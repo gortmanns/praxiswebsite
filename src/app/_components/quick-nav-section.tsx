@@ -58,9 +58,9 @@ function HandHoldingMedicalIcon(props: React.SVGProps<SVGSVGElement>) {
         className="absolute text-current"
         // Fine-tuned positioning for the cross
         style={{ 
-          fontSize: '120%', 
+          fontSize: '80%', 
           fontWeight: 'bold', 
-          top: '-25%', 
+          top: '-5%', 
           left: '52%',
           lineHeight: 1, // Ensures the '+' character is vertically centered
         }}
