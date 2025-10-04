@@ -47,7 +47,7 @@ export function CooperationPartnersSection() {
               rel="noopener noreferrer"
               className="group"
             >
-              <Card className="flex min-h-[144px] items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
+              <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
                 <CardContent className="flex w-full items-center justify-center p-0">
                   {partner.name === 'VASC-ALLIANCE' ? (
                      <div className="relative flex h-[75px] w-full items-center justify-center overflow-hidden">
