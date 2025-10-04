@@ -50,8 +50,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-/* Temporary debug styles */
-* {
-  border: 1px solid orange !important;
-}
