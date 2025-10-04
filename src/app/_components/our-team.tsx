@@ -27,7 +27,7 @@ export function OurTeam() {
       <div className="container">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">
-            Lernen Sie unser Team kennen
+            SPEZIALISTEN IM PRAXISZENTRUM IM RING
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
             Unser engagiertes Team von erfahrenen Ärzten ist hier, um Ihnen die beste Betreuung zu bieten.
