@@ -4,6 +4,7 @@ import { Hero } from './_components/hero';
 import { WelcomeSection } from './_components/welcome-section';
 import { QuickNavSection } from './_components/quick-nav-section';
 import { CooperationPartnersSection } from './_components/cooperation-partners';
+import { ColorPaletteDemo } from './_components/color-palette-demo';
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
         <WelcomeSection />
         <QuickNavSection />
         <CooperationPartnersSection />
+        <ColorPaletteDemo />
       </main>
       <Footer />
     </div>
