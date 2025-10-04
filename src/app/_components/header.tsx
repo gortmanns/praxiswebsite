@@ -32,8 +32,8 @@ export function Header() {
       {/* Main header with logo and navigation */}
       <div className="relative flex h-20 items-center">
         {/* Logo */}
-        <div className="absolute inset-y-0 left-0 flex items-center px-4 sm:px-6 lg:px-8">
-            <Link href="/" className="inline-block py-4">
+        <div className="container mx-auto flex items-center px-4 sm:px-6 lg:px-8">
+            <Link href="/" className="inline-block">
             <Image
                 src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
                 alt="Praxiszentrum im Ring Logo"
@@ -45,8 +45,8 @@ export function Header() {
             </Link>
         </div>
 
-        {/* Centered Navigation for Desktop & Mobile Menu */}
-        <div className="container mx-auto flex flex-1 items-center justify-center px-4 sm:px-6 lg:px-8">
+        {/* Centered Navigation for Desktop */}
+        <div className="absolute inset-0 flex items-center justify-center">
             <nav className="hidden items-center space-x-8 md:flex">
                 {navLinks.map((link) => (
                 <Link
