@@ -3,17 +3,11 @@ import Link from 'next/link';
 import {
   Users,
   FilePlus,
-  Pill,
   AlertTriangle,
   HeartPulse,
   ClipboardList,
   Medal,
   Stethoscope,
-  ShieldCheck,
-  Package,
-  Beaker,
-  TestTube2,
-  Circle,
 } from 'lucide-react';
 
 const navItems = [
@@ -33,7 +27,7 @@ const navItems = [
     href: '/medikamente',
     label: 'Medikamente',
     icon: null,
-    icons: [Pill, 'CustomHalfCircle'],
+    icons: ['CustomPillsIcon'],
   },
   {
     href: '/notfall',
@@ -43,28 +37,26 @@ const navItems = [
   },
 ];
 
-const CustomHalfCircleIcon = (props: React.SVGProps<SVGSVGElement>) => (
+const CustomPillsIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      viewBox="0 0 512 512"
+      fill="currentColor"
       {...props}
     >
-      <circle cx="12" cy="12" r="10" />
-      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+        <path d="M294.9 238.4l-96-96c-18.7-18.7-49.1-18.7-67.9 0s-18.7 49.1 0 67.9l96 96L42.3 391c-18.7 18.7-18.7 49.1 0 67.9s49.1 18.7 67.9 0l84.7-84.7 96 96c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9l-96-96L386.3 150.6c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0L294.9 238.4zM464 128c-35.3 0-64 28.7-64 64s28.7 64 64 64 64-28.7 64-64-28.7-64-64-64z"/>
     </svg>
   );
 
+
 export function QuickNavSection() {
   const iconComponents: { [key: string]: React.ElementType } = {
-    Pill,
-    CustomHalfCircle: CustomHalfCircleIcon
+    HeartPulse,
+    ClipboardList,
+    Medal,
+    Stethoscope,
+    FilePlus,
+    CustomPillsIcon
   };
 
   return (
