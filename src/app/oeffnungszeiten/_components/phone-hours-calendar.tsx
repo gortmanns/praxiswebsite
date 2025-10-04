@@ -61,27 +61,31 @@ export function PhoneHoursCalendar() {
     const dailyBlocks = useMemo(() => {
         return days.map(day => {
             const blocks: { [key: string]: TimeBlock } = {};
+            const processedSlots: Set<string> = new Set();
+    
+            day.open.forEach(period => {
+                for (let i = 0; i < timeSlots.length - 1; i++) {
+                    const currentTime = timeSlots[i];
+                    if (processedSlots.has(currentTime)) continue;
+    
+                    const currentMinutes = timeToMinutes(currentTime);
+                    const periodStartMinutes = timeToMinutes(period.start);
+                    const periodEndMinutes = timeToMinutes(period.end);
+    
+                    if (currentMinutes >= periodStartMinutes && currentMinutes < periodEndMinutes) {
+                        blocks[currentTime] = { ...period, isOpen: true };
+                        processedSlots.add(currentTime);
+                    }
+                }
+            });
             
             for (let i = 0; i < timeSlots.length - 1; i++) {
                 const currentTime = timeSlots[i];
-                const currentMinutes = timeToMinutes(currentTime);
-                let periodFound = false;
-
-                for (const period of day.open) {
-                    const periodStartMinutes = timeToMinutes(period.start);
-                    const periodEndMinutes = timeToMinutes(period.end);
-
-                    if (currentMinutes >= periodStartMinutes && currentMinutes < periodEndMinutes) {
-                        blocks[currentTime] = { ...period, isOpen: true };
-                        periodFound = true;
-                        break;
-                    }
-                }
-
-                if (!periodFound) {
+                if (!processedSlots.has(currentTime)) {
                     blocks[currentTime] = { start: currentTime, end: timeSlots[i+1], isOpen: false, label: 'Telefon nicht bedient' };
                 }
             }
+    
             return blocks;
         });
     }, []);
@@ -99,39 +103,67 @@ export function PhoneHoursCalendar() {
             ))}
 
           {/* Time Axis & Content */}
-          {fullHourSlots.map((hour, hourIndex) => (
-              <React.Fragment key={hour}>
-                <div className="row-span-2 flex items-center justify-center border-b border-l border-border px-2 text-center text-xs font-bold text-muted-foreground">
-                   {hour} - {fullHourSlots[hourIndex+1] || '18:00'}
+          <div className="col-start-1 col-end-2 row-start-2 row-end-[22] grid grid-rows-20">
+              {timeSlots.slice(0, -1).map((startTime) => (
+                <div key={startTime} className="flex h-12 items-center justify-center border-b border-l border-border px-2 text-center text-xs font-bold text-muted-foreground bg-muted">
+                    {startTime}
                 </div>
-                {[':00', ':30'].map((minute) => {
-                    const currentTime = `${hour.split(':')[0]}${minute}`;
-                    return dailyBlocks.map((dayBlocks, dayIndex) => {
-                        const currentBlock = dayBlocks[currentTime];
-                        const isFirstIntervalOfBlock = timeToMinutes(currentBlock.start) === timeToMinutes(currentTime);
+              ))}
+          </div>
 
-                        return (
-                             <div
-                                key={`${dayIndex}-${currentTime}`}
-                                className={cn(
-                                    "flex items-center justify-center p-1 border-b border-l border-border h-12",
-                                    currentBlock.isOpen ? 'bg-primary/20' : 'bg-muted'
-                                )}
-                            >
-                                {isFirstIntervalOfBlock && (
-                                    <span className={cn(
-                                        "font-semibold text-base",
-                                        currentBlock.isOpen ? "text-foreground" : "text-muted-foreground"
-                                    )}>
-                                        {currentBlock.label}
-                                    </span>
-                                )}
-                            </div>
-                        );
-                    })
-                })}
-              </React.Fragment>
-          ))}
+          <div className="col-start-2 col-end-7 row-start-2 row-end-[22] grid grid-cols-5 grid-rows-20">
+            {dailyBlocks.map((dayBlocks, dayIndex) => {
+                const processedBlocks = new Set<string>();
+                return timeSlots.slice(0, -1).map((startTime, timeIndex) => {
+                    const currentBlock = dayBlocks[startTime];
+                    
+                    if (processedBlocks.has(startTime)) {
+                        return null;
+                    }
+
+                    const startMinutes = timeToMinutes(currentBlock.start);
+                    const endMinutes = timeToMinutes(currentBlock.end);
+                    const durationInIntervals = Math.round((endMinutes - startMinutes) / 30);
+
+                    const startRow = timeIndex + 1;
+                    const endRow = startRow + (currentBlock.isOpen ? durationInIntervals : 1);
+                    
+                    const blockKey = `${dayIndex}-${startTime}`;
+                    
+                    if (currentBlock.isOpen) {
+                        for(let i=0; i<durationInIntervals; i++){
+                            const slotIndex = timeIndex + i;
+                            if (slotIndex < timeSlots.length - 1) {
+                                processedBlocks.add(timeSlots[slotIndex]);
+                            }
+                        }
+                    } else {
+                        processedBlocks.add(startTime);
+                    }
+
+                    return (
+                        <div
+                            key={blockKey}
+                            className={cn(
+                                "flex items-center justify-center p-1 border-b border-l border-border",
+                                currentBlock.isOpen ? 'bg-background' : 'bg-muted'
+                            )}
+                            style={{
+                                gridColumn: `${dayIndex + 1} / span 1`,
+                                gridRow: `${startRow} / ${endRow}`
+                            }}
+                        >
+                            <span className={cn(
+                                "font-semibold text-base",
+                                currentBlock.isOpen ? "text-foreground" : "text-muted-foreground"
+                            )}>
+                                {currentBlock.label}
+                            </span>
+                        </div>
+                    );
+                })
+            })}
         </div>
-      );
+    </div>
+    );
 }
