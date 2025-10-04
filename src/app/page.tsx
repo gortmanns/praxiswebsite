@@ -1,6 +1,7 @@
 import { Header } from './_components/header';
 import { Footer } from './_components/footer';
 import { Hero } from './_components/hero';
+import { WelcomeSection } from './_components/welcome-section';
 import { OurTeam } from './_components/our-team';
 import { ContactSection } from './_components/contact-section';
 
@@ -10,6 +11,7 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <Hero />
+        <WelcomeSection />
         <OurTeam />
         <ContactSection />
       </main>
