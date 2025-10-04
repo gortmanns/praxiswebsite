@@ -15,7 +15,6 @@ const minutesToTime = (minutes: number) => {
     return `${h}:${m}`;
 };
 
-
 const timeSlots = [
   '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00',
   '16:00', '17:00', '18:00',
@@ -139,34 +138,37 @@ export function OpeningHoursCalendar() {
           <div className="grid grid-cols-[auto_repeat(5,1fr)]">
             {/* Header Row */}
             <div className="sticky top-0 z-10 border-b border-r border-border bg-muted"></div>
-            <div className="sticky top-0 z-10 grid grid-cols-5 bg-muted">
-                {days.map((day) => (
-                    <div key={day.name} className="flex h-12 items-center justify-center border-b border-l border-border text-center text-sm font-bold text-muted-foreground sm:text-base">
-                        {day.name}
-                    </div>
-                ))}
-            </div>
-
-            {/* Time Axis Blocks */}
-            <div className="row-start-2 flex flex-col">
-                {timeLabels.map((slot, index) => (
-                <div
-                    key={`time-${index}`}
-                    className="flex h-16 items-center justify-center border-b border-r border-border bg-muted px-2 text-center text-xs text-muted-foreground"
-                >
-                    {slot.startTime} - {slot.endTime}
+            {days.map((day, dayIndex) => (
+                <div key={day.name} className={cn(
+                    "sticky top-0 z-10 flex h-12 items-center justify-center border-b border-l-0 border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base",
+                    dayIndex < days.length -1 ? "border-r" : ""
+                )}>
+                    {day.name}
                 </div>
-                ))}
-            </div>
+            ))}
 
-             {/* Days Content Area */}
-            <div className="relative col-span-5 col-start-2 row-start-2 grid grid-cols-5">
-                {/* Vertical lines for day separation */}
-                {days.slice(0, 4).map((_, dayIndex) => (
-                    <div key={`line-${dayIndex}`} className="h-full border-l border-border" style={{gridColumn: dayIndex + 2}}></div>
-                ))}
+            {/* Time Axis & Content Grid */}
+            {timeLabels.map((slot, timeIndex) => (
+                <div key={`row-${timeIndex}`} className="contents">
+                     {/* Time Axis Cell */}
+                    <div
+                        className="flex h-16 items-center justify-center border-b border-r border-border bg-muted px-2 text-center text-xs text-muted-foreground"
+                    >
+                        {slot.startTime} - {slot.endTime}
+                    </div>
 
-                {/* Blocks overlay */}
+                    {/* Day cells (empty for grid structure) */}
+                    {days.map((_, dayIndex) => (
+                         <div key={`cell-${timeIndex}-${dayIndex}`} className={cn(
+                            "border-b",
+                            dayIndex < days.length - 1 ? "border-r" : ""
+                         )}></div>
+                    ))}
+                </div>
+            ))}
+             
+            {/* Overlay for grouped blocks */}
+            <div className="absolute col-span-5 col-start-2 row-span-full row-start-2 h-full w-full">
                 {groupedBlocks.map((block, index) => {
                     const startMinutes = timeToMinutes(block.start);
                     const endMinutes = timeToMinutes(block.end);
@@ -186,7 +188,7 @@ export function OpeningHoursCalendar() {
                                 top: `${top}rem`,
                                 height: `${height}rem`,
                                 left: `${block.startDay * 20}%`,
-                                width: `calc(${(block.endDay - block.startDay + 1) * 20}% - 1px)`, 
+                                width: `${(block.endDay - block.startDay + 1) * 20}%`, 
                             }}
                         >
                             {block.label && (
