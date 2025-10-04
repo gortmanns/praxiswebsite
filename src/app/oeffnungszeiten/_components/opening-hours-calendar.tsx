@@ -55,10 +55,6 @@ const days = [
   },
 ];
 
-const totalStartMinutes = timeToMinutes('08:00');
-const totalEndMinutes = timeToMinutes('18:00');
-const totalDurationMinutes = totalEndMinutes - totalStartMinutes;
-
 type TimeBlock = {
   start: string;
   end: string;
@@ -66,20 +62,12 @@ type TimeBlock = {
   label?: string;
 };
 
-type GroupedBlock = {
-    start: string;
-    end: string;
-    isOpen: boolean;
-    label?: string;
-    startDay: number;
-    endDay: number;
-};
-
 export function OpeningHoursCalendar() {
-    const groupedBlocks = useMemo(() => {
-        const dailyBlocks: TimeBlock[][] = days.map(day => {
+    const dailyBlocks = useMemo(() => {
+        return days.map(day => {
             const blocks: TimeBlock[] = [];
-            let currentTime = totalStartMinutes;
+            let currentTime = timeToMinutes('08:00');
+            const endTime = timeToMinutes('18:00');
             const sortedOpen = [...day.open].sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
             
             for (const period of sortedOpen) {
@@ -94,36 +82,11 @@ export function OpeningHoursCalendar() {
                 currentTime = endMinutes;
             }
 
-            if (currentTime < totalEndMinutes) {
-                blocks.push({ start: minutesToTime(currentTime), end: minutesToTime(totalEndMinutes), isOpen: false, label: 'Praxis geschlossen' });
+            if (currentTime < endTime) {
+                blocks.push({ start: minutesToTime(currentTime), end: minutesToTime(endTime), isOpen: false, label: 'Praxis geschlossen' });
             }
             return blocks;
         });
-
-        const allGroupedBlocks: GroupedBlock[] = [];
-        dailyBlocks.forEach((dayBlocks, dayIndex) => {
-            dayBlocks.forEach(block => {
-                const mergeCandidate = allGroupedBlocks.find(grouped => 
-                    grouped.start === block.start &&
-                    grouped.end === block.end &&
-                    grouped.isOpen === block.isOpen &&
-                    grouped.label === block.label &&
-                    grouped.endDay === dayIndex - 1
-                );
-
-                if (mergeCandidate) {
-                    mergeCandidate.endDay = dayIndex;
-                } else {
-                    allGroupedBlocks.push({
-                        ...block,
-                        startDay: dayIndex,
-                        endDay: dayIndex
-                    });
-                }
-            });
-        });
-        
-        return allGroupedBlocks;
     }, []);
 
     return (
@@ -131,71 +94,54 @@ export function OpeningHoursCalendar() {
           {/* Header Row */}
           <div className="sticky top-0 z-10 border-b border-l border-border bg-muted"></div>
           {days.map((day) => (
-            <div key={day.name} className={cn(
-                "flex h-12 items-center justify-center border-b border-l border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base",
-            )}>
+            <div key={day.name} className="flex h-12 items-center justify-center border-b border-l border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
                 {day.name}
             </div>
           ))}
 
-
-          {/* Time Axis Column */}
+          {/* Time Axis & Content */}
           {timeSlots.slice(0, -1).map((startTime, index) => (
-              <div key={startTime} className="row-span-1 flex items-center justify-center text-center text-xs text-muted-foreground border-b border-l border-border px-2 font-bold">
-                  {startTime} - {timeSlots[index + 1]}
-              </div>
-          ))}
-          
-          {/* Content Area */}
-          <div className="col-start-2 col-span-5 row-start-2 row-span-10 grid grid-cols-5 grid-rows-10 relative">
-              {/* Day cells for grid lines */}
-              {Array.from({ length: 5 }).map((_, dayIndex) => (
-                  <div key={`col-${dayIndex}`} className={cn(
-                      "h-full border-l border-border"
-                  )}>
-                    {Array.from({ length: 10 }).map((_, timeIndex) => (
-                      <div key={`row-line-${dayIndex}-${timeIndex}`} className="h-full border-b border-border"></div>
-                    ))}
-                  </div>
-              ))}
-              
-              {/* Grouped Blocks */}
-              {groupedBlocks.map((block, index) => {
-                  const startMinutes = timeToMinutes(block.start);
-                  const endMinutes = timeToMinutes(block.end);
-                  const durationMinutes = endMinutes - startMinutes;
-                  
-                  const top = ((startMinutes - totalStartMinutes) / totalDurationMinutes) * 100;
-                  const height = (durationMinutes / totalDurationMinutes) * 100;
-                  const left = block.startDay * 20;
-                  const width = (block.endDay - block.startDay + 1) * 20;
+              <React.Fragment key={startTime}>
+                <div className="row-span-1 flex items-center justify-center text-center text-xs text-muted-foreground border-b border-l border-border px-2 font-bold">
+                    {startTime} - {timeSlots[index + 1]}
+                </div>
+                {dailyBlocks.map((dayBlocks, dayIndex) => {
+                    const startHour = parseInt(startTime.split(':')[0]);
+                    const currentBlock = dayBlocks.find(block => {
+                        const blockStartHour = parseInt(block.start.split(':')[0]);
+                        const blockEndHour = parseInt(block.end.split(':')[0]);
+                        return startHour >= blockStartHour && startHour < blockEndHour;
+                    });
+                    
+                    const isFirstHourOfBlock = currentBlock && parseInt(currentBlock.start.split(':')[0]) === startHour;
+                    if (!currentBlock || !isFirstHourOfBlock) {
+                        return <div key={`${dayIndex}-${startTime}`} className="h-full border-b border-l border-border"></div>;
+                    }
 
-                  return (
-                      <div
-                          key={index}
-                          className={cn(
-                              "absolute flex items-center justify-center p-2",
-                              block.isOpen ? 'bg-primary/20' : 'bg-muted'
-                          )}
-                          style={{
-                              top: `${top}%`,
-                              height: `${height}%`,
-                              left: `${left}%`,
-                              width: `${width}%`, 
-                          }}
-                      >
-                          {block.label && (
-                              <span className={cn(
-                                  "font-semibold text-lg",
-                                  block.isOpen ? "text-foreground" : "text-muted-foreground"
-                              )}>
-                                  {block.label}
-                              </span>
-                          )}
-                      </div>
-                  );
-              })}
-          </div>
+                    const startMinutes = timeToMinutes(currentBlock.start);
+                    const endMinutes = timeToMinutes(currentBlock.end);
+                    const durationHours = Math.ceil((endMinutes - startMinutes) / 60);
+
+                    return (
+                        <div
+                            key={`${dayIndex}-${startTime}`}
+                            className={cn(
+                                "flex items-center justify-center p-2 border-b border-l border-border",
+                                currentBlock.isOpen ? 'bg-primary/20' : 'bg-muted'
+                            )}
+                            style={{ gridRow: `span ${durationHours}` }}
+                        >
+                            <span className={cn(
+                                "font-semibold text-lg",
+                                currentBlock.isOpen ? "text-foreground" : "text-muted-foreground"
+                            )}>
+                                {currentBlock.label}
+                            </span>
+                        </div>
+                    );
+                })}
+              </React.Fragment>
+          ))}
         </div>
       );
 }

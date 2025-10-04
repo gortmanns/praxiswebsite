@@ -2,7 +2,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 const timeToMinutes = (time: string) => {
     const [hours, minutes] = time.split(':').map(Number);
@@ -16,9 +16,8 @@ const minutesToTime = (minutes: number) => {
 };
 
 const timeSlots = [
-  '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-  '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30',
-  '16:00', '16:30', '17:00', '17:30', '18:00',
+  '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00',
+  '16:00', '17:00', '18:00',
 ];
 
 const days = [
@@ -56,10 +55,6 @@ const days = [
   },
 ];
 
-const totalStartMinutes = timeToMinutes('08:00');
-const totalEndMinutes = timeToMinutes('18:00');
-const totalDurationMinutes = totalEndMinutes - totalStartMinutes;
-
 type TimeBlock = {
   start: string;
   end: string;
@@ -67,20 +62,12 @@ type TimeBlock = {
   label?: string;
 };
 
-type GroupedBlock = {
-    start: string;
-    end: string;
-    isOpen: boolean;
-    label?: string;
-    startDay: number;
-    endDay: number;
-};
-
 export function PhoneHoursCalendar() {
-    const groupedBlocks = useMemo(() => {
-        const dailyBlocks: TimeBlock[][] = days.map(day => {
+    const dailyBlocks = useMemo(() => {
+        return days.map(day => {
             const blocks: TimeBlock[] = [];
-            let currentTime = totalStartMinutes;
+            let currentTime = timeToMinutes('08:00');
+            const endTime = timeToMinutes('18:00');
             const sortedOpen = [...day.open].sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
             
             for (const period of sortedOpen) {
@@ -95,49 +82,22 @@ export function PhoneHoursCalendar() {
                 currentTime = endMinutes;
             }
 
-            if (currentTime < totalEndMinutes) {
-                blocks.push({ start: minutesToTime(currentTime), end: minutesToTime(totalEndMinutes), isOpen: false, label: 'Telefon nicht bedient' });
+            if (currentTime < endTime) {
+                blocks.push({ start: minutesToTime(currentTime), end: minutesToTime(endTime), isOpen: false, label: 'Telefon nicht bedient' });
             }
             return blocks;
         });
-
-        const allGroupedBlocks: GroupedBlock[] = [];
-        dailyBlocks.forEach((dayBlocks, dayIndex) => {
-            dayBlocks.forEach(block => {
-                const mergeCandidate = allGroupedBlocks.find(grouped => 
-                    grouped.start === block.start &&
-                    grouped.end === block.end &&
-                    grouped.isOpen === block.isOpen &&
-                    grouped.label === block.label &&
-                    grouped.endDay === dayIndex - 1
-                );
-
-                if (mergeCandidate) {
-                    mergeCandidate.endDay = dayIndex;
-                } else {
-                    allGroupedBlocks.push({
-                        ...block,
-                        startDay: dayIndex,
-                        endDay: dayIndex
-                    });
-                }
-            });
-        });
-        
-        return allGroupedBlocks;
     }, []);
 
     const timeAxisSlots = useMemo(() => {
-      const slots = [];
-      for (let i = 0; i < timeSlots.length - 1; i++) {
-        if (i % 2 === 0) { // Show label for every full hour
+        const slots = [];
+        for (let i = 0; i < timeSlots.length - 1; i++) {
             slots.push({
                 startTime: timeSlots[i],
-                endTime: timeSlots[i+2] || timeSlots[i+1],
+                endTime: timeSlots[i+1],
             });
         }
-      }
-      return slots;
+        return slots;
     }, []);
 
     return (
@@ -145,71 +105,68 @@ export function PhoneHoursCalendar() {
           {/* Header Row */}
           <div className="sticky top-0 z-10 border-b border-l border-border bg-muted"></div>
             {days.map((day) => (
-                <div key={day.name} className={cn(
-                    "flex h-12 items-center justify-center border-b border-l border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base",
-                )}>
+                <div key={day.name} className="flex h-12 items-center justify-center border-b border-l border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
                     {day.name}
                 </div>
             ))}
 
-
-          {/* Time Axis Column */}
+          {/* Time Axis & Content */}
           {timeAxisSlots.map(({startTime, endTime}) => (
-               <div key={startTime} className="row-span-1 flex items-center justify-center text-center text-xs text-muted-foreground border-b border-l border-border px-2 font-bold">
+              <React.Fragment key={startTime}>
+                <div className="row-span-1 flex items-center justify-center text-center text-xs text-muted-foreground border-b border-l border-border px-2 font-bold">
                    {startTime} - {endTime}
-               </div>
-          ))}
-          
-          {/* Content Area */}
-          <div className="col-start-2 col-span-5 row-start-2 row-span-10 grid grid-cols-5 grid-rows-10 relative">
-              {/* Day cells for grid lines */}
-              {Array.from({ length: 5 }).map((_, dayIndex) => (
-                  <div key={`col-${dayIndex}`} className={cn(
-                      "h-full border-l border-border"
-                  )}>
-                    {Array.from({ length: 10 }).map((_, timeIndex) => (
-                      <div key={`row-line-${dayIndex}-${timeIndex}`} className="h-full border-b border-border"></div>
-                    ))}
-                  </div>
-              ))}
-              
-              {/* Grouped Blocks */}
-              {groupedBlocks.map((block, index) => {
-                  const startMinutes = timeToMinutes(block.start);
-                  const endMinutes = timeToMinutes(block.end);
-                  const durationMinutes = endMinutes - startMinutes;
-                  
-                  const top = ((startMinutes - totalStartMinutes) / totalDurationMinutes) * 100;
-                  const height = (durationMinutes / totalDurationMinutes) * 100;
-                  const left = block.startDay * 20;
-                  const width = (block.endDay - block.startDay + 1) * 20;
+                </div>
+                {dailyBlocks.map((dayBlocks, dayIndex) => {
+                    const gridCells = [];
+                    // Create cells for each 30-minute interval within the hour
+                    for (let minuteOffset = 0; minuteOffset < 60; minuteOffset += 30) {
+                        const currentMinutes = timeToMinutes(startTime) + minuteOffset;
+                        
+                        const currentBlock = dayBlocks.find(block => {
+                            const blockStartMinutes = timeToMinutes(block.start);
+                            const blockEndMinutes = timeToMinutes(block.end);
+                            return currentMinutes >= blockStartMinutes && currentMinutes < blockEndMinutes;
+                        });
 
-                  return (
-                      <div
-                          key={index}
-                          className={cn(
-                              "absolute flex items-center justify-center p-2",
-                              block.isOpen ? 'bg-primary/20' : 'bg-muted'
-                          )}
-                          style={{
-                              top: `${top}%`,
-                              height: `${height}%`,
-                              left: `${left}%`,
-                              width: `${width}%`, 
-                          }}
-                      >
-                          {block.label && (
-                              <span className={cn(
-                                  "font-semibold text-base",
-                                  block.isOpen ? "text-foreground" : "text-muted-foreground"
-                              )}>
-                                  {block.label}
-                              </span>
-                          )}
-                      </div>
-                  );
-              })}
-          </div>
+                        const isFirstIntervalOfBlock = currentBlock && timeToMinutes(currentBlock.start) === currentMinutes;
+                        if (!currentBlock || !isFirstIntervalOfBlock) {
+                            gridCells.push(<div key={`${dayIndex}-${startTime}-${minuteOffset}`} className="h-1/2 border-b border-l border-border"></div>);
+                            continue;
+                        }
+
+                        const startMinutes = timeToMinutes(currentBlock.start);
+                        const endMinutes = timeToMinutes(currentBlock.end);
+                        const durationMinutes = endMinutes - startMinutes;
+                        const rowSpan = durationMinutes / 30;
+
+                        gridCells.push(
+                            <div
+                                key={`${dayIndex}-${startTime}-${minuteOffset}`}
+                                className={cn(
+                                    "flex items-center justify-center p-1 border-b border-l border-border",
+                                    currentBlock.isOpen ? 'bg-primary/20' : 'bg-muted'
+                                )}
+                                style={{ 
+                                    gridRow: `span ${rowSpan}`,
+                                    height: `${rowSpan * 50}%` // This is a bit of a hack for height, might need adjustment
+                                 }}
+                            >
+                                <span className={cn(
+                                    "font-semibold text-base",
+                                    currentBlock.isOpen ? "text-foreground" : "text-muted-foreground"
+                                )}>
+                                    {currentBlock.label}
+                                </span>
+                            </div>
+                        );
+                    }
+                    
+                    // The main div for the day column in this time slot now just acts as a container
+                    return <div key={`${dayIndex}-${startTime}`} className="h-full flex flex-col">{gridCells}</div>;
+                })}
+              </React.Fragment>
+          ))}
         </div>
       );
 }
+
