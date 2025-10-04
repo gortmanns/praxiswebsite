@@ -1,3 +1,4 @@
+
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 
@@ -15,11 +16,20 @@ export default function PraxisferienPage() {
                     Auf dieser Seite finden Sie stets eine Übersicht aller Praxisferien, soweit diese bereits geplant sind.
                 </p>
             </div>
+            <div className="mx-auto mt-16 w-full max-w-2xl space-y-8 text-center">
+              <div className="space-y-2">
+                <p className="text-xl font-bold text-primary">Herbstferien 2025</p>
+                <p className="text-lg text-foreground/80">4. Oktober 2025 - 12. Oktober 2025</p>
+              </div>
+              <hr className="border-t border-border" />
+              <div className="space-y-2">
+                <p className="text-xl font-bold text-primary">Weihnachtsferien 2025 / 2026</p>
+                <p className="text-lg text-foreground/80">20.12.2025 - 4. Januar 2026</p>
+              </div>
+            </div>
         </div>
       </main>
       <Footer />
     </div>
   );
 }
-
-    
