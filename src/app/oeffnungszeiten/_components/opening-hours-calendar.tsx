@@ -102,22 +102,39 @@ export function OpeningHoursCalendar() {
       {/* Time Axis & Content */}
       <div className="col-start-1 col-end-2 row-start-2 row-end-[13] grid grid-rows-10">
           {timeSlots.slice(0, -1).map((startTime, index) => (
-            <div key={startTime} className="flex items-center justify-center border-b border-l border-border px-2 text-center text-xs font-bold text-muted-foreground bg-muted">
+            <div key={startTime} className="flex items-center justify-center border-b border-l border-border bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
                 {startTime} - {timeSlots[index + 1]}
             </div>
           ))}
       </div>
       
       <div className="col-start-2 col-end-7 row-start-2 row-end-[13] grid grid-cols-5 grid-rows-10">
+        {/* Merged Morning Block */}
+        <div
+            className="flex items-center justify-center p-2 border-b border-l border-border bg-background"
+            style={{
+                gridColumn: '1 / span 5',
+                gridRow: '1 / span 4'
+            }}
+        >
+            <span className="font-semibold text-lg text-foreground">
+                Sprechstunde
+            </span>
+        </div>
+
         {dailyBlocks.map((dayBlocks, dayIndex) => {
             const processedBlocks = new Set<string>();
             return timeSlots.slice(0, -1).map((startTime, timeIndex) => {
               const currentBlock = dayBlocks[startTime];
-              
-              if (processedBlocks.has(startTime)) {
+
+              if (processedBlocks.has(startTime)) return null;
+
+              const isMorning = timeToMinutes(startTime) < timeToMinutes('12:00');
+              if (isMorning) {
+                // Skip rendering individual morning blocks as they are merged
                 return null;
               }
-
+              
               const startMinutes = timeToMinutes(currentBlock.start);
               const endMinutes = timeToMinutes(currentBlock.end);
               const durationInHours = Math.round((endMinutes - startMinutes) / 60);
