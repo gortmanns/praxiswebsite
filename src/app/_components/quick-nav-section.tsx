@@ -35,14 +35,13 @@ function CustomPillsIcon(props: React.SVGProps<SVGSVGElement>) {
       viewBox="0 0 50 100"
       fill="currentColor"
       {...props}>
-      {/* Bottom filled half with stroke */}
-      <path d="M 5 50 H 45 V 95 C 45 97.761 42.761 100 40 100 H 10 C 7.239 100 5 97.761 5 95 V 50 Z" stroke="currentColor" strokeWidth="5" />
-      {/* Top hollow half */}
-      <path d="M 5 50 H 45 V 5 C 45 2.239 42.761 0 40 0 H 10 C 7.239 0 5 2.239 5 5 V 50 Z" fill="none" stroke="currentColor" strokeWidth="5"/>
+      {/* Bottom filled half with rounded corners and stroke */}
+      <path d="M 45 50 V 90 A 20 20 0 0 1 25 100 A 20 20 0 0 1 5 90 V 50 Z" stroke="currentColor" strokeWidth="5" />
+      {/* Top hollow half with rounded corners and stroke */}
+      <path d="M 5 50 V 10 A 20 20 0 0 1 25 0 A 20 20 0 0 1 45 10 V 50 Z" fill="none" stroke="currentColor" strokeWidth="5"/>
     </svg>
   );
 }
-
 
 // Keep FilePlus as it's used in the navItems array for 'Leistungen'
 function FilePlus(props: React.SVGProps<SVGSVGElement>) {
