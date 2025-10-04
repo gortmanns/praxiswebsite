@@ -9,6 +9,7 @@ import { MedphoneLogo } from '@/components/logos/medphone-logo';
 
 export default function NotfallPage() {
   const ambulanceImage = PlaceHolderImages.find((p) => p.id === 'rettungswagen');
+  const medphoneImage = PlaceHolderImages.find((p) => p.id === 'medphone-logo');
   
   return (
     <div className="flex min-h-screen flex-col bg-background">
