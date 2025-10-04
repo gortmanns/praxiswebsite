@@ -24,9 +24,9 @@ export function CooperationPartnersSection() {
     },
   ];
   return (
-    <section id="partners" className="bg-muted/50">
+    <section id="partners" className="bg-primary">
       <div className="container py-16 text-center sm:py-24">
-        <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">
+        <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl text-primary-foreground">
           Unsere Kooperationspartner
         </h2>
         <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
