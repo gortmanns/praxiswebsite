@@ -100,7 +100,7 @@ export function CooperationPartnersSection() {
                       alt={`${partner.name} Logo`}
                       width={280}
                       height={80}
-                      className="h-auto max-h-28 w-auto object-contain"
+                      className="h-auto w-auto object-contain"
                     />
                   )}
                 </CardContent>
