@@ -6,6 +6,7 @@ import {
   Pill,
   AlertTriangle,
   Beaker,
+  TestTube2,
 } from 'lucide-react';
 
 const navItems = [
@@ -25,7 +26,7 @@ const navItems = [
     href: '/medikamente',
     label: 'Medikamente',
     icon: null,
-    icons: [Pill, Beaker],
+    icons: [Pill, TestTube2],
   },
   {
     href: '/notfall',
