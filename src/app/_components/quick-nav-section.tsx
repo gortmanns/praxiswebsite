@@ -3,8 +3,8 @@ import Link from 'next/link';
 import {
   Users,
   AlertTriangle,
-  UsersRound,
-  UserCog,
+  UserCheck,
+  Accessibility,
 } from 'lucide-react';
 
 const navItems = [
@@ -16,12 +16,12 @@ const navItems = [
   {
     href: '/team',
     label: 'Team (2)',
-    Icon: UsersRound,
+    Icon: UserCheck,
   },
-  {
+{
     href: '/team',
     label: 'Team (3)',
-    Icon: UserCog,
+    Icon: Accessibility,
   },
   {
     href: '/leistungen',
