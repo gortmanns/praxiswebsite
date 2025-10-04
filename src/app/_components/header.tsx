@@ -67,7 +67,7 @@ export function Header() {
       </div>
 
       {/* Main header */}
-      <div className="flex h-28 items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="container flex h-28 items-center justify-between">
         <Link href="/">
             <Image
             src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
