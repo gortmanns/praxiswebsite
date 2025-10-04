@@ -49,7 +49,39 @@ export function CooperationPartnersSection() {
               <Card className="flex min-h-[144px] items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
                 <CardContent className="flex w-full items-center justify-center p-0">
                   {partner.isSvg ? (
-                     <div />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="200"
+                      height="50"
+                      viewBox="0 0 379.79 70.36"
+                      aria-label="orthozentrum-bern Logo"
+                      className="text-foreground"
+                    >
+                      <g>
+                        <path
+                          d="M35.18,0A35.18,35.18,0,0,0,20.5,67.65L24,58.53a25.86,25.86,0,1,1,22.39,0l3.49,9.12A35.18,35.18,0,0,0,35.18,0Z"
+                          style={{ fill: '#00aaef' }}
+                        ></path>
+                        <path
+                          d="M35.18,13.6a21.58,21.58,0,1,0,21.58,21.58A21.58,21.58,0,0,0,35.18,13.6Zm12.6,23.33H38.1v9.68a2.92,2.92,0,0,1-5.84,0V36.93H22.58a2.92,2.92,0,1,1,0-5.84h9.68V21.41a2.92,2.92,0,0,1,5.84,0v9.68h9.68a2.92,2.92,0,1,1,0,5.84Z"
+                          style={{ fill: '#fff' }}
+                        ></path>
+                      </g>
+                      <g
+                        style={{
+                          isolation: 'isolate',
+                        }}
+                      >
+                        <text
+                          transform="translate(80.63 46.51)"
+                          fontSize="43"
+                          fill="currentColor"
+                          fontFamily="Prompt-Regular, Prompt"
+                        >
+                          orthozentrum-bern
+                        </text>
+                      </g>
+                    </svg>
                   ) : (
                     <div className="relative flex h-[80px] w-full items-center justify-center overflow-hidden">
                       <Image
