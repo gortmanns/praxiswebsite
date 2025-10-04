@@ -58,7 +58,7 @@ function HandHoldingMedicalIcon(props: React.SVGProps<SVGSVGElement>) {
         style={{ 
           fontSize: '80%', 
           fontWeight: 'bold', 
-          top: '-50%', 
+          top: '-15%', 
           left: '42%',
           lineHeight: 1,
         }}
