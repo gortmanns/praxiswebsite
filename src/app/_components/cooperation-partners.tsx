@@ -51,7 +51,7 @@ export function CooperationPartnersSection() {
                       alt={`${partner.name} Logo`}
                       width={200}
                       height={75}
-                      className="h-auto w-full object-contain"
+                      className="h-auto w-[110%] object-contain"
                     />
                   ) : partner.name === 'Schemmer & Worni' ? (
                     <div className="relative flex h-[50px] w-full items-center justify-center overflow-hidden">
