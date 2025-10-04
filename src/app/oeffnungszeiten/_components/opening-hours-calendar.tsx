@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { useMemo } from 'react';
 
 const timeToMinutes = (time: string) => {
     const [hours, minutes] = time.split(':').map(Number);
@@ -57,7 +56,7 @@ type TimeBlock = {
 };
 
 export function OpeningHoursCalendar() {
-  const dailyBlocks = useMemo(() => {
+  const dailyBlocks = React.useMemo(() => {
     return days.map(day => {
       const blocks: { [key: string]: TimeBlock } = {};
       
@@ -136,7 +135,7 @@ export function OpeningHoursCalendar() {
         <div
             className="flex items-center justify-center p-2 border-b border-l border-border bg-background"
             style={{
-                gridColumn: '4 / span 1',
+                gridColumn: '4 / span 2',
                 gridRow: '7 / span 4'
             }}
         >
@@ -163,7 +162,7 @@ export function OpeningHoursCalendar() {
                  // Already handled by the merged Mo/Di block
                 return null;
               }
-              if (dayIndex === 3 && timeToMinutes(startTime) >= timeToMinutes('14:00')) {
+              if ((dayIndex === 3 || dayIndex === 4) && timeToMinutes(startTime) >= timeToMinutes('14:00')) {
                 // Already handled by the merged Do/Fr block
                return null;
              }
