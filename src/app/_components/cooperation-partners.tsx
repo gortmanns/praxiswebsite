@@ -63,7 +63,7 @@ export function CooperationPartnersSection() {
                       />
                     </div>
                   ) : partner.name === 'MCL' ? (
-                    <div className="relative flex h-[70px] w-full items-center justify-center overflow-hidden">
+                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
                       <Image
                         src={partner.logoUrl!}
                         alt={`${partner.name} Logo`}
