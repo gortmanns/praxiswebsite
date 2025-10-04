@@ -14,9 +14,11 @@ function DoctorCard({ doctor }: { doctor: Doctor }) {
         <CardTitle className="pt-4">{doctor.name}</CardTitle>
         <CardDescription className="text-primary">{doctor.specialty}</CardDescription>
       </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground">{doctor.bio}</p>
-      </CardContent>
+      {doctor.bio && (
+        <CardContent>
+          <p className="text-muted-foreground">{doctor.bio}</p>
+        </CardContent>
+      )}
     </Card>
   );
 }
@@ -33,7 +35,7 @@ export function OurTeam() {
             Unser engagiertes Team von erfahrenen Ärzten ist hier, um Ihnen die beste Betreuung zu bieten.
           </p>
         </div>
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {doctors.map((doctor) => (
             <DoctorCard key={doctor.name} doctor={doctor} />
           ))}

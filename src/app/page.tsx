@@ -6,6 +6,7 @@ import { ContactSection } from './_components/contact-section';
 import { ColorPaletteDemo } from './_components/color-palette-demo';
 import { QuickNavSection } from './_components/quick-nav-section';
 import { CooperationPartnersSection } from './_components/cooperation-partners';
+import { OurTeam } from './_components/our-team';
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
         <Hero />
         <WelcomeSection />
         <QuickNavSection />
+        <OurTeam />
         <CooperationPartnersSection />
         <ContactSection />
         <ColorPaletteDemo />

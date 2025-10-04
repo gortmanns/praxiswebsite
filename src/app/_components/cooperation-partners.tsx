@@ -21,9 +21,6 @@ export function CooperationPartnersSection() {
       name: 'orthozentrum-bern',
       websiteUrl: 'https://www.orthozentrum-bern.ch/',
     },
-    {
-      name: 'placeholder',
-    },
   ];
   const secondRowPartner = {
     name: 'MCL',
@@ -37,11 +34,8 @@ export function CooperationPartnersSection() {
         <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
           Unsere Kooperationspartner
         </h2>
-        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {partners.map((partner) => {
-            if (partner.name === 'placeholder') {
-              return <div key="placeholder" className="hidden lg:block"></div>;
-            }
             return (
               <Link
                 key={partner.name}
@@ -53,12 +47,12 @@ export function CooperationPartnersSection() {
                 <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
                   <CardContent className="flex w-full items-center justify-center p-0">
                     {partner.name === 'VASC-ALLIANCE' ? (
-                      <Image
+                       <Image
                         src={partner.logoUrl!}
                         alt={`${partner.name} Logo`}
                         width={200}
                         height={90}
-                        className="h-auto w-full object-contain"
+                        className="w-auto h-auto object-contain"
                       />
                     ) : partner.name === 'Schemmer & Worni' ? (
                       <div className="relative flex h-[55px] w-full items-center justify-center overflow-hidden">
@@ -88,7 +82,7 @@ export function CooperationPartnersSection() {
           })}
         </div>
         <div className="mt-8 flex justify-center">
-            <div className="w-full sm:w-1/2 lg:w-1/4">
+            <div className="w-full sm:w-1/2 lg:w-1/3">
                  <Link
                     key={secondRowPartner.name}
                     href={secondRowPartner.websiteUrl}
