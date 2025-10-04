@@ -28,45 +28,39 @@ export function Header() {
           </a>
         </div>
       </div>
-      
-      {/* Main header */}
-      <div className="container px-4 sm:px-6 lg:px-8">
-        <div className="relative flex h-20 items-center justify-between">
-          {/* Logo - Aligned Left */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="inline-block">
-              <Image
-                src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
-                alt="Praxiszentrum im Ring Logo"
-                width={520}
-                height={105}
-                className="h-auto w-auto max-w-[300px] md:max-w-[520px]"
-                priority
-              />
-            </Link>
-          </div>
 
-          {/* Centered Navigation for Desktop */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <nav className="hidden items-center space-x-8 md:flex">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-lg font-bold text-muted-foreground transition-colors hover:text-primary"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
-          
-          {/* Right-aligned content */}
-          <div className="flex items-center">
-            <Button className="hidden md:inline-flex">Termin buchen</Button>
-            
-            {/* Mobile Menu Trigger */}
-            <div className="ml-4 md:hidden">
+      {/* Main header */}
+      <div className="relative flex h-20 items-center justify-center">
+        {/* Logo - Aligned Left */}
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 px-4 sm:px-6 lg:px-8">
+          <Link href="/" className="inline-block">
+            <Image
+              src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
+              alt="Praxiszentrum im Ring Logo"
+              width={520}
+              height={105}
+              className="h-auto w-auto max-w-[300px] md:max-w-[520px]"
+              priority
+            />
+          </Link>
+        </div>
+
+        {/* Centered Navigation for Desktop */}
+        <nav className="hidden items-center space-x-8 md:flex">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-lg font-bold text-muted-foreground transition-colors hover:text-primary"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+        
+        {/* Right-aligned content for mobile menu trigger */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 px-4 sm:px-6 lg:px-8">
+            <div className="md:hidden">
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon">
@@ -106,12 +100,10 @@ export function Header() {
                         </Link>
                       ))}
                     </nav>
-                    <Button className="mt-8 w-full">Termin buchen</Button>
                   </div>
                 </SheetContent>
               </Sheet>
             </div>
-          </div>
         </div>
       </div>
     </header>
