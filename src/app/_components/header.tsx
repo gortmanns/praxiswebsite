@@ -31,9 +31,10 @@ const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export function Header() {
   const pathname = usePathname();
   const navLinks = [
-    { href: '/ueber-uns', label: 'Über uns' },
-    { href: '/leistungen', label: 'Leistungen' },
+    { href: '/', label: 'Startseite' },
     { href: '/team', label: 'Team' },
+    { href: '/leistungen', label: 'Leistungen' },
+    { href: '/medikamente', label: 'Medikamente' },
     { href: '/zeiten', label: 'Zeiten' },
     { href: '/notfall', label: 'NOTFALL' },
   ];
