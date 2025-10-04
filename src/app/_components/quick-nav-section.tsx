@@ -3,7 +3,6 @@ import Link from 'next/link';
 import {
   AlertTriangle,
   Users,
-  HandHelping,
 } from 'lucide-react';
 
 const navItems = [
@@ -15,7 +14,7 @@ const navItems = [
   {
     href: '/leistungen',
     label: 'Leistungen',
-    Icon: CustomLeistungenIcon,
+    Icon: LeistungenIcon,
   },
   {
     href: '/medikamente',
@@ -49,7 +48,7 @@ function FaPillsIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-function CustomLeistungenIcon(props: React.SVGProps<SVGSVGElement>) {
+function LeistungenIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -61,12 +60,11 @@ function CustomLeistungenIcon(props: React.SVGProps<SVGSVGElement>) {
       strokeLinejoin="round"
       {...props}
     >
-      {/* Hand Helping Icon Paths, lowered by ~30% */}
-      <path d="M11 13.5h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 15.5" />
-      <path d="m7 19.5 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.7-2.9l-4.2 4.3c-.5.5-.9 1.2-1 2Z" />
-      <path d="m2 15.5 6 6" />
-      {/* Smaller, repositioned Filled Equilateral Cross */}
-      <path fill="currentColor" stroke="currentColor" d="M19 2 a 0.5 0.5 0 0 1 0.5 0.5 v 1.5 h 1.5 a 0.5 0.5 0 0 1 0 1 h -1.5 v 1.5 a 0.5 0.5 0 0 1 -1 0 v -1.5 h -1.5 a 0.5 0.5 0 0 1 0 -1 h 1.5 v -1.5 a 0.5 0.5 0 0 1 0.5 -0.5 z" />
+      <g transform="rotate(20 12 12)">
+        <path d="M11 12.5a4.5 4.5 0 0 1 9 0Z" />
+        <path d="M3 8v5.6c0 1.2 1 2.2 2.2 2.2h2.6c1.2 0 2.2-1 2.2-2.2V8" />
+        <path d="M7 11.5a1.5 1.5 0 0 1 3 0Z" />
+      </g>
     </svg>
   );
 }
