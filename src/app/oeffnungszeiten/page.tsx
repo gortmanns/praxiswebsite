@@ -1,3 +1,4 @@
+
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,7 +19,7 @@ export default function OeffnungszeitenPage() {
             <div className="mx-auto mt-16 max-w-4xl">
                 <Tabs defaultValue="oeffnungszeiten" className="w-full">
                     <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="oeffnungszeiten">Praxis-Öffnungszeiten</TabsTrigger>
+                        <TabsTrigger value="oeffnungszeiten">Öffnungszeiten</TabsTrigger>
                         <TabsTrigger value="telefonzeiten">Telefonzeiten</TabsTrigger>
                     </TabsList>
                     <TabsContent value="oeffnungszeiten">
