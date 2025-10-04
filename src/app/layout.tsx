@@ -3,7 +3,7 @@ import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Praxiszentrum im Rind',
+  title: 'Praxiszentrum im Ring',
   description: 'Ihre Gesundheit, Unsere Priorität.',
 };
 

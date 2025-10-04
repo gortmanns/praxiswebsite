@@ -18,14 +18,14 @@ export function ContactSection() {
         </div>
         <div className="grid grid-cols-1 gap-12 md:grid-cols-5">
           <div className="md:col-span-2">
-            <h3 className="font-headline text-xl font-bold">Praxiszentrum im Rind</h3>
+            <h3 className="font-headline text-xl font-bold">Praxiszentrum im Ring</h3>
             <p className="mt-2 text-muted-foreground">
               Wir freuen uns auf Ihre Kontaktaufnahme.
             </p>
             <div className="mt-8 space-y-4 text-muted-foreground">
               <p><strong>Adresse:</strong><br />Musterstrasse 1<br />8000 Zürich</p>
               <p><strong>Telefon:</strong><br />+41 44 123 45 67</p>
-              <p><strong>Email:</strong><br />info@praxis-im-rind.ch</p>
+              <p><strong>Email:</strong><br />info@praxis-im-ring.ch</p>
             </div>
           </div>
           <div className="md:col-span-3">
