@@ -55,13 +55,14 @@ export function Header() {
             <PrinterIcon className="h-[21px] w-[21px]" />
             <span>031 589 68 60</span>
           </div>
-          <div className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80">
+          <ObfuscatedLink
+            user="empfang"
+            domain="praxiszentrum-im-ring.ch"
+            className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
+          >
             <MailIcon className="h-[21px] w-[21px]" />
-            <ObfuscatedLink
-              user="empfang"
-              domain="praxiszentrum-im-ring.ch"
-            />
-          </div>
+            <span>empfang@praxiszentrum-im-ring.ch</span>
+          </ObfuscatedLink>
         </div>
       </div>
 
@@ -126,15 +127,14 @@ export function Header() {
                     <PhoneIcon className="h-[21px] w-[21px]" />
                     <span>031 316 26 00</span>
                 </a>
-                <div
+                <ObfuscatedLink
+                    user="empfang"
+                    domain="praxiszentrum-im-ring.ch"
                     className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary"
                 >
                     <MailIcon className="h-[21px] w-[21px]" />
-                    <ObfuscatedLink
-                        user="empfang"
-                        domain="praxiszentrum-im-ring.ch"
-                    />
-                </div>
+                    <span>empfang@praxiszentrum-im-ring.ch</span>
+                </ObfuscatedLink>
                 </div>
                 <nav className="flex flex-col space-y-4">
                 {navLinks.map((link) => {

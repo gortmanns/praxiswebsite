@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { cn } from '@/lib/utils';
 
 type ObfuscatedLinkProps = {
   user: string;
@@ -25,10 +24,11 @@ export function ObfuscatedLink({ user, domain, className, children }: Obfuscated
   }
   
   const href = `mailto:${user}@${domain}`;
+  const text = children || `${user}@${domain}`;
 
   return (
     <a href={href} className={className}>
-      {children}
+      {text}
     </a>
   );
 }
