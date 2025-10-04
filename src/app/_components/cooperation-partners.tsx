@@ -66,13 +66,15 @@ export function CooperationPartnersSection() {
                 <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
                   <CardContent className="flex w-full items-center justify-center p-0">
                     {partner.name === 'VASC-ALLIANCE' ? (
-                      <Image
-                        src={partner.logoUrl!}
-                        alt={`${partner.name} Logo`}
-                        width={340}
-                        height={68}
-                        className="h-auto w-full object-contain"
-                      />
+                      <div className="relative flex h-[68px] w-full items-center justify-center overflow-hidden">
+                        <Image
+                          src={partner.logoUrl!}
+                          alt={`${partner.name} Logo`}
+                          width={578}
+                          height={116}
+                          className="h-auto w-full object-contain"
+                        />
+                      </div>
                     ) : partner.name === 'Schemmer & Worni' ? (
                       <div className="relative flex h-[55px] w-full items-center justify-center overflow-hidden">
                         <Image
@@ -99,11 +101,18 @@ export function CooperationPartnersSection() {
               </Link>
             );
           })}
-          <Card className="flex h-32 items-center justify-center p-6 text-center text-special-green">
-            <CardContent className="p-0">
-              <AgnieszkaSlezakLogo className="h-20 w-auto" />
-            </CardContent>
-          </Card>
+          <Link
+            href="https://neurologie-plus.ch/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group"
+          >
+            <Card className="flex h-32 items-center justify-center p-6 text-center text-special-green transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
+              <CardContent className="p-0">
+                <AgnieszkaSlezakLogo className="h-20 w-auto" />
+              </CardContent>
+            </Card>
+          </Link>
         </div>
         <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
           Unsere weiteren Partner
