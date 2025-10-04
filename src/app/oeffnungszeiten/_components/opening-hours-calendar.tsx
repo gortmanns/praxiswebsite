@@ -80,19 +80,35 @@ export function OpeningHoursCalendar() {
     });
   }, []);
 
-  const renderBlock = (dayIndex: number, timeIndex: number, block: TimeBlock) => {
-    // Hide individual blocks that are now part of a merged block
-    const startTime = timeSlots[timeIndex];
-    const startTimeMinutes = timeToMinutes(startTime);
-
+    const renderBlock = (dayIndex: number, timeIndex: number, block: TimeBlock) => {
+    // Hide blocks that are part of a merged block
+    const startTimeMinutes = timeToMinutes(timeSlots[timeIndex]);
+    
     // Hide morning blocks
     if (startTimeMinutes < timeToMinutes('12:00')) return null;
     
-    // Hide Monday/Tuesday afternoon blocks
+    // Hide Mo/Di afternoon blocks
     if ((dayIndex === 0 || dayIndex === 1) && startTimeMinutes >= timeToMinutes('14:00')) return null;
-    
-    // Hide Thursday/Friday 14:00-17:00 blocks
+
+    // Hide Do/Fr 14:00-17:00 blocks
     if ((dayIndex === 3 || dayIndex === 4) && startTimeMinutes >= timeToMinutes('14:00') && startTimeMinutes < timeToMinutes('17:00')) return null;
+
+    if (dayIndex === 2) {
+        if(startTimeMinutes >= timeToMinutes('12:00')) {
+             return (
+                <div
+                    key={`${dayIndex}-${timeIndex}`}
+                    className="flex items-center justify-center p-1 border-b border-l border-border bg-secondary"
+                >
+                    <span className="text-base font-semibold text-secondary-foreground">
+                        Praxis geschlossen
+                    </span>
+                </div>
+            );
+        }
+        return null;
+    }
+
 
     return (
         <div
@@ -125,9 +141,9 @@ export function OpeningHoursCalendar() {
 
       {/* Time Axis & Content */}
       <div className="col-start-1 col-end-2 row-start-2 row-end-[13] grid grid-rows-10">
-          {timeSlots.slice(0, -1).map((startTime) => (
+          {timeSlots.slice(0, -1).map((startTime, index) => (
             <div key={startTime} className="flex h-12 items-center justify-center border-b border-l border-border bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
-                {startTime}
+                {startTime} - {timeSlots[index + 1]}
             </div>
           ))}
       </div>
@@ -159,7 +175,6 @@ export function OpeningHoursCalendar() {
                 Sprechstunde
             </span>
         </div>
-
 
         {dailyBlocks.map((dayBlocks, dayIndex) => 
             dayBlocks.map((block, timeIndex) => renderBlock(dayIndex, timeIndex, block))
