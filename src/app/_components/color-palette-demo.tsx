@@ -2,7 +2,7 @@
 export function ColorPaletteDemo() {
   const colors = [
     { name: "Primary", className: "bg-primary text-primary-foreground", value: "197 100% 47%" },
-    { name: "Primary FG", className: "bg-primary-foreground text-primary", value: "210 40% 98%", border: true },
+    { name: "Primary FG", className: "bg-primary-foreground text-primary", value: "0 0% 100%", border: true },
     { name: "Secondary", className: "bg-secondary text-secondary-foreground", value: "210 20% 90%" },
     { name: "Secondary FG", className: "bg-secondary-foreground text-secondary", value: "222.2 47.4% 11.2%" },
     { name: "Background", className: "bg-background text-foreground", value: "0 0% 100%", border: true },
