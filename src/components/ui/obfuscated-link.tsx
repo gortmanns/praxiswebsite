@@ -11,26 +11,24 @@ type ObfuscatedLinkProps = {
 };
 
 export function ObfuscatedLink({ user, domain, className, children }: ObfuscatedLinkProps) {
-  const [email, setEmail] = useState('');
-  const [href, setHref] = useState('');
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // This code runs only on the client, after hydration
-    const fullEmail = `${user}@${domain}`;
-    setEmail(fullEmail);
-    setHref(`mailto:${fullEmail}`);
-  }, [user, domain]);
+    // This effect runs only on the client, after initial render
+    setIsClient(true);
+  }, []);
 
-  if (!email) {
-    // Render a placeholder or nothing while waiting for client-side hydration
-    // to avoid layout shifts. The text is constructed in a way that bots
-    // have a harder time parsing it.
-    return <span className={cn('break-all', className)}>{user}<span className='hidden'>-</span>@<span className='hidden'>-</span>{domain}</span>;
+  if (!isClient) {
+    // Render a non-interactive placeholder on the server and during hydration.
+    // The children are rendered directly to show the icon and text structure.
+    return <div className={className}>{children}</div>;
   }
+  
+  const href = `mailto:${user}@${domain}`;
 
   return (
-    <a href={href} className={cn('break-all', className)}>
-      {children || email}
+    <a href={href} className={className}>
+      {children}
     </a>
   );
 }

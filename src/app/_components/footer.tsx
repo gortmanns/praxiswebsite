@@ -66,50 +66,48 @@ export function Footer() {
           {/* Anschrift */}
           <div className="space-y-4">
             <h3 className="text-lg font-bold uppercase text-primary">Anschrift</h3>
-            <div className="flex items-start gap-3 text-sm">
+            <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 text-sm transition-colors hover:text-background">
                 <MapPinIcon className="mt-1 h-[21px] w-[21px] flex-shrink-0" />
-                <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="flex flex-col transition-colors hover:text-background">
+                <div className="flex flex-col">
                     <span>PRAXISZENTRUM IM RING</span>
                     <span>Kappelenring 6</span>
                     <span>3023 Hinterkappelen</span>
-                </a>
-            </div>
+                </div>
+            </a>
           </div>
 
           {/* Kontakt */}
           <div className="space-y-4">
             <h3 className="text-lg font-bold uppercase text-primary">Kontakt</h3>
             <div className="space-y-2 text-sm">
-                <p className="flex items-center gap-3">
+                <a
+                  href="tel:0313162600"
+                  className="flex items-center gap-3 transition-colors hover:text-background"
+                >
                     <PhoneIcon className="h-[21px] w-[21px] flex-shrink-0" />
-                    <a
-                    href="tel:0313162600"
-                    className="transition-colors hover:text-background"
-                    >
-                    031 316 26 00
-                    </a>
-                </p>
+                    <span>031 316 26 00</span>
+                </a>
                 <p className="flex items-center gap-3">
                     <PrinterIcon className="h-[21px] w-[21px] flex-shrink-0" />
                     <span>031 589 68 60</span>
                 </p>
-                <div className="flex items-center gap-3">
-                    <MailIcon className="h-[21px] w-[21px] flex-shrink-0" />
-                    <ObfuscatedLink 
-                      user="empfang" 
-                      domain="praxiszentrum-im-ring.ch"
-                      className="break-all transition-colors hover:text-background"
-                    />
-                </div>
+                <ObfuscatedLink
+                  user="empfang"
+                  domain="praxiszentrum-im-ring.ch"
+                  className="flex items-center gap-3 transition-colors hover:text-background"
+                >
+                  <MailIcon className="h-[21px] w-[21px] flex-shrink-0" />
+                  <span className="break-all">empfang@praxiszentrum-im-ring.ch</span>
+                </ObfuscatedLink>
                 <div className="flex flex-col items-start gap-1">
-                    <div className="flex items-center gap-3">
-                        <HinMailIcon className="h-[21px] w-[21px] text-primary flex-shrink-0"/>
-                        <ObfuscatedLink
-                          user="praxiszentrum-im-ring"
-                          domain="hin.ch"
-                          className="break-all transition-colors hover:text-background"
-                        />
-                    </div>
+                    <ObfuscatedLink
+                      user="praxiszentrum-im-ring"
+                      domain="hin.ch"
+                      className="flex items-center gap-3 transition-colors hover:text-background"
+                    >
+                      <HinMailIcon className="h-[21px] w-[21px] text-primary flex-shrink-0"/>
+                      <span className="break-all">praxiszentrum-im-ring@hin.ch</span>
+                    </ObfuscatedLink>
                     <p className="pl-9 text-xs text-background/70">(Für die sichere Übermittlung medizinischer Unterlagen)</p>
                 </div>
             </div>
@@ -118,23 +116,21 @@ export function Footer() {
            <div className="space-y-4">
             <h3 className="text-lg font-bold uppercase text-primary">Medikamentenbestellung</h3>
             <div className="space-y-2 text-sm">
-                <p className="flex items-center gap-3">
+                <a
+                  href="tel:0313162666"
+                  className="flex items-center gap-3 transition-colors hover:text-background"
+                >
                     <PhoneIcon className="h-[21px] w-[21px] flex-shrink-0" />
-                    <a
-                    href="tel:0313162666"
-                    className="transition-colors hover:text-background"
-                    >
-                    031 316 26 66
-                    </a>
-                </p>
-                <div className="flex items-center gap-3">
-                    <MailIcon className="h-[21px] w-[21px] flex-shrink-0" />
-                    <ObfuscatedLink 
-                      user="medikamente" 
-                      domain="praxiszentrum-im-ring.ch"
-                      className="break-all transition-colors hover:text-background"
-                    />
-                </div>
+                    <span>031 316 26 66</span>
+                </a>
+                <ObfuscatedLink
+                  user="medikamente"
+                  domain="praxiszentrum-im-ring.ch"
+                  className="flex items-center gap-3 transition-colors hover:text-background"
+                >
+                  <MailIcon className="h-[21px] w-[21px] flex-shrink-0" />
+                  <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
+                </ObfuscatedLink>
             </div>
           </div>
         </div>
