@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Printer } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -20,6 +20,12 @@ const MailIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
+const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+        <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>
+    </svg>
+);
+
 
 export function Header() {
   const pathname = usePathname();
@@ -33,7 +39,7 @@ export function Header() {
     <header className="w-full border-b bg-background">
       {/* Top bar */}
       <div className="bg-primary text-primary-foreground">
-        <div className="flex h-10 items-center justify-end gap-6 px-4 text-sm sm:px-6 lg:px-8">
+        <div className="container flex h-10 items-center justify-end gap-6 text-sm">
           <a
             href="tel:0313162600"
             className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
@@ -49,7 +55,7 @@ export function Header() {
             <span>empfang@praxiszentrum-im-ring.ch</span>
           </a>
            <div className="flex items-center gap-2 font-medium text-sm text-primary-foreground">
-            <Printer className="h-5 w-5" />
+            <PrinterIcon className="h-[21px] w-[21px]" />
             <span>Fax: 031 589 68 60</span>
           </div>
         </div>

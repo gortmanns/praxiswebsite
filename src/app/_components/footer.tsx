@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Printer } from 'lucide-react';
 import Image from 'next/image';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -14,10 +13,22 @@ const MailIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
+const HinMailIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+        <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/>
+    </svg>
+);
+
 const MapPinIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
   </svg>
+);
+
+const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+        <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>
+    </svg>
 );
 
 
@@ -89,7 +100,7 @@ export function Footer() {
                 </a>
               </p>
               <p className="flex items-center gap-3">
-                <Printer size={21} className="flex-shrink-0" />
+                <PrinterIcon className="h-[21px] w-[21px] flex-shrink-0" />
                 <span>Fax: 031 589 68 60</span>
               </p>
               <p className="flex items-center gap-3">
@@ -101,6 +112,13 @@ export function Footer() {
                   empfang@praxiszentrum-im-ring.ch
                 </a>
               </p>
+              <div className="flex flex-col items-start gap-1">
+                <p className="flex items-center gap-3">
+                    <HinMailIcon className="h-[21px] w-[21px] text-primary flex-shrink-0"/>
+                     <a href="mailto:praxiszentrum-im-ring@hin.ch" className="break-all transition-colors hover:text-background">praxiszentrum-im-ring@hin.ch</a>
+                </p>
+                <p className="text-xs text-background/70 pl-9">(Für die sichere Übermittlung medizinischer Unterlagen)</p>
+              </div>
             </div>
           </div>
         </div>

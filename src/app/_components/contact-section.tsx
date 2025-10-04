@@ -1,4 +1,4 @@
-import { ShieldCheck, Printer } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -22,6 +22,12 @@ const MapPinIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
   </svg>
+);
+
+const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+        <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>
+    </svg>
 );
 
 
@@ -57,7 +63,7 @@ export function ContactSection() {
                 <a href="tel:0313162600" className="hover:text-primary">031 316 26 00</a>
               </p>
               <p className="flex items-center justify-center gap-2">
-                <Printer size={21} />
+                <PrinterIcon className="h-[21px] w-[21px]" />
                 <span>Fax: 031 589 68 60</span>
               </p>
               <p className="flex items-center justify-center gap-2">
