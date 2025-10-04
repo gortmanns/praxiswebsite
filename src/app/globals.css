@@ -50,3 +50,7 @@
     @apply text-foreground;
   }
 }
+
+* {
+  border: 1px solid orange !important;
+}
