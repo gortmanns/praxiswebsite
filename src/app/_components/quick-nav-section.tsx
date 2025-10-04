@@ -3,6 +3,7 @@ import Link from 'next/link';
 import {
   AlertTriangle,
   Users,
+  HandHelping,
 } from 'lucide-react';
 
 const TiltedHandHelpingIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -32,7 +33,7 @@ const navItems = [
   {
     href: '/leistungen',
     label: 'Leistungen',
-    Icon: FaHandHoldingMedicalIcon,
+    Icon: HandHelping,
   },
   {
     href: '/medikamente',
@@ -62,19 +63,6 @@ function FaPillsIcon(props: React.SVGProps<SVGSVGElement>) {
       {/* Circle with 80% height of capsule, aligned to bottom */}
       <circle cx="85" cy="62.06" r="28" fill="currentColor" stroke="white" strokeWidth="2" />
       <path d="M65.2 42.26 L 104.8 81.86" stroke="gray" strokeWidth="3" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function FaHandHoldingMedicalIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 576 512"
-      fill="currentColor"
-      {...props}
-    >
-      <path d="M288 32c-17.7 0-32 14.3-32 32s14.3 32 32 32 32-14.3 32-32-14.3-32-32-32zm18.4 118.5L281 175.8l-25.4-25.4c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L258.3 198.4l-25.3 25.3c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0l25.3-25.3 25.3 25.3c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L303.7 198.4l25.3-25.3c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0zM520 192h-32v56c0 13.3-10.7 24-24 24s-24-10.7-24-24v-56h-32c-13.3 0-24-10.7-24-24s10.7-24 24-24h32V88c0-13.3 10.7-24 24-24s24 10.7 24 24v80h32c13.3 0 24 10.7 24 24s-10.7 24-24 24zM512 288c-17.7 0-32 14.3-32 32v16c0 44.1-35.9 80-80 80H216c-44.1 0-80-35.9-80-80v-16c0-17.7-14.3-32-32-32s-32 14.3-32 32v16c0 79.5 64.5 144 144 144h192c79.5 0 144-64.5 144-144v-16c0-17.7-14.3-32-32-32zM120 128c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32s32-14.3 32-32V160c0-17.7-14.3-32-32-32z" />
     </svg>
   );
 }
