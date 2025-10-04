@@ -98,9 +98,9 @@ export function CooperationPartnersSection() {
                     <Image
                       src={partner.logoUrl!}
                       alt={`${partner.name} Logo`}
-                      width={240}
+                      width={280}
                       height={80}
-                      className="h-auto max-h-24 w-auto object-contain"
+                      className="h-auto max-h-28 w-auto object-contain"
                     />
                   )}
                 </CardContent>
