@@ -6,22 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ColorPaletteDemo } from '../_components/color-palette-demo';
 import { cn } from '@/lib/utils';
 import { DoorOpen, Phone } from 'lucide-react';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "@/components/ui/table"
-
-const openingHours = [
-    { day: "Montag", morning: "08:00 - 12:00", afternoon: "14:00 - 18:00" },
-    { day: "Dienstag", morning: "08:00 - 12:00", afternoon: "14:00 - 18:00" },
-    { day: "Mittwoch", morning: "08:00 - 12:00", afternoon: "geschlossen" },
-    { day: "Donnerstag", morning: "08:00 - 12:00", afternoon: "14:00 - 18:00" },
-    { day: "Freitag", morning: "08:00 - 12:00", afternoon: "13:00 - 17:00" },
-];
+import { OpeningHoursCalendar } from './_components/opening-hours-calendar';
 
 export default function OeffnungszeitenPage() {
   return (
@@ -60,24 +45,7 @@ export default function OeffnungszeitenPage() {
                     <TabsContent value="oeffnungszeiten">
                         <Card className="rounded-t-none">
                             <CardContent className="p-6 text-lg">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                        <TableHead className="w-[150px] text-base">Wochentag</TableHead>
-                                        <TableHead className="text-base">Vormittag</TableHead>
-                                        <TableHead className="text-base">Nachmittag</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {openingHours.map((item) => (
-                                        <TableRow key={item.day}>
-                                            <TableCell className="font-medium">{item.day}</TableCell>
-                                            <TableCell>{item.morning}</TableCell>
-                                            <TableCell>{item.afternoon}</TableCell>
-                                        </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
+                               <OpeningHoursCalendar />
                             </CardContent>
                         </Card>
                     </TabsContent>
