@@ -11,90 +11,96 @@ export function Header() {
   ];
 
   return (
-    <>
-      <div className="bg-primary text-primary-foreground">
-        <div className="container flex h-10 items-center justify-center text-sm md:justify-end">
-          <div className="flex items-center gap-6">
-            <a href="tel:+41441234567" className="flex items-center gap-2 transition-opacity hover:opacity-80">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center">
+        <div className="mr-auto flex items-center">
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
+              alt="Praxiszentrum im Ring Logo"
+              width={220}
+              height={45}
+              className="h-auto"
+              priority
+            />
+          </Link>
+        </div>
+
+        <div className="hidden items-center gap-6 text-sm md:flex">
+           <a href="tel:+41441234567" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary">
               <Phone size={16} />
-              <span className="hidden sm:inline">+41 44 123 45 67</span>
+              <span>+41 44 123 45 67</span>
             </a>
-            <a href="mailto:info@praxis-im-ring.ch" className="flex items-center gap-2 transition-opacity hover:opacity-80">
+            <a href="mailto:info@praxis-im-ring.ch" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary">
               <Mail size={16} />
-              <span className="hidden sm:inline">info@praxis-im-ring.ch</span>
+              <span>info@praxis-im-ring.ch</span>
             </a>
-          </div>
+        </div>
+        
+        <nav className="hidden items-center space-x-6 md:flex md:ml-6">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="ml-4 hidden md:flex">
+          <Button asChild>
+            <Link href="#contact">Termin Buchen</Link>
+          </Button>
+        </div>
+        <div className="ml-4 md:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Menü öffnen</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right">
+              <div className="p-4">
+                <Link href="/" className="mb-8 block">
+                   <Image
+                    src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
+                    alt="Praxiszentrum im Ring Logo"
+                    width={180}
+                    height={37}
+                    className="h-auto"
+                  />
+                </Link>
+                <div className="mb-6 space-y-4 text-sm">
+                  <a href="tel:+41441234567" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary">
+                    <Phone size={16} />
+                    <span>+41 44 123 45 67</span>
+                  </a>
+                  <a href="mailto:info@praxis-im-ring.ch" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary">
+                    <Mail size={16} />
+                    <span>info@praxis-im-ring.ch</span>
+                  </a>
+                </div>
+                <nav className="flex flex-col space-y-4">
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="text-lg font-medium text-muted-foreground transition-colors hover:text-primary"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                  <Button asChild className="mt-4">
+                    <Link href="#contact">Termin Buchen</Link>
+                  </Button>
+                </nav>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center">
-          <div className="mr-auto flex items-center">
-            <Link href="/" className="flex items-center gap-2">
-              <Image
-                src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
-                alt="Praxiszentrum im Ring Logo"
-                width={220}
-                height={45}
-                className="h-auto"
-                priority
-              />
-            </Link>
-          </div>
-          <nav className="hidden items-center space-x-6 md:flex">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-          <div className="ml-4 hidden md:flex">
-            <Button asChild>
-              <Link href="#contact">Termin Buchen</Link>
-            </Button>
-          </div>
-          <div className="ml-4 md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-6 w-6" />
-                  <span className="sr-only">Menü öffnen</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right">
-                <div className="p-4">
-                  <Link href="/" className="mb-8 block">
-                     <Image
-                      src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
-                      alt="Praxiszentrum im Ring Logo"
-                      width={180}
-                      height={37}
-                      className="h-auto"
-                    />
-                  </Link>
-                  <nav className="flex flex-col space-y-4">
-                    {navLinks.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className="text-lg font-medium text-muted-foreground transition-colors hover:text-primary"
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
-                    <Button asChild className="mt-4">
-                      <Link href="#contact">Termin Buchen</Link>
-                    </Button>
-                  </nav>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-        </div>
-      </header>
-    </>
+    </header>
   );
 }
