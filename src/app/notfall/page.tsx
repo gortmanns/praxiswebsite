@@ -16,7 +16,7 @@ export default function NotfallPage() {
         <div className="w-full px-4 py-16 sm:px-8 sm:py-24">
           <Card>
             <CardHeader>
-              <CardTitle className="text-center font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl">NOTFALL-RUFNUMMERN</CardTitle>
+              <CardTitle className="text-center font-headline text-4xl font-bold tracking-tight text-primary sm:text-5xl">NOTFALL-RUFNUMMERN</CardTitle>
             </CardHeader>
             <CardContent className="space-y-8 text-foreground/80">
               <div className="space-y-16">
