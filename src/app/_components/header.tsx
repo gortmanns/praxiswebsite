@@ -43,26 +43,28 @@ export function Header() {
     <header className="w-full border-b bg-background">
       {/* Top bar */}
       <div className="bg-primary text-primary-foreground">
-        <div className="container flex h-10 items-center justify-end gap-6 text-sm">
-          <a
-            href="tel:0313162600"
-            className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
-          >
-            <PhoneIcon className="h-[21px] w-[21px]" />
-            <span>031 316 26 00</span>
-          </a>
-          <div className="flex items-center gap-2 font-medium text-sm text-primary-foreground">
-            <PrinterIcon className="h-[21px] w-[21px]" />
-            <span>031 589 68 60</span>
+        <div className="container flex h-10 items-center justify-end">
+          <div className="flex items-center gap-6 text-sm">
+            <a
+              href="tel:0313162600"
+              className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
+            >
+              <PhoneIcon className="h-[21px] w-[21px]" />
+              <span>031 316 26 00</span>
+            </a>
+            <div className="flex items-center gap-2 font-medium text-sm text-primary-foreground">
+              <PrinterIcon className="h-[21px] w-[21px]" />
+              <span>031 589 68 60</span>
+            </div>
+            <ObfuscatedLink
+              user="empfang"
+              domain="praxiszentrum-im-ring.ch"
+              className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
+            >
+              <MailIcon className="h-[21px] w-[21px]" />
+              <span>empfang@praxiszentrum-im-ring.ch</span>
+            </ObfuscatedLink>
           </div>
-          <ObfuscatedLink
-            user="empfang"
-            domain="praxiszentrum-im-ring.ch"
-            className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
-          >
-            <MailIcon className="h-[21px] w-[21px]" />
-            <span>empfang@praxiszentrum-im-ring.ch</span>
-          </ObfuscatedLink>
         </div>
       </div>
 
