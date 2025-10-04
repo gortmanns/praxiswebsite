@@ -9,13 +9,13 @@ export function ColorPaletteDemo() {
     { name: "Foreground", className: "bg-foreground text-background", value: "224 71.4% 4.1%" },
     { name: "Card", className: "bg-card text-card-foreground", value: "0 0% 100%", border: true },
     { name: "Card FG", className: "bg-card-foreground text-card", value: "224 71% 4%" },
-    { name: "Muted", className: "bg-muted text-muted-foreground", value: "210 40% 96.1%" },
-    { name: "Muted FG", className: "bg-muted-foreground text-muted", value: "215.4 16.3% 46.9%" },
-    { name: "Accent", className: "bg-accent text-accent-foreground", value: "210 40% 98%" },
-    { name: "Accent FG", className: "bg-accent-foreground text-accent", value: "222.2 47.4% 11.2%" },
+    { name: "Muted", className: "bg-[#faf8f1] text-[#5c4b3c]", value: "45 53% 96%", hsl: { bg: "hsl(45 53% 96%)", fg: "hsl(30 42% 24%)" } },
+    { name: "Muted FG", className: "bg-[#5c4b3c] text-[#faf8f1]", value: "30 42% 24%", hsl: { bg: "hsl(30 42% 24%)", fg: "hsl(45 53% 96%)" } },
+    { name: "Accent", className: "bg-[#eef6f2] text-[#202f27]", value: "140 45% 95%", hsl: { bg: "hsl(140 45% 95%)", fg: "hsl(140 25% 15%)" } },
+    { name: "Accent FG", className: "bg-[#202f27] text-[#eef6f2]", value: "140 25% 15%", hsl: { bg: "hsl(140 25% 15%)", fg: "hsl(140 45% 95%)" } },
     { name: "Destructive", className: "bg-destructive text-destructive-foreground", value: "0 84.2% 60.2%" },
-    { name: "Border", className: "bg-border text-foreground", value: "214.3 31.8% 91.4%" },
-    { name: "Input", className: "bg-input text-foreground", value: "214.3 31.8% 91.4%" },
+    { name: "Border", className: "bg-[#e5e2db] text-foreground", value: "45 15% 88%", hsl: { bg: "hsl(45 15% 88%)", fg: "hsl(var(--foreground))" } },
+    { name: "Input", className: "bg-[#e5e2db] text-foreground", value: "45 15% 88%", hsl: { bg: "hsl(45 15% 88%)", fg: "hsl(var(--foreground))" } },
     { name: "Ring", className: "bg-ring text-primary-foreground", value: "197 100% 47%" },
   ];
 
@@ -34,10 +34,10 @@ export function ColorPaletteDemo() {
           {colors.map((color) => (
             <div key={color.name} className="flex flex-col items-center">
               <div
-                className={`flex h-24 w-full flex-col items-center justify-center rounded-lg ${color.className} ${color.border ? 'border' : ''}`}
+                className={`flex h-24 w-full flex-col items-center justify-center rounded-lg ${color.className} ${color.border ? 'border border-border' : ''}`}
                 style={{
-                  backgroundColor: color.name === 'Muted' ? 'hsl(210 40% 96.1%)' : color.name === 'Muted FG' ? 'hsl(215.4 16.3% 46.9%)' : color.name === 'Accent' ? 'hsl(210 40% 98%)' : color.name === 'Accent FG' ? 'hsl(222.2 47.4% 11.2%)' : color.name === 'Border' ? 'hsl(214.3 31.8% 91.4%)' : color.name === 'Input' ? 'hsl(214.3 31.8% 91.4%)' : undefined,
-                  color: color.name === 'Muted' ? 'hsl(215.4 16.3% 46.9%)' : color.name === 'Muted FG' ? 'hsl(210 40% 96.1%)' : color.name === 'Accent' ? 'hsl(222.2 47.4% 11.2%)' : color.name === 'Accent FG' ? 'hsl(210 40% 98%)' : color.name === 'Border' ? 'hsl(var(--foreground))' : color.name === 'Input' ? 'hsl(var(--foreground))' : undefined
+                  backgroundColor: color.hsl?.bg,
+                  color: color.hsl?.fg,
                 }}
               >
                 <span className="font-bold">{color.name}</span>
