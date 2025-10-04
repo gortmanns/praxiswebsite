@@ -50,7 +50,16 @@ export function CooperationPartnersSection() {
               <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
                 <CardContent className="flex w-full items-center justify-center p-0">
                   {partner.name === 'VASC-ALLIANCE' ? (
-                     <div className="relative flex h-[75px] w-full items-center justify-center overflow-hidden">
+                     <div className="relative flex h-[90px] w-full items-center justify-center overflow-hidden">
+                      <Image
+                        src={partner.logoUrl!}
+                        alt={`${partner.name} Logo`}
+                        fill
+                        className="object-contain max-h-full max-w-full"
+                      />
+                    </div>
+                  ) : partner.name === 'MCL' ? (
+                    <div className="relative flex h-[70px] w-full items-center justify-center overflow-hidden">
                       <Image
                         src={partner.logoUrl!}
                         alt={`${partner.name} Logo`}
@@ -59,7 +68,7 @@ export function CooperationPartnersSection() {
                       />
                     </div>
                   ) : partner.isSvg ? (
-                    <OrthozentrumLogo className="h-16 w-auto" />
+                    <OrthozentrumLogo className="h-20 w-auto" />
                   ) : (
                     <div className="relative flex h-[50px] w-full items-center justify-center overflow-hidden">
                       <Image
