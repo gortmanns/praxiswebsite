@@ -10,26 +10,22 @@ export function CooperationPartnersSection() {
       logoUrl:
         'https://www.vasc-alliance.ch/view/data/10907/VASC-Alliance-Logo.png',
       websiteUrl: 'https://www.vasc-alliance.ch/',
-      isSvg: false,
     },
     {
       name: 'Schemmer & Worni',
       logoUrl:
         'https://schemmer-worni.ch/wp-content/uploads/2025/02/logo_de.png',
       websiteUrl: 'https://schemmer-worni.ch/',
-      isSvg: false,
     },
     {
       name: 'MCL',
       logoUrl:
         'https://www.mcl.ch/Portals/3/LOGO%20MCL%20DE%20WEB%20513X126.png?ver=cvc-6YjvCrM5oNcznlXoCQ%3d%3d',
       websiteUrl: 'https://www.mcl.ch/',
-      isSvg: false,
     },
     {
       name: 'orthozentrum-bern',
       websiteUrl: 'https://www.orthozentrum-bern.ch/',
-      isSvg: true,
     },
   ];
   return (
@@ -39,7 +35,7 @@ export function CooperationPartnersSection() {
           Unsere Kooperationspartner
         </h2>
         <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {partners.map((partner, index) => (
+          {partners.map((partner) => (
             <Link
               key={partner.name}
               href={partner.websiteUrl}
@@ -50,12 +46,12 @@ export function CooperationPartnersSection() {
               <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
                 <CardContent className="flex w-full items-center justify-center p-0">
                   {partner.name === 'VASC-ALLIANCE' ? (
-                     <div className="relative flex h-20 w-full items-center justify-center overflow-hidden">
+                     <div className="relative flex h-[90px] w-full items-center justify-center">
                       <Image
                         src={partner.logoUrl!}
                         alt={`${partner.name} Logo`}
                         fill
-                        className="object-contain w-[130%]"
+                        className="object-contain"
                       />
                     </div>
                   ) : partner.name === 'MCL' ? (
@@ -67,7 +63,7 @@ export function CooperationPartnersSection() {
                         className="object-contain max-h-full max-w-full"
                       />
                     </div>
-                  ) : partner.isSvg ? (
+                  ) : partner.name === 'orthozentrum-bern' ? (
                     <OrthozentrumLogo className="h-20 w-auto" />
                   ) : (
                     <div className="relative flex h-[50px] w-full items-center justify-center overflow-hidden">
