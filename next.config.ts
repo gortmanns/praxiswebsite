@@ -45,6 +45,12 @@ const nextConfig: NextConfig = {
         hostname: 'schemmer-worni.ch',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.mcl.ch',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

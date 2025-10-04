@@ -13,6 +13,11 @@ export function CooperationPartnersSection() {
       logoUrl: 'https://schemmer-worni.ch/wp-content/uploads/2025/02/logo_de.png',
       websiteUrl: 'https://schemmer-worni.ch/',
     },
+    {
+      name: 'MCL',
+      logoUrl: 'https://www.mcl.ch/Portals/3/LOGO%20MCL%20DE%20WEB%20513X126.png?ver=cvc-6YjvCrM5oNcznlXoCQ%3d%3d',
+      websiteUrl: 'https://www.mcl.ch/',
+    }
   ];
   return (
     <section id="partners" className="bg-primary text-primary-foreground">
