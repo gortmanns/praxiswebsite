@@ -37,16 +37,9 @@ function FaPillsIcon(props: React.SVGProps<SVGSVGElement>) {
       {...props}
     >
       {/* Elongated pill - scaled by 1.2 */}
-      <g transform="scale(1.2)" transform-origin="416 322">
-        {/* Bottom half (solid) */}
-        <path d="M372.7 437.2c-23.9-23.9-23.9-62.7 0-86.6L415 308.3l-42.3-42.3-129.4 129.4c23.9 23.9 62.7 23.9 86.6 0l42.8-42.8z" />
-        {/* Top half (hollow) */}
-        <path fill="none" stroke="currentColor" strokeWidth="20" d="M459.3 221.2c-23.9-23.9-62.7-23.9-86.6 0L328.9 265l42.3 42.3 42.8-42.8c23.9-23.9 23.9-62.7 0-86.6z" />
-      </g>
+      <path d="M414.2 360.8c-2.3-2.3-4.8-4.3-7.4-6.2L304.4 457c-2.3 2.3-4.3 4.8-6.2 7.4c-23.9 23.9-62.7 23.9-86.6 0l-42.8-42.8c-23.9-23.9-23.9-62.7 0-86.6l129.4-129.4c2.3 2.3 4.8 4.3 7.4 6.2L408 269.4c2.3-2.3 4.3-4.8 6.2-7.4c23.9-23.9 62.7-23.9 86.6 0l42.8 42.8c23.9 23.9 23.9 62.7 0 86.6L414.2 360.8z" />
       {/* Round pill */}
       <path d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128z" />
-      {/* Break line for round pill */}
-      <path d="M224 64v128" stroke="white" strokeWidth="20" strokeLinecap="round" />
     </svg>
   );
 }
