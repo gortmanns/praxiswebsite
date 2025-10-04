@@ -25,11 +25,11 @@ export function Header() {
       <div className="bg-primary text-primary-foreground">
         <div className="flex h-10 items-center justify-end gap-6 px-4 text-sm sm:px-6 lg:px-8">
           <a
-            href="tel:+41313162600"
+            href="tel:0313162600"
             className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
           >
             <Phone size={16} />
-            <span>+41 31 316 26 00</span>
+            <span>031 316 26 00</span>
           </a>
           <a
             href="mailto:empfang@praxiszentrum-im-ring.ch"
@@ -96,11 +96,11 @@ export function Header() {
                 </Link>
                 <div className="mb-6 space-y-4 text-sm">
                 <a
-                    href="tel:+41313162600"
+                    href="tel:0313162600"
                     className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary"
                 >
                     <Phone size={16} />
-                    <span>+41 31 316 26 00</span>
+                    <span>031 316 26 00</span>
                 </a>
                 <a
                     href="mailto:empfang@praxiszentrum-im-ring.ch"

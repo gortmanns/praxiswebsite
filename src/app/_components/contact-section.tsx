@@ -24,7 +24,7 @@ export function ContactSection() {
               </p>
               <p className="flex items-center justify-center gap-2">
                 <Phone size={16} />
-                <a href="tel:+41313162600" className="hover:text-primary">+41 31 316 26 00</a>
+                <a href="tel:0313162600" className="hover:text-primary">031 316 26 00</a>
               </p>
               <p className="flex items-center justify-center gap-2">
                 <Mail size={16} />
