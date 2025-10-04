@@ -4,8 +4,8 @@ import { Card, CardContent } from '@/components/ui/card';
 
 const ZahnradIcon = () => (
   <svg
-    width="150"
-    height="60"
+    width="180"
+    height="72"
     preserveAspectRatio="xMidYMid meet"
     viewBox="0 0 59.9 55.5"
     xmlns="http://www.w3.org/2000/svg"
