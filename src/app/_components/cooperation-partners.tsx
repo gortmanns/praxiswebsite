@@ -6,7 +6,7 @@ const ZahnradIcon = () => (
   <svg
     width="250"
     height="56"
-    viewBox="0 0 250 56"
+    viewBox="0 0 260 56"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     aria-label="Orthozentrum Bern Logo"
@@ -33,7 +33,7 @@ const ZahnradIcon = () => (
       ></path>
     </g>
     <text
-      x="60"
+      x="65"
       y="35"
       fontFamily="Montserrat, sans-serif"
       fontSize="20"
@@ -77,7 +77,7 @@ export function CooperationPartnersSection() {
   ];
   return (
     <section id="partners" className="bg-primary">
-      <div className="mx-auto w-full px-4 py-16 text-center sm:px-6 sm:py-24 lg:px-8">
+      <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <h2 className="font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
           Unsere Kooperationspartner
         </h2>
