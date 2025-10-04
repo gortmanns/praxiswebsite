@@ -18,16 +18,19 @@ export function CooperationPartnersSection() {
       websiteUrl: 'https://schemmer-worni.ch/',
     },
     {
-      name: 'MCL',
-      logoUrl:
-        'https://www.mcl.ch/Portals/3/LOGO%20MCL%20DE%20WEB%20513X126.png?ver=cvc-6YjvCrM5oNcznlXoCQ%3d%3d',
-      websiteUrl: 'https://www.mcl.ch/',
-    },
-    {
       name: 'orthozentrum-bern',
       websiteUrl: 'https://www.orthozentrum-bern.ch/',
     },
+    {
+      name: 'placeholder',
+    },
   ];
+  const secondRowPartner = {
+    name: 'MCL',
+    logoUrl:
+      'https://www.mcl.ch/Portals/3/LOGO%20MCL%20DE%20WEB%20513X126.png?ver=cvc-6YjvCrM5oNcznlXoCQ%3d%3d',
+    websiteUrl: 'https://www.mcl.ch/',
+  };
   return (
     <section id="partners" className="w-full bg-primary">
       <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
@@ -35,58 +38,78 @@ export function CooperationPartnersSection() {
           Unsere Kooperationspartner
         </h2>
         <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {partners.map((partner) => (
-            <Link
-              key={partner.name}
-              href={partner.websiteUrl}
-              target={partner.websiteUrl === '#' ? '_self' : '_blank'}
-              rel="noopener noreferrer"
-              className="group"
-            >
-              <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
-                <CardContent className="flex w-full items-center justify-center p-0">
-                  {partner.name === 'VASC-ALLIANCE' ? (
-                    <Image
-                      src={partner.logoUrl!}
-                      alt={`${partner.name} Logo`}
-                      width={200}
-                      height={90}
-                      className="h-auto w-full object-contain"
-                    />
-                  ) : partner.name === 'Schemmer & Worni' ? (
-                    <div className="relative flex h-[55px] w-full items-center justify-center overflow-hidden">
+          {partners.map((partner) => {
+            if (partner.name === 'placeholder') {
+              return <div key="placeholder" className="hidden lg:block"></div>;
+            }
+            return (
+              <Link
+                key={partner.name}
+                href={partner.websiteUrl!}
+                target={partner.websiteUrl === '#' ? '_self' : '_blank'}
+                rel="noopener noreferrer"
+                className="group"
+              >
+                <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
+                  <CardContent className="flex w-full items-center justify-center p-0">
+                    {partner.name === 'VASC-ALLIANCE' ? (
                       <Image
                         src={partner.logoUrl!}
                         alt={`${partner.name} Logo`}
-                        fill
-                        className="object-contain"
+                        width={200}
+                        height={90}
+                        className="h-auto w-full object-contain"
                       />
-                    </div>
-                  ) : partner.name === 'MCL' ? (
-                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                      <Image
-                        src={partner.logoUrl!}
-                        alt={`${partner.name} Logo`}
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                  ) : partner.name === 'orthozentrum-bern' ? (
-                    <OrthozentrumLogo className="h-20 w-auto" />
-                  ) : (
-                    <div className="relative flex h-[50px] w-full items-center justify-center overflow-hidden">
-                      <Image
-                        src={partner.logoUrl!}
-                        alt={`${partner.name} Logo`}
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
+                    ) : partner.name === 'Schemmer & Worni' ? (
+                      <div className="relative flex h-[55px] w-full items-center justify-center overflow-hidden">
+                        <Image
+                          src={partner.logoUrl!}
+                          alt={`${partner.name} Logo`}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                    ) : partner.name === 'orthozentrum-bern' ? (
+                      <OrthozentrumLogo className="h-20 w-auto" />
+                    ) : (
+                      <div className="relative flex h-[50px] w-full items-center justify-center overflow-hidden">
+                        <Image
+                          src={partner.logoUrl!}
+                          alt={`${partner.name} Logo`}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })}
+        </div>
+        <div className="mt-8 flex justify-center">
+            <div className="w-full sm:w-1/2 lg:w-1/4">
+                 <Link
+                    key={secondRowPartner.name}
+                    href={secondRowPartner.websiteUrl}
+                    target={secondRowPartner.websiteUrl === '#' ? '_self' : '_blank'}
+                    rel="noopener noreferrer"
+                    className="group"
+                >
+                    <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
+                        <CardContent className="flex w-full items-center justify-center p-0">
+                             <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                                <Image
+                                    src={secondRowPartner.logoUrl!}
+                                    alt={`${secondRowPartner.name} Logo`}
+                                    fill
+                                    className="object-contain"
+                                />
+                            </div>
+                        </CardContent>
+                    </Card>
+                </Link>
+            </div>
         </div>
       </div>
     </section>
