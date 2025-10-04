@@ -126,22 +126,21 @@ export function OpeningHoursCalendar() {
     }, []);
 
     return (
-        <div className="grid grid-cols-[auto_repeat(5,1fr)] w-full border-t border-border">
+        <div className="grid grid-cols-[auto_repeat(5,1fr)] w-full border-t border-r border-border">
           {/* Header Row */}
-          <div className="sticky top-0 z-10 border-b border-r border-border bg-muted"></div>
+          <div className="sticky top-0 z-10 border-b border-l border-border bg-muted"></div>
           {days.map((day, dayIndex) => (
               <div key={day.name} className={cn(
-                  "sticky top-0 z-10 flex h-12 items-center justify-center border-b border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base",
-                  dayIndex < days.length -1 ? "border-r" : ""
+                  "sticky top-0 z-10 flex h-12 items-center justify-center border-b border-l-0 border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base",
               )}>
                   {day.name}
               </div>
           ))}
 
           {/* Time Axis Column */}
-          <div className="row-start-2 border-r border-border bg-muted">
+          <div className="col-start-1 row-start-2 border-l border-border bg-muted">
               {timeSlots.slice(0, -1).map((startTime, index) => (
-                  <div key={startTime} className="flex h-16 items-center justify-center text-center text-xs text-muted-foreground border-b border-border px-2">
+                  <div key={startTime} className="flex h-16 items-center justify-center text-center text-xs text-muted-foreground border-b border-border px-2 font-bold">
                       {startTime} - {timeSlots[index + 1]}
                   </div>
               ))}
@@ -177,8 +176,8 @@ export function OpeningHoursCalendar() {
                       <div
                           key={index}
                           className={cn(
-                              "absolute flex items-center justify-center p-2",
-                              block.isOpen ? 'bg-background' : 'bg-secondary'
+                              "absolute flex items-center justify-center p-2 border-l border-border",
+                              block.isOpen ? 'bg-background' : 'bg-muted'
                           )}
                           style={{
                               top: `${top}%`,
@@ -190,7 +189,7 @@ export function OpeningHoursCalendar() {
                           {block.label && (
                               <span className={cn(
                                   "font-semibold text-lg",
-                                  block.isOpen ? "text-foreground" : "text-secondary-foreground"
+                                  block.isOpen ? "text-foreground" : "text-muted-foreground"
                               )}>
                                   {block.label}
                               </span>
