@@ -140,7 +140,7 @@ export function OpeningHoursCalendar() {
                     key={blockKey}
                     className={cn(
                         "flex items-center justify-center p-2 border-b border-l border-border",
-                        currentBlock.isOpen ? 'bg-background' : 'bg-muted'
+                        currentBlock.isOpen ? 'bg-background' : 'bg-secondary'
                     )}
                     style={{
                       gridColumn: `${dayIndex + 1} / span 1`,
@@ -149,7 +149,7 @@ export function OpeningHoursCalendar() {
                 >
                     <span className={cn(
                         "font-semibold text-lg",
-                        currentBlock.isOpen ? "text-foreground" : "text-muted-foreground"
+                        currentBlock.isOpen ? "text-foreground" : "text-secondary-foreground"
                     )}>
                         {currentBlock.label}
                     </span>

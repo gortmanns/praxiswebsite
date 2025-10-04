@@ -90,8 +90,6 @@ export function PhoneHoursCalendar() {
         });
     }, []);
 
-    const fullHourSlots = timeSlots.filter(t => t.endsWith(':00')).slice(0, -1);
-
     return (
         <div className="grid grid-cols-[auto_repeat(5,minmax(0,1fr))] w-full border-t border-r border-border">
           {/* Header Row */}
@@ -146,7 +144,7 @@ export function PhoneHoursCalendar() {
                             key={blockKey}
                             className={cn(
                                 "flex items-center justify-center p-1 border-b border-l border-border",
-                                currentBlock.isOpen ? 'bg-background' : 'bg-muted'
+                                currentBlock.isOpen ? 'bg-background' : 'bg-secondary'
                             )}
                             style={{
                                 gridColumn: `${dayIndex + 1} / span 1`,
@@ -155,7 +153,7 @@ export function PhoneHoursCalendar() {
                         >
                             <span className={cn(
                                 "font-semibold text-base",
-                                currentBlock.isOpen ? "text-foreground" : "text-muted-foreground"
+                                currentBlock.isOpen ? "text-foreground" : "text-secondary-foreground"
                             )}>
                                 {currentBlock.label}
                             </span>
