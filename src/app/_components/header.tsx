@@ -28,14 +28,14 @@ export function Header() {
             href="tel:0313162600"
             className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
           >
-            <Phone size={16} />
+            <Phone size={18} />
             <span>031 316 26 00</span>
           </a>
           <a
             href="mailto:empfang@praxiszentrum-im-ring.ch"
             className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
           >
-            <Mail size={16} />
+            <Mail size={18} />
             <span>empfang@praxiszentrum-im-ring.ch</span>
           </a>
         </div>
@@ -99,14 +99,14 @@ export function Header() {
                     href="tel:0313162600"
                     className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary"
                 >
-                    <Phone size={16} />
+                    <Phone size={18} />
                     <span>031 316 26 00</span>
                 </a>
                 <a
                     href="mailto:empfang@praxiszentrum-im-ring.ch"
                     className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary"
                 >
-                    <Mail size={16} />
+                    <Mail size={18} />
                     <span>empfang@praxiszentrum-im-ring.ch</span>
                 </a>
                 </div>
