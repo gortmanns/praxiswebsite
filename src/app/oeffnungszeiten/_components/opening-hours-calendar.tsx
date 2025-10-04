@@ -130,20 +130,6 @@ export function OpeningHoursCalendar() {
                 Sprechstunde
             </span>
         </div>
-        
-        {/* Merged Do/Fr Afternoon Block */}
-        <div
-            className="flex items-center justify-center p-2 border-b border-l border-border bg-background"
-            style={{
-                gridColumn: '4 / span 2',
-                gridRow: '7 / span 4'
-            }}
-        >
-            <span className="font-semibold text-lg text-foreground">
-                Sprechstunde
-            </span>
-        </div>
-
 
         {dailyBlocks.map((dayBlocks, dayIndex) => {
             const processedBlocks = new Set<string>();
@@ -159,17 +145,12 @@ export function OpeningHoursCalendar() {
               if ((dayIndex === 0 || dayIndex === 1) && timeToMinutes(startTime) >= timeToMinutes('14:00')) {
                 return null;
               }
-              if ((dayIndex === 3 || dayIndex === 4) && timeToMinutes(startTime) >= timeToMinutes('14:00')) {
-                 return null;
-              }
-
 
               const startMinutes = timeToMinutes(currentBlock.start);
               const endMinutes = timeToMinutes(currentBlock.end);
               const durationInHours = Math.round((endMinutes - startMinutes) / 60);
 
               const startRow = timeIndex + 1;
-              const endRow = startRow + (currentBlock.isOpen ? durationInHours : 1);
               
               const blockKey = `${dayIndex}-${startTime}`;
               
