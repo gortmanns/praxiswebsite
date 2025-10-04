@@ -55,26 +55,28 @@ export function OpeningHoursCalendar() {
         </div>
 
         {/* Nachmittag Do 17-18 */}
-        <div className="col-start-4 col-end-5 row-start-10 row-end-11 flex items-center justify-center p-2 border-b border-l border-border bg-background">
+        <div className="col-start-4 col-end-5 row-start-10 row-end-11 flex items-center justify-center p-2 border-b border-l border-border bg-background border-t-0">
             
         </div>
         
         {/* Freitag Nachmittag 13-14 */}
-        <div className="col-start-5 col-end-6 row-start-6 row-end-7 flex items-center justify-center p-2 border-l border-t border-border bg-background">
+        <div className="col-start-5 col-end-6 row-start-6 row-end-7 flex items-center justify-center p-2 border-l border-border bg-background border-b-0">
             
         </div>
         
         {/* Mittagspause Block */}
-        <div className="col-start-1 col-end-6 row-start-5 row-end-7 flex items-center justify-center p-2 border-b border-l border-border bg-secondary">
+        <div className="col-start-1 col-end-6 row-start-5 row-end-7 flex items-center justify-center p-2 border-b border-l border-border bg-secondary/80">
              <span className="text-base font-semibold text-secondary-foreground">Mittagspause</span>
         </div>
 
         {/* Mittwoch Nachmittag geschlossen 14-18 */}
         <div className="col-start-3 col-end-4 row-start-7 row-end-11 flex items-center justify-center p-2 border-b border-l border-border bg-secondary">
+            <span className="text-base font-semibold text-secondary-foreground">Praxis geschlossen</span>
         </div>
         
         {/* Freitag Abend 17-18 geschlossen */}
         <div className="col-start-5 col-end-6 row-start-10 row-end-11 flex items-center justify-center p-2 border-b border-l border-border bg-secondary">
+             <span className="text-base font-semibold text-secondary-foreground">Praxis geschlossen</span>
         </div>
 
       </div>
