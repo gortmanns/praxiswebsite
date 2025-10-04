@@ -23,6 +23,12 @@
       "description": "Portrait of Dr. Sophie Huber, a smiling female doctor looking approachable.",
       "imageUrl": "https://images.unsplash.com/photo-1684331448263-9975a4358032?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx3b21hbiUyMGRvY3RvciUyMHNtaWxpbmd8ZW58MHx8fHwxNzU5NTY3NDIzfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "woman doctor smiling"
+    },
+    {
+      "id": "luftbild",
+      "description": "Aerial view of the practice location.",
+      "imageUrl": "https://images.unsplash.com/photo-1747604468279-35079f811aeb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhZXJpYWwlMjBjbGluaWN8ZW58MHx8fHwxNzU5NTY4OTM4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "aerial clinic"
     }
   ]
 }
