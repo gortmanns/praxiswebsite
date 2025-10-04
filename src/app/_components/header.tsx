@@ -3,11 +3,17 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu } from 'lucide-react';
+import { Menu, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+  } from "@/components/ui/dropdown-menu"
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -35,9 +41,14 @@ export function Header() {
     { href: '/team', label: 'Team' },
     { href: '/leistungen', label: 'Leistungen' },
     { href: '/medikamente', label: 'Medikamente' },
-    { href: '/zeiten', label: 'Zeiten' },
     { href: '/notfall', label: 'NOTFALL' },
   ];
+
+  const zeitenLinks = [
+    { href: '/zeiten#oeffnungszeiten', label: 'Öffnungs- & Telefonzeiten' },
+    { href: '/zeiten#praxisferien', label: 'Praxisferien' }
+  ];
+
 
   return (
     <header className="w-full border-b bg-background">
@@ -84,7 +95,45 @@ export function Header() {
         </Link>
 
         <nav className="hidden md:flex md:items-center md:space-x-4">
-        {navLinks.map((link) => {
+        {navLinks.filter(l => l.href !== '/zeiten').map((link) => {
+            const isActive = pathname === link.href;
+            return (
+            <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                'whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                isActive
+                    ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                    : 'text-muted-foreground hover:text-primary',
+                link.label === 'NOTFALL' ? 'uppercase' : ''
+                )}
+            >
+                {link.label}
+            </Link>
+            );
+        })}
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <button className={cn(
+                    'flex items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                    pathname === '/zeiten'
+                        ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                        : 'text-muted-foreground hover:text-primary'
+                )}>
+                    Zeiten <ChevronDown className="h-4 w-4" />
+                </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+                {zeitenLinks.map(link => (
+                    <DropdownMenuItem key={link.href} asChild>
+                        <Link href={link.href}>{link.label}</Link>
+                    </DropdownMenuItem>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
+
+        {navLinks.filter(l => l.href === '/notfall').map((link) => {
             const isActive = pathname === link.href;
             return (
             <Link
@@ -143,6 +192,29 @@ export function Header() {
                 <nav className="flex flex-col space-y-4">
                 {navLinks.map((link) => {
                     const isActive = pathname === link.href;
+                    if (link.href === '/zeiten') {
+                        return (
+                            <div key={link.href}>
+                                <h3 className={cn(
+                                    'rounded-md px-3 py-2 text-lg font-bold',
+                                    isActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'
+                                )}>
+                                    {link.label}
+                                </h3>
+                                <div className="flex flex-col space-y-2 pl-6 pt-2">
+                                    {zeitenLinks.map(subLink => (
+                                        <Link
+                                            key={subLink.href}
+                                            href={subLink.href}
+                                            className="rounded-md px-3 py-2 text-base font-bold text-muted-foreground hover:text-primary"
+                                        >
+                                            {subLink.label}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        );
+                    }
                     return (
                     <Link
                         key={link.href}
