@@ -35,11 +35,12 @@ function CustomPillsIcon(props: React.SVGProps<SVGSVGElement>) {
       viewBox="0 0 200 150"
       fill="currentColor"
       {...props}>
-      <g transform="rotate(15 55 75)">
-        {/* Bottom filled half of the capsule */}
-        <path d="M55 105 a30 30 0 0 1-30-30 v-0 h60 v0 a30 30 0 0 1-30 30z" />
-        {/* Top hollow half of the capsule */}
-        <path d="M25 75 a30 30 0 0 1 30-30 a30 30 0 0 1 30 30" fill="none" stroke="currentColor" strokeWidth="5"/>
+      <g transform="rotate(15 60 75)">
+        {/* Elongated Capsule */}
+        {/* Bottom filled half */}
+        <path d="M20 75 H60 A20 20 0 0 1 60 115 H20 A20 20 0 0 1 20 75 Z" transform="translate(0, -20)"/>
+        {/* Top hollow half */}
+        <path d="M20 75 H60 A20 20 0 0 0 60 35 H20 A20 20 0 0 0 20 75 Z" transform="translate(0, -20)" fill="none" stroke="currentColor" strokeWidth="5"/>
       </g>
       
       {/* Round pill, 20% smaller */}
