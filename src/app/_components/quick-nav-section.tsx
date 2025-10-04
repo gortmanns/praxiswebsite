@@ -3,9 +3,9 @@ import Link from 'next/link';
 import {
   Users,
   FilePlus,
-  AlertTriangle,
   Pill,
-  Package,
+  AlertTriangle,
+  Beaker,
 } from 'lucide-react';
 
 const navItems = [
@@ -25,7 +25,7 @@ const navItems = [
     href: '/medikamente',
     label: 'Medikamente',
     icon: null,
-    icons: [Pill, Package],
+    icons: [Pill, Beaker],
   },
   {
     href: '/notfall',
