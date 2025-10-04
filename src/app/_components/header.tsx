@@ -1,10 +1,15 @@
+'use client';
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Mail, Menu, Phone } from 'lucide-react';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 export function Header() {
+  const pathname = usePathname();
   const navLinks = [
     { href: '/', label: 'Startseite' },
     { href: '/zeiten', label: 'Zeiten' },
@@ -19,11 +24,17 @@ export function Header() {
       {/* Top bar */}
       <div className="bg-primary text-primary-foreground">
         <div className="container mx-auto flex h-10 items-center justify-end gap-6 px-4 text-sm sm:px-6 lg:px-8">
-          <a href="tel:+41313162600" className="flex items-center gap-2 text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80">
+          <a
+            href="tel:+41313162600"
+            className="flex items-center gap-2 text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
+          >
             <Phone size={16} />
             <span>+41 31 316 26 00</span>
           </a>
-          <a href="mailto:empfang@praxiszentrum-im-ring.ch" className="flex items-center gap-2 text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80">
+          <a
+            href="mailto:empfang@praxiszentrum-im-ring.ch"
+            className="flex items-center gap-2 text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
+          >
             <Mail size={16} />
             <span>empfang@praxiszentrum-im-ring.ch</span>
           </a>
@@ -45,18 +56,25 @@ export function Header() {
           </Link>
         </div>
 
-        <nav className="hidden md:flex md:items-center md:justify-end md:space-x-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`whitespace-nowrap text-lg font-bold text-muted-foreground transition-colors hover:text-primary ${
-                link.label === 'NOTFALL' ? 'uppercase' : ''
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+        <nav className="hidden md:flex md:items-center md:justify-end md:space-x-4">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  'whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                  isActive
+                    ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                    : 'text-muted-foreground hover:text-primary',
+                  link.label === 'NOTFALL' ? 'uppercase' : ''
+                )}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center md:hidden">
@@ -79,27 +97,40 @@ export function Header() {
                   />
                 </Link>
                 <div className="mb-6 space-y-4 text-sm">
-                  <a href="tel:+41313162600" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary">
+                  <a
+                    href="tel:+41313162600"
+                    className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary"
+                  >
                     <Phone size={16} />
                     <span>+41 31 316 26 00</span>
                   </a>
-                  <a href="mailto:empfang@praxiszentrum-im-ring.ch" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary">
+                  <a
+                    href="mailto:empfang@praxiszentrum-im-ring.ch"
+                    className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary"
+                  >
                     <Mail size={16} />
                     <span>empfang@praxiszentrum-im-ring.ch</span>
                   </a>
                 </div>
                 <nav className="flex flex-col space-y-4">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className={`text-lg font-bold text-muted-foreground transition-colors hover:text-primary ${
-                        link.label === 'NOTFALL' ? 'uppercase' : ''
-                      }`}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
+                  {navLinks.map((link) => {
+                     const isActive = pathname === link.href;
+                    return (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className={cn(
+                          'rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                           isActive
+                            ? 'bg-primary text-primary-foreground'
+                            : 'text-muted-foreground hover:text-primary',
+                           link.label === 'NOTFALL' ? 'uppercase' : ''
+                        )}
+                      >
+                        {link.label}
+                      </Link>
+                    );
+                  })}
                 </nav>
               </div>
             </SheetContent>
