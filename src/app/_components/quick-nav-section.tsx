@@ -37,7 +37,7 @@ function FaPillsIcon(props: React.SVGProps<SVGSVGElement>) {
       {...props}>
       <g transform="rotate(15 25 50)">
         {/* Lower filled part */}
-        <path d="M10 50 H 40 V 85 C 40 100.45, 10 100.45, 10 85 V 50 Z" />
+        <path d="M10 50 H 40 V 85 C 40 100.45, 10 100.45, 10 85 Z" />
         {/* Full outline */}
         <path d="M10 15 C 10 -0.45, 40 -0.45, 40 15 V 85 C 40 100.45, 10 100.45, 10 85 V 15 Z" fill="none" stroke="currentColor" strokeWidth="5" />
       </g>
