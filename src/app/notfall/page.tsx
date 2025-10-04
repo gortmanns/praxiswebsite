@@ -33,12 +33,12 @@ export default function NotfallPage() {
                       />
                     </div>
                     <div className="space-y-4 text-left">
-                      <p className="text-2xl lg:text-3xl xl:text-5xl text-foreground">
+                      <p className="text-xl lg:text-2xl xl:text-3xl text-foreground">
                         Bei einem lebensbedrohlichen Notfall alarmieren Sie bitte unverzüglich den Rettungsdienst unter der Rufnummer
                       </p>
-                      <div className="text-2xl lg:text-3xl xl:text-5xl">
+                      <div className="text-4xl lg:text-6xl xl:text-8xl">
                         <a href="tel:144" className="flex items-center gap-3 font-bold text-destructive transition-colors hover:text-destructive/80">
-                            <Phone className="h-8 w-8 flex-shrink-0 lg:h-10 lg:w-10 xl:h-12 xl:w-12" />
+                            <Phone className="h-12 w-12 flex-shrink-0 lg:h-16 lg:w-16 xl:h-20 xl:w-20" />
                             <strong>144</strong>
                         </a>
                       </div>
@@ -59,7 +59,7 @@ export default function NotfallPage() {
                         />
                     </div>
                     <div className="space-y-4 text-left">
-                        <p className='text-2xl lg:text-3xl xl:text-5xl'>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
+                        <p className='text-xl lg:text-2xl xl:text-3xl'>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
                         <div className='space-y-8 text-2xl lg:text-3xl xl:text-5xl'>
                             <div className='flex flex-col items-start'>
                                 <a href="tel:0900576747" className='flex items-center gap-3'><Phone className='h-8 w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 flex-shrink-0' /><strong className='font-bold'>0900 - 57 67 47</strong></a>
@@ -88,13 +88,13 @@ export default function NotfallPage() {
                       </Link>
                     </div>
                     <div className="space-y-4 text-left">
-                      <p className="text-2xl lg:text-3xl xl:text-5xl text-foreground">
+                      <p className="text-xl lg:text-2xl xl:text-3xl text-foreground">
                         Bei Vergiftungen - aber nur wenn der Patient wach und ansprechbar und nicht in akuter Lebensgefahr ist - erreichen Sie den Vergiftungsnotruf unter der Nummer
                       </p>
                       <div className="text-2xl lg:text-3xl xl:text-5xl">
-                          <a href="tel:145" className="flex items-center gap-3">
+                          <a href="tel:145" className="flex items-center gap-3 font-bold">
                               <Phone className="h-8 w-8 flex-shrink-0 lg:h-10 lg:w-10 xl:h-12 xl:w-12" />
-                              <strong className="font-bold">145</strong>
+                              <strong>145</strong>
                           </a>
                       </div>
                     </div>
