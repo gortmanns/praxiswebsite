@@ -30,8 +30,8 @@ export function Header() {
       </div>
       
       {/* Main header with logo and navigation */}
-      <div className="w-full border-b">
-        <div className="relative flex items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative flex h-20 items-center justify-between">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="inline-block py-4">
@@ -61,13 +61,8 @@ export function Header() {
             </nav>
           </div>
           
-          {/* Appointment Button & Mobile Menu Trigger */}
+          {/* Mobile Menu Trigger */}
           <div className="flex items-center flex-shrink-0">
-            <div className="hidden md:flex">
-              <Button asChild size="lg">
-                <Link href="#contact">Termin Buchen</Link>
-              </Button>
-            </div>
             <div className="ml-4 md:hidden">
               <Sheet>
                 <SheetTrigger asChild>
@@ -107,9 +102,6 @@ export function Header() {
                           {link.label}
                         </Link>
                       ))}
-                      <Button asChild className="mt-4" size="lg">
-                        <Link href="#contact">Termin Buchen</Link>
-                      </Button>
                     </nav>
                   </div>
                 </SheetContent>
