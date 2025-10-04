@@ -75,15 +75,12 @@ export function OpeningHoursCalendar() {
       {/* Time Column */}
       <div className="flex flex-col">
         <div className="h-12 border-b"></div> {/* Empty cell for header */}
-        {timeSlots.map((time, index) => (
+        {calendarGrid.map((slot) => (
           <div
-            key={time}
-            className={cn(
-              'relative -top-3 flex h-8 w-16 items-center justify-end pr-2 text-xs text-muted-foreground',
-              index % 2 !== 0 && 'hidden'
-            )}
+            key={slot.startTime}
+            className="flex h-8 w-24 items-center justify-center border-b px-2 text-center text-xs text-muted-foreground"
           >
-            {index % 2 === 0 && time}
+            {slot.startTime} - {slot.endTime}
           </div>
         ))}
       </div>
