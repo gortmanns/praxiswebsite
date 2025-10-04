@@ -30,9 +30,9 @@ export function Header() {
       </div>
       
       {/* Main header with logo and navigation */}
-      <div className="relative flex h-20 items-center">
-        {/* Logo */}
-        <div className="container mx-auto flex items-center px-4 sm:px-6 lg:px-8">
+      <div className="relative flex h-20 items-center justify-center">
+        {/* Logo - Aligned Left */}
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 px-4 sm:px-6 lg:px-8">
             <Link href="/" className="inline-block">
             <Image
                 src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
@@ -46,19 +46,17 @@ export function Header() {
         </div>
 
         {/* Centered Navigation for Desktop */}
-        <div className="absolute inset-0 flex items-center justify-center">
-            <nav className="hidden items-center space-x-8 md:flex">
-                {navLinks.map((link) => (
-                <Link
-                    key={link.href}
-                    href={link.href}
-                    className="text-lg font-bold text-muted-foreground transition-colors hover:text-primary"
-                >
-                    {link.label}
-                </Link>
-                ))}
-            </nav>
-        </div>
+        <nav className="hidden items-center space-x-8 md:flex">
+            {navLinks.map((link) => (
+            <Link
+                key={link.href}
+                href={link.href}
+                className="text-lg font-bold text-muted-foreground transition-colors hover:text-primary"
+            >
+                {link.label}
+            </Link>
+            ))}
+        </nav>
         
         {/* Mobile Menu Trigger - Right-aligned */}
         <div className="absolute inset-y-0 right-0 flex items-center pr-4 sm:pr-6 lg:pr-8">
