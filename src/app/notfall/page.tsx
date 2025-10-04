@@ -1,9 +1,10 @@
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Phone, AlertTriangle } from 'lucide-react';
+import { Phone } from 'lucide-react';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import Link from 'next/link';
 
 export default function NotfallPage() {
   const ambulanceImage = PlaceHolderImages.find((p) => p.id === 'rettungswagen');
@@ -24,7 +25,7 @@ export default function NotfallPage() {
                 <div className="rounded-lg border border-destructive p-6">
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
                     {ambulanceImage && (
-                      <div className="relative mx-auto aspect-video w-[35%] overflow-hidden rounded-md md:w-full">
+                      <div className="relative mx-auto aspect-video w-full max-w-sm overflow-hidden rounded-md">
                         <Image
                           src={ambulanceImage.imageUrl}
                           alt={ambulanceImage.description}
@@ -48,15 +49,15 @@ export default function NotfallPage() {
 
                 <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
                     {medphoneImage && (
-                        <div className="relative mx-auto aspect-video w-[35%] overflow-hidden rounded-md md:w-full">
-                        <Image
-                          src={medphoneImage.imageUrl}
-                          alt={medphoneImage.description}
-                          fill
-                          className="object-contain"
-                          data-ai-hint={medphoneImage.imageHint}
-                        />
-                      </div>
+                        <Link href="https://www.medphone.ch/home" target='_blank' rel='noopener noreferrer' className="relative mx-auto aspect-video w-full max-w-sm overflow-hidden rounded-md">
+                            <Image
+                              src={medphoneImage.imageUrl}
+                              alt={medphoneImage.description}
+                              fill
+                              className="object-contain"
+                              data-ai-hint={medphoneImage.imageHint}
+                            />
+                        </Link>
                     )}
                     <div className="space-y-4">
                         <p className='text-4xl'>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
