@@ -6,6 +6,10 @@ import {
   HandHelping,
 } from 'lucide-react';
 
+const TiltedHandHelpingIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <HandHelping {...props} style={{ transform: 'rotate(20deg)' }} />
+);
+
 const navItems = [
   {
     href: '/team',
@@ -15,7 +19,7 @@ const navItems = [
   {
     href: '/leistungen',
     label: 'Leistungen',
-    Icon: HandHelping,
+    Icon: TiltedHandHelpingIcon,
   },
   {
     href: '/medikamente',
