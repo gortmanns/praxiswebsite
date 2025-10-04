@@ -49,39 +49,72 @@ const timeToMinutes = (time: string) => {
   return hours * 60 + minutes;
 };
 
+const slotHeightInRem = 4; // h-16
+const totalStartMinutes = timeToMinutes('08:00');
+const totalEndMinutes = timeToMinutes('18:00');
+
+type TimeBlock = {
+  start: string;
+  end: string;
+  isOpen: boolean;
+};
+
 export function OpeningHoursCalendar() {
-  const calendarGrid = useMemo(() => {
+  const timeLabels = useMemo(() => {
     return timeSlots.slice(0, -1).map((startTime, index) => {
       const endTime = timeSlots[index + 1];
-      const slotStartMinutes = timeToMinutes(startTime);
-      return {
-        startTime,
-        endTime,
-        days: days.map((day) => {
-          const isOpen = day.open.some(
-            (period) =>
-              slotStartMinutes >= timeToMinutes(period.start) &&
-              slotStartMinutes < timeToMinutes(period.end)
-          );
-          return { name: day.name, isOpen };
-        }),
-      };
+      return { startTime, endTime };
     });
   }, []);
 
-  const slotHeightInRem = 4; // h-16
+  const dailyBlocks = useMemo(() => {
+    return days.map(day => {
+      const blocks: TimeBlock[] = [];
+      let currentTime = totalStartMinutes;
+
+      // Add open periods
+      const sortedOpen = [...day.open].sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
+      
+      for (const period of sortedOpen) {
+        const startMinutes = timeToMinutes(period.start);
+        const endMinutes = timeToMinutes(period.end);
+
+        // Add closed block before open period if there is a gap
+        if (currentTime < startMinutes) {
+            blocks.push({ start: minutesToTime(currentTime), end: minutesToTime(startMinutes), isOpen: false });
+        }
+        
+        // Add the open block
+        blocks.push({ start: period.start, end: period.end, isOpen: true });
+        currentTime = endMinutes;
+      }
+
+      // Add final closed block if needed
+      if (currentTime < totalEndMinutes) {
+          blocks.push({ start: minutesToTime(currentTime), end: minutesToTime(totalEndMinutes), isOpen: false });
+      }
+
+      return { name: day.name, blocks };
+    });
+  }, []);
+
+  const minutesToTime = (minutes: number) => {
+    const h = Math.floor(minutes / 60).toString().padStart(2, '0');
+    const m = (minutes % 60).toString().padStart(2, '0');
+    return `${h}:${m}`;
+  }
 
   return (
-    <div className="flex w-full">
+    <div className="flex w-full border-t border-border">
       {/* Time Column */}
       <div className="flex flex-col">
-        <div className="h-12 border-b"></div> {/* Empty cell for header */}
-        {calendarGrid.map((slot) => (
+        {/* Empty cell for header */}
+        <div className="h-12 border-b border-border"></div>
+        {timeLabels.map((slot) => (
           <div
             key={slot.startTime}
             className={cn(
-                "flex items-center justify-center border-b px-2 text-center text-xs text-muted-foreground",
-                `h-16` // h-16 = 4rem
+                `flex h-16 items-center justify-center border-b border-border px-2 text-center text-xs text-muted-foreground`
             )}
           >
             {slot.startTime} - {slot.endTime}
@@ -91,30 +124,24 @@ export function OpeningHoursCalendar() {
 
       {/* Days Columns */}
       <div className="grid flex-1 grid-cols-5">
-        {days.map((day) => (
+        {dailyBlocks.map((day) => (
           <div key={day.name} className="flex flex-col text-center">
-            <div className="h-12 border-b flex items-center justify-center font-bold text-sm sm:text-base">{day.name}</div>
-            <div className="relative border-l">
-              {calendarGrid.map((slot) => (
-                <div
-                  key={`${day.name}-${slot.startTime}`}
-                  className={cn(
-                    'h-16 border-b',
-                    'bg-secondary'
-                  )}
-                ></div>
-              ))}
-              {day.open.map((period, index) => {
-                 const startMinutes = timeToMinutes(period.start);
-                 const endMinutes = timeToMinutes(period.end);
+            <div className="flex h-12 items-center justify-center border-b border-border font-bold text-sm sm:text-base">{day.name}</div>
+            <div className="relative border-l border-border h-full">
+              {day.blocks.map((block, index) => {
+                 const startMinutes = timeToMinutes(block.start);
+                 const endMinutes = timeToMinutes(block.end);
                  const durationMinutes = endMinutes - startMinutes;
-                 const top = ((startMinutes - timeToMinutes('08:00')) / 60) * slotHeightInRem;
+                 const top = ((startMinutes - totalStartMinutes) / 60) * slotHeightInRem;
                  const height = (durationMinutes / 60) * slotHeightInRem;
  
                  return (
                    <div
                      key={index}
-                     className="absolute w-full bg-background border border-border"
+                     className={cn(
+                       "absolute w-full",
+                       block.isOpen ? 'bg-background' : 'bg-secondary'
+                     )}
                      style={{
                        top: `${top}rem`,
                        height: `${height}rem`,
@@ -122,7 +149,6 @@ export function OpeningHoursCalendar() {
                    ></div>
                  );
               })}
-
             </div>
           </div>
         ))}
