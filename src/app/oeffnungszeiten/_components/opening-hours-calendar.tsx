@@ -49,6 +49,12 @@ const timeToMinutes = (time: string) => {
   return hours * 60 + minutes;
 };
 
+const minutesToTime = (minutes: number) => {
+    const h = Math.floor(minutes / 60).toString().padStart(2, '0');
+    const m = (minutes % 60).toString().padStart(2, '0');
+    return `${h}:${m}`;
+};
+
 const slotHeightInRem = 4; // h-16
 const totalStartMinutes = timeToMinutes('08:00');
 const totalEndMinutes = timeToMinutes('18:00');
@@ -60,12 +66,6 @@ type TimeBlock = {
 };
 
 export function OpeningHoursCalendar() {
-  const minutesToTime = (minutes: number) => {
-    const h = Math.floor(minutes / 60).toString().padStart(2, '0');
-    const m = (minutes % 60).toString().padStart(2, '0');
-    return `${h}:${m}`;
-  }
-
   const timeLabels = useMemo(() => {
     return timeSlots.slice(0, -1).map((startTime, index) => {
       const endTime = timeSlots[index + 1];
@@ -102,9 +102,7 @@ export function OpeningHoursCalendar() {
 
       return { name: day.name, blocks };
     });
-  }, [minutesToTime]);
-
-
+  }, []);
 
   return (
     <div className="flex w-full border-t border-border">
@@ -126,7 +124,7 @@ export function OpeningHoursCalendar() {
 
       {/* Days Columns */}
       <div className="grid flex-1 grid-cols-5">
-        {dailyBlocks.map((day) => (
+        {dailyBlocks.map((day, dayIndex) => (
           <div key={day.name} className="flex flex-col text-center">
             <div className="flex h-12 items-center justify-center border-b border-border font-bold text-sm sm:text-base">{day.name}</div>
             <div className="relative border-l border-border h-full">
