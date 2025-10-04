@@ -16,6 +16,7 @@ export function Header() {
 
   return (
     <header className="w-full bg-background">
+      {/* Top bar */}
       <div className="bg-primary text-primary-foreground">
         <div className="container mx-auto flex h-10 items-center justify-end gap-6 px-4 text-sm">
           <a href="tel:+41313162600" className="flex items-center gap-2 text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80">
@@ -28,10 +29,13 @@ export function Header() {
           </a>
         </div>
       </div>
+      
+      {/* Main header with logo and navigation */}
       <div className="w-full border-b">
-        <div className="relative flex items-center justify-center">
-          <div className="absolute left-0 w-full px-4 sm:px-6 lg:px-8">
-            <Link href="/" className="py-4 inline-block">
+        <div className="relative flex items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <Link href="/" className="inline-block py-4">
               <Image
                 src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
                 alt="Praxiszentrum im Ring Logo"
@@ -42,8 +46,9 @@ export function Header() {
               />
             </Link>
           </div>
-          
-          <div className="container flex items-center justify-end px-4 sm:px-6 lg:px-8">
+
+          {/* Centered Navigation for Desktop */}
+          <div className="flex-grow flex justify-center items-center">
             <nav className="hidden items-center space-x-8 md:flex">
               {navLinks.map((link) => (
                 <Link
@@ -55,7 +60,11 @@ export function Header() {
                 </Link>
               ))}
             </nav>
-            <div className="ml-8 hidden md:flex">
+          </div>
+          
+          {/* Appointment Button & Mobile Menu Trigger */}
+          <div className="flex items-center flex-shrink-0">
+            <div className="hidden md:flex">
               <Button asChild size="lg">
                 <Link href="#contact">Termin Buchen</Link>
               </Button>
