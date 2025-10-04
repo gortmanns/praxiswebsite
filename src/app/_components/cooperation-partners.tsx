@@ -93,6 +93,9 @@ export function CooperationPartnersSection() {
             </CardContent>
           </Card>
         </div>
+        <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
+          Unsere weiteren Partner
+        </h3>
         <div className="mt-8 flex justify-center">
           <div className="w-full sm:w-1/2 lg:w-1/3">
             <Link
