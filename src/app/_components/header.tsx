@@ -42,7 +42,7 @@ export function Header() {
       </div>
 
       {/* Main header */}
-      <div className="flex h-20 w-full items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="flex h-28 w-full items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex-shrink-0">
           <Link href="/">
             <Image
