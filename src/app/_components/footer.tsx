@@ -5,12 +5,9 @@ import Image from 'next/image';
 export function Footer() {
   const year = new Date().getFullYear();
   const navLinks = [
-    { href: '/', label: 'Startseite' },
-    { href: '/zeiten', label: 'Zeiten' },
-    { href: '/team', label: 'Team' },
-    { href: '/leistungen', 'label': 'Leistungen' },
-    { href: '/medikamente', 'label': 'Medikamente' },
-    { href: '/notfall', label: 'NOTFALL' },
+    { href: '/ueber-uns', label: 'Über uns' },
+    { href: '/impressum', label: 'Impressum' },
+    { href: '/datenschutzerklaerung', label: 'Datenschutzerklärung' },
   ];
   const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Praxiszentrum+im+Ring,+Kappelenring+6,+3023+Hinterkappelen";
 

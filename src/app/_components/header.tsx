@@ -24,12 +24,9 @@ const MailIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export function Header() {
   const pathname = usePathname();
   const navLinks = [
-    { href: '/', label: 'Startseite' },
-    { href: '/zeiten', label: 'Zeiten' },
-    { href: '/team', label: 'Team' },
-    { href: '/leistungen', 'label': 'Leistungen' },
-    { href: '/medikamente', 'label': 'Medikamente' },
-    { href: '/notfall', label: 'NOTFALL' },
+    { href: '/ueber-uns', label: 'Über uns' },
+    { href: '/impressum', label: 'Impressum' },
+    { href: '/datenschutzerklaerung', label: 'Datenschutzerklärung' },
   ];
 
   return (
