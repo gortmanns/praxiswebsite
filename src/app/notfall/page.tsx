@@ -1,3 +1,4 @@
+
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -35,10 +36,12 @@ export default function NotfallPage() {
                       <p className="text-2xl lg:text-3xl xl:text-5xl text-foreground">
                         Bei einem lebensbedrohlichen Notfall alarmieren Sie bitte unverzüglich den Rettungsdienst unter der Rufnummer
                       </p>
-                      <a href="tel:144" className="inline-flex w-full justify-start items-center gap-2 text-6xl lg:text-7xl xl:text-9xl font-bold text-destructive transition-colors hover:text-destructive/80">
-                        <Phone className="h-16 w-16 lg:h-20 lg:w-20 xl:h-24 xl:w-24" />
-                        144
-                      </a>
+                      <div className="text-2xl lg:text-3xl xl:text-5xl">
+                        <a href="tel:144" className="flex items-center gap-3 font-bold text-destructive transition-colors hover:text-destructive/80">
+                            <Phone className="h-8 w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 flex-shrink-0" />
+                            <strong>144</strong>
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -88,10 +91,12 @@ export default function NotfallPage() {
                       <p className="text-2xl lg:text-3xl xl:text-5xl text-foreground">
                         Bei Vergiftungen - aber nur wenn der Patient wach und ansprechbar und nicht in akuter Lebensgefahr ist - erreichen Sie den Vergiftungsnotruf unter der Nummer
                       </p>
-                      <a href="tel:145" className="inline-flex w-full justify-start items-center gap-2 text-6xl lg:text-7xl xl:text-9xl font-bold text-primary transition-colors hover:text-primary/80">
-                        <Phone className="h-16 w-16 lg:h-20 lg:w-20 xl:h-24 xl:w-24" />
-                        145
-                      </a>
+                      <div className="text-2xl lg:text-3xl xl:text-5xl">
+                        <a href="tel:145" className="flex items-center gap-3 font-bold text-primary transition-colors hover:text-primary/80">
+                          <Phone className="h-8 w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 flex-shrink-0" />
+                          <strong>145</strong>
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
