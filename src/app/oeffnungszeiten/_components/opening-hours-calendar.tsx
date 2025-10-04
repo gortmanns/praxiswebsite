@@ -100,7 +100,7 @@ export function OpeningHoursCalendar() {
                   key={`${day.name}-${slot.startTime}`}
                   className={cn(
                     'h-16 border-b',
-                    'bg-muted/30'
+                    'bg-secondary'
                   )}
                 ></div>
               ))}
@@ -114,7 +114,7 @@ export function OpeningHoursCalendar() {
                  return (
                    <div
                      key={index}
-                     className="absolute w-full bg-primary/80 rounded-md"
+                     className="absolute w-full bg-background border border-border"
                      style={{
                        top: `${top}rem`,
                        height: `${height}rem`,
