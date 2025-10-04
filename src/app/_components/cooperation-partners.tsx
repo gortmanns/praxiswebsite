@@ -70,7 +70,7 @@ export function CooperationPartnersSection() {
                         src={partner.logoUrl!}
                         alt={`${partner.name} Logo`}
                         width={340}
-                        height={100}
+                        height={68}
                         className="h-auto w-full object-contain"
                       />
                     ) : partner.name === 'Schemmer & Worni' ? (
@@ -108,29 +108,31 @@ export function CooperationPartnersSection() {
         <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
           Unsere weiteren Partner
         </h3>
-        <div className="mt-8 grid grid-cols-1 justify-center gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {otherPartners.map((partner) => (
-            <Link
-                key={partner.name}
-                href={partner.websiteUrl}
-                target={partner.websiteUrl === '#' ? '_self' : '_blank'}
-                rel="noopener noreferrer"
-                className='group'
-            >
-                <Card className="flex h-32 items-center justify-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
-                    <CardContent className="flex w-full items-center justify-center p-0">
-                        <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                            <Image
-                            src={partner.logoUrl!}
-                            alt={`${partner.name} Logo`}
-                            fill
-                            className="object-contain"
-                            />
-                        </div>
-                    </CardContent>
-                </Card>
-            </Link>
-          ))}
+        <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3 lg:grid-cols-8">
+            <div className="hidden lg:block"></div> {/* Empty spacer */}
+            {otherPartners.map((partner) => (
+                <Link
+                    key={partner.name}
+                    href={partner.websiteUrl}
+                    target={partner.websiteUrl === '#' ? '_self' : '_blank'}
+                    rel="noopener noreferrer"
+                    className='group sm:col-span-1 lg:col-span-2'
+                >
+                    <Card className="flex h-32 items-center justify-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
+                        <CardContent className="flex w-full items-center justify-center p-0">
+                            <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                                <Image
+                                src={partner.logoUrl!}
+                                alt={`${partner.name} Logo`}
+                                fill
+                                className="object-contain"
+                                />
+                            </div>
+                        </CardContent>
+                    </Card>
+                </Link>
+            ))}
+            <div className="hidden lg:block"></div> {/* Empty spacer */}
         </div>
       </div>
     </section>
