@@ -50,12 +50,12 @@ export function CooperationPartnersSection() {
               <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
                 <CardContent className="flex w-full items-center justify-center p-0">
                   {partner.name === 'VASC-ALLIANCE' ? (
-                     <div className="relative flex h-[90px] w-full items-center justify-center overflow-hidden">
+                     <div className="relative flex h-20 w-full items-center justify-center overflow-hidden">
                       <Image
                         src={partner.logoUrl!}
                         alt={`${partner.name} Logo`}
                         fill
-                        className="object-contain max-h-full max-w-full"
+                        className="object-contain w-[130%]"
                       />
                     </div>
                   ) : partner.name === 'MCL' ? (
