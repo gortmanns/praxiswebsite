@@ -1,5 +1,5 @@
 import { Header } from '../_components/header';
-import { Footer } from '../components/footer';
+import { Footer } from '../_components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function OeffnungszeitenPage() {
