@@ -7,6 +7,7 @@ import { ColorPaletteDemo } from '../_components/color-palette-demo';
 import { cn } from '@/lib/utils';
 import { DoorOpen, Phone } from 'lucide-react';
 import { OpeningHoursCalendar } from './_components/opening-hours-calendar';
+import { PhoneHoursCalendar } from './_components/phone-hours-calendar';
 
 export default function OeffnungszeitenPage() {
   return (
@@ -51,8 +52,8 @@ export default function OeffnungszeitenPage() {
                     </TabsContent>
                     <TabsContent value="telefonzeiten">
                         <Card className="rounded-t-none">
-                            <CardContent className="pt-6">
-                                <p className="text-muted-foreground">Der Inhalt für die Telefonzeiten wird hier in Kürze verfügbar sein.</p>
+                            <CardContent className="p-6 text-lg">
+                                <PhoneHoursCalendar />
                             </CardContent>
                         </Card>
                     </TabsContent>

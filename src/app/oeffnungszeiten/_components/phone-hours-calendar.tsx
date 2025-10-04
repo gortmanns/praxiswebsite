@@ -15,41 +15,42 @@ const minutesToTime = (minutes: number) => {
 };
 
 const timeSlots = [
-  '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00',
-  '16:00', '17:00', '18:00',
+  '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+  '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30',
+  '16:00', '16:30', '17:00', '17:30', '18:00',
 ];
 
 const days = [
   {
     name: 'Montag',
     open: [
-      { start: '08:00', end: '12:00', label: 'Sprechstunde' },
-      { start: '14:00', end: '18:00', label: 'Sprechstunde' },
+      { start: '08:30', end: '13:00', label: 'Telefon wird bedient' },
+      { start: '14:00', end: '17:30', label: 'Telefon wird bedient' },
     ],
   },
   {
     name: 'Dienstag',
     open: [
-      { start: '08:00', end: '12:00', label: 'Sprechstunde' },
-      { start: '14:00', end: '18:00', label: 'Sprechstunde' },
+        { start: '08:30', end: '13:00', label: 'Telefon wird bedient' },
+        { start: '14:00', end: '17:30', label: 'Telefon wird bedient' },
     ],
   },
   {
     name: 'Mittwoch',
-    open: [{ start: '08:00', end: '12:00', label: 'Sprechstunde' }],
+    open: [{ start: '08:30', end: '13:00', label: 'Telefon wird bedient' }],
   },
   {
     name: 'Donnerstag',
     open: [
-      { start: '08:00', end: '12:00', label: 'Sprechstunde' },
-      { start: '14:00', end: '18:00', label: 'Sprechstunde' },
+        { start: '08:30', end: '13:00', label: 'Telefon wird bedient' },
+        { start: '14:00', end: '17:30', label: 'Telefon wird bedient' },
     ],
   },
   {
     name: 'Freitag',
     open: [
-      { start: '08:00', end: '12:00', label: 'Sprechstunde' },
-      { start: '13:00', end: '17:00', label: 'Sprechstunde' },
+      { start: '08:30', end: '13:00', label: 'Telefon wird bedient' },
+      { start: '14:00', end: '16:30', label: 'Telefon wird bedient' },
     ],
   },
 ];
@@ -74,7 +75,7 @@ type GroupedBlock = {
     endDay: number;
 };
 
-export function OpeningHoursCalendar() {
+export function PhoneHoursCalendar() {
     const groupedBlocks = useMemo(() => {
         const dailyBlocks: TimeBlock[][] = days.map(day => {
             const blocks: TimeBlock[] = [];
@@ -86,7 +87,7 @@ export function OpeningHoursCalendar() {
                 const endMinutes = timeToMinutes(period.end);
 
                 if (currentTime < startMinutes) {
-                    blocks.push({ start: minutesToTime(currentTime), end: minutesToTime(startMinutes), isOpen: false, label: 'Praxis geschlossen' });
+                    blocks.push({ start: minutesToTime(currentTime), end: minutesToTime(startMinutes), isOpen: false, label: 'Telefon nicht bedient' });
                 }
                 
                 blocks.push({ start: period.start, end: period.end, isOpen: true, label: period.label });
@@ -94,7 +95,7 @@ export function OpeningHoursCalendar() {
             }
 
             if (currentTime < totalEndMinutes) {
-                blocks.push({ start: minutesToTime(currentTime), end: minutesToTime(totalEndMinutes), isOpen: false, label: 'Praxis geschlossen' });
+                blocks.push({ start: minutesToTime(currentTime), end: minutesToTime(totalEndMinutes), isOpen: false, label: 'Telefon nicht bedient' });
             }
             return blocks;
         });
@@ -125,6 +126,20 @@ export function OpeningHoursCalendar() {
         return allGroupedBlocks;
     }, []);
 
+    const timeAxisSlots = useMemo(() => {
+      const slots = [];
+      for (let i = 0; i < timeSlots.length - 1; i++) {
+        if (i % 2 === 0) { // Show label for every full hour
+            slots.push({
+                startTime: timeSlots[i],
+                endTime: timeSlots[i+2] || timeSlots[i+1],
+                isHour: true,
+            });
+        }
+      }
+      return slots;
+    }, []);
+
     return (
         <div className="grid grid-cols-[auto_1fr] w-full border-t border-r border-border">
           {/* Header Row */}
@@ -143,10 +158,10 @@ export function OpeningHoursCalendar() {
 
           {/* Time Axis Column */}
           <div className="col-start-1 row-start-2 border-l border-border bg-muted">
-              {timeSlots.slice(0, -1).map((startTime, index) => (
-                  <div key={startTime} className="flex h-16 items-center justify-center text-center text-xs text-muted-foreground border-b border-border px-2 font-bold">
-                      {startTime} - {timeSlots[index + 1]}
-                  </div>
+              {timeAxisSlots.map(({startTime, endTime, isHour}) => (
+                   <div key={startTime} className="flex h-16 items-center justify-center text-center text-xs text-muted-foreground border-b border-border px-2 font-bold">
+                       {startTime} - {endTime}
+                   </div>
               ))}
           </div>
           
@@ -158,7 +173,7 @@ export function OpeningHoursCalendar() {
                       "h-full",
                       dayIndex < 4 ? "border-r border-border" : ""
                   )}>
-                    {Array.from({ length: timeSlots.length - 1 }).map((_, timeIndex) => (
+                    {Array.from({ length: (timeSlots.length -1) / 2 }).map((_, timeIndex) => (
                       <div key={`row-line-${dayIndex}-${timeIndex}`} className="h-16 border-b border-border"></div>
                     ))}
                   </div>
@@ -191,7 +206,7 @@ export function OpeningHoursCalendar() {
                       >
                           {block.label && (
                               <span className={cn(
-                                  "font-semibold text-lg",
+                                  "font-semibold text-base",
                                   block.isOpen ? "text-foreground" : "text-muted-foreground"
                               )}>
                                   {block.label}
