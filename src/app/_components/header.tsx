@@ -24,8 +24,8 @@ export function Header() {
           </a>
         </div>
       </div>
-      <div className="container flex h-auto items-center justify-between border-b">
-        <Link href="/" className="flex items-center gap-2 py-4">
+      <div className="container flex h-auto items-center justify-between border-b py-6">
+        <Link href="/" className="flex items-center gap-2">
           <Image
             src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
             alt="Praxiszentrum im Ring Logo"
