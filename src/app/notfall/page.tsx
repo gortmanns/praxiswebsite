@@ -49,18 +49,16 @@ export default function NotfallPage() {
                 </div>
 
                 <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
-                  <div className="flex justify-center items-center">
-                    <Link href="https://www.medphone.ch/home" target='_blank' rel='noopener noreferrer' className="relative block w-full max-w-md">
-                        <Image
-                          src={medphoneImage.imageUrl}
-                          alt={medphoneImage.description}
-                          width={800}
-                          height={269}
-                          className="h-auto w-full object-contain"
-                          data-ai-hint={medphoneImage.imageHint}
-                        />
-                    </Link>
-                  </div>
+                  <Link href="https://www.medphone.ch/home" target='_blank' rel='noopener noreferrer' className="flex justify-center items-center">
+                      <Image
+                        src={medphoneImage.imageUrl}
+                        alt={medphoneImage.description}
+                        width={800}
+                        height={269}
+                        className="h-auto w-full max-w-md object-contain"
+                        data-ai-hint={medphoneImage.imageHint}
+                      />
+                  </Link>
                   <div className="space-y-4">
                       <p className='text-4xl'>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
                       <div className='space-y-8 text-4xl'>
