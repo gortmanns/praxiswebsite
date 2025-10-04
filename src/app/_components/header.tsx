@@ -38,19 +38,19 @@ export function Header() {
           </Link>
           
           <div className="flex items-center">
-            <nav className="hidden items-center space-x-6 md:flex">
+            <nav className="hidden items-center space-x-8 md:flex">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+                  className="text-lg font-bold text-muted-foreground transition-colors hover:text-primary"
                 >
                   {link.label}
                 </Link>
               ))}
             </nav>
-            <div className="ml-4 hidden md:flex">
-              <Button asChild>
+            <div className="ml-8 hidden md:flex">
+              <Button asChild size="lg">
                 <Link href="#contact">Termin Buchen</Link>
               </Button>
             </div>
@@ -88,12 +88,12 @@ export function Header() {
                         <Link
                           key={link.href}
                           href={link.href}
-                          className="text-lg font-medium text-muted-foreground transition-colors hover:text-primary"
+                          className="text-lg font-bold text-muted-foreground transition-colors hover:text-primary"
                         >
                           {link.label}
                         </Link>
                       ))}
-                      <Button asChild className="mt-4">
+                      <Button asChild className="mt-4" size="lg">
                         <Link href="#contact">Termin Buchen</Link>
                       </Button>
                     </nav>
