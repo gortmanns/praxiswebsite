@@ -49,39 +49,12 @@ export function CooperationPartnersSection() {
               <Card className="flex min-h-[144px] items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
                 <CardContent className="flex w-full items-center justify-center p-0">
                   {partner.isSvg ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="200"
-                      height="50"
-                      viewBox="0 0 379.79 70.36"
-                      aria-label="orthozentrum-bern Logo"
-                      className="text-foreground"
-                      style={{ color: '#4d4d4d' }}
-                    >
-                      <g>
-                        <path
-                          d="M35.18,0A35.18,35.18,0,0,0,20.5,67.65L24,58.53a25.86,25.86,0,1,1,22.39,0l3.49,9.12A35.18,35.18,0,0,0,35.18,0Z"
-                          style={{ fill: '#00aaef' }}
-                        ></path>
-                        <path
-                          d="M35.18,13.6a21.58,21.58,0,1,0,21.58,21.58A21.58,21.58,0,0,0,35.18,13.6Zm12.6,23.33H38.1v9.68a2.92,2.92,0,0,1-5.84,0V36.93H22.58a2.92,2.92,0,1,1,0-5.84h9.68V21.41a2.92,2.92,0,0,1,5.84,0v9.68h9.68a2.92,2.92,0,1,1,0,5.84Z"
-                          style={{ fill: '#fff' }}
-                        ></path>
-                      </g>
-                      <g
-                        style={{
-                          isolation: 'isolate',
-                        }}
-                      >
-                        <text
-                          transform="translate(80.63 46.51)"
-                          fontSize="43"
-                          fill="currentColor"
-                          fontFamily="Prompt-Regular, Prompt"
-                        >
-                          orthozentrum-bern
-                        </text>
-                      </g>
+                    <svg preserveAspectRatio="xMidYMid meet" data-bbox="3.622 3.9 53.656 48.7" viewBox="0 0 59.9 55.5" xmlns="http://www.w3.org/2000/svg" data-type="ugc" role="presentation" aria-hidden="true" aria-label="" className="h-16 w-auto">
+                        <g>
+                            <path d="M46.7 7.8S44.5 3.9 40 3.9H20.8s-4.4 0-6.7 3.9L4.6 24.4s-2.2 3.9 0 7.7l9.6 16.6s2.2 3.9 6.7 3.9H40s4.4 0 6.7-3.9l9.6-16.6s2.2-3.9 0-7.7L46.7 7.8z" fill="none" stroke="#588791" stroke-width="1.639"></path>
+                            <path d="M24 52.4c-1.1-3.4-3.1-8-5.1-11.1-.6-.9-1-1.9-1.2-2.9-.3-1.8.9-3.2 2.9-3.5 6.5-1 13-1 19.5 0 2.2.3 3.4 2 2.9 4-.2.7-.5 1.4-1 2.1-2 3.1-4.1 8-5.2 11.4" fill="none" stroke="#588791" stroke-width="1.639"></path>
+                            <path d="M35.4 4.4c.4 3.8 1.7 8 4.1 11.3 1.8 2.4 3.1 2.6 3.7 5.6.5 2.5-.3 6.9-2.3 7.9-2.3 1.2-4.6 1-6.8-.4-1.4-1.2-2.4-1.4-3.6-1.3-1.3 0-2.3.2-3.6 1.3-2.2 1.5-4.4 1.6-6.8.4-2-1-2.8-5.3-2.3-7.9.6-3 1.9-3.2 3.7-5.6 2.4-3.2 3.7-7.4 4.1-11.3" fill="none" stroke="#588791" stroke-width="1.639"></path>
+                        </g>
                     </svg>
                   ) : (
                     <div className="relative flex h-[80px] w-full items-center justify-center overflow-hidden">
