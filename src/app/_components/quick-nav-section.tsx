@@ -50,23 +50,24 @@ function FaPillsIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 function HandHoldingMedicalIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <div className="relative" {...props}>
-      <HandHelping className="h-full w-full" />
-      <div 
-        className="absolute text-current"
-        style={{ 
-          fontSize: '40%', 
-          fontWeight: 'bold', 
-          top: '15%', 
-          left: '55%'
-        }}
-      >
-        +
+    return (
+      <div className="relative" style={{ width: props.width, height: props.height }}>
+        <HandHelping {...props} />
+        <div 
+          className="absolute text-current"
+          style={{ 
+            fontSize: '40%', 
+            fontWeight: 'bold', 
+            top: '15%', 
+            left: '55%',
+            lineHeight: 1,
+          }}
+        >
+          +
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
 
 export function QuickNavSection() {
