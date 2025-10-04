@@ -1,6 +1,6 @@
 export function WelcomeSection() {
   return (
-    <section id="welcome" className="py-16 sm:py-24">
+    <section id="welcome" className="pt-8 pb-12 sm:pt-12 sm:pb-16">
       <div className="container">
         <div className="mx-auto max-w-5xl text-center">
           <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl sm:whitespace-nowrap text-primary">
