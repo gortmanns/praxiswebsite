@@ -14,13 +14,13 @@ export function Header() {
     <>
       <div className="bg-primary text-primary-foreground">
         <div className="container mx-auto flex h-10 items-center justify-end gap-6 px-4 text-sm">
-          <a href="tel:+41441234567" className="flex items-center gap-2 text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80">
+          <a href="tel:+41313162600" className="flex items-center gap-2 text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80">
             <Phone size={16} />
-            <span>+41 44 123 45 67</span>
+            <span>+41 31 316 26 00</span>
           </a>
-          <a href="mailto:info@praxis-im-ring.ch" className="flex items-center gap-2 text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80">
+          <a href="mailto:empfang@praxiszentrum-im-ring.ch" className="flex items-center gap-2 text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80">
             <Mail size={16} />
-            <span>info@praxis-im-ring.ch</span>
+            <span>empfang@praxiszentrum-im-ring.ch</span>
           </a>
         </div>
       </div>
@@ -74,13 +74,13 @@ export function Header() {
                       />
                     </Link>
                     <div className="mb-6 space-y-4 text-sm">
-                      <a href="tel:+41441234567" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary">
+                      <a href="tel:+41313162600" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary">
                         <Phone size={16} />
-                        <span>+41 44 123 45 67</span>
+                        <span>+41 31 316 26 00</span>
                       </a>
-                      <a href="mailto:info@praxis-im-ring.ch" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary">
+                      <a href="mailto:empfang@praxiszentrum-im-ring.ch" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary">
                         <Mail size={16} />
-                        <span>info@praxis-im-ring.ch</span>
+                        <span>empfang@praxiszentrum-im-ring.ch</span>
                       </a>
                     </div>
                     <nav className="flex flex-col space-y-4">
