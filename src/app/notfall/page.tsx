@@ -5,7 +5,6 @@ import { Phone } from 'lucide-react';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Link from 'next/link';
-import { MedphoneLogo } from '@/components/logos/medphone-logo';
 
 export default function NotfallPage() {
   const ambulanceImage = PlaceHolderImages.find((p) => p.id === 'rettungswagen');
@@ -51,9 +50,18 @@ export default function NotfallPage() {
 
                 <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
                   <div className='mx-auto w-full max-w-lg'>
+                  {medphoneImage && (
                     <Link href="https://www.medphone.ch/home" target="_blank" rel="noopener noreferrer">
-                       <MedphoneLogo className="h-auto w-full" />
+                      <Image
+                        src={medphoneImage.imageUrl}
+                        alt={medphoneImage.description}
+                        width={1024}
+                        height={241}
+                        className="h-auto w-full"
+                        data-ai-hint={medphoneImage.imageHint}
+                      />
                     </Link>
+                  )}
                   </div>
                   <div className="space-y-4">
                       <p className='text-2xl lg:text-3xl xl:text-5xl'>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
