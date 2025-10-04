@@ -1,4 +1,3 @@
-
 'use client';
 
 import { cn } from '@/lib/utils';
@@ -55,9 +54,9 @@ const days = [
   },
 ];
 
-const slotHeightInRem = 4; // h-16
 const totalStartMinutes = timeToMinutes('08:00');
 const totalEndMinutes = timeToMinutes('18:00');
+const totalDurationMinutes = totalEndMinutes - totalStartMinutes;
 
 type TimeBlock = {
   start: string;
@@ -76,13 +75,6 @@ type GroupedBlock = {
 };
 
 export function OpeningHoursCalendar() {
-    const timeLabels = useMemo(() => {
-        return timeSlots.slice(0, -1).map((startTime, index) => {
-          const endTime = timeSlots[index + 1];
-          return { startTime, endTime };
-        });
-    }, []);
-
     const groupedBlocks = useMemo(() => {
         const dailyBlocks: TimeBlock[][] = days.map(day => {
             const blocks: TimeBlock[] = [];
@@ -134,75 +126,78 @@ export function OpeningHoursCalendar() {
     }, []);
 
     return (
-        <div className="relative w-full border-t border-border">
-          <div className="grid grid-cols-[auto_repeat(5,1fr)]">
-            {/* Header Row */}
-            <div className="sticky top-0 z-10 border-b border-r border-border bg-muted"></div>
-            {days.map((day, dayIndex) => (
-                <div key={day.name} className={cn(
-                    "sticky top-0 z-10 flex h-12 items-center justify-center border-b border-l-0 border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base",
-                    dayIndex < days.length -1 ? "border-r" : ""
-                )}>
-                    {day.name}
-                </div>
-            ))}
+        <div className="grid grid-cols-[auto_repeat(5,1fr)] w-full border-t border-border">
+          {/* Header Row */}
+          <div className="sticky top-0 z-10 border-b border-r border-border bg-muted"></div>
+          {days.map((day, dayIndex) => (
+              <div key={day.name} className={cn(
+                  "sticky top-0 z-10 flex h-12 items-center justify-center border-b border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base",
+                  dayIndex < days.length -1 ? "border-r" : ""
+              )}>
+                  {day.name}
+              </div>
+          ))}
 
-            {/* Time Axis & Content Grid */}
-            {timeLabels.map((slot, timeIndex) => (
-                <div key={`row-${timeIndex}`} className="contents">
-                     {/* Time Axis Cell */}
-                    <div
-                        className="flex h-16 items-center justify-center border-b border-r border-border bg-muted px-2 text-center text-xs text-muted-foreground"
-                    >
-                        {slot.startTime} - {slot.endTime}
-                    </div>
+          {/* Time Axis Column */}
+          <div className="row-start-2 border-r border-border bg-muted">
+              {timeSlots.slice(0, -1).map((startTime, index) => (
+                  <div key={startTime} className="flex h-16 items-center justify-center text-center text-xs text-muted-foreground border-b border-border px-2">
+                      {startTime} - {timeSlots[index + 1]}
+                  </div>
+              ))}
+          </div>
+          
+          {/* Content Area */}
+          <div className="col-start-2 col-span-5 row-start-2 relative">
+              {/* Day cells for grid lines */}
+              {Array.from({ length: 5 }).map((_, dayIndex) => (
+                  <div key={`col-${dayIndex}`} className={cn(
+                      "absolute top-0 h-full",
+                      dayIndex < 4 ? "border-r border-border" : ""
+                  )}
+                  style={{ left: `${dayIndex * 20}%`, width: '20%' }}
+                  ></div>
+              ))}
+               {Array.from({ length: timeSlots.length - 1 }).map((_, timeIndex) => (
+                  <div key={`row-line-${timeIndex}`} className="h-16 border-b border-border"></div>
+              ))}
+              
+              {/* Grouped Blocks */}
+              {groupedBlocks.map((block, index) => {
+                  const startMinutes = timeToMinutes(block.start);
+                  const endMinutes = timeToMinutes(block.end);
+                  const durationMinutes = endMinutes - startMinutes;
+                  
+                  const top = ((startMinutes - totalStartMinutes) / totalDurationMinutes) * 100;
+                  const height = (durationMinutes / totalDurationMinutes) * 100;
+                  const left = block.startDay * 20;
+                  const width = (block.endDay - block.startDay + 1) * 20;
 
-                    {/* Day cells (empty for grid structure) */}
-                    {days.map((_, dayIndex) => (
-                         <div key={`cell-${timeIndex}-${dayIndex}`} className={cn(
-                            "border-b",
-                            dayIndex < days.length - 1 ? "border-r" : ""
-                         )}></div>
-                    ))}
-                </div>
-            ))}
-             
-            {/* Overlay for grouped blocks */}
-            <div className="absolute col-span-5 col-start-2 row-span-full row-start-2 h-full w-full">
-                {groupedBlocks.map((block, index) => {
-                    const startMinutes = timeToMinutes(block.start);
-                    const endMinutes = timeToMinutes(block.end);
-                    const durationMinutes = endMinutes - startMinutes;
-                    
-                    const top = ((startMinutes - totalStartMinutes) / 60) * slotHeightInRem;
-                    const height = (durationMinutes / 60) * slotHeightInRem;
-
-                    return (
-                        <div
-                            key={index}
-                            className={cn(
-                                "absolute flex items-center justify-center p-2",
-                                block.isOpen ? 'bg-background' : 'bg-secondary'
-                            )}
-                            style={{
-                                top: `${top}rem`,
-                                height: `${height}rem`,
-                                left: `${block.startDay * 20}%`,
-                                width: `${(block.endDay - block.startDay + 1) * 20}%`, 
-                            }}
-                        >
-                            {block.label && (
-                                <span className={cn(
-                                    "font-semibold text-lg",
-                                    block.isOpen ? "text-foreground" : "text-secondary-foreground"
-                                )}>
-                                    {block.label}
-                                </span>
-                            )}
-                        </div>
-                    );
-                })}
-            </div>
+                  return (
+                      <div
+                          key={index}
+                          className={cn(
+                              "absolute flex items-center justify-center p-2",
+                              block.isOpen ? 'bg-background' : 'bg-secondary'
+                          )}
+                          style={{
+                              top: `${top}%`,
+                              height: `${height}%`,
+                              left: `${left}%`,
+                              width: `${width}%`, 
+                          }}
+                      >
+                          {block.label && (
+                              <span className={cn(
+                                  "font-semibold text-lg",
+                                  block.isOpen ? "text-foreground" : "text-secondary-foreground"
+                              )}>
+                                  {block.label}
+                              </span>
+                          )}
+                      </div>
+                  );
+              })}
           </div>
         </div>
       );
