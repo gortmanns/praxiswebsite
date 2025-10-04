@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
+import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
 
 export function CooperationPartnersSection() {
   const partners = [
@@ -88,10 +89,7 @@ export function CooperationPartnersSection() {
           })}
           <Card className="flex h-32 items-center justify-center p-6 text-center text-special-green">
             <CardContent className="p-0">
-              <p className="font-bold text-2xl">Dr. med. Agnieszka Slezak</p>
-              <p className="text-lg text-muted-foreground">
-                Fachärztin für Neurologie
-              </p>
+              <AgnieszkaSlezakLogo className="h-16 w-auto" />
             </CardContent>
           </Card>
         </div>
