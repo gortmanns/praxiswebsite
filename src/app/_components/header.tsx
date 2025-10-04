@@ -10,8 +10,7 @@ export function Header() {
     { href: '/team', label: 'Team' },
     { href: '/leistungen', label: 'Leistungen' },
     { href: '/medikamente', label: 'Medikamente' },
-    { href: '/notfall', label: 'Notfall' },
-    { href: '#contact', label: 'Kontakt' },
+    { href: '/notfall', label: 'NOTFALL' },
   ];
 
   return (
