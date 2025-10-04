@@ -1,8 +1,9 @@
 
 'use client';
 
+import React from 'react';
 import { cn } from '@/lib/utils';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 const timeToMinutes = (time: string) => {
     const [hours, minutes] = time.split(':').map(Number);
@@ -16,8 +17,9 @@ const minutesToTime = (minutes: number) => {
 };
 
 const timeSlots = [
-  '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00',
-  '16:00', '17:00', '18:00',
+  '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+  '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30',
+  '16:00', '16:30', '17:00', '17:30', '18:00'
 ];
 
 const days = [
@@ -91,14 +93,24 @@ export function PhoneHoursCalendar() {
 
     const timeAxisSlots = useMemo(() => {
         const slots = [];
-        for (let i = 0; i < timeSlots.length - 1; i++) {
-            slots.push({
-                startTime: timeSlots[i],
-                endTime: timeSlots[i+1],
-            });
+        for (let i = 0; i < timeSlots.length - 1; i += 2) {
+             if (timeSlots[i+2]) {
+                slots.push({
+                    startTime: timeSlots[i],
+                    endTime: timeSlots[i+2],
+                });
+             } else if (timeSlots[i+1]) {
+                slots.push({
+                    startTime: timeSlots[i],
+                    endTime: timeSlots[i+1]
+                })
+             }
         }
         return slots;
     }, []);
+
+    const fullHourSlots = timeSlots.filter(t => t.endsWith(':00')).slice(0, -1);
+
 
     return (
         <div className="grid grid-cols-[auto_repeat(5,minmax(0,1fr))] w-full border-t border-r border-border">
@@ -111,44 +123,47 @@ export function PhoneHoursCalendar() {
             ))}
 
           {/* Time Axis & Content */}
-          {timeAxisSlots.map(({startTime, endTime}) => (
+          {fullHourSlots.map((startTime, hourIndex) => (
               <React.Fragment key={startTime}>
-                <div className="row-span-1 flex items-center justify-center text-center text-xs text-muted-foreground border-b border-l border-border px-2 font-bold">
-                   {startTime} - {endTime}
+                <div className="row-span-2 flex items-center justify-center text-center text-xs text-muted-foreground border-b border-l border-border px-2 font-bold">
+                   {startTime} - {fullHourSlots[hourIndex+1] || '18:00'}
                 </div>
-                {dailyBlocks.map((dayBlocks, dayIndex) => {
-                    const gridCells = [];
-                    // Create cells for each 30-minute interval within the hour
-                    for (let minuteOffset = 0; minuteOffset < 60; minuteOffset += 30) {
-                        const currentMinutes = timeToMinutes(startTime) + minuteOffset;
-                        
+                {[':00', ':30'].map((minute, minuteIndex) => {
+                    const currentTime = `${startTime.split(':')[0]}${minute}`;
+                    return dailyBlocks.map((dayBlocks, dayIndex) => {
+                        const currentMinutes = timeToMinutes(currentTime);
+
                         const currentBlock = dayBlocks.find(block => {
                             const blockStartMinutes = timeToMinutes(block.start);
                             const blockEndMinutes = timeToMinutes(block.end);
                             return currentMinutes >= blockStartMinutes && currentMinutes < blockEndMinutes;
                         });
-
-                        const isFirstIntervalOfBlock = currentBlock && timeToMinutes(currentBlock.start) === currentMinutes;
-                        if (!currentBlock || !isFirstIntervalOfBlock) {
-                            gridCells.push(<div key={`${dayIndex}-${startTime}-${minuteOffset}`} className="h-1/2 border-b border-l border-border"></div>);
-                            continue;
+                        
+                        if (!currentBlock) {
+                             return <div key={`${dayIndex}-${currentTime}`} className="h-full border-b border-l border-border"></div>;
                         }
 
+                        const isFirstIntervalOfBlock = timeToMinutes(currentBlock.start) === currentMinutes;
+                        
+                        if (!isFirstIntervalOfBlock) {
+                            return null;
+                        }
+                        
                         const startMinutes = timeToMinutes(currentBlock.start);
                         const endMinutes = timeToMinutes(currentBlock.end);
                         const durationMinutes = endMinutes - startMinutes;
                         const rowSpan = durationMinutes / 30;
 
-                        gridCells.push(
-                            <div
-                                key={`${dayIndex}-${startTime}-${minuteOffset}`}
+                        return (
+                             <div
+                                key={`${dayIndex}-${currentTime}`}
                                 className={cn(
                                     "flex items-center justify-center p-1 border-b border-l border-border",
                                     currentBlock.isOpen ? 'bg-primary/20' : 'bg-muted'
                                 )}
                                 style={{ 
-                                    gridRow: `span ${rowSpan}`,
-                                    height: `${rowSpan * 50}%` // This is a bit of a hack for height, might need adjustment
+                                    gridRow: `${minuteIndex + 1 + (hourIndex * 2)} / span ${rowSpan}`,
+                                    gridColumn: `${dayIndex + 2}`
                                  }}
                             >
                                 <span className={cn(
@@ -159,14 +174,10 @@ export function PhoneHoursCalendar() {
                                 </span>
                             </div>
                         );
-                    }
-                    
-                    // The main div for the day column in this time slot now just acts as a container
-                    return <div key={`${dayIndex}-${startTime}`} className="h-full flex flex-col">{gridCells}</div>;
+                    });
                 })}
               </React.Fragment>
           ))}
         </div>
       );
 }
-

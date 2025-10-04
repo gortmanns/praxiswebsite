@@ -1,6 +1,6 @@
-
 'use client';
 
+import React from 'react';
 import { cn } from '@/lib/utils';
 import { useMemo } from 'react';
 
@@ -113,9 +113,14 @@ export function OpeningHoursCalendar() {
                         return startHour >= blockStartHour && startHour < blockEndHour;
                     });
                     
-                    const isFirstHourOfBlock = currentBlock && parseInt(currentBlock.start.split(':')[0]) === startHour;
-                    if (!currentBlock || !isFirstHourOfBlock) {
+                    if (!currentBlock) {
                         return <div key={`${dayIndex}-${startTime}`} className="h-full border-b border-l border-border"></div>;
+                    }
+
+                    const isFirstHourOfBlock = parseInt(currentBlock.start.split(':')[0]) === startHour;
+
+                    if (!isFirstHourOfBlock) {
+                        return null;
                     }
 
                     const startMinutes = timeToMinutes(currentBlock.start);
