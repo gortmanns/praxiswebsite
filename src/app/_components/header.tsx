@@ -1,4 +1,3 @@
-import { Stethoscope } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
@@ -8,8 +7,7 @@ export function Header() {
       <div className="container flex h-14 items-center">
         <div className="mr-auto flex items-center">
           <Link href="/" className="flex items-center gap-2">
-            <Stethoscope className="h-6 w-6 text-primary" />
-            <span className="font-bold">Praxis Online</span>
+            <span className="text-xl font-bold text-primary">Praxiszentrum im Rind</span>
           </Link>
         </div>
         <nav className="hidden items-center space-x-6 md:flex">

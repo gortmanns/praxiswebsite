@@ -2,9 +2,9 @@
   "placeholderImages": [
     {
       "id": "hero-background",
-      "description": "A modern, clean doctor's office reception area with green plants.",
-      "imageUrl": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtZWRpY2FsJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3NTk1Njc4NTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "medical background"
+      "description": "Modern and bright medical practice waiting room with comfortable chairs.",
+      "imageUrl": "https://images.unsplash.com/photo-1579684385127-6c17935a4a58?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyMHx8bWVkaWNhbCUyMHByYWN0aWNlfGVufDB8fHx8MTc2MjAwNTY1OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "medical practice"
     },
     {
       "id": "dr-anna-meier",

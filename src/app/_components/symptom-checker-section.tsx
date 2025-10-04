@@ -2,7 +2,7 @@ import { SymptomCheckerForm } from './symptom-checker-form';
 
 export function SymptomCheckerSection() {
   return (
-    <section id="symptoms" className="py-16 sm:py-24 bg-card">
+    <section id="symptoms" className="py-16 sm:py-24 bg-muted/50">
       <div className="container">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">
