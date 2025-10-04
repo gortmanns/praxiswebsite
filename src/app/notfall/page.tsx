@@ -24,13 +24,12 @@ export default function NotfallPage() {
                 
                 <div className="rounded-lg border border-destructive p-6">
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
-                    <div className="flex w-full max-w-sm justify-center items-center mx-auto">
+                    <div className="relative w-full max-w-sm mx-auto aspect-[16/9]">
                         <Image
                           src={ambulanceImage.imageUrl}
                           alt={ambulanceImage.description}
-                          width={1000}
-                          height={563}
-                          className="h-auto w-full object-contain"
+                          fill
+                          className="object-contain"
                           data-ai-hint={ambulanceImage.imageHint}
                         />
                     </div>
@@ -47,14 +46,13 @@ export default function NotfallPage() {
                 </div>
 
                 <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
-                  <div className='flex w-full max-w-sm justify-center items-center mx-auto'>
-                    <Link href="https://www.medphone.ch/home" target="_blank" rel="noopener noreferrer" className="w-full">
+                  <div className='relative w-full max-w-sm mx-auto aspect-[16/9]'>
+                    <Link href="https://www.medphone.ch/home" target="_blank" rel="noopener noreferrer" className="w-full h-full">
                       <Image
                           src={medphoneImage.imageUrl}
                           alt={medphoneImage.description}
-                          width={1000}
-                          height={563}
-                          className="h-auto w-full object-contain"
+                          fill
+                          className="object-contain"
                           data-ai-hint={medphoneImage.imageHint}
                         />
                     </Link>
