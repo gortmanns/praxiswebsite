@@ -57,7 +57,7 @@ export function CooperationPartnersSection() {
                               <path d="M35.4 4.4c.4 3.8 1.7 8 4.1 11.3 1.8 2.4 3.1 2.6 3.7 5.6.5 2.5-.3 6.9-2.3 7.9-2.3 1.2-4.6 1-6.8-.4-1.4-1.2-2.4-1.4-3.6-1.3-1.3 0-2.3.2-3.6 1.3-2.2 1.5-4.4 1.6-6.8.4-2-1-2.8-5.3-2.3-7.9.6-3 1.9-3.2 3.7-5.6 2.4-3.2 3.7-7.4 4.1-11.3" fill="none" stroke="#588791" strokeWidth="1.639"></path>
                           </g>
                       </svg>
-                      <span className="font-bold text-card-foreground">orthozentrum-bern</span>
+                      <span className="font-bold text-card-foreground" style={{ color: '#588791' }}>orthozentrum-bern</span>
                     </div>
                   ) : (
                     <div className="relative flex h-[80px] w-full items-center justify-center overflow-hidden">
