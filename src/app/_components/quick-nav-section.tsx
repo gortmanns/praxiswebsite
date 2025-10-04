@@ -35,17 +35,16 @@ function CustomPillsIcon(props: React.SVGProps<SVGSVGElement>) {
       viewBox="0 0 640 512"
       fill="currentColor"
       {...props}>
-        {/* Längliche Pille */}
-        <path d="M479.13,32.87A143.2,143.2,0,0,0,320,32a143.2,143.2,0,0,0-159.13,112.87,143.2,143.2,0,0,0,0,224.26A143.2,143.2,0,0,0,320,480a143.2,143.2,0,0,0,159.13-112.87,143.2,143.2,0,0,0,0-224.26ZM320,448a111.3,111.3,0,0,1-124.2-88H320V64h-.3A111.32,111.32,0,0,1,320,64a111.3,111.3,0,0,1,124.2,88H320Z" stroke="currentColor" strokeWidth="16" fill="none"/>
-        <path d="M320 64H195.7C195.7 64 320 64 320 64V360H195.8A111.31 111.31 0 0 1 195.8 88H320Z" />
-
-        {/* Runde Pille */}
-        <circle cx="448" cy="352" r="96"/>
-        <line x1="400" y1="304" x2="496" y2="400" stroke="white" strokeWidth="20" strokeLinecap="round"/>
+        {/* Längliche Pille: linke Hälfte (hohl), rechte Hälfte (gefüllt) */}
+        <path d="M320,64.3C223.4,64.3,144,143.7,144,240.3S223.4,416.3,320,416.3c48.2,0,92-19.3,123.8-50.7" fill="none" stroke="currentColor" strokeWidth="32" />
+        <path d="M320,64.3c96.6,0,176,79.4,176,176s-79.4,176-176,176" fill="currentColor" />
+        
+        {/* Runde Pille mit Bruchrille */}
+        <circle cx="448" cy="352" r="120" fill="currentColor" />
+        <line x1="400" y1="280" x2="496" y2="424" stroke="white" strokeWidth="24" strokeLinecap="round" transform="rotate(10, 448, 352)" />
     </svg>
   );
 }
-
 
 // Keep FilePlus as it's used in the navItems array for 'Leistungen'
 function FilePlus(props: React.SVGProps<SVGSVGElement>) {
