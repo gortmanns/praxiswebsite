@@ -94,7 +94,7 @@ export function OpeningHoursCalendar() {
           <div key={day.name} className="flex flex-col text-center">
             <div className="h-12 border-b flex items-center justify-center font-bold text-sm sm:text-base">{day.name}</div>
             <div className="relative border-l">
-              {calendarGrid.map((slot, slotIndex) => (
+              {calendarGrid.map((slot) => (
                 <div
                   key={`${day.name}-${slot.startTime}`}
                   className={cn(
