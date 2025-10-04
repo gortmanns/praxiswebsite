@@ -3,13 +3,25 @@ import Link from 'next/link';
 import {
   Users,
   AlertTriangle,
+  UsersRound,
+  UserCog,
 } from 'lucide-react';
 
 const navItems = [
   {
     href: '/team',
-    label: 'Team',
+    label: 'Team (1)',
     Icon: Users,
+  },
+  {
+    href: '/team',
+    label: 'Team (2)',
+    Icon: UsersRound,
+  },
+  {
+    href: '/team',
+    label: 'Team (3)',
+    Icon: UserCog,
   },
   {
     href: '/leistungen',
@@ -73,11 +85,31 @@ function FilePlus(props: React.SVGProps<SVGSVGElement>) {
 
 
 export function QuickNavSection() {
+  const teamItems = navItems.filter(item => item.href === '/team');
+  const otherItems = navItems.filter(item => item.href !== '/team');
   return (
     <section id="quick-nav" className="bg-background">
       <div className="container py-16 sm:py-24">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {navItems.map((item) => (
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+            <h3 className="font-headline text-2xl font-bold tracking-tight">Icon-Vorschläge für "Team"</h3>
+            <p className="mt-2 text-muted-foreground">Wählen Sie ein Icon aus. Ich werde die anderen danach entfernen.</p>
+        </div>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {teamItems.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="group flex flex-col items-center justify-center gap-4 rounded-lg bg-secondary p-8 text-secondary-foreground transition-all hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            >
+              <item.Icon className="h-16 w-16 text-secondary-foreground" />
+              <span className="text-lg font-bold uppercase tracking-wider text-secondary-foreground">
+                {item.label}
+              </span>
+            </Link>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 mt-16">
+          {otherItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
