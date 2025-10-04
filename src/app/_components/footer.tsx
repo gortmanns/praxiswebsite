@@ -14,7 +14,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-primary text-primary-foreground">
+    <footer className="bg-accent-foreground text-accent">
       <div className="container py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {/* Logo und Info */}
@@ -28,20 +28,20 @@ export function Footer() {
                 className="h-auto w-auto"
               />
             </Link>
-            <p className="text-sm text-primary-foreground/80">
+            <p className="text-sm text-accent/80">
               Ihr Gesundheitszentrum in Hinterkappelen.
             </p>
           </div>
 
           {/* Navigation */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold uppercase">Navigation</h3>
+            <h3 className="text-lg font-bold uppercase text-accent">Navigation</h3>
             <ul className="space-y-2">
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-primary-foreground/80 transition-colors hover:text-primary-foreground"
+                    className="text-sm text-accent/80 transition-colors hover:text-accent"
                   >
                     {link.label}
                   </Link>
@@ -52,8 +52,8 @@ export function Footer() {
 
           {/* Kontakt */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold uppercase">Kontakt</h3>
-            <div className="space-y-2 text-sm text-primary-foreground/80">
+            <h3 className="text-lg font-bold uppercase text-accent">Kontakt</h3>
+            <div className="space-y-2 text-sm text-accent/80">
               <p className="flex items-start gap-3">
                 <MapPin size={16} className="mt-1 flex-shrink-0" />
                 <span>Kappelenring 6, 3023 Hinterkappelen</span>
@@ -62,7 +62,7 @@ export function Footer() {
                 <Phone size={16} className="flex-shrink-0" />
                 <a
                   href="tel:0313162600"
-                  className="transition-colors hover:text-primary-foreground"
+                  className="transition-colors hover:text-accent"
                 >
                   031 316 26 00
                 </a>
@@ -71,7 +71,7 @@ export function Footer() {
                 <Mail size={16} className="flex-shrink-0" />
                 <a
                   href="mailto:empfang@praxiszentrum-im-ring.ch"
-                  className="break-all transition-colors hover:text-primary-foreground"
+                  className="break-all transition-colors hover:text-accent"
                 >
                   empfang@praxiszentrum-im-ring.ch
                 </a>
@@ -80,9 +80,9 @@ export function Footer() {
           </div>
         </div>
       </div>
-      <div className="bg-primary/90">
+      <div className="bg-foreground/10">
         <div className="container flex h-14 items-center justify-center">
-          <p className="text-sm text-primary-foreground/70">
+          <p className="text-sm text-accent/70">
             &copy; {year} Praxiszentrum im Ring. Alle Rechte vorbehalten.
           </p>
         </div>
