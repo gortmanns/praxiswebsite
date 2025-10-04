@@ -49,7 +49,7 @@ export function CooperationPartnersSection() {
               <Card className="flex min-h-[144px] items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
                 <CardContent className="flex w-full items-center justify-center p-0">
                   {partner.isSvg ? (
-                    <div className="flex items-center justify-center gap-4">
+                    <div className="flex items-center justify-center gap-2">
                       <svg preserveAspectRatio="xMidYMid meet" data-bbox="3.622 3.9 53.656 48.7" viewBox="0 0 59.9 55.5" xmlns="http://www.w3.org/2000/svg" data-type="ugc" role="presentation" aria-hidden="true" className="h-16 w-auto flex-shrink-0">
                           <g>
                               <path d="M46.7 7.8S44.5 3.9 40 3.9H20.8s-4.4 0-6.7 3.9L4.6 24.4s-2.2 3.9 0 7.7l9.6 16.6s2.2 3.9 6.7 3.9H40s4.4 0 6.7-3.9l9.6-16.6s2.2-3.9 0-7.7L46.7 7.8z" fill="none" stroke="#588791" strokeWidth="1.639"></path>
