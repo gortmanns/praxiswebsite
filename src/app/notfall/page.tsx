@@ -37,7 +37,7 @@ export default function NotfallPage() {
                         Bei einem lebensbedrohlichen Notfall alarmieren Sie bitte unverzüglich den Rettungsdienst unter der Rufnummer
                       </p>
                       <div className="text-2xl lg:text-3xl xl:text-5xl">
-                        <a href="tel:144" className="flex items-center gap-3 font-bold transition-colors hover:text-foreground/80">
+                        <a href="tel:144" className="flex items-center gap-3 font-bold text-destructive transition-colors hover:text-destructive/80">
                             <Phone className="h-8 w-8 flex-shrink-0 lg:h-10 lg:w-10 xl:h-12 xl:w-12" />
                             <strong>144</strong>
                         </a>
@@ -49,7 +49,6 @@ export default function NotfallPage() {
                 <div className="border border-border p-6">
                   <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
                     <div className='mx-auto w-full max-w-lg'>
-                      <Link href="https://www.medphone.ch/home" target="_blank" rel="noopener noreferrer">
                         <Image
                           src="http://www.praxiszentrum-im-ring.ch//images/2024/10/13/medphone_logo.png"
                           alt="Medphone Logo"
@@ -58,7 +57,6 @@ export default function NotfallPage() {
                           className="h-auto w-full"
                           data-ai-hint="logo"
                         />
-                      </Link>
                     </div>
                     <div className="space-y-4 text-left">
                         <p className='text-2xl lg:text-3xl xl:text-5xl'>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
@@ -94,10 +92,10 @@ export default function NotfallPage() {
                         Bei Vergiftungen - aber nur wenn der Patient wach und ansprechbar und nicht in akuter Lebensgefahr ist - erreichen Sie den Vergiftungsnotruf unter der Nummer
                       </p>
                       <div className="text-2xl lg:text-3xl xl:text-5xl">
-                        <a href="tel:145" className="flex items-center gap-3 font-bold text-primary transition-colors hover:text-primary/80">
-                          <Phone className="h-8 w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 flex-shrink-0" />
-                          <strong>145</strong>
-                        </a>
+                          <a href="tel:145" className="flex items-center gap-3">
+                              <Phone className="h-8 w-8 flex-shrink-0 lg:h-10 lg:w-10 xl:h-12 xl:w-12" />
+                              <strong className="font-bold">145</strong>
+                          </a>
                       </div>
                     </div>
                   </div>
