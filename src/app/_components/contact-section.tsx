@@ -30,10 +30,13 @@ export function ContactSection() {
                 <Mail size={16} />
                 <a href="mailto:empfang@praxiszentrum-im-ring.ch" className="hover:text-primary">empfang@praxiszentrum-im-ring.ch</a>
               </p>
-               <p className="flex items-center justify-center gap-2">
-                <ShieldCheck size={16} className="text-primary"/>
-                <span>HIN-Adresse: <a href="mailto:praxiszentrum-im-ring@hin.ch" className="hover:text-primary">praxiszentrum-im-ring@hin.ch</a></span>
-              </p>
+               <div className="flex flex-col items-center justify-center gap-2 text-center">
+                <p className="flex items-center gap-2">
+                    <ShieldCheck size={16} className="text-primary flex-shrink-0"/>
+                    <span>HIN-Adresse: <a href="mailto:praxiszentrum-im-ring@hin.ch" className="hover:text-primary">praxiszentrum-im-ring@hin.ch</a></span>
+                </p>
+                <p className="text-xs text-muted-foreground/80">(Für die sichere Übermittlung medizinischer Unterlagen)</p>
+              </div>
                <p className="flex items-center justify-center gap-2 pt-2 text-foreground">
                 <Phone size={16} className="text-primary"/>
                 <strong>Medikamenten-Hotline: <a href="tel:0313162666" className="hover:text-primary">031 316 26 66</a></strong>
