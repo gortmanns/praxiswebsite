@@ -35,6 +35,12 @@
       "description": "Ambulance from Bern.",
       "imageUrl": "http://www.praxiszentrum-im-ring.ch//images/2024/10/13/rtw-bern.jpg",
       "imageHint": "ambulance"
+    },
+    {
+      "id": "medphone-logo",
+      "description": "Medphone Logo.",
+      "imageUrl": "http://www.praxiszentrum-im-ring.ch//images/2024/10/13/medphone_logo.png",
+      "imageHint": "logo"
     }
   ]
 }

@@ -7,6 +7,8 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function NotfallPage() {
   const ambulanceImage = PlaceHolderImages.find((p) => p.id === 'rettungswagen');
+  const medphoneImage = PlaceHolderImages.find((p) => p.id === 'medphone-logo');
+  
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -23,9 +25,9 @@ export default function NotfallPage() {
                 </p>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-12">
                 
-                <div className="rounded-lg border border-destructive bg-destructive/10 p-6">
+                <div className="rounded-lg border border-destructive p-6">
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
                     {ambulanceImage && (
                       <div className="relative aspect-video w-full overflow-hidden rounded-md">
@@ -33,37 +35,48 @@ export default function NotfallPage() {
                           src={ambulanceImage.imageUrl}
                           alt={ambulanceImage.description}
                           fill
-                          className="object-cover"
+                          className="object-contain"
                           data-ai-hint={ambulanceImage.imageHint}
                         />
                       </div>
                     )}
-                    <div className="space-y-4">
-                      <h4 className="flex items-center gap-2 font-bold text-lg text-destructive">
+                    <div className="space-y-4 text-center">
+                      <h4 className="flex items-center justify-center gap-2 font-bold text-lg text-destructive">
                         <AlertTriangle />
                         Bei lebensbedrohlichen Notfällen
                       </h4>
                       <p className="text-destructive/90">
                         Bei einem lebensbedrohlichen Notfall alarmieren Sie bitte unverzüglich den Rettungsdienst unter der Rufnummer
                       </p>
-                      <a href="tel:144" className="inline-flex items-center gap-2 font-bold text-2xl text-destructive transition-colors hover:text-destructive/80">
-                        <Phone className="h-6 w-6" />
+                      <a href="tel:144" className="inline-flex w-full justify-center items-center gap-2 text-6xl font-bold text-destructive transition-colors hover:text-destructive/80">
+                        <Phone className="h-10 w-10" />
                         144
                       </a>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-4 rounded-lg border border-border p-6">
-                  <h4 className="font-bold text-lg text-foreground">Ärztlicher Notfalldienst (keine Lebensgefahr)</h4>
-                  <p>
-                    Wenden Sie sich telefonisch an die kantonale Notfallnummer.
-                  </p>
-                  <a href="tel:0900576747" className="inline-flex items-center gap-2 font-bold text-primary transition-colors hover:text-primary/80">
-                    <Phone className="h-5 w-5" />
-                    Medphone: 0900 57 67 47 (kostenpflichtig)
-                  </a>
+                <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
+                    {medphoneImage && (
+                        <div className="relative aspect-video w-full overflow-hidden rounded-md">
+                        <Image
+                          src={medphoneImage.imageUrl}
+                          alt={medphoneImage.description}
+                          fill
+                          className="object-contain"
+                          data-ai-hint={medphoneImage.imageHint}
+                        />
+                      </div>
+                    )}
+                    <div className="space-y-4">
+                        <p>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
+                        <div className='space-y-2'>
+                            <p><strong className='font-bold'>0900 - 57 67 47</strong> (3.23 CHF / min) nicht über Prepaid Handy</p>
+                            <p><strong className='font-bold'>0900 - 57 67 48</strong> (3.50 CHF / min) für Anruf über Prepaid Handy</p>
+                        </div>
+                    </div>
                 </div>
+
 
                 <div className="space-y-4 rounded-lg border border-border p-6">
                   <h4 className="font-bold text-lg text-foreground">Bei Vergiftungen</h4>
