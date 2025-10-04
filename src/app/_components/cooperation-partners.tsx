@@ -92,8 +92,8 @@ export function CooperationPartnersSection() {
               rel="noopener noreferrer"
               className="group"
             >
-              <Card className="flex h-full items-center justify-center p-6 transition-all group-hover:shadow-lg group-hover:-translate-y-1">
-                <CardContent className="p-0 flex items-center justify-center">
+              <Card className="flex h-full items-center p-6 transition-all group-hover:shadow-lg group-hover:-translate-y-1">
+                <CardContent className="p-0 flex items-center">
                   {partner.isSvg ? (
                     <ZahnradIcon />
                   ) : (
