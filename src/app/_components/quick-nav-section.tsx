@@ -6,6 +6,7 @@ import {
   HandHelping,
   Pill,
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const navItems = [
   {
@@ -40,17 +41,33 @@ export function QuickNavSection() {
             <Link
               key={item.href}
               href={item.href}
-              className="group rounded-lg bg-secondary text-secondary-foreground shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              className="group h-32 w-full rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               style={{ perspective: '1000px' }}
             >
               <div
-                className="flex h-full w-full flex-col items-center justify-center gap-4 rounded-lg p-6 transition-all duration-500 group-hover:bg-primary group-hover:text-primary-foreground"
+                className="relative h-full w-full rounded-lg transition-transform duration-700 group-hover:[transform:rotateY(180deg)]"
                 style={{ transformStyle: 'preserve-3d' }}
               >
-                <item.Icon className="h-14 w-14 transition-colors" />
-                <span className="text-xl font-bold uppercase tracking-wider">
-                  {item.label}
-                </span>
+                {/* Front face */}
+                <div
+                  className="absolute flex h-full w-full flex-col items-center justify-center gap-4 rounded-lg bg-secondary p-6 text-secondary-foreground"
+                  style={{ backfaceVisibility: 'hidden' }}
+                >
+                  <item.Icon className="h-14 w-14" />
+                  <span className="text-xl font-bold uppercase tracking-wider">
+                    {item.label}
+                  </span>
+                </div>
+                {/* Back face */}
+                <div
+                  className="absolute flex h-full w-full flex-col items-center justify-center gap-4 rounded-lg bg-primary p-6 text-primary-foreground"
+                  style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                >
+                  <item.Icon className="h-14 w-14" />
+                  <span className="text-xl font-bold uppercase tracking-wider">
+                    {item.label}
+                  </span>
+                </div>
               </div>
             </Link>
           ))}
