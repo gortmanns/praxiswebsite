@@ -88,7 +88,7 @@ export function CooperationPartnersSection() {
           })}
           <Card className="flex h-32 items-center justify-center p-6 text-center text-special-green">
             <CardContent className="p-0">
-              <p className="font-bold">Dr. med. Agnieszka Slezak</p>
+              <p className="font-bold text-2xl">Dr. med. Agnieszka Slezak</p>
               <p className="text-sm text-muted-foreground">
                 Fachärztin für Neurologie
               </p>
