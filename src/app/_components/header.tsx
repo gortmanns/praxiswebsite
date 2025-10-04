@@ -26,7 +26,7 @@ export function Header() {
       </div>
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-20 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 -ml-2">
+          <Link href="/" className="flex items-center gap-2 py-2.5">
             <Image
               src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
               alt="Praxiszentrum im Ring Logo"
