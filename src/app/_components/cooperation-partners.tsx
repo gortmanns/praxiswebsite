@@ -52,7 +52,16 @@ export function CooperationPartnersSection() {
                         alt={`${partner.name} Logo`}
                         width={200}
                         height={75}
-                        className="h-auto w-full object-contain"
+                        className="h-auto w-[120%] object-contain"
+                      />
+                    </div>
+                  ) : partner.name === 'Schemmer & Worni' ? (
+                    <div className="relative flex h-[50px] w-full items-center justify-center overflow-hidden">
+                      <Image
+                        src={partner.logoUrl!}
+                        alt={`${partner.name} Logo`}
+                        fill
+                        className="object-contain max-h-full max-w-full"
                       />
                     </div>
                   ) : partner.name === 'MCL' ? (
