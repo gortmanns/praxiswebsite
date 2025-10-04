@@ -60,28 +60,25 @@ export function OpeningHoursCalendar() {
   const dailyBlocks = useMemo(() => {
     return days.map(day => {
       const blocks: { [key: string]: TimeBlock } = {};
-      const processedHours: Set<string> = new Set();
-
-      day.open.forEach(period => {
-        for (let i = 0; i < timeSlots.length - 1; i++) {
-          const currentHour = timeSlots[i];
-          if (processedHours.has(currentHour)) continue;
-
-          const hourStartMinutes = timeToMinutes(currentHour);
-          const periodStartMinutes = timeToMinutes(period.start);
-          const periodEndMinutes = timeToMinutes(period.end);
-
-          if (hourStartMinutes >= periodStartMinutes && hourStartMinutes < periodEndMinutes) {
-            blocks[currentHour] = { ...period, isOpen: true };
-            processedHours.add(currentHour);
-          }
-        }
-      });
       
       for (let i = 0; i < timeSlots.length - 1; i++) {
           const currentHour = timeSlots[i];
-          if (!processedHours.has(currentHour)) {
-              blocks[currentHour] = { start: currentHour, end: timeSlots[i+1], isOpen: false, label: 'Praxis geschlossen' };
+          const hourStartMinutes = timeToMinutes(currentHour);
+          let isHourInAnyPeriod = false;
+
+          for (const period of day.open) {
+            const periodStartMinutes = timeToMinutes(period.start);
+            const periodEndMinutes = timeToMinutes(period.end);
+
+            if (hourStartMinutes >= periodStartMinutes && hourStartMinutes < periodEndMinutes) {
+              blocks[currentHour] = { ...period, isOpen: true };
+              isHourInAnyPeriod = true;
+              break; 
+            }
+          }
+
+          if (!isHourInAnyPeriod) {
+            blocks[currentHour] = { start: currentHour, end: timeSlots[i+1], isOpen: false, label: 'Praxis geschlossen' };
           }
       }
 
@@ -101,9 +98,9 @@ export function OpeningHoursCalendar() {
 
       {/* Time Axis & Content */}
       <div className="col-start-1 col-end-2 row-start-2 row-end-[13] grid grid-rows-10">
-          {timeSlots.slice(0, -1).map((startTime, index) => (
-            <div key={startTime} className="flex items-center justify-center border-b border-l border-border bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
-                {startTime} - {timeSlots[index + 1]}
+          {timeSlots.slice(0, -1).map((startTime) => (
+            <div key={startTime} className="flex h-12 items-center justify-center border-b border-l border-border bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
+                {startTime}
             </div>
           ))}
       </div>
@@ -134,23 +131,43 @@ export function OpeningHoursCalendar() {
                 Sprechstunde
             </span>
         </div>
+        
+        {/* Merged Do/Fr Afternoon Block */}
+        <div
+            className="flex items-center justify-center p-2 border-b border-l border-border bg-background"
+            style={{
+                gridColumn: '4 / span 1',
+                gridRow: '7 / span 4'
+            }}
+        >
+            <span className="font-semibold text-lg text-foreground">
+                Sprechstunde
+            </span>
+        </div>
 
 
         {dailyBlocks.map((dayBlocks, dayIndex) => {
             const processedBlocks = new Set<string>();
             return timeSlots.slice(0, -1).map((startTime, timeIndex) => {
-              const currentBlock = dayBlocks[startTime];
-
               if (processedBlocks.has(startTime)) return null;
+
+              const currentBlock = dayBlocks[startTime];
 
               const isMorning = timeToMinutes(startTime) < timeToMinutes('12:00');
               if (isMorning) {
+                // Already handled by the merged block
                 return null;
               }
               
               if ((dayIndex === 0 || dayIndex === 1) && timeToMinutes(startTime) >= timeToMinutes('14:00')) {
+                 // Already handled by the merged Mo/Di block
                 return null;
               }
+              if (dayIndex === 3 && timeToMinutes(startTime) >= timeToMinutes('14:00')) {
+                // Already handled by the merged Do/Fr block
+               return null;
+             }
+
 
               const startMinutes = timeToMinutes(currentBlock.start);
               const endMinutes = timeToMinutes(currentBlock.end);
@@ -163,7 +180,10 @@ export function OpeningHoursCalendar() {
               
               if (currentBlock.isOpen) {
                   for(let i=0; i<durationInHours; i++){
-                      processedBlocks.add(timeSlots[timeIndex + i]);
+                      const slotIndex = timeIndex + i;
+                       if (slotIndex < timeSlots.length - 1) {
+                        processedBlocks.add(timeSlots[slotIndex]);
+                      }
                   }
               } else {
                   processedBlocks.add(startTime);
