@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin, ShieldCheck } from "lucide-react";
 
 export function ContactSection() {
   return (
@@ -29,6 +29,10 @@ export function ContactSection() {
               <p className="flex items-center justify-center gap-2">
                 <Mail size={16} />
                 <a href="mailto:empfang@praxiszentrum-im-ring.ch" className="hover:text-primary">empfang@praxiszentrum-im-ring.ch</a>
+              </p>
+               <p className="flex items-center justify-center gap-2">
+                <ShieldCheck size={16} className="text-primary"/>
+                <span>HIN-Adresse: <a href="mailto:praxiszentrum-im-ring@hin.ch" className="hover:text-primary">praxiszentrum-im-ring@hin.ch</a></span>
               </p>
                <p className="flex items-center justify-center gap-2 pt-2 text-foreground">
                 <Phone size={16} className="text-primary"/>
