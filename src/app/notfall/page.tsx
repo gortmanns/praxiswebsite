@@ -27,7 +27,7 @@ export default function NotfallPage() {
                         alt="Ambulanz"
                         width={1200}
                         height={800}
-                        className="h-auto w-full rounded-lg object-cover"
+                        className="h-auto w-full object-cover"
                         data-ai-hint="ambulance"
                       />
                     </div>
