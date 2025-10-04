@@ -51,16 +51,16 @@ export function Header() {
             <PhoneIcon className="h-[21px] w-[21px]" />
             <span>031 316 26 00</span>
           </a>
+          <div className="flex items-center gap-2 font-medium text-sm text-primary-foreground">
+            <PrinterIcon className="h-[21px] w-[21px]" />
+            <span>Fax: 031 589 68 60</span>
+          </div>
           <div className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80">
             <MailIcon className="h-[21px] w-[21px]" />
             <ObfuscatedLink
               user="empfang"
               domain="praxiszentrum-im-ring.ch"
             />
-          </div>
-           <div className="flex items-center gap-2 font-medium text-sm text-primary-foreground">
-            <PrinterIcon className="h-[21px] w-[21px]" />
-            <span>Fax: 031 589 68 60</span>
           </div>
         </div>
       </div>
