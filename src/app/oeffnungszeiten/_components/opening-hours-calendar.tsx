@@ -191,6 +191,7 @@ export function OpeningHoursCalendar() {
                         }}
                     >
                         {block.label && <span className="font-semibold text-lg text-primary">{block.label}</span>}
+                        {!block.isOpen && <span className="font-semibold text-lg text-secondary-foreground">Praxis geschlossen</span>}
                     </div>
                 );
             })}
