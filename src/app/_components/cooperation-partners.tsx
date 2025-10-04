@@ -49,7 +49,16 @@ export function CooperationPartnersSection() {
             >
               <Card className="flex min-h-[144px] items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
                 <CardContent className="flex w-full items-center justify-center p-0">
-                  {partner.isSvg ? (
+                  {partner.name === 'VASC-ALLIANCE' ? (
+                     <div className="relative flex h-[75px] w-full items-center justify-center overflow-hidden">
+                      <Image
+                        src={partner.logoUrl!}
+                        alt={`${partner.name} Logo`}
+                        fill
+                        className="object-contain max-h-full max-w-full"
+                      />
+                    </div>
+                  ) : partner.isSvg ? (
                     <OrthozentrumLogo className="h-16 w-auto" />
                   ) : (
                     <div className="relative flex h-[50px] w-full items-center justify-center overflow-hidden">
