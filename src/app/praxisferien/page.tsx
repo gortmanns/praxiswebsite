@@ -16,7 +16,7 @@ export default function PraxisferienPage() {
                     Auf dieser Seite finden Sie stets eine Übersicht aller Praxisferien, soweit diese bereits geplant sind.
                 </p>
             </div>
-            <div className="mx-auto mt-16 w-full max-w-2xl space-y-8 text-center">
+            <div className="mx-auto mt-16 w-full max-w-2xl space-y-8">
               <div className="space-y-2">
                 <p className="text-xl font-bold text-primary">Herbstferien 2025</p>
                 <p className="text-lg text-foreground/80">4. Oktober 2025 - 12. Oktober 2025</p>
