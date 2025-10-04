@@ -34,7 +34,7 @@ export function CooperationPartnersSection() {
         <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
           Unsere Kooperationspartner
         </h2>
-        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {partners.map((partner) => (
             <Link
               key={partner.name}
@@ -52,7 +52,7 @@ export function CooperationPartnersSection() {
                         alt={`${partner.name} Logo`}
                         width={200}
                         height={75}
-                        className="h-auto w-[120%] object-contain"
+                        className="h-auto w-[110%] object-contain"
                       />
                     </div>
                   ) : partner.name === 'Schemmer & Worni' ? (
