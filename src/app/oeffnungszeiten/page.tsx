@@ -3,6 +3,7 @@ import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ColorPaletteDemo } from '../_components/color-palette-demo';
 
 export default function OeffnungszeitenPage() {
   return (
@@ -39,6 +40,7 @@ export default function OeffnungszeitenPage() {
                 </Tabs>
             </div>
         </div>
+        <ColorPaletteDemo />
       </main>
       <Footer />
     </div>
