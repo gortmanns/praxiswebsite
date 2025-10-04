@@ -3,16 +3,16 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 
 const ZahnradIcon = () => (
-  <div className="flex items-center justify-center">
+  <div className="flex items-center justify-center" style={{ whiteSpace: 'nowrap' }}>
     <svg
-      width="150"
-      height="60"
+      width="180"
+      height="72"
       preserveAspectRatio="xMidYMid meet"
       viewBox="0 4 58 48"
       xmlns="http://www.w3.org/2000/svg"
       className="h-auto max-h-16 w-auto object-contain"
       aria-label="Zahnrad Logo"
-      style={{ flexShrink: 0 }}
+      style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'middle' }}
     >
       <g>
         <path
@@ -36,8 +36,8 @@ const ZahnradIcon = () => (
       </g>
     </svg>
     <span
-      className="text-2xl font-bold whitespace-nowrap"
-      style={{ color: '#588791' }}
+      className="text-2xl font-bold"
+      style={{ color: '#588791', display: 'inline-block', verticalAlign: 'middle' }}
     >
       orthozentrum-bern
     </span>
