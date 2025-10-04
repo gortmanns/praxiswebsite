@@ -60,6 +60,12 @@ type TimeBlock = {
 };
 
 export function OpeningHoursCalendar() {
+  const minutesToTime = (minutes: number) => {
+    const h = Math.floor(minutes / 60).toString().padStart(2, '0');
+    const m = (minutes % 60).toString().padStart(2, '0');
+    return `${h}:${m}`;
+  }
+
   const timeLabels = useMemo(() => {
     return timeSlots.slice(0, -1).map((startTime, index) => {
       const endTime = timeSlots[index + 1];
@@ -96,13 +102,9 @@ export function OpeningHoursCalendar() {
 
       return { name: day.name, blocks };
     });
-  }, []);
+  }, [minutesToTime]);
 
-  const minutesToTime = (minutes: number) => {
-    const h = Math.floor(minutes / 60).toString().padStart(2, '0');
-    const m = (minutes % 60).toString().padStart(2, '0');
-    return `${h}:${m}`;
-  }
+
 
   return (
     <div className="flex w-full border-t border-border">
