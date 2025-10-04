@@ -45,7 +45,7 @@ const ZahnradIcon = () => (
       </g>
     </svg>
     <span
-      className="text-2xl font-bold"
+      className="text-xl font-bold"
       style={{
         color: '#588791',
         display: 'inline-block',
