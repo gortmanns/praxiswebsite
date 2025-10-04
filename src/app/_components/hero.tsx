@@ -28,7 +28,7 @@ export function Hero() {
             Willkommen bei Praxis Online. Wir verbinden moderne Technologie mit einfühlsamer Betreuung.
             </p>
             <Button asChild size="lg" className="mt-8">
-            <Link href="#symptoms">Symptome Prüfen</Link>
+            <Link href="#contact">Termin Buchen</Link>
             </Button>
         </div>
       </div>

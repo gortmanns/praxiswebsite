@@ -6,7 +6,6 @@ import Image from 'next/image';
 
 export function Header() {
   const navLinks = [
-    { href: '#symptoms', label: 'Symptom-Check' },
     { href: '#team', label: 'Unser Team' },
     { href: '#contact', label: 'Kontakt' },
   ];
