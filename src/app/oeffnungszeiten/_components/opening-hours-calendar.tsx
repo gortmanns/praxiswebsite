@@ -152,20 +152,16 @@ export function OpeningHoursCalendar() {
 
               const currentBlock = dayBlocks[startTime];
 
+              // Skip rendering for merged blocks
               const isMorning = timeToMinutes(startTime) < timeToMinutes('12:00');
-              if (isMorning) {
-                // Already handled by the merged block
-                return null;
-              }
+              if (isMorning) return null;
               
               if ((dayIndex === 0 || dayIndex === 1) && timeToMinutes(startTime) >= timeToMinutes('14:00')) {
-                 // Already handled by the merged Mo/Di block
                 return null;
               }
               if ((dayIndex === 3 || dayIndex === 4) && timeToMinutes(startTime) >= timeToMinutes('14:00')) {
-                // Already handled by the merged Do/Fr block
-               return null;
-             }
+                 return null;
+              }
 
 
               const startMinutes = timeToMinutes(currentBlock.start);
@@ -197,7 +193,7 @@ export function OpeningHoursCalendar() {
                     )}
                     style={{
                       gridColumn: `${dayIndex + 1} / span 1`,
-                      gridRow: `${startRow} / ${endRow}`
+                      gridRow: `${startRow} / span ${currentBlock.isOpen ? durationInHours : 1}`
                     }}
                 >
                     <span className={cn(
