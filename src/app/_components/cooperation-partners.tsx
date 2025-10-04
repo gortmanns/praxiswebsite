@@ -19,7 +19,7 @@ export function CooperationPartnersSection() {
       name: 'Schemmer & Worni',
       logoUrl:
         'https://schemmer-worni.ch/wp-content/uploads/2025/02/logo_de.png',
-      websiteUrl: 'https://schemmer-worni.ch/',
+      websiteUrl: 'https://schemmer-worni.ch/de/',
     },
     {
       name: 'orthozentrum-bern',
