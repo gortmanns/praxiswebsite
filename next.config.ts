@@ -28,6 +28,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'http',
+        hostname: 'www.praxiszentrum-im-ring.ch',
+        port: '',
+        pathname: '/**',
+      }
     ],
   },
 };
