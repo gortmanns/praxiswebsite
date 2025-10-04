@@ -36,7 +36,7 @@ export function QuickNavSection() {
               <Link key={item.href} href={item.href} passHref>
                 <Button
                   variant="secondary"
-                  className="h-48 w-full text-lg font-bold uppercase tracking-wider transition-all hover:shadow-lg hover:-translate-y-1 flex-col"
+                  className="h-32 w-full text-lg font-bold uppercase tracking-wider transition-all hover:shadow-lg hover:-translate-y-1 flex-col"
                 >
                   <Icon className="mb-4 h-24 w-24" />
                   <span>{item.label}</span>
