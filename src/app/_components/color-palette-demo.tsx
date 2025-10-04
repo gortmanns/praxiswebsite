@@ -1,18 +1,22 @@
 
 export function ColorPaletteDemo() {
   const colors = [
-    { name: "Primary", className: "bg-primary text-primary-foreground" },
-    { name: "Secondary", className: "bg-secondary text-secondary-foreground" },
-    { name: "Background", className: "bg-background text-foreground border" },
-    { name: "Foreground", className: "bg-foreground text-background" },
-    { name: "Card", className: "bg-card text-card-foreground border" },
-    { name: "Popover", className: "bg-popover text-popover-foreground border" },
-    { name: "Muted", className: "bg-muted text-muted-foreground" },
-    { name: "Accent", className: "bg-accent text-accent-foreground" },
-    { name: "Destructive", className: "bg-destructive text-destructive-foreground" },
-    { name: "Border", className: "bg-border text-foreground" },
-    { name: "Input", className: "bg-input text-foreground border" },
-    { name: "Ring", className: "bg-ring text-primary-foreground" },
+    { name: "Primary", className: "bg-primary text-primary-foreground", value: "197 100% 47%" },
+    { name: "Primary FG", className: "bg-primary-foreground text-primary", value: "210 40% 98%", border: true },
+    { name: "Secondary", className: "bg-secondary text-secondary-foreground", value: "210 20% 90%" },
+    { name: "Secondary FG", className: "bg-secondary-foreground text-secondary", value: "222.2 47.4% 11.2%" },
+    { name: "Background", className: "bg-background text-foreground", value: "0 0% 100%", border: true },
+    { name: "Foreground", className: "bg-foreground text-background", value: "222.2 84% 4.9%" },
+    { name: "Card", className: "bg-card text-card-foreground", value: "0 0% 100%", border: true },
+    { name: "Card FG", className: "bg-card-foreground text-card", value: "222.2 84% 4.9%" },
+    { name: "Muted", className: "bg-muted text-muted-foreground", value: "210 30% 95%" },
+    { name: "Muted FG", className: "bg-muted-foreground text-muted", value: "215.4 16.3% 46.9%" },
+    { name: "Accent", className: "bg-accent text-accent-foreground", value: "210 25% 92%" },
+    { name: "Accent FG", className: "bg-accent-foreground text-accent", value: "222.2 47.4% 11.2%" },
+    { name: "Destructive", className: "bg-destructive text-destructive-foreground", value: "0 84.2% 60.2%" },
+    { name: "Border", className: "bg-border text-foreground", value: "214.3 31.8% 91.4%" },
+    { name: "Input", className: "bg-input text-foreground", value: "214.3 31.8% 91.4%" },
+    { name: "Ring", className: "bg-ring text-primary-foreground", value: "197 100% 47%" },
   ];
 
   return (
@@ -30,11 +34,11 @@ export function ColorPaletteDemo() {
           {colors.map((color) => (
             <div key={color.name} className="flex flex-col items-center">
               <div
-                className={`flex h-24 w-full items-center justify-center rounded-lg ${color.className}`}
+                className={`flex h-24 w-full flex-col items-center justify-center rounded-lg ${color.className} ${color.border ? 'border' : ''}`}
               >
                 <span className="font-bold">{color.name}</span>
+                <span className="mt-1 text-xs opacity-80">{color.value}</span>
               </div>
-              <p className="mt-2 text-sm text-muted-foreground">{color.name.toLowerCase()}</p>
             </div>
           ))}
         </div>

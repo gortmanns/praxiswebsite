@@ -12,11 +12,11 @@
     --popover-foreground: 222.2 84% 4.9%; /* dark gray */
     --primary: 197 100% 47%; /* #00aaef */
     --primary-foreground: 210 40% 98%; /* white */
-    --secondary: 210 40% 96.1%; /* light gray */
+    --secondary: 210 20% 90%; /* dark silver */
     --secondary-foreground: 222.2 47.4% 11.2%; /* dark gray */
-    --muted: 210 40% 96.1%; /* light gray */
+    --muted: 210 30% 95%; /* lighter silver */
     --muted-foreground: 215.4 16.3% 46.9%; /* medium gray */
-    --accent: 210 40% 94%; /* slightly darker light gray */
+    --accent: 210 25% 92%; /* light silver accent */
     --accent-foreground: 222.2 47.4% 11.2%; /* dark gray */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
