@@ -8,7 +8,7 @@ export function CooperationPartnersSection() {
     {
       name: 'VASC-ALLIANCE',
       logoUrl:
-        'https://www.vasc-alliance.ch/view_image.php?image_id=10907',
+        'https://www.vasc-alliance.ch/view/data/10907/VASC-Alliance-Logo.png',
       websiteUrl: 'https://www.vasc-alliance.ch/',
     },
     {
@@ -29,12 +29,12 @@ export function CooperationPartnersSection() {
     },
   ];
   return (
-    <section id="partners" className="bg-primary">
+    <section id="partners" className="w-full bg-primary">
       <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
           Unsere Kooperationspartner
         </h2>
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {partners.map((partner) => (
             <Link
               key={partner.name}
@@ -51,7 +51,7 @@ export function CooperationPartnersSection() {
                       alt={`${partner.name} Logo`}
                       width={200}
                       height={75}
-                      className="h-auto w-[110%] object-contain"
+                      className="h-auto w-full object-contain"
                     />
                   ) : partner.name === 'Schemmer & Worni' ? (
                     <div className="relative flex h-[50px] w-full items-center justify-center overflow-hidden">
