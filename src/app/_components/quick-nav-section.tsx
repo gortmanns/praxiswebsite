@@ -19,7 +19,7 @@ const navItems = [
   {
     href: '/medikamente',
     label: 'Medikamente',
-    Icon: FaPillsIcon,
+    Icon: CustomPillsIcon,
   },
   {
     href: '/notfall',
@@ -28,14 +28,20 @@ const navItems = [
   },
 ];
 
-function FaPillsIcon(props: React.SVGProps<SVGSVGElement>) {
+function CustomPillsIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg 
       xmlns="http://www.w3.org/2000/svg" 
-      viewBox="0 0 576 512"
+      viewBox="0 0 640 512"
       fill="currentColor"
       {...props}>
-        <path d="M304 224c53 0 96-43 96-96s-43-96-96-96-96 43-96 96 43 96 96 96zM576 352c0-53-43-96-96-96H304c-24.8 0-47.9 9.5-65.4 25.5L131.1 192.8c-12-11-28.3-17.5-45.1-17.5H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h54l105.4 96.6c-21.3 24.3-33.4 55.4-33.4 88.9 0 79.5 64.5 144 144 144h160c53 0 96-43 96-96zm-320 48c26.5 0 48-21.5 48-48s-21.5-48-48-48-48 21.5-48 48 21.5 48 48 48z"/>
+        {/* Längliche Pille */}
+        <path d="M479.13,32.87A143.2,143.2,0,0,0,320,32a143.2,143.2,0,0,0-159.13,112.87,143.2,143.2,0,0,0,0,224.26A143.2,143.2,0,0,0,320,480a143.2,143.2,0,0,0,159.13-112.87,143.2,143.2,0,0,0,0-224.26ZM320,448a111.3,111.3,0,0,1-124.2-88H320V64h-.3A111.32,111.32,0,0,1,320,64a111.3,111.3,0,0,1,124.2,88H320Z" stroke="currentColor" strokeWidth="16" fill="none"/>
+        <path d="M320 64H195.7C195.7 64 320 64 320 64V360H195.8A111.31 111.31 0 0 1 195.8 88H320Z" />
+
+        {/* Runde Pille */}
+        <circle cx="448" cy="352" r="96"/>
+        <line x1="400" y1="304" x2="496" y2="400" stroke="white" strokeWidth="20" strokeLinecap="round"/>
     </svg>
   );
 }
