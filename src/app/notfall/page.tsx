@@ -17,7 +17,7 @@ export default function NotfallPage() {
         <div className="w-full px-4 py-16 sm:px-8 sm:py-24">
           <Card>
             <CardHeader>
-              <CardTitle className="text-center font-headline text-4xl font-bold tracking-tight text-primary sm:text-5xl">NOTFALL-RUFNUMMERN</CardTitle>
+              <CardTitle className="text-center font-headline text-5xl font-bold tracking-tight text-primary sm:text-6xl">NOTFALL-RUFNUMMERN</CardTitle>
             </CardHeader>
             <CardContent className="space-y-8 text-foreground/80">
               <div className="space-y-16">
@@ -25,7 +25,7 @@ export default function NotfallPage() {
                 <div className="rounded-lg border border-destructive p-6">
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
                     <div className="flex justify-center items-center">
-                      <div className="w-full max-w-md">
+                      <div className="w-full max-w-sm">
                         <Image
                           src={ambulanceImage.imageUrl}
                           alt={ambulanceImage.description}
@@ -50,13 +50,13 @@ export default function NotfallPage() {
 
                 <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
                   <Link href="https://www.medphone.ch/home" target='_blank' rel='noopener noreferrer' className="flex justify-center items-center">
-                    <div className="w-full max-w-md">
+                    <div className="w-full max-w-sm">
                         <Image
                           src={medphoneImage.imageUrl}
                           alt={medphoneImage.description}
                           width={800}
                           height={269}
-                          className="h-auto w-full object-contain"
+                          className="w-full h-auto"
                           data-ai-hint={medphoneImage.imageHint}
                         />
                     </div>
