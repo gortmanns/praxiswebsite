@@ -41,17 +41,17 @@ export function Header() {
     { href: '/team', label: 'Team' },
     { href: '/leistungen', label: 'Leistungen' },
     { href: '/medikamente', label: 'Medikamente' },
-    { href: '/zeiten', label: 'Zeiten' },
+    { href: '/oeffnungszeiten', label: 'Zeiten' },
     { href: '/notfall', label: 'NOTFALL' },
   ];
 
-  const mainNavLinks = navLinks.filter(l => !['/zeiten', '/notfall'].includes(l.href));
+  const mainNavLinks = navLinks.filter(l => !['/oeffnungszeiten', '/notfall'].includes(l.href));
   const notfallLink = navLinks.find(l => l.href === '/notfall');
 
 
   const zeitenLinks = [
-    { href: '/zeiten#oeffnungszeiten', label: 'Öffnungs- & Telefonzeiten' },
-    { href: '/zeiten#praxisferien', label: 'Praxisferien' }
+    { href: '/oeffnungszeiten', label: 'Öffnungs- & Telefonzeiten' },
+    { href: '/praxisferien', label: 'Praxisferien' }
   ];
 
 
@@ -121,7 +121,7 @@ export function Header() {
                 <DropdownMenuTrigger asChild>
                     <div className={cn(
                         'flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                        pathname === '/zeiten'
+                        (pathname === '/oeffnungszeiten' || pathname === '/praxisferien')
                             ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                             : 'text-muted-foreground hover:text-primary'
                     )}>
@@ -193,14 +193,14 @@ export function Header() {
                 <nav className="flex flex-col space-y-4">
                 {navLinks.map((link) => {
                     const isActive = pathname === link.href;
-                    if (link.href === '/zeiten') {
+                    if (link.href === '/oeffnungszeiten') {
                         return (
                             <div key={link.href}>
                                 <h3 className={cn(
                                     'rounded-md px-3 py-2 text-lg font-bold',
-                                    isActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'
+                                    (isActive || pathname === '/praxisferien') ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'
                                 )}>
-                                    {link.label}
+                                    Zeiten
                                 </h3>
                                 <div className="flex flex-col space-y-2 pl-6 pt-2">
                                     {zeitenLinks.map(subLink => (
@@ -241,3 +241,5 @@ export function Header() {
     </header>
   );
 }
+
+    
