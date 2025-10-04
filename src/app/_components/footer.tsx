@@ -54,10 +54,14 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="text-lg font-bold uppercase text-primary">Kontakt</h3>
             <div className="space-y-2 text-sm text-background/80">
-              <p className="flex items-start gap-3">
+              <div className="flex items-start gap-3">
                 <MapPin size={16} className="mt-1 flex-shrink-0" />
-                <span>Kappelenring 6, 3023 Hinterkappelen</span>
-              </p>
+                <div className='flex flex-col'>
+                    <span>PRAXISZENTRUM IM RING</span>
+                    <span>Kappelenring 6</span>
+                    <span>3023 Hinterkappelen</span>
+                </div>
+              </div>
               <p className="flex items-center gap-3">
                 <Phone size={16} className="flex-shrink-0" />
                 <a

@@ -18,10 +18,14 @@ export function ContactSection() {
               Ihr Gesundheitszentrum in Hinterkappelen.
             </p>
             <div className="mt-8 space-y-4 text-muted-foreground">
-              <p className="flex items-center justify-center gap-2">
+              <div className="flex items-center justify-center gap-2">
                 <MapPin size={16} />
-                <span>Kappelenring 6, 3023 Hinterkappelen</span>
-              </p>
+                <div className="flex flex-col">
+                    <span>PRAXISZENTRUM IM RING</span>
+                    <span>Kappelenring 6</span>
+                    <span>3023 Hinterkappelen</span>
+                </div>
+              </div>
               <p className="flex items-center justify-center gap-2">
                 <Phone size={16} />
                 <a href="tel:0313162600" className="hover:text-primary">031 316 26 00</a>
