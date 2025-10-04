@@ -19,7 +19,7 @@ const navItems = [
   {
     href: '/medikamente',
     label: 'Medikamente',
-    Icon: CustomPillsIcon,
+    Icon: FaPillsIcon,
   },
   {
     href: '/notfall',
@@ -28,17 +28,17 @@ const navItems = [
   },
 ];
 
-function CustomPillsIcon(props: React.SVGProps<SVGSVGElement>) {
+function FaPillsIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg 
       xmlns="http://www.w3.org/2000/svg" 
       viewBox="0 0 50 100"
       fill="currentColor"
       {...props}>
-      {/* Bottom filled half with rounded corners and stroke */}
-      <path d="M 45 50 V 90 A 20 20 0 0 1 25 100 A 20 20 0 0 1 5 90 V 50 Z" stroke="currentColor" strokeWidth="5" />
-      {/* Top hollow half with rounded corners and stroke */}
-      <path d="M 5 50 V 10 A 20 20 0 0 1 25 0 A 20 20 0 0 1 45 10 V 50 Z" fill="none" stroke="currentColor" strokeWidth="5"/>
+      {/* Lower filled part */}
+      <path d="M5 50 H 45 V 80 A 20 20 0 0 1 25 100 A 20 20 0 0 1 5 80 V 50 Z" />
+      {/* Full outline */}
+      <path d="M5 20 A 20 20 0 0 1 25 0 A 20 20 0 0 1 45 20 V 80 A 20 20 0 0 1 25 100 A 20 20 0 0 1 5 80 V 20 Z" fill="none" stroke="currentColor" strokeWidth="5" />
     </svg>
   );
 }
