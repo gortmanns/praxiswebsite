@@ -5,8 +5,8 @@ import { cn } from '@/lib/utils';
 import { useMemo } from 'react';
 
 const timeToMinutes = (time: string) => {
-    const [hours, minutes] = time.split(':').map(Number);
-    return hours * 60 + minutes;
+  const [hours, minutes] = time.split(':').map(Number);
+  return hours * 60 + minutes;
 };
 
 const timeSlots = [
@@ -59,32 +59,59 @@ type TimeBlock = {
 export function OpeningHoursCalendar() {
   const dailyBlocks = useMemo(() => {
     return days.map(day => {
-        const blocks: { [key: string]: TimeBlock } = {};
-        
-        for (let i = 0; i < timeSlots.length - 1; i++) {
-            const currentHour = timeSlots[i];
-            const hourStartMinutes = timeToMinutes(currentHour);
-            let isHourInAnyPeriod = false;
-
-            for (const period of day.open) {
-              const periodStartMinutes = timeToMinutes(period.start);
-              const periodEndMinutes = timeToMinutes(period.end);
-
-              if (hourStartMinutes >= periodStartMinutes && hourStartMinutes < periodEndMinutes) {
-                blocks[currentHour] = { ...period, isOpen: true };
-                isHourInAnyPeriod = true;
-                break; 
-              }
-            }
-
-            if (!isHourInAnyPeriod) {
-              blocks[currentHour] = { start: currentHour, end: timeSlots[i+1], isOpen: false, label: 'Praxis geschlossen' };
-            }
+      const blocks: TimeBlock[] = [];
+      timeSlots.slice(0, -1).forEach((startTime, i) => {
+        const slotStartMinutes = timeToMinutes(startTime);
+        let inOpeningPeriod = false;
+        for (const period of day.open) {
+          const periodStartMinutes = timeToMinutes(period.start);
+          const periodEndMinutes = timeToMinutes(period.end);
+          if (slotStartMinutes >= periodStartMinutes && slotStartMinutes < periodEndMinutes) {
+            blocks.push({ ...period, start: startTime, end: timeSlots[i + 1], isOpen: true });
+            inOpeningPeriod = true;
+            break;
+          }
         }
-
-        return blocks;
+        if (!inOpeningPeriod) {
+          blocks.push({ start: startTime, end: timeSlots[i + 1], isOpen: false, label: 'Praxis geschlossen' });
+        }
+      });
+      return blocks;
     });
   }, []);
+
+  const renderBlock = (dayIndex: number, timeIndex: number, block: TimeBlock) => {
+    // Hide individual blocks that are now part of a merged block
+    const startTime = timeSlots[timeIndex];
+    const startTimeMinutes = timeToMinutes(startTime);
+
+    // Hide morning blocks
+    if (startTimeMinutes < timeToMinutes('12:00')) return null;
+    
+    // Hide Monday/Tuesday afternoon blocks
+    if ((dayIndex === 0 || dayIndex === 1) && startTimeMinutes >= timeToMinutes('14:00')) return null;
+    
+    // Hide Thursday/Friday 14:00-17:00 blocks
+    if ((dayIndex === 3 || dayIndex === 4) && startTimeMinutes >= timeToMinutes('14:00') && startTimeMinutes < timeToMinutes('17:00')) return null;
+
+    return (
+        <div
+            key={`${dayIndex}-${timeIndex}`}
+            className={cn(
+                "flex items-center justify-center p-1 border-b border-l border-border",
+                block.isOpen ? 'bg-background' : 'bg-secondary'
+            )}
+        >
+            <span className={cn(
+                "text-base font-semibold",
+                block.isOpen ? "text-foreground" : "text-secondary-foreground"
+            )}>
+                {block.isOpen ? (dayIndex === 4 && timeIndex === 5 ? block.label : '') : 'Praxis geschlossen'}
+            </span>
+        </div>
+    );
+};
+
 
   return (
     <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border-t border-r border-border">
@@ -98,9 +125,9 @@ export function OpeningHoursCalendar() {
 
       {/* Time Axis & Content */}
       <div className="col-start-1 col-end-2 row-start-2 row-end-[13] grid grid-rows-10">
-          {timeSlots.slice(0, -1).map((startTime, index) => (
+          {timeSlots.slice(0, -1).map((startTime) => (
             <div key={startTime} className="flex h-12 items-center justify-center border-b border-l border-border bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
-                {startTime} - {timeSlots[index + 1]}
+                {startTime}
             </div>
           ))}
       </div>
@@ -110,7 +137,7 @@ export function OpeningHoursCalendar() {
         <div
             className="col-start-1 col-end-6 row-start-1 row-end-5 flex items-center justify-center p-2 border-b border-l border-border bg-background"
         >
-            <span className="text-lg font-semibold text-foreground">
+            <span className="col-start-3 text-lg font-semibold text-foreground">
                 Sprechstunde
             </span>
         </div>
@@ -134,46 +161,9 @@ export function OpeningHoursCalendar() {
         </div>
 
 
-        {dailyBlocks.map((dayBlocks, dayIndex) => {
-            return timeSlots.slice(0, -1).map((startTime, timeIndex) => {
-
-              const currentBlock = dayBlocks[startTime];
-
-              // Skip rendering for manually merged blocks
-              const isMorning = timeToMinutes(startTime) < timeToMinutes('12:00');
-              if (isMorning) return null;
-              
-              const isMoDiAfternoon = (dayIndex === 0 || dayIndex === 1) && timeToMinutes(startTime) >= timeToMinutes('14:00');
-              if(isMoDiAfternoon) return null;
-
-              const isDoFrAfternoon14to17 = (dayIndex === 3 || dayIndex === 4) && timeToMinutes(startTime) >= timeToMinutes('14:00') && timeToMinutes(startTime) < timeToMinutes('17:00');
-               if(isDoFrAfternoon14to17) return null;
-
-
-              const blockKey = `${dayIndex}-${startTime}`;
-              
-              return (
-                <div
-                    key={blockKey}
-                    className={cn(
-                        "flex items-center justify-center p-1 border-b border-l border-border",
-                        currentBlock.isOpen ? 'bg-background' : 'bg-secondary'
-                    )}
-                    style={{
-                      gridColumn: `${dayIndex + 1} / span 1`,
-                      gridRow: `${timeIndex + 1} / span 1`
-                    }}
-                >
-                    <span className={cn(
-                        "text-base font-semibold",
-                        currentBlock.isOpen ? "text-foreground" : "text-secondary-foreground"
-                    )}>
-                        {currentBlock.isOpen ? (dayIndex === 4 && timeIndex === 5 ? 'Sprechstunde' : '') : 'Praxis geschlossen'}
-                    </span>
-                </div>
-              );
-            })
-        })}
+        {dailyBlocks.map((dayBlocks, dayIndex) => 
+            dayBlocks.map((block, timeIndex) => renderBlock(dayIndex, timeIndex, block))
+        )}
       </div>
     </div>
   );

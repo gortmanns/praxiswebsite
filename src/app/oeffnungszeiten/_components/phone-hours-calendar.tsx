@@ -60,35 +60,61 @@ type TimeBlock = {
 export function PhoneHoursCalendar() {
     const dailyBlocks = useMemo(() => {
         return days.map(day => {
-            const blocks: { [key: string]: TimeBlock } = {};
-            const processedSlots: Set<string> = new Set();
+            const processedPeriods: { start: number, end: number, label?: string }[] = [];
     
             day.open.forEach(period => {
-                for (let i = 0; i < timeSlots.length - 1; i++) {
-                    const currentTime = timeSlots[i];
-                    if (processedSlots.has(currentTime)) continue;
-    
-                    const currentMinutes = timeToMinutes(currentTime);
-                    const periodStartMinutes = timeToMinutes(period.start);
-                    const periodEndMinutes = timeToMinutes(period.end);
-    
-                    if (currentMinutes >= periodStartMinutes && currentMinutes < periodEndMinutes) {
-                        blocks[currentTime] = { ...period, isOpen: true };
-                        processedSlots.add(currentTime);
-                    }
-                }
+                const startMinutes = timeToMinutes(period.start);
+                const endMinutes = timeToMinutes(period.end);
+                processedPeriods.push({ start: startMinutes, end: endMinutes, label: period.label });
             });
-            
-            for (let i = 0; i < timeSlots.length - 1; i++) {
-                const currentTime = timeSlots[i];
-                if (!processedSlots.has(currentTime)) {
-                    blocks[currentTime] = { start: currentTime, end: timeSlots[i+1], isOpen: false, label: 'Telefon nicht bedient' };
-                }
-            }
     
-            return blocks;
+            return processedPeriods;
         });
     }, []);
+
+    const renderBlock = (dayIndex: number, timeIndex: number) => {
+        const startTime = timeSlots[timeIndex];
+        const startMinutes = timeToMinutes(startTime);
+        const dayPeriods = dailyBlocks[dayIndex];
+    
+        for (const period of dayPeriods) {
+            if (startMinutes >= period.start && startMinutes < period.end) {
+                // This slot is part of an open period
+                if (startMinutes === period.start) {
+                    // This is the beginning of the block, so render it
+                    const durationInIntervals = (period.end - period.start) / 30;
+                    return (
+                        <div
+                            key={`${dayIndex}-${timeIndex}`}
+                            className="flex items-center justify-center p-1 border-b border-l border-border bg-background"
+                            style={{
+                                gridRow: `span ${durationInIntervals}`,
+                            }}
+                        >
+                            <span className="font-semibold text-base text-foreground">
+                                {period.label}
+                            </span>
+                        </div>
+                    );
+                } else {
+                    // This slot is covered by a multi-slot block, so render nothing
+                    return null;
+                }
+            }
+        }
+    
+        // If we get here, the slot is closed
+        return (
+            <div
+                key={`${dayIndex}-${timeIndex}`}
+                className="flex items-center justify-center p-1 border-b border-l border-border bg-secondary"
+            >
+                <span className="font-semibold text-base text-secondary-foreground">
+                    Telefon nicht bedient
+                </span>
+            </div>
+        );
+    };
 
     return (
         <div className="grid grid-cols-[auto_repeat(5,minmax(0,1fr))] w-full border-t border-r border-border">
@@ -110,57 +136,11 @@ export function PhoneHoursCalendar() {
           </div>
 
           <div className="col-start-2 col-end-7 row-start-2 row-end-[22] grid grid-cols-5 grid-rows-20">
-            {dailyBlocks.map((dayBlocks, dayIndex) => {
-                const processedBlocks = new Set<string>();
-                return timeSlots.slice(0, -1).map((startTime, timeIndex) => {
-                    const currentBlock = dayBlocks[startTime];
-                    
-                    if (processedBlocks.has(startTime)) {
-                        return null;
-                    }
-
-                    const startMinutes = timeToMinutes(currentBlock.start);
-                    const endMinutes = timeToMinutes(currentBlock.end);
-                    const durationInIntervals = Math.round((endMinutes - startMinutes) / 30);
-
-                    const startRow = timeIndex + 1;
-                    const endRow = startRow + (currentBlock.isOpen ? durationInIntervals : 1);
-                    
-                    const blockKey = `${dayIndex}-${startTime}`;
-                    
-                    if (currentBlock.isOpen) {
-                        for(let i=0; i<durationInIntervals; i++){
-                            const slotIndex = timeIndex + i;
-                            if (slotIndex < timeSlots.length - 1) {
-                                processedBlocks.add(timeSlots[slotIndex]);
-                            }
-                        }
-                    } else {
-                        processedBlocks.add(startTime);
-                    }
-
-                    return (
-                        <div
-                            key={blockKey}
-                            className={cn(
-                                "flex items-center justify-center p-1 border-b border-l border-border",
-                                currentBlock.isOpen ? 'bg-background' : 'bg-secondary'
-                            )}
-                            style={{
-                                gridColumn: `${dayIndex + 1} / span 1`,
-                                gridRow: `${startRow} / ${endRow}`
-                            }}
-                        >
-                            <span className={cn(
-                                "font-semibold text-base",
-                                currentBlock.isOpen ? "text-foreground" : "text-secondary-foreground"
-                            )}>
-                                {currentBlock.label}
-                            </span>
-                        </div>
-                    );
-                })
-            })}
+            {dailyBlocks.map((_, dayIndex) => 
+                timeSlots.slice(0,-1).map((__, timeIndex) => 
+                    renderBlock(dayIndex, timeIndex)
+                )
+            )}
         </div>
     </div>
     );
