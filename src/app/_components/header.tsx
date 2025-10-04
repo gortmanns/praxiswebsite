@@ -23,7 +23,7 @@ export function Header() {
     <header className="w-full border-b bg-background">
       {/* Top bar */}
       <div className="bg-primary text-primary-foreground">
-        <div className="container flex h-10 items-center justify-end gap-6 text-sm">
+        <div className="container flex h-10 items-center justify-end gap-6 px-4 text-sm sm:px-6 lg:px-8">
           <a
             href="tel:+41313162600"
             className="flex items-center gap-2 text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
@@ -43,7 +43,7 @@ export function Header() {
 
       {/* Main header */}
       <div className="container flex h-28 items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex-shrink-0">
+        <div className="flex-shrink-0">
           <Link href="/">
               <Image
               src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
@@ -54,9 +54,9 @@ export function Header() {
               priority
               />
           </Link>
-          </div>
+        </div>
 
-          <nav className="hidden md:flex md:items-center md:justify-end md:space-x-4">
+          <nav className="hidden md:flex md:items-center md:space-x-4">
           {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
