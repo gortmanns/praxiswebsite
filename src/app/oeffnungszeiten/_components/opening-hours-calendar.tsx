@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { useMemo } from 'react';
 
 const timeToMinutes = (time: string) => {
     const [hours, minutes] = time.split(':').map(Number);
@@ -56,37 +57,37 @@ type TimeBlock = {
 };
 
 export function OpeningHoursCalendar() {
-  const dailyBlocks = React.useMemo(() => {
+  const dailyBlocks = useMemo(() => {
     return days.map(day => {
-      const blocks: { [key: string]: TimeBlock } = {};
-      
-      for (let i = 0; i < timeSlots.length - 1; i++) {
-          const currentHour = timeSlots[i];
-          const hourStartMinutes = timeToMinutes(currentHour);
-          let isHourInAnyPeriod = false;
+        const blocks: { [key: string]: TimeBlock } = {};
+        
+        for (let i = 0; i < timeSlots.length - 1; i++) {
+            const currentHour = timeSlots[i];
+            const hourStartMinutes = timeToMinutes(currentHour);
+            let isHourInAnyPeriod = false;
 
-          for (const period of day.open) {
-            const periodStartMinutes = timeToMinutes(period.start);
-            const periodEndMinutes = timeToMinutes(period.end);
+            for (const period of day.open) {
+              const periodStartMinutes = timeToMinutes(period.start);
+              const periodEndMinutes = timeToMinutes(period.end);
 
-            if (hourStartMinutes >= periodStartMinutes && hourStartMinutes < periodEndMinutes) {
-              blocks[currentHour] = { ...period, isOpen: true };
-              isHourInAnyPeriod = true;
-              break; 
+              if (hourStartMinutes >= periodStartMinutes && hourStartMinutes < periodEndMinutes) {
+                blocks[currentHour] = { ...period, isOpen: true };
+                isHourInAnyPeriod = true;
+                break; 
+              }
             }
-          }
 
-          if (!isHourInAnyPeriod) {
-            blocks[currentHour] = { start: currentHour, end: timeSlots[i+1], isOpen: false, label: 'Praxis geschlossen' };
-          }
-      }
+            if (!isHourInAnyPeriod) {
+              blocks[currentHour] = { start: currentHour, end: timeSlots[i+1], isOpen: false, label: 'Praxis geschlossen' };
+            }
+        }
 
-      return blocks;
+        return blocks;
     });
   }, []);
 
   return (
-    <div className="grid grid-cols-[auto_repeat(5,minmax(0,1fr))] w-full border-t border-r border-border">
+    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border-t border-r border-border">
       {/* Header Row */}
       <div className="sticky top-0 z-10 border-b border-l border-border bg-muted"></div>
       {days.map((day) => (
@@ -97,9 +98,9 @@ export function OpeningHoursCalendar() {
 
       {/* Time Axis & Content */}
       <div className="col-start-1 col-end-2 row-start-2 row-end-[13] grid grid-rows-10">
-          {timeSlots.slice(0, -1).map((startTime) => (
+          {timeSlots.slice(0, -1).map((startTime, index) => (
             <div key={startTime} className="flex h-12 items-center justify-center border-b border-l border-border bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
-                {startTime}
+                {startTime} - {timeSlots[index + 1]}
             </div>
           ))}
       </div>
@@ -107,81 +108,67 @@ export function OpeningHoursCalendar() {
       <div className="col-start-2 col-end-7 row-start-2 row-end-[13] grid grid-cols-5 grid-rows-10">
         {/* Merged Morning Block */}
         <div
-            className="flex items-center justify-center p-2 border-b border-l border-border bg-background"
-            style={{
-                gridColumn: '1 / span 5',
-                gridRow: '1 / span 4'
-            }}
+            className="col-start-1 col-end-6 row-start-1 row-end-5 flex items-center justify-center p-2 border-b border-l border-border bg-background"
         >
-            <span className="font-semibold text-lg text-foreground">
+            <span className="text-lg font-semibold text-foreground">
                 Sprechstunde
             </span>
         </div>
 
         {/* Merged Mo/Di Afternoon Block */}
         <div
-            className="flex items-center justify-center p-2 border-b border-l border-border bg-background"
-            style={{
-                gridColumn: '1 / span 2',
-                gridRow: '7 / span 4'
-            }}
+            className="col-start-1 col-end-3 row-start-7 row-end-11 flex items-center justify-center p-2 border-b border-l border-border bg-background"
         >
-            <span className="font-semibold text-lg text-foreground">
+            <span className="text-lg font-semibold text-foreground">
+                Sprechstunde
+            </span>
+        </div>
+        
+        {/* Merged Do/Fr Afternoon Block 14-17 */}
+        <div
+            className="col-start-4 col-end-6 row-start-7 row-end-10 flex items-center justify-center p-2 border-b border-l border-border bg-background"
+        >
+            <span className="text-lg font-semibold text-foreground">
                 Sprechstunde
             </span>
         </div>
 
+
         {dailyBlocks.map((dayBlocks, dayIndex) => {
-            const processedBlocks = new Set<string>();
             return timeSlots.slice(0, -1).map((startTime, timeIndex) => {
-              if (processedBlocks.has(startTime)) return null;
 
               const currentBlock = dayBlocks[startTime];
 
-              // Skip rendering for merged blocks
+              // Skip rendering for manually merged blocks
               const isMorning = timeToMinutes(startTime) < timeToMinutes('12:00');
               if (isMorning) return null;
               
-              if ((dayIndex === 0 || dayIndex === 1) && timeToMinutes(startTime) >= timeToMinutes('14:00')) {
-                return null;
-              }
+              const isMoDiAfternoon = (dayIndex === 0 || dayIndex === 1) && timeToMinutes(startTime) >= timeToMinutes('14:00');
+              if(isMoDiAfternoon) return null;
 
-              const startMinutes = timeToMinutes(currentBlock.start);
-              const endMinutes = timeToMinutes(currentBlock.end);
-              const durationInHours = Math.round((endMinutes - startMinutes) / 60);
+              const isDoFrAfternoon14to17 = (dayIndex === 3 || dayIndex === 4) && timeToMinutes(startTime) >= timeToMinutes('14:00') && timeToMinutes(startTime) < timeToMinutes('17:00');
+               if(isDoFrAfternoon14to17) return null;
 
-              const startRow = timeIndex + 1;
-              
+
               const blockKey = `${dayIndex}-${startTime}`;
               
-              if (currentBlock.isOpen) {
-                  for(let i=0; i<durationInHours; i++){
-                      const slotIndex = timeIndex + i;
-                       if (slotIndex < timeSlots.length - 1) {
-                        processedBlocks.add(timeSlots[slotIndex]);
-                      }
-                  }
-              } else {
-                  processedBlocks.add(startTime);
-              }
-
               return (
                 <div
                     key={blockKey}
                     className={cn(
-                        "flex items-center justify-center p-2 border-b border-l border-border",
+                        "flex items-center justify-center p-1 border-b border-l border-border",
                         currentBlock.isOpen ? 'bg-background' : 'bg-secondary'
                     )}
                     style={{
                       gridColumn: `${dayIndex + 1} / span 1`,
-                      gridRow: `${startRow} / span ${currentBlock.isOpen ? durationInHours : 1}`
+                      gridRow: `${timeIndex + 1} / span 1`
                     }}
                 >
                     <span className={cn(
-                        "font-semibold text-lg",
+                        "text-base font-semibold",
                         currentBlock.isOpen ? "text-foreground" : "text-secondary-foreground"
                     )}>
-                        {currentBlock.label}
+                        {currentBlock.isOpen ? (dayIndex === 4 && timeIndex === 5 ? 'Sprechstunde' : '') : 'Praxis geschlossen'}
                     </span>
                 </div>
               );
