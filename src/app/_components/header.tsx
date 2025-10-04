@@ -33,7 +33,7 @@ export function Header() {
   ];
 
   return (
-    <header className="w-full border-b bg-background">
+    <header className="w-full border-b bg-background border-2 border-orange-500">
       {/* Top bar */}
       <div className="bg-primary text-primary-foreground">
         <div className="flex h-10 items-center justify-end gap-6 px-4 text-sm sm:px-6 lg:px-8">

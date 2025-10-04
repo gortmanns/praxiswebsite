@@ -33,7 +33,7 @@ const navItems = [
 
 export function QuickNavSection() {
   return (
-    <section id="quick-nav" className="bg-background">
+    <section id="quick-nav" className="bg-background border-2 border-orange-500">
       <div className="container py-16 sm:py-24">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {navItems.map((item) => (

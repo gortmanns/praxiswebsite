@@ -20,7 +20,7 @@ export function ColorPaletteDemo() {
   ];
 
   return (
-    <section id="color-demo" className="py-16 bg-white">
+    <section id="color-demo" className="py-16 bg-white border-2 border-orange-500">
       <div className="container">
         <div className="mb-8 text-center">
           <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">

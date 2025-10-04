@@ -2,7 +2,7 @@ import { Phone, Mail, MapPin, ShieldCheck } from "lucide-react";
 
 export function ContactSection() {
   return (
-    <section id="contact" className="py-16 sm:py-24 bg-muted/50">
+    <section id="contact" className="py-16 sm:py-24 bg-muted/50 border-2 border-orange-500">
       <div className="container">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">
