@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import {
-  HeartHandshake,
+  Stethoscope,
   AlertTriangle,
 } from 'lucide-react';
 
@@ -9,7 +9,7 @@ const navItems = [
   {
     href: '/team',
     label: 'Team',
-    Icon: HeartHandshake,
+    Icon: Stethoscope,
   },
   {
     href: '/leistungen',
