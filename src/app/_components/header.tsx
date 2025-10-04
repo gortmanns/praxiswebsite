@@ -14,8 +14,8 @@ export function Header() {
     { href: '/', label: 'Startseite' },
     { href: '/zeiten', label: 'Zeiten' },
     { href: '/team', label: 'Team' },
-    { href: '/leistungen', label: 'Leistungen' },
-    { href: '/medikamente', label: 'Medikamente' },
+    { href: '/leistungen', 'label': 'Leistungen' },
+    { href: '/medikamente', 'label': 'Medikamente' },
     { href: '/notfall', label: 'NOTFALL' },
   ];
 
@@ -43,7 +43,7 @@ export function Header() {
 
       {/* Main header */}
       <div className="container mx-auto">
-        <div className="flex h-28 items-center justify-between">
+        <div className="flex h-28 items-center justify-between px-4 sm:px-6 lg:px-8">
             <div className="flex-shrink-0">
             <Link href="/">
                 <Image
