@@ -3,11 +3,27 @@ import Link from 'next/link';
 import {
   AlertTriangle,
   Users,
-  HandHelping,
 } from 'lucide-react';
 
 const TiltedHandHelpingIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <HandHelping {...props} style={{ transform: 'rotate(20deg)' }} />
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <g transform="rotate(20 12 12)">
+        <path d="M11 12h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 14" />
+        <path d="m7 18 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.7-2.9l-4.2 4.3c-.5.5-.9 1.2-1 1.8-2 .5-4 2-6 2H3" />
+        <path d="M2 14h6" />
+      </g>
+    </svg>
 );
 
 const navItems = [
