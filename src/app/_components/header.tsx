@@ -9,6 +9,7 @@ export function Header() {
     { href: '/', label: 'Startseite' },
     { href: '/team', label: 'Team' },
     { href: '/leistungen', label: 'Leistungen' },
+    { href: '/zeiten', label: 'Zeiten' },
     { href: '/medikamente', label: 'Medikamente' },
     { href: '/notfall', label: 'NOTFALL' },
   ];
@@ -17,7 +18,7 @@ export function Header() {
     <header className="w-full border-b bg-background">
       {/* Top bar */}
       <div className="bg-primary text-primary-foreground">
-        <div className="container mx-auto flex h-10 items-center justify-end gap-6 px-4 text-sm">
+        <div className="container mx-auto flex h-10 items-center justify-end gap-6 px-4 text-sm sm:px-6 lg:px-8">
           <a href="tel:+41313162600" className="flex items-center gap-2 text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80">
             <Phone size={16} />
             <span>+41 31 316 26 00</span>
