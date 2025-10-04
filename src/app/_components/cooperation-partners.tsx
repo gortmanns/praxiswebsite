@@ -8,7 +8,7 @@ const ZahnradIcon = () => (
       width="180"
       height="72"
       preserveAspectRatio="xMidYMid meet"
-      viewBox="0 0 59.9 55.5"
+      viewBox="0 0 50 55.5"
       xmlns="http://www.w3.org/2000/svg"
       aria-label="Zahnrad Logo"
       style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'middle' }}
@@ -68,7 +68,7 @@ export function CooperationPartnersSection() {
     },
     {
       name: 'Zahnrad',
-      websiteUrl: '#',
+      websiteUrl: 'https://www.orthozentrum-bern.ch/',
       isSvg: true,
     },
   ];
