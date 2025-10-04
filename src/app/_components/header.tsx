@@ -41,8 +41,13 @@ export function Header() {
     { href: '/team', label: 'Team' },
     { href: '/leistungen', label: 'Leistungen' },
     { href: '/medikamente', label: 'Medikamente' },
+    { href: '/zeiten', label: 'Zeiten' },
     { href: '/notfall', label: 'NOTFALL' },
   ];
+
+  const mainNavLinks = navLinks.filter(l => !['/zeiten', '/notfall'].includes(l.href));
+  const notfallLink = navLinks.find(l => l.href === '/notfall');
+
 
   const zeitenLinks = [
     { href: '/zeiten#oeffnungszeiten', label: 'Öffnungs- & Telefonzeiten' },
@@ -95,62 +100,58 @@ export function Header() {
         </Link>
 
         <nav className="hidden md:flex md:items-center md:space-x-4">
-        {navLinks.filter(l => l.href !== '/zeiten').map((link) => {
-            const isActive = pathname === link.href;
-            return (
-            <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                'whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                isActive
-                    ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                    : 'text-muted-foreground hover:text-primary',
-                link.label === 'NOTFALL' ? 'uppercase' : ''
-                )}
-            >
-                {link.label}
-            </Link>
-            );
-        })}
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <button className={cn(
-                    'flex items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                    pathname === '/zeiten'
+            {mainNavLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                    'whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                    isActive
                         ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                         : 'text-muted-foreground hover:text-primary'
-                )}>
-                    Zeiten <ChevronDown className="h-4 w-4" />
-                </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-                {zeitenLinks.map(link => (
-                    <DropdownMenuItem key={link.href} asChild>
-                        <Link href={link.href}>{link.label}</Link>
-                    </DropdownMenuItem>
-                ))}
-            </DropdownMenuContent>
-        </DropdownMenu>
+                    )}
+                >
+                    {link.label}
+                </Link>
+                );
+            })}
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <button className={cn(
+                        'flex items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                        pathname === '/zeiten'
+                            ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                            : 'text-muted-foreground hover:text-primary'
+                    )}>
+                        Zeiten <ChevronDown className="h-4 w-4" />
+                    </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    {zeitenLinks.map(link => (
+                        <DropdownMenuItem key={link.href} asChild>
+                            <Link href={link.href}>{link.label}</Link>
+                        </DropdownMenuItem>
+                    ))}
+                </DropdownMenuContent>
+            </DropdownMenu>
 
-        {navLinks.filter(l => l.href === '/notfall').map((link) => {
-            const isActive = pathname === link.href;
-            return (
-            <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                'whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                isActive
-                    ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                    : 'text-muted-foreground hover:text-primary',
-                link.label === 'NOTFALL' ? 'uppercase' : ''
-                )}
-            >
-                {link.label}
-            </Link>
-            );
-        })}
+            {notfallLink && (
+                 <Link
+                 key={notfallLink.href}
+                 href={notfallLink.href}
+                 className={cn(
+                 'whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                 pathname === notfallLink.href
+                     ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                     : 'text-muted-foreground hover:text-primary',
+                 notfallLink.label === 'NOTFALL' ? 'uppercase' : ''
+                 )}
+             >
+                 {notfallLink.label}
+             </Link>
+            )}
         </nav>
 
         <div className="flex items-center md:hidden">
