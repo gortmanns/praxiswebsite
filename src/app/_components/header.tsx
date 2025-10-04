@@ -6,7 +6,11 @@ import Image from 'next/image';
 
 export function Header() {
   const navLinks = [
-    { href: '#team', label: 'Unser Team' },
+    { href: '/', label: 'Startseite' },
+    { href: '/team', label: 'Team' },
+    { href: '/leistungen', label: 'Leistungen' },
+    { href: '/medikamente', label: 'Medikamente' },
+    { href: '/notfall', label: 'Notfall' },
     { href: '#contact', label: 'Kontakt' },
   ];
 
@@ -25,19 +29,21 @@ export function Header() {
         </div>
       </div>
       <div className="w-full border-b">
-        <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8">
-            <Link href="/" className="py-6">
-                <Image
+        <div className="relative flex items-center justify-center">
+          <div className="absolute left-0 w-full px-4 sm:px-6 lg:px-8">
+            <Link href="/" className="py-4 inline-block">
+              <Image
                 src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
                 alt="Praxiszentrum im Ring Logo"
                 width={520}
                 height={105}
                 className="h-auto w-auto max-w-[300px] md:max-w-[520px]"
                 priority
-                />
+              />
             </Link>
+          </div>
           
-          <div className="flex items-center">
+          <div className="container flex items-center justify-end px-4 sm:px-6 lg:px-8">
             <nav className="hidden items-center space-x-8 md:flex">
               {navLinks.map((link) => (
                 <Link
