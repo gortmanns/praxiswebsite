@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin, ShieldCheck } from "lucide-react";
+import { Phone, Mail, MapPin, ShieldCheck, Printer } from "lucide-react";
 
 export function ContactSection() {
   const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Praxiszentrum+im+Ring,+Kappelenring+6,+3023+Hinterkappelen";
@@ -30,6 +30,10 @@ export function ContactSection() {
               <p className="flex items-center justify-center gap-2">
                 <Phone size={16} />
                 <a href="tel:0313162600" className="hover:text-primary">031 316 26 00</a>
+              </p>
+              <p className="flex items-center justify-center gap-2">
+                <Printer size={16} />
+                <span>Fax: 031 589 68 60</span>
               </p>
               <p className="flex items-center justify-center gap-2">
                 <Mail size={16} />

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Phone, Mail, MapPin } from 'lucide-react';
+import { Phone, Mail, MapPin, Printer } from 'lucide-react';
 import Image from 'next/image';
 
 export function Footer() {
@@ -33,7 +33,7 @@ export function Footer() {
 
           {/* Navigation */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold uppercase text-primary">Navigation</h3>
+            <h3 className="text-lg font-bold uppercase text-primary">Rechtliches</h3>
             <ul className="space-y-2">
               {navLinks.map((link) => (
                 <li key={link.href}>
@@ -68,6 +68,10 @@ export function Footer() {
                 >
                   031 316 26 00
                 </a>
+              </p>
+              <p className="flex items-center gap-3">
+                <Printer size={16} className="flex-shrink-0" />
+                <span>Fax: 031 589 68 60</span>
               </p>
               <p className="flex items-center gap-3">
                 <Mail size={16} className="flex-shrink-0" />
