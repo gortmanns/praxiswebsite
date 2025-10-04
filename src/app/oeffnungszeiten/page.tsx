@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ColorPaletteDemo } from '../_components/color-palette-demo';
 import { cn } from '@/lib/utils';
+import { DoorOpen, Phone } from 'lucide-react';
 
 export default function OeffnungszeitenPage() {
   return (
@@ -24,17 +25,19 @@ export default function OeffnungszeitenPage() {
                         <TabsTrigger 
                             value="oeffnungszeiten" 
                             className={cn(
-                                'h-14 rounded-l-lg rounded-r-none border-b-2 border-transparent text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
+                                'flex items-center justify-center gap-3 h-14 rounded-l-lg rounded-r-none border-b-2 border-transparent text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
                             )}
                         >
+                            <DoorOpen className="h-6 w-6"/>
                             Öffnungszeiten
                         </TabsTrigger>
                         <TabsTrigger 
                             value="telefonzeiten"
                             className={cn(
-                                'h-14 rounded-r-lg rounded-l-none border-b-2 border-transparent text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
+                                'flex items-center justify-center gap-3 h-14 rounded-r-lg rounded-l-none border-b-2 border-transparent text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
                             )}
                         >
+                            <Phone className="h-6 w-6"/>
                             Telefonzeiten
                         </TabsTrigger>
                     </TabsList>
