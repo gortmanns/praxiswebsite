@@ -1,3 +1,28 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-background",
+      "description": "A modern, clean doctor's office reception area.",
+      "imageUrl": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwY2xpbmljfGVufDB8fHx8MTc1OTUyODQ3MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "medical clinic"
+    },
+    {
+      "id": "dr-anna-meier",
+      "description": "Portrait of Dr. Anna Meier, a friendly female doctor.",
+      "imageUrl": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3b21hbiUyMGRvY3RvcnxlbnwwfHx8fDE3NTk0ODAyMDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman doctor"
+    },
+    {
+      "id": "dr-lars-weber",
+      "description": "Portrait of Dr. Lars Weber, a professional male doctor.",
+      "imageUrl": "https://images.unsplash.com/photo-1612276529731-4b21494e6d71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYW4lMjBkb2N0b3J8ZW58MHx8fHwxNzU5NTY3NDIyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man doctor"
+    },
+    {
+      "id": "dr-sophie-huber",
+      "description": "Portrait of Dr. Sophie Huber, a smiling female doctor.",
+      "imageUrl": "https://images.unsplash.com/photo-1675186914580-94356f7c012c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx3b21hbiUyMGRvY3RvciUyMHNtaWxpbmd8ZW58MHx8fHwxNzU5NTY3NDIzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman doctor smiling"
+    }
+  ]
 }
