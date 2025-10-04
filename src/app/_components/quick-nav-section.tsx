@@ -5,8 +5,7 @@ import {
   FilePlus,
   Pill,
   AlertTriangle,
-  Beaker,
-  TestTube2,
+  Circle,
 } from 'lucide-react';
 
 const navItems = [
@@ -26,7 +25,7 @@ const navItems = [
     href: '/medikamente',
     label: 'Medikamente',
     icon: null,
-    icons: [Pill, TestTube2],
+    icons: [Pill, Circle],
   },
   {
     href: '/notfall',
