@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import {
   Users,
-  FilePlus,
   AlertTriangle,
 } from 'lucide-react';
 
@@ -37,10 +36,33 @@ function FaPillsIcon(props: React.SVGProps<SVGSVGElement>) {
       fill="currentColor"
       {...props}
     >
-      <path d="M304 96c0-53-43-96-96-96S112 43 112 96s43 96 96 96 96-43 96-96zM528 224c0-53-43-96-96-96s-96 43-96 96s43 96 96 96 96-43 96-96zM320 352c-53 0-96 43-96 96s43 96 96 96s96-43 96-96s-43-96-96-96zM112.1 271.9c-20.5-12-45.3-11.5-65.2 1.5l-2.4 1.5c-23.7 15.3-33.1 44.9-22 70.8s38.8 38.8 65.2 27.2l2.4-1.5c20-12.9 31.2-36.4 28.5-59.5c-1.3-11.3-5.2-21.9-10.9-30.8zM240 224c0-35.3-28.7-64-64-64s-64 28.7-64 64s28.7 64 64 64s64-28.7 64-64z"/>
+      <path d="M459.3 221.2c-23.9-23.9-62.7-23.9-86.6 0L243.3 350.6c-23.9 23.9-23.9 62.7 0 86.6s62.7 23.9 86.6 0l129.4-129.4c23.9-23.9 23.9-62.7 0-86.6zM224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128z" />
     </svg>
-  )
+  );
 }
+
+// Keep FilePlus as it's used in the navItems array for 'Leistungen'
+function FilePlus(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      width="24" 
+      height="24" 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+      <path d="M12 15v-6" />
+      <path d="M9 12h6" />
+    </svg>
+  );
+}
+
 
 export function QuickNavSection() {
   return (
