@@ -18,7 +18,7 @@ export default function OeffnungszeitenPage() {
                 </h2>
             </div>
 
-            <div className="mx-auto mt-16 max-w-4xl">
+            <div className="mx-auto mt-16">
                 <Tabs defaultValue="oeffnungszeiten" className="w-full">
                     <TabsList className="grid h-auto w-full grid-cols-2 rounded-lg bg-transparent p-0">
                         <TabsTrigger 
@@ -61,4 +61,3 @@ export default function OeffnungszeitenPage() {
     </div>
   );
 }
-
