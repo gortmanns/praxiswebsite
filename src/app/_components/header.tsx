@@ -119,14 +119,14 @@ export function Header() {
             })}
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <button className={cn(
-                        'flex items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                    <div className={cn(
+                        'flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
                         pathname === '/zeiten'
                             ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                             : 'text-muted-foreground hover:text-primary'
                     )}>
                         Zeiten <ChevronDown className="h-4 w-4" />
-                    </button>
+                    </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                     {zeitenLinks.map(link => (
