@@ -122,6 +122,20 @@ export function OpeningHoursCalendar() {
             </span>
         </div>
 
+        {/* Merged Mo/Di Afternoon Block */}
+        <div
+            className="flex items-center justify-center p-2 border-b border-l border-border bg-background"
+            style={{
+                gridColumn: '1 / span 2',
+                gridRow: '7 / span 4'
+            }}
+        >
+            <span className="font-semibold text-lg text-foreground">
+                Sprechstunde
+            </span>
+        </div>
+
+
         {dailyBlocks.map((dayBlocks, dayIndex) => {
             const processedBlocks = new Set<string>();
             return timeSlots.slice(0, -1).map((startTime, timeIndex) => {
@@ -131,10 +145,13 @@ export function OpeningHoursCalendar() {
 
               const isMorning = timeToMinutes(startTime) < timeToMinutes('12:00');
               if (isMorning) {
-                // Skip rendering individual morning blocks as they are merged
                 return null;
               }
               
+              if ((dayIndex === 0 || dayIndex === 1) && timeToMinutes(startTime) >= timeToMinutes('14:00')) {
+                return null;
+              }
+
               const startMinutes = timeToMinutes(currentBlock.start);
               const endMinutes = timeToMinutes(currentBlock.end);
               const durationInHours = Math.round((endMinutes - startMinutes) / 60);
