@@ -3,8 +3,8 @@ export function ColorPaletteDemo() {
   const colors = [
     { name: "Primary", className: "bg-primary text-primary-foreground", value: "197 100% 47%" },
     { name: "Primary FG", className: "bg-primary-foreground text-primary", value: "0 0% 100%", border: true },
-    { name: "Secondary", className: "bg-secondary text-secondary-foreground", value: "210 40% 96.1%" },
-    { name: "Secondary FG", className: "bg-secondary-foreground text-secondary", value: "222.2 47.4% 11.2%", border: true },
+    { name: "Secondary", className: "bg-secondary text-secondary-foreground", value: "209 15% 65%" },
+    { name: "Secondary FG", className: "bg-secondary-foreground text-secondary", value: "210 40% 98%", border: true },
     { name: "Background", className: "bg-background text-foreground", value: "0 0% 100%", border: true },
     { name: "Foreground", className: "bg-foreground text-background", value: "224 71.4% 4.1%" },
     { name: "Card", className: "bg-card text-card-foreground", value: "0 0% 100%", border: true },
