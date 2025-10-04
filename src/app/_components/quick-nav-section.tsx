@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import {
-  AlertTriangle,
+  Siren,
   Users,
   HandHelping,
   Pill,
@@ -26,7 +26,7 @@ const navItems = [
   {
     href: '/notfall',
     label: 'Notfall',
-    Icon: AlertTriangle,
+    Icon: Siren,
   },
 ];
 
