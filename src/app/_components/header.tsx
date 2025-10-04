@@ -32,8 +32,10 @@ export function Header() {
   const pathname = usePathname();
   const navLinks = [
     { href: '/ueber-uns', label: 'Über uns' },
-    { href: '/impressum', label: 'Impressum' },
-    { href: '/datenschutzerklaerung', label: 'Datenschutzerklärung' },
+    { href: '/leistungen', label: 'Leistungen' },
+    { href: '/team', label: 'Team' },
+    { href: '/zeiten', label: 'Zeiten' },
+    { href: '/notfall', label: 'NOTFALL' },
   ];
 
   return (

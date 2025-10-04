@@ -4,6 +4,7 @@ import {
   Siren,
   HandHelping,
   Pill,
+  Users,
 } from 'lucide-react';
 
 const navItems = [
@@ -11,6 +12,11 @@ const navItems = [
     href: '/leistungen',
     label: 'Leistungen',
     Icon: HandHelping,
+  },
+  {
+    href: '/team',
+    label: 'Team',
+    Icon: Users,
   },
   {
     href: '/medikamente',
@@ -29,7 +35,7 @@ export function QuickNavSection() {
   return (
     <section id="quick-nav" className="w-full bg-background">
       <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {navItems.map((item) => (
             <Link
               key={item.href}
