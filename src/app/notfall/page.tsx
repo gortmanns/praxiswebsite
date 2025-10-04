@@ -25,16 +25,14 @@ export default function NotfallPage() {
                 <div className="rounded-lg border border-destructive p-6">
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
                     <div className="flex justify-center items-center">
-                      <div className="relative w-full max-w-md">
                         <Image
                           src={ambulanceImage.imageUrl}
                           alt={ambulanceImage.description}
                           width={1000}
                           height={563}
-                          className="h-auto w-full object-contain"
+                          className="h-auto w-full object-contain max-w-md"
                           data-ai-hint={ambulanceImage.imageHint}
                         />
-                      </div>
                     </div>
                     <div className="space-y-4 text-center">
                       <p className="text-4xl text-foreground">
@@ -55,7 +53,7 @@ export default function NotfallPage() {
                         alt={medphoneImage.description}
                         width={800}
                         height={269}
-                        className="h-auto w-full max-w-md object-contain"
+                        className="h-auto w-full object-contain max-w-md"
                         data-ai-hint={medphoneImage.imageHint}
                       />
                   </Link>
