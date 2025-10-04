@@ -44,7 +44,7 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'schemmer-worni.ch',
         port: '',
-        pathname: '/**',
+pathname: '/**',
       },
       {
         protocol: 'https',
@@ -55,6 +55,12 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'www.toxinfo.ch',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.abvbernregio.ch',
         port: '',
         pathname: '/**',
       }

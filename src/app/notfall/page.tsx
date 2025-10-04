@@ -36,9 +36,9 @@ export default function NotfallPage() {
                       <p className="text-xl lg:text-2xl xl:text-3xl text-foreground">
                         Bei einem lebensbedrohlichen Notfall alarmieren Sie bitte unverzüglich den Rettungsdienst unter der Rufnummer
                       </p>
-                      <div className="text-4xl lg:text-6xl xl:text-8xl">
+                      <div className="text-6xl lg:text-8xl xl:text-9xl">
                         <a href="tel:144" className="flex items-center gap-3 font-bold text-destructive transition-colors hover:text-destructive/80">
-                            <Phone className="h-12 w-12 flex-shrink-0 lg:h-16 lg:w-16 xl:h-20 xl:w-20" />
+                            <Phone className="h-24 w-24 flex-shrink-0 lg:h-32 lg:w-32 xl:h-40 xl:w-40" />
                             <strong>144</strong>
                         </a>
                       </div>
@@ -50,7 +50,7 @@ export default function NotfallPage() {
                   <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
                     <div className='mx-auto w-full max-w-lg'>
                         <Image
-                          src="http://www.praxiszentrum-im-ring.ch//images/2024/10/13/medphone_logo.png"
+                          src="https://www.abvbernregio.ch/images/content/layout/partner/medphone_logo.png"
                           alt="Medphone Logo"
                           width={1024}
                           height={241}
