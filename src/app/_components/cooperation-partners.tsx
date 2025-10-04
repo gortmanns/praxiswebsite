@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 
 const ZahnradIcon = () => (
-  <div className="flex items-center gap-4">
+  <div className="flex items-center gap-1">
     <svg
       width="180"
       height="72"
