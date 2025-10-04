@@ -33,6 +33,12 @@ const nextConfig: NextConfig = {
         hostname: 'www.praxiszentrum-im-ring.ch',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.vasc-alliance.ch',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

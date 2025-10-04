@@ -1,11 +1,40 @@
+import Image from 'next/image';
+import Link from 'next/link';
+
 export function CooperationPartnersSection() {
+  const partners = [
+    {
+      name: 'VASC-ALLIANCE',
+      logoUrl: 'https://www.vasc-alliance.ch/view/data/10907/VASC-Alliance-Logo.png',
+      websiteUrl: 'https://www.vasc-alliance.ch/',
+    },
+  ];
   return (
     <section id="partners" className="bg-primary text-primary-foreground">
       <div className="container py-16 text-center sm:py-24">
         <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">
           Unsere Kooperationspartner
         </h2>
-        {/* Hier können später die Logos der Partner eingefügt werden. */}
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-x-12 gap-y-8">
+          {partners.map((partner) => (
+            <Link
+              key={partner.name}
+              href={partner.websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-opacity hover:opacity-80"
+            >
+              <Image
+                src={partner.logoUrl}
+                alt={`${partner.name} Logo`}
+                width={200}
+                height={80}
+                className="h-auto max-h-20 w-auto object-contain"
+                style={{ filter: 'brightness(0) invert(1)' }}
+              />
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   );
