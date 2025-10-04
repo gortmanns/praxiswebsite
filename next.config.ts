@@ -51,6 +51,12 @@ const nextConfig: NextConfig = {
         hostname: 'www.mcl.ch',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.toxinfo.ch',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
