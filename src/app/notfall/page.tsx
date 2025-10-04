@@ -24,7 +24,7 @@ export default function NotfallPage() {
                 <div className="rounded-lg border border-destructive p-6">
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
                     {ambulanceImage && (
-                      <div className="relative aspect-video w-full overflow-hidden rounded-md">
+                      <div className="relative mx-auto aspect-video w-1/2 overflow-hidden rounded-md md:w-full">
                         <Image
                           src={ambulanceImage.imageUrl}
                           alt={ambulanceImage.description}
@@ -35,11 +35,11 @@ export default function NotfallPage() {
                       </div>
                     )}
                     <div className="space-y-4 text-center">
-                      <p className="text-xl text-foreground">
+                      <p className="text-3xl text-foreground">
                         Bei einem lebensbedrohlichen Notfall alarmieren Sie bitte unverzüglich den Rettungsdienst unter der Rufnummer
                       </p>
-                      <a href="tel:144" className="inline-flex w-full justify-center items-center gap-2 text-7xl font-bold text-destructive transition-colors hover:text-destructive/80">
-                        <Phone className="h-14 w-14" />
+                      <a href="tel:144" className="inline-flex w-full justify-center items-center gap-2 text-9xl font-bold text-destructive transition-colors hover:text-destructive/80">
+                        <Phone className="h-20 w-20" />
                         144
                       </a>
                     </div>
@@ -48,7 +48,7 @@ export default function NotfallPage() {
 
                 <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
                     {medphoneImage && (
-                        <div className="relative aspect-video w-full overflow-hidden rounded-md">
+                        <div className="relative mx-auto aspect-video w-1/2 overflow-hidden rounded-md md:w-full">
                         <Image
                           src={medphoneImage.imageUrl}
                           alt={medphoneImage.description}
@@ -59,10 +59,10 @@ export default function NotfallPage() {
                       </div>
                     )}
                     <div className="space-y-4">
-                        <p className='text-xl'>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
-                        <div className='space-y-4 text-xl'>
-                            <p className='flex items-center gap-3'><Phone className='h-6 w-6 flex-shrink-0' /><strong className='font-bold'>0900 - 57 67 47</strong> (3.23 CHF / min) nicht über Prepaid Handy</p>
-                            <p className='flex items-center gap-3'><Phone className='h-6 w-6 flex-shrink-0' /><strong className='font-bold'>0900 - 57 67 48</strong> (3.50 CHF / min) für Anruf über Prepaid Handy</p>
+                        <p className='text-3xl'>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
+                        <div className='space-y-4 text-3xl'>
+                            <p className='flex items-center gap-3'><Phone className='h-8 w-8 flex-shrink-0' /><strong className='font-bold'>0900 - 57 67 47</strong> (3.23 CHF / min) nicht über Prepaid Handy</p>
+                            <p className='flex items-center gap-3'><Phone className='h-8 w-8 flex-shrink-0' /><strong className='font-bold'>0900 - 57 67 48</strong> (3.50 CHF / min) für Anruf über Prepaid Handy</p>
                         </div>
                     </div>
                 </div>
