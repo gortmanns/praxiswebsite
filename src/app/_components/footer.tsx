@@ -44,24 +44,8 @@ export function Footer() {
   return (
     <footer className="bg-accent text-background/80">
       <div className="container py-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          {/* Logo und Info */}
-          <div className="space-y-4">
-            <Link href="/">
-              <Image
-                src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu-weiss.png"
-                alt="Praxiszentrum im Ring Logo"
-                width={300}
-                height={60}
-                className="h-auto w-auto"
-              />
-            </Link>
-            <p className="text-sm text-background/80">
-              Ihr Gesundheitszentrum in Hinterkappelen.
-            </p>
-          </div>
-
-          {/* Navigation */}
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          {/* Rechtliches */}
           <div className="space-y-4">
             <h3 className="text-lg font-bold uppercase text-primary">Rechtliches</h3>
             <ul className="space-y-2">
