@@ -53,7 +53,7 @@ export function Header() {
           </a>
           <div className="flex items-center gap-2 font-medium text-sm text-primary-foreground">
             <PrinterIcon className="h-[21px] w-[21px]" />
-            <span>Fax: 031 589 68 60</span>
+            <span>031 589 68 60</span>
           </div>
           <div className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80">
             <MailIcon className="h-[21px] w-[21px]" />
