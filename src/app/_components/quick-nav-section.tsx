@@ -9,14 +9,14 @@ import {
 
 const navItems = [
   {
-    href: '/leistungen',
-    label: 'Leistungen',
-    Icon: HandHelping,
-  },
-  {
     href: '/team',
     label: 'Team',
     Icon: Users,
+  },
+  {
+    href: '/leistungen',
+    label: 'Leistungen',
+    Icon: HandHelping,
   },
   {
     href: '/medikamente',
