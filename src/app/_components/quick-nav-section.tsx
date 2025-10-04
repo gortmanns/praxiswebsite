@@ -3,6 +3,7 @@ import Link from 'next/link';
 import {
   AlertTriangle,
   Users,
+  HandHelping,
 } from 'lucide-react';
 
 const navItems = [
@@ -14,7 +15,7 @@ const navItems = [
   {
     href: '/leistungen',
     label: 'Leistungen',
-    Icon: LeistungenIcon,
+    Icon: HandHelping,
   },
   {
     href: '/medikamente',
@@ -47,28 +48,6 @@ function FaPillsIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-
-function LeistungenIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <g transform="rotate(20 12 12)">
-        <path d="M11 12.5a4.5 4.5 0 0 1 9 0Z" />
-        <path d="M3 8v5.6c0 1.2 1 2.2 2.2 2.2h2.6c1.2 0 2.2-1 2.2-2.2V8" />
-        <path d="M7 11.5a1.5 1.5 0 0 1 3 0Z" />
-      </g>
-    </svg>
-  );
-}
-
 
 export function QuickNavSection() {
   return (
