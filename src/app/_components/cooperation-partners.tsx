@@ -39,7 +39,7 @@ export function CooperationPartnersSection() {
           Unsere Kooperationspartner
         </h2>
         <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {partners.map((partner) => (
+          {partners.map((partner, index) => (
             <Link
               key={partner.name}
               href={partner.websiteUrl}
@@ -52,7 +52,7 @@ export function CooperationPartnersSection() {
                   {partner.isSvg ? (
                     <OrthozentrumLogo className="h-16 w-auto" />
                   ) : (
-                    <div className="relative flex h-[80px] w-full items-center justify-center overflow-hidden">
+                    <div className="relative flex h-[50px] w-full items-center justify-center overflow-hidden">
                       <Image
                         src={partner.logoUrl!}
                         alt={`${partner.name} Logo`}
