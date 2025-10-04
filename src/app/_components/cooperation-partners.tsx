@@ -34,7 +34,7 @@ export function CooperationPartnersSection() {
   ];
   return (
     <section id="partners" className="bg-primary">
-      <div className="container mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+      <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
           Unsere Kooperationspartner
         </h2>
