@@ -25,17 +25,17 @@ export function Header() {
         </div>
       </div>
       <div className="w-full border-b">
-        <div className="container mx-auto flex h-auto items-center justify-between py-6">
-          <Link href="/" className="flex items-center gap-2 -ml-4 md:-ml-0">
-            <Image
-              src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
-              alt="Praxiszentrum im Ring Logo"
-              width={520}
-              height={105}
-              className="h-auto w-[520px]"
-              priority
-            />
-          </Link>
+        <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8">
+            <Link href="/" className="py-6">
+                <Image
+                src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
+                alt="Praxiszentrum im Ring Logo"
+                width={520}
+                height={105}
+                className="h-auto w-auto max-w-[300px] md:max-w-[520px]"
+                priority
+                />
+            </Link>
           
           <div className="flex items-center">
             <nav className="hidden items-center space-x-8 md:flex">
