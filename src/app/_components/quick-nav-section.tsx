@@ -32,19 +32,26 @@ function CustomPillsIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg 
       xmlns="http://www.w3.org/2000/svg" 
-      viewBox="0 0 640 512"
+      viewBox="0 0 200 150"
       fill="currentColor"
       {...props}>
-        {/* Längliche Pille: linke Hälfte (hohl), rechte Hälfte (gefüllt) */}
-        <path d="M320,64.3C223.4,64.3,144,143.7,144,240.3S223.4,416.3,320,416.3c48.2,0,92-19.3,123.8-50.7" fill="none" stroke="currentColor" strokeWidth="32" />
-        <path d="M320,64.3c96.6,0,176,79.4,176,176s-79.4,176-176,176" fill="currentColor" />
-        
-        {/* Runde Pille mit Bruchrille */}
-        <circle cx="448" cy="352" r="120" fill="currentColor" />
-        <line x1="400" y1="280" x2="496" y2="424" stroke="white" strokeWidth="24" strokeLinecap="round" transform="rotate(10, 448, 352)" />
+      <g transform="rotate(15 55 75)">
+        {/* Bottom filled half of the capsule */}
+        <path d="M55 105 a30 30 0 0 1-30-30 v-0 h60 v0 a30 30 0 0 1-30 30z" />
+        {/* Top hollow half of the capsule */}
+        <path d="M25 75 a30 30 0 0 1 30-30 a30 30 0 0 1 30 30" fill="none" stroke="currentColor" strokeWidth="5"/>
+      </g>
+      
+      {/* Round pill, 20% smaller */}
+      <g transform="translate(130 50)">
+        <circle cx="24" cy="24" r="24" fill="currentColor"/>
+        {/* Break line at 45 degrees */}
+        <line x1="10" y1="10" x2="38" y2="38" stroke="hsl(var(--secondary-foreground))" strokeWidth="4" strokeLinecap="round" />
+      </g>
     </svg>
   );
 }
+
 
 // Keep FilePlus as it's used in the navItems array for 'Leistungen'
 function FilePlus(props: React.SVGProps<SVGSVGElement>) {
