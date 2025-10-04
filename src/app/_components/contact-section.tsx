@@ -65,10 +65,6 @@ export function ContactSection() {
                 </p>
                 <p className="text-xs text-muted-foreground/80">(Für die sichere Übermittlung medizinischer Unterlagen)</p>
               </div>
-               <p className="flex items-center justify-center gap-2 pt-2 text-foreground">
-                <PhoneIcon className="h-[21px] w-[21px] text-primary"/>
-                <strong>Medikamenten-Hotline: <a href="tel:0313162666" className="hover:text-primary">031 316 26 66</a></strong>
-              </p>
             </div>
         </div>
       </div>
