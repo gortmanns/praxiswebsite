@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu } from 'lucide-react';
+import { Menu, Printer } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -48,6 +48,10 @@ export function Header() {
             <MailIcon className="h-[21px] w-[21px]" />
             <span>empfang@praxiszentrum-im-ring.ch</span>
           </a>
+           <div className="flex items-center gap-2 font-medium text-sm text-primary-foreground">
+            <Printer className="h-5 w-5" />
+            <span>Fax: 031 589 68 60</span>
+          </div>
         </div>
       </div>
 
