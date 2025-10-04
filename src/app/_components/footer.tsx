@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { MapPin, Printer } from 'lucide-react';
+import { Printer } from 'lucide-react';
 import Image from 'next/image';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -12,6 +12,12 @@ const MailIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
         <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
     </svg>
+);
+
+const MapPinIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+  </svg>
 );
 
 
@@ -66,7 +72,7 @@ export function Footer() {
             <h3 className="text-lg font-bold uppercase text-primary">Kontakt</h3>
             <div className="space-y-2 text-sm text-background/80">
               <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 transition-colors hover:text-background">
-                <MapPin size={21} className="mt-1 flex-shrink-0" />
+                <MapPinIcon className="h-[21px] w-[21px] mt-1 flex-shrink-0" />
                 <div className='flex flex-col'>
                     <span>PRAXISZENTRUM IM RING</span>
                     <span>Kappelenring 6</span>
