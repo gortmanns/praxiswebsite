@@ -8,7 +8,7 @@ export function CooperationPartnersSection() {
     {
       name: 'VASC-ALLIANCE',
       logoUrl:
-        'https://www.vasc-alliance.ch/view/data/10907/VASC-Alliance-Logo.png',
+        'https://www.vasc-alliance.ch/view_image.php?image_id=10907',
       websiteUrl: 'https://www.vasc-alliance.ch/',
     },
     {
@@ -46,22 +46,20 @@ export function CooperationPartnersSection() {
               <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
                 <CardContent className="flex w-full items-center justify-center p-0">
                   {partner.name === 'VASC-ALLIANCE' ? (
-                     <div className="relative flex h-[50px] w-full items-center justify-center overflow-hidden">
-                      <Image
-                        src={partner.logoUrl!}
-                        alt={`${partner.name} Logo`}
-                        width={200}
-                        height={75}
-                        className="h-auto w-[110%] object-contain"
-                      />
-                    </div>
+                    <Image
+                      src={partner.logoUrl!}
+                      alt={`${partner.name} Logo`}
+                      width={200}
+                      height={75}
+                      className="h-auto w-full object-contain"
+                    />
                   ) : partner.name === 'Schemmer & Worni' ? (
                     <div className="relative flex h-[50px] w-full items-center justify-center overflow-hidden">
                       <Image
                         src={partner.logoUrl!}
                         alt={`${partner.name} Logo`}
                         fill
-                        className="object-contain max-h-full max-w-full"
+                        className="object-contain"
                       />
                     </div>
                   ) : partner.name === 'MCL' ? (
@@ -70,7 +68,7 @@ export function CooperationPartnersSection() {
                         src={partner.logoUrl!}
                         alt={`${partner.name} Logo`}
                         fill
-                        className="object-contain max-h-full max-w-full"
+                        className="object-contain"
                       />
                     </div>
                   ) : partner.name === 'orthozentrum-bern' ? (
@@ -81,7 +79,7 @@ export function CooperationPartnersSection() {
                         src={partner.logoUrl!}
                         alt={`${partner.name} Logo`}
                         fill
-                        className="object-contain max-h-full max-w-full"
+                        className="object-contain"
                       />
                     </div>
                   )}
