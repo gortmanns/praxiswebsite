@@ -126,40 +126,34 @@ export function OpeningHoursCalendar() {
     }, []);
 
     return (
-        <div className="grid grid-cols-[auto_1fr] w-full border-t border-r border-border">
+        <div className="grid grid-cols-[auto_repeat(5,minmax(0,1fr))] w-full border-t border-r border-border">
           {/* Header Row */}
           <div className="sticky top-0 z-10 border-b border-l border-border bg-muted"></div>
-          <div className="sticky top-0 z-10 grid grid-cols-5 border-b border-l border-border bg-muted">
-            {days.map((day) => (
-                <div key={day.name} className={cn(
-                    "flex h-12 items-center justify-center border-r border-border text-center text-sm font-bold text-muted-foreground sm:text-base",
-                    "last:border-r-0"
-                )}>
-                    {day.name}
-                </div>
-            ))}
-          </div>
+          {days.map((day) => (
+            <div key={day.name} className={cn(
+                "flex h-12 items-center justify-center border-b border-l border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base",
+            )}>
+                {day.name}
+            </div>
+          ))}
 
 
           {/* Time Axis Column */}
-          <div className="col-start-1 row-start-2 border-l border-border bg-muted">
-              {timeSlots.slice(0, -1).map((startTime, index) => (
-                  <div key={startTime} className="flex h-16 items-center justify-center text-center text-xs text-muted-foreground border-b border-border px-2 font-bold">
-                      {startTime} - {timeSlots[index + 1]}
-                  </div>
-              ))}
-          </div>
+          {timeSlots.slice(0, -1).map((startTime, index) => (
+              <div key={startTime} className="row-span-1 flex items-center justify-center text-center text-xs text-muted-foreground border-b border-l border-border px-2 font-bold">
+                  {startTime} - {timeSlots[index + 1]}
+              </div>
+          ))}
           
           {/* Content Area */}
-          <div className="col-start-2 row-start-2 grid grid-cols-5 relative">
+          <div className="col-start-2 col-span-5 row-start-2 row-span-10 grid grid-cols-5 grid-rows-10 relative">
               {/* Day cells for grid lines */}
               {Array.from({ length: 5 }).map((_, dayIndex) => (
                   <div key={`col-${dayIndex}`} className={cn(
-                      "h-full",
-                      dayIndex < 4 ? "border-r border-border" : ""
+                      "h-full border-l border-border"
                   )}>
-                    {Array.from({ length: timeSlots.length - 1 }).map((_, timeIndex) => (
-                      <div key={`row-line-${dayIndex}-${timeIndex}`} className="h-16 border-b border-border"></div>
+                    {Array.from({ length: 10 }).map((_, timeIndex) => (
+                      <div key={`row-line-${dayIndex}-${timeIndex}`} className="h-full border-b border-border"></div>
                     ))}
                   </div>
               ))}

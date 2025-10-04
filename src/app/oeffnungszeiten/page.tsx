@@ -3,7 +3,6 @@ import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ColorPaletteDemo } from '../_components/color-palette-demo';
 import { cn } from '@/lib/utils';
 import { DoorOpen, Phone } from 'lucide-react';
 import { OpeningHoursCalendar } from './_components/opening-hours-calendar';
@@ -19,6 +18,9 @@ export default function OeffnungszeitenPage() {
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
                     ÖFFNUNGS- & TELEFONZEITEN
                 </h2>
+                <p className="mt-4 text-lg text-foreground/80">
+                    Bitte beachten Sie, dass Öffnungszeiten und Telefonzeiten verschieden sind.
+                </p>
             </div>
 
             <div className="mx-auto mt-16">
@@ -45,14 +47,20 @@ export default function OeffnungszeitenPage() {
                     </TabsList>
                     <TabsContent value="oeffnungszeiten">
                         <Card className="rounded-t-none">
-                            <CardContent className="p-6 text-lg">
+                            <CardContent className="space-y-6 p-6 text-lg">
+                                <h3 className="text-center font-headline text-2xl font-bold tracking-tight text-primary">
+                                    Unsere Öffnungszeiten
+                                </h3>
                                <OpeningHoursCalendar />
                             </CardContent>
                         </Card>
                     </TabsContent>
                     <TabsContent value="telefonzeiten">
                         <Card className="rounded-t-none">
-                            <CardContent className="p-6 text-lg">
+                            <CardContent className="space-y-6 p-6 text-lg">
+                                <h3 className="text-center font-headline text-2xl font-bold tracking-tight text-primary">
+                                    Unsere Telefonzeiten
+                                </h3>
                                 <PhoneHoursCalendar />
                             </CardContent>
                         </Card>
@@ -60,7 +68,6 @@ export default function OeffnungszeitenPage() {
                 </Tabs>
             </div>
         </div>
-        <ColorPaletteDemo />
       </main>
       <Footer />
     </div>
