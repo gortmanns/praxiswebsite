@@ -17,14 +17,14 @@ export default function NotfallPage() {
         <div className="w-full px-4 py-16 sm:px-8 sm:py-24">
           <Card>
             <CardHeader>
-              <CardTitle className="text-center font-headline text-7xl font-bold tracking-tight text-primary sm:text-8xl">NOTFALL-RUFNUMMERN</CardTitle>
+              <CardTitle className="text-center font-headline text-5xl font-bold tracking-tight text-primary sm:text-6xl md:text-7xl lg:text-8xl">NOTFALL-RUFNUMMERN</CardTitle>
             </CardHeader>
             <CardContent className="space-y-8 text-foreground/80">
               <div className="space-y-16">
                 
                 <div className="rounded-lg border border-destructive p-6">
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
-                    <div className="relative w-full max-w-sm mx-auto aspect-[16/9]">
+                    <div className="relative mx-auto aspect-video w-full max-w-lg">
                         <Image
                           src={ambulanceImage.imageUrl}
                           alt={ambulanceImage.description}
@@ -34,11 +34,11 @@ export default function NotfallPage() {
                         />
                     </div>
                     <div className="space-y-4 text-center">
-                      <p className="text-5xl text-foreground">
+                      <p className="text-2xl lg:text-3xl xl:text-5xl text-foreground">
                         Bei einem lebensbedrohlichen Notfall alarmieren Sie bitte unverzüglich den Rettungsdienst unter der Rufnummer
                       </p>
-                      <a href="tel:144" className="inline-flex w-full justify-center items-center gap-2 text-9xl font-bold text-destructive transition-colors hover:text-destructive/80">
-                        <Phone className="h-24 w-24" />
+                      <a href="tel:144" className="inline-flex w-full justify-center items-center gap-2 text-6xl lg:text-7xl xl:text-9xl font-bold text-destructive transition-colors hover:text-destructive/80">
+                        <Phone className="h-16 w-16 lg:h-20 lg:w-20 xl:h-24 xl:w-24" />
                         144
                       </a>
                     </div>
@@ -46,8 +46,8 @@ export default function NotfallPage() {
                 </div>
 
                 <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
-                  <div className='relative w-full max-w-sm mx-auto aspect-[16/9]'>
-                    <Link href="https://www.medphone.ch/home" target="_blank" rel="noopener noreferrer" className="w-full h-full">
+                  <div className='relative w-full max-w-lg mx-auto aspect-video'>
+                    <Link href="https://www.medphone.ch/home" target="_blank" rel="noopener noreferrer" className="relative block h-full w-full">
                       <Image
                           src={medphoneImage.imageUrl}
                           alt={medphoneImage.description}
@@ -58,15 +58,15 @@ export default function NotfallPage() {
                     </Link>
                   </div>
                   <div className="space-y-4">
-                      <p className='text-5xl'>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
-                      <div className='space-y-8 text-5xl'>
+                      <p className='text-2xl lg:text-3xl xl:text-5xl'>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
+                      <div className='space-y-8 text-2xl lg:text-3xl xl:text-5xl'>
                           <div className='flex flex-col'>
-                              <a href="tel:0900576747" className='flex items-center gap-3'><Phone className='h-12 w-12 flex-shrink-0' /><strong className='font-bold'>0900 - 57 67 47</strong></a>
-                              <span className='text-2xl pl-16'>(3.23 CHF / min) nicht über Prepaid Handy</span>
+                              <a href="tel:0900576747" className='flex items-center gap-3'><Phone className='h-8 w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 flex-shrink-0' /><strong className='font-bold'>0900 - 57 67 47</strong></a>
+                              <span className='text-lg lg:text-xl xl:text-2xl pl-12 lg:pl-14 xl:pl-16'>(3.23 CHF / min) nicht über Prepaid Handy</span>
                           </div>
                           <div className='flex flex-col'>
-                              <a href="tel:0900576748" className='flex items-center gap-3'><Phone className='h-12 w-12 flex-shrink-0' /><strong className='font-bold'>0900 - 57 67 48</strong></a>
-                              <span className='text-2xl pl-16'>(3.50 CHF / min) für Anruf über Prepaid Handy</span>
+                              <a href="tel:0900576748" className='flex items-center gap-3'><Phone className='h-8 w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 flex-shrink-0' /><strong className='font-bold'>0900 - 57 67 48</strong></a>
+                              <span className='text-lg lg:text-xl xl:text-2xl pl-12 lg:pl-14 xl:pl-16'>(3.50 CHF / min) für Anruf über Prepaid Handy</span>
                           </div>
                       </div>
                   </div>
