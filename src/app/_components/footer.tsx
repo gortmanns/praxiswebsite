@@ -14,7 +14,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-accent text-background">
+    <footer className="bg-accent text-background/80">
       <div className="container py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {/* Logo und Info */}
@@ -35,7 +35,7 @@ export function Footer() {
 
           {/* Navigation */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold uppercase text-primary-foreground">Navigation</h3>
+            <h3 className="text-lg font-bold uppercase text-primary">Navigation</h3>
             <ul className="space-y-2">
               {navLinks.map((link) => (
                 <li key={link.href}>
@@ -52,7 +52,7 @@ export function Footer() {
 
           {/* Kontakt */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold uppercase text-primary-foreground">Kontakt</h3>
+            <h3 className="text-lg font-bold uppercase text-primary">Kontakt</h3>
             <div className="space-y-2 text-sm text-background/80">
               <p className="flex items-start gap-3">
                 <MapPin size={16} className="mt-1 flex-shrink-0" />
