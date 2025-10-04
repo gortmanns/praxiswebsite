@@ -30,9 +30,9 @@ export function Header() {
             <Image
               src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
               alt="Praxiszentrum im Ring Logo"
-              width={400}
-              height={81}
-              className="h-auto w-[400px]"
+              width={520}
+              height={105}
+              className="h-auto w-[520px]"
               priority
             />
           </Link>
