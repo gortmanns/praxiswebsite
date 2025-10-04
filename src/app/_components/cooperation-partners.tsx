@@ -4,8 +4,8 @@ import { Card, CardContent } from '@/components/ui/card';
 
 const ZahnradIcon = () => (
   <svg
-    width="250"
-    height="56"
+    width="342"
+    height="67"
     viewBox="0 0 285 56"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -90,7 +90,7 @@ export function CooperationPartnersSection() {
               rel="noopener noreferrer"
               className="group"
             >
-              <Card className="flex h-full items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
+              <Card className="flex min-h-[144px] items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
                 <CardContent className="flex w-full items-center justify-center p-0">
                   {partner.isSvg ? (
                     <ZahnradIcon />
@@ -98,9 +98,9 @@ export function CooperationPartnersSection() {
                     <Image
                       src={partner.logoUrl!}
                       alt={`${partner.name} Logo`}
-                      width={200}
+                      width={240}
                       height={80}
-                      className="h-auto max-h-20 w-auto object-contain"
+                      className="h-auto max-h-24 w-auto object-contain"
                     />
                   )}
                 </CardContent>
