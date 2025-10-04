@@ -24,20 +24,18 @@ export default function NotfallPage() {
                 
                 <div className="rounded-lg border border-destructive p-6">
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
-                    {ambulanceImage && (
-                      <div className="flex justify-center items-center">
-                        <div className="relative w-full max-w-md">
-                          <Image
-                            src={ambulanceImage.imageUrl}
-                            alt={ambulanceImage.description}
-                            width={1000}
-                            height={563}
-                            className="h-auto w-full object-contain"
-                            data-ai-hint={ambulanceImage.imageHint}
-                          />
-                        </div>
+                    <div className="flex justify-center items-center">
+                      <div className="relative w-full max-w-md">
+                        <Image
+                          src={ambulanceImage.imageUrl}
+                          alt={ambulanceImage.description}
+                          width={1000}
+                          height={563}
+                          className="h-auto w-full object-contain"
+                          data-ai-hint={ambulanceImage.imageHint}
+                        />
                       </div>
-                    )}
+                    </div>
                     <div className="space-y-4 text-center">
                       <p className="text-4xl text-foreground">
                         Bei einem lebensbedrohlichen Notfall alarmieren Sie bitte unverzüglich den Rettungsdienst unter der Rufnummer
@@ -51,33 +49,31 @@ export default function NotfallPage() {
                 </div>
 
                 <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
-                    {medphoneImage && (
-                        <div className="flex justify-center items-center">
-                            <Link href="https://www.medphone.ch/home" target='_blank' rel='noopener noreferrer' className="block w-full max-w-md">
-                                <Image
-                                  src={medphoneImage.imageUrl}
-                                  alt={medphoneImage.description}
-                                  width={800}
-                                  height={269}
-                                  className="h-auto w-full object-contain"
-                                  data-ai-hint={medphoneImage.imageHint}
-                                />
-                            </Link>
-                        </div>
-                    )}
-                    <div className="space-y-4">
-                        <p className='text-4xl'>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
-                        <div className='space-y-8 text-4xl'>
-                            <div className='flex flex-col'>
-                                <p className='flex items-center gap-3'><Phone className='h-10 w-10 flex-shrink-0' /><strong className='font-bold'>0900 - 57 67 47</strong></p>
-                                <span className='text-xl'>(3.23 CHF / min) nicht über Prepaid Handy</span>
-                            </div>
-                            <div className='flex flex-col'>
-                                <p className='flex items-center gap-3'><Phone className='h-10 w-10 flex-shrink-0' /><strong className='font-bold'>0900 - 57 67 48</strong></p>
-                                <span className='text-xl'>(3.50 CHF / min) für Anruf über Prepaid Handy</span>
-                            </div>
-                        </div>
-                    </div>
+                  <div className="flex justify-center items-center">
+                    <Link href="https://www.medphone.ch/home" target='_blank' rel='noopener noreferrer' className="relative block w-full max-w-md">
+                        <Image
+                          src={medphoneImage.imageUrl}
+                          alt={medphoneImage.description}
+                          width={800}
+                          height={269}
+                          className="h-auto w-full object-contain"
+                          data-ai-hint={medphoneImage.imageHint}
+                        />
+                    </Link>
+                  </div>
+                  <div className="space-y-4">
+                      <p className='text-4xl'>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
+                      <div className='space-y-8 text-4xl'>
+                          <div className='flex flex-col'>
+                              <p className='flex items-center gap-3'><Phone className='h-10 w-10 flex-shrink-0' /><strong className='font-bold'>0900 - 57 67 47</strong></p>
+                              <span className='text-xl'>(3.23 CHF / min) nicht über Prepaid Handy</span>
+                          </div>
+                          <div className='flex flex-col'>
+                              <p className='flex items-center gap-3'><Phone className='h-10 w-10 flex-shrink-0' /><strong className='font-bold'>0900 - 57 67 48</strong></p>
+                              <span className='text-xl'>(3.50 CHF / min) für Anruf über Prepaid Handy</span>
+                          </div>
+                      </div>
+                  </div>
                 </div>
 
 
