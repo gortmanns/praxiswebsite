@@ -3,7 +3,13 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 
 const ZahnradIcon = () => (
-  <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+  <div
+    style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      transform: 'translateX(-10%)',
+    }}
+  >
     <svg
       width="180"
       height="72"
@@ -11,7 +17,11 @@ const ZahnradIcon = () => (
       viewBox="0 0 50 55.5"
       xmlns="http://www.w3.org/2000/svg"
       aria-label="Zahnrad Logo"
-      style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'middle' }}
+      style={{
+        flexShrink: 0,
+        display: 'inline-block',
+        verticalAlign: 'middle',
+      }}
     >
       <g>
         <path
@@ -93,7 +103,7 @@ export function CooperationPartnersSection() {
               className="group"
             >
               <Card className="flex h-full items-center p-6 transition-all group-hover:shadow-lg group-hover:-translate-y-1">
-                <CardContent className="p-0 flex items-center">
+                <CardContent className="p-0 flex w-full items-center justify-center">
                   {partner.isSvg ? (
                     <ZahnradIcon />
                   ) : (
