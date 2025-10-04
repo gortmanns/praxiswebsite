@@ -56,9 +56,9 @@ function HandHoldingMedicalIcon(props: React.SVGProps<SVGSVGElement>) {
       <div 
         className="absolute text-current"
         style={{ 
-          fontSize: '80%', 
+          fontSize: '240%', 
           fontWeight: 'bold', 
-          top: '-15%', 
+          top: '-85%', 
           left: '42%',
           lineHeight: 1,
         }}
