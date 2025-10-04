@@ -50,19 +50,17 @@ function FaPillsIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 function HandHoldingMedicalIcon(props: React.SVGProps<SVGSVGElement>) {
-  // A wrapper div is needed for positioning the cross relative to the icon
   return (
     <div className="relative" style={{ width: props.width, height: props.height }}>
       <HandHelping {...props} />
       <div 
         className="absolute text-current"
-        // Fine-tuned positioning for the cross
         style={{ 
-          fontSize: '240%', 
+          fontSize: '80%', 
           fontWeight: 'bold', 
-          top: '-85%', 
+          top: '-50%', 
           left: '42%',
-          lineHeight: 1, // Ensures the '+' character is vertically centered
+          lineHeight: 1,
         }}
       >
         +
