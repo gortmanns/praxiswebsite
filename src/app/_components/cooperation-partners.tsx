@@ -8,6 +8,11 @@ export function CooperationPartnersSection() {
       logoUrl: 'https://www.vasc-alliance.ch/view/data/10907/VASC-Alliance-Logo.png',
       websiteUrl: 'https://www.vasc-alliance.ch/',
     },
+    {
+      name: 'Schemmer & Worni',
+      logoUrl: 'https://schemmer-worni.ch/wp-content/uploads/2025/02/logo_de.png',
+      websiteUrl: 'https://schemmer-worni.ch/',
+    },
   ];
   return (
     <section id="partners" className="bg-primary text-primary-foreground">

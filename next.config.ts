@@ -39,6 +39,12 @@ const nextConfig: NextConfig = {
         hostname: 'www.vasc-alliance.ch',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'schemmer-worni.ch',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
