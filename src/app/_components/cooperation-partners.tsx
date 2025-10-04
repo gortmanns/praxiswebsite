@@ -56,6 +56,7 @@ export function CooperationPartnersSection() {
                       viewBox="0 0 379.79 70.36"
                       aria-label="orthozentrum-bern Logo"
                       className="text-foreground"
+                      style={{ color: '#4d4d4d' }}
                     >
                       <g>
                         <path
