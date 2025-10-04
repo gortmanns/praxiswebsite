@@ -3,14 +3,13 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 
 const ZahnradIcon = () => (
-  <div className="flex items-center justify-center" style={{ whiteSpace: 'nowrap' }}>
+  <div style={{ display: 'inline-flex', alignItems: 'center' }}>
     <svg
       width="180"
       height="72"
       preserveAspectRatio="xMidYMid meet"
-      viewBox="0 4 58 48"
+      viewBox="0 0 59.9 55.5"
       xmlns="http://www.w3.org/2000/svg"
-      className="h-auto max-h-16 w-auto object-contain"
       aria-label="Zahnrad Logo"
       style={{ flexShrink: 0, display: 'inline-block', verticalAlign: 'middle' }}
     >
