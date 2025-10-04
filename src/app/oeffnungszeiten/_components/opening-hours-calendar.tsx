@@ -84,7 +84,6 @@ export function OpeningHoursCalendar() {
     }, []);
 
     const groupedBlocks = useMemo(() => {
-        // 1. Create a matrix of blocks for each day
         const dailyBlocks: TimeBlock[][] = days.map(day => {
             const blocks: TimeBlock[] = [];
             let currentTime = totalStartMinutes;
@@ -95,7 +94,7 @@ export function OpeningHoursCalendar() {
                 const endMinutes = timeToMinutes(period.end);
 
                 if (currentTime < startMinutes) {
-                    blocks.push({ start: minutesToTime(currentTime), end: minutesToTime(startMinutes), isOpen: false });
+                    blocks.push({ start: minutesToTime(currentTime), end: minutesToTime(startMinutes), isOpen: false, label: 'Praxis geschlossen' });
                 }
                 
                 blocks.push({ start: period.start, end: period.end, isOpen: true, label: period.label });
@@ -103,16 +102,14 @@ export function OpeningHoursCalendar() {
             }
 
             if (currentTime < totalEndMinutes) {
-                blocks.push({ start: minutesToTime(currentTime), end: minutesToTime(totalEndMinutes), isOpen: false });
+                blocks.push({ start: minutesToTime(currentTime), end: minutesToTime(totalEndMinutes), isOpen: false, label: 'Praxis geschlossen' });
             }
             return blocks;
         });
 
-        // 2. Group blocks horizontally
         const allGroupedBlocks: GroupedBlock[] = [];
         dailyBlocks.forEach((dayBlocks, dayIndex) => {
             dayBlocks.forEach(block => {
-                // Check if this block can be merged with an existing one
                 const mergeCandidate = allGroupedBlocks.find(grouped => 
                     grouped.start === block.start &&
                     grouped.end === block.end &&
@@ -137,64 +134,78 @@ export function OpeningHoursCalendar() {
     }, []);
 
     return (
-        <div className="flex w-full border-t border-border">
-          {/* Time Column */}
-          <div className="flex flex-col">
-            {/* Empty cell for header */}
-            <div className="h-12 border-b border-border"></div>
-            {timeLabels.map((slot) => (
-              <div
-                key={slot.startTime}
-                className={cn(
-                    `flex h-16 items-center justify-center border-b border-border px-2 text-center text-xs text-muted-foreground`
-                )}
-              >
-                {slot.startTime} - {slot.endTime}
-              </div>
-            ))}
-          </div>
-
-          {/* Days Columns */}
-          <div className="relative grid flex-1 grid-cols-5">
-            {/* Column structure for borders */}
-            {days.map((day, dayIndex) => (
-                <div key={day.name} className="flex flex-col text-center">
-                    <div className="flex h-12 items-center justify-center border-b border-border font-bold text-sm sm:text-base">{day.name}</div>
-                    <div className="relative h-full border-l border-border"></div>
-                </div>
-            ))}
-
-            {/* Blocks overlay */}
-            {groupedBlocks.map((block, index) => {
-                const startMinutes = timeToMinutes(block.start);
-                const endMinutes = timeToMinutes(block.end);
-                const durationMinutes = endMinutes - startMinutes;
-                
-                const top = ((startMinutes - totalStartMinutes) / 60) * slotHeightInRem;
-                const height = (durationMinutes / 60) * slotHeightInRem;
-
-                const left = `${block.startDay * 20}%`;
-                const width = `${(block.endDay - block.startDay + 1) * 20}%`;
-
-                return (
-                    <div
-                        key={index}
-                        className={cn(
-                            "absolute flex items-center justify-center p-2",
-                            block.isOpen ? 'bg-background' : 'bg-secondary'
-                        )}
-                        style={{
-                            top: `${top}rem`,
-                            height: `${height}rem`,
-                            left: left,
-                            width: width,
-                        }}
-                    >
-                        {block.label && <span className="font-semibold text-lg text-primary">{block.label}</span>}
-                        {!block.isOpen && <span className="font-semibold text-lg text-secondary-foreground">Praxis geschlossen</span>}
+        <div className="relative w-full border-t border-border">
+          {/* Main Grid */}
+          <div className="grid grid-cols-[auto_1fr]">
+            {/* Header Row */}
+            <div className="sticky top-0 z-10 border-b border-border bg-background"></div>
+            <div className="sticky top-0 z-10 grid grid-cols-5 bg-background">
+                {days.map((day) => (
+                    <div key={day.name} className="flex h-12 items-center justify-center border-b border-border font-bold text-sm sm:text-base text-center">
+                        {day.name}
                     </div>
-                );
-            })}
+                ))}
+            </div>
+
+            {/* Time Axis Column */}
+            <div className="row-span-2">
+                {timeLabels.map((slot) => (
+                <div
+                    key={slot.startTime}
+                    className={cn(
+                        `flex h-16 items-center justify-center border-b border-r border-border px-2 text-center text-xs text-muted-foreground`
+                    )}
+                >
+                    {slot.startTime} - {slot.endTime}
+                </div>
+                ))}
+            </div>
+
+             {/* Days Content Area */}
+            <div className="relative grid grid-cols-5">
+                {/* Vertical lines for day separation */}
+                {days.slice(0, 4).map((_, dayIndex) => (
+                    <div key={`line-${dayIndex}`} className="h-full border-r border-border" style={{gridColumn: dayIndex + 1}}></div>
+                ))}
+
+                {/* Blocks overlay */}
+                {groupedBlocks.map((block, index) => {
+                    const startMinutes = timeToMinutes(block.start);
+                    const endMinutes = timeToMinutes(block.end);
+                    const durationMinutes = endMinutes - startMinutes;
+                    
+                    const top = ((startMinutes - totalStartMinutes) / 60) * slotHeightInRem;
+                    const height = (durationMinutes / 60) * slotHeightInRem;
+
+                    const left = `${block.startDay * 20}%`;
+                    const width = `${(block.endDay - block.startDay + 1) * 20}%`;
+
+                    return (
+                        <div
+                            key={index}
+                            className={cn(
+                                "absolute flex items-center justify-center p-2",
+                                block.isOpen ? 'bg-background' : 'bg-secondary'
+                            )}
+                            style={{
+                                top: `${top}rem`,
+                                height: `${height}rem`,
+                                left: left,
+                                width: `calc(${width} - 1px)`, // Subtract 1px to prevent covering the border
+                            }}
+                        >
+                            {block.label && (
+                                <span className={cn(
+                                    "font-semibold text-lg",
+                                    block.isOpen ? "text-primary" : "text-secondary-foreground"
+                                )}>
+                                    {block.label}
+                                </span>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
           </div>
         </div>
       );
