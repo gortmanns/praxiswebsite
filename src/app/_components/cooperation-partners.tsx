@@ -108,29 +108,33 @@ export function CooperationPartnersSection() {
         <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
           Unsere weiteren Partner
         </h3>
-        <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {otherPartners.map((partner, index) => (
-                <Link
-                    key={partner.name}
-                    href={partner.websiteUrl}
-                    target={partner.websiteUrl === '#' ? '_self' : '_blank'}
-                    rel="noopener noreferrer"
-                    className={`group ${index === 0 ? 'lg:col-start-2' : ''}`}
-                >
-                    <Card className="flex h-32 items-center justify-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
-                        <CardContent className="flex w-full items-center justify-center p-0">
-                             <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                                <Image
-                                src={partner.logoUrl!}
-                                alt={`${partner.name} Logo`}
-                                fill
-                                className="object-contain"
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
-                </Link>
-            ))}
+        <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="lg:col-start-2">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+              {otherPartners.map((partner) => (
+                  <Link
+                      key={partner.name}
+                      href={partner.websiteUrl}
+                      target={partner.websiteUrl === '#' ? '_self' : '_blank'}
+                      rel="noopener noreferrer"
+                      className='group'
+                  >
+                      <Card className="flex h-32 items-center justify-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
+                          <CardContent className="flex w-full items-center justify-center p-0">
+                              <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                                  <Image
+                                  src={partner.logoUrl!}
+                                  alt={`${partner.name} Logo`}
+                                  fill
+                                  className="object-contain"
+                                  />
+                              </div>
+                          </CardContent>
+                      </Card>
+                  </Link>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
