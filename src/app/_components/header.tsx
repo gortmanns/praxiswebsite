@@ -30,7 +30,7 @@ export function Header() {
       </div>
 
       {/* Main header */}
-      <div className="container flex h-20 items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <div className="container relative flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center">
           <Link href="/" className="flex-shrink-0">
             <Image
@@ -44,7 +44,7 @@ export function Header() {
           </Link>
         </div>
 
-        <nav className="hidden items-center space-x-8 md:flex">
+        <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:flex md:items-center md:space-x-8">
           {navLinks.map((link) => (
             <Link
               key={link.href}
