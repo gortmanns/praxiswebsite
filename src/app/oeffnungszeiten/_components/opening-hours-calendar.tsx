@@ -141,7 +141,7 @@ export function OpeningHoursCalendar() {
             <div className="sticky top-0 z-10 border-b border-border bg-background"></div>
             <div className="sticky top-0 z-10 grid grid-cols-5 bg-background">
                 {days.map((day) => (
-                    <div key={day.name} className="flex h-12 items-center justify-center border-b border-border font-bold text-sm sm:text-base text-center">
+                    <div key={day.name} className="flex h-12 items-center justify-center border-b border-l border-border font-bold text-sm sm:text-base text-center">
                         {day.name}
                     </div>
                 ))}
@@ -153,7 +153,7 @@ export function OpeningHoursCalendar() {
                 <div
                     key={slot.startTime}
                     className={cn(
-                        `flex h-16 items-center justify-center border-b border-r border-border px-2 text-center text-xs text-muted-foreground`
+                        `flex h-16 items-center justify-center border-b border-border px-2 text-center text-xs text-muted-foreground`
                     )}
                 >
                     {slot.startTime} - {slot.endTime}
@@ -164,8 +164,8 @@ export function OpeningHoursCalendar() {
              {/* Days Content Area */}
             <div className="relative grid grid-cols-5">
                 {/* Vertical lines for day separation */}
-                {days.slice(0, 4).map((_, dayIndex) => (
-                    <div key={`line-${dayIndex}`} className="h-full border-r border-border" style={{gridColumn: dayIndex + 1}}></div>
+                {days.slice(0, 5).map((_, dayIndex) => (
+                    <div key={`line-${dayIndex}`} className="h-full border-l border-border" style={{gridColumn: dayIndex + 1}}></div>
                 ))}
 
                 {/* Blocks overlay */}
@@ -191,7 +191,7 @@ export function OpeningHoursCalendar() {
                                 top: `${top}rem`,
                                 height: `${height}rem`,
                                 left: left,
-                                width: `calc(${width} - 1px)`, // Subtract 1px to prevent covering the border
+                                width: `calc(${width})`, 
                             }}
                         >
                             {block.label && (
