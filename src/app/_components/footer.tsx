@@ -91,7 +91,7 @@ export function Footer() {
                 </p>
                 <p className="flex items-center gap-3">
                     <PrinterIcon className="h-[21px] w-[21px] flex-shrink-0" />
-                    <span>Fax: 031 589 68 60</span>
+                    <span>031 589 68 60</span>
                 </p>
                 <div className="flex items-center gap-3">
                     <MailIcon className="h-[21px] w-[21px] flex-shrink-0" />
