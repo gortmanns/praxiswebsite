@@ -32,16 +32,17 @@ function FaPillsIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg 
       xmlns="http://www.w3.org/2000/svg" 
-      viewBox="0 0 50 100"
+      viewBox="0 0 80 110"
       fill="currentColor"
       {...props}>
       <g transform="rotate(15 25 50)">
-        {/* Capsule with stronger rounded corners, full border, and tilted */}
         {/* Lower filled part */}
         <path d="M10 50 H 40 V 85 C 40 95, 35 100, 25 100 C 15 100, 10 95, 10 85 V 50 Z" />
         {/* Full outline */}
         <path d="M10 15 C 10 5, 15 0, 25 0 C 35 0, 40 5, 40 15 V 85 C 40 95, 35 100, 25 100 C 15 100, 10 95, 10 85 V 15 Z" fill="none" stroke="currentColor" strokeWidth="5" />
       </g>
+      {/* New Circle */}
+      <circle cx="65" cy="87.06" r="15" />
     </svg>
   );
 }
