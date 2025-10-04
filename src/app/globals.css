@@ -16,13 +16,13 @@
     --primary: 197 100% 47%; /* #00aaef */
     --primary-foreground: 0 0% 100%; /* white */
 
-    --secondary: 216 12% 84%; /* light silvery gray */
-    --secondary-foreground: 224 71% 4%; /* dark gray for contrast */
+    --secondary: 215 15% 45%; /* darker silvery gray */
+    --secondary-foreground: 0 0% 98%; /* very light gray for contrast */
 
-    --muted: 210 20% 98%; /* very light gray-blue */
-    --muted-foreground: 215 28% 17%; /* dark slate gray */
+    --muted: 210 40% 96.1%; /* very light gray-blue */
+    --muted-foreground: 215.4 16.3% 46.9%; /* slate gray */
 
-    --accent: 210 20% 94%; /* light gray-blue */
+    --accent: 210 40% 98%; /* very light gray-blue */
     --accent-foreground: 222.2 47.4% 11.2%; /* dark blue */
 
     --destructive: 0 84.2% 60.2%;
