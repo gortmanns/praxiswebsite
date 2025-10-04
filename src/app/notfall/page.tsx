@@ -37,8 +37,8 @@ export default function NotfallPage() {
                         Bei einem lebensbedrohlichen Notfall alarmieren Sie bitte unverzüglich den Rettungsdienst unter der Rufnummer
                       </p>
                       <div className="text-2xl lg:text-3xl xl:text-5xl">
-                        <a href="tel:144" className="flex items-center gap-3 font-bold text-destructive transition-colors hover:text-destructive/80">
-                            <Phone className="h-8 w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 flex-shrink-0" />
+                        <a href="tel:144" className="flex items-center gap-3 font-bold transition-colors hover:text-foreground/80">
+                            <Phone className="h-8 w-8 flex-shrink-0 lg:h-10 lg:w-10 xl:h-12 xl:w-12" />
                             <strong>144</strong>
                         </a>
                       </div>
@@ -79,13 +79,15 @@ export default function NotfallPage() {
                 <div className="border border-border p-6">
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
                     <div className="mx-auto w-full max-w-lg">
-                      <Image
-                        src="https://www.toxinfo.ch/customer/layout/images/logo.svg"
-                        alt="Tox Info Suisse Logo"
-                        width={300}
-                        height={100}
-                        className="h-auto w-full"
-                      />
+                      <Link href="https://www.toxinfo.ch/" target="_blank" rel="noopener noreferrer">
+                        <Image
+                          src="https://www.toxinfo.ch/customer/layout/images/logo.svg"
+                          alt="Tox Info Suisse Logo"
+                          width={300}
+                          height={100}
+                          className="h-auto w-full"
+                        />
+                      </Link>
                     </div>
                     <div className="space-y-4 text-left">
                       <p className="text-2xl lg:text-3xl xl:text-5xl text-foreground">
