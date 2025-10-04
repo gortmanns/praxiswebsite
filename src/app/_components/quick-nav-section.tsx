@@ -1,6 +1,11 @@
 'use client';
 import Link from 'next/link';
-import { Users, HandHelping, Pill, AlertTriangle, Stethoscope, FilePlus, ShieldCheck } from 'lucide-react';
+import {
+  Users,
+  Pill,
+  AlertTriangle,
+  FilePlus,
+} from 'lucide-react';
 
 const navItems = [
   {
@@ -11,7 +16,7 @@ const navItems = [
   {
     href: '/leistungen',
     label: 'Leistungen',
-    icon: HandHelping, // Placeholder, will be replaced by the 3 icons
+    icon: FilePlus,
   },
   {
     href: '/medikamente',
@@ -38,15 +43,7 @@ export function QuickNavSection() {
                 href={item.href}
                 className="group flex flex-col items-center justify-center gap-4 rounded-lg bg-secondary p-8 text-secondary-foreground transition-all hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               >
-                {item.label === 'Leistungen' ? (
-                  <div className="flex items-center justify-center gap-2 sm:gap-4">
-                    <Stethoscope className="h-16 w-16 text-secondary-foreground" />
-                    <FilePlus className="h-16 w-16 text-secondary-foreground" />
-                    <ShieldCheck className="h-16 w-16 text-secondary-foreground" />
-                  </div>
-                ) : (
-                  <Icon className="h-16 w-16 text-secondary-foreground" />
-                )}
+                <Icon className="h-16 w-16 text-secondary-foreground" />
                 <span className="text-lg font-bold uppercase tracking-wider text-secondary-foreground">
                   {item.label}
                 </span>
