@@ -34,7 +34,7 @@ const navItems = [
 export function QuickNavSection() {
   return (
     <section id="quick-nav" className="w-full bg-background">
-      <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+      <div className="mx-auto w-full px-4 pt-8 pb-16 sm:px-6 sm:pt-12 sm:pb-24 lg:px-8">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {navItems.map((item) => (
             <Link
