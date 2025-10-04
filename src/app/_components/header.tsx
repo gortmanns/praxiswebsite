@@ -23,7 +23,7 @@ export function Header() {
     <header className="w-full border-b bg-background">
       {/* Top bar */}
       <div className="bg-primary text-primary-foreground">
-        <div className="container mx-auto flex h-10 items-center justify-end gap-6 px-4 text-sm sm:px-6 lg:px-8">
+        <div className="container mx-auto flex h-10 items-center justify-end gap-6 text-sm">
           <a
             href="tel:+41313162600"
             className="flex items-center gap-2 text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
@@ -42,7 +42,7 @@ export function Header() {
       </div>
 
       {/* Main header */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto">
         <div className="flex h-28 items-center justify-between">
             <div className="flex-shrink-0">
             <Link href="/">
