@@ -89,7 +89,7 @@ export function CooperationPartnersSection() {
   ];
   return (
     <section id="partners" className="bg-primary">
-      <div className="container py-16 text-center sm:py-24">
+      <div className="mx-auto w-full px-4 py-16 text-center sm:px-6 sm:py-24 lg:px-8">
         <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl text-primary-foreground">
           Unsere Kooperationspartner
         </h2>
