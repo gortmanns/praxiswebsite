@@ -14,7 +14,7 @@ export function Header() {
   ];
 
   return (
-    <header className="w-full bg-background">
+    <header className="w-full border-b bg-background">
       {/* Top bar */}
       <div className="bg-primary text-primary-foreground">
         <div className="container mx-auto flex h-10 items-center justify-end gap-6 px-4 text-sm">
@@ -30,49 +30,48 @@ export function Header() {
       </div>
       
       {/* Main header with logo and navigation */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative flex h-20 items-center justify-between">
-          {/* Logo */}
-          <div className="flex-shrink-0">
+      <div className="relative flex h-20 items-center">
+        {/* Logo */}
+        <div className="absolute inset-y-0 left-0 flex items-center px-4 sm:px-6 lg:px-8">
             <Link href="/" className="inline-block py-4">
-              <Image
+            <Image
                 src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
                 alt="Praxiszentrum im Ring Logo"
                 width={520}
                 height={105}
                 className="h-auto w-auto max-w-[300px] md:max-w-[520px]"
                 priority
-              />
+            />
             </Link>
-          </div>
+        </div>
 
-          {/* Centered Navigation for Desktop */}
-          <div className="flex-grow flex justify-center items-center">
+        {/* Centered Navigation for Desktop & Mobile Menu */}
+        <div className="container mx-auto flex flex-1 items-center justify-center px-4 sm:px-6 lg:px-8">
             <nav className="hidden items-center space-x-8 md:flex">
-              {navLinks.map((link) => (
+                {navLinks.map((link) => (
                 <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-lg font-bold text-muted-foreground transition-colors hover:text-primary"
+                    key={link.href}
+                    href={link.href}
+                    className="text-lg font-bold text-muted-foreground transition-colors hover:text-primary"
                 >
-                  {link.label}
+                    {link.label}
                 </Link>
-              ))}
+                ))}
             </nav>
-          </div>
-          
-          {/* Mobile Menu Trigger */}
-          <div className="flex items-center flex-shrink-0">
+        </div>
+        
+        {/* Mobile Menu Trigger - Right-aligned */}
+        <div className="absolute inset-y-0 right-0 flex items-center pr-4 sm:pr-6 lg:pr-8">
             <div className="ml-4 md:hidden">
-              <Sheet>
+            <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon">
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Menü öffnen</span>
-                  </Button>
+                </Button>
                 </SheetTrigger>
                 <SheetContent side="right">
-                  <div className="p-4">
+                <div className="p-4">
                     <Link href="/" className="mb-8 block">
                         <Image
                         src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
@@ -80,36 +79,35 @@ export function Header() {
                         width={180}
                         height={37}
                         className="h-auto"
-                      />
+                    />
                     </Link>
                     <div className="mb-6 space-y-4 text-sm">
-                      <a href="tel:+41313162600" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary">
+                    <a href="tel:+41313162600" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary">
                         <Phone size={16} />
                         <span>+41 31 316 26 00</span>
-                      </a>
-                      <a href="mailto:empfang@praxiszentrum-im-ring.ch" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary">
+                    </a>
+                    <a href="mailto:empfang@praxiszentrum-im-ring.ch" className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary">
                         <Mail size={16} />
                         <span>empfang@praxiszentrum-im-ring.ch</span>
-                      </a>
+                    </a>
                     </div>
                     <nav className="flex flex-col space-y-4">
-                      {navLinks.map((link) => (
+                    {navLinks.map((link) => (
                         <Link
-                          key={link.href}
-                          href={link.href}
-                          className="text-lg font-bold text-muted-foreground transition-colors hover:text-primary"
+                        key={link.href}
+                        href={link.href}
+                        className="text-lg font-bold text-muted-foreground transition-colors hover:text-primary"
                         >
-                          {link.label}
+                        {link.label}
                         </Link>
-                      ))}
+                    ))}
                     </nav>
-                  </div>
+                </div>
                 </SheetContent>
-              </Sheet>
+            </Sheet>
             </div>
-          </div>
         </div>
-      </div>
+        </div>
     </header>
   );
 }
