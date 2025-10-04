@@ -7,9 +7,9 @@ import Image from 'next/image';
 export function Header() {
   const navLinks = [
     { href: '/', label: 'Startseite' },
+    { href: '/zeiten', label: 'Zeiten' },
     { href: '/team', label: 'Team' },
     { href: '/leistungen', label: 'Leistungen' },
-    { href: '/zeiten', label: 'Zeiten' },
     { href: '/medikamente', label: 'Medikamente' },
     { href: '/notfall', label: 'NOTFALL' },
   ];
