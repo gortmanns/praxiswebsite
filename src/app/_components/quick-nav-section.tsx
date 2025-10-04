@@ -43,7 +43,7 @@ function FaPillsIcon(props: React.SVGProps<SVGSVGElement>) {
       </g>
       {/* Circle with 80% height of capsule, aligned to bottom */}
       <circle cx="85" cy="62.06" r="28" fill="currentColor"/>
-      <path d="M65.2 42.26 L 104.8 81.86" stroke="white" strokeWidth="3" strokeLinecap="round" />
+      <path d="M65.2 42.26 L 104.8 81.86" stroke="gray" strokeWidth="3" strokeLinecap="round" />
     </svg>
   );
 }
