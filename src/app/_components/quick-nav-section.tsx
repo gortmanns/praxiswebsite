@@ -4,10 +4,6 @@ import {
   Users,
   FilePlus,
   AlertTriangle,
-  HeartPulse,
-  ClipboardList,
-  Medal,
-  Stethoscope,
 } from 'lucide-react';
 
 const navItems = [
@@ -51,10 +47,6 @@ const CustomPillsIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export function QuickNavSection() {
   const iconComponents: { [key: string]: React.ElementType } = {
-    HeartPulse,
-    ClipboardList,
-    Medal,
-    Stethoscope,
     FilePlus,
     CustomPillsIcon
   };
