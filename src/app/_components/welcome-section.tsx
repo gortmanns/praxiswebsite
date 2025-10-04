@@ -6,7 +6,7 @@ export function WelcomeSection() {
           <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl whitespace-nowrap text-primary">
             WILLKOMMEN BEIM PRAXISZENTRUM IM RING
           </h2>
-          <p className="mt-6 text-lg text-muted-foreground">
+          <p className="mt-6 text-lg text-foreground/80">
             Im Herzen des Kappelenrings gelegen verstehen wir uns als Ansprechpartner und Ratgeber in allen Gesundheitsfragen für unsere Patienten. Als Ausbildungspraxis für Hausarztmedizin der Universität Bern unterstützen wir ausserdem aktiv die Ausbildung der nächsten Generation.
           </p>
         </div>
