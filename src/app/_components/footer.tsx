@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -92,20 +93,23 @@ export function Footer() {
                     <PrinterIcon className="h-[21px] w-[21px] flex-shrink-0" />
                     <span>Fax: 031 589 68 60</span>
                 </p>
-                <p className="flex items-center gap-3">
+                <div className="flex items-center gap-3">
                     <MailIcon className="h-[21px] w-[21px] flex-shrink-0" />
-                    <a
-                    href="mailto:empfang@praxiszentrum-im-ring.ch"
-                    className="break-all transition-colors hover:text-background"
-                    >
-                    empfang@praxiszentrum-im-ring.ch
-                    </a>
-                </p>
+                    <ObfuscatedLink 
+                      user="empfang" 
+                      domain="praxiszentrum-im-ring.ch"
+                      className="break-all transition-colors hover:text-background"
+                    />
+                </div>
                 <div className="flex flex-col items-start gap-1">
-                    <p className="flex items-center gap-3">
+                    <div className="flex items-center gap-3">
                         <HinMailIcon className="h-[21px] w-[21px] text-primary flex-shrink-0"/>
-                        <a href="mailto:praxiszentrum-im-ring@hin.ch" className="break-all transition-colors hover:text-background">praxiszentrum-im-ring@hin.ch</a>
-                    </p>
+                        <ObfuscatedLink
+                          user="praxiszentrum-im-ring"
+                          domain="hin.ch"
+                          className="break-all transition-colors hover:text-background"
+                        />
+                    </div>
                     <p className="pl-9 text-xs text-background/70">(Für die sichere Übermittlung medizinischer Unterlagen)</p>
                 </div>
             </div>

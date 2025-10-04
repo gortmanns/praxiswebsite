@@ -7,6 +7,7 @@ import { Menu } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -47,13 +48,13 @@ export function Header() {
             <PhoneIcon className="h-[21px] w-[21px]" />
             <span>031 316 26 00</span>
           </a>
-          <a
-            href="mailto:empfang@praxiszentrum-im-ring.ch"
-            className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
-          >
+          <div className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80">
             <MailIcon className="h-[21px] w-[21px]" />
-            <span>empfang@praxiszentrum-im-ring.ch</span>
-          </a>
+            <ObfuscatedLink
+              user="empfang"
+              domain="praxiszentrum-im-ring.ch"
+            />
+          </div>
            <div className="flex items-center gap-2 font-medium text-sm text-primary-foreground">
             <PrinterIcon className="h-[21px] w-[21px]" />
             <span>Fax: 031 589 68 60</span>
@@ -122,13 +123,15 @@ export function Header() {
                     <PhoneIcon className="h-[21px] w-[21px]" />
                     <span>031 316 26 00</span>
                 </a>
-                <a
-                    href="mailto:empfang@praxiszentrum-im-ring.ch"
+                <div
                     className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary"
                 >
                     <MailIcon className="h-[21px] w-[21px]" />
-                    <span>empfang@praxiszentrum-im-ring.ch</span>
-                </a>
+                    <ObfuscatedLink
+                        user="empfang"
+                        domain="praxiszentrum-im-ring.ch"
+                    />
+                </div>
                 </div>
                 <nav className="flex flex-col space-y-4">
                 {navLinks.map((link) => {
