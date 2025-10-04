@@ -30,10 +30,9 @@ export function Header() {
       </div>
 
       {/* Main header */}
-      <div className="relative flex h-20 w-full items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Logo - Aligned Left */}
-        <div className="flex-shrink-0">
-          <Link href="/" className="inline-block">
+      <div className="container flex h-20 items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        <div className="flex items-center">
+          <Link href="/" className="flex-shrink-0">
             <Image
               src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
               alt="Praxiszentrum im Ring Logo"
@@ -45,25 +44,21 @@ export function Header() {
           </Link>
         </div>
 
-        {/* Centered Navigation for Desktop */}
-        <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:flex">
-            <div className="flex items-center justify-center space-x-8">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`text-lg font-bold text-muted-foreground transition-colors hover:text-primary ${
-                    link.label === 'NOTFALL' ? 'uppercase' : ''
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
+        <nav className="hidden items-center space-x-8 md:flex">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`text-lg font-bold text-muted-foreground transition-colors hover:text-primary ${
+                link.label === 'NOTFALL' ? 'uppercase' : ''
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
-        
-        {/* Mobile Menu Trigger - Aligned Right */}
-        <div className="flex items-center justify-end md:hidden">
+
+        <div className="flex items-center md:hidden">
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
