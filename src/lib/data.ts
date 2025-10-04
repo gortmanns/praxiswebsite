@@ -34,12 +34,6 @@ export const doctors = [
     bio: 'Dr. Huber begleitet Frauen in allen Lebensphasen mit Einfühlungsvermögen und hoher fachlicher Kompetenz.',
     image: getImage('dr-sophie-huber'),
   },
-    {
-    name: 'Dr. med. Agnieszka Slezak',
-    specialty: 'Fachärztin für Neurologie',
-    bio: '',
-    image: getImage('dr-agnieszka-slezak'),
-  },
 ];
 
 export type Doctor = typeof doctors[0];

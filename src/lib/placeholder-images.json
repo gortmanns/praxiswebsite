@@ -15,7 +15,7 @@
     {
       "id": "dr-lars-weber",
       "description": "Portrait of Dr. Lars Weber, a professional male doctor in a clinical setting.",
-      "imageUrl": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYWxlJTIwZG9jdG9yfGVufDB8fHx8MTc1OTU2Nzg4Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYWxlJTIwZG9jdG9yfGVufDB8fHx8MTc1OTU2Nzg4Mnww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "male doctor"
     },
     {
@@ -23,12 +23,6 @@
       "description": "Portrait of Dr. Sophie Huber, a smiling female doctor looking approachable.",
       "imageUrl": "https://images.unsplash.com/photo-1684331448263-9975a4358032?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx3b21hbiUyMGRvY3RvciUyMHNtaWxpbmd8ZW58MHx8fHwxNzU5NTY3NDIzfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "woman doctor smiling"
-    },
-    {
-      "id": "dr-agnieszka-slezak",
-      "description": "Portrait of Dr. Agnieszka Slezak, a professional female doctor.",
-      "imageUrl": "https://images.unsplash.com/photo-1753487050317-919a2b26a6ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmZW1hbGUlMjBkb2N0b3IlMjBwcm9mZXNzaW9uYWx8ZW58MHx8fHwxNzU5NTkyMjIzfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "female doctor professional"
     },
     {
       "id": "luftbild",

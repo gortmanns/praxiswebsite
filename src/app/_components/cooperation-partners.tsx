@@ -1,6 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Card, CardContent } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 
 export function CooperationPartnersSection() {
@@ -34,7 +40,7 @@ export function CooperationPartnersSection() {
         <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
           Unsere Kooperationspartner
         </h2>
-        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {partners.map((partner) => {
             return (
               <Link
@@ -47,7 +53,7 @@ export function CooperationPartnersSection() {
                 <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
                   <CardContent className="flex w-full items-center justify-center p-0">
                     {partner.name === 'VASC-ALLIANCE' ? (
-                       <Image
+                      <Image
                         src={partner.logoUrl!}
                         alt={`${partner.name} Logo`}
                         width={200}
@@ -80,30 +86,38 @@ export function CooperationPartnersSection() {
               </Link>
             );
           })}
+          <Card className="flex h-32 items-center justify-center p-6 text-center">
+            <CardContent className="p-0">
+              <p className="font-bold">Dr. med. Agnieszka Slezak</p>
+              <p className="text-sm text-muted-foreground">
+                Fachärztin für Neurologie
+              </p>
+            </CardContent>
+          </Card>
         </div>
         <div className="mt-8 flex justify-center">
-            <div className="w-full sm:w-1/2 lg:w-1/3">
-                 <Link
-                    key={secondRowPartner.name}
-                    href={secondRowPartner.websiteUrl}
-                    target={secondRowPartner.websiteUrl === '#' ? '_self' : '_blank'}
-                    rel="noopener noreferrer"
-                    className="group"
-                >
-                    <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
-                        <CardContent className="flex w-full items-center justify-center p-0">
-                             <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                                <Image
-                                    src={secondRowPartner.logoUrl!}
-                                    alt={`${secondRowPartner.name} Logo`}
-                                    fill
-                                    className="object-contain"
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
-                </Link>
-            </div>
+          <div className="w-full sm:w-1/2 lg:w-1/3">
+            <Link
+              key={secondRowPartner.name}
+              href={secondRowPartner.websiteUrl}
+              target={secondRowPartner.websiteUrl === '#' ? '_self' : '_blank'}
+              rel="noopener noreferrer"
+              className="group"
+            >
+              <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
+                <CardContent className="flex w-full items-center justify-center p-0">
+                  <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                    <Image
+                      src={secondRowPartner.logoUrl!}
+                      alt={`${secondRowPartner.name} Logo`}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
         </div>
       </div>
     </section>
