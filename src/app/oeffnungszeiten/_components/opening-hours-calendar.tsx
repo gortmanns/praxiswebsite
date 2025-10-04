@@ -15,6 +15,7 @@ const minutesToTime = (minutes: number) => {
     return `${h}:${m}`;
 };
 
+
 const timeSlots = [
   '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00',
   '16:00', '17:00', '18:00',
@@ -135,26 +136,23 @@ export function OpeningHoursCalendar() {
 
     return (
         <div className="relative w-full border-t border-border">
-          {/* Main Grid */}
-          <div className="grid grid-cols-[auto_1fr]">
+          <div className="grid grid-cols-[auto_repeat(5,1fr)]">
             {/* Header Row */}
-            <div className="sticky top-0 z-10 border-b border-border bg-background"></div>
-            <div className="sticky top-0 z-10 grid grid-cols-5 bg-background">
+            <div className="sticky top-0 z-10 border-b border-r border-border bg-muted"></div>
+            <div className="sticky top-0 z-10 grid grid-cols-5 bg-muted">
                 {days.map((day) => (
-                    <div key={day.name} className="flex h-12 items-center justify-center border-b border-l border-border font-bold text-sm sm:text-base text-center">
+                    <div key={day.name} className="flex h-12 items-center justify-center border-b border-l border-border text-center text-sm font-bold text-muted-foreground sm:text-base">
                         {day.name}
                     </div>
                 ))}
             </div>
 
-            {/* Time Axis Column */}
-            <div className="row-span-2">
-                {timeLabels.map((slot) => (
+            {/* Time Axis Blocks */}
+            <div className="row-start-2 flex flex-col">
+                {timeLabels.map((slot, index) => (
                 <div
-                    key={slot.startTime}
-                    className={cn(
-                        `flex h-16 items-center justify-center border-b border-border px-2 text-center text-xs text-muted-foreground`
-                    )}
+                    key={`time-${index}`}
+                    className="flex h-16 items-center justify-center border-b border-r border-border bg-muted px-2 text-center text-xs text-muted-foreground"
                 >
                     {slot.startTime} - {slot.endTime}
                 </div>
@@ -162,10 +160,10 @@ export function OpeningHoursCalendar() {
             </div>
 
              {/* Days Content Area */}
-            <div className="relative grid grid-cols-5">
+            <div className="relative col-span-5 col-start-2 row-start-2 grid grid-cols-5">
                 {/* Vertical lines for day separation */}
-                {days.slice(0, 5).map((_, dayIndex) => (
-                    <div key={`line-${dayIndex}`} className="h-full border-l border-border" style={{gridColumn: dayIndex + 1}}></div>
+                {days.slice(0, 4).map((_, dayIndex) => (
+                    <div key={`line-${dayIndex}`} className="h-full border-l border-border" style={{gridColumn: dayIndex + 2}}></div>
                 ))}
 
                 {/* Blocks overlay */}
@@ -177,9 +175,6 @@ export function OpeningHoursCalendar() {
                     const top = ((startMinutes - totalStartMinutes) / 60) * slotHeightInRem;
                     const height = (durationMinutes / 60) * slotHeightInRem;
 
-                    const left = `${block.startDay * 20}%`;
-                    const width = `${(block.endDay - block.startDay + 1) * 20}%`;
-
                     return (
                         <div
                             key={index}
@@ -190,14 +185,14 @@ export function OpeningHoursCalendar() {
                             style={{
                                 top: `${top}rem`,
                                 height: `${height}rem`,
-                                left: left,
-                                width: `calc(${width})`, 
+                                left: `${block.startDay * 20}%`,
+                                width: `calc(${(block.endDay - block.startDay + 1) * 20}% - 1px)`, 
                             }}
                         >
                             {block.label && (
                                 <span className={cn(
                                     "font-semibold text-lg",
-                                    block.isOpen ? "text-primary" : "text-secondary-foreground"
+                                    block.isOpen ? "text-foreground" : "text-secondary-foreground"
                                 )}>
                                     {block.label}
                                 </span>
