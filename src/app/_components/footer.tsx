@@ -12,6 +12,7 @@ export function Footer() {
     { href: '/medikamente', 'label': 'Medikamente' },
     { href: '/notfall', label: 'NOTFALL' },
   ];
+  const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Praxiszentrum+im+Ring,+Kappelenring+6,+3023+Hinterkappelen";
 
   return (
     <footer className="bg-accent text-background/80">
@@ -54,14 +55,14 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="text-lg font-bold uppercase text-primary">Kontakt</h3>
             <div className="space-y-2 text-sm text-background/80">
-              <div className="flex items-start gap-3">
+              <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 transition-colors hover:text-background">
                 <MapPin size={16} className="mt-1 flex-shrink-0" />
                 <div className='flex flex-col'>
                     <span>PRAXISZENTRUM IM RING</span>
                     <span>Kappelenring 6</span>
                     <span>3023 Hinterkappelen</span>
                 </div>
-              </div>
+              </a>
               <p className="flex items-center gap-3">
                 <Phone size={16} className="flex-shrink-0" />
                 <a

@@ -1,6 +1,7 @@
 import { Phone, Mail, MapPin, ShieldCheck } from "lucide-react";
 
 export function ContactSection() {
+  const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Praxiszentrum+im+Ring,+Kappelenring+6,+3023+Hinterkappelen";
   return (
     <section id="contact" className="py-16 sm:py-24 bg-muted/50">
       <div className="container">
@@ -18,14 +19,14 @@ export function ContactSection() {
               Ihr Gesundheitszentrum in Hinterkappelen.
             </p>
             <div className="mt-8 space-y-4 text-muted-foreground">
-              <div className="flex items-center justify-center gap-2">
+              <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 transition-colors hover:text-primary">
                 <MapPin size={16} />
                 <div className="flex flex-col">
                     <span>PRAXISZENTRUM IM RING</span>
                     <span>Kappelenring 6</span>
                     <span>3023 Hinterkappelen</span>
                 </div>
-              </div>
+              </a>
               <p className="flex items-center justify-center gap-2">
                 <Phone size={16} />
                 <a href="tel:0313162600" className="hover:text-primary">031 316 26 00</a>
