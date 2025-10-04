@@ -45,7 +45,7 @@ export function Footer() {
   return (
     <footer className="bg-accent text-background/80">
       <div className="container py-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {/* Rechtliches */}
           <div className="space-y-4">
             <h3 className="text-lg font-bold uppercase text-primary">Rechtliches</h3>
@@ -111,6 +111,29 @@ export function Footer() {
                         />
                     </div>
                     <p className="pl-9 text-xs text-background/70">(Für die sichere Übermittlung medizinischer Unterlagen)</p>
+                </div>
+            </div>
+          </div>
+           {/* Medikamente */}
+           <div className="space-y-4">
+            <h3 className="text-lg font-bold uppercase text-primary">Medikamentenbestellung</h3>
+            <div className="space-y-2 text-sm">
+                <p className="flex items-center gap-3">
+                    <PhoneIcon className="h-[21px] w-[21px] flex-shrink-0" />
+                    <a
+                    href="tel:0313162666"
+                    className="transition-colors hover:text-background"
+                    >
+                    031 316 26 66
+                    </a>
+                </p>
+                <div className="flex items-center gap-3">
+                    <MailIcon className="h-[21px] w-[21px] flex-shrink-0" />
+                    <ObfuscatedLink 
+                      user="medikamente" 
+                      domain="praxiszentrum-im-ring.ch"
+                      className="break-all transition-colors hover:text-background"
+                    />
                 </div>
             </div>
           </div>
