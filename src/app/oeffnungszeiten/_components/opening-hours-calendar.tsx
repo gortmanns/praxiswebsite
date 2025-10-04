@@ -49,100 +49,7 @@ const days = [
   },
 ];
 
-type TimeBlock = {
-  start: string;
-  end: string;
-  isOpen: boolean;
-  label?: string;
-};
-
 export function OpeningHoursCalendar() {
-    const dailyBlocks = useMemo(() => {
-        return days.map(day => {
-            const blocks: TimeBlock[] = [];
-            timeSlots.slice(0, -1).forEach((startTime, i) => {
-                const slotStartMinutes = timeToMinutes(startTime);
-                let inOpeningPeriod = false;
-                for (const period of day.open) {
-                    const periodStartMinutes = timeToMinutes(period.start);
-                    const periodEndMinutes = timeToMinutes(period.end);
-                    if (slotStartMinutes >= periodStartMinutes && slotStartMinutes < periodEndMinutes) {
-                        blocks.push({ ...period, isOpen: true, start: startTime, end: timeSlots[i+1] });
-                        inOpeningPeriod = true;
-                        break;
-                    }
-                }
-                if (!inOpeningPeriod) {
-                    blocks.push({ start: startTime, end: timeSlots[i+1], isOpen: false, label: 'Praxis geschlossen' });
-                }
-            });
-            return blocks;
-        });
-    }, []);
-
-    const renderBlock = (dayIndex: number, timeIndex: number) => {
-        const block = dailyBlocks[dayIndex][timeIndex];
-        const startTimeMinutes = timeToMinutes(block.start);
-        const day = days[dayIndex];
-    
-        // Hide blocks that are part of a merged block
-        // Vormittag Mo-Fr
-        if (startTimeMinutes < timeToMinutes('12:00')) return null;
-        // Nachmittag Mo/Di
-        if ((dayIndex === 0 || dayIndex === 1) && startTimeMinutes >= timeToMinutes('14:00')) return null;
-    
-        // Find if the current block is the start of an open period
-        const openPeriod = day.open.find(p => timeToMinutes(p.start) === startTimeMinutes);
-    
-        if (openPeriod) {
-            const startMinutes = timeToMinutes(openPeriod.start);
-            const endMinutes = timeToMinutes(openPeriod.end);
-            const durationInIntervals = (endMinutes - startMinutes) / 60;
-    
-            return (
-                <div
-                    key={`${dayIndex}-${timeIndex}`}
-                    className="flex items-center justify-center p-1 border-b border-l border-border bg-background"
-                    style={{ gridRow: `span ${durationInIntervals}` }}
-                >
-                    <span className="text-base font-semibold text-foreground">
-                        {openPeriod.label}
-                    </span>
-                </div>
-            );
-        }
-    
-        // For closed periods, check if we are already covered by a merged block
-        if (dayIndex === 2 && startTimeMinutes >= timeToMinutes('12:00')) {
-            // Already handled by the merged "Praxis geschlossen" block
-            return null;
-        }
-
-        const isCoveredByMergedClosedBlock = (dayIndex < 3 && startTimeMinutes >= timeToMinutes('12:00') && startTimeMinutes < timeToMinutes('14:00')) || // Mo-Mi
-                                           (dayIndex === 3 && startTimeMinutes >= timeToMinutes('12:00') && startTimeMinutes < timeToMinutes('14:00')) || // Do
-                                           (dayIndex === 4 && startTimeMinutes >= timeToMinutes('12:00') && startTimeMinutes < timeToMinutes('13:00')) || // Fr Mittag
-                                           (dayIndex === 4 && startTimeMinutes >= timeToMinutes('17:00') && startTimeMinutes < timeToMinutes('18:00')); // Fr Abend
-
-        if(isCoveredByMergedClosedBlock) return null;
-
-        return (
-            <div
-                key={`${dayIndex}-${timeIndex}`}
-                className={cn(
-                    "flex items-center justify-center p-1 border-b border-l border-border",
-                    'bg-secondary'
-                )}
-            >
-                <span className={cn(
-                    "text-base font-semibold",
-                    "text-secondary-foreground"
-                )}>
-                   {'Praxis geschlossen'}
-                </span>
-            </div>
-        );
-    };
-
   return (
     <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border-t border-r border-border">
       {/* Header Row */}
@@ -163,50 +70,51 @@ export function OpeningHoursCalendar() {
       </div>
       
       <div className="col-start-2 col-end-7 row-start-2 row-end-[13] grid grid-cols-5 grid-rows-10">
-        {/* Merged Morning Block Mo-Fr 08-12 */}
-        <div className="col-start-1 col-end-6 row-start-1 row-end-5 flex items-center justify-center p-2 border-b border-l border-border bg-background">
-            <div className="col-start-3 text-lg font-semibold text-foreground">
-                Sprechstunde
-            </div>
+        {/* Vormittag Mo-Fr 08-12 */}
+        <div className="col-span-5 row-span-4 flex items-center justify-center p-2 border-b border-l border-border bg-background">
+            <div className="text-lg font-semibold text-foreground">Sprechstunde</div>
         </div>
 
-        {/* Merged Lunch Block Mo-Do 12-14 */}
-        <div className="col-start-1 col-end-5 row-start-5 row-end-7 flex items-center justify-center p-2 border-b border-l border-border bg-secondary">
-             <span className="text-base font-semibold text-secondary-foreground">
-                Praxis geschlossen
-            </span>
-        </div>
-        {/* Fr 12-13 */}
-        <div className="col-start-5 col-end-6 row-start-5 row-end-6 flex items-center justify-center p-2 border-b border-l border-border bg-secondary">
-             <span className="text-base font-semibold text-secondary-foreground">
-                Praxis geschlossen
-            </span>
-        </div>
-
-        {/* Merged Afternoon Block Mo/Di 14-18 */}
+        {/* Nachmittag Mo/Di 14-18 */}
         <div className="col-start-1 col-end-3 row-start-7 row-end-11 flex items-center justify-center p-2 border-b border-l border-border bg-background">
             <span className="text-lg font-semibold text-foreground">
                 Sprechstunde
             </span>
         </div>
         
-        {/* Mittwoch Nachmittag geschlossen */}
+        {/* Mittagspause Mo/Di/Do 12-14 */}
+        <div className="col-start-1 col-end-3 row-start-5 row-end-7 flex items-center justify-center p-2 border-b border-l border-border bg-secondary">
+             <span className="text-base font-semibold text-secondary-foreground">Praxis geschlossen</span>
+        </div>
+        <div className="col-start-4 col-end-5 row-start-5 row-end-7 flex items-center justify-center p-2 border-b border-l border-border bg-secondary">
+             <span className="text-base font-semibold text-secondary-foreground">Praxis geschlossen</span>
+        </div>
+
+        {/* Mittwoch Nachmittag geschlossen 12-18 */}
         <div className="col-start-3 col-end-4 row-start-5 row-end-11 flex items-center justify-center p-2 border-b border-l border-border bg-secondary">
-            <span className="text-base font-semibold text-secondary-foreground">
-                Praxis geschlossen
-            </span>
+            <span className="text-base font-semibold text-secondary-foreground">Praxis geschlossen</span>
         </div>
 
-        {/* Fr Abend geschlossen */}
+        {/* Donnerstag Nachmittag 14-18 */}
+        <div className="col-start-4 col-end-5 row-start-7 row-end-11 flex items-center justify-center p-2 border-b border-l border-border bg-background">
+            <span className="text-lg font-semibold text-foreground">Sprechstunde</span>
+        </div>
+
+        {/* Freitag Mittag 12-13 */}
+        <div className="col-start-5 col-end-6 row-start-5 row-end-6 flex items-center justify-center p-2 border-b border-l border-border bg-secondary">
+             <span className="text-base font-semibold text-secondary-foreground">Praxis geschlossen</span>
+        </div>
+        
+        {/* Freitag Nachmittag 13-17 */}
+        <div className="col-start-5 col-end-6 row-start-6 row-end-10 flex items-center justify-center p-2 border-b border-l border-border bg-background">
+            <span className="text-lg font-semibold text-foreground">Sprechstunde</span>
+        </div>
+
+        {/* Freitag Abend 17-18 geschlossen */}
         <div className="col-start-5 col-end-6 row-start-10 row-end-11 flex items-center justify-center p-2 border-b border-l border-border bg-secondary">
-            <span className="text-base font-semibold text-secondary-foreground">
-                Praxis geschlossen
-            </span>
+            <span className="text-base font-semibold text-secondary-foreground">Praxis geschlossen</span>
         </div>
 
-        {dailyBlocks.map((dayBlocks, dayIndex) => 
-            dayBlocks.map((block, timeIndex) => renderBlock(dayIndex, timeIndex))
-        )}
       </div>
     </div>
   );
