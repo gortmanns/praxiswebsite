@@ -13,12 +13,12 @@ export function Hero() {
           src={heroImage.imageUrl}
           alt={heroImage.description}
           fill
-          className="object-cover md:object-center"
+          className="object-contain md:object-cover"
           priority
           data-ai-hint={heroImage.imageHint}
         />
       )}
-      <div className="absolute inset-0 bg-primary/20" />
+      <div className="absolute inset-0 bg-primary/20 -z-10" />
       <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground">
         <div className='bg-black/40 p-8 rounded-lg backdrop-blur-sm'>
             <h1 className="font-headline text-4xl font-bold md:text-6xl">
