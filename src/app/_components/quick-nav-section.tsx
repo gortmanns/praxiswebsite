@@ -1,14 +1,11 @@
 'use client';
 import Link from 'next/link';
 import {
-  Users,
   FilePlus,
   AlertTriangle,
 } from 'lucide-react';
 
-// Benutzerdefiniertes SVG-Icon, das das 'Users'-Icon erweitert.
-// Es fügt eine gespiegelte Version der rechten Figur auf der linken Seite hinzu.
-function CustomTeamIcon(props: React.SVGProps<SVGSVGElement>) {
+function UsersIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -22,15 +19,10 @@ function CustomTeamIcon(props: React.SVGProps<SVGSVGElement>) {
       strokeLinejoin="round"
       {...props}
     >
-      {/* Originale mittlere und rechte Figur */}
       <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
       <circle cx="9" cy="7" r="4" />
       <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      
-      {/* Hinzugefügte gespiegelte linke Figur */}
-      <path d="M2 21v-2a4 4 0 0 1 3-3.87" />
-      <path d="M8 3.13a4 4 0 0 0 0 7.75" />
     </svg>
   );
 }
@@ -40,7 +32,7 @@ const navItems = [
   {
     href: '/team',
     label: 'Team',
-    Icon: CustomTeamIcon,
+    Icon: UsersIcon,
   },
   {
     href: '/leistungen',
