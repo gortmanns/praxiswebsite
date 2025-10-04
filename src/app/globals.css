@@ -6,24 +6,34 @@
   :root {
     --background: 0 0% 100%; /* white */
     --foreground: 224 71.4% 4.1%; /* near black */
-    --card: 220 13% 96%; /* was Muted */
-    --card-foreground: 220 9% 46%; /* was Muted FG */
+    
+    --card: 0 0% 100%; /* white */
+    --card-foreground: 224 71% 4%; /* dark gray */
+    
     --popover: 0 0% 100%; /* white */
     --popover-foreground: 224 71.4% 4.1%; /* near black */
+
     --primary: 197 100% 47%; /* #00aaef */
     --primary-foreground: 0 0% 100%; /* white */
-    --secondary: 220 9% 46%; /* was Muted FG */
-    --secondary-foreground: 0 0% 98%; /* near white */
-    --muted: 210 20% 98%; /* lighter gray-blue */
+
+    --secondary: 216 12% 84%; /* light silvery gray */
+    --secondary-foreground: 224 71% 4%; /* dark gray for contrast */
+
+    --muted: 210 20% 98%; /* very light gray-blue */
     --muted-foreground: 215 28% 17%; /* dark slate gray */
+
     --accent: 210 20% 94%; /* light gray-blue */
     --accent-foreground: 222.2 47.4% 11.2%; /* dark blue */
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
     --ring: 197 100% 47%; /* #00aaef */
+    
     --radius: 0.5rem;
+
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
