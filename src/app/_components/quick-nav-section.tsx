@@ -41,8 +41,8 @@ function FaPillsIcon(props: React.SVGProps<SVGSVGElement>) {
         {/* Full outline */}
         <path d="M10 15 C 10 -0.45, 40 -0.45, 40 15 V 85 C 40 100.45, 10 100.45, 10 85 V 15 Z" fill="none" stroke="currentColor" strokeWidth="5" />
       </g>
-      {/* New Circle. The lowest point of the rotated capsule is at y=87.5. The circle with radius 28 should have its center at cy = 87.5 - 28 = 59.5 */}
-      <circle cx="85" cy="59.5" r="28" />
+      {/* Circle with 80% height of capsule, aligned to bottom */}
+      <circle cx="85" cy="62.06" r="28" />
     </svg>
   );
 }
