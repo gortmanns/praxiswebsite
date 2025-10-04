@@ -1,6 +1,7 @@
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function OeffnungszeitenPage() {
   return (
@@ -15,23 +16,26 @@ export default function OeffnungszeitenPage() {
             </div>
 
             <div className="mx-auto mt-16 max-w-4xl">
-                 <Card id="oeffnungszeiten">
-                    <CardHeader>
-                        <CardTitle className="font-headline text-2xl font-bold tracking-tight sm:text-3xl">Praxis-Öffnungszeiten</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-muted-foreground">Der Inhalt für die Öffnungszeiten wird hier in Kürze verfügbar sein.</p>
-                    </CardContent>
-                </Card>
-
-                <Card id="telefonzeiten" className="mt-12">
-                    <CardHeader>
-                        <CardTitle className="font-headline text-2xl font-bold tracking-tight sm:text-3xl">Telefonzeiten</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-muted-foreground">Der Inhalt für die Telefonzeiten wird hier in Kürze verfügbar sein.</p>
-                    </CardContent>
-                </Card>
+                <Tabs defaultValue="oeffnungszeiten" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="oeffnungszeiten">Praxis-Öffnungszeiten</TabsTrigger>
+                        <TabsTrigger value="telefonzeiten">Telefonzeiten</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="oeffnungszeiten">
+                        <Card>
+                            <CardContent className="pt-6">
+                                <p className="text-muted-foreground">Der Inhalt für die Öffnungszeiten wird hier in Kürze verfügbar sein.</p>
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+                    <TabsContent value="telefonzeiten">
+                        <Card>
+                            <CardContent className="pt-6">
+                                <p className="text-muted-foreground">Der Inhalt für die Telefonzeiten wird hier in Kürze verfügbar sein.</p>
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+                </Tabs>
             </div>
         </div>
       </main>
