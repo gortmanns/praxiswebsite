@@ -36,7 +36,12 @@ const ZahnradIcon = () => (
     </svg>
     <span
       className="text-2xl font-bold"
-      style={{ color: '#588791', display: 'inline-block', verticalAlign: 'middle' }}
+      style={{
+        color: '#588791',
+        display: 'inline-block',
+        verticalAlign: 'middle',
+        marginLeft: '-40px',
+      }}
     >
       orthozentrum-bern
     </span>
