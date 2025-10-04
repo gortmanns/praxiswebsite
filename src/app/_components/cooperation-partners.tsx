@@ -37,12 +37,12 @@ export function CooperationPartnersSection() {
         name: 'MCL',
         logoUrl:
         'https://www.mcl.ch/Portals/3/LOGO%20MCL%20DE%20WEB%20513X126.png?ver=cvc-6YjvCrM5oNcznlXoCQ%3d%3d',
-        websiteUrl: 'https://www.mcl.ch/',
+        websiteUrl: 'https://www.mcl.ch/de-de/',
     },
     {
         name: 'doxnet',
         logoUrl: 'http://www.praxiszentrum-im-ring.ch//images/2024/08/18/doxnet_logo_rgb1.jpg',
-        websiteUrl: '#'
+        websiteUrl: 'https://www.doxnet.ch/'
     }
   ];
 
