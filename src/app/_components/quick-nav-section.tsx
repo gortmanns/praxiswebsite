@@ -38,7 +38,7 @@ export function QuickNavSection() {
                 className="group rounded-lg bg-secondary p-8 text-secondary-foreground transition-all hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               >
                 <div className="flex h-full w-full flex-col items-center justify-center">
-                  <Icon className="mb-4 h-32 w-32 text-secondary-foreground" />
+                  <Icon className="mb-4 h-16 w-16 text-secondary-foreground" />
                   <span className="text-lg font-bold uppercase tracking-wider text-secondary-foreground">
                     {item.label}
                   </span>
