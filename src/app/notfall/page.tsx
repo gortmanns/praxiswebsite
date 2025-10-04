@@ -24,14 +24,17 @@ export default function NotfallPage() {
                 
                 <div className="rounded-lg border border-destructive p-6">
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
-                    <div className="relative mx-auto aspect-video w-full max-w-lg">
+                    <div className="mx-auto w-full max-w-lg">
+                      {ambulanceImage && (
                         <Image
                           src={ambulanceImage.imageUrl}
                           alt={ambulanceImage.description}
-                          fill
-                          className="object-contain"
+                          width={1200}
+                          height={800}
+                          className="w-full h-auto object-cover"
                           data-ai-hint={ambulanceImage.imageHint}
                         />
+                      )}
                     </div>
                     <div className="space-y-4 text-center">
                       <p className="text-2xl lg:text-3xl xl:text-5xl text-foreground">
@@ -46,16 +49,19 @@ export default function NotfallPage() {
                 </div>
 
                 <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
-                  <div className='relative w-full max-w-lg mx-auto aspect-video'>
-                    <Link href="https://www.medphone.ch/home" target="_blank" rel="noopener noreferrer" className="relative block h-full w-full">
-                      <Image
-                          src={medphoneImage.imageUrl}
-                          alt={medphoneImage.description}
-                          fill
-                          className="object-contain"
-                          data-ai-hint={medphoneImage.imageHint}
-                        />
-                    </Link>
+                  <div className='mx-auto w-full max-w-lg'>
+                    {medphoneImage && (
+                      <Link href="https://www.medphone.ch/home" target="_blank" rel="noopener noreferrer">
+                        <Image
+                            src={medphoneImage.imageUrl}
+                            alt={medphoneImage.description}
+                            width={1200}
+                            height={349}
+                            className="w-full h-auto"
+                            data-ai-hint={medphoneImage.imageHint}
+                          />
+                      </Link>
+                    )}
                   </div>
                   <div className="space-y-4">
                       <p className='text-2xl lg:text-3xl xl:text-5xl'>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
