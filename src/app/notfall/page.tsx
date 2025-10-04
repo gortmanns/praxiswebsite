@@ -41,11 +41,7 @@ export default function NotfallPage() {
                       </div>
                     )}
                     <div className="space-y-4 text-center">
-                      <h4 className="flex items-center justify-center gap-2 font-bold text-lg text-destructive">
-                        <AlertTriangle />
-                        Bei lebensbedrohlichen Notfällen
-                      </h4>
-                      <p className="text-destructive/90">
+                      <p className="text-lg text-foreground">
                         Bei einem lebensbedrohlichen Notfall alarmieren Sie bitte unverzüglich den Rettungsdienst unter der Rufnummer
                       </p>
                       <a href="tel:144" className="inline-flex w-full justify-center items-center gap-2 text-6xl font-bold text-destructive transition-colors hover:text-destructive/80">
