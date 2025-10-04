@@ -15,7 +15,7 @@
     {
       "id": "dr-lars-weber",
       "description": "Portrait of Dr. Lars Weber, a professional male doctor in a clinical setting.",
-      "imageUrl": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYWxlJTIwZG9jdG9yfGVufDB8fHx8MTc1OTU2Nzg4Mnww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYWxlJTIwZG9jdG9yfGVufDB8fHx8MTc1OTU2Nzg4Mnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "male doctor"
     },
     {
@@ -29,6 +29,12 @@
       "description": "Aerial view of the practice location.",
       "imageUrl": "http://www.praxiszentrum-im-ring.ch/images/2024/08/18/luftbild.jpg",
       "imageHint": "aerial clinic"
+    },
+    {
+      "id": "rettungswagen",
+      "description": "Ambulance from Bern.",
+      "imageUrl": "http://www.praxiszentrum-im-ring.ch//images/2024/10/13/rtw-bern.jpg",
+      "imageHint": "ambulance"
     }
   ]
 }

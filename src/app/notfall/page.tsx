@@ -2,8 +2,11 @@ import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Phone, AlertTriangle } from 'lucide-react';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function NotfallPage() {
+  const ambulanceImage = PlaceHolderImages.find((p) => p.id === 'rettungswagen');
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -14,45 +17,51 @@ export default function NotfallPage() {
               <CardTitle className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Notfall</CardTitle>
             </CardHeader>
             <CardContent className="space-y-8 text-foreground/80">
-              <div>
-                <h3 className="mb-4 font-headline text-2xl font-bold text-primary">Praxis-Öffnungszeiten</h3>
+              <div className="text-center">
                 <p>
-                  Unsere Praxis ist während der folgenden Zeiten geöffnet. In Notfällen ausserhalb dieser Zeiten stehen Ihnen die unten aufgeführten Dienste zur Verfügung.
+                  Unsere Praxis ist während der Sprechstunden durchgehend für Notfälle erreichbar. Ausserhalb unserer Öffnungszeiten und bei Abwesenheit wenden Sie sich bitte an die offiziellen Notfalldienste.
                 </p>
               </div>
 
               <div className="space-y-6">
-                <h3 className="font-headline text-2xl font-bold text-primary">Was tun bei einem Notfall?</h3>
                 
+                <div className="rounded-lg border border-destructive bg-destructive/10 p-6">
+                  <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
+                    {ambulanceImage && (
+                      <div className="relative aspect-video w-full overflow-hidden rounded-md">
+                        <Image
+                          src={ambulanceImage.imageUrl}
+                          alt={ambulanceImage.description}
+                          fill
+                          className="object-cover"
+                          data-ai-hint={ambulanceImage.imageHint}
+                        />
+                      </div>
+                    )}
+                    <div className="space-y-4">
+                      <h4 className="flex items-center gap-2 font-bold text-lg text-destructive">
+                        <AlertTriangle />
+                        Bei lebensbedrohlichen Notfällen
+                      </h4>
+                      <p className="text-destructive/90">
+                        Bei einem lebensbedrohlichen Notfall alarmieren Sie bitte unverzüglich den Rettungsdienst unter der Rufnummer
+                      </p>
+                      <a href="tel:144" className="inline-flex items-center gap-2 font-bold text-2xl text-destructive transition-colors hover:text-destructive/80">
+                        <Phone className="h-6 w-6" />
+                        144
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="space-y-4 rounded-lg border border-border p-6">
-                  <h4 className="font-bold text-lg text-foreground">Ausserhalb unserer Öffnungszeiten</h4>
+                  <h4 className="font-bold text-lg text-foreground">Ärztlicher Notfalldienst (keine Lebensgefahr)</h4>
                   <p>
-                    Wenden Sie sich telefonisch an die Medgate Telemedizinisches Zentrum, mit welchen wir zusammenarbeiten. Ein Arzt oder eine Ärztin von Medgate wird das weitere Vorgehen mit Ihnen besprechen.
-                  </p>
-                  <a href="tel:0800888333" className="inline-flex items-center gap-2 font-bold text-primary transition-colors hover:text-primary/80">
-                    <Phone className="h-5 w-5" />
-                    Medgate: 0800 888 333
-                  </a>
-                  <p className="pt-2">
-                    Falls Medgate nicht erreichbar ist, kontaktieren Sie bitte die kantonale Notfallnummer:
+                    Wenden Sie sich telefonisch an die kantonale Notfallnummer.
                   </p>
                   <a href="tel:0900576747" className="inline-flex items-center gap-2 font-bold text-primary transition-colors hover:text-primary/80">
                     <Phone className="h-5 w-5" />
                     Medphone: 0900 57 67 47 (kostenpflichtig)
-                  </a>
-                </div>
-
-                <div className="space-y-4 rounded-lg border border-destructive bg-destructive/10 p-6">
-                  <h4 className="flex items-center gap-2 font-bold text-lg text-destructive">
-                    <AlertTriangle />
-                    Bei lebensbedrohlichen Notfällen
-                  </h4>
-                  <p className="text-destructive/90">
-                    Rufen Sie sofort den Sanitätsnotruf an. Zögern Sie nicht bei Verdacht auf Herzinfarkt, Schlaganfall oder bei schweren Unfällen.
-                  </p>
-                  <a href="tel:144" className="inline-flex items-center gap-2 font-bold text-destructive transition-colors hover:text-destructive/80">
-                    <Phone className="h-5 w-5" />
-                    Sanitätsnotruf: 144
                   </a>
                 </div>
 
