@@ -5,13 +5,14 @@ export function Hero() {
   const heroImage = PlaceHolderImages.find((p) => p.id === 'luftbild');
 
   return (
-    <section className="relative h-[60vh] min-h-[500px] w-full">
+    <section className="relative w-full">
       {heroImage && (
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
-          fill
-          className="object-contain"
+          width={1200}
+          height={400}
+          className="w-full h-auto object-cover"
           priority
           data-ai-hint={heroImage.imageHint}
         />
