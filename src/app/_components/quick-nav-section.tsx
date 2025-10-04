@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import {
-  Hand,
+  HandHelping,
   AlertTriangle,
   Users,
 } from 'lucide-react';
@@ -15,7 +15,7 @@ const navItems = [
   {
     href: '/leistungen',
     label: 'Leistungen',
-    Icon: Hand,
+    Icon: HandHelping,
   },
   {
     href: '/medikamente',
