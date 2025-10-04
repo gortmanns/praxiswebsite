@@ -30,9 +30,9 @@ export function Header() {
       </div>
 
       {/* Main header */}
-      <div className="relative flex h-20 items-center justify-center">
+      <div className="flex h-20 w-full items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo - Aligned Left */}
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 px-4 sm:px-6 lg:px-8">
+        <div className="flex-shrink-0">
           <Link href="/" className="inline-block">
             <Image
               src="http://www.praxiszentrum-im-ring.ch/images/headers/logo-neu.png"
@@ -46,12 +46,14 @@ export function Header() {
         </div>
 
         {/* Centered Navigation for Desktop */}
-        <nav className="hidden items-center space-x-8 md:flex">
+        <nav className="hidden flex-1 items-center justify-center space-x-8 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-lg font-bold text-muted-foreground transition-colors hover:text-primary"
+              className={`text-lg font-bold text-muted-foreground transition-colors hover:text-primary ${
+                link.label === 'NOTFALL' ? 'uppercase' : ''
+              }`}
             >
               {link.label}
             </Link>
@@ -59,7 +61,7 @@ export function Header() {
         </nav>
         
         {/* Right-aligned content for mobile menu trigger */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-end">
             <div className="md:hidden">
               <Sheet>
                 <SheetTrigger asChild>
@@ -94,7 +96,9 @@ export function Header() {
                         <Link
                           key={link.href}
                           href={link.href}
-                          className="text-lg font-bold text-muted-foreground transition-colors hover:text-primary"
+                          className={`text-lg font-bold text-muted-foreground transition-colors hover:text-primary ${
+                            link.label === 'NOTFALL' ? 'uppercase' : ''
+                          }`}
                         >
                           {link.label}
                         </Link>
