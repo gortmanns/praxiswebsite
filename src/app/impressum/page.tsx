@@ -23,8 +23,6 @@ export default function ImpressumPage() {
                 <div className="space-y-1">
                     <p>Dipl. med. G. Ortmanns</p>
                     <p>Praktischer Arzt</p>
-                    <p>Master of Public Health (UNSW)</p>
-                    <p>Master of Health Management (UNSW)</p>
                 </div>
                 <div className="space-y-1">
                     <h3 className="font-headline text-2xl font-bold text-primary">Anschrift</h3>
