@@ -45,7 +45,7 @@ export function QuickNavSection() {
             >
               <div
                 className="relative h-full w-full rounded-lg transition-transform duration-700 group-hover:[transform:rotateX(180deg)] debug-outline"
-                style={{ transformStyle: 'preserve-3d' }}
+                style={{ transformStyle: 'preserve-d' }}
               >
                 {/* Front face */}
                 <div
