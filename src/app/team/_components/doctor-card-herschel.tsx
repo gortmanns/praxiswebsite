@@ -32,20 +32,28 @@ export const DoctorCardHerschel = () => (
                                 <div className="mt-[1.5cqw] text-[2.2cqw] leading-tight">
                                     <p className="font-bold">Facharzt für Orthopädische Chirurgie und Traumatologie des Bewegungsapparates</p>
                                 </div>
-                                <div className="relative h-[10cqw] w-[30cqw] mt-4">
+                                <div className="relative mt-4 h-[10cqw] w-[30cqw]">
                                   <OrthozentrumLogo className="h-full w-auto" />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </CardContent>
-                {/*
-                <div className="absolute inset-0 flex flex-col items-start justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                
+                {/* <div className="absolute inset-0 flex flex-col items-start justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <ul className="space-y-1.5 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
-                        <li className="font-bold text-primary mb-4">Weitere Informationen folgen in Kürze.</li>
+                        <li className="font-bold text-primary mb-2">SPEZIALGEBIETE</li>
+                        <li className="mb-2">ALLGEMEINE ORTHOPÄDIE</li>
+                        <li className="mb-4">SPEZIALGEBIET HÜFT- UND KNIEGELENKE</li>
+                        
+                        <li className="font-bold text-primary mt-6 mb-2">LEISTUNGEN VOR ORT</li>
+                        <li className="mb-2">RÖNTGENUNTERSUCHUNGEN, KONSULTATIONEN UND KLINISCHE UNTERSUCHUNGEN FINDEN DIREKT HIER IM PRAXISZENTRUM IM RING STATT.</li>
+                        <li className="mb-4">AUCH GELENKINFILTRATIONEN, Z. B. BEI SCHMERZEN, KÖNNEN ZUM TEIL DIREKT HIER VOR ORT DURCHGEFÜHRT WERDEN.</li>
+
+                        <li className="font-bold text-primary mt-6 mb-2">OPERATIONEN</li>
+                        <li className="mb-2">Allenfalls nötige Operationen werden im gut erreichbaren Lindenhof-Spital durchgeführt.</li>
                     </ul>
-                </div>
-                */}
+                </div> */}
                 <div className="absolute inset-0 flex flex-col items-start justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <ul className="space-y-1.5 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
                         <li className="font-bold text-primary mb-2">SPEZIALGEBIETE</li>
@@ -64,4 +72,3 @@ export const DoctorCardHerschel = () => (
         </div>
     </div>
 );
-
