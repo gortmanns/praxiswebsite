@@ -134,7 +134,7 @@ export function Footer() {
           </div>
           
           <div className="space-y-4">
-            <h3 className="text-lg font-bold uppercase text-primary">Qualitätslabel</h3>
+            <h3 className="text-lg font-bold uppercase text-primary">Zertifizierte Qualität</h3>
             <div className="w-1/2">
               <Image
                 src="/images/mehrfacharzt-logo.png"
