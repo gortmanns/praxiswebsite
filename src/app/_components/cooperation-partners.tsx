@@ -1,9 +1,7 @@
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-  Card,
-  CardContent,
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
 
@@ -29,23 +27,21 @@ export function CooperationPartnersSection() {
 
   const otherPartners = [
     {
-        name: 'go-medical',
-        logoUrl: '/images/partners/go-medical-logo.png',
-        websiteUrl: '#'
+      name: 'go-medical',
+      logoUrl: '/images/partners/go-medical-logo.png',
+      websiteUrl: '#',
     },
     {
-        name: 'MCL',
-        logoUrl:
-        '/images/partners/mcl-logo.png',
-        websiteUrl: 'https://www.mcl.ch/de-de/',
+      name: 'MCL',
+      logoUrl: '/images/partners/mcl-logo.png',
+      websiteUrl: 'https://www.mcl.ch/de-de/',
     },
     {
-        name: 'doxnet',
-        logoUrl: '/images/partners/doxnet-logo.jpg',
-        websiteUrl: 'https://www.doxnet.ch/'
-    }
+      name: 'doxnet',
+      logoUrl: '/images/partners/doxnet-logo.jpg',
+      websiteUrl: 'https://www.doxnet.ch/',
+    },
   ];
-
 
   return (
     <section id="partners" className="w-full bg-primary">
@@ -118,30 +114,30 @@ export function CooperationPartnersSection() {
           Unsere weiteren Partner
         </h3>
         <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3 lg:grid-cols-8">
-            <div className="hidden lg:block"></div> {/* Empty spacer */}
-            {otherPartners.map((partner) => (
-                <Link
-                    key={partner.name}
-                    href={partner.websiteUrl}
-                    target={partner.websiteUrl === '#' ? '_self' : '_blank'}
-                    rel="noopener noreferrer"
-                    className='group sm:col-span-1 lg:col-span-2'
-                >
-                    <Card className="flex h-32 items-center justify-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
-                        <CardContent className="flex w-full items-center justify-center p-0">
-                            <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                                <Image
-                                src={partner.logoUrl!}
-                                alt={`${partner.name} Logo`}
-                                fill
-                                className="object-contain"
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
-                </Link>
-            ))}
-            <div className="hidden lg:block"></div> {/* Empty spacer */}
+          <div className="hidden lg:block"></div> {/* Empty spacer */}
+          {otherPartners.map((partner) => (
+            <Link
+              key={partner.name}
+              href={partner.websiteUrl}
+              target={partner.websiteUrl === '#' ? '_self' : '_blank'}
+              rel="noopener noreferrer"
+              className="group sm:col-span-1 lg:col-span-2"
+            >
+              <Card className="flex h-32 items-center justify-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
+                <CardContent className="flex w-full items-center justify-center p-0">
+                  <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                    <Image
+                      src={partner.logoUrl!}
+                      alt={`${partner.name} Logo`}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+          <div className="hidden lg:block"></div> {/* Empty spacer */}
         </div>
       </div>
     </section>
