@@ -32,7 +32,7 @@ export const DoctorCardHerschel = () => (
                                 <div className="mt-[1.5cqw] text-[2.2cqw] leading-tight">
                                     <p className="font-bold">Facharzt für Orthopädische Chirurgie und Traumatologie des Bewegungsapparates</p>
                                 </div>
-                                <div className="relative h-[10cqw] w-[30cqw] mt-2">
+                                <div className="relative h-[10cqw] w-[30cqw] mt-4">
                                   <OrthozentrumLogo className="h-full w-auto" />
                                 </div>
                             </div>
@@ -46,8 +46,8 @@ export const DoctorCardHerschel = () => (
                         <li className="mb-4">SPEZIALGEBIET HÜFT- UND KNIEGELENKE</li>
                         
                         <li className="font-bold text-primary mt-6 mb-4">LEISTUNGEN VOR ORT</li>
-                        <li className="mb-2">Röntgenuntersuchungen, Konsultationen und klinische Untersuchungen finden direkt hier im PRAXISZENTRUM IM RING statt.</li>
-                        <li className="mb-4">Auch Gelenkinfiltrationen, z. B. bei Schmerzen, können zum Teil direkt hier vor Ort durchgeführt werden.</li>
+                        <li className="mb-2">Röntgenuntersuchungen, Konsultationen und klinische Untersuchungen finden direkt im PRAXISZENTRUM IM RING statt.</li>
+                        <li className="mb-4">Auch Gelenkinfiltrationen, z. B. bei Schmerzen, können zum Teil direkt vor Ort durchgeführt werden.</li>
 
                         <li className="font-bold text-primary mt-6 mb-4">OPERATIONEN</li>
                         <li className="mb-2">Allenfalls nötige Operationen werden im gut erreichbaren Lindenhof-Spital durchgeführt.</li>
@@ -92,7 +92,7 @@ export const DoctorCardHerschel = () => (
                                 <div className="mt-[1.5cqw] text-[2.2cqw] leading-tight">
                                     <p className="font-bold">Facharzt für Orthopädische Chirurgie und Traumatologie des Bewegungsapparates</p>
                                 </div>
-                                <div className="relative h-[10cqw] w-[30cqw] mt-2">
+                                <div className="relative h-[10cqw] w-[30cqw] mt-4">
                                   <OrthozentrumLogo className="h-full w-auto" />
                                 </div>
                             </div>
