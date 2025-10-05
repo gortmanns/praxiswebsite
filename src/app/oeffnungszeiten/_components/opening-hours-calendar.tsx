@@ -80,24 +80,36 @@ export function OpeningHoursCalendar() {
       </div>
 
       <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
-          <div className="h-12"></div>
+          {/* Header Row */}
+          <div className="h-12 border-b border-orange-500"></div>
           {days.map((day) => (
-              <div key={`${day}-overlay-header`} className="flex h-12 items-center justify-center border-l border-t border-orange-500 text-center text-sm font-bold text-transparent sm:text-base">{day}</div>
+              <div key={`${day}-overlay-header`} className="flex h-12 items-center justify-center border-b border-l border-orange-500 text-center text-sm font-bold text-transparent sm:text-base">{day}</div>
           ))}
+
+          {/* Time Axis + Cell Grid */}
           {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
               <React.Fragment key={`${startTime}-overlay-row`}>
-                  <div className="flex h-12 items-center justify-center border-l border-t border-orange-500 px-2 text-center text-xs font-bold text-transparent">
+                  <div className="flex h-12 items-center justify-center border-b border-l border-orange-500 px-2 text-center text-xs font-bold text-transparent">
                       {startTime} - {timeSlots[hourIndex + 1]}
                   </div>
                   {days.map((_day, dayIndex) => (
-                      <div key={`${_day}-${startTime}-overlay-cell`} className="h-12 border-l border-t border-orange-500 bg-transparent">
+                      <div key={`${_day}-${startTime}-overlay-cell`} className="h-12 border-b border-l border-orange-500 bg-transparent">
                       </div>
                   ))}
               </React.Fragment>
           ))}
-          <div className="absolute inset-0 h-full w-full border-b border-r border-orange-500"></div>
+          
+          {/* Right border for the last column */}
+          <div className="absolute top-0 right-0 h-full w-px bg-orange-500"></div>
 
-          <div className="absolute top-[3rem] left-[calc(var(--time-col-width))] h-[12rem] w-[calc(100%-var(--time-col-width))] bg-orange-500/20" style={{'--time-col-width': 'calc(4rem + 1px)'} as React.CSSProperties}></div>
+           {/* Block for Sprechstunde Vormittag */}
+           <div
+            className="pointer-events-auto absolute bg-orange-500/20"
+            style={{
+              gridRow: '2 / span 4',
+              gridColumn: '2 / span 5',
+            }}
+          ></div>
       </div>
     </div>
   );
