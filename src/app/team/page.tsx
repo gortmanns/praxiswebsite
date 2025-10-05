@@ -1,6 +1,7 @@
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import Image from 'next/image';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function TeamPage() {
   return (
@@ -19,29 +20,33 @@ export default function TeamPage() {
               Ärzte
             </h3>
 
-            <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-3 md:gap-12">
-              <div className="relative mx-auto w-full max-w-xs md:max-w-none">
-                <Image
-                  src="/images/team/Ortmanns.jpg"
-                  alt="Portrait von G. Ortmanns"
-                  data-ai-hint="doctor portrait"
-                  width={400}
-                  height={400}
-                  className="rounded-lg object-contain shadow-lg"
-                />
-              </div>
-              <div className="text-left text-foreground/80 md:col-span-2">
-                <p className="text-lg text-primary">Dipl. med.</p>
-                <h4 className="font-headline text-2xl font-bold text-primary">
-                  G. Ortmanns
-                </h4>
-                <p className="mt-4 text-lg font-bold">Praktischer Arzt</p>
-                <div className="mt-1 text-base">
-                  <p>Master of Public Health (UNSW)</p>
-                  <p>Master of Health Management (UNSW)</p>
+            <Card>
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-3 md:gap-12">
+                  <div className="relative mx-auto w-full max-w-xs md:max-w-none">
+                    <Image
+                      src="/images/team/Ortmanns.jpg"
+                      alt="Portrait von G. Ortmanns"
+                      data-ai-hint="doctor portrait"
+                      width={400}
+                      height={400}
+                      className="rounded-lg object-contain"
+                    />
+                  </div>
+                  <div className="text-left text-foreground/80 md:col-span-2">
+                    <p className="text-xl text-primary">Dipl. med.</p>
+                    <h4 className="font-headline text-3xl font-bold text-primary">
+                      G. Ortmanns
+                    </h4>
+                    <p className="mt-4 text-xl font-bold">Praktischer Arzt</p>
+                    <div className="mt-1 text-base">
+                      <p>Master of Public Health (UNSW)</p>
+                      <p>Master of Health Management (UNSW)</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>
