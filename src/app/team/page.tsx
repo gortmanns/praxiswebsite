@@ -9,7 +9,7 @@ export default function TeamPage() {
       <main className="flex-1">
         <div className="container py-16 sm:py-24">
           <div className="mx-auto max-w-5xl text-center">
-            <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl">
+            <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
               UNSER TEAM
             </h2>
           </div>
@@ -36,11 +36,10 @@ export default function TeamPage() {
                   G. Ortmanns
                 </h4>
                 <p className="mt-4 text-lg font-bold">Praktischer Arzt</p>
-                <p className="mt-4 text-base">
-                  [Hier könnte eine kurze Biografie oder weitere Informationen
-                  über den Werdegang, die Spezialisierungen und die Philosophie
-                  des Arztes stehen.]
-                </p>
+                <div className="mt-4 text-base">
+                  <p>Master of Public Health (UNSW)</p>
+                  <p>Master of Health Management (UNSW)</p>
+                </div>
               </div>
             </div>
           </div>
