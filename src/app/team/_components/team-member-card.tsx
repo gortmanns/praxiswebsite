@@ -14,7 +14,7 @@ export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsid
   return (
     <div className="group relative w-full">
         <Card className="h-full overflow-hidden">
-            <CardContent className="flex h-full flex-col p-6 transition-opacity duration-300">
+            <CardContent className="flex h-full flex-col p-6">
                 <div className="relative w-full aspect-[2/3] rounded-md overflow-hidden">
                     <Image
                         src={imageUrl}
@@ -31,7 +31,7 @@ export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsid
                 </div>
             </CardContent>
             {backsideContent && (
-                <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-left text-background opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
                     <div className="text-center text-lg">
                         {backsideContent}
                     </div>

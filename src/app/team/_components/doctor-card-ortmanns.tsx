@@ -41,7 +41,7 @@ export const DoctorCardOrtmanns = () => (
                         </div>
                     </div>
                 </CardContent>
-                <div className="absolute inset-0 flex translate-y-full flex-col items-start justify-center overflow-auto bg-accent/95 p-6 text-left text-background opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                <div className="absolute inset-0 flex translate-y-full flex-col items-start justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
                     <ul className="space-y-1.5 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
                         <li>Medizinstudium in Bonn (Deutschland) und Hobart (Australien)</li>
                         <li>Masterstudium Public Health und Health Management in Sydney (Australien)</li>
