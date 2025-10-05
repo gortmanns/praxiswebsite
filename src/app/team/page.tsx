@@ -15,12 +15,6 @@ const teamMembers = [
       imageUrl: '/images/team/Garcia.jpg',
       imageHint: 'woman portrait',
     },
-    {
-      name: 'Max Mustermann',
-      role: 'Med. Praxisassistent',
-      imageUrl: 'https://picsum.photos/seed/mann1/400/600',
-      imageHint: 'man portrait',
-    },
   ];
 
 export default function TeamPage() {
