@@ -27,12 +27,12 @@ export default function MedikamentePage() {
                     className="rounded-lg object-cover"
                   />
                 </div>
-                <div className="space-y-4">
+                <div className="flex flex-col justify-center space-y-4">
                   <h3 className="font-headline text-2xl font-bold text-primary">Ihre Medikamente direkt vom Hausarzt</h3>
-                  <p className="text-foreground/80">
+                  <p className="text-lg text-foreground/80">
                     Als Patient können Sie alle Ihre Medikamente bequem bei uns beziehen. So sparen Sie nicht nur Geld sondern Sie haben auch die Gewissheit, dass Sie wirklich nur die Medikamente erhalten und einnehmen, die Sie auch benötigen. Bei jeder Abgabe eines Medikaments wird dieses mit den in Ihrer Krankenakte hinterlegten Medikamenten abgeglichen.
                   </p>
-                  <p className="text-foreground/80">
+                  <p className="text-lg text-foreground/80">
                     Um Ihnen den Bezug der Medikamente so einfach wie möglich zu machen, bieten wir Ihnen die Möglichkeit, die Medikamente vorzubestellen.
                   </p>
                 </div>
