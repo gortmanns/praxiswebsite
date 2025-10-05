@@ -28,25 +28,24 @@ const schedule = [
     { day: 3, start: '08:00', end: '12:00', type: 'sprechstunde' },
     { day: 3, start: '12:00', end: '14:00', type: 'pause' },
     { day: 3, start: '14:00', end: '17:00', type: 'sprechstunde' },
-    { day: 3, start: '17:00', end: '18:00', type: 'empty' },
+    { day: 3, start: '17:00', end: '18:00', type: 'geschlossen' },
     // Fr
     { day: 4, start: '08:00', end: '12:00', type: 'sprechstunde' },
     { day: 4, start: '12:00', end: '13:00', type: 'pause' },
-    { day: 4, start: '13:00', end: '14:00', type: 'sprechstunde' },
-    { day: 4, start: '14:00', end: '17:00', type: 'sprechstunde' },
+    { day: 4, start: '13:00', end: '17:00', type: 'sprechstunde' },
     { day: 4, start: '17:00', end: '18:00', type: 'geschlossen' },
 ];
 
 const Cell = ({ type }: { type: string }) => {
     switch (type) {
         case 'sprechstunde':
-            return <div className='bg-background h-full w-full'></div>;
+            return <div className='bg-background h-full w-full border-r border-b border-border/50'></div>;
         case 'pause':
-            return <div className='bg-secondary h-full w-full'></div>;
+            return <div className='bg-secondary h-full w-full border-r border-b border-border/50'></div>;
         case 'geschlossen':
-            return <div className='bg-secondary h-full w-full'></div>;
+            return <div className='bg-secondary h-full w-full border-r border-b border-border/50'></div>;
         default:
-             return <div className='bg-background h-full w-full'></div>;
+             return <div className='bg-background h-full w-full border-r border-b border-border/50'></div>;
     }
 };
 
@@ -57,18 +56,18 @@ export function OpeningHoursCalendar() {
       const startRow = timeSlots.indexOf(entry.start);
       const endRow = timeSlots.indexOf(entry.end);
       for (let row = startRow; row < endRow; row++) {
-          if (grid[row]) {
+          if (grid[row] && grid[row][entry.day] !== undefined) {
               grid[row][entry.day] = entry.type;
           }
       }
   });
 
   return (
-    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
+    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border-l border-t border-border/50">
       {/* Header Row */}
       <div className="sticky top-0 z-10 bg-muted"></div>
       {days.map((day) => (
-        <div key={day} className="flex h-12 items-center justify-center bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
+        <div key={day} className="flex h-12 items-center justify-center bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base border-r border-b border-border/50">
             {day}
         </div>
       ))}
@@ -76,7 +75,7 @@ export function OpeningHoursCalendar() {
       {/* Time Axis */}
       <div className="col-start-1 col-end-2 row-start-2 row-end-[12] grid grid-rows-10">
           {timeSlots.slice(0, -1).map((startTime, index) => (
-            <div key={startTime} className="flex h-12 items-center justify-center bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
+            <div key={startTime} className="flex h-12 items-center justify-center bg-muted px-2 text-center text-xs font-bold text-muted-foreground border-b border-border/50">
                 {startTime} - {timeSlots[index + 1]}
             </div>
           ))}
@@ -87,29 +86,6 @@ export function OpeningHoursCalendar() {
         {grid.flat().map((type, index) => (
           <Cell key={index} type={type} />
         ))}
-
-        {/* Text Overlays */}
-        <div className="col-start-1 col-end-6 row-start-1 row-end-5 pointer-events-none flex items-center justify-center p-2">
-            <div className="text-lg font-semibold text-foreground">Sprechstunde</div>
-        </div>
-        <div className="col-start-1 col-end-3 row-start-7 row-end-11 pointer-events-none flex items-center justify-center p-2">
-            <span className="text-lg font-semibold text-foreground">Sprechstunde</span>
-        </div>
-         <div className="col-start-4 col-end-5 row-start-7 row-end-10 pointer-events-none flex items-center justify-center p-2">
-            <span className="text-lg font-semibold text-foreground">Sprechstunde</span>
-        </div>
-        <div className="col-start-5 col-end-6 row-start-6 row-end-10 pointer-events-none flex items-center justify-center p-2">
-            <span className="text-lg font-semibold text-foreground">Sprechstunde</span>
-        </div>
-        <div className="col-start-1 col-end-6 row-start-5 row-end-6 pointer-events-none flex items-center justify-center p-2">
-             <span className="text-base font-semibold text-secondary-foreground">Mittagspause</span>
-        </div>
-        <div className="col-start-3 col-end-4 row-start-7 row-end-11 pointer-events-none flex items-center justify-center p-2">
-            <span className="text-base font-semibold text-secondary-foreground">Praxis geschlossen</span>
-        </div>
-         <div className="col-start-5 col-end-6 row-start-10 row-end-11 pointer-events-none flex items-center justify-center p-2">
-             <span className="text-base font-semibold text-secondary-foreground">Praxis geschlossen</span>
-        </div>
       </div>
     </div>
   );
