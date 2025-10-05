@@ -72,20 +72,20 @@ export const doctors: Doctor[] = [
     imageUrl: '/images/team/Prof.Schemmer.jpg',
     cv: [
       {
-        point: 'Kleinchirurgische Eingriffe können direkt vor Ort im PRAXISZENTRUM IM RING erfolgen',
+        point: 'Kleinchirurgische Eingriffe können direkt vor Ort im PRAXISZENTRUM IM RING erfolgen.',
       },
       {
-        point: 'Grosse chirurgische Eingriffe werden in enger Kooperation zwischen Chirurg und Hausarzt durchgeführt',
+        point: 'Grosse chirurgische Eingriffe werden in enger Kooperation zwischen Chirurg und Hausarzt durchgeführt.',
         isList: true,
         subPoints: [
-            'Vorbesprechung und Planung des Eingriffs erfolgen hier im PRAXISZENTRUM IM RING',
-            'Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls hier im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten',
-            'Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt',
+          'Vorbesprechung und Planung des Eingriffs erfolgen hier im PRAXISZENTRUM IM RING.',
+          'Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls hier im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten.',
+          'Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt.',
+          'Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder hier vor Ort im PRAXISZENTRUM IM RING statt.',
         ],
-        subPointsTitle: 'Partnerkliniken',
       },
       {
-        point: 'Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder hier vor Ort im PRAXISZENTRUM IM RING statt',
+        point: 'Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder hier vor Ort im PRAXISZENTRUM IM RING statt.',
       }
     ],
   },
