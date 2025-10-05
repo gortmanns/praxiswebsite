@@ -48,6 +48,23 @@ const otherTeamMembers = [
         </>
       ),
     },
+    {
+      name: 'G. Öztürk',
+      role: 'Praxishilfe',
+      imageUrl: '/images/team/Ozturk.jpg',
+      imageHint: 'man portrait',
+      backsideContent: (
+        <>
+          <p>
+            Eigentlich bin ich Arzt und stamme aus der Türkei, aber noch läuft das Anerkennungsverfahren für die Qualifikation als Hausarzt hier in der Schweiz.
+          </p>
+          <br />
+          <p>
+            Daher aktuell "nur" als Praxishilfe tätig, jedoch hoffentlich bald als weiterer Hausarzt hier im Praxiszentrum.
+          </p>
+        </>
+      ),
+    },
 ];
 
 export default function TeamPage() {
