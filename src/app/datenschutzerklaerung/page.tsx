@@ -150,7 +150,7 @@ export default function DatenschutzerklaerungPage() {
                         <CardTitle className="font-headline text-2xl font-bold text-primary">Dienste von Drittanbietern</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 text-base text-foreground/80">
-                        <p>Diese Website kann Google Maps zur Einbettung von Karten, Google Invisible reCAPTCHA zum Schutz vor Bots und Spam und YouTube zur Einbettung von Videos nutzen.</p>
+                        <p>Diese Website nutzt Dienste von Drittanbietern. An einigen Stellen, wie zum Beispiel bei der Anfahrtsbeschreibung im Footer, verlinken wir auf Google Maps. Wenn Sie einem solchen Link folgen, verlassen Sie unsere Website und rufen den Dienst des Drittanbieters auf, wobei Daten wie Ihre IP-Adresse an diesen Dienst übertragen werden können.</p>
                         <p>Diese Dienste der amerikanischen Google LLC verwenden u.a. Cookies, wodurch Daten an Google in die USA übertragen werden, wobei wir davon ausgehen, dass in diesem Zusammenhang allein durch die Nutzung unserer Website kein personenbezogenes Tracking stattfindet.</p>
                         <p>Google hat sich verpflichtet, einen angemessenen Datenschutz gemäß dem US-amerikanisch-europäischen und dem US-amerikanisch-schweizerischen Privacy Shield zu gewährleisten.</p>
                         <p>Weitere Informationen finden Sie in den Datenschutzbestimmungen von Google.</p>
@@ -163,3 +163,5 @@ export default function DatenschutzerklaerungPage() {
     </div>
   );
 }
+
+    
