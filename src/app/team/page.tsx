@@ -65,6 +65,32 @@ const otherTeamMembers = [
         </>
       ),
     },
+    {
+      name: 'N. Memeti',
+      role: 'Medizinische Praxisassistentin in Ausbildung',
+      imageUrl: '/images/team/Memeti.jpg',
+      imageHint: 'woman portrait',
+      backsideContent: (
+        <>
+          <p>
+            Ich habe im Sommer 2023 die Lehre zur MPA im Praxiszentrum im Ring begonnen.
+          </p>
+        </>
+      ),
+    },
+    {
+      name: 'D. Schmocker',
+      role: 'Medizinische Praxisassistentin',
+      imageUrl: '/images/team/Schmocker.jpg',
+      imageHint: 'woman portrait',
+      backsideContent: (
+        <>
+          <p>
+            Nach meiner Ausbildung zur MPA und einigen Jahren Berufserfahrung bin ich seit Herbst 2023 im Praxiszentrum im Ring tätig.
+          </p>
+        </>
+      ),
+    },
 ];
 
 export default function TeamPage() {
