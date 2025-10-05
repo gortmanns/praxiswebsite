@@ -38,8 +38,7 @@ export const DoctorCardSchemmer = ({ doctor }: { doctor: Doctor }) => (
                                     <Image
                                         src="/images/schemmer-worni-logo.png"
                                         alt="Schemmer & Worni Logo"
-                                        width={300}
-                                        height={100}
+                                        fill
                                         className="object-contain"
                                     />
                                 </div>
