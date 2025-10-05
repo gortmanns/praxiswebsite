@@ -27,19 +27,19 @@
     {
       "id": "luftbild",
       "description": "Aerial view of the practice location.",
-      "imageUrl": "http://www.praxiszentrum-im-ring.ch/images/2024/08/18/luftbild.jpg",
+      "imageUrl": "/images/luftbild.jpg",
       "imageHint": "aerial clinic"
     },
     {
       "id": "rettungswagen",
       "description": "Ambulance from Bern.",
-      "imageUrl": "http://www.praxiszentrum-im-ring.ch//images/2024/10/13/rtw-bern.jpg",
+      "imageUrl": "/images/rtw-bern.jpg",
       "imageHint": "ambulance"
     },
     {
       "id": "medphone-logo",
       "description": "Medphone Logo.",
-      "imageUrl": "http://www.praxiszentrum-im-ring.ch//images/2024/10/13/medphone_logo.png",
+      "imageUrl": "https://www.abvbernregio.ch/images/content/layout/partner/medphone_logo.png",
       "imageHint": "logo"
     }
   ]

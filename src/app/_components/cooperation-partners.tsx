@@ -12,13 +12,13 @@ export function CooperationPartnersSection() {
     {
       name: 'VASC-ALLIANCE',
       logoUrl:
-        'https://www.vasc-alliance.ch/view/data/10907/VASC-Alliance-Logo.png',
+        '/images/VASC-Alliance-Logo.png',
       websiteUrl: 'https://www.vasc-alliance.ch/',
     },
     {
       name: 'Schemmer & Worni',
       logoUrl:
-        'https://schemmer-worni.ch/wp-content/uploads/2025/02/logo_de.png',
+        '/images/schemmer-worni-logo.png',
       websiteUrl: 'https://schemmer-worni.ch/de/',
     },
     {
@@ -30,18 +30,18 @@ export function CooperationPartnersSection() {
   const otherPartners = [
     {
         name: 'go-medical',
-        logoUrl: 'http://www.praxiszentrum-im-ring.ch//images/2024/08/18/go-medical-logo-600x117.png',
+        logoUrl: '/images/go-medical-logo.png',
         websiteUrl: '#'
     },
     {
         name: 'MCL',
         logoUrl:
-        'https://www.mcl.ch/Portals/3/LOGO%20MCL%20DE%20WEB%20513X126.png?ver=cvc-6YjvCrM5oNcznlXoCQ%3d%3d',
+        '/images/mcl-logo.png',
         websiteUrl: 'https://www.mcl.ch/de-de/',
     },
     {
         name: 'doxnet',
-        logoUrl: 'http://www.praxiszentrum-im-ring.ch//images/2024/08/18/doxnet_logo_rgb1.jpg',
+        logoUrl: '/images/doxnet_logo.jpg',
         websiteUrl: 'https://www.doxnet.ch/'
     }
   ];

@@ -24,7 +24,7 @@ export default function NotfallPage() {
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
                     <div className="mx-auto w-full max-w-lg">
                       <Image
-                        src="http://www.praxiszentrum-im-ring.ch//images/2024/10/13/rtw-bern.jpg"
+                        src="/images/rtw-bern.jpg"
                         alt="Ambulanz"
                         width={1200}
                         height={800}
@@ -79,7 +79,7 @@ export default function NotfallPage() {
                     <div className="mx-auto w-full max-w-lg">
                       <Link href="https://www.toxinfo.ch/" target="_blank" rel="noopener noreferrer">
                         <Image
-                          src="https://www.toxinfo.ch/customer/layout/images/logo.svg"
+                          src="/images/toxinfo-logo.svg"
                           alt="Tox Info Suisse Logo"
                           width={300}
                           height={100}

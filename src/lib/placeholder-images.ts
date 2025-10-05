@@ -7,4 +7,13 @@ export type ImagePlaceholder = {
   imageHint: string;
 };
 
-export const PlaceHolderImages: ImagePlaceholder[] = data.placeholderImages;
+// Replace the original http URLs with local paths for specific images
+const updatedImages = data.placeholderImages.map(img => {
+  if (img.id === 'luftbild') {
+    return { ...img, imageUrl: '/images/luftbild.jpg' };
+  }
+  return img;
+});
+
+
+export const PlaceHolderImages: ImagePlaceholder[] = updatedImages;

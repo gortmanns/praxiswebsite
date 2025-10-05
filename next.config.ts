@@ -29,36 +29,6 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'http',
-        hostname: 'www.praxiszentrum-im-ring.ch',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.vasc-alliance.ch',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'schemmer-worni.ch',
-        port: '',
-pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.mcl.ch',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.toxinfo.ch',
-        port: '',
-        pathname: '/**',
-      },
-      {
         protocol: 'https',
         hostname: 'www.abvbernregio.ch',
         port: '',
