@@ -41,7 +41,7 @@ export function CooperationPartnersSection() {
     },
     {
         name: 'doxnet',
-        logoUrl: '/images/partners/doxnet_logo.jpg',
+        logoUrl: '/images/partners/doxnet-logo.jpg',
         websiteUrl: 'https://www.doxnet.ch/'
     }
   ];

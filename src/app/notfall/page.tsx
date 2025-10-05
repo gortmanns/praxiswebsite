@@ -50,7 +50,7 @@ export default function NotfallPage() {
                   <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
                     <div className='mx-auto w-full max-w-lg'>
                         <Image
-                          src="/images/notfall/medphone_logo.png"
+                          src="/images/notfall/medphone-logo.png"
                           alt="Medphone Logo"
                           width={1024}
                           height={241}

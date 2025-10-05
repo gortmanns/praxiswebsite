@@ -23,24 +23,6 @@
       "description": "Portrait of Dr. Sophie Huber, a smiling female doctor looking approachable.",
       "imageUrl": "https://images.unsplash.com/photo-1684331448263-9975a4358032?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx3b21hbiUyMGRvY3RvciUyMHNtaWxpbmd8ZW58MHx8fHwxNzU5NTY3NDIzfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "woman doctor smiling"
-    },
-    {
-      "id": "luftbild",
-      "description": "Aerial view of the practice location.",
-      "imageUrl": "/images/luftbild.jpg",
-      "imageHint": "aerial clinic"
-    },
-    {
-      "id": "rettungswagen",
-      "description": "Ambulance from Bern.",
-      "imageUrl": "/images/rtw-bern.jpg",
-      "imageHint": "ambulance"
-    },
-    {
-      "id": "medphone-logo",
-      "description": "Medphone Logo.",
-      "imageUrl": "https://www.abvbernregio.ch/images/content/layout/partner/medphone_logo.png",
-      "imageHint": "logo"
     }
   ]
 }
