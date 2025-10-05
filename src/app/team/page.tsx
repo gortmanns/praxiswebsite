@@ -51,7 +51,7 @@ const otherTeamMembers = [
     {
       name: 'G. Öztürk',
       role: 'Praxishilfe',
-      imageUrl: '', // LEER GELASSEN, UM FEHLER ZU VERMEIDEN
+      imageUrl: '/images/team/Oetztuerk.jpg',
       imageHint: 'man portrait',
       backsideContent: (
         <>
