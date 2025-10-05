@@ -1,4 +1,3 @@
-
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import Image from 'next/image';
@@ -29,8 +28,8 @@ export default function TeamPage() {
               style={{aspectRatio: '1000 / 470'}}
             >
               <Card className="absolute inset-0 overflow-hidden">
-                <CardContent className="h-full p-0 transition-opacity duration-300 group-hover:opacity-10">
-                    <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-[3.5%]">
+                <CardContent className="h-full p-6 transition-opacity duration-300 group-hover:opacity-10">
+                    <div className="grid h-full grid-cols-3 items-center gap-[4.5%]">
                       <div className="relative col-span-1 h-full w-full">
                         <Image
                           src="/images/team/Ortmanns.jpg"
@@ -56,7 +55,7 @@ export default function TeamPage() {
                       </div>
                     </div>
                 </CardContent>
-                <div className="absolute inset-0 flex flex-col items-start justify-center overflow-hidden bg-accent p-[3.5%] text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <div className="absolute inset-0 flex flex-col items-start justify-center overflow-hidden bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                   <ul className="space-y-[0.4cqw] text-[1.3cqw] leading-snug">
                     <li className="font-bold text-primary">
                       Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
@@ -71,7 +70,7 @@ export default function TeamPage() {
                       Projektmanagement im Gesundheitswesen in Europa und Australien
                       <div className="mt-1 pl-4 text-[1.1cqw] leading-snug text-background/80">
                           <h5 className="mb-1 font-bold uppercase tracking-wider text-primary">Meilensteine</h5>
-                          <ul className="list-disc space-y-0.5 pl-5">
+                          <ul className="list-disc space-y-px pl-5">
                             <li>Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
                             <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
                             <li>Direktor der Memory-Strategie (Elektronisches Medikamenten-Management und Elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
