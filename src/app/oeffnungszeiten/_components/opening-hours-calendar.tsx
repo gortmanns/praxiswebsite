@@ -101,7 +101,7 @@ export function OpeningHoursCalendar() {
          <div className="col-start-4 col-end-5 row-start-7 row-end-10 pointer-events-none flex items-center justify-center p-2">
             <span className="text-lg font-semibold text-foreground">Sprechstunde</span>
         </div>
-        <div className="col-start-5 col-end-6 row-start-7 row-end-10 pointer-events-none flex items-center justify-center p-2">
+        <div className="col-start-5 col-end-6 row-start-6 row-end-10 pointer-events-none flex items-center justify-center p-2">
             <span className="text-lg font-semibold text-foreground">Sprechstunde</span>
         </div>
         <div className="col-start-1 col-end-6 row-start-5 row-end-7 pointer-events-none flex items-center justify-center p-2">
