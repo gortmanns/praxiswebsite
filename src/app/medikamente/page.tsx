@@ -3,6 +3,10 @@ import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
+import { cn } from '@/lib/utils';
+import { Phone, Mail } from 'lucide-react';
 
 export default function MedikamentePage() {
   return (
@@ -49,6 +53,58 @@ export default function MedikamentePage() {
             <p className="mt-4 text-xl font-bold text-foreground">
               Ganz bequem, wahlweise per Telefon oder E-Mail
             </p>
+          </div>
+
+          <div className="mx-auto mt-12 max-w-4xl">
+            <Tabs defaultValue="telefon" className="w-full">
+              <TabsList className="grid h-auto w-full grid-cols-2 rounded-lg bg-transparent p-0">
+                  <TabsTrigger 
+                      value="telefon" 
+                      className={cn(
+                          'flex items-center justify-center gap-3 h-14 rounded-l-lg rounded-r-none border-b-2 border-transparent text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
+                      )}
+                  >
+                      <Phone className="h-6 w-6"/>
+                      Vorbestellung per Telefon
+                  </TabsTrigger>
+                  <TabsTrigger 
+                      value="email"
+                      className={cn(
+                          'flex items-center justify-center gap-3 h-14 rounded-r-lg rounded-l-none border-b-2 border-transparent text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
+                      )}
+                  >
+                      <Mail className="h-6 w-6"/>
+                      Vorbestellung per Email
+                  </TabsTrigger>
+              </TabsList>
+              <TabsContent value="telefon">
+                  <Card className="rounded-t-none">
+                      <CardContent className="flex items-center justify-center space-y-6 p-6 text-lg">
+                          <a
+                            href="tel:0313162666"
+                            className="flex items-center gap-4 text-2xl font-bold text-foreground transition-colors hover:text-primary"
+                          >
+                            <Phone className="h-8 w-8" />
+                            <span>031 316 26 66</span>
+                          </a>
+                      </CardContent>
+                  </Card>
+              </TabsContent>
+              <TabsContent value="email">
+                  <Card className="rounded-t-none">
+                      <CardContent className="flex items-center justify-center space-y-6 p-6 text-lg">
+                          <ObfuscatedLink
+                            user="medikamente"
+                            domain="praxiszentrum-im-ring.ch"
+                            className="flex items-center gap-4 text-2xl font-bold text-foreground transition-colors hover:text-primary"
+                          >
+                            <Mail className="h-8 w-8" />
+                            <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
+                          </ObfuscatedLink>
+                      </CardContent>
+                  </Card>
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </main>
