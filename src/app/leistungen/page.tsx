@@ -79,10 +79,14 @@ export default function LeistungenPage() {
                       className="object-cover"
                       data-ai-hint={leistung.hint}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    <h3 className="absolute bottom-0 left-0 p-4 font-headline text-xl font-bold text-white group-hover:text-primary transition-colors">
+                  </div>
+                  <div className="flex-1 p-6">
+                    <h3 className="font-headline text-xl font-bold text-primary">
                       {leistung.name}
                     </h3>
+                    <p className="mt-2 text-base text-foreground/80">
+                      {leistung.description}
+                    </p>
                   </div>
                 </div>
               ))}
