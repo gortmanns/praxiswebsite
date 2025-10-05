@@ -10,13 +10,17 @@ export default function ImpressumPage() {
       <Header />
       <main className="flex-1">
         <div className="container py-16 sm:py-24">
-          <Card>
+          <div className="mx-auto max-w-5xl text-center">
+              <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
+                  IMPRESSUM
+              </h2>
+          </div>
+          <Card className="mt-16">
             <CardHeader>
-              <CardTitle className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Impressum</CardTitle>
+              <CardTitle className="font-headline text-2xl font-bold text-primary">Für den Inhalt der Seite verantwortlich</CardTitle>
             </CardHeader>
             <CardContent className="space-y-8 text-lg text-foreground/80">
                 <div className="space-y-2">
-                    <h3 className="font-headline text-2xl font-bold text-primary">Für den Inhalt der Seite verantwortlich</h3>
                     <p>Dipl. med. G. Ortmanns</p>
                     <p>Praktischer Arzt</p>
                     <p>Master of Public Health (UNSW)</p>
