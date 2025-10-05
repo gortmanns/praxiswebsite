@@ -3,6 +3,7 @@ import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import Image from 'next/image';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 const leistungen = [
   {
@@ -96,6 +97,7 @@ const leistungen = [
     subtitle: 'Mit dem Handy bezahlen',
     image: '/images/leistungen/twint-logo.png',
     hint: 'twint logo',
+    backsideContent: <></>,
   }
 ];
 
@@ -130,7 +132,10 @@ export default function LeistungenPage() {
                         src={leistung.image}
                         alt={leistung.name}
                         fill
-                        className={leistung.name === 'TWINT' ? "object-contain p-8" : "object-cover object-bottom"}
+                        className={cn(
+                            "object-cover",
+                            leistung.name === 'TWINT' && "object-contain p-8"
+                        )}
                         data-ai-hint={leistung.hint}
                       />
                     </div>
