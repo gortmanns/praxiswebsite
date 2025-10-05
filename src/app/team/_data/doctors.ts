@@ -71,21 +71,30 @@ export const doctors: Doctor[] = [
     position: 'Schemmer • Worni\nKlinik für Allgemein- und Viszeralchirurgie',
     imageUrl: '/images/team/Prof.Schemmer.jpg',
     cv: [
-        {
-            point: 'Facharzt für Allgemein- und Viszeralchirurgie mit umfassender Erfahrung in leitenden Positionen.',
-        },
-        {
-            point: 'Spezialisiert auf komplexe chirurgische Eingriffe und Lebertransplantationen.',
-        },
-        {
-            point: 'Umfangreiche wissenschaftliche Tätigkeit und zahlreiche Publikationen.',
-        },
-        {
-            point: 'Ordinarius für Allgemein-, Viszeral- und Transplantationschirurgie an der Medizinischen Fakultät der Universität Bern (2016-2020).',
-        },
-        {
-            point: 'Direktor der Universitätsklinik für Viszerale Chirurgie und Medizin, Inselspital Bern (2016-2020).',
-        }
+      {
+        point: 'Kleinchirurgische Eingriffe können direkt vor Ort im PRAXISZENTRUM IM RING erfolgen',
+      },
+      {
+        point: 'Grosse chirurgische Eingriffe werden in enger Kooperation zwischen Chirurg und Hausarzt durchgeführt',
+        isList: true,
+        subPoints: [
+            'Vorbesprechung und Planung des Eingriffs erfolgen hier im PRAXISZENTRUM IM RING',
+            'Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls hier im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten',
+            'Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt',
+        ]
+      },
+      {
+        point: '',
+        isList: true,
+        subPoints: [
+            'Hirslanden',
+            'Lindenhof-Spital',
+            'Siloah-Spital',
+        ]
+      },
+      {
+        point: 'Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder hier vor Ort im PRAXISZENTRUM IM RING statt',
+      }
     ],
   },
 ];
