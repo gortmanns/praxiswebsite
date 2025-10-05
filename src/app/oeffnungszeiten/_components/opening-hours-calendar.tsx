@@ -53,13 +53,14 @@ const BaseCell = ({ dayIndex, hourIndex }: { dayIndex: number; hourIndex: number
 export function OpeningHoursCalendar() {
   return (
     <div className="relative">
+      {/* Base Grid */}
       <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-secondary">
         {/* Header */}
         <div className="sticky top-0 z-10 bg-muted"></div>
         {days.map((day) => (
           <div 
             key={day} 
-            className="flex h-12 items-center justify-center border-l border-t border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base"
+            className="flex h-12 items-center justify-center border-l border-b border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base"
           >
             {day}
           </div>
@@ -68,11 +69,11 @@ export function OpeningHoursCalendar() {
         {/* Time Slots & Base Cells */}
         {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
           <React.Fragment key={startTime}>
-            <div className="flex h-12 items-center justify-center border-l border-t border-border bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
+            <div className="flex h-12 items-center justify-center border-l border-b border-border bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
               {startTime} - {timeSlots[hourIndex + 1]}
             </div>
             {days.map((_day, dayIndex) => (
-              <div key={`${_day}-${startTime}`} className="h-12 border-l border-t border-border">
+              <div key={`${_day}-${startTime}`} className="h-12 border-l border-b border-border">
                  <BaseCell dayIndex={dayIndex} hourIndex={hourIndex} />
               </div>
             ))}
@@ -81,43 +82,11 @@ export function OpeningHoursCalendar() {
       </div>
 
       {/* Overlay Grid */}
-      <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(10,minmax(0,1fr))]">
-        {/* Empty cells for grid lines */}
-        {Array.from({ length: 10 * 5 }).map((_, i) => (
-          <div key={i} className="border-r border-b border-orange-500"></div>
+      <div className="pointer-events-none absolute inset-0 grid grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(10,minmax(0,1fr))]">
+        <div className="row-start-1 col-start-1 h-12"></div>
+        {Array.from({ length: 11 * 5 }).map((_, i) => (
+            <div key={i} className="border-r border-b border-orange-500"></div>
         ))}
-        
-        {/* Sprechstunde Block */}
-        <div
-            className="pointer-events-auto flex items-center justify-center font-bold text-primary"
-            style={{
-              gridRow: '1 / 5', 
-              gridColumn: '2 / 7', 
-            }}
-          >
-            Sprechstunde
-        </div>
-
-        {/* Mittagspause Block */}
-        <div
-            className="pointer-events-auto flex items-center justify-center font-bold text-white"
-            style={{
-              gridRow: '5 / 7', 
-              gridColumn: '2 / 7',
-            }}
-          >
-            Mittagspause
-        </div>
-
-        {/* 14-18 Mo/Di Block */}
-        <div
-            className="pointer-events-auto bg-orange-500/20"
-            style={{
-              gridRow: '7 / 11',
-              gridColumn: '2 / 4',
-            }}
-          >
-        </div>
       </div>
     </div>
   );
