@@ -56,7 +56,7 @@ export function OpeningHoursCalendar() {
   return (
     <div className="relative">
       {/* Base Calendar Grid */}
-      <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
+      <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-secondary">
         {/* Header Row */}
         <div className="sticky top-0 z-10 bg-muted"></div>
         {days.map((day) => (
@@ -85,19 +85,19 @@ export function OpeningHoursCalendar() {
         <div className="col-span-6 h-px border-b border-border"></div>
       </div>
 
-      {/* Orange Overlay Grid for Borders and Blocks */}
+      {/* Orange Overlay Grid for Borders */}
       <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
           {/* Invisible Header Row for alignment */}
-          <div></div>
+          <div className="flex h-12 items-center justify-center border-l border-t border-transparent px-2 text-center text-xs font-bold text-transparent"></div>
           {days.map((day) => (
               <div key={`${day}-overlay-header`} className="flex h-12 items-center justify-center border-l border-t border-orange-500 text-center text-sm font-bold text-transparent sm:text-base">{day}</div>
           ))}
 
           {/* Invisible Time Axis and grid cells for alignment */}
-          {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
+          {timeSlots.slice(0, -1).map((startTime) => (
               <React.Fragment key={`${startTime}-overlay-row`}>
                   <div className="flex h-12 items-center justify-center border-l border-t border-orange-500 px-2 text-center text-xs font-bold text-transparent">
-                      {startTime} - {timeSlots[hourIndex + 1]}
+                      {startTime} -
                   </div>
                   {days.map((_day) => (
                       <div key={`${_day}-${startTime}-overlay-cell`} className="h-12 border-l border-t border-orange-500 bg-transparent"></div>
@@ -105,6 +105,7 @@ export function OpeningHoursCalendar() {
               </React.Fragment>
           ))}
           <div className="col-span-6 h-px border-b border-orange-500"></div>
+          <div className="absolute inset-0 h-full w-full border border-orange-500"></div>
       </div>
     </div>
   );
