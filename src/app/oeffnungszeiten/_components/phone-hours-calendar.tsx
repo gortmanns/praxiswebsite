@@ -2,12 +2,6 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { useMemo } from 'react';
-
-const timeToMinutes = (time: string) => {
-    const [hours, minutes] = time.split(':').map(Number);
-    return hours * 60 + minutes;
-};
 
 const timeSlots = [
   '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
@@ -15,133 +9,64 @@ const timeSlots = [
   '16:00', '16:30', '17:00', '17:30', '18:00'
 ];
 
-const days = [
-  {
-    name: 'Montag',
-    open: [
-      { start: '08:30', end: '13:00', label: 'Telefon wird bedient' },
-      { start: '14:00', end: '17:30', label: 'Telefon wird bedient' },
-    ],
-  },
-  {
-    name: 'Dienstag',
-    open: [
-        { start: '08:30', end: '13:00', label: 'Telefon wird bedient' },
-        { start: '14:00', end: '17:30', label: 'Telefon wird bedient' },
-    ],
-  },
-  {
-    name: 'Mittwoch',
-    open: [{ start: '08:30', end: '13:00', label: 'Telefon wird bedient' }],
-  },
-  {
-    name: 'Donnerstag',
-    open: [
-        { start: '08:30', end: '13:00', label: 'Telefon wird bedient' },
-        { start: '14:00', end: '17:30', label: 'Telefon wird bedient' },
-    ],
-  },
-  {
-    name: 'Freitag',
-    open: [
-      { start: '08:30', end: '13:00', label: 'Telefon wird bedient' },
-      { start: '14:00', end: '16:30', label: 'Telefon wird bedient' },
-    ],
-  },
-];
+const days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
 
-type TimeBlock = {
-  start: string;
-  end: string;
-  isOpen: boolean;
-  label?: string;
-};
+const commonLabel = "Telefon bedient";
+const commonLabelClosed = "Telefon nicht bedient";
+
+const renderBlock = (label: string, className: string, style: React.CSSProperties) => (
+  <div
+    className={cn("flex items-center justify-center p-1", className)}
+    style={style}
+  >
+    <span className="text-center font-semibold text-base">
+      {label}
+    </span>
+  </div>
+);
 
 export function PhoneHoursCalendar() {
-    const dailyBlocks = useMemo(() => {
-        return days.map(day => {
-            const processedPeriods: { start: number, end: number, label?: string }[] = [];
-    
-            day.open.forEach(period => {
-                const startMinutes = timeToMinutes(period.start);
-                const endMinutes = timeToMinutes(period.end);
-                processedPeriods.push({ start: startMinutes, end: endMinutes, label: period.label });
-            });
-    
-            return processedPeriods;
-        });
-    }, []);
-
-    const renderBlock = (dayIndex: number, timeIndex: number) => {
-        const startTime = timeSlots[timeIndex];
-        const startMinutes = timeToMinutes(startTime);
-        const dayPeriods = dailyBlocks[dayIndex];
-    
-        for (const period of dayPeriods) {
-            if (startMinutes >= period.start && startMinutes < period.end) {
-                // This slot is part of an open period
-                if (startMinutes === period.start) {
-                    // This is the beginning of the block, so render it
-                    const durationInIntervals = (period.end - period.start) / 30;
-                    return (
-                        <div
-                            key={`${dayIndex}-${timeIndex}`}
-                            className="flex items-center justify-center p-1 border-b border-l border-border bg-background"
-                            style={{
-                                gridRow: `span ${durationInIntervals}`,
-                            }}
-                        >
-                            <span className="font-semibold text-base text-foreground">
-                                {period.label}
-                            </span>
-                        </div>
-                    );
-                } else {
-                    // This slot is covered by a multi-slot block, so render nothing
-                    return null;
-                }
-            }
-        }
-    
-        // If we get here, the slot is closed
-        return (
-            <div
-                key={`${dayIndex}-${timeIndex}`}
-                className="flex items-center justify-center p-1 border-b border-l border-border bg-secondary"
-            >
-                <span className="font-semibold text-base text-secondary-foreground">
-                    Telefon nicht bedient
-                </span>
-            </div>
-        );
-    };
-
-    return (
-        <div className="grid grid-cols-[auto_repeat(5,minmax(0,1fr))] w-full border-t border-r border-border">
-          {/* Header Row */}
-          <div className="sticky top-0 z-10 border-b border-l border-border bg-muted"></div>
-            {days.map((day) => (
-                <div key={day.name} className="flex h-12 items-center justify-center border-b border-l border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
-                    {day.name}
-                </div>
-            ))}
-
-          {/* Time Axis & Content */}
-          <div className="col-start-1 col-end-2 row-start-2 row-end-[22] grid grid-rows-20">
-              {timeSlots.slice(0, -1).map((startTime) => (
-                <div key={startTime} className="flex h-12 items-center justify-center border-b border-l border-border px-2 text-center text-xs font-bold text-muted-foreground bg-muted">
-                    {startTime}
-                </div>
-              ))}
-          </div>
-
-          <div className="col-start-2 col-end-7 row-start-2 row-end-[22] grid grid-cols-5 grid-rows-20">
-            {dailyBlocks.map((_, dayIndex) => 
-                timeSlots.slice(0,-1).map((__, timeIndex) => 
-                    renderBlock(dayIndex, timeIndex)
-                )
-            )}
+  return (
+    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border-t border-r border-border">
+      {/* Header Row */}
+      <div className="sticky top-0 z-10 border-b border-l border-border bg-muted"></div>
+      {days.map((day) => (
+        <div key={day} className="flex h-12 items-center justify-center border-b border-l border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
+          {day}
         </div>
+      ))}
+
+      {/* Time Axis */}
+      <div className="col-start-1 col-end-2 row-start-2 row-end-[22] grid grid-rows-20">
+        {timeSlots.slice(0, -1).map((startTime, index) => (
+          <div key={startTime} className="flex h-6 items-center justify-center border-b border-l border-border bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
+            {startTime}
+          </div>
+        ))}
+      </div>
+
+      {/* Content Grid */}
+      <div className="col-start-2 col-end-7 row-start-2 row-end-[22] grid grid-cols-5 grid-rows-20">
+        {/* Mo, Di, Do Vormittag */}
+        {renderBlock(commonLabel, 'bg-background text-foreground border-b border-l', { gridColumn: '1 / 4', gridRow: '2 / 11' })}
+        {/* Mi Vormittag */}
+        {renderBlock(commonLabel, 'bg-background text-foreground border-b border-l', { gridColumn: '3 / 4', gridRow: '2 / 11' })}
+        {/* Fr Vormittag */}
+        {renderBlock(commonLabel, 'bg-background text-foreground border-b border-l', { gridColumn: '5 / 6', gridRow: '2 / 11' })}
+        
+        {/* Mo, Di, Do Nachmittag */}
+        {renderBlock(commonLabel, 'bg-background text-foreground border-b border-l', { gridColumn: '1 / 4', gridRow: '13 / 20' })}
+        {/* Fr Nachmittag */}
+        {renderBlock(commonLabel, 'bg-background text-foreground border-b border-l', { gridColumn: '5 / 6', gridRow: '13 / 18' })}
+
+        {/* Geschlossen-Zeiten */}
+        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '1 / 6', gridRow: '1 / 2' })}
+        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '1 / 6', gridRow: '11 / 13' })}
+        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '3 / 4', gridRow: '13 / 21' })}
+        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '1 / 3', gridRow: '20 / 21' })}
+        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '4 / 5', gridRow: '20 / 21' })}
+        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '5 / 6', gridRow: '18 / 21' })}
+      </div>
     </div>
-    );
+  );
 }

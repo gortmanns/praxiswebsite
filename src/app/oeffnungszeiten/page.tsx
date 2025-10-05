@@ -57,7 +57,7 @@ export default function OeffnungszeitenPage() {
                     </TabsContent>
                     <TabsContent value="telefonzeiten">
                         <Card className="rounded-t-none">
-                            <CardContent className="space-y-6 p-6 text-lg">
+                            <CardContent className="space-y-6 p-6 text-lg overflow-x-auto">
                                 <h3 className="text-center font-headline text-2xl font-bold tracking-tight text-primary">
                                     Unsere Telefonzeiten
                                 </h3>
