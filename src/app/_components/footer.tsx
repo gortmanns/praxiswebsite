@@ -122,6 +122,7 @@ export function Footer() {
                   <span className="break-all">empfang@praxiszentrum-im-ring.ch</span>
                 </ObfuscatedLink>
                 <div className="flex flex-col items-start gap-1 debug-outline">
+                    <p className="pl-9 text-xs text-background/70">Sichere HIN-Email</p>
                     <ObfuscatedLink
                       user="praxiszentrum-im-ring"
                       domain="hin.ch"
@@ -130,7 +131,6 @@ export function Footer() {
                       <HinMailIcon className="h-[21px] w-[21px] text-primary flex-shrink-0"/>
                       <span className="break-all">praxiszentrum-im-ring@hin.ch</span>
                     </ObfuscatedLink>
-                    <p className="pl-9 text-xs text-background/70">(Für die sichere Übermittlung medizinischer Unterlagen)</p>
                 </div>
             </div>
           </div>
