@@ -22,7 +22,7 @@ export default function TeamPage() {
             </h3>
 
             <Card className="group relative overflow-hidden">
-              <CardContent className="p-6 transition-opacity duration-300 group-hover:opacity-10">
+              <CardContent className="py-10 px-6 transition-opacity duration-300 group-hover:opacity-10">
                 <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-3 md:gap-12">
                   <div className="relative mx-auto w-full max-w-xs md:max-w-none">
                     <Image
@@ -51,7 +51,7 @@ export default function TeamPage() {
                 </div>
               </CardContent>
               <div className="absolute inset-0 flex flex-col items-start bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <ul className="space-y-3 text-base">
+                <ul className="space-y-1.5 text-xs">
                   <li className="font-bold text-primary">
                     Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
                   </li>
@@ -63,18 +63,18 @@ export default function TeamPage() {
                   </li>
                   <li className="font-bold text-primary">
                     Projektmanagement im Gesundheitswesen in Europa und Australien
-                     <div className="mt-2 pl-4 text-background/80">
-                        <h5 className="mb-2 text-sm font-bold uppercase tracking-wider">Meilensteine</h5>
-                        <ul className="list-disc space-y-1 pl-5 text-sm">
+                     <div className="mt-1 pl-4 text-background/80">
+                        <h5 className="mb-1 text-xs font-bold uppercase tracking-wider text-primary">Meilensteine</h5>
+                        <ul className="list-disc space-y-1 pl-5 text-xs">
                           <li>Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
                           <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
                           <li>Direktor der Memory-Strategie (Elektronisches Medikamenten-Management und Elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
                         </ul>
                      </div>
                   </li>
-                  <li className='mt-2 font-bold text-primary'>
+                  <li className='mt-1.5 font-bold text-primary'>
                     Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz
-                    <ul className="list-disc space-y-1 pl-9 mt-2 text-background/80 text-sm">
+                    <ul className="list-disc space-y-1 pl-9 mt-1 text-background/80 text-xs">
                         <li>Universitätsspital Basel (USB)</li>
                         <li>Kantonsspital Baselland (KSBL)</li>
                         <li>Kantonsspital Winterthur (KSW)</li>
@@ -83,8 +83,8 @@ export default function TeamPage() {
                     </ul>
                   </li>
                 </ul>
-                <p className='mt-3 text-base text-primary font-bold'>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)</p>
-                <p className='text-base text-primary font-bold'>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
+                <p className='mt-2 text-xs text-primary font-bold'>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)</p>
+                <p className='text-xs text-primary font-bold'>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
               </div>
             </Card>
           </div>
