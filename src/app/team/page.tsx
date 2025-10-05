@@ -53,7 +53,7 @@ export default function TeamPage() {
               <div className="absolute inset-0 flex flex-col items-start justify-center bg-primary/90 p-6 text-left text-primary-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 <ul className="space-y-2 text-sm">
                   <li>
-                    <span className="font-bold uppercase">Medizinstudium</span> in Bonn und Hobart (Australien)
+                    <span className="font-bold uppercase">Medizinstudium</span> in Bonn (Deutschland) und Hobart (Australien)
                   </li>
                   <li>
                     <span className="font-bold uppercase">Masterstudium</span> Public Health und Health Management in Sydney (Australien)
