@@ -22,13 +22,12 @@ const schedule = [
     { day: 1, start: '14:00', end: '18:00', type: 'sprechstunde' },
     // Mi
     { day: 2, start: '08:00', end: '12:00', type: 'sprechstunde' },
-    { day: 2, start: '12:00', end: '14:00', type: 'pause' },
-    { day: 2, start: '14:00', end: '18:00', type: 'geschlossen' },
+    { day: 2, start: '12:00', end: '18:00', type: 'geschlossen' },
     // Do
     { day: 3, start: '08:00', end: '12:00', type: 'sprechstunde' },
     { day: 3, start: '12:00', end: '14:00', type: 'pause' },
     { day: 3, start: '14:00', end: '17:00', type: 'sprechstunde' },
-    { day: 3, start: '17:00', end: '18:00', type: 'geschlossen' },
+    { day: 3, start: '17:00', end: '18:00', type: 'sprechstunde' },
     // Fr
     { day: 4, start: '08:00', end: '12:00', type: 'sprechstunde' },
     { day: 4, start: '12:00', end: '13:00', type: 'pause' },
@@ -39,13 +38,13 @@ const schedule = [
 const Cell = ({ type }: { type: string }) => {
     switch (type) {
         case 'sprechstunde':
-            return <div className='bg-background h-full w-full border-r border-b border-border/50'></div>;
+            return <div className='bg-background h-full w-full'></div>;
         case 'pause':
-            return <div className='bg-secondary h-full w-full border-r border-b border-border/50'></div>;
+            return <div className='bg-secondary h-full w-full'></div>;
         case 'geschlossen':
-            return <div className='bg-secondary h-full w-full border-r border-b border-border/50'></div>;
+            return <div className='bg-secondary h-full w-full'></div>;
         default:
-             return <div className='bg-background h-full w-full border-r border-b border-border/50'></div>;
+             return <div className='bg-background h-full w-full'></div>;
     }
 };
 
@@ -63,11 +62,11 @@ export function OpeningHoursCalendar() {
   });
 
   return (
-    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border-l border-t border-border/50">
+    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
       {/* Header Row */}
       <div className="sticky top-0 z-10 bg-muted"></div>
       {days.map((day) => (
-        <div key={day} className="flex h-12 items-center justify-center bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base border-r border-b border-border/50">
+        <div key={day} className="flex h-12 items-center justify-center bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
             {day}
         </div>
       ))}
@@ -75,7 +74,7 @@ export function OpeningHoursCalendar() {
       {/* Time Axis */}
       <div className="col-start-1 col-end-2 row-start-2 row-end-[12] grid grid-rows-10">
           {timeSlots.slice(0, -1).map((startTime, index) => (
-            <div key={startTime} className="flex h-12 items-center justify-center bg-muted px-2 text-center text-xs font-bold text-muted-foreground border-b border-border/50">
+            <div key={startTime} className="flex h-12 items-center justify-center bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
                 {startTime} - {timeSlots[index + 1]}
             </div>
           ))}
