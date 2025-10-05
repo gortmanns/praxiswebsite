@@ -14,15 +14,10 @@ export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsid
   return (
     <div className="group relative w-full" style={{ aspectRatio: '384 / 544' }}>
         <Card className="absolute inset-0 overflow-hidden">
+            {/* 
+            // BEGINN VORHERIGER CODE
             <CardContent className="flex h-full flex-col p-6">
-                {/* 
-                // BEGINN VORHERIGER CODE
-                <div className="relative w-full flex-grow rounded-md overflow-hidden">
-                // ENDE VORHERIGER CODE
-                */}
-                {/* BEGINN NEUER CODE */}
                 <div className="relative w-[85%] mx-auto flex-grow rounded-md overflow-hidden">
-                {/* ENDE NEUER CODE */}
                     <Image
                         src={imageUrl}
                         alt={`Portrait von ${name}`}
@@ -37,6 +32,28 @@ export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsid
                     {role2 && <p className="mt-1 text-base text-muted-foreground">{role2}</p>}
                 </div>
             </CardContent>
+            // ENDE VORHERIGER CODE
+            */}
+            {/* BEGINN NEUER CODE */}
+            <CardContent className="flex h-full flex-col p-0">
+                <div className="flex flex-grow flex-col px-6 pt-6">
+                  <div className="relative mx-auto w-full flex-grow overflow-hidden rounded-md">
+                      <Image
+                          src={imageUrl}
+                          alt={`Portrait von ${name}`}
+                          fill
+                          className="object-contain"
+                          data-ai-hint={imageHint}
+                      />
+                  </div>
+                </div>
+                <div className="p-6 text-center">
+                    <h4 className="text-xl font-bold text-primary">{name}</h4>
+                    <p className="mt-2 text-base font-bold text-muted-foreground">{role}</p>
+                    {role2 && <p className="mt-1 text-base text-muted-foreground">{role2}</p>}
+                </div>
+            </CardContent>
+            {/* ENDE NEUER CODE */}
             {backsideContent && (
                 <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
                     <div className="text-center text-lg">
