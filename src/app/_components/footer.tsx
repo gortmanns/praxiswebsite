@@ -22,7 +22,7 @@ const HinMailIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 const MapPinIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5-2.5z"/>
   </svg>
 );
 
@@ -45,25 +45,47 @@ export function Footer() {
   return (
     <footer className="bg-accent text-background/80 debug-outline">
       <div className="container py-12 debug-outline">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-5 debug-outline">
-          {/* Rechtliches */}
-          <div className="space-y-4 debug-outline">
-            <h3 className="text-lg font-bold uppercase text-primary">Rechtliches</h3>
-            <ul className="space-y-2">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-background/80 transition-colors hover:text-background debug-outline"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4 debug-outline">
+          {/* Col 1: Medikamentenbestellung & Rechtliches */}
+          <div className="space-y-8 debug-outline">
+            <div className="space-y-4 debug-outline">
+                <h3 className="text-lg font-bold uppercase text-primary">Medikamentenbestellung</h3>
+                <div className="space-y-2 text-sm debug-outline">
+                    <a
+                    href="tel:0313162666"
+                    className="flex items-center gap-3 transition-colors hover:text-background debug-outline"
+                    >
+                        <PhoneIcon className="h-[21px] w-[21px] flex-shrink-0" />
+                        <span>031 316 26 66</span>
+                    </a>
+                    <ObfuscatedLink
+                    user="medikamente"
+                    domain="praxiszentrum-im-ring.ch"
+                    className="flex items-center gap-3 transition-colors hover:text-background debug-outline"
+                    >
+                    <MailIcon className="h-[21px] w-[21px] flex-shrink-0" />
+                    <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
+                    </ObfuscatedLink>
+                </div>
+            </div>
+            <div className="space-y-4 debug-outline">
+              <h3 className="text-lg font-bold uppercase text-primary">Rechtliches</h3>
+              <ul className="space-y-2">
+                {navLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-background/80 transition-colors hover:text-background debug-outline"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          {/* Anschrift */}
+          {/* Col 2: Anschrift */}
           <div className="space-y-4 debug-outline">
             <h3 className="text-lg font-bold uppercase text-primary">Anschrift</h3>
             <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 text-sm transition-colors hover:text-background debug-outline">
@@ -76,7 +98,7 @@ export function Footer() {
             </a>
           </div>
 
-          {/* Kontakt */}
+          {/* Col 3: Kontakt */}
           <div className="space-y-4 debug-outline">
             <h3 className="text-lg font-bold uppercase text-primary">Kontakt</h3>
             <div className="space-y-2 text-sm debug-outline">
@@ -112,28 +134,8 @@ export function Footer() {
                 </div>
             </div>
           </div>
-           {/* Medikamente */}
-           <div className="space-y-4 debug-outline">
-            <h3 className="text-lg font-bold uppercase text-primary">Medikamentenbestellung</h3>
-            <div className="space-y-2 text-sm debug-outline">
-                <a
-                  href="tel:0313162666"
-                  className="flex items-center gap-3 transition-colors hover:text-background debug-outline"
-                >
-                    <PhoneIcon className="h-[21px] w-[21px] flex-shrink-0" />
-                    <span>031 316 26 66</span>
-                </a>
-                <ObfuscatedLink
-                  user="medikamente"
-                  domain="praxiszentrum-im-ring.ch"
-                  className="flex items-center gap-3 transition-colors hover:text-background debug-outline"
-                >
-                  <MailIcon className="h-[21px] w-[21px] flex-shrink-0" />
-                  <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
-                </ObfuscatedLink>
-            </div>
-          </div>
-          {/* Qualitätslabel */}
+          
+          {/* Col 4: Qualitätslabel */}
           <div className="space-y-4 debug-outline">
             <h3 className="text-lg font-bold uppercase text-primary">Qualitätslabel</h3>
             <div className="w-full debug-outline">
