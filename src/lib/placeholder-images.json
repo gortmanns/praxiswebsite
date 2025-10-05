@@ -1,28 +1,70 @@
 {
   "placeholderImages": [
     {
+      "id": "main-logo",
+      "description": "The main logo for Praxiszentrum im Ring.",
+      "imageUrl": "https://images.unsplash.com/photo-1753453218794-0dcd1e98442d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwcmFjdGljZSUyMGxvZ298ZW58MHx8fHwxNzU5NjY1MTYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "practice logo"
+    },
+    {
       "id": "hero-background",
-      "description": "Modern and bright medical practice waiting room with comfortable chairs.",
-      "imageUrl": "https://images.unsplash.com/photo-1579684385127-6c17935a4a58?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyMHx8bWVkaWNhbCUyMHByYWN0aWNlfGVufDB8fHx8MTc2MjAwNTY1OXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "medical practice"
+      "description": "Aerial view of the practice location.",
+      "imageUrl": "https://images.unsplash.com/photo-1614694871161-65768bca8b8d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhZXJpYWwlMjBjbGluaWN8ZW58MHx8fHwxNzU5NTY4OTM4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "aerial clinic"
     },
     {
-      "id": "dr-anna-meier",
-      "description": "Portrait of Dr. Anna Meier, a friendly female doctor with a warm smile.",
-      "imageUrl": "https://images.unsplash.com/photo-1537368910025-700350796527?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxkb2N0b3J8ZW58MHx8fHwxNzU5NTY3ODgxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "doctor smiling"
+      "id": "vasc-alliance",
+      "description": "Logo for VASC-ALLIANCE.",
+      "imageUrl": "https://images.unsplash.com/photo-1627843563095-f6e94676cfe0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29tcGFueSUyMGxvZ298ZW58MHx8fHwxNzU5NjI0Mjg0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "company logo"
     },
     {
-      "id": "dr-lars-weber",
-      "description": "Portrait of Dr. Lars Weber, a professional male doctor in a clinical setting.",
-      "imageUrl": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYWxlJTIwZG9jdG9yfGVufDB8fHx8MTc1OTU2Nzg4Mnww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "male doctor"
+      "id": "schemmer-worni",
+      "description": "Logo for Schemmer & Worni.",
+      "imageUrl": "https://images.unsplash.com/photo-1619551734325-81aaf323686c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb21wYW55JTIwbG9nb3xlbnwwfHx8fDE3NTk2MjQyODR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "company logo"
     },
     {
-      "id": "dr-sophie-huber",
-      "description": "Portrait of Dr. Sophie Huber, a smiling female doctor looking approachable.",
-      "imageUrl": "https://images.unsplash.com/photo-1684331448263-9975a4358032?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx3b21hbiUyMGRvY3RvciUyMHNtaWxpbmd8ZW58MHx8fHwxNzU5NTY3NDIzfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "woman doctor smiling"
+      "id": "go-medical",
+      "description": "Logo for go-medical.",
+      "imageUrl": "https://images.unsplash.com/photo-1751894051402-7cdb1753a653?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtZWRpY2FsJTIwbG9nb3xlbnwwfHx8fDE3NTk1NjY5Mjh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "medical logo"
+    },
+    {
+      "id": "mcl-logo",
+      "description": "Logo for MCL.",
+      "imageUrl": "https://images.unsplash.com/photo-1637489981573-e45e9297cb21?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxsYWIlMjBsb2dvfGVufDB8fHx8MTc1OTY2NTE2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "lab logo"
+    },
+    {
+      "id": "doxnet-logo",
+      "description": "Logo for doxnet.",
+      "imageUrl": "https://images.unsplash.com/photo-1656524111219-1c2d6c011ece?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxuZXR3b3JrJTIwbG9nb3xlbnwwfHx8fDE3NTk2NTQ5MTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network logo"
+    },
+    {
+      "id": "ambulance",
+      "description": "Picture of an ambulance.",
+      "imageUrl": "https://images.unsplash.com/photo-1507105306461-47f75f2da3aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YW1idWxhbmNlfGVufDB8fHx8MTc1OTY2NTE2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ambulance"
+    },
+    {
+      "id": "medphone-logo",
+      "description": "Logo for Medphone.",
+      "imageUrl": "https://images.unsplash.com/photo-1694878981702-150c7d04f874?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cGhvbmUlMjBsb2dvfGVufDB8fHx8MTc1OTYwMTUyNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "phone logo"
+    },
+    {
+      "id": "toxinfo-logo",
+      "description": "Logo for Tox Info Suisse.",
+      "imageUrl": "https://images.unsplash.com/photo-1628760584600-6c31148991e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxpbmZvJTIwbG9nb3xlbnwwfHx8fDE3NTk2NjUxNjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "info logo"
+    },
+    {
+      "id": "quality-label",
+      "description": "Logo for Mehrfacharzt quality label.",
+      "imageUrl": "https://images.unsplash.com/photo-1730730236229-51b1e418a238?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxxdWFsaXR5JTIwc2VhbHxlbnwwfHx8fDE3NTk2NjUxNjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "quality seal"
     }
   ]
 }

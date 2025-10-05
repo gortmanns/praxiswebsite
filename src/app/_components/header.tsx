@@ -13,7 +13,8 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
+  } from "@/components/ui/dropdown-menu";
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -36,6 +37,8 @@ const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export function Header() {
   const pathname = usePathname();
+  const mainLogo = PlaceHolderImages.find(p => p.id === 'main-logo');
+
   const navLinks = [
     { href: '/', label: 'Startseite' },
     { href: '/team', label: 'Team' },
@@ -89,14 +92,17 @@ export function Header() {
       {/* Main header */}
       <div className="flex h-28 items-center justify-between px-8">
         <Link href="/">
-            <Image
-            src="https://www.praxiszentrum-im-ring.ch/s/img/logo.png"
-            alt="Praxiszentrum im Ring Logo"
-            width={520}
-            height={105}
-            className="h-auto w-auto max-w-[300px] md:max-w-[520px]"
-            priority
-            />
+          {mainLogo && (
+              <Image
+                src={mainLogo.imageUrl}
+                alt="Praxiszentrum im Ring Logo"
+                width={520}
+                height={105}
+                className="h-auto w-auto max-w-[300px] md:max-w-[520px]"
+                priority
+                data-ai-hint={mainLogo.imageHint}
+              />
+          )}
         </Link>
 
         <nav className="hidden md:flex md:items-center md:space-x-4">
@@ -165,13 +171,16 @@ export function Header() {
             <SheetContent side="right">
             <div className="p-4">
                 <Link href="/" className="mb-8 block">
-                <Image
-                    src="https://www.praxiszentrum-im-ring.ch/s/img/logo.png"
-                    alt="Praxiszentrum im Ring Logo"
-                    width={180}
-                    height={37}
-                    className="h-auto"
-                />
+                  {mainLogo && (
+                    <Image
+                      src={mainLogo.imageUrl}
+                      alt="Praxiszentrum im Ring Logo"
+                      width={180}
+                      height={37}
+                      className="h-auto"
+                      data-ai-hint={mainLogo.imageHint}
+                    />
+                  )}
                 </Link>
                 <div className="mb-6 space-y-4 text-sm">
                 <a

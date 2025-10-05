@@ -5,9 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Phone } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function NotfallPage() {
-  
+  const ambulanceImage = PlaceHolderImages.find(p => p.id === 'ambulance');
+  const medphoneImage = PlaceHolderImages.find(p => p.id === 'medphone-logo');
+  const toxinfoImage = PlaceHolderImages.find(p => p.id === 'toxinfo-logo');
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -23,14 +27,16 @@ export default function NotfallPage() {
                 <div className="border border-destructive p-6">
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
                     <div className="mx-auto w-full max-w-lg">
-                      <Image
-                        src="https://www.praxiszentrum-im-ring.ch/s/img/rettungswagen.jpg"
-                        alt="Ambulanz"
-                        width={1200}
-                        height={800}
-                        className="h-auto w-full object-cover"
-                        data-ai-hint="ambulance"
-                      />
+                      {ambulanceImage && (
+                        <Image
+                          src={ambulanceImage.imageUrl}
+                          alt="Ambulanz"
+                          width={600}
+                          height={400}
+                          className="h-auto w-full object-cover"
+                          data-ai-hint={ambulanceImage.imageHint}
+                        />
+                      )}
                     </div>
                     <div className="space-y-4 text-left">
                       <p className="text-xl lg:text-2xl xl:text-3xl text-foreground">
@@ -49,14 +55,16 @@ export default function NotfallPage() {
                 <div className="border border-border p-6">
                   <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
                     <div className='mx-auto w-full max-w-lg'>
+                      {medphoneImage && (
                         <Image
-                          src="https://www.medphone.ch/wp-content/themes/medphone/img/logo_medphone.svg"
+                          src={medphoneImage.imageUrl}
                           alt="Medphone Logo"
-                          width={1024}
-                          height={241}
+                          width={600}
+                          height={141}
                           className="h-auto w-full"
-                          data-ai-hint="logo"
+                          data-ai-hint={medphoneImage.imageHint}
                         />
+                      )}
                     </div>
                     <div className="space-y-4 text-left">
                         <p className='text-xl lg:text-2xl xl:text-3xl'>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
@@ -78,13 +86,16 @@ export default function NotfallPage() {
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
                     <div className="mx-auto w-full max-w-lg">
                       <Link href="https://www.toxinfo.ch/" target="_blank" rel="noopener noreferrer">
-                        <Image
-                          src="https://www.toxinfo.ch/logo.svg"
-                          alt="Tox Info Suisse Logo"
-                          width={300}
-                          height={100}
-                          className="h-auto w-full"
-                        />
+                        {toxinfoImage && (
+                          <Image
+                            src={toxinfoImage.imageUrl}
+                            alt="Tox Info Suisse Logo"
+                            width={300}
+                            height={100}
+                            className="h-auto w-full"
+                            data-ai-hint={toxinfoImage.imageHint}
+                          />
+                        )}
                       </Link>
                     </div>
                     <div className="space-y-4 text-left">

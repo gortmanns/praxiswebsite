@@ -4,20 +4,28 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export function CooperationPartnersSection() {
+  const vascAllianceImage = PlaceHolderImages.find(p => p.id === 'vasc-alliance');
+  const schemmerWorniImage = PlaceHolderImages.find(p => p.id === 'schemmer-worni');
+  const goMedicalImage = PlaceHolderImages.find(p => p.id === 'go-medical');
+  const mclImage = PlaceHolderImages.find(p => p.id === 'mcl-logo');
+  const doxnetImage = PlaceHolderImages.find(p => p.id === 'doxnet-logo');
+
+
   const topPartners = [
     {
       name: 'VASC-ALLIANCE',
-      logoUrl:
-        'https://www.vasc-alliance.ch/s/img/logo.png',
+      logoUrl: vascAllianceImage?.imageUrl,
       websiteUrl: 'https://www.vasc-alliance.ch/',
+      aiHint: vascAllianceImage?.imageHint,
     },
     {
       name: 'Schemmer & Worni',
-      logoUrl:
-        'https://schemmer-worni.ch/wp-content/themes/schemmer-worni/assets/img/logo.svg',
+      logoUrl: schemmerWorniImage?.imageUrl,
       websiteUrl: 'https://schemmer-worni.ch/de/',
+      aiHint: schemmerWorniImage?.imageHint,
     },
     {
       name: 'orthozentrum-bern',
@@ -28,18 +36,21 @@ export function CooperationPartnersSection() {
   const otherPartners = [
     {
       name: 'go-medical',
-      logoUrl: 'https://www.go-medical.ch/wp-content/uploads/2022/02/go-medical_logo.svg',
+      logoUrl: goMedicalImage?.imageUrl,
       websiteUrl: 'https://www.go-medical.ch/',
+      aiHint: goMedicalImage?.imageHint,
     },
     {
       name: 'MCL',
-      logoUrl: 'https://www.mcl.ch/de-de/mcl_logo_data/mcl_logo_de-de.svg',
+      logoUrl: mclImage?.imageUrl,
       websiteUrl: 'https://www.mcl.ch/de-de/',
+      aiHint: mclImage?.imageHint,
     },
     {
       name: 'doxnet',
-      logoUrl: 'https://www.doxnet.ch/wp-content/uploads/2021/04/doxnet_logo.svg',
+      logoUrl: doxnetImage?.imageUrl,
       websiteUrl: 'https://www.doxnet.ch/',
+      aiHint: doxnetImage?.imageHint,
     },
   ];
 
@@ -68,6 +79,7 @@ export function CooperationPartnersSection() {
                           alt={`${partner.name} Logo`}
                           fill
                           className="object-contain"
+                          data-ai-hint={partner.aiHint}
                         />
                       </div>
                     ) : partner.name === 'orthozentrum-bern' ? (
@@ -112,6 +124,7 @@ export function CooperationPartnersSection() {
                       alt={`${partner.name} Logo`}
                       fill
                       className="object-contain"
+                      data-ai-hint={partner.aiHint}
                     />
                   </div>
                 </CardContent>

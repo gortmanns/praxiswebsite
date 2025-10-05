@@ -1,18 +1,22 @@
 import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+
 
 export function Hero() {
+  const heroImage = PlaceHolderImages.find(p => p.id === 'hero-background');
 
   return (
-    <section className="relative w-full">
+    <section className="relative w-full h-[400px]">
+      {heroImage && (
         <Image
-          src="https://www.praxiszentrum-im-ring.ch/s/img/emotionheader.jpg"
+          src={heroImage.imageUrl}
           alt="Aerial view of the practice location."
-          width={1200}
-          height={400}
+          fill
           className="w-full h-auto object-cover"
           priority
-          data-ai-hint="aerial clinic"
+          data-ai-hint={heroImage.imageHint}
         />
+      )}
     </section>
   );
 }
