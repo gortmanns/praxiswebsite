@@ -1,9 +1,6 @@
-
-
 'use client';
 
 import React from 'react';
-import { cn } from '@/lib/utils';
 
 const timeSlots = [
   '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00',
@@ -13,7 +10,6 @@ const timeSlots = [
 const days = [
   'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'
 ];
-
 
 const schedule = [
     // Mo
@@ -67,11 +63,11 @@ export function OpeningHoursCalendar() {
   });
 
   return (
-    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-[#EEEEEE]">
+    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
       {/* Header Row */}
       <div className="sticky top-0 z-10 bg-muted"></div>
       {days.map((day) => (
-        <div key={day} className="flex h-12 items-center justify-center border-l border-[#EEEEEE] bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
+        <div key={day} className="flex h-12 items-center justify-center bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
             {day}
         </div>
       ))}
@@ -79,7 +75,7 @@ export function OpeningHoursCalendar() {
       {/* Time Axis */}
       <div className="col-start-1 col-end-2 row-start-2 row-end-[12] grid grid-rows-10">
           {timeSlots.slice(0, -1).map((startTime, index) => (
-            <div key={startTime} className="flex h-12 items-center justify-center border-t border-r border-[#EEEEEE] bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
+            <div key={startTime} className="flex h-12 items-center justify-center bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
                 {startTime} - {timeSlots[index + 1]}
             </div>
           ))}
@@ -101,10 +97,10 @@ export function OpeningHoursCalendar() {
          <div className="col-start-4 col-end-5 row-start-7 row-end-10 pointer-events-none flex items-center justify-center p-2">
             <span className="text-lg font-semibold text-foreground">Sprechstunde</span>
         </div>
-        <div className="col-start-5 col-end-6 row-start-6 row-end-10 pointer-events-none flex items-center justify-center p-2">
+        <div className="col-start-5 col-end-6 row-start-7 row-end-10 pointer-events-none flex items-center justify-center p-2">
             <span className="text-lg font-semibold text-foreground">Sprechstunde</span>
         </div>
-        <div className="col-start-1 col-end-6 row-start-5 row-end-7 pointer-events-none flex items-center justify-center p-2">
+        <div className="col-start-1 col-end-6 row-start-5 row-end-6 pointer-events-none flex items-center justify-center p-2">
              <span className="text-base font-semibold text-secondary-foreground">Mittagspause</span>
         </div>
         <div className="col-start-3 col-end-4 row-start-7 row-end-11 pointer-events-none flex items-center justify-center p-2">

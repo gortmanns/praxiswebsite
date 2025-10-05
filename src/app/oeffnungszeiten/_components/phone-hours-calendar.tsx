@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/lib/utils';
 
 const timeSlots = [
   '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
@@ -63,11 +62,11 @@ export function PhoneHoursCalendar() {
   });
 
   return (
-    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-[#EEEEEE]">
+    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
       {/* Header Row */}
       <div className="sticky top-0 z-10 bg-muted"></div>
       {days.map((day) => (
-        <div key={day} className="flex h-12 items-center justify-center border-l border-[#EEEEEE] bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
+        <div key={day} className="flex h-12 items-center justify-center bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
           {day}
         </div>
       ))}
@@ -75,7 +74,7 @@ export function PhoneHoursCalendar() {
       {/* Time Axis */}
       <div className="col-start-1 col-end-2 row-start-2 row-end-[21] grid grid-rows-19">
         {timeSlots.slice(0, -1).map((startTime, index) => (
-          <div key={startTime} className="flex h-6 items-center justify-center border-t border-r border-[#EEEEEE] bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
+          <div key={startTime} className="flex h-6 items-center justify-center bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
              {startTime} - {timeSlots[index + 1]}
           </div>
         ))}
