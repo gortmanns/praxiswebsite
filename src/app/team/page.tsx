@@ -14,8 +14,21 @@ const teamMembers = [
       role2: 'Berufsbildnerin',
       imageUrl: '/images/team/Garcia.jpg',
       imageHint: 'woman portrait',
+      backsideContent: (
+        <>
+          <p>
+            Früher habe ich schon einmal für rund 10 Jahre in dieser Praxis gearbeitet,
+            damals noch bei Dr. Segginger.
+          </p>
+          <br />
+          <p>
+            Inzwischen bin ich - jetzt in der Funktion der Leitenden MPA –
+            zurückgekehrt an meine alte Wirkungsstätte.
+          </p>
+        </>
+      ),
     },
-  ];
+];
 
 export default function TeamPage() {
   return (
@@ -61,6 +74,7 @@ export default function TeamPage() {
                             role2={member.role2}
                             imageUrl={member.imageUrl}
                             imageHint={member.imageHint}
+                            backsideContent={member.backsideContent}
                         />
                     </div>
                 ))}
