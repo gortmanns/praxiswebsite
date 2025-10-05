@@ -84,15 +84,6 @@ export const doctors: Doctor[] = [
         ]
       },
       {
-        point: 'Partnerkliniken',
-        isList: true,
-        subPoints: [
-            'Hirslanden',
-            'Lindenhof-Spital',
-            'Siloah-Spital',
-        ]
-      },
-      {
         point: 'Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder hier vor Ort im PRAXISZENTRUM IM RING statt',
       }
     ],
