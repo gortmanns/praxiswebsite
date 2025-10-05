@@ -83,7 +83,7 @@ export default function TeamPage() {
                     </ul>
                   </li>
                 </ul>
-                 <p className='mt-4 text-sm'><span className="font-bold uppercase">Wissensch. Mitarbeiter:</span> Pneumologie (Universität Zürich / USZ)</p>
+                 <p className='mt-4 text-sm'><span className="font-bold uppercase">Wissenschaftlicher Mitarbeiter:</span> Pneumologie (Universität Zürich / USZ)</p>
                  <p className='text-sm'><span className="font-bold uppercase">Lehrbeauftragter:</span> Hausarztmedizin (Universität Bern)</p>
               </div>
             </Card>
