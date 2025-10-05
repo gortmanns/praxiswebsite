@@ -73,7 +73,7 @@ const leistungen = [
   {
     name: 'TWINT',
     subtitle: 'Mit dem Handy bezahlen',
-    image: '/images/leistungen/twint-logo.png',
+    image: '/images/leistungen/TWINT.png',
     hint: 'twint logo',
     backsideContent: <></>,
   },
@@ -83,7 +83,7 @@ const leistungen = [
     hint: 'driving test eye chart',
     backsideContent: (
       <>
-        <p>Wir führen Verkehrsmedizinische Untersuchungen der Klasse 1 durch (für Senioren). Dieses ist eine Wahlleistung und nicht über die Krankenversicherung gedeckt.</p>
+        <p>Wir führen Verkehrsmedizinische Untersuchungen der Klasse 1 (für Senioren) durch. Dieses ist eine Wahlleistung und nicht über die Krankenversicherung gedeckt.</p>
       </>
     ),
   },
@@ -116,8 +116,8 @@ export default function LeistungenPage() {
             <div className="mx-auto mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {leistungen.map((leistung) => (
                 <div key={leistung.name} className="group relative flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl aspect-[4/5]">
-                  <div className="flex h-full flex-col">
-                    <div className="flex h-28 items-center justify-center p-4">
+                  <div className="flex flex-col h-full">
+                    <div className="flex items-center justify-center p-4 min-h-[9rem]">
                       <div className="text-center">
                         <h3 className="font-headline text-2xl font-bold text-primary">
                           {leistung.name}
