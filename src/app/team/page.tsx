@@ -2,7 +2,6 @@
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { DoctorCard } from './_components/doctor-card';
-import { DoctorCardSchemmer } from './_components/doctor-card-schemmer';
 import { doctors } from './_data/doctors';
 
 export default function TeamPage() {
@@ -27,7 +26,7 @@ export default function TeamPage() {
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
             <DoctorCard doctor={ortmanns} />
-            <DoctorCardSchemmer doctor={schemmer} />
+            <DoctorCard doctor={schemmer} />
           </div>
         </div>
       </main>

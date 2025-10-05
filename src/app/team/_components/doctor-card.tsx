@@ -34,7 +34,16 @@ export const DoctorCard = ({ doctor }: { doctor: Doctor }) => (
                                         <p key={index} className={index === 0 ? 'font-bold' : ''}>{spec}</p>
                                     ))}
                                 </div>
-                                {doctor.position && (
+                                {doctor.name === 'P. Schemmer' ? (
+                                    <div className="relative mt-[2.5cqw] h-[10cqw] w-[30cqw]">
+                                        <Image
+                                            src="/images/schemmer-worni-logo.png"
+                                            alt="Schemmer & Worni Logo"
+                                            fill
+                                            className="object-contain"
+                                        />
+                                    </div>
+                                ) : doctor.position && (
                                     <p className="mt-[2.5cqw] text-[1.6cqw] italic">
                                         {doctor.position.split('\n').map((line, index) => (
                                             <span key={index} className="whitespace-nowrap">
