@@ -83,35 +83,53 @@ export function OpeningHoursCalendar() {
         ))}
         {/* Bottom border for the last row */}
         <div className="col-span-6 h-px border-b border-border"></div>
+        
+        {/* Sprechstunde Text Overlay */}
+        <div className="pointer-events-none absolute inset-0 grid grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(10,minmax(0,1fr))]">
+          <div className="col-start-2 col-end-7 row-start-2 row-end-6 flex items-center justify-center">
+              <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
+          </div>
+          <div className="col-start-2 col-end-7 row-start-8 row-end-12 flex items-center justify-center">
+              <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
+          </div>
+        </div>
       </div>
 
-      {/* Overlay Grid */}
-      <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] bg-orange-500/20">
-        {/* Header Row */}
-        <div className="text-transparent"></div>
-        {days.map((day) => (
-          <div 
-            key={`${day}-overlay`} 
-            className="flex h-12 items-center justify-center border-l border-t border-orange-500 text-center text-sm font-bold text-transparent sm:text-base"
-          >
-            {day}
-          </div>
-        ))}
+      {/* Orange Overlay Grid for Borders and Blocks */}
+      <div className="pointer-events-none absolute inset-0">
+          <div className="grid h-full w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(11,minmax(0,1fr))]">
+              {/* Invisible Headers for correct spacing */}
+              <div className="row-start-1 text-transparent"></div>
+              {days.map((day) => (
+                  <div key={`${day}-overlay-header`} className="flex h-12 items-center justify-center border-l border-t border-orange-500 text-center text-sm font-bold text-transparent sm:text-base">{day}</div>
+              ))}
 
-        {/* Time Axis and Content Grid */}
-        {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
-          <React.Fragment key={`${startTime}-overlay`}>
-            <div className="flex h-12 items-center justify-center border-l border-t border-orange-500 px-2 text-center text-xs font-bold text-transparent">
-               {startTime} - {timeSlots[hourIndex + 1]}
-            </div>
-            {days.map((_day) => (
-              <div key={`${_day}-${startTime}-overlay`} className="h-12 border-l border-t border-orange-500">
-              </div>
-            ))}
-          </React.Fragment>
-        ))}
-        {/* Bottom border for the last row */}
-        <div className="col-span-6 h-px border-b border-orange-500"></div>
+              {/* Invisible Time Axis and grid lines */}
+              {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
+                  <React.Fragment key={`${startTime}-overlay-row`}>
+                      <div className="flex h-12 items-center justify-center border-l border-t border-orange-500 px-2 text-center text-xs font-bold text-transparent">
+                          {startTime} - {timeSlots[hourIndex + 1]}
+                      </div>
+                      {days.map((_day) => (
+                          <div key={`${_day}-${startTime}-overlay-cell`} className="h-12 border-l border-t border-orange-500"></div>
+                      ))}
+                  </React.Fragment>
+              ))}
+              <div className="col-span-6 h-px border-b border-orange-500"></div>
+
+              {/* === ORANGE BLOCKS START === */}
+              {/* Block 1: Mo 8-9 to Fr 11-12 */}
+              <div className="col-start-2 col-end-7 row-start-2 row-end-6 bg-orange-500/20"></div>
+              {/* Block 2: Mo 12-13 to Fr 13-14 */}
+              <div className="col-start-2 col-end-7 row-start-6 row-end-8 bg-orange-500/20"></div>
+              {/* Block 3: Mo 13-14 to Di 17-18 */}
+              <div className="col-start-2 col-end-4 row-start-8 row-end-12 bg-orange-500/20"></div>
+              {/* Block 4: Mi 14-18 */}
+              <div className="col-start-4 col-end-5 row-start-8 row-end-12 bg-orange-500/20"></div>
+              {/* Block 5: Do-Fr 15-16 */}
+              <div className="col-start-5 col-end-7 row-start-9 row-end-10 bg-orange-500/20"></div>
+              {/* === ORANGE BLOCKS END === */}
+          </div>
       </div>
     </div>
   );
