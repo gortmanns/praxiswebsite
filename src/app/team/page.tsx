@@ -50,8 +50,8 @@ export default function TeamPage() {
                   </div>
                 </div>
               </CardContent>
-              <div className="absolute inset-0 flex flex-col items-start overflow-y-auto bg-accent p-8 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <ul className="space-y-4 text-lg">
+              <div className="absolute inset-0 flex flex-col items-start bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <ul className="space-y-3 text-base">
                   <li className="font-bold text-primary">
                     Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
                   </li>
@@ -64,8 +64,8 @@ export default function TeamPage() {
                   <li className="font-bold text-primary">
                     Projektmanagement im Gesundheitswesen in Europa und Australien
                      <div className="mt-2 pl-4 text-background/80">
-                        <h5 className="mb-2 text-base font-bold uppercase tracking-wider">Meilensteine</h5>
-                        <ul className="list-disc space-y-2 pl-5 text-base">
+                        <h5 className="mb-2 text-sm font-bold uppercase tracking-wider">Meilensteine</h5>
+                        <ul className="list-disc space-y-1 pl-5 text-sm">
                           <li>Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
                           <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
                           <li>Direktor der Memory-Strategie (Elektronisches Medikamenten-Management und Elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
@@ -74,7 +74,7 @@ export default function TeamPage() {
                   </li>
                   <li className='mt-2 font-bold text-primary'>
                     Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz
-                    <ul className="list-disc space-y-2 pl-9 mt-2 text-background/80 text-base">
+                    <ul className="list-disc space-y-1 pl-9 mt-2 text-background/80 text-sm">
                         <li>Universitätsspital Basel (USB)</li>
                         <li>Kantonsspital Baselland (KSBL)</li>
                         <li>Kantonsspital Winterthur (KSW)</li>
@@ -83,8 +83,8 @@ export default function TeamPage() {
                     </ul>
                   </li>
                 </ul>
-                <p className='mt-4 text-lg text-primary font-bold'>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)</p>
-                <p className='text-lg text-primary font-bold'>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
+                <p className='mt-3 text-base text-primary font-bold'>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)</p>
+                <p className='text-base text-primary font-bold'>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
               </div>
             </Card>
           </div>
