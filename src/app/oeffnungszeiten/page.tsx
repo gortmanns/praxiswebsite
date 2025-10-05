@@ -10,11 +10,11 @@ import { PhoneHoursCalendar } from './_components/phone-hours-calendar';
 
 export default function OeffnungszeitenPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-background debug-outline">
       <Header />
-      <main className="flex-1">
-        <div className="container py-16 sm:py-24">
-            <div className="mx-auto max-w-5xl text-center">
+      <main className="flex-1 debug-outline">
+        <div className="container py-16 sm:py-24 debug-outline">
+            <div className="mx-auto max-w-5xl text-center debug-outline">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
                     ÖFFNUNGS- & TELEFONZEITEN
                 </h2>
@@ -23,9 +23,9 @@ export default function OeffnungszeitenPage() {
                 </p>
             </div>
 
-            <div className="mx-auto mt-16">
-                <Tabs defaultValue="oeffnungszeiten" className="w-full">
-                    <TabsList className="grid h-auto w-full grid-cols-2 rounded-lg bg-transparent p-0">
+            <div className="mx-auto mt-16 debug-outline">
+                <Tabs defaultValue="oeffnungszeiten" className="w-full debug-outline">
+                    <TabsList className="grid h-auto w-full grid-cols-2 rounded-lg bg-transparent p-0 debug-outline">
                         <TabsTrigger 
                             value="oeffnungszeiten" 
                             className={cn(
@@ -45,9 +45,9 @@ export default function OeffnungszeitenPage() {
                             Telefonzeiten
                         </TabsTrigger>
                     </TabsList>
-                    <TabsContent value="oeffnungszeiten">
-                        <Card className="rounded-t-none">
-                            <CardContent className="space-y-6 p-6 text-lg">
+                    <TabsContent value="oeffnungszeiten" className="debug-outline">
+                        <Card className="rounded-t-none debug-outline">
+                            <CardContent className="space-y-6 p-6 text-lg debug-outline">
                                 <h3 className="text-center font-headline text-2xl font-bold tracking-tight text-primary">
                                     Unsere Öffnungszeiten
                                 </h3>
@@ -55,9 +55,9 @@ export default function OeffnungszeitenPage() {
                             </CardContent>
                         </Card>
                     </TabsContent>
-                    <TabsContent value="telefonzeiten">
-                        <Card className="rounded-t-none">
-                            <CardContent className="space-y-6 p-6 text-lg">
+                    <TabsContent value="telefonzeiten" className="debug-outline">
+                        <Card className="rounded-t-none debug-outline">
+                            <CardContent className="space-y-6 p-6 text-lg debug-outline">
                                 <h3 className="text-center font-headline text-2xl font-bold tracking-tight text-primary">
                                     Unsere Telefonzeiten
                                 </h3>

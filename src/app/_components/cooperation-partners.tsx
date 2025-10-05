@@ -58,24 +58,24 @@ export function CooperationPartnersSection() {
   ];
 
   return (
-    <section id="partners" className="w-full bg-primary">
-      <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+    <section id="partners" className="w-full bg-primary debug-outline">
+      <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8 debug-outline">
         <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
           Unsere ärztlichen Kooperationspartner
         </h2>
-        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 debug-outline">
           {topPartners.map(partner => (
             <Link
               key={partner.name}
               href={partner.websiteUrl!}
               target={partner.websiteUrl === '#' ? '_self' : '_blank'}
               rel="noopener noreferrer"
-              className="group"
+              className="group debug-outline"
             >
-              <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
-                <CardContent className="flex w-full items-center justify-center p-0">
+              <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg debug-outline">
+                <CardContent className="flex w-full items-center justify-center p-0 debug-outline">
                   {partner.logoUrl ? (
-                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden debug-outline">
                       <Image
                         src={partner.logoUrl}
                         alt={`${partner.name} Logo`}
@@ -96,10 +96,10 @@ export function CooperationPartnersSection() {
             href="https://neurologie-plus.ch/"
             target="_blank"
             rel="noopener noreferrer"
-            className="group"
+            className="group debug-outline"
           >
-            <Card className="flex h-32 items-center justify-center p-6 text-center text-special-green transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
-              <CardContent className="p-0">
+            <Card className="flex h-32 items-center justify-center p-6 text-center text-special-green transition-all group-hover:-translate-y-1 group-hover:shadow-lg debug-outline">
+              <CardContent className="p-0 debug-outline">
                 <AgnieszkaSlezakLogo className="h-20 w-auto" />
               </CardContent>
             </Card>
@@ -108,19 +108,19 @@ export function CooperationPartnersSection() {
         <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
           Unsere weiteren Partner
         </h3>
-        <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3 lg:grid-cols-8">
-          <div className="hidden lg:block"></div> {/* Empty spacer */}
+        <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3 lg:grid-cols-8 debug-outline">
+          <div className="hidden lg:block debug-outline"></div> {/* Empty spacer */}
           {otherPartners.map(partner => (
             <Link
               key={partner.name}
               href={partner.websiteUrl}
               target={partner.websiteUrl === '#' ? '_self' : '_blank'}
               rel="noopener noreferrer"
-              className="group sm:col-span-1 lg:col-span-2"
+              className="group sm:col-span-1 lg:col-span-2 debug-outline"
             >
-              <Card className="flex h-32 items-center justify-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
-                <CardContent className="flex w-full items-center justify-center p-0">
-                  <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+              <Card className="flex h-32 items-center justify-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg debug-outline">
+                <CardContent className="flex w-full items-center justify-center p-0 debug-outline">
+                  <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden debug-outline">
                     <Image
                       src={partner.logoUrl!}
                       alt={`${partner.name} Logo`}
@@ -134,7 +134,7 @@ export function CooperationPartnersSection() {
               </Card>
             </Link>
           ))}
-          <div className="hidden lg:block"></div> {/* Empty spacer */}
+          <div className="hidden lg:block debug-outline"></div> {/* Empty spacer */}
         </div>
       </div>
     </section>

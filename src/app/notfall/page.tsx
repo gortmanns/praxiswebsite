@@ -8,20 +8,20 @@ import Link from 'next/link';
 
 export default function NotfallPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-background debug-outline">
       <Header />
-      <main className="flex-1">
-        <div className="w-full px-4 py-16 sm:px-8 sm:py-24">
-          <Card>
-            <CardHeader>
+      <main className="flex-1 debug-outline">
+        <div className="w-full px-4 py-16 sm:px-8 sm:py-24 debug-outline">
+          <Card className="debug-outline">
+            <CardHeader className="debug-outline">
               <CardTitle className="text-center font-headline text-5xl font-bold tracking-tight text-primary sm:text-6xl md:text-7xl lg:text-8xl">NOTFALL-RUFNUMMERN</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-8 text-foreground/80">
-              <div className="space-y-16">
+            <CardContent className="space-y-8 text-foreground/80 debug-outline">
+              <div className="space-y-16 debug-outline">
                 
-                <div className="border border-destructive p-6">
-                  <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
-                    <div className="mx-auto w-full max-w-lg">
+                <div className="border border-destructive p-6 debug-outline">
+                  <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2 debug-outline">
+                    <div className="mx-auto w-full max-w-lg debug-outline">
                       <Image
                         src="/images/rtw-bern.jpg"
                         alt="Ambulanz"
@@ -31,11 +31,11 @@ export default function NotfallPage() {
                         className="h-auto w-full object-cover"
                       />
                     </div>
-                    <div className="space-y-4 text-left">
+                    <div className="space-y-4 text-left debug-outline">
                       <p className="text-xl lg:text-2xl xl:text-3xl text-foreground">
                         Bei einem lebensbedrohlichen Notfall alarmieren Sie bitte unverzüglich den Rettungsdienst unter der Rufnummer
                       </p>
-                      <div className="text-6xl lg:text-8xl xl:text-9xl">
+                      <div className="text-6xl lg:text-8xl xl:text-9xl debug-outline">
                         <a href="tel:144" className="flex items-center gap-3 font-bold text-destructive transition-colors hover:text-destructive/80">
                             <Phone className="h-24 w-24 flex-shrink-0 lg:h-32 lg:w-32 xl:h-40 xl:w-40" />
                             <strong>144</strong>
@@ -45,9 +45,9 @@ export default function NotfallPage() {
                   </div>
                 </div>
 
-                <div className="border border-border p-6">
-                  <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
-                    <div className='mx-auto w-full max-w-lg'>
+                <div className="border border-border p-6 debug-outline">
+                  <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2 debug-outline">
+                    <div className='mx-auto w-full max-w-lg debug-outline'>
                       <Image
                         src="/images/medphone-logo.png"
                         alt="Medphone Logo"
@@ -57,14 +57,14 @@ export default function NotfallPage() {
                         className="h-auto w-full"
                       />
                     </div>
-                    <div className="space-y-4 text-left">
+                    <div className="space-y-4 text-left debug-outline">
                         <p className='text-xl lg:text-2xl xl:text-3xl'>Ausserhalb der Öffnungszeiten, ohne dass ein lebensbedrohlicher Notfall vorliegt, erhalten Sie medizinischen Rat durch die Hotline von Medphone:</p>
-                        <div className='space-y-8 text-2xl lg:text-3xl xl:text-5xl'>
-                            <div className='flex flex-col items-start'>
+                        <div className='space-y-8 text-2xl lg:text-3xl xl:text-5xl debug-outline'>
+                            <div className='flex flex-col items-start debug-outline'>
                                 <a href="tel:0900576747" className='flex items-center gap-3'><Phone className='h-8 w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 flex-shrink-0' /><strong className='font-bold'>0900 - 57 67 47</strong></a>
                                 <span className='text-lg lg:text-xl xl:text-2xl pl-12 lg:pl-14 xl:pl-16'>(3.23 CHF / min) nicht über Prepaid Handy</span>
                             </div>
-                            <div className='flex flex-col items-start'>
+                            <div className='flex flex-col items-start debug-outline'>
                                 <a href="tel:0900576748" className='flex items-center gap-3'><Phone className='h-8 w-8 lg:h-10 lg:w-10 xl:h-12 xl:w-12 flex-shrink-0' /><strong className='font-bold'>0900 - 57 67 48</strong></a>
                                 <span className='text-lg lg:text-xl xl:text-2xl pl-12 lg:pl-14 xl:pl-16'>(3.50 CHF / min) für Anruf über Prepaid Handy</span>
                             </div>
@@ -73,9 +73,9 @@ export default function NotfallPage() {
                   </div>
                 </div>
 
-                <div className="border border-border p-6">
-                  <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
-                    <div className="mx-auto w-full max-w-lg">
+                <div className="border border-border p-6 debug-outline">
+                  <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2 debug-outline">
+                    <div className="mx-auto w-full max-w-lg debug-outline">
                       <Link href="https://www.toxinfo.ch/" target="_blank" rel="noopener noreferrer">
                         <Image
                           src="/images/partners/tox-info-suisse-logo.png"
@@ -87,11 +87,11 @@ export default function NotfallPage() {
                         />
                       </Link>
                     </div>
-                    <div className="space-y-4 text-left">
+                    <div className="space-y-4 text-left debug-outline">
                       <p className="text-xl lg:text-2xl xl:text-3xl text-foreground">
                         Bei Vergiftungen - aber nur wenn der Patient wach und ansprechbar und nicht in akuter Lebensgefahr ist - erreichen Sie den Vergiftungsnotruf unter der Nummer
                       </p>
-                      <div className="text-2xl lg:text-3xl xl:text-5xl">
+                      <div className="text-2xl lg:text-3xl xl:text-5xl debug-outline">
                           <a href="tel:145" className="flex items-center gap-3 font-bold">
                               <Phone className="h-8 w-8 flex-shrink-0 lg:h-10 lg:w-10 xl:h-12 xl:w-12" />
                               <strong>145</strong>

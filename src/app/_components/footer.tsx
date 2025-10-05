@@ -43,18 +43,18 @@ export function Footer() {
   const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Praxiszentrum+im+Ring,+Kappelenring+6,+3032+Hinterkappelen";
 
   return (
-    <footer className="bg-accent text-background/80">
-      <div className="container py-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-5">
+    <footer className="bg-accent text-background/80 debug-outline">
+      <div className="container py-12 debug-outline">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-5 debug-outline">
           {/* Rechtliches */}
-          <div className="space-y-4">
+          <div className="space-y-4 debug-outline">
             <h3 className="text-lg font-bold uppercase text-primary">Rechtliches</h3>
             <ul className="space-y-2">
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-background/80 transition-colors hover:text-background"
+                    className="text-sm text-background/80 transition-colors hover:text-background debug-outline"
                   >
                     {link.label}
                   </Link>
@@ -64,9 +64,9 @@ export function Footer() {
           </div>
 
           {/* Anschrift */}
-          <div className="space-y-4">
+          <div className="space-y-4 debug-outline">
             <h3 className="text-lg font-bold uppercase text-primary">Anschrift</h3>
-            <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 text-sm transition-colors hover:text-background">
+            <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 text-sm transition-colors hover:text-background debug-outline">
                 <MapPinIcon className="mt-1 h-[21px] w-[21px] flex-shrink-0" />
                 <div className="flex flex-col">
                     <span>PRAXISZENTRUM IM RING</span>
@@ -77,33 +77,33 @@ export function Footer() {
           </div>
 
           {/* Kontakt */}
-          <div className="space-y-4">
+          <div className="space-y-4 debug-outline">
             <h3 className="text-lg font-bold uppercase text-primary">Kontakt</h3>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-2 text-sm debug-outline">
                 <a
                   href="tel:0313162600"
-                  className="flex items-center gap-3 transition-colors hover:text-background"
+                  className="flex items-center gap-3 transition-colors hover:text-background debug-outline"
                 >
                     <PhoneIcon className="h-[21px] w-[21px] flex-shrink-0" />
                     <span>031 316 26 00</span>
                 </a>
-                <p className="flex items-center gap-3">
+                <p className="flex items-center gap-3 debug-outline">
                     <PrinterIcon className="h-[21px] w-[21px] flex-shrink-0" />
                     <span>031 589 68 60</span>
                 </p>
                 <ObfuscatedLink
                   user="empfang"
                   domain="praxiszentrum-im-ring.ch"
-                  className="flex items-center gap-3 transition-colors hover:text-background"
+                  className="flex items-center gap-3 transition-colors hover:text-background debug-outline"
                 >
                   <MailIcon className="h-[21px] w-[21px] flex-shrink-0" />
                   <span className="break-all">empfang@praxiszentrum-im-ring.ch</span>
                 </ObfuscatedLink>
-                <div className="flex flex-col items-start gap-1">
+                <div className="flex flex-col items-start gap-1 debug-outline">
                     <ObfuscatedLink
                       user="praxiszentrum-im-ring"
                       domain="hin.ch"
-                      className="flex items-center gap-3 transition-colors hover:text-background"
+                      className="flex items-center gap-3 transition-colors hover:text-background debug-outline"
                     >
                       <HinMailIcon className="h-[21px] w-[21px] text-primary flex-shrink-0"/>
                       <span className="break-all">praxiszentrum-im-ring@hin.ch</span>
@@ -113,12 +113,12 @@ export function Footer() {
             </div>
           </div>
            {/* Medikamente */}
-           <div className="space-y-4">
+           <div className="space-y-4 debug-outline">
             <h3 className="text-lg font-bold uppercase text-primary">Medikamentenbestellung</h3>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-2 text-sm debug-outline">
                 <a
                   href="tel:0313162666"
-                  className="flex items-center gap-3 transition-colors hover:text-background"
+                  className="flex items-center gap-3 transition-colors hover:text-background debug-outline"
                 >
                     <PhoneIcon className="h-[21px] w-[21px] flex-shrink-0" />
                     <span>031 316 26 66</span>
@@ -126,7 +126,7 @@ export function Footer() {
                 <ObfuscatedLink
                   user="medikamente"
                   domain="praxiszentrum-im-ring.ch"
-                  className="flex items-center gap-3 transition-colors hover:text-background"
+                  className="flex items-center gap-3 transition-colors hover:text-background debug-outline"
                 >
                   <MailIcon className="h-[21px] w-[21px] flex-shrink-0" />
                   <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
@@ -134,9 +134,9 @@ export function Footer() {
             </div>
           </div>
           {/* Qualitätslabel */}
-          <div className="space-y-4">
+          <div className="space-y-4 debug-outline">
             <h3 className="text-lg font-bold uppercase text-primary">Qualitätslabel</h3>
-            <div className="w-full">
+            <div className="w-full debug-outline">
               <Image
                 src="/images/mehrfacharzt-logo.png"
                 alt="Mehrfacharzt Logo"
@@ -149,8 +149,8 @@ export function Footer() {
           </div>
         </div>
       </div>
-      <div className="bg-foreground/10">
-        <div className="container flex h-14 items-center justify-center">
+      <div className="bg-foreground/10 debug-outline">
+        <div className="container flex h-14 items-center justify-center debug-outline">
           <p className="text-sm text-background/70">
             &copy; {year} Praxiszentrum im Ring. Alle Rechte vorbehalten.
           </p>

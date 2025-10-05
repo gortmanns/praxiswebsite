@@ -50,3 +50,7 @@
     @apply text-foreground;
   }
 }
+
+.debug-outline {
+  border: 2px solid orange !important;
+}
