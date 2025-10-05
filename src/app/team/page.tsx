@@ -58,20 +58,24 @@ export default function TeamPage() {
               </p>
             </div>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                <TeamMemberCard 
-                    key={teamMembers[0].name}
-                    name={teamMembers[0].name}
-                    role={teamMembers[0].role}
-                    imageUrl={teamMembers[0].imageUrl}
-                    imageHint={teamMembers[0].imageHint}
-                />
-                <TeamMemberCard 
-                    key={teamMembers[1].name}
-                    name={teamMembers[1].name}
-                    role={teamMembers[1].role}
-                    imageUrl={teamMembers[1].imageUrl}
-                    imageHint={teamMembers[1].imageHint}
-                />
+                <div className="max-w-sm mx-auto w-full">
+                    <TeamMemberCard 
+                        key={teamMembers[0].name}
+                        name={teamMembers[0].name}
+                        role={teamMembers[0].role}
+                        imageUrl={teamMembers[0].imageUrl}
+                        imageHint={teamMembers[0].imageHint}
+                    />
+                </div>
+                <div className="max-w-sm mx-auto w-full">
+                    <TeamMemberCard 
+                        key={teamMembers[1].name}
+                        name={teamMembers[1].name}
+                        role={teamMembers[1].role}
+                        imageUrl={teamMembers[1].imageUrl}
+                        imageHint={teamMembers[1].imageHint}
+                    />
+                </div>
             </div>
           </div>
 
