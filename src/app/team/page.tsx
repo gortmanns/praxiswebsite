@@ -50,8 +50,19 @@ export default function TeamPage() {
                   </div>
                 </div>
               </CardContent>
-              <div className="absolute inset-0 flex items-center justify-center bg-primary/90 p-6 text-primary-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <p className="text-center">Hier kommt der Text für den Hover-Effekt.</p>
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-primary/90 p-6 text-left text-xs text-primary-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <ul className="list-disc space-y-2 pl-4">
+                  <li>MEDIZINSTUDIUM IN BONN UND HOBART (AUSTRALIEN)</li>
+                  <li>MASTERSTUDIUM PUBLIC HEALTH UND HEALTH MANAGEMENT IN SYDNEY (AUSTRALIEN)</li>
+                  <li>UNTERNEHMENSBERATUNG MIT SPEZIALISIERUNG AUF DEN GESUNDHEITSSEKTOR</li>
+                  <li>PROJEKTMANAGEMENT IM GESUNDHEITSWESEN IN EUROPA UND AUSTRALIEN</li>
+                </ul>
+                <h5 className="mt-4 mb-2 font-bold uppercase">Meilensteine:</h5>
+                <ul className="list-disc space-y-1 pl-4">
+                  <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
+                  <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
+                  <li>Direktor der Memory-Strategie (elektronisches Medikamenten-management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
+                </ul>
               </div>
             </Card>
           </div>
