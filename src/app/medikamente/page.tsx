@@ -115,6 +115,26 @@ export default function MedikamentePage() {
               </TabsContent>
             </Tabs>
           </div>
+
+          <div className="mx-auto mt-16 max-w-7xl">
+            <Card>
+              <CardContent className="p-6 md:p-8">
+                <div className="space-y-6 text-lg text-foreground/80">
+                  <h3 className="font-headline text-2xl font-bold text-primary">Abholung Ihrer bestellten Medikamente</h3>
+                  <p>Ihre Medikamente sind in der Regel spätestens 2 Werktage nach Ihrer Bestellung zur Abholung im Praxiszentrum im Ring bereit.</p>
+                  <p>Um Wartezeiten und Störungen des Sprechstundenbetriebs zu minimieren bitten wir darum, dass Sie wann immer möglich die Medikamente vorbestellen und sie zu den folgenden Zeiten abholen:</p>
+                  <ul className="space-y-2 font-bold text-foreground">
+                    <li>Montags 10-12 Uhr</li>
+                    <li>Dienstag 15-17 Uhr</li>
+                    <li>Mittwoch 10-12 Uhr</li>
+                    <li>Donnerstag 15-17 Uhr</li>
+                    <li>Freitag 10-12 Uhr</li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
         </div>
       </main>
       <Footer />
