@@ -55,7 +55,7 @@ export default function MedikamentePage() {
             </p>
           </div>
 
-          <div className="mx-auto mt-12 max-w-4xl">
+          <div className="mx-auto mt-12 max-w-7xl">
             <Tabs defaultValue="telefon" className="w-full">
               <TabsList className="grid h-auto w-full grid-cols-1 gap-4 sm:grid-cols-2">
                   <a href="tel:0313162666">
