@@ -31,7 +31,7 @@ export default function TeamPage() {
                       data-ai-hint="doctor portrait"
                       width={400}
                       height={400}
-                      className="rounded-lg object-contain"
+                      className="object-contain"
                     />
                   </div>
                   <div className="md:col-span-2">
@@ -52,14 +52,14 @@ export default function TeamPage() {
               </CardContent>
               <div className="absolute inset-0 flex flex-col items-start justify-center bg-primary/90 p-6 text-left text-primary-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 <ul className="space-y-2 text-sm">
-                  <li>
-                    <span className="font-bold uppercase">Medizinstudium</span> in Bonn (Deutschland) und Hobart (Australien)
+                  <li className="font-bold uppercase">
+                    Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
                   </li>
-                  <li>
-                    <span className="font-bold uppercase">Masterstudium</span> Public Health und Health Management in Sydney (Australien)
+                  <li className="font-bold uppercase">
+                    Masterstudium Public Health und Health Management in Sydney (Australien)
                   </li>
-                  <li>
-                    <span className="font-bold uppercase">Unternehmensberatung</span> mit Spezialisierung auf den Gesundheitssektor
+                  <li className="font-bold uppercase">
+                    Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor
                   </li>
                   <li>
                      <span className="font-bold uppercase">Projektmanagement</span> im Gesundheitswesen in Europa und Australien
