@@ -90,7 +90,7 @@ export function CooperationPartnersSection() {
                   ) : null}
                 </CardContent>
               </Card>
-              <div className="absolute inset-0 bg-black/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100 debug-outline"></div>
+              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 debug-outline"></div>
             </Link>
           ))}
           <Link
@@ -104,7 +104,7 @@ export function CooperationPartnersSection() {
                 <AgnieszkaSlezakLogo className="h-20 w-auto text-special-green" />
               </CardContent>
             </Card>
-            <div className="absolute inset-0 bg-black/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100 debug-outline"></div>
+            <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 debug-outline"></div>
           </Link>
         </div>
         <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
@@ -134,7 +134,7 @@ export function CooperationPartnersSection() {
                   </div>
                 </CardContent>
               </Card>
-              <div className="absolute inset-0 bg-black/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100 debug-outline"></div>
+              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 debug-outline"></div>
             </Link>
           ))}
           <div className="hidden lg:block debug-outline"></div> {/* Empty spacer */}
