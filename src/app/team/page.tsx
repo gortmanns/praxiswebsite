@@ -22,7 +22,7 @@ export default function TeamPage() {
             </h3>
 
             <Card className="group relative overflow-hidden">
-              <CardContent className="py-12 px-6 transition-opacity duration-300 group-hover:opacity-10">
+              <CardContent className="p-6 transition-opacity duration-300 group-hover:opacity-10">
                 <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-3 md:gap-12">
                   <div className="relative mx-auto w-full max-w-xs md:max-w-none">
                     <Image
