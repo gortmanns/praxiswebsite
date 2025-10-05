@@ -14,6 +14,8 @@ export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsid
   return (
     <div className="group relative w-full" style={{ aspectRatio: '384 / 544' }}>
         <Card className="absolute inset-0 overflow-hidden">
+            {/* BEGINN VORHERIGER CODE */}
+            {/*
             <CardContent className="flex h-full flex-col p-6">
                 <div className="relative w-full flex-grow rounded-md overflow-hidden">
                     <Image
@@ -30,6 +32,28 @@ export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsid
                     {role2 && <p className="mt-1 text-base text-muted-foreground">{role2}</p>}
                 </div>
             </CardContent>
+            */}
+            {/* ENDE VORHERIGER CODE */}
+
+            {/* BEGINN NEUER CODE */}
+            <CardContent className="flex h-full flex-col px-2 pt-6 pb-6">
+                <div className="relative w-full flex-grow rounded-md overflow-hidden">
+                    <Image
+                        src={imageUrl}
+                        alt={`Portrait von ${name}`}
+                        fill
+                        className="object-contain"
+                        data-ai-hint={imageHint}
+                    />
+                </div>
+                <div className="pt-6 text-center">
+                    <h4 className="text-xl font-bold text-primary">{name}</h4>
+                    <p className="mt-2 text-base font-bold text-muted-foreground">{role}</p>
+                    {role2 && <p className="mt-1 text-base text-muted-foreground">{role2}</p>}
+                </div>
+            </CardContent>
+            {/* ENDE NEUER CODE */}
+
             {backsideContent && (
                 <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
                     <div className="text-center text-lg">
