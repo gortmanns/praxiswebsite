@@ -12,34 +12,6 @@ export const DoctorCardHerschel = () => (
             style={{ aspectRatio: '1000 / 495' }}
         >
             <Card className="absolute inset-0 overflow-hidden">
-                {/* <CardContent className="h-full p-6 transition-opacity duration-300 group-hover:opacity-10">
-                    <div className="grid h-full grid-cols-3 items-center gap-[4.5%]">
-                        <div className="relative col-span-1 h-full w-full">
-                            <Image
-                                src="/images/team/Dr.Herschel.jpg"
-                                alt="Portrait von Dr. Herschel"
-                                data-ai-hint="doctor portrait"
-                                fill
-                                className="object-cover"
-                            />
-                        </div>
-                        <div className="col-span-2">
-                            <div className="flex h-full flex-col justify-center text-left text-foreground/80">
-                                <p className="text-[2.2cqw] text-primary">Dr. med.</p>
-                                <h4 className="font-headline text-[4.8cqw] font-bold leading-tight text-primary">
-                                R. Herschel
-                                </h4>
-                                <div className="mt-[1.5cqw] text-[2.2cqw] leading-tight">
-                                    <p className="font-bold">Facharzt für Orthopädische Chirurgie und Traumatologie des Bewegungsapparates</p>
-                                </div>
-                                <div className="relative mt-4 h-[10cqw] w-[30cqw]">
-                                  <OrthozentrumLogo className="h-full w-auto" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </CardContent> */}
-                
                 <CardContent className="h-full p-6 transition-opacity duration-300 group-hover:opacity-10">
                     <div className="grid h-full grid-cols-3 items-center gap-[4.5%]">
                         <div className="relative col-span-1 h-full w-full">
