@@ -1,3 +1,4 @@
+
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import Image from 'next/image';
@@ -8,48 +9,80 @@ const leistungen = [
     image: '/images/leistungen/audiometrie.jpg',
     description: 'Hörtests zur Überprüfung und Diagnose der Hörfähigkeit.',
     hint: 'audiometry test',
+    backsideContent: (
+      <>
+      </>
+    ),
   },
   {
     name: 'EKG',
     image: '/images/leistungen/ekg.jpg',
     description: 'Messung der Herzströme zur Beurteilung der Herzfunktion.',
     hint: 'ecg machine',
+    backsideContent: (
+      <>
+      </>
+    ),
   },
   {
     name: 'Labor',
     image: '/images/leistungen/labor.jpg',
     description: 'Analyse von Blut- und Urinproben direkt in unserer Praxis.',
     hint: 'lab technician microscope',
+    backsideContent: (
+      <>
+      </>
+    ),
   },
   {
     name: 'Praxisapotheke',
     image: '/images/leistungen/praxisapotheke.jpg',
     description: 'Direkte Abgabe von Medikamenten aus unserer eigenen Apotheke.',
     hint: 'pharmacy shelf medication',
+    backsideContent: (
+      <>
+      </>
+    ),
   },
   {
     name: 'Röntgen',
     image: '/images/leistungen/roentgen.jpg',
     description: 'Moderne digitale Röntgendiagnostik für präzise Ergebnisse.',
     hint: 'x-ray scan',
+    backsideContent: (
+      <>
+      </>
+    ),
   },
   {
     name: 'Spirometrie',
     image: '/images/leistungen/spirometrie.jpg',
     description: 'Lungenfunktionstests zur Diagnose von Atemwegserkrankungen.',
     hint: 'spirometry test',
+    backsideContent: (
+      <>
+      </>
+    ),
   },
   {
     name: 'Verkehrsmedizinische Untersuchungen (VMU)',
     image: '/images/leistungen/vmu.jpg',
     description: 'Untersuchungen zur Beurteilung der Fahreignung.',
     hint: 'driving test eye chart',
+    backsideContent: (
+      <>
+      </>
+    ),
   },
   {
     name: 'Wundversorgung',
     image: '/images/leistungen/wundversorgung.jpg',
     description: 'Professionelle Versorgung von akuten und chronischen Wunden.',
     hint: 'wound dressing',
+    backsideContent: (
+      <>
+      </>
+    ),
   },
 ];
 
@@ -72,7 +105,7 @@ export default function LeistungenPage() {
               {leistungen.map((leistung) => (
                 <div key={leistung.name} className="group relative flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl">
                   <div className="p-6">
-                    <h3 className="font-headline text-xl font-bold text-primary text-center">
+                    <h3 className="font-headline text-2xl font-bold text-primary text-center">
                       {leistung.name}
                     </h3>
                   </div>
@@ -85,6 +118,13 @@ export default function LeistungenPage() {
                       data-ai-hint={leistung.hint}
                     />
                   </div>
+                   {leistung.backsideContent && (
+                        <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
+                            <div className="text-center text-lg">
+                                {leistung.backsideContent}
+                            </div>
+                        </div>
+                    )}
                 </div>
               ))}
             </div>
