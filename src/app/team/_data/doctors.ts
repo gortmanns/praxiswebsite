@@ -69,7 +69,7 @@ export const doctors: Doctor[] = [
         'Facharzt für Allgemein- und Viszeralchirurgie',
     ],
     position: 'Schemmer • Worni\nKlinik für Allgemein- und Viszeralchirurgie',
-    imageUrl: '/images/schemmer-worni-logo.png',
+    imageUrl: '/images/team/Prof.Schemmer.jpg',
     cv: [
         {
             point: 'Facharzt für Allgemein- und Viszeralchirurgie mit umfassender Erfahrung in leitenden Positionen.',
