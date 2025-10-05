@@ -1,8 +1,8 @@
 
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
-import { DoctorCard } from './_components/doctor-card';
-import { doctors } from './_data/doctors';
+import { DoctorCardOrtmanns } from './_components/doctor-card-ortmanns';
+import { DoctorCardSchemmer } from './_components/doctor-card-schemmer';
 
 export default function TeamPage() {
   return (
@@ -22,9 +22,8 @@ export default function TeamPage() {
               </h3>
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
-            {doctors.map(doctor => (
-              <DoctorCard key={doctor.name} doctor={doctor} />
-            ))}
+            <DoctorCardOrtmanns />
+            <DoctorCardSchemmer />
           </div>
         </div>
       </main>
