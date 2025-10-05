@@ -19,21 +19,20 @@ export default function ImpressumPage() {
             <CardHeader>
               <CardTitle className="font-headline text-2xl font-bold text-primary">Für den Inhalt der Seite verantwortlich</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-8 text-lg text-foreground/80">
-                <div className="space-y-2">
+            <CardContent className="space-y-6 text-lg text-foreground/80">
+                <div className="space-y-1">
                     <p>Dipl. med. G. Ortmanns</p>
                     <p>Praktischer Arzt</p>
                     <p>Master of Public Health (UNSW)</p>
                     <p>Master of Health Management (UNSW)</p>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1">
                     <h3 className="font-headline text-2xl font-bold text-primary">Anschrift</h3>
                     <p>PRAXISZENTRUM IM RING</p>
                     <p>Kappelenring 6</p>
                     <p>3032 Hinterkappelen</p>
                 </div>
-                <div className="space-y-2">
-                    <h3 className="font-headline text-2xl font-bold text-primary">Kontakt</h3>
+                <div className="space-y-1">
                     <p>Telefon: 031 316 26 00</p>
                     <p>Fax: 031 589 68 60</p>
                     <ObfuscatedLink
