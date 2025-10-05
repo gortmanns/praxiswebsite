@@ -61,7 +61,7 @@ export function OpeningHoursCalendar() {
         </div>
         
         {/* Freitag Nachmittag 13-14 */}
-        <div className="col-start-5 col-end-6 row-start-6 row-end-7 flex items-center justify-center p-2 border-l border-border bg-background">
+        <div className="col-start-5 col-end-6 row-start-6 row-end-7 flex items-center justify-center p-2 border-l border-border bg-background border-b-0">
             
         </div>
         
@@ -70,7 +70,7 @@ export function OpeningHoursCalendar() {
              <span className="text-base font-semibold text-secondary-foreground">Mittagspause</span>
         </div>
          <div className="col-start-5 col-end-6 row-start-5 row-end-6 flex items-center justify-center p-2 border-b border-l border-border bg-secondary">
-             <span className="text-base font-semibold text-secondary-foreground">Mittagspause</span>
+             
         </div>
 
         {/* Mittwoch Nachmittag geschlossen 14-18 */}
@@ -87,4 +87,3 @@ export function OpeningHoursCalendar() {
     </div>
   );
 }
-
