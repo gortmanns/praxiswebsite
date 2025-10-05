@@ -102,9 +102,6 @@ export default function LeistungenPage() {
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
                     UNSERE LEISTUNGEN
                 </h2>
-                <p className="mt-6 text-lg text-foreground/80">
-                    Wir bieten Ihnen eine breite Palette an medizinischen Dienstleistungen an, um Ihre Gesundheit optimal zu betreuen.
-                </p>
             </div>
 
             <div className="mx-auto mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
