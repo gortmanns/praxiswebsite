@@ -147,13 +147,13 @@ export default function DatenschutzerklaerungPage() {
                 </Card>
                 <Card>
                     <CardHeader>
-                        <CardTitle className="font-headline text-2xl font-bold text-primary">Dienste von Drittanbietern</CardTitle>
+                        <CardTitle className="font-headline text-2xl font-bold text-primary">Google Maps</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 text-base text-foreground/80">
-                        <p>Diese Website nutzt Dienste von Drittanbietern. An einigen Stellen, wie zum Beispiel bei der Anfahrtsbeschreibung im Footer, verlinken wir auf Google Maps. Wenn Sie einem solchen Link folgen, verlassen Sie unsere Website und rufen den Dienst des Drittanbieters auf, wobei Daten wie Ihre IP-Adresse an diesen Dienst übertragen werden können.</p>
-                        <p>Diese Dienste der amerikanischen Google LLC verwenden u.a. Cookies, wodurch Daten an Google in die USA übertragen werden, wobei wir davon ausgehen, dass in diesem Zusammenhang allein durch die Nutzung unserer Website kein personenbezogenes Tracking stattfindet.</p>
-                        <p>Google hat sich verpflichtet, einen angemessenen Datenschutz gemäß dem US-amerikanisch-europäischen und dem US-amerikanisch-schweizerischen Privacy Shield zu gewährleisten.</p>
-                        <p>Weitere Informationen finden Sie in den Datenschutzbestimmungen von Google.</p>
+                        <p>Diese Website nutzt das Angebot von Google Maps. Dies ermöglicht es uns, interaktive Karten direkt auf der Website darzustellen und Ihnen die komfortable Nutzung der Kartenfunktion zu ermöglichen. Durch den Besuch der Website erhält Google die Information, dass Sie die entsprechende Unterseite unserer Website aufgerufen haben. Dies geschieht unabhängig davon, ob Google ein Nutzerkonto bereitstellt, über das Sie eingeloggt sind, oder ob kein Nutzerkonto vorhanden ist.</p>
+                        <p>Wenn Sie bei Google eingeloggt sind, werden Ihre Daten direkt Ihrem Konto zugeordnet. Wenn Sie die Zuordnung zu Ihrem Profil bei Google nicht wünschen, müssen Sie sich vor Aktivierung der Schaltfläche ausloggen. Google speichert Ihre Daten als Nutzungsprofile und nutzt sie für Zwecke der Werbung, Marktforschung und/oder bedarfsgerechten Gestaltung seiner Website.</p>
+                        <p>Eine solche Auswertung erfolgt insbesondere (auch für nicht eingeloggte Nutzer) zur Erbringung bedarfsgerechter Werbung und um andere Nutzer des sozialen Netzwerks über Ihre Aktivitäten auf unserer Website zu informieren.</p>
+                        <p>Sie haben das Recht, der Erstellung dieser Nutzerprofile zu widersprechen, wobei Sie sich zur Ausübung dieses Rechts an Google wenden müssen. Nähere Informationen zu Zweck und Umfang der Datenerhebung und -verarbeitung durch Google sowie weitere Informationen zu Ihren diesbezüglichen Rechten und Einstellungsmöglichkeiten zum Schutz Ihrer Privatsphäre finden Sie unter: www.google.de/intl/de/policies/privacy.</p>
                     </CardContent>
                 </Card>
             </div>
