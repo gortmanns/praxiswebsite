@@ -70,11 +70,29 @@ export function CooperationPartnersSection() {
               href={partner.websiteUrl!}
               target={partner.websiteUrl === '#' ? '_self' : '_blank'}
               rel="noopener noreferrer"
-              className="group debug-outline"
+              className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 debug-outline"
             >
-              <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg debug-outline">
+              <Card className="absolute flex h-full w-full items-center p-6 transition-transform duration-500 debug-outline">
                 <CardContent className="flex w-full items-center justify-center p-0 debug-outline">
                   {partner.logoUrl ? (
+                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden debug-outline">
+                      <Image
+                        src={partner.logoUrl}
+                        alt={`${partner.name} Logo`}
+                        width={partner.width}
+                        height={partner.height}
+                        className="object-contain"
+                        data-ai-hint={partner.hint}
+                      />
+                    </div>
+                  ) : partner.name === 'orthozentrum-bern' ? (
+                    <OrthozentrumLogo className="h-20 w-auto" />
+                  ) : null}
+                </CardContent>
+              </Card>
+              <Card className="absolute flex h-full w-full items-center bg-accent p-6 text-accent-foreground transition-transform duration-500 translate-y-full group-hover:translate-y-0 debug-outline">
+                <CardContent className="flex w-full items-center justify-center p-0 debug-outline">
+                   {partner.logoUrl ? (
                     <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden debug-outline">
                       <Image
                         src={partner.logoUrl}
@@ -96,9 +114,14 @@ export function CooperationPartnersSection() {
             href="https://neurologie-plus.ch/"
             target="_blank"
             rel="noopener noreferrer"
-            className="group debug-outline"
+            className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 debug-outline"
           >
-            <Card className="flex h-32 items-center justify-center p-6 text-center text-special-green transition-all group-hover:-translate-y-1 group-hover:shadow-lg debug-outline">
+             <Card className="absolute flex h-full w-full items-center justify-center p-6 text-center transition-transform duration-500 debug-outline">
+              <CardContent className="p-0 debug-outline">
+                <AgnieszkaSlezakLogo className="h-20 w-auto text-special-green" />
+              </CardContent>
+            </Card>
+             <Card className="absolute flex h-full w-full items-center justify-center bg-accent p-6 text-center text-accent-foreground transition-transform duration-500 translate-y-full group-hover:translate-y-0 debug-outline">
               <CardContent className="p-0 debug-outline">
                 <AgnieszkaSlezakLogo className="h-20 w-auto" />
               </CardContent>
@@ -116,9 +139,23 @@ export function CooperationPartnersSection() {
               href={partner.websiteUrl}
               target={partner.websiteUrl === '#' ? '_self' : '_blank'}
               rel="noopener noreferrer"
-              className="group sm:col-span-1 lg:col-span-2 debug-outline"
+              className="group relative sm:col-span-1 lg:col-span-2 h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 debug-outline"
             >
-              <Card className="flex h-32 items-center justify-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg debug-outline">
+              <Card className="absolute flex h-full w-full items-center justify-center p-6 transition-transform duration-500 debug-outline">
+                <CardContent className="flex w-full items-center justify-center p-0 debug-outline">
+                  <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden debug-outline">
+                    <Image
+                      src={partner.logoUrl!}
+                      alt={`${partner.name} Logo`}
+                      width={partner.width}
+                      height={partner.height}
+                      className="object-contain"
+                      data-ai-hint={partner.hint}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="absolute flex h-full w-full items-center justify-center bg-accent p-6 transition-transform duration-500 translate-y-full group-hover:translate-y-0 debug-outline">
                 <CardContent className="flex w-full items-center justify-center p-0 debug-outline">
                   <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden debug-outline">
                     <Image
