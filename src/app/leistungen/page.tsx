@@ -71,13 +71,10 @@ const leistungen = [
     ),
   },
   {
-    name: `TWINT`,
+    name: 'TWINT',
     image: '/images/leistungen/twint_logo.png',
     hint: 'twint logo',
-    backsideContent: (
-      <>
-      </>
-    ),
+    backsideContent: <></>,
   },
   {
     name: 'Verkehrsmedizinische Untersuchungen',
@@ -121,7 +118,13 @@ export default function LeistungenPage() {
                     <div className="flex items-center justify-center p-4 min-h-[9rem]">
                         <div className="text-center">
                           <h3 className="font-headline text-2xl font-bold text-primary">
-                            {leistung.name === 'TWINT' ? <>TWINT<br />Mit dem Handy bezahlen</> : leistung.name}
+                            {leistung.name === 'TWINT' ? (
+                                <>
+                                    TWINT
+                                    <br />
+                                    Mit dem Handy bezahlen
+                                </>
+                            ) : leistung.name}
                           </h3>
                         </div>
                     </div>
@@ -130,7 +133,10 @@ export default function LeistungenPage() {
                           src={leistung.image}
                           alt={leistung.name}
                           fill
-                          className={"object-cover"}
+                          className={cn(
+                            {"object-cover": leistung.name !== 'TWINT'},
+                            {"object-scale-down": leistung.name === 'TWINT'}
+                          )}
                           data-ai-hint={leistung.hint}
                         />
                     </div>
