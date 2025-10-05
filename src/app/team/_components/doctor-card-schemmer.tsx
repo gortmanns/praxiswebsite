@@ -49,29 +49,17 @@ export const DoctorCardSchemmer = () => (
                 </CardContent>
                 <div className="absolute inset-0 flex flex-col items-start justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <ul className="space-y-1.5 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
-                        <li className="flex font-medium text-background">
-                            <span className="mr-2">&#8226;</span>
-                            <span className='flex-1'>Vorbesprechung und Planung des Eingriffs erfolgen hier im PRAXISZENTRUM IM RING.</span>
+                        <li className="font-bold text-primary mt-2">Vorbesprechung und Planung des Eingriffs erfolgen hier im PRAXISZENTRUM IM RING.</li>
+                        <li className="font-bold text-primary mt-2">Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls hier im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten.</li>
+                        <li>
+                            Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt.
+                            <ul className="list-disc space-y-px pl-9 pt-1 text-[clamp(0.7rem,2.3cqw,1rem)] font-normal text-background/80">
+                                <li>Hirslanden</li>
+                                <li>Lindehof-Spital</li>
+                                <li>Siloah-Spital</li>
+                            </ul>
                         </li>
-                        <li className="flex font-medium text-background">
-                            <span className="mr-2">&#8226;</span>
-                            <span className='flex-1'>Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls hier im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten.</span>
-                        </li>
-                        <li className="flex font-medium text-background">
-                            <span className="mr-2">&#8226;</span>
-                            <span className='flex-1'>
-                                Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt.
-                                <ul className="list-disc space-y-px pl-9 pt-1 text-[clamp(0.7rem,2.3cqw,1rem)] font-normal text-background/80">
-                                    <li>Hirslanden</li>
-                                    <li>Lindehof-Spital</li>
-                                    <li>Siloah-Spital</li>
-                                </ul>
-                            </span>
-                        </li>
-                        <li className="flex font-medium text-background">
-                            <span className="mr-2">&#8226;</span>
-                            <span className='flex-1'>Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder hier vor Ort im PRAXISZENTRUM IM RING statt.</span>
-                        </li>
+                        <li>Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder hier vor Ort im PRAXISZENTRUM IM RING statt.</li>
                     </ul>
                 </div>
             </Card>
