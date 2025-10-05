@@ -1,3 +1,4 @@
+
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import Image from 'next/image';
@@ -20,8 +21,8 @@ export default function TeamPage() {
               Ärzte
             </h3>
 
-            <Card>
-              <CardContent className="p-6">
+            <Card className="group relative overflow-hidden">
+              <CardContent className="p-6 transition-opacity duration-300 group-hover:opacity-10">
                 <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-3 md:gap-12">
                   <div className="relative mx-auto w-full max-w-xs md:max-w-none">
                     <Image
@@ -33,20 +34,25 @@ export default function TeamPage() {
                       className="rounded-lg object-contain"
                     />
                   </div>
-                  <div className="text-left text-foreground/80 md:col-span-2">
-                    <p className="text-xl text-primary">Dipl. med.</p>
-                    <h4 className="font-headline text-3xl font-bold text-primary">
-                      G. Ortmanns
-                    </h4>
-                    <div className="mt-4 text-base">
-                      <p className="text-xl font-bold">Praktischer Arzt</p>
-                      <p>Master of Public Health (UNSW)</p>
-                      <p>Master of Health Management (UNSW)</p>
+                  <div className="md:col-span-2">
+                    <div className="text-left text-foreground/80">
+                      <p className="text-xl text-primary">Dipl. med.</p>
+                      <h4 className="font-headline text-4xl font-bold text-primary">
+                        G. Ortmanns
+                      </h4>
+                      <div className="mt-4 text-xl">
+                        <p className="font-bold">Praktischer Arzt</p>
+                        <p>Master of Public Health (UNSW)</p>
+                        <p>Master of Health Management (UNSW)</p>
+                      </div>
+                      <p className="mt-4 text-base italic">Medizinische und Administrative Leitung Praxiszentrum im Ring</p>
                     </div>
-                    <p className="mt-4 text-base italic">Medizinische und Administrative Leitung Praxiszentrum im Ring</p>
                   </div>
                 </div>
               </CardContent>
+              <div className="absolute inset-0 flex items-center justify-center bg-primary/90 p-6 text-primary-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <p className="text-center">Hier kommt der Text für den Hover-Effekt.</p>
+              </div>
             </Card>
           </div>
         </div>
