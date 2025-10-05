@@ -69,7 +69,7 @@ const leistungen = [
     ),
   },
   {
-    name: 'Verkehrsmedizinische Untersuchungen (VMU)',
+    name: 'Verkehrsmedizinische Untersuchungen',
     image: '/images/leistungen/VMU.png',
     hint: 'driving test eye chart',
     backsideContent: (
