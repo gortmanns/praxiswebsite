@@ -44,7 +44,7 @@ export function QuickNavSection() {
               style={{ perspective: '1000px' }}
             >
               <div
-                className="relative h-full w-full rounded-lg transition-transform duration-700 group-hover:[transform:rotateY(180deg)]"
+                className="relative h-full w-full rounded-lg transition-transform duration-700 group-hover:[transform:rotateX(180deg)]"
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 {/* Front face */}
@@ -60,7 +60,7 @@ export function QuickNavSection() {
                 {/* Back face */}
                 <div
                   className="absolute flex h-full w-full flex-col items-center justify-center gap-4 rounded-lg bg-primary p-6 text-primary-foreground"
-                  style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                  style={{ backfaceVisibility: 'hidden', transform: 'rotateX(180deg)' }}
                 >
                   <item.Icon className="h-14 w-14" />
                   <span className="text-xl font-bold uppercase tracking-wider">
