@@ -51,7 +51,7 @@ export default function TeamPage() {
                 </div>
               </CardContent>
               <div className="absolute inset-0 flex flex-col items-start overflow-y-auto bg-accent p-8 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <ul className="space-y-2 text-lg">
+                <ul className="space-y-2 text-base">
                   <li className="font-bold text-primary">
                     Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
                   </li>
@@ -63,7 +63,7 @@ export default function TeamPage() {
                   </li>
                   <li className="font-bold text-primary">
                     Projektmanagement im Gesundheitswesen in Europa und Australien
-                     <div className="mt-2 pl-4 text-base text-background/80">
+                     <div className="mt-2 pl-4 text-sm text-background/80">
                         <h5 className="mb-1 font-bold uppercase tracking-wider text-primary">Meilensteine</h5>
                         <ul className="list-disc space-y-1 pl-5">
                           <li>Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
@@ -74,7 +74,7 @@ export default function TeamPage() {
                   </li>
                   <li className='mt-2 font-bold text-primary'>
                     Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz
-                    <ul className="list-disc space-y-1 pl-9 mt-1 text-base text-background/80">
+                    <ul className="list-disc space-y-1 pl-9 mt-1 text-sm text-background/80">
                         <li>Universitätsspital Basel (USB)</li>
                         <li>Kantonsspital Baselland (KSBL)</li>
                         <li>Kantonsspital Winterthur (KSW)</li>
@@ -83,8 +83,8 @@ export default function TeamPage() {
                     </ul>
                   </li>
                 </ul>
-                <p className='mt-2 text-lg text-primary font-bold'>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)</p>
-                <p className='text-lg text-primary font-bold'>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
+                <p className='mt-2 text-base text-primary font-bold'>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)</p>
+                <p className='text-base text-primary font-bold'>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
               </div>
             </Card>
           </div>
