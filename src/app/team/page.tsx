@@ -8,27 +8,28 @@ import { DoctorCardHerschel } from './_components/doctor-card-herschel';
 import { DoctorCardSlezak } from './_components/doctor-card-slezak';
 import { TeamMemberCard } from './_components/team-member-card';
 
-const teamMembers = [
-    {
-      name: 'S. Garcia',
-      role: 'Leitende Medizinische Praxisassistentin',
-      role2: 'Berufsbildnerin',
-      imageUrl: '/images/team/Garcia.jpg',
-      imageHint: 'woman portrait',
-      backsideContent: (
-        <>
-          <p>
-            Früher habe ich schon einmal für rund 10 Jahre in dieser Praxis gearbeitet,
-            damals noch bei Dr. Segginger.
-          </p>
-          <br />
-          <p>
-            Inzwischen bin ich - jetzt in der Funktion der Leitenden MPA –
-            zurückgekehrt an meine alte Wirkungsstätte.
-          </p>
-        </>
-      ),
-    },
+const garciaMember = {
+  name: 'S. Garcia',
+  role: 'Leitende Medizinische Praxisassistentin',
+  role2: 'Berufsbildnerin',
+  imageUrl: '/images/team/Garcia.jpg',
+  imageHint: 'woman portrait',
+  backsideContent: (
+    <>
+      <p>
+        Früher habe ich schon einmal für rund 10 Jahre in dieser Praxis gearbeitet,
+        damals noch bei Dr. Segginger.
+      </p>
+      <br />
+      <p>
+        Inzwischen bin ich - jetzt in der Funktion der Leitenden MPA –
+        zurückgekehrt an meine alte Wirkungsstätte.
+      </p>
+    </>
+  ),
+};
+
+const otherTeamMembers = [
     {
       name: 'B. Aeschlimann',
       role: 'Medizinische Praxisassistentin',
@@ -43,6 +44,45 @@ const teamMembers = [
           <br />
           <p>
           Als Berufsbildnerin bin ich für die Ausbildung der Lernenden zur MPA verantwortlich.
+          </p>
+        </>
+      ),
+    },
+    {
+      name: 'S. Blaser',
+      role: 'Medizinische Praxisassistentin',
+      imageUrl: '/images/team/Blaser.jpg',
+      imageHint: 'woman portrait',
+      backsideContent: (
+        <>
+          <p>
+          Nach meiner Ausbildung zur MPA und einigen Jahren Berufserfahrung freue ich mich, nun zum Team des Praxiszentrums im Ring zu gehören.
+          </p>
+        </>
+      ),
+    },
+    {
+      name: 'N. Memeti',
+      role: 'Medizinische Praxisassistentin in Ausbildung',
+      imageUrl: '/images/team/Memeti.jpg',
+      imageHint: 'woman portrait',
+      backsideContent: (
+        <>
+          <p>
+          Seit August 2022 mache ich die Lehre zur medizinischen Praxisassistentin (MPA) und freue mich sehr, meine Ausbildung hier im Praxiszentrum im Ring absolvieren zu dürfen.
+          </p>
+        </>
+      ),
+    },
+    {
+      name: 'N. Santos',
+      role: 'Medizinische Praxisassistentin in Ausbildung',
+      imageUrl: '/images/team/Santos.jpg',
+      imageHint: 'woman portrait',
+      backsideContent: (
+        <>
+          <p>
+          Ich habe meine Ausbildung zur MPA im August 2023 begonnen und freue mich sehr, ein Teil dieses Teams zu sein.
           </p>
         </>
       ),
@@ -84,8 +124,20 @@ export default function TeamPage() {
                 Die guten Geister, ohne die keine Arztpraxis funktioniert
               </p>
             </div>
+            <div className="flex w-full justify-center">
+                <div className="w-full max-w-sm">
+                    <TeamMemberCard 
+                        name={garciaMember.name}
+                        role={garciaMember.role}
+                        role2={garciaMember.role2}
+                        imageUrl={garciaMember.imageUrl}
+                        imageHint={garciaMember.imageHint}
+                        backsideContent={garciaMember.backsideContent}
+                    />
+                </div>
+            </div>
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                {teamMembers.map((member) => (
+                {otherTeamMembers.map((member) => (
                     <div key={member.name} className="mx-auto w-full max-w-sm">
                         <TeamMemberCard 
                             name={member.name}
