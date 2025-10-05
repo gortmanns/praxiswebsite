@@ -86,30 +86,32 @@ export function OpeningHoursCalendar() {
       </div>
 
       {/* Overlay Grid */}
-      <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
+      <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] bg-orange-500/20">
         {/* Header Row */}
-        <div></div>
+        <div className="text-transparent"></div>
         {days.map((day) => (
           <div 
             key={`${day}-overlay`} 
-            className="h-12 border-l border-t border-orange-500/50 bg-orange-500/20"
+            className="flex h-12 items-center justify-center border-l border-t border-orange-500 text-center text-sm font-bold text-transparent sm:text-base"
           >
+            {day}
           </div>
         ))}
 
         {/* Time Axis and Content Grid */}
         {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
           <React.Fragment key={`${startTime}-overlay`}>
-            <div className="h-12 border-l border-t border-orange-500/50 bg-orange-500/20">
+            <div className="flex h-12 items-center justify-center border-l border-t border-orange-500 px-2 text-center text-xs font-bold text-transparent">
+               {startTime} - {timeSlots[hourIndex + 1]}
             </div>
-            {days.map((_day, dayIndex) => (
-              <div key={`${_day}-${startTime}-overlay`} className="h-12 border-l border-t border-orange-500/50 bg-orange-500/20">
+            {days.map((_day) => (
+              <div key={`${_day}-${startTime}-overlay`} className="h-12 border-l border-t border-orange-500">
               </div>
             ))}
           </React.Fragment>
         ))}
         {/* Bottom border for the last row */}
-        <div className="col-span-6 h-px border-b border-orange-500/50"></div>
+        <div className="col-span-6 h-px border-b border-orange-500"></div>
       </div>
     </div>
   );
