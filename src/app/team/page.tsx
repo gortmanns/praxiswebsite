@@ -36,16 +36,16 @@ export default function TeamPage() {
                   </div>
                   <div className="md:col-span-2">
                     <div className="flex h-full flex-col justify-center text-left text-foreground/80">
-                      <p className="text-xl text-primary">Dipl. med.</p>
-                      <h4 className="font-headline text-4xl font-bold text-primary">
+                      <p className="text-2xl text-primary">Dipl. med.</p>
+                      <h4 className="font-headline text-5xl font-bold text-primary">
                         G. Ortmanns
                       </h4>
-                      <div className="mt-4 text-xl">
+                      <div className="mt-4 text-2xl">
                         <p className="font-bold">Praktischer Arzt</p>
                         <p>Master of Public Health (UNSW)</p>
                         <p>Master of Health Management (UNSW)</p>
                       </div>
-                      <p className="mt-4 text-base italic">Medizinische und Administrative Leitung Praxiszentrum im Ring</p>
+                      <p className="mt-6 text-lg italic">Medizinische und Administrative Leitung Praxiszentrum im Ring</p>
                     </div>
                   </div>
                 </div>
@@ -84,7 +84,7 @@ export default function TeamPage() {
                   </li>
                 </ul>
                  <p className='mt-4 text-sm'><span className="font-bold">Wissenschaftlicher Mitarbeiter:</span> Pneumologie (Universität Zürich / USZ)</p>
-                 <p className='text-sm'><span className="font-bold">Lehrbeauftragter:</span> Hausarztmedizin (Universität Bern)</p>
+                 <p className='text-sm'><span className="font-bold">Lehrbeauftragter für Hausarztmedizin</span> (Institut für Hausarztmedizin der Universität Bern)</p>
               </div>
             </Card>
           </div>
