@@ -122,7 +122,7 @@ export function Footer() {
                   <span className="break-all">empfang@praxiszentrum-im-ring.ch</span>
                 </ObfuscatedLink>
                 <div className="flex flex-col items-start gap-2 pt-2 debug-outline">
-                    <p className="pl-9 text-base font-medium text-background/80">Sichere HIN-Email</p>
+                    <p className="text-base font-medium text-background/80">Sichere HIN-Email</p>
                     <ObfuscatedLink
                       user="praxiszentrum-im-ring"
                       domain="hin.ch"
