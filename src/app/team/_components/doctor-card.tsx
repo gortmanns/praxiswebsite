@@ -55,7 +55,7 @@ export const DoctorCard = ({ doctor }: { doctor: Doctor }) => (
                                 {item.subPoints && (
                                      <div className="mt-1 pl-4 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
                                         {item.subPointsTitle && (
-                                            <h5 className="mb-1 font-semibold tracking-wide text-background/90">
+                                            <h5 className="mb-1 tracking-wide text-background/90">
                                                 {item.subPointsTitle}:
                                             </h5>
                                         )}
