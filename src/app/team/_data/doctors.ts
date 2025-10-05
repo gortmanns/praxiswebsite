@@ -81,7 +81,8 @@ export const doctors: Doctor[] = [
             'Vorbesprechung und Planung des Eingriffs erfolgen hier im PRAXISZENTRUM IM RING',
             'Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls hier im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten',
             'Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt',
-        ]
+        ],
+        subPointsTitle: 'Partnerkliniken',
       },
       {
         point: 'Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder hier vor Ort im PRAXISZENTRUM IM RING statt',

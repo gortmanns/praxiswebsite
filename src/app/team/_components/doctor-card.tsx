@@ -55,11 +55,11 @@ export const DoctorCard = ({ doctor }: { doctor: Doctor }) => (
                                 {item.subPoints && (
                                      <div className="mt-1 pl-4 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
                                         {item.subPointsTitle && (
-                                            <h5 className="mb-1 font-bold uppercase tracking-wider text-primary">
-                                                {item.subPointsTitle}
+                                            <h5 className="mb-1 font-semibold tracking-wide text-background/90">
+                                                {item.subPointsTitle}:
                                             </h5>
                                         )}
-                                        <ul className={`list-disc space-y-px ${item.subPointsTitle ? 'pl-5' : 'pl-9'}`}>
+                                        <ul className="list-disc space-y-px pl-9 font-normal">
                                             {item.subPoints.map((sub, subIndex) => (
                                                 <li key={subIndex}>{sub}</li>
                                             ))}
