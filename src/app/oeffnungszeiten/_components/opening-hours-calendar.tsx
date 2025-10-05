@@ -84,59 +84,6 @@ export function OpeningHoursCalendar() {
         {/* Bottom border for the last row */}
         <div className="col-span-6 h-px border-b border-secondary"></div>
       </div>
-
-      {/* Overlay Grid */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="relative grid h-full w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[repeat(11,minmax(0,1fr))]">
-            {/* Header Row Placeholder */}
-            <div className="row-start-1" style={{gridColumn: '1 / -1'}}></div>
-            
-            {/* Time Axis Placeholder */}
-            <div className="col-start-1" style={{gridRow: '1 / -1'}}></div>
-
-            {/* Sprechstunde Vormittag */}
-            <div
-                className="pointer-events-auto flex items-center justify-center"
-                style={{ 
-                    gridColumn: '2 / 7', 
-                    gridRow: '2 / 6',
-                }}
-            >
-                <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
-            </div>
-
-            {/* Sprechstunde Nachmittag Mo-Di */}
-            <div
-                className="pointer-events-auto flex items-center justify-center"
-                style={{ 
-                    gridColumn: '2 / 4',
-                    gridRow: '8 / 12',
-                }}
-            >
-                <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
-            </div>
-             {/* Sprechstunde Nachmittag Do */}
-             <div
-                className="pointer-events-auto flex items-center justify-center"
-                style={{ 
-                    gridColumn: '5 / 6',
-                    gridRow: '8 / 12',
-                }}
-            >
-                <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
-            </div>
-             {/* Sprechstunde Nachmittag Fr */}
-             <div
-                className="pointer-events-auto flex items-center justify-center"
-                style={{ 
-                    gridColumn: '6 / 7',
-                    gridRow: '7 / 11',
-                }}
-            >
-                <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
-            </div>
-        </div>
-      </div>
     </div>
   );
 }
