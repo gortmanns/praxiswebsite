@@ -106,20 +106,22 @@ export default function LeistungenPage() {
 
             <div className="mx-auto mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {leistungen.map((leistung) => (
-                <div key={leistung.name} className="group relative flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl">
-                  <div className="p-6">
-                    <h3 className="font-headline text-2xl font-bold text-primary text-center">
-                      {leistung.name}
-                    </h3>
-                  </div>
-                  <div className="relative w-full aspect-square">
-                    <Image
-                      src={leistung.image}
-                      alt={leistung.name}
-                      fill
-                      className="object-cover"
-                      data-ai-hint={leistung.hint}
-                    />
+                <div key={leistung.name} className="group relative flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl aspect-[4/5]">
+                  <div className="flex h-full flex-col">
+                    <div className="flex h-28 items-center justify-center p-4">
+                      <h3 className="text-center font-headline text-2xl font-bold text-primary">
+                        {leistung.name}
+                      </h3>
+                    </div>
+                    <div className="relative flex-1">
+                      <Image
+                        src={leistung.image}
+                        alt={leistung.name}
+                        fill
+                        className="object-cover object-bottom"
+                        data-ai-hint={leistung.hint}
+                      />
+                    </div>
                   </div>
                    {leistung.backsideContent && (
                         <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
