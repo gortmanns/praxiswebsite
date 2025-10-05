@@ -16,7 +16,7 @@ export function TeamMemberCard({ name, role, imageUrl, imageHint }: TeamMemberCa
           src={imageUrl}
           alt={`Portrait von ${name}`}
           fill
-          className="object-cover"
+          className="object-contain"
           data-ai-hint={imageHint}
         />
       </div>
