@@ -10,7 +10,8 @@ export function AgnieszkaSlezakLogo({ className }: { className?: string }) {
     >
       <text
         x="50%"
-        y="12"
+        y="45%"
+        dominantBaseline="middle"
         fontFamily="Open Sans, sans-serif"
         fontSize="12"
         fontWeight="bold"
@@ -21,7 +22,8 @@ export function AgnieszkaSlezakLogo({ className }: { className?: string }) {
       </text>
       <text
         x="50%"
-        y="28"
+        y="80%"
+        dominantBaseline="middle"
         fontFamily="Open Sans, sans-serif"
         fontSize="8"
         fill="hsl(var(--muted-foreground))"
