@@ -2,6 +2,7 @@
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const leistungen = [
   {
@@ -86,7 +87,7 @@ const leistungen = [
       <>
         <p>Die Versorgung kleiner Wunden und die Durchführung kleiner Eingriffe (z. B. Entfernung von Hautveränderungen) können wir direkt in der normalen Sprechstunde durchführen.</p>
         <br/>
-        <p>Für grössere Eingriffe steht mit Prof. Dr. med. Dr. h. c. Schemmer ein Spezialist zur Verfügung, der mehrmals pro Monat eine Sprechstunde im Praxiszentrum anbietet.</p>
+        <p>Für grössere Eingriffe steht mit <Link href="/team#schemmer" className="underline hover:text-primary">Prof. Dr. med. Dr. h. c. Schemmer</Link> ein Spezialist zur Verfügung, der mehrmals pro Monat eine Sprechstunde im Praxiszentrum anbietet.</p>
       </>
     ),
   },

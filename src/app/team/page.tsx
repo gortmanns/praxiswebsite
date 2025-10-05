@@ -118,7 +118,9 @@ export default function TeamPage() {
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
             <DoctorCardOrtmanns />
-            <DoctorCardSchemmer />
+            <div id="schemmer">
+              <DoctorCardSchemmer />
+            </div>
             <DoctorCardRosenov />
             <DoctorCardHerschel />
             <DoctorCardSlezak />
