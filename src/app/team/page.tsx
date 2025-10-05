@@ -8,27 +8,28 @@ import { DoctorCardHerschel } from './_components/doctor-card-herschel';
 import { DoctorCardSlezak } from './_components/doctor-card-slezak';
 import { TeamMemberCard } from './_components/team-member-card';
 
-const teamMembers = [
-    {
-      name: 'S. Garcia',
-      role: 'Leitende Medizinische Praxisassistentin',
-      role2: 'Berufsbildnerin',
-      imageUrl: '/images/team/Garcia.jpg',
-      imageHint: 'woman portrait',
-      backsideContent: (
-        <>
-          <p>
-            Früher habe ich schon einmal für rund 10 Jahre in dieser Praxis gearbeitet,
-            damals noch bei Dr. Segginger.
-          </p>
-          <br />
-          <p>
-            Inzwischen bin ich - jetzt in der Funktion der Leitenden MPA –
-            zurückgekehrt an meine alte Wirkungsstätte.
-          </p>
-        </>
-      ),
-    },
+const garcia = {
+    name: 'S. Garcia',
+    role: 'Leitende Medizinische Praxisassistentin',
+    role2: 'Berufsbildnerin',
+    imageUrl: '/images/team/Garcia.jpg',
+    imageHint: 'woman portrait',
+    backsideContent: (
+    <>
+        <p>
+        Früher habe ich schon einmal für rund 10 Jahre in dieser Praxis gearbeitet,
+        damals noch bei Dr. Segginger.
+        </p>
+        <br />
+        <p>
+        Inzwischen bin ich - jetzt in der Funktion der Leitenden MPA –
+        zurückgekehrt an meine alte Wirkungsstätte.
+        </p>
+    </>
+    ),
+};
+
+const otherTeamMembers = [
     {
       name: 'B. Aeschlimann',
       role: 'Medizinische Praxisassistentin',
@@ -101,8 +102,24 @@ export default function TeamPage() {
                 Die guten Geister, ohne die keine Arztpraxis funktioniert
               </p>
             </div>
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {teamMembers.map((member) => (
+            
+            {/* Leitende MPA - Centered */}
+            <div className="flex justify-center">
+                <div className="w-full max-w-sm">
+                    <TeamMemberCard 
+                        name={garcia.name}
+                        role={garcia.role}
+                        role2={garcia.role2}
+                        imageUrl={garcia.imageUrl}
+                        imageHint={garcia.imageHint}
+                        backsideContent={garcia.backsideContent}
+                    />
+                </div>
+            </div>
+
+            {/* Restliches Personal - 2 Spalten Grid */}
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                {otherTeamMembers.map((member) => (
                     <div key={member.name} className="mx-auto w-full max-w-sm">
                         <TeamMemberCard 
                             name={member.name}
