@@ -71,6 +71,13 @@ const leistungen = [
     ),
   },
   {
+    name: 'TWINT',
+    subtitle: 'Mit dem Handy bezahlen',
+    image: '/images/leistungen/twint-logo.png',
+    hint: 'twint logo',
+    backsideContent: <></>,
+  },
+  {
     name: 'Verkehrsmedizinische Untersuchungen',
     image: '/images/leistungen/VMU.png',
     hint: 'driving test eye chart',
@@ -91,13 +98,6 @@ const leistungen = [
         <p>Für grössere Eingriffe steht mit <Link href="/team#schemmer" className="underline hover:text-primary">Prof. Dr. med. Dr. h. c. Schemmer</Link> ein Spezialist zur Verfügung, der mehrmals pro Monat eine Sprechstunde im Praxiszentrum anbietet.</p>
       </>
     ),
-  },
-  {
-    name: 'TWINT',
-    subtitle: 'Mit dem Handy bezahlen',
-    image: '/images/leistungen/twint-logo.png',
-    hint: 'twint logo',
-    backsideContent: <></>,
   }
 ];
 
