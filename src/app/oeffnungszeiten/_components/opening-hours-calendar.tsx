@@ -83,31 +83,12 @@ export function OpeningHoursCalendar() {
         ))}
         {/* Bottom border for the last row */}
         <div className="col-span-6 h-px border-b border-border"></div>
-        
-        {/* Sprechstunde Text Overlays */}
-        <div className="pointer-events-none absolute inset-0 grid grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(11,minmax(0,1fr))]">
-          <div className="row-start-2 row-end-6 col-start-2 col-end-6 flex items-center justify-center">
-            
-          </div>
-          <div className="row-start-8 row-end-12 col-start-2 col-end-3 flex items-center justify-center">
-            
-          </div>
-          <div className="row-start-8 row-end-12 col-start-3 col-end-5 flex items-center justify-center">
-            
-          </div>
-           <div className="row-start-7 row-end-11 col-start-5 col-end-6 flex items-center justify-center">
-            
-          </div>
-           <div className="row-start-7 row-end-11 col-start-6 col-end-7 flex items-center justify-center">
-            
-          </div>
-        </div>
       </div>
 
       {/* Orange Overlay Grid for Borders and Blocks */}
       <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
           {/* Invisible Header Row for alignment */}
-          <div className="text-transparent"></div>
+          <div></div>
           {days.map((day) => (
               <div key={`${day}-overlay-header`} className="flex h-12 items-center justify-center border-l border-t border-orange-500 text-center text-sm font-bold text-transparent sm:text-base">{day}</div>
           ))}
@@ -119,7 +100,7 @@ export function OpeningHoursCalendar() {
                       {startTime} - {timeSlots[hourIndex + 1]}
                   </div>
                   {days.map((_day) => (
-                      <div key={`${_day}-${startTime}-overlay-cell`} className="h-12 border-l border-t border-orange-500"></div>
+                      <div key={`${_day}-${startTime}-overlay-cell`} className="h-12 border-l border-t border-orange-500 bg-transparent"></div>
                   ))}
               </React.Fragment>
           ))}
