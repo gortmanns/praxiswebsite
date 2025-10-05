@@ -45,7 +45,7 @@ export function Footer() {
   return (
     <footer className="bg-accent text-background/80">
       <div className="container py-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-5">
           {/* Rechtliches */}
           <div className="space-y-4">
             <h3 className="text-lg font-bold uppercase text-primary">Rechtliches</h3>
@@ -131,6 +131,19 @@ export function Footer() {
                   <MailIcon className="h-[21px] w-[21px] flex-shrink-0" />
                   <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
                 </ObfuscatedLink>
+            </div>
+          </div>
+          {/* Qualitätslabel */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold uppercase text-primary">Qualitätslabel</h3>
+            <div className="w-full">
+              <Image 
+                src="/images/mehrfacharzt-logo.png" 
+                alt="Mehrfacharzt Logo" 
+                width={200}
+                height={64}
+                className="h-auto w-full object-contain"
+                />
             </div>
           </div>
         </div>
