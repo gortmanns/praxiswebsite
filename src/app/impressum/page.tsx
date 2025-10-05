@@ -37,6 +37,10 @@ export default function ImpressumPage() {
                         empfang@praxiszentrum-im-ring.ch
                     </ObfuscatedLink>
                 </div>
+                <div className="space-y-1">
+                    <p>GLN: 7601003456677</p>
+                    <p>ZSR: UU57432</p>
+                </div>
             </CardContent>
           </Card>
         </div>
