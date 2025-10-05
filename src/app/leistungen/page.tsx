@@ -99,7 +99,7 @@ const leistungen = [
       </>
     ),
   }
-];
+].sort((a, b) => a.name.localeCompare(b.name));
 
 export default function LeistungenPage() {
   return (
@@ -114,41 +114,44 @@ export default function LeistungenPage() {
             </div>
 
             <div className="mx-auto mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {leistungen.map((leistung) => (
-                <div key={leistung.name} className="group relative flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl aspect-[4/5]">
-                  <div className="flex flex-col h-full">
-                    <div className="flex items-center justify-center p-4 min-h-[9rem]">
-                      <div className="text-center">
-                        <h3 className="font-headline text-2xl font-bold text-primary">
-                          {leistung.name}
-                        </h3>
-                        {leistung.subtitle && (
-                          <p className="mt-1 text-base text-primary">{leistung.subtitle}</p>
-                        )}
+              {leistungen.map((leistung) => {
+                const isTwint = leistung.name === 'TWINT';
+                return (
+                  <div key={leistung.name} className="group relative flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl aspect-[4/5]">
+                    <div className={cn("flex flex-col h-full", isTwint && 'justify-between')}>
+                      <div className={cn("flex items-center justify-center p-4 min-h-[9rem]", isTwint && 'absolute top-0 left-0 right-0 z-10 min-h-0 h-auto bg-card/80 backdrop-blur-sm rounded-t-lg')}>
+                        <div className="text-center">
+                          <h3 className="font-headline text-2xl font-bold text-primary">
+                            {leistung.name}
+                          </h3>
+                          {leistung.subtitle && (
+                            <p className="mt-1 text-base text-primary">{leistung.subtitle}</p>
+                          )}
+                        </div>
+                      </div>
+                      <div className={cn("relative flex-1", isTwint && 'aspect-square w-full self-end')}>
+                        <Image
+                          src={leistung.image}
+                          alt={leistung.name}
+                          fill
+                          className={cn(
+                              "object-cover",
+                              isTwint && "object-contain p-8"
+                          )}
+                          data-ai-hint={leistung.hint}
+                        />
                       </div>
                     </div>
-                    <div className="relative flex-1">
-                      <Image
-                        src={leistung.image}
-                        alt={leistung.name}
-                        fill
-                        className={cn(
-                            "object-cover",
-                            leistung.name === 'TWINT' && "object-contain p-8"
-                        )}
-                        data-ai-hint={leistung.hint}
-                      />
-                    </div>
+                     {leistung.backsideContent && (
+                          <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
+                              <div className="text-center text-lg">
+                                  {leistung.backsideContent}
+                              </div>
+                          </div>
+                      )}
                   </div>
-                   {leistung.backsideContent && (
-                        <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                            <div className="text-center text-lg">
-                                {leistung.backsideContent}
-                            </div>
-                        </div>
-                    )}
-                </div>
-              ))}
+                );
+              })}
             </div>
         </div>
       </main>
