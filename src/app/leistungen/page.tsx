@@ -122,20 +122,19 @@ export default function LeistungenPage() {
                                 <>
                                     TWINT
                                     <br />
-                                    Mit dem Handy bezahlen
+                                    <span className="font-normal">Mit dem Handy bezahlen</span>
                                 </>
                             ) : leistung.name}
                           </h3>
                         </div>
                     </div>
-                    <div className="relative flex-1">
+                    <div className={cn("relative flex-1", leistung.name === 'TWINT' && "bg-black")}>
                         <Image
                           src={leistung.image}
                           alt={leistung.name}
                           fill
                           className={cn(
-                            {"object-cover": leistung.name !== 'TWINT'},
-                            {"object-scale-down": leistung.name === 'TWINT'}
+                            leistung.name === 'TWINT' ? "object-contain p-4" : "object-cover"
                           )}
                           data-ai-hint={leistung.hint}
                         />
