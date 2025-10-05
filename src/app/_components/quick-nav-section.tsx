@@ -40,33 +40,25 @@ export function QuickNavSection() {
             <Link
               key={item.href}
               href={item.href}
-              className="group h-40 w-full rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 debug-outline"
-              style={{ perspective: '1000px' }}
+              className="group relative h-40 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 debug-outline"
             >
+              {/* Graue Karte (unten) */}
               <div
-                className="relative h-full w-full rounded-lg transition-transform duration-700 group-hover:[transform:rotateX(180deg)] debug-outline"
-                style={{ transformStyle: 'preserve-d' }}
+                className="absolute flex h-full w-full flex-col items-center justify-center gap-4 rounded-lg bg-secondary p-6 text-secondary-foreground transition-transform duration-500 debug-outline"
               >
-                {/* Front face */}
-                <div
-                  className="absolute flex h-full w-full flex-col items-center justify-center gap-4 rounded-lg bg-secondary p-6 text-secondary-foreground debug-outline"
-                  style={{ backfaceVisibility: 'hidden' }}
-                >
-                  <item.Icon className="h-24 w-24" />
-                  <span className="text-xl font-bold uppercase tracking-wider">
-                    {item.label}
-                  </span>
-                </div>
-                {/* Back face */}
-                <div
-                  className="absolute flex h-full w-full flex-col items-center justify-center gap-4 rounded-lg bg-primary p-6 text-primary-foreground debug-outline"
-                  style={{ backfaceVisibility: 'hidden', transform: 'rotateX(180deg)' }}
-                >
-                  <item.Icon className="h-24 w-24" />
-                  <span className="text-xl font-bold uppercase tracking-wider">
-                    {item.label}
-                  </span>
-                </div>
+                <item.Icon className="h-24 w-24" />
+                <span className="text-xl font-bold uppercase tracking-wider">
+                  {item.label}
+                </span>
+              </div>
+              {/* Blaue Karte (oben, gleitet rein) */}
+              <div
+                className="absolute flex h-full w-full flex-col items-center justify-center gap-4 rounded-lg bg-primary p-6 text-primary-foreground transition-transform duration-500 translate-y-full group-hover:translate-y-0 debug-outline"
+              >
+                <item.Icon className="h-24 w-24" />
+                <span className="text-xl font-bold uppercase tracking-wider">
+                  {item.label}
+                </span>
               </div>
             </Link>
           ))}
