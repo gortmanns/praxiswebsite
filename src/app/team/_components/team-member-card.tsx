@@ -12,10 +12,10 @@ interface TeamMemberCardProps {
 
 export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsideContent }: TeamMemberCardProps) {
   return (
-    <div className="group relative w-full" style={{ aspectRatio: '384 / 644' }}>
+    <div className="group relative w-full" style={{ aspectRatio: '384 / 544' }}>
         <Card className="absolute inset-0 overflow-hidden">
             <CardContent className="flex h-full flex-col p-6">
-                <div className="relative w-full aspect-[2/3] rounded-md overflow-hidden">
+                <div className="relative w-full flex-grow rounded-md overflow-hidden">
                     <Image
                         src={imageUrl}
                         alt={`Portrait von ${name}`}
