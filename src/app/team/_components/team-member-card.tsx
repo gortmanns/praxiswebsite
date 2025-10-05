@@ -15,7 +15,14 @@ export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsid
     <div className="group relative w-full" style={{ aspectRatio: '384 / 544' }}>
         <Card className="absolute inset-0 overflow-hidden">
             <CardContent className="flex h-full flex-col p-6">
+                {/* 
+                // BEGINN VORHERIGER CODE
                 <div className="relative w-full flex-grow rounded-md overflow-hidden">
+                // ENDE VORHERIGER CODE
+                */}
+                {/* BEGINN NEUER CODE */}
+                <div className="relative w-[85%] mx-auto flex-grow rounded-md overflow-hidden">
+                {/* ENDE NEUER CODE */}
                     <Image
                         src={imageUrl}
                         alt={`Portrait von ${name}`}
