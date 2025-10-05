@@ -93,7 +93,7 @@ export default function MedikamentePage() {
                 <Card>
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg text-foreground/80">
-                            <h4 className="font-headline text-2xl font-bold text-primary">Vorbestellung per Telefon</h4>
+                            <h4 className="font-headline text-2xl font-bold text-primary text-left">Vorbestellung per Telefon</h4>
                             <p>Unsere Bestellhotline für Medikamente erreichen Sie Tag und Nacht an 365 Tagen im Jahr unter der Rufnummer</p>
                             
                             <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold text-foreground transition-colors hover:text-primary md:text-3xl lg:text-4xl">
@@ -112,6 +112,38 @@ export default function MedikamentePage() {
                 </Card>
               </TabsContent>
               <TabsContent value="email" className="mt-8">
+                <Card>
+                    <CardContent className="p-6 md:p-8">
+                        <div className="space-y-6 text-lg text-foreground/80">
+                            <h4 className="font-headline text-2xl font-bold text-primary text-left">Vorbestellung per E-Mail</h4>
+                            <p>Die Bestellung per E-Mail ist ganz einfach. Schreiben Sie eine Email an</p>
+                            
+                            <ObfuscatedLink
+                                user="medikamente"
+                                domain="praxiszentrum-im-ring.ch"
+                                className="my-4 flex items-center justify-start gap-4 text-2xl font-bold text-foreground transition-colors hover:text-primary md:text-3xl lg:text-4xl"
+                            >
+                                <Mail className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
+                                <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
+                            </ObfuscatedLink>
+
+                            <p>In den Betreff schreiben Sie bitte Ihren Namen, Vornamen sowie das Geburtsdatum, damit wir Ihre Bestellung zuordnen können.</p>
+                            <p>Schreiben Sie dann in die E-Mail einfach die benötigten Medikamente, möglichst so, wie diese auf der Originalverpackung bezeichnet sind.</p>
+                            
+                            <div>
+                                <p>Zum Beispiel:</p>
+                                <pre className="mt-2 rounded-md bg-muted p-4 font-code text-base text-muted-foreground">ATORVASTATIN Mepha Lactab 40 mg</pre>
+                            </div>
+
+                            <p>Alternativ können Sie auch ganz unkompliziert Fotos der Verpackungen schicken, auf denen die Bezeichnung des jeweiligen Medikaments gut erkennbar ist.</p>
+                            
+                            <div className="space-y-2 rounded-md border border-border bg-card p-4">
+                                <h5 className="font-bold text-primary">Hinweis zum Datenschutz</h5>
+                                <p className="text-base">E-Mails werden im Internet unverschlüsselt übertragen und passieren dabei mehrere Server und Zwischenstationen. Das heisst mit ausreichendem technischem Wissen kann jeder der Zugriff auf diese Zwischenstationen hat, den Inhalt der E-Mails lesen. Eine E-Mail entspricht also am ehesten einer Postkarte und nicht einem geschlossenen Brief. Bitte bedenken Sie dieses, wenn Sie diesen Weg der Vorbestellung wählen. Wenn Sie Bedenken bezüglich Vertraulichkeit und Datenschutz haben, nutzen Sie im Zweifel lieber die telefonische Bestellhotline.</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
               </TabsContent>
             </Tabs>
           </div>
