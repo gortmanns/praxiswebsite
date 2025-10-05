@@ -32,14 +32,14 @@ export const DoctorCardSchemmer = () => (
                                     <p className="font-bold">Facharzt für Allgemein- und Viszeralchirurgie</p>
                                 </div>
                                 <div className="relative mt-[2.5cqw] h-[77px] w-full items-center justify-start overflow-hidden">
-                                    <Image
-                                      src="/images/schemmer-worni-logo.png"
-                                      alt="Schemmer & Worni Logo"
-                                      width={300}
-                                      height={100}
-                                      className="object-contain"
-                                      data-ai-hint="partner logo"
-                                    />
+                                  <Image
+                                    src="/images/schemmer-worni-logo.png"
+                                    alt="Schemmer & Worni Logo"
+                                    width={300}
+                                    height={100}
+                                    className="object-contain"
+                                    data-ai-hint="partner logo"
+                                  />
                                 </div>
                             </div>
                         </div>
@@ -48,9 +48,9 @@ export const DoctorCardSchemmer = () => (
                 <div className="absolute inset-0 flex flex-col items-start justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <ul className="space-y-1.5 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
                         <li className="font-bold text-primary mt-2">KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT VOR ORT IM PRAXISZENTRUM IM RING ERFOLGEN</li>
-                        <li className="font-bold text-primary mt-4">GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT</li>
-                        <li>Die Vorbesprechung und Planung des Eingriffs erfolgen hier im PRAXISZENTRUM IM RING.</li>
-                        <li>Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls hier im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten.</li>
+                        <li className="font-bold text-primary mt-6">GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT</li>
+                        <li>Die Vorbesprechung und Planung des Eingriffs erfolgen im PRAXISZENTRUM IM RING.</li>
+                        <li>Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten.</li>
                         <li>
                             Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt.
                             <ul className="list-disc space-y-px pl-9 pt-1 text-[clamp(0.7rem,2.3cqw,1rem)] font-normal text-background/80">
@@ -59,7 +59,7 @@ export const DoctorCardSchemmer = () => (
                                 <li>Siloah-Spital</li>
                             </ul>
                         </li>
-                        <li>Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder hier vor Ort im PRAXISZENTRUM IM RING statt.</li>
+                        <li>Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder vor Ort im PRAXISZENTRUM IM RING statt.</li>
                     </ul>
                 </div>
             </Card>
