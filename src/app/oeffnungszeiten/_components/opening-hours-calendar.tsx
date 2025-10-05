@@ -55,16 +55,14 @@ const Cell = ({ dayIndex, hourIndex }: { dayIndex: number; hourIndex: number; })
 export function OpeningHoursCalendar() {
   return (
     <div className="relative">
-      <div className="relative grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-secondary">
+      {/* Base Calendar Grid */}
+      <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
         {/* Header Row */}
         <div className="sticky top-0 z-10 bg-muted"></div>
-        {days.map((day, dayIndex) => (
+        {days.map((day) => (
           <div 
             key={day} 
-            className={cn(
-              "flex h-12 items-center justify-center bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base",
-              "border-b border-l border-secondary"
-            )}
+            className="flex h-12 items-center justify-center border-l border-t border-secondary bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base"
           >
             {day}
           </div>
@@ -73,7 +71,7 @@ export function OpeningHoursCalendar() {
         {/* Time Axis and Content Grid */}
         {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
           <React.Fragment key={startTime}>
-            <div className="flex h-12 items-center justify-center bg-muted px-2 text-center text-xs font-bold text-muted-foreground border-t border-l border-secondary">
+            <div className="flex h-12 items-center justify-center border-l border-t border-secondary bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
               {startTime} - {timeSlots[hourIndex + 1]}
             </div>
             {days.map((_day, dayIndex) => (
@@ -83,10 +81,12 @@ export function OpeningHoursCalendar() {
             ))}
           </React.Fragment>
         ))}
+        {/* Bottom border for the last row */}
+        <div className="col-span-6 h-px border-b border-secondary"></div>
       </div>
 
       {/* Overlay Grid */}
-      <div className="absolute top-0 left-0 h-full w-full pointer-events-none">
+      <div className="pointer-events-none absolute inset-0">
         <div className="relative grid h-full w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[repeat(11,minmax(0,1fr))]">
             {/* Header Row Placeholder */}
             <div className="row-start-1" style={{gridColumn: '1 / -1'}}></div>
@@ -96,7 +96,7 @@ export function OpeningHoursCalendar() {
 
             {/* Sprechstunde Vormittag */}
             <div
-                className="flex items-center justify-center pointer-events-auto"
+                className="pointer-events-auto flex items-center justify-center"
                 style={{ 
                     gridColumn: '2 / 7', 
                     gridRow: '2 / 6',
@@ -107,7 +107,7 @@ export function OpeningHoursCalendar() {
 
             {/* Sprechstunde Nachmittag Mo-Di */}
             <div
-                className="flex items-center justify-center pointer-events-auto"
+                className="pointer-events-auto flex items-center justify-center"
                 style={{ 
                     gridColumn: '2 / 4',
                     gridRow: '8 / 12',
@@ -117,7 +117,7 @@ export function OpeningHoursCalendar() {
             </div>
              {/* Sprechstunde Nachmittag Do */}
              <div
-                className="flex items-center justify-center pointer-events-auto"
+                className="pointer-events-auto flex items-center justify-center"
                 style={{ 
                     gridColumn: '5 / 6',
                     gridRow: '8 / 12',
@@ -127,7 +127,7 @@ export function OpeningHoursCalendar() {
             </div>
              {/* Sprechstunde Nachmittag Fr */}
              <div
-                className="flex items-center justify-center pointer-events-auto"
+                className="pointer-events-auto flex items-center justify-center"
                 style={{ 
                     gridColumn: '6 / 7',
                     gridRow: '7 / 11',
