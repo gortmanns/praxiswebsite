@@ -34,7 +34,7 @@ export const DoctorCardSchemmer = ({ doctor }: { doctor: Doctor }) => (
                                         <p key={index} className={index === 0 ? 'font-bold' : ''}>{spec}</p>
                                     ))}
                                 </div>
-                                <div className="relative mt-4 w-48 h-16">
+                                <div className="relative mt-[2.5cqw]" style={{ width: '30cqw', height: '10cqw' }}>
                                     <Image
                                         src="/images/schemmer-worni-logo.png"
                                         alt="Schemmer & Worni Logo"
