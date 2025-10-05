@@ -20,7 +20,7 @@ export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsid
                         src={imageUrl}
                         alt={`Portrait von ${name}`}
                         fill
-                        className="object-cover"
+                        className="object-contain"
                         data-ai-hint={imageHint}
                     />
                 </div>
