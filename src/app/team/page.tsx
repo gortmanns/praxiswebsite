@@ -30,62 +30,6 @@ const garcia = {
     ),
 };
 
-/* BEGINN VORHERIGER CODE */
-/*
-const otherTeamMembers = [
-    {
-      name: 'B. Aeschlimann',
-      role: 'Medizinische Praxisassistentin',
-      role2: 'Berufsbildnerin',
-      imageUrl: '/images/team/Aeschlimann.jpg',
-      imageHint: 'woman portrait',
-      backsideContent: (
-        <>
-          <p>
-          Ich blicke zurück auf eine lange Erfahrung im Beruf als MPA aber bin neu im Praxiszentrum im Ring.
-          </p>
-          <br />
-          <p>
-          Als Berufsbildnerin bin ich für die Ausbildung der Lernenden zur MPA verantwortlich.
-          </p>
-        </>
-      ),
-    },
-    {
-        name: 'K. Huber',
-        role: 'Medizinische Praxisassistentin',
-        imageUrl: '/images/team/Huber.jpg',
-        imageHint: 'woman portrait',
-        backsideContent: (
-          <>
-            <p>
-            Viele Jahre war ich in einer kleinen chirurgischen Praxis tätig. Inzwischen jetzt zusätzlich an meist einem Tag in der Woche auch hier im Praxiszentrum im Ring.
-            </p>
-          </>
-        ),
-      },
-    {
-      name: 'G. Öztürk',
-      role: 'Praxishilfe',
-      imageUrl: '/images/team/Oetztuerk.jpg',
-      imageHint: 'man portrait',
-      backsideContent: (
-        <>
-          <p>
-            Eigentlich bin ich Arzt und stamme aus der Türkei, aber noch läuft das Anerkennungsverfahren für die Qualifikation als Hausarzt hier in der Schweiz.
-          </p>
-          <br />
-          <p>
-            Daher aktuell "nur" als Praxishilfe tätig, jedoch hoffentlich bald als weiterer Hausarzt hier im Praxiszentrum.
-          </p>
-        </>
-      ),
-    },
-];
-*/
-/* ENDE VORHERIGER CODE */
-
-// BEGINN NEUER CODE
 const otherTeamMembers = [
     {
       name: 'B. Aeschlimann',
@@ -153,7 +97,6 @@ const otherTeamMembers = [
       ),
     },
 ];
-// ENDE NEUER CODE
 
 
 export default function TeamPage() {
@@ -192,7 +135,6 @@ export default function TeamPage() {
               </p>
             </div>
             
-            {/* Leitende MPA - Centered */}
             <div className="flex justify-center">
                 <div className="w-full max-w-sm">
                     <TeamMemberCard 
@@ -206,7 +148,6 @@ export default function TeamPage() {
                 </div>
             </div>
 
-            {/* Restliches Personal - 2 Spalten Grid */}
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
                 {otherTeamMembers.map((member) => (
                     <div key={member.name} className="mx-auto w-full max-w-sm">
