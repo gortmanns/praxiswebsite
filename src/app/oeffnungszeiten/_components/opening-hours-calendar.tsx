@@ -84,33 +84,6 @@ export function OpeningHoursCalendar() {
         {/* Bottom border for the last row */}
         <div className="col-span-6 h-px border-b border-border"></div>
       </div>
-      
-      {/* Overlay Grid */}
-      <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] bg-orange-500/20">
-        {/* Header Row */}
-        <div className="sticky top-0 z-10"></div>
-        {days.map((day) => (
-          <div
-            key={`${day}-overlay-header`}
-            className="h-12 border-l border-t border-orange-500"
-          ></div>
-        ))}
-
-        {/* Time Axis and Content Grid */}
-        {timeSlots.slice(0, -1).map((startTime) => (
-          <React.Fragment key={`${startTime}-overlay`}>
-            <div className="h-12 border-l border-t border-orange-500"></div>
-            {days.map((_day) => (
-              <div
-                key={`${_day}-${startTime}-overlay`}
-                className="h-12 border-l border-t border-orange-500"
-              ></div>
-            ))}
-          </React.Fragment>
-        ))}
-        {/* Bottom border for the last row */}
-        <div className="col-span-6 h-px border-b border-orange-500"></div>
-      </div>
     </div>
   );
 }
