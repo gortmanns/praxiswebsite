@@ -14,7 +14,10 @@ export default function TeamPage() {
               UNSER TEAM
             </h2>
           </div>
-          <div className="mx-auto mt-8 max-w-5xl debug-outline">
+          <div className="mx-auto mt-8 max-w-5xl space-y-8 debug-outline">
+            <h3 className="font-headline text-2xl font-bold tracking-tight text-primary/90 sm:text-3xl">
+                Ärzte
+            </h3>
             <DoctorCard />
           </div>
         </div>
