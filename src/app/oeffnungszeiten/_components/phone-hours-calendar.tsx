@@ -4,7 +4,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 const timeSlots = [
-  '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+  '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
   '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30',
   '16:00', '16:30', '17:00', '17:30', '18:00'
 ];
@@ -37,7 +37,7 @@ export function PhoneHoursCalendar() {
       ))}
 
       {/* Time Axis */}
-      <div className="col-start-1 col-end-2 row-start-2 row-end-[22] grid grid-rows-20">
+      <div className="col-start-1 col-end-2 row-start-2 row-end-[21] grid grid-rows-19">
         {timeSlots.slice(0, -1).map((startTime, index) => (
           <div key={startTime} className="flex h-6 items-center justify-center border-b border-l border-border bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
             {startTime} - {timeSlots[index + 1]}
@@ -46,26 +46,21 @@ export function PhoneHoursCalendar() {
       </div>
 
       {/* Content Grid */}
-      <div className="col-start-2 col-end-7 row-start-2 row-end-[22] grid grid-cols-5 grid-rows-20">
-        {/* Mo, Di, Do Vormittag */}
-        {renderBlock(commonLabel, 'bg-background text-foreground border-b border-l', { gridColumn: '1 / 4', gridRow: '2 / 11' })}
-        {/* Mi Vormittag */}
-        {renderBlock(commonLabel, 'bg-background text-foreground border-b border-l', { gridColumn: '3 / 4', gridRow: '2 / 11' })}
-        {/* Fr Vormittag */}
-        {renderBlock(commonLabel, 'bg-background text-foreground border-b border-l', { gridColumn: '5 / 6', gridRow: '2 / 11' })}
+      <div className="col-start-2 col-end-7 row-start-2 row-end-[21] grid grid-cols-5 grid-rows-19">
+        {/* Mo, Di, Do, Mi, Fr Vormittag */}
+        {renderBlock(commonLabel, 'bg-background text-foreground border-b border-l', { gridColumn: '1 / 6', gridRow: '1 / 9' })}
         
         {/* Mo, Di, Do Nachmittag */}
-        {renderBlock(commonLabel, 'bg-background text-foreground border-b border-l', { gridColumn: '1 / 4', gridRow: '13 / 20' })}
+        {renderBlock(commonLabel, 'bg-background text-foreground border-b border-l', { gridColumn: '1 / 4', gridRow: '11 / 18' })}
         {/* Fr Nachmittag */}
-        {renderBlock(commonLabel, 'bg-background text-foreground border-b border-l', { gridColumn: '5 / 6', gridRow: '13 / 18' })}
+        {renderBlock(commonLabel, 'bg-background text-foreground border-b border-l', { gridColumn: '5 / 6', gridRow: '11 / 16' })}
 
         {/* Geschlossen-Zeiten */}
-        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '1 / 6', gridRow: '1 / 2' })}
-        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '1 / 6', gridRow: '11 / 13' })}
-        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '3 / 4', gridRow: '13 / 21' })}
-        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '1 / 3', gridRow: '20 / 21' })}
-        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '4 / 5', gridRow: '20 / 21' })}
-        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '5 / 6', gridRow: '18 / 21' })}
+        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '1 / 6', gridRow: '9 / 11' })}
+        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '3 / 4', gridRow: '11 / 19' })}
+        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '1 / 3', gridRow: '18 / 19' })}
+        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '4 / 5', gridRow: '18 / 19' })}
+        {renderBlock(commonLabelClosed, 'bg-secondary text-secondary-foreground border-b border-l', { gridColumn: '5 / 6', gridRow: '16 / 19' })}
       </div>
     </div>
   );
