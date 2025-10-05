@@ -46,7 +46,7 @@ export const DoctorCardOrtmanns = () => (
                         <li>Medizinstudium in Bonn (Deutschland) und Hobart (Australien)</li>
                         <li>Masterstudium Public Health und Health Management in Sydney (Australien)</li>
                         <li>Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor</li>
-                        <li className="font-bold text-primary mt-6">
+                        <li className="font-bold text-primary mt-6 mb-4">
                             Projektmanagement im Gesundheitswesen in Europa und Australien
                             <div className="mt-1 pl-9 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
                                 <h5 className="mb-1 tracking-wide text-background/90">Meilensteine</h5>
@@ -57,7 +57,7 @@ export const DoctorCardOrtmanns = () => (
                                 </ul>
                             </div>
                         </li>
-                        <li className="font-bold text-primary mt-6">
+                        <li className="font-bold text-primary mt-6 mb-4">
                             Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz
                             <div className="mt-1 pl-9 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
                                 <ul className="list-disc space-y-px pl-5 font-normal">
@@ -69,8 +69,8 @@ export const DoctorCardOrtmanns = () => (
                                 </ul>
                             </div>
                         </li>
-                        <li className='mt-6'>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)</li>
-                        <li className='mt-6'>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</li>
+                        <li className='mt-6 mb-4'>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)</li>
+                        <li className='mt-6 mb-4'>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</li>
                     </ul>
                 </div>
             </Card>
