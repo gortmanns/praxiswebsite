@@ -21,10 +21,8 @@ export default function ImpressumPage() {
             </CardHeader>
             <CardContent className="space-y-6 text-lg text-foreground/80">
                 <div className="space-y-1">
-                    <p>Dipl. med. G. Ortmanns</p>
-                </div>
-                <div className="space-y-1">
                     <p>PRAXISZENTRUM IM RING</p>
+                    <p>Dipl. med. G. Ortmanns</p>
                     <p>Kappelenring 6</p>
                     <p>3032 Hinterkappelen</p>
                 </div>
