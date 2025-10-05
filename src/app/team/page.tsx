@@ -1,3 +1,4 @@
+
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import Image from 'next/image';
@@ -61,7 +62,7 @@ export default function TeamPage() {
                         </div>
                         </CardContent>
                         <div className="absolute inset-0 flex flex-col items-start justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <ul className="space-y-1 text-[clamp(0.8rem,1.9cqw,1.1rem)] leading-tight">
+                        <ul className="space-y-1 text-[clamp(0.8rem,2cqw,1.2rem)] leading-tight">
                             <li className="font-bold text-primary">
                             Medizinstudium in Bonn (Deutschland) und Hobart
                             (Australien)
@@ -77,7 +78,7 @@ export default function TeamPage() {
                             <li className="font-bold text-primary">
                             Projektmanagement im Gesundheitswesen in Europa und
                             Australien
-                            <div className="mt-1 pl-4 text-[clamp(0.7rem,1.7cqw,0.9rem)] leading-snug text-background/80">
+                            <div className="mt-1 pl-4 text-[clamp(0.7rem,1.8cqw,1rem)] leading-snug text-background/80">
                                 <h5 className="mb-1 font-bold uppercase tracking-wider text-primary">
                                 Meilensteine
                                 </h5>
@@ -103,7 +104,7 @@ export default function TeamPage() {
                             </li>
                             <li className="mt-2 font-bold text-primary">
                             Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz
-                            <ul className="mt-1 list-disc space-y-px pl-9 text-[clamp(0.7rem,1.7cqw,0.9rem)] leading-snug text-background/80">
+                            <ul className="mt-1 list-disc space-y-px pl-9 text-[clamp(0.7rem,1.8cqw,1rem)] leading-snug text-background/80">
                                 <li>Universitätsspital Basel (USB)</li>
                                 <li>Kantonsspital Baselland (KSBL)</li>
                                 <li>Kantonsspital Winterthur (KSW)</li>
@@ -112,11 +113,11 @@ export default function TeamPage() {
                             </ul>
                             </li>
                         </ul>
-                        <p className="mt-2 text-[clamp(0.7rem,1.7cqw,0.9rem)] font-bold text-primary">
+                        <p className="mt-2 text-[clamp(0.7rem,1.8cqw,1rem)] font-bold text-primary">
                             Wissenschaftlicher Mitarbeiter an der Universität Zürich /
                             USZ (Abteilung für Pneumologie)
                         </p>
-                        <p className="text-[clamp(0.7rem,1.7cqw,0.9rem)] font-bold text-primary">
+                        <p className="text-[clamp(0.7rem,1.8cqw,1rem)] font-bold text-primary">
                             Lehrbeauftragter für Hausarztmedizin (Institut für
                             Hausarztmedizin der Universität Bern)
                         </p>
