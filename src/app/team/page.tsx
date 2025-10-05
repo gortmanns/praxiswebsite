@@ -78,19 +78,6 @@ const otherTeamMembers = [
         </>
       ),
     },
-    {
-      name: 'D. Schmocker',
-      role: 'Medizinische Praxisassistentin',
-      imageUrl: '/images/team/Schmocker.jpg',
-      imageHint: 'woman portrait',
-      backsideContent: (
-        <>
-          <p>
-            Nach meiner Ausbildung zur MPA und einigen Jahren Berufserfahrung bin ich seit Herbst 2023 im Praxiszentrum im Ring tätig.
-          </p>
-        </>
-      ),
-    },
 ];
 
 export default function TeamPage() {
