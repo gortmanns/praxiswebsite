@@ -11,7 +11,7 @@ interface TeamMemberCardProps {
 export function TeamMemberCard({ name, role, imageUrl, imageHint }: TeamMemberCardProps) {
   return (
     <Card className="flex flex-col text-center transition-all hover:-translate-y-1 hover:shadow-xl overflow-hidden">
-      <div className="relative w-full" style={{ aspectRatio: '1 / 1' }}>
+      <div className="relative w-full" style={{ aspectRatio: '1 / 1.2' }}>
         <Image
           src={imageUrl}
           alt={`Portrait von ${name}`}

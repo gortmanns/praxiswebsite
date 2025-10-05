@@ -1,5 +1,6 @@
 
 
+
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { DoctorCardOrtmanns } from './_components/doctor-card-ortmanns';
@@ -11,15 +12,15 @@ import { TeamMemberCard } from './_components/team-member-card';
 
 const teamMembers = [
     {
-      name: 'Erika Mustermann',
-      role: 'Med. Praxisassistentin',
-      imageUrl: 'https://picsum.photos/seed/frau1/200/200',
+      name: 'S. Garcia',
+      role: 'Leitende Medizinische Praxisassistentin',
+      imageUrl: '/images/team/Garcia.jpg',
       imageHint: 'woman portrait',
     },
     {
       name: 'Max Mustermann',
       role: 'Med. Praxisassistent',
-      imageUrl: 'https://picsum.photos/seed/mann1/200/200',
+      imageUrl: 'https://picsum.photos/seed/mann1/400/400',
       imageHint: 'man portrait',
     },
   ];
