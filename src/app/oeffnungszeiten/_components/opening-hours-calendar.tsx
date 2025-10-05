@@ -85,32 +85,57 @@ export function OpeningHoursCalendar() {
         ))}
       </div>
 
-      <div className="absolute top-0 left-0 h-full w-full grid grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[repeat(11,minmax(0,1fr))] pointer-events-none">
-          {/* Header Row Placeholder */}
-          <div className="row-start-1"></div>
+      {/* Overlay Grid */}
+      <div className="absolute top-0 left-0 h-full w-full pointer-events-none">
+        <div className="relative grid h-full w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[repeat(11,minmax(0,1fr))]">
+            {/* Header Row Placeholder */}
+            <div className="row-start-1" style={{gridColumn: '1 / -1'}}></div>
+            
+            {/* Time Axis Placeholder */}
+            <div className="col-start-1" style={{gridRow: '1 / -1'}}></div>
 
-          {/* Time Axis Placeholder */}
-          <div className="col-start-1"></div>
-          
-          <div 
-              className="flex items-center justify-center pointer-events-auto"
-              style={{ 
-                  gridColumn: '2 / 7', 
-                  gridRow: '2 / 6'
-              }}
-          >
-              <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
-          </div>
-          
-          <div 
-              className="flex items-center justify-center pointer-events-auto"
-              style={{ 
-                  gridColumn: '2 / 4', 
-                  gridRow: '8 / 12'
-              }}
-          >
-              <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
-          </div>
+            {/* Sprechstunde Vormittag */}
+            <div
+                className="flex items-center justify-center pointer-events-auto"
+                style={{ 
+                    gridColumn: '2 / span 5', 
+                    gridRow: '2 / span 4',
+                }}
+            >
+                <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
+            </div>
+
+            {/* Sprechstunde Nachmittag Mo-Di */}
+            <div
+                className="flex items-center justify-center pointer-events-auto"
+                style={{ 
+                    gridColumn: '2 / span 2',
+                    gridRow: '8 / span 4',
+                }}
+            >
+                <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
+            </div>
+             {/* Sprechstunde Nachmittag Do */}
+             <div
+                className="flex items-center justify-center pointer-events-auto"
+                style={{ 
+                    gridColumn: '5 / span 1',
+                    gridRow: '8 / span 4',
+                }}
+            >
+                <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
+            </div>
+             {/* Sprechstunde Nachmittag Fr */}
+             <div
+                className="flex items-center justify-center pointer-events-auto"
+                style={{ 
+                    gridColumn: '6 / span 1',
+                    gridRow: '7 / span 4',
+                }}
+            >
+                <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
+            </div>
+        </div>
       </div>
     </div>
   );
