@@ -62,7 +62,7 @@ export function OpeningHoursCalendar() {
           key={day} 
           className={cn(
             "flex h-12 items-center justify-center bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base",
-            "border-b border-l border-border/20"
+            "border-b border-l border-secondary"
           )}
         >
           {day}
@@ -72,11 +72,11 @@ export function OpeningHoursCalendar() {
       {/* Time Axis and Content Grid */}
       {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
         <React.Fragment key={startTime}>
-          <div className="flex h-12 items-center justify-center bg-muted px-2 text-center text-xs font-bold text-muted-foreground border-t border-l border-border/20">
+          <div className="flex h-12 items-center justify-center bg-muted px-2 text-center text-xs font-bold text-muted-foreground border-t border-l border-secondary">
             {startTime} - {timeSlots[hourIndex + 1]}
           </div>
           {days.map((_day, dayIndex) => (
-            <div key={`${_day}-${startTime}`} className="h-12 border-l border-t border-border/20">
+            <div key={`${_day}-${startTime}`} className="h-12 border-l border-t border-secondary">
                <Cell dayIndex={dayIndex} hourIndex={hourIndex} />
             </div>
           ))}
