@@ -72,7 +72,7 @@ export function CooperationPartnersSection() {
               rel="noopener noreferrer"
               className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 debug-outline"
             >
-              <Card className="absolute flex h-full w-full items-center p-6 transition-transform duration-500 debug-outline">
+              <Card className="flex h-full w-full items-center p-6 debug-outline">
                 <CardContent className="flex w-full items-center justify-center p-0 debug-outline">
                   {partner.logoUrl ? (
                     <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden debug-outline">
@@ -90,24 +90,7 @@ export function CooperationPartnersSection() {
                   ) : null}
                 </CardContent>
               </Card>
-              <Card className="absolute flex h-full w-full items-center bg-accent p-6 text-accent-foreground transition-transform duration-500 translate-y-full group-hover:translate-y-0 debug-outline">
-                <CardContent className="flex w-full items-center justify-center p-0 debug-outline">
-                   {partner.logoUrl ? (
-                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden debug-outline">
-                      <Image
-                        src={partner.logoUrl}
-                        alt={`${partner.name} Logo`}
-                        width={partner.width}
-                        height={partner.height}
-                        className="object-contain"
-                        data-ai-hint={partner.hint}
-                      />
-                    </div>
-                  ) : partner.name === 'orthozentrum-bern' ? (
-                    <OrthozentrumLogo className="h-20 w-auto" />
-                  ) : null}
-                </CardContent>
-              </Card>
+              <div className="absolute inset-0 bg-black/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100 debug-outline"></div>
             </Link>
           ))}
           <Link
@@ -116,16 +99,12 @@ export function CooperationPartnersSection() {
             rel="noopener noreferrer"
             className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 debug-outline"
           >
-             <Card className="absolute flex h-full w-full items-center justify-center p-6 text-center transition-transform duration-500 debug-outline">
+             <Card className="flex h-full w-full items-center justify-center p-6 text-center debug-outline">
               <CardContent className="p-0 debug-outline">
                 <AgnieszkaSlezakLogo className="h-20 w-auto text-special-green" />
               </CardContent>
             </Card>
-             <Card className="absolute flex h-full w-full items-center justify-center bg-accent p-6 text-center text-accent-foreground transition-transform duration-500 translate-y-full group-hover:translate-y-0 debug-outline">
-              <CardContent className="p-0 debug-outline">
-                <AgnieszkaSlezakLogo className="h-20 w-auto" />
-              </CardContent>
-            </Card>
+            <div className="absolute inset-0 bg-black/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100 debug-outline"></div>
           </Link>
         </div>
         <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
@@ -141,7 +120,7 @@ export function CooperationPartnersSection() {
               rel="noopener noreferrer"
               className="group relative sm:col-span-1 lg:col-span-2 h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 debug-outline"
             >
-              <Card className="absolute flex h-full w-full items-center justify-center p-6 transition-transform duration-500 debug-outline">
+              <Card className="flex h-full w-full items-center justify-center p-6 debug-outline">
                 <CardContent className="flex w-full items-center justify-center p-0 debug-outline">
                   <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden debug-outline">
                     <Image
@@ -155,20 +134,7 @@ export function CooperationPartnersSection() {
                   </div>
                 </CardContent>
               </Card>
-              <Card className="absolute flex h-full w-full items-center justify-center bg-accent p-6 transition-transform duration-500 translate-y-full group-hover:translate-y-0 debug-outline">
-                <CardContent className="flex w-full items-center justify-center p-0 debug-outline">
-                  <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden debug-outline">
-                    <Image
-                      src={partner.logoUrl!}
-                      alt={`${partner.name} Logo`}
-                      width={partner.width}
-                      height={partner.height}
-                      className="object-contain"
-                      data-ai-hint={partner.hint}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="absolute inset-0 bg-black/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100 debug-outline"></div>
             </Link>
           ))}
           <div className="hidden lg:block debug-outline"></div> {/* Empty spacer */}
