@@ -12,7 +12,7 @@ export function TeamMemberCard({ name, role, imageUrl, imageHint }: TeamMemberCa
   return (
     <Card className="flex flex-col text-center transition-all hover:-translate-y-1 hover:shadow-xl overflow-hidden">
       <CardContent className="p-6">
-        <div className="relative w-full aspect-[1/1]">
+        <div className="relative w-full aspect-square">
           <Image
             src={imageUrl}
             alt={`Portrait von ${name}`}
