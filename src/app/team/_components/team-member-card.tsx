@@ -16,18 +16,6 @@ export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsid
         <Card className="absolute inset-0 overflow-hidden">
             <CardContent className="flex h-full flex-col p-6">
                 <div className="relative w-full flex-grow rounded-md overflow-hidden">
-                    {/* BEGINN VORHERIGER CODE */}
-                    {/*
-                    <Image
-                        src={imageUrl}
-                        alt={`Portrait von ${name}`}
-                        fill
-                        className="object-contain"
-                        data-ai-hint={imageHint}
-                    />
-                    */}
-                    {/* ENDE VORHERIGER CODE */}
-                    {/* BEGINN NEUER CODE */}
                     <Image
                         src={imageUrl}
                         alt={`Portrait von ${name}`}
@@ -35,7 +23,6 @@ export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsid
                         className="object-cover"
                         data-ai-hint={imageHint}
                     />
-                    {/* ENDE NEUER CODE */}
                 </div>
                 <div className="pt-6 text-center">
                     <h4 className="text-xl font-bold text-primary">{name}</h4>
