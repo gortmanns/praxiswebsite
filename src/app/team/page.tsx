@@ -2,6 +2,7 @@
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { DoctorCard } from './_components/doctor-card';
+import { DoctorCardSchemmer } from './_components/doctor-card-schemmer';
 import { doctors } from './_data/doctors';
 
 export default function TeamPage() {
@@ -22,9 +23,12 @@ export default function TeamPage() {
               </h3>
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
-            {doctors.map((doctor) => (
-              <DoctorCard key={doctor.name} doctor={doctor} />
-            ))}
+            {doctors.map((doctor) => {
+              if (doctor.name === 'P. Schemmer') {
+                return <DoctorCardSchemmer key={doctor.name} doctor={doctor} />;
+              }
+              return <DoctorCard key={doctor.name} doctor={doctor} />;
+            })}
           </div>
         </div>
       </main>

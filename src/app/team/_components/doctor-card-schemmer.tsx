@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import type { Doctor } from '@/app/team/_data/doctors';
 
-export const DoctorCard = ({ doctor }: { doctor: Doctor }) => (
+export const DoctorCardSchemmer = ({ doctor }: { doctor: Doctor }) => (
     <div 
         className="mx-auto max-w-5xl" 
         style={{ 'containerType': 'inline-size' } as React.CSSProperties}
@@ -34,15 +34,14 @@ export const DoctorCard = ({ doctor }: { doctor: Doctor }) => (
                                         <p key={index} className={index === 0 ? 'font-bold' : ''}>{spec}</p>
                                     ))}
                                 </div>
-                                {doctor.position && (
-                                    <p className="mt-[2.5cqw] text-[1.6cqw] italic">
-                                        {doctor.position.split('\n').map((line, index) => (
-                                            <span key={index} className="whitespace-nowrap">
-                                                {line}{' '}
-                                            </span>
-                                        ))}
-                                    </p>
-                                )}
+                                <div className="relative mt-[2.5cqw] h-[10cqw] w-[30cqw]">
+                                    <Image
+                                        src="/images/schemmer-worni-logo.png"
+                                        alt="Schemmer & Worni Logo"
+                                        fill
+                                        className="object-contain"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

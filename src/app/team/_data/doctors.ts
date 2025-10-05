@@ -79,7 +79,7 @@ export const doctors: Doctor[] = [
         point: 'Grosse chirurgische Eingriffe werden in enger Kooperation zwischen Chirurg und Hausarzt durchgeführt.',
         isList: true,
       },
-      {
+       {
         point: 'Vorbesprechung und Planung des Eingriffs erfolgen hier im PRAXISZENTRUM IM RING.',
         isParagraph: true,
       },
