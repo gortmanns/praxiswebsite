@@ -65,19 +65,6 @@ const otherTeamMembers = [
         </>
       ),
     },
-    {
-      name: 'N. Memeti',
-      role: 'Medizinische Praxisassistentin in Ausbildung',
-      imageUrl: '/images/team/Memeti.jpg',
-      imageHint: 'woman portrait',
-      backsideContent: (
-        <>
-          <p>
-            Ich habe im Sommer 2023 die Lehre zur MPA im Praxiszentrum im Ring begonnen.
-          </p>
-        </>
-      ),
-    },
 ];
 
 export default function TeamPage() {
@@ -127,7 +114,7 @@ export default function TeamPage() {
                     />
                 </div>
             </div>
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {otherTeamMembers.map((member) => (
                     <div key={member.name} className="mx-auto w-full max-w-sm">
                         <TeamMemberCard 
