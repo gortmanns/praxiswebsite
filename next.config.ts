@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'www.abvbernregio.ch',
+        hostname: 'i.ibb.co',
         port: '',
         pathname: '/**',
       }
