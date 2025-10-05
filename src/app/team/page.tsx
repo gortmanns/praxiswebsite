@@ -1,8 +1,3 @@
-
-
-
-
-
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { DoctorCardOrtmanns } from './_components/doctor-card-ortmanns';
@@ -62,8 +57,7 @@ export default function TeamPage() {
                 Die guten Geister, ohne die keine Arztpraxis funktioniert
               </p>
             </div>
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                <div className="lg:col-span-1"></div>
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                 <TeamMemberCard 
                     key={teamMembers[0].name}
                     name={teamMembers[0].name}
@@ -71,7 +65,6 @@ export default function TeamPage() {
                     imageUrl={teamMembers[0].imageUrl}
                     imageHint={teamMembers[0].imageHint}
                 />
-                <div className="lg:col-span-1"></div>
                 <TeamMemberCard 
                     key={teamMembers[1].name}
                     name={teamMembers[1].name}
