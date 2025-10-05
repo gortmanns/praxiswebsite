@@ -35,7 +35,7 @@ export default function TeamPage() {
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <div className="text-left text-foreground/80">
+                    <div className="flex h-full flex-col justify-center text-left text-foreground/80">
                       <p className="text-xl text-primary">Dipl. med.</p>
                       <h4 className="font-headline text-4xl font-bold text-primary">
                         G. Ortmanns
@@ -50,7 +50,7 @@ export default function TeamPage() {
                   </div>
                 </div>
               </CardContent>
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-primary/90 p-6 text-left text-xs text-primary-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <div className="absolute inset-0 flex flex-col items-start justify-center bg-primary/90 p-6 text-left text-xs text-primary-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 <ul className="list-disc space-y-2 pl-4">
                   <li>MEDIZINSTUDIUM IN BONN UND HOBART (AUSTRALIEN)</li>
                   <li>MASTERSTUDIUM PUBLIC HEALTH UND HEALTH MANAGEMENT IN SYDNEY (AUSTRALIEN)</li>
