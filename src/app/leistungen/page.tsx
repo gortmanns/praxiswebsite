@@ -91,6 +91,12 @@ const leistungen = [
       </>
     ),
   },
+  {
+    name: 'TWINT',
+    image: '/images/leistungen/twint-logo.png',
+    hint: 'twint logo',
+    description: 'Mit dem Handy bezahlen'
+  }
 ];
 
 export default function LeistungenPage() {
@@ -110,16 +116,21 @@ export default function LeistungenPage() {
                 <div key={leistung.name} className="group relative flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl aspect-[4/5]">
                   <div className="flex h-full flex-col">
                     <div className="flex h-28 items-center justify-center p-4">
-                      <h3 className="text-center font-headline text-2xl font-bold text-primary">
-                        {leistung.name}
-                      </h3>
+                      <div className="text-center">
+                        <h3 className="font-headline text-2xl font-bold text-primary">
+                          {leistung.name}
+                        </h3>
+                        {leistung.description && (
+                          <p className="mt-1 text-base text-muted-foreground">{leistung.description}</p>
+                        )}
+                      </div>
                     </div>
                     <div className="relative flex-1">
                       <Image
                         src={leistung.image}
                         alt={leistung.name}
                         fill
-                        className="object-cover object-bottom"
+                        className={leistung.name === 'TWINT' ? "object-contain p-8" : "object-cover object-bottom"}
                         data-ai-hint={leistung.hint}
                       />
                     </div>
