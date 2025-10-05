@@ -84,45 +84,46 @@ export function OpeningHoursCalendar() {
         {/* Bottom border for the last row */}
         <div className="col-span-6 h-px border-b border-border"></div>
         
-        <div className="pointer-events-none absolute inset-0 grid grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(10,minmax(0,1fr))]">
-          <div className="col-start-1 col-end-1 row-start-1 row-end-1"></div>
-          <div className="col-start-2 col-end-6 row-start-1 row-end-5 flex items-center justify-center">
+        {/* Sprechstunde Text Overlays */}
+        <div className="pointer-events-none absolute inset-0 grid grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(11,minmax(0,1fr))]">
+          <div className="row-start-2 row-end-6 col-start-2 col-end-6 flex items-center justify-center">
             <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
           </div>
-          <div className="col-start-2 col-end-3 row-start-7 row-end-11 flex items-center justify-center">
+          <div className="row-start-8 row-end-12 col-start-2 col-end-3 flex items-center justify-center">
             <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
           </div>
-          <div className="col-start-3 col-end-5 row-start-7 row-end-11 flex items-center justify-center">
+          <div className="row-start-8 row-end-12 col-start-3 col-end-5 flex items-center justify-center">
             <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
           </div>
-          <div className="col-start-5 col-end-6 row-start-6 row-end-10 flex items-center justify-center">
+           <div className="row-start-7 row-end-11 col-start-5 col-end-6 flex items-center justify-center">
+            <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
+          </div>
+           <div className="row-start-7 row-end-11 col-start-6 col-end-7 flex items-center justify-center">
             <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
           </div>
         </div>
       </div>
 
       {/* Orange Overlay Grid for Borders and Blocks */}
-      <div className="pointer-events-none absolute inset-0">
-          <div className="grid h-full w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(11,minmax(0,1fr))]">
-              {/* Invisible Headers for correct spacing */}
-              <div className="row-start-1 text-transparent"></div>
-              {days.map((day) => (
-                  <div key={`${day}-overlay-header`} className="flex h-12 items-center justify-center border-l border-t border-orange-500 text-center text-sm font-bold text-transparent sm:text-base">{day}</div>
-              ))}
+      <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
+          {/* Invisible Header Row for alignment */}
+          <div className="text-transparent"></div>
+          {days.map((day) => (
+              <div key={`${day}-overlay-header`} className="flex h-12 items-center justify-center border-l border-t border-orange-500 text-center text-sm font-bold text-transparent sm:text-base">{day}</div>
+          ))}
 
-              {/* Invisible Time Axis and grid lines */}
-              {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
-                  <React.Fragment key={`${startTime}-overlay-row`}>
-                      <div className="flex h-12 items-center justify-center border-l border-t border-orange-500 px-2 text-center text-xs font-bold text-transparent">
-                          {startTime} - {timeSlots[hourIndex + 1]}
-                      </div>
-                      {days.map((_day) => (
-                          <div key={`${_day}-${startTime}-overlay-cell`} className="h-12 border-l border-t border-orange-500 bg-orange-500/20"></div>
-                      ))}
-                  </React.Fragment>
-              ))}
-              <div className="col-span-6 h-px border-b border-orange-500"></div>
-          </div>
+          {/* Invisible Time Axis and grid cells for alignment */}
+          {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
+              <React.Fragment key={`${startTime}-overlay-row`}>
+                  <div className="flex h-12 items-center justify-center border-l border-t border-orange-500 px-2 text-center text-xs font-bold text-transparent">
+                      {startTime} - {timeSlots[hourIndex + 1]}
+                  </div>
+                  {days.map((_day) => (
+                      <div key={`${_day}-${startTime}-overlay-cell`} className="h-12 border-l border-t border-orange-500 bg-orange-500/20"></div>
+                  ))}
+              </React.Fragment>
+          ))}
+          <div className="col-span-6 h-px border-b border-orange-500"></div>
       </div>
     </div>
   );
