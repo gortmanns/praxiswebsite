@@ -58,7 +58,7 @@ export default function TeamPage() {
               </p>
             </div>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                <div className="max-w-sm mx-auto w-full">
+                <div className="mx-auto w-full max-w-sm">
                     <TeamMemberCard 
                         key={teamMembers[0].name}
                         name={teamMembers[0].name}
@@ -67,7 +67,7 @@ export default function TeamPage() {
                         imageHint={teamMembers[0].imageHint}
                     />
                 </div>
-                <div className="max-w-sm mx-auto w-full">
+                <div className="mx-auto w-full max-w-sm">
                     <TeamMemberCard 
                         key={teamMembers[1].name}
                         name={teamMembers[1].name}
