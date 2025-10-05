@@ -32,6 +32,19 @@ export default function TeamPage() {
             <DoctorCardHerschel />
             <DoctorCardSlezak />
           </div>
+
+          <div className="mx-auto mt-16 max-w-5xl space-y-8">
+            <div>
+              <h3 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">
+                  Praxispersonal
+              </h3>
+              <div className="mt-2 h-1 w-full bg-primary"></div>
+              <p className="mt-4 text-center text-lg text-foreground/80">
+                Die guten Geister, ohne die keine Arztpraxis funktioniert
+              </p>
+            </div>
+          </div>
+
         </div>
       </main>
       <Footer />
