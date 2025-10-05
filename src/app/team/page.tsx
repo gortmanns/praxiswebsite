@@ -51,7 +51,7 @@ export default function TeamPage() {
                 </div>
               </CardContent>
               <div className="absolute inset-0 flex flex-col items-start justify-center overflow-hidden bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <ul className="space-y-1 text-sm">
+                <ul className="space-y-1.5 text-base">
                   <li className="font-bold text-primary">
                     Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
                   </li>
@@ -63,7 +63,7 @@ export default function TeamPage() {
                   </li>
                   <li className="font-bold text-primary">
                     Projektmanagement im Gesundheitswesen in Europa und Australien
-                     <div className="mt-1 pl-4 text-xs text-background/80">
+                     <div className="mt-1 pl-4 text-sm text-background/80">
                         <h5 className="mb-1 font-bold uppercase tracking-wider text-primary">Meilensteine</h5>
                         <ul className="list-disc space-y-0.5 pl-5">
                           <li>Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
@@ -72,9 +72,9 @@ export default function TeamPage() {
                         </ul>
                      </div>
                   </li>
-                  <li className='mt-1 font-bold text-primary'>
+                  <li className='mt-2 font-bold text-primary'>
                     Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz
-                    <ul className="list-disc space-y-0.5 pl-9 mt-1 text-xs text-background/80">
+                    <ul className="list-disc space-y-px pl-9 mt-1 text-sm text-background/80">
                         <li>Universitätsspital Basel (USB)</li>
                         <li>Kantonsspital Baselland (KSBL)</li>
                         <li>Kantonsspital Winterthur (KSW)</li>
@@ -83,8 +83,8 @@ export default function TeamPage() {
                     </ul>
                   </li>
                 </ul>
-                <p className='mt-1 text-xs text-primary font-bold'>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)</p>
-                <p className='text-xs text-primary font-bold'>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
+                <p className='mt-2 text-sm text-primary font-bold'>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)</p>
+                <p className='text-sm text-primary font-bold'>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
               </div>
             </Card>
           </div>
