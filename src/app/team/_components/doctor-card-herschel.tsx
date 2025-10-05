@@ -27,7 +27,7 @@ export const DoctorCardHerschel = () => (
                             <div className="flex h-full flex-col justify-center text-left text-foreground/80">
                                 <p className="text-[2.2cqw] text-primary">Dr. med.</p>
                                 <h4 className="font-headline text-[4.8cqw] font-bold leading-tight text-primary">
-                                P. Herschel
+                                R. Herschel
                                 </h4>
                                 <div className="mt-[1.5cqw] text-[2.2cqw] leading-tight">
                                     <p className="font-bold">Facharzt für Orthopädische Chirurgie und Traumatologie des Bewegungsapparates</p>
