@@ -3,15 +3,15 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 
 export const DoctorCard = () => (
-    <div className="mx-auto max-w-5xl" style={{ containerType: 'inline-size' }}>
+    <div className="mx-auto max-w-5xl debug-outline" style={{ containerType: 'inline-size' }}>
         <div
-            className="group relative w-full"
+            className="group relative w-full debug-outline"
             style={{ aspectRatio: '1000 / 495' }}
         >
-            <Card className="absolute inset-0 overflow-hidden">
-                <CardContent className="h-full p-6 transition-opacity duration-300 group-hover:opacity-10">
-                <div className="grid h-full grid-cols-3 items-center gap-[4.5%]">
-                    <div className="relative col-span-1 h-full w-full">
+            <Card className="absolute inset-0 overflow-hidden debug-outline">
+                <CardContent className="h-full p-6 transition-opacity duration-300 group-hover:opacity-10 debug-outline">
+                <div className="grid h-full grid-cols-3 items-center gap-[4.5%] debug-outline">
+                    <div className="relative col-span-1 h-full w-full debug-outline">
                     <Image
                         src="/images/team/Ortmanns.jpg"
                         alt="Portrait von G. Ortmanns"
@@ -20,8 +20,8 @@ export const DoctorCard = () => (
                         className="object-contain"
                     />
                     </div>
-                    <div className="col-span-2">
-                    <div className="flex h-full flex-col justify-center text-left text-foreground/80">
+                    <div className="col-span-2 debug-outline">
+                    <div className="flex h-full flex-col justify-center text-left text-foreground/80 debug-outline">
                         <p className="text-[2.2cqw] text-primary">Dipl. med.</p>
                         <h4 className="font-headline text-[4.8cqw] font-bold leading-tight text-primary">
                         G. Ortmanns
@@ -43,8 +43,8 @@ export const DoctorCard = () => (
                     </div>
                 </div>
                 </CardContent>
-                <div className="absolute inset-0 flex flex-col items-start justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <ul className="space-y-1.5 text-[clamp(0.8rem,2.4cqw,1.2rem)] leading-tight">
+                <div className="absolute inset-0 flex flex-col items-start justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100 debug-outline">
+                <ul className="space-y-1.5 text-[clamp(0.8rem,2.4cqw,1.2rem)] leading-tight debug-outline">
                     <li className="font-bold text-primary">
                     Medizinstudium in Bonn (Deutschland) und Hobart
                     (Australien)
@@ -60,11 +60,11 @@ export const DoctorCard = () => (
                     <li className="font-bold text-primary">
                     Projektmanagement im Gesundheitswesen in Europa und
                     Australien
-                    <div className="mt-1 pl-4 text-[clamp(0.7rem,2.2cqw,1rem)] leading-snug text-background/80">
+                    <div className="mt-1 pl-4 text-[clamp(0.7rem,2.2cqw,1rem)] leading-snug text-background/80 debug-outline">
                         <h5 className="mb-1 font-bold uppercase tracking-wider text-primary">
                         Meilensteine
                         </h5>
-                        <ul className="list-disc space-y-px pl-5">
+                        <ul className="list-disc space-y-px pl-5 debug-outline">
                         <li>
                             Leiter Klinische Entwicklung und Analytik bei DxCG
                             Gesundheitsanalytik GmbH (Deutschland)
@@ -86,7 +86,7 @@ export const DoctorCard = () => (
                     </li>
                     <li className="mt-2 font-bold text-primary">
                     Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz
-                    <ul className="mt-1 list-disc space-y-px pl-9 text-[clamp(0.7rem,2.2cqw,1rem)] leading-snug text-background/80">
+                    <ul className="mt-1 list-disc space-y-px pl-9 text-[clamp(0.7rem,2.2cqw,1rem)] leading-snug text-background/80 debug-outline">
                         <li>Universitätsspital Basel (USB)</li>
                         <li>Kantonsspital Baselland (KSBL)</li>
                         <li>Kantonsspital Winterthur (KSW)</li>
