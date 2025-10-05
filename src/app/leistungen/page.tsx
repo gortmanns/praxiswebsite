@@ -74,7 +74,7 @@ const leistungen = [
     hint: 'driving test eye chart',
     backsideContent: (
       <>
-        <p>Wir führen Verkehrsmedizinische Untersuchungen der Klasse 1 durch (für Senioren). Dieses ist eine Wahlleistung und nicht über die Krankenversicherung gedeckt.</p>
+        <p>Wir führen Verkehrsmedizinische Untersuchungen der Klasse 1 (für Senioren) durch. Dieses ist eine Wahlleistung und nicht über die Krankenversicherung gedeckt.</p>
       </>
     ),
   },
