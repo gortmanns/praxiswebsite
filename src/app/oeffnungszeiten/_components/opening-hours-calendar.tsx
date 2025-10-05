@@ -51,14 +51,6 @@ const Cell = ({ type, dayIndex, hourIndex }: { type: string; dayIndex: number; h
 
 
 export function OpeningHoursCalendar() {
-  const grid: string[][] = Array(5).fill(0).map(() => Array(10).fill('empty'));
-
-  for (let day = 0; day < 5; day++) {
-    for (let hour = 0; hour < 10; hour++) {
-      grid[day][hour] = schedule[day][hour];
-    }
-  }
-
   return (
     <div className="relative grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-secondary">
       {/* Header Row */}
@@ -83,7 +75,7 @@ export function OpeningHoursCalendar() {
           </div>
           {days.map((_day, dayIndex) => (
             <div key={`${_day}-${startTime}`} className="h-12 border-l border-t border-border/20">
-               <Cell type={grid[dayIndex][hourIndex]} dayIndex={dayIndex} hourIndex={hourIndex} />
+               <Cell type={schedule[dayIndex][hourIndex]} dayIndex={dayIndex} hourIndex={hourIndex} />
             </div>
           ))}
         </React.Fragment>
