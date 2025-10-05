@@ -50,7 +50,7 @@ export default function TeamPage() {
                   </div>
                 </div>
               </CardContent>
-              <div className="absolute inset-0 flex flex-col items-start justify-center bg-primary/90 p-6 text-left text-primary-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <div className="absolute inset-0 flex flex-col items-start justify-start bg-primary/90 p-6 text-left text-primary-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 <ul className="space-y-2 text-sm">
                   <li className="font-bold">
                     Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
@@ -83,8 +83,8 @@ export default function TeamPage() {
                     </ul>
                   </li>
                 </ul>
-                 <p className='mt-4 text-sm'><span className="font-bold">Wissenschaftlicher Mitarbeiter:</span> Pneumologie (Universität Zürich / USZ)</p>
-                 <p className='text-sm'><span className="font-bold">Lehrbeauftragter für Hausarztmedizin</span> (Institut für Hausarztmedizin der Universität Bern)</p>
+                 <p className='mt-4 text-sm font-bold'>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)</p>
+                 <p className='text-sm font-bold'>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
               </div>
             </Card>
           </div>
