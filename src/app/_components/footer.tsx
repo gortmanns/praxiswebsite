@@ -45,7 +45,7 @@ export function Footer() {
   return (
     <footer className="bg-accent text-background/80 debug-outline">
       <div className="mx-auto w-full px-4 py-12 sm:px-6 lg:px-8 debug-outline">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4 debug-outline">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3 debug-outline">
           {/* Col 1: Medikamentenbestellung & Rechtliches */}
           <div className="space-y-8 debug-outline">
             <div className="space-y-4 debug-outline">
@@ -85,57 +85,57 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Col 2: Anschrift */}
-          <div className="space-y-4 debug-outline">
-            <h3 className="text-lg font-bold uppercase text-primary">Anschrift</h3>
-            <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 text-sm transition-colors hover:text-background debug-outline">
-                <MapPinIcon className="mt-1 h-[21px] w-[21px] flex-shrink-0" />
-                <div className="flex flex-col">
-                    <span>PRAXISZENTRUM IM RING</span>
-                    <span>Kappelenring 6</span>
-                    <span>3032 Hinterkappelen</span>
-                </div>
-            </a>
-          </div>
-
-          {/* Col 3: Kontakt */}
-          <div className="space-y-4 debug-outline">
-            <h3 className="text-lg font-bold uppercase text-primary">Kontakt</h3>
-            <div className="space-y-2 text-sm debug-outline">
-                <a
-                  href="tel:0313162600"
-                  className="flex items-center gap-3 transition-colors hover:text-background debug-outline"
-                >
-                    <PhoneIcon className="h-[21px] w-[21px] flex-shrink-0" />
-                    <span>031 316 26 00</span>
-                </a>
-                <p className="flex items-center gap-3 debug-outline">
-                    <PrinterIcon className="h-[21px] w-[21px] flex-shrink-0" />
-                    <span>031 589 68 60</span>
-                </p>
-                <ObfuscatedLink
-                  user="empfang"
-                  domain="praxiszentrum-im-ring.ch"
-                  className="flex items-center gap-3 transition-colors hover:text-background debug-outline"
-                >
-                  <MailIcon className="h-[21px] w-[21px] flex-shrink-0" />
-                  <span className="break-all">empfang@praxiszentrum-im-ring.ch</span>
-                </ObfuscatedLink>
-                <div className="flex flex-col items-start gap-2 pt-2 debug-outline">
-                    <p className="text-base font-medium text-background/80">Sichere HIN-Email</p>
-                    <ObfuscatedLink
-                      user="praxiszentrum-im-ring"
-                      domain="hin.ch"
-                      className="flex items-center gap-3 transition-colors hover:text-background debug-outline"
-                    >
-                      <HinMailIcon className="h-[21px] w-[21px] text-primary flex-shrink-0"/>
-                      <span className="break-all">praxiszentrum-im-ring@hin.ch</span>
-                    </ObfuscatedLink>
-                </div>
+          {/* Col 2: Anschrift & Kontakt */}
+          <div className="space-y-8 debug-outline">
+            <div className="space-y-4 debug-outline">
+              <h3 className="text-lg font-bold uppercase text-primary">Anschrift</h3>
+              <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 text-sm transition-colors hover:text-background debug-outline">
+                  <MapPinIcon className="mt-1 h-[21px] w-[21px] flex-shrink-0" />
+                  <div className="flex flex-col">
+                      <span>PRAXISZENTRUM IM RING</span>
+                      <span>Kappelenring 6</span>
+                      <span>3032 Hinterkappelen</span>
+                  </div>
+              </a>
+            </div>
+            <div className="space-y-4 debug-outline">
+              <h3 className="text-lg font-bold uppercase text-primary">Kontakt</h3>
+              <div className="space-y-2 text-sm debug-outline">
+                  <a
+                    href="tel:0313162600"
+                    className="flex items-center gap-3 transition-colors hover:text-background debug-outline"
+                  >
+                      <PhoneIcon className="h-[21px] w-[21px] flex-shrink-0" />
+                      <span>031 316 26 00</span>
+                  </a>
+                  <p className="flex items-center gap-3 debug-outline">
+                      <PrinterIcon className="h-[21px] w-[21px] flex-shrink-0" />
+                      <span>031 589 68 60</span>
+                  </p>
+                  <ObfuscatedLink
+                    user="empfang"
+                    domain="praxiszentrum-im-ring.ch"
+                    className="flex items-center gap-3 transition-colors hover:text-background debug-outline"
+                  >
+                    <MailIcon className="h-[21px] w-[21px] flex-shrink-0" />
+                    <span className="break-all">empfang@praxiszentrum-im-ring.ch</span>
+                  </ObfuscatedLink>
+                  <div className="flex flex-col items-start gap-2 pt-2 debug-outline">
+                      <p className="text-base font-medium text-background/80">Sichere HIN-Email</p>
+                      <ObfuscatedLink
+                        user="praxiszentrum-im-ring"
+                        domain="hin.ch"
+                        className="flex items-center gap-3 transition-colors hover:text-background debug-outline"
+                      >
+                        <HinMailIcon className="h-[21px] w-[21px] text-primary flex-shrink-0"/>
+                        <span className="break-all">praxiszentrum-im-ring@hin.ch</span>
+                      </ObfuscatedLink>
+                  </div>
+              </div>
             </div>
           </div>
           
-          {/* Col 4: Qualitätslabel */}
+          {/* Col 3: Qualitätslabel */}
           <div className="space-y-4 debug-outline">
             <h3 className="text-lg font-bold uppercase text-primary">Qualitätslabel</h3>
             <div className="w-full debug-outline">
