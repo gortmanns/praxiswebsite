@@ -65,7 +65,7 @@ export function OpeningHoursCalendar() {
         </div>
         
         {/* Mittagspause Block */}
-        <div className="col-start-1 col-end-6 row-start-5 row-end-7 flex items-center justify-center p-2 border-b border-l border-border bg-secondary/80">
+        <div className="col-start-1 col-end-6 row-start-5 row-end-7 flex items-center justify-center p-2 border-b border-l border-border bg-secondary">
              <span className="text-base font-semibold text-secondary-foreground">Mittagspause</span>
         </div>
 
