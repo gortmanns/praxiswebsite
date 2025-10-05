@@ -45,27 +45,10 @@ export const DoctorCardRosenov = () => (
                         </div>
                     </div>
                 </CardContent>
-                {/*<div className="absolute inset-0 flex flex-col items-start justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <ul className="space-y-1.5 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
-                        <li className="font-bold text-primary mt-6 mb-4">KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT VOR ORT IM PRAXISZENTRUM IM RING ERFOLGEN</li>
-                        <li className="font-bold text-primary mt-6 mb-4">GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT</li>
-                        <li className="mt-6 mb-4">Die Vorbesprechung und Planung des Eingriffs erfolgen im PRAXISZENTRUM IM RING.</li>
-                        <li className="mb-4">Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten.</li>
-                        <li className="mb-4">
-                            Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt.
-                            <ul className="list-disc space-y-px pl-9 pt-1 text-[clamp(0.7rem,2.3cqw,1rem)] font-normal text-background/80">
-                                <li>Hirslanden</li>
-                                <li>Lindehof-Spital</li>
-                                <li>Siloah-Spital</li>
-                            </ul>
-                        </li>
-                        <li className="mt-6 mb-4">Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder vor Ort im PRAXISZENTRUM IM RING statt.</li>
-                    </ul>
-                </div>*/}
                 <div className="absolute inset-0 flex flex-col items-start justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <ul className="space-y-1.5 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
-                        <li className="font-bold text-primary mt-6 mb-4">UNTERSUCHUNGEN DER VENEN UND ARTERIEN UND LYMPHGEFÄSSE</li>
-                        <li className="font-bold text-primary mt-2 mb-4">ABKLÄRUNG VON EREKTIONSSTÖRUNGEN</li>
+                        <li className="font-bold text-primary mb-4">UNTERSUCHUNGEN DER VENEN UND ARTERIEN UND LYMPHGEFÄSSE</li>
+                        <li className="font-bold text-primary mb-4">ABKLÄRUNG VON EREKTIONSSTÖRUNGEN</li>
                         <li className="mb-4">Viele Untersuchungen und Abklärungen können direkt hier im PRAXISZENTRUM IM RING durchgeführt werden.</li>
                         <li className="mb-4">Sind zusätzliche Spezialuntersuchungen oder weiterführende Eingriffe nötig, die mit den Geräten im Praxiszentrum nicht durchführbar sind, wird ein Folgetermin in den Räumlichkeiten der VASC ALLIANCE am Beau-site Spital in Bern vereinbart.</li>
                     </ul>
