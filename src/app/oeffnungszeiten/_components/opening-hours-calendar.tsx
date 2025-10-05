@@ -98,8 +98,8 @@ export function OpeningHoursCalendar() {
             <div
                 className="flex items-center justify-center pointer-events-auto"
                 style={{ 
-                    gridColumn: '2 / span 5', 
-                    gridRow: '2 / span 4',
+                    gridColumn: '2 / 7', 
+                    gridRow: '2 / 6',
                 }}
             >
                 <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
@@ -109,8 +109,8 @@ export function OpeningHoursCalendar() {
             <div
                 className="flex items-center justify-center pointer-events-auto"
                 style={{ 
-                    gridColumn: '2 / span 2',
-                    gridRow: '8 / span 4',
+                    gridColumn: '2 / 4',
+                    gridRow: '8 / 12',
                 }}
             >
                 <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
@@ -119,8 +119,8 @@ export function OpeningHoursCalendar() {
              <div
                 className="flex items-center justify-center pointer-events-auto"
                 style={{ 
-                    gridColumn: '5 / span 1',
-                    gridRow: '8 / span 4',
+                    gridColumn: '5 / 6',
+                    gridRow: '8 / 12',
                 }}
             >
                 <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
@@ -129,8 +129,8 @@ export function OpeningHoursCalendar() {
              <div
                 className="flex items-center justify-center pointer-events-auto"
                 style={{ 
-                    gridColumn: '6 / span 1',
-                    gridRow: '7 / span 4',
+                    gridColumn: '6 / 7',
+                    gridRow: '7 / 11',
                 }}
             >
                 <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
