@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import { Montserrat, Open_Sans } from 'next/font/google';
+import { Montserrat, Open_Sans, Roboto_Mono } from 'next/font/google';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -13,6 +13,12 @@ const montserrat = Montserrat({
 const openSans = Open_Sans({
   subsets: ['latin'],
   variable: '--font-body',
+  weight: ['400', '700'],
+});
+
+const robotoMono = Roboto_Mono({
+  subsets: ['latin'],
+  variable: '--font-code',
   weight: ['400', '700'],
 });
 
@@ -29,7 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de">
-      <body className={cn('font-body antialiased', montserrat.variable, openSans.variable)}>
+      <body className={cn('font-body antialiased', montserrat.variable, openSans.variable, robotoMono.variable)}>
         {children}
         <Toaster />
       </body>
