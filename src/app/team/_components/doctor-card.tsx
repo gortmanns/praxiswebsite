@@ -19,7 +19,7 @@ export const DoctorCard = () => (
                                 alt="Portrait von G. Ortmanns"
                                 data-ai-hint="doctor portrait"
                                 fill
-                                className="object-contain"
+                                className="object-cover"
                             />
                         </div>
                         <div className="col-span-2 debug-outline">
