@@ -27,7 +27,7 @@ export default function TeamPage() {
                   data-ai-hint="doctor portrait"
                   width={400}
                   height={400}
-                  className="aspect-square rounded-lg object-cover shadow-lg"
+                  className="rounded-lg object-contain shadow-lg"
                 />
               </div>
               <div className="text-left text-foreground/80 md:col-span-2">
