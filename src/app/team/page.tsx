@@ -51,27 +51,39 @@ export default function TeamPage() {
                 </div>
               </CardContent>
               <div className="absolute inset-0 flex flex-col items-start justify-center bg-primary/90 p-6 text-left text-xs text-primary-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <ul className="list-disc space-y-2 pl-4">
-                  <li>MEDIZINSTUDIUM IN BONN UND HOBART (AUSTRALIEN)</li>
-                  <li>MASTERSTUDIUM PUBLIC HEALTH UND HEALTH MANAGEMENT IN SYDNEY (AUSTRALIEN)</li>
-                  <li>UNTERNEHMENSBERATUNG MIT SPEZIALISIERUNG AUF DEN GESUNDHEITSSEKTOR</li>
-                  <li>PROJEKTMANAGEMENT IM GESUNDHEITSWESEN IN EUROPA UND AUSTRALIEN</li>
+                <ul className="space-y-2">
+                  <li>
+                    <span className="font-bold uppercase">MEDIZINSTUDIUM</span> IN BONN UND HOBART (AUSTRALIEN)
+                  </li>
+                  <li>
+                    <span className="font-bold uppercase">MASTERSTUDIUM</span> PUBLIC HEALTH UND HEALTH MANAGEMENT IN SYDNEY (AUSTRALIEN)
+                  </li>
+                  <li>
+                    <span className="font-bold uppercase">UNTERNEHMENSBERATUNG</span> MIT SPEZIALISIERUNG AUF DEN GESUNDHEITSSEKTOR
+                  </li>
+                  <li>
+                     <span className="font-bold uppercase">PROJEKTMANAGEMENT</span> IM GESUNDHEITSWESEN IN EUROPA UND AUSTRALIEN
+                     <div className="mt-2 pl-4">
+                        <h5 className="font-bold uppercase">Meilensteine:</h5>
+                        <ul className="list-disc space-y-1 pl-4">
+                          <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
+                          <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
+                          <li>Direktor der Memory-Strategie (elektronisches Medikamenten-management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
+                        </ul>
+                     </div>
+                  </li>
+                  <li className='mt-2'>
+                    <span className="font-bold uppercase">Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz:</span>
+                    <ul className="list-disc space-y-1 pl-8 mt-1">
+                        <li>Universitätsspital Basel (USB)</li>
+                        <li>Kantonsspital Baselland (KSBL)</li>
+                        <li>Kantonsspital Winterthur (KSW)</li>
+                        <li>Kantonsspital Wil (SRFT)</li>
+                        <li>Hausarztpraxis in Winterthur</li>
+                    </ul>
+                  </li>
                 </ul>
-                <h5 className="mt-4 mb-2 font-bold uppercase">Meilensteine:</h5>
-                <ul className="list-disc space-y-1 pl-4">
-                  <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
-                  <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
-                  <li>Direktor der Memory-Strategie (elektronisches Medikamenten-management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
-                </ul>
-                <h5 className="mt-4 mb-2 font-bold uppercase">Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz:</h5>
-                <ul className="list-disc space-y-1 pl-4">
-                    <li>Universitätsspital Basel (USB)</li>
-                    <li>Kantonsspital Baselland (KSBL)</li>
-                    <li>Kantonsspital Winterthur (KSW)</li>
-                    <li>Kantonsspital Wil (SRFT)</li>
-                    <li>Hausarztpraxis in Winterthur</li>
-                </ul>
-                 <p className='mt-4 mb-2 text-xs'><span className="font-bold uppercase">Wissensch. Mitarbeiter:</span> Pneumologie (Universität Zürich / USZ)</p>
+                 <p className='mt-4 text-xs'><span className="font-bold uppercase">Wissensch. Mitarbeiter:</span> Pneumologie (Universität Zürich / USZ)</p>
                  <p className='text-xs'><span className="font-bold uppercase">Lehrbeauftragter:</span> Hausarztmedizin (Universität Bern)</p>
               </div>
             </Card>
