@@ -48,62 +48,6 @@ const otherTeamMembers = [
         </>
       ),
     },
-    {
-      name: 'S. Blaser',
-      role: 'Medizinische Praxisassistentin',
-      imageUrl: '/images/team/Blaser.jpg',
-      imageHint: 'woman portrait',
-      backsideContent: (
-        <>
-          <p>
-          Nach meiner Ausbildung zur MPA und einigen Jahren Berufserfahrung freue ich mich, nun zum Team des Praxiszentrums im Ring zu gehören.
-          </p>
-        </>
-      ),
-    },
-    {
-      name: 'N. Memeti',
-      role: 'Medizinische Praxisassistentin in Ausbildung',
-      imageUrl: '/images/team/Memeti.jpg',
-      imageHint: 'woman portrait',
-      backsideContent: (
-        <>
-          <p>
-          Seit August 2022 mache ich die Lehre zur medizinischen Praxisassistentin (MPA) und freue mich sehr, meine Ausbildung hier im Praxiszentrum im Ring absolvieren zu dürfen.
-          </p>
-        </>
-      ),
-    },
-    {
-      name: 'N. Santos',
-      role: 'Medizinische Praxisassistentin in Ausbildung',
-      imageUrl: '/images/team/Santos.jpg',
-      imageHint: 'woman portrait',
-      backsideContent: (
-        <>
-          <p>
-          Ich habe meine Ausbildung zur MPA im August 2023 begonnen und freue ich mich sehr, ein Teil dieses Teams zu sein.
-          </p>
-        </>
-      ),
-    },
-    {
-      name: 'G. Öztürk',
-      role: 'Praxishilfe',
-      imageUrl: '/images/team/Ozturk.jpg',
-      imageHint: 'man portrait',
-      backsideContent: (
-        <>
-          <p>
-          Eigentlich bin ich Arzt und stamme aus der Türkei, aber noch läuft das Anerkennungsverfahren für die Qualifikation als Hausarzt hier in der Schweiz.
-          </p>
-          <br />
-          <p>
-          Daher aktuell “nur” als Praxishilfe tätig, jedoch hoffentlich bald als weiterer Hausarzt hier im Praxiszentrum.
-          </p>
-        </>
-      ),
-    }
 ];
 
 export default function TeamPage() {
