@@ -34,7 +34,16 @@ export const DoctorCard = ({ doctor }: { doctor: Doctor }) => (
                                         <p key={index} className={index === 0 ? 'font-bold' : ''}>{spec}</p>
                                     ))}
                                 </div>
-                                {doctor.position && (
+                                {doctor.name === 'P. Schemmer' ? (
+                                    <div className="relative mt-[2.5cqw] h-[10cqw] w-[30cqw]">
+                                        <Image
+                                            src="/images/schemmer-worni-logo.png"
+                                            alt="Schemmer & Worni Logo"
+                                            fill
+                                            className="object-contain"
+                                        />
+                                    </div>
+                                ) : doctor.position && (
                                     <p className="mt-[2.5cqw] text-[1.6cqw] italic">
                                         {doctor.position.split('\n').map((line, index) => (
                                             <span key={index} className="whitespace-nowrap">
@@ -50,12 +59,12 @@ export const DoctorCard = ({ doctor }: { doctor: Doctor }) => (
                 <div className="absolute inset-0 flex flex-col items-start justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <ul className="list-disc space-y-1.5 pl-5 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
                         {doctor.cv.map((item, index) => {
-                            if (item.isParagraph) {
+                             if (item.isParagraph) {
                                 return (
                                     <li key={index} className="font-medium text-background">
                                         <span>{item.point}</span>
                                         {item.subPoints && (
-                                            <ul className="list-disc space-y-px pl-9 pt-1 text-[clamp(0.7rem,2.3cqw,1rem)] font-normal text-background/80">
+                                            <ul className="list-[circle] space-y-px pl-9 pt-1 text-[clamp(0.7rem,2.3cqw,1rem)] font-normal text-background/80">
                                                 {item.subPoints.map((sub, subIndex) => (
                                                     <li key={subIndex}>{sub}</li>
                                                 ))}

@@ -69,7 +69,6 @@ export const doctors: Doctor[] = [
     specialties: [
         'Facharzt für Allgemein- und Viszeralchirurgie',
     ],
-    position: 'Schemmer • Worni\nKlinik für Allgemein- und Viszeralchirurgie',
     imageUrl: '/images/team/Prof.Schemmer.jpg',
     cv: [
       {
