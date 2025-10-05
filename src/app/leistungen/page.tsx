@@ -73,7 +73,7 @@ const leistungen = [
   {
     name: 'TWINT',
     subtitle: 'Mit dem Handy bezahlen',
-    image: '/images/leistungen/TWINT.png',
+    image: '/images/leistungen/twint_logo.png',
     hint: 'twint logo',
     backsideContent: <></>,
   },
@@ -83,7 +83,7 @@ const leistungen = [
     hint: 'driving test eye chart',
     backsideContent: (
       <>
-        <p>Wir führen Verkehrsmedizinische Untersuchungen der Klasse 1 durch (für Senioren). Dieses ist eine Wahlleistung und nicht über die Krankenversicherung gedeckt.</p>
+        <p>Wir führen Verkehrsmedizinische Untersuchungen der Stufe 1 durch (für Senioren). Dieses ist eine Wahlleistung und nicht über die Krankenversicherung gedeckt.</p>
       </>
     ),
   },
