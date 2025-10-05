@@ -84,13 +84,15 @@ export function OpeningHoursCalendar() {
         {/* Bottom border for the last row */}
         <div className="col-span-6 h-px border-b border-border"></div>
         
-        {/* Sprechstunde Text Overlay */}
         <div className="pointer-events-none absolute inset-0 grid grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(10,minmax(0,1fr))]">
           <div className="col-start-2 col-end-7 row-start-2 row-end-6 flex items-center justify-center">
-              <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
+            <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
           </div>
-          <div className="col-start-2 col-end-7 row-start-8 row-end-12 flex items-center justify-center">
-              <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
+          <div className="col-start-2 col-end-5 row-start-8 row-end-12 flex items-center justify-center">
+            <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
+          </div>
+           <div className="col-start-5 col-end-7 row-start-8 row-end-10 flex items-center justify-center">
+            <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
           </div>
         </div>
       </div>
@@ -118,15 +120,15 @@ export function OpeningHoursCalendar() {
               <div className="col-span-6 h-px border-b border-orange-500"></div>
 
               {/* === ORANGE BLOCKS START === */}
-              {/* Block 1: Mo 8-9 to Fr 11-12 */}
+              {/* 1. Mo 8-9 to Fr 11-12 */}
               <div className="col-start-2 col-end-7 row-start-2 row-end-6 bg-orange-500/20"></div>
-              {/* Block 2: Mo 12-13 to Fr 13-14 */}
+              {/* 2. Mo 12-13 to Fr 13-14 */}
               <div className="col-start-2 col-end-7 row-start-6 row-end-8 bg-orange-500/20"></div>
-              {/* Block 3: Mo 13-14 to Di 17-18 */}
+              {/* 3. Mo 13-14 to Di 17-18 */}
               <div className="col-start-2 col-end-4 row-start-8 row-end-12 bg-orange-500/20"></div>
-              {/* Block 4: Mi 14-18 */}
+              {/* 4. Mi 14-18 */}
               <div className="col-start-4 col-end-5 row-start-8 row-end-12 bg-orange-500/20"></div>
-              {/* Block 5: Do-Fr 15-16 */}
+              {/* 5. Do-Fr 15-16 */}
               <div className="col-start-5 col-end-7 row-start-9 row-end-10 bg-orange-500/20"></div>
               {/* === ORANGE BLOCKS END === */}
           </div>
