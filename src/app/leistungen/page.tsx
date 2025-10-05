@@ -11,6 +11,7 @@ const leistungen = [
     hint: 'audiometry test',
     backsideContent: (
       <>
+        <p>Durch die orientierende Audiometrie (Test des Hörvermögens) können wir eine Hörminderung unkompliziert erkennen und Sie wenn nötig in die Behandlung eines Spezialisten (Facharzt für HNO) überweisen.</p>
       </>
     ),
   },
@@ -21,6 +22,7 @@ const leistungen = [
     hint: 'ecg machine',
     backsideContent: (
       <>
+        <p>Mit dem modernen, digitalen 12-Kanal-EKG können wir die elektrischen Signale Ihres Herzens analysieren und mögliche Probleme wie Vorhofflimmern und Rhythmusstörungen frühzeitig erkennen.</p>
       </>
     ),
   },
@@ -31,6 +33,11 @@ const leistungen = [
     hint: 'lab technician microscope',
     backsideContent: (
       <>
+        <p>In unserem modernen Praxislabor können wir viele Analysen noch während der Sprechstunde durchführen und so eine Behandlung ohne Verzögerung sicherstellen.</p>
+        <br />
+        <p>Für Analysen die wir nicht vor Ort durchführen können arbeiten wir mit MCL, einem der grössten Labordienstleister der Schweiz, zusammen.</p>
+        <br />
+        <p>Auf Wunsch führen wir auch Laboranalysen durch, die nicht durch die Grundversicherung abgedeckt sind (z. B. Bestimmungen von Vitaminspiegeln oder Durchführung von Covid-Tests).</p>
       </>
     ),
   },
@@ -41,6 +48,7 @@ const leistungen = [
     hint: 'pharmacy shelf medication',
     backsideContent: (
       <>
+        <p>Als selbstdispensierende Praxis übernehmen wir Ihre Versorgung mit den benötigten Medikamenten aus unserer gut sortierten Praxisapotheke. Die Lagerung und Abgabe der Medikamente erfolgt selbstverständlich entsprechend den gesetzlichen Vorschriften.</p>
       </>
     ),
   },
@@ -51,6 +59,7 @@ const leistungen = [
     hint: 'x-ray scan',
     backsideContent: (
       <>
+        <p>Durch unser volldigitales Röntgengerät können wir schnell und unkompliziert Knochenbrüche, Lungenentzündungen und andere Probleme feststellen und dann die notwendige Behandlung ohne Zeitverzögerung einleiten.</p>
       </>
     ),
   },
@@ -61,6 +70,7 @@ const leistungen = [
     hint: 'spirometry test',
     backsideContent: (
       <>
+        <p>Durch die Untersuchung der Lungenfunktion (Spirometrie) kann der Verdacht auf eine Lungenerkrankung wie Asthma oder COPD frühzeitig gestellt und eine angemessene Behandlung eingeleitet werden.</p>
       </>
     ),
   },
@@ -71,6 +81,7 @@ const leistungen = [
     hint: 'driving test eye chart',
     backsideContent: (
       <>
+        <p>Wir führen Verkehrsmedizinische Untersuchungen der Klasse 1 durch (für Senioren). Dieses ist eine Wahlleistung und nicht über die Krankenversicherung gedeckt.</p>
       </>
     ),
   },
@@ -81,6 +92,9 @@ const leistungen = [
     hint: 'wound dressing',
     backsideContent: (
       <>
+        <p>Die Versorgung kleiner Wunden und die Durchführung kleiner Eingriffe (z. B. Entfernung von Hautveränderungen) können wir direkt in der normalen Sprechstunde durchführen.</p>
+        <br/>
+        <p>Für grössere Eingriffe steht mit Prof. Dr. med. Dr. h. c. Schemmer ein Spezialist zur Verfügung, der mehrmals pro Monat eine Sprechstunde im Praxiszentrum anbietet.</p>
       </>
     ),
   },
