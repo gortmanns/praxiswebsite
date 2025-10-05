@@ -13,27 +13,32 @@ const days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
 const schedule = [
     // Mo
     { day: 0, start: '08:30', end: '12:00', type: 'bedient' },
-    { day: 0, start: '12:00', end: '13:30', type: 'unbedient' },
-    { day: 0, start: '13:30', end: '17:00', type: 'bedient' },
-    { day: 0, start: '17:00', end: '18:00', type: 'unbedient' },
+    { day: 0, start: '12:00', end: '14:00', type: 'unbedient' },
+    { day: 0, start: '14:00', end: '17:00', type: 'bedient' },
+    { day: 0, start: '17:00', end: '17:30', type: 'bedient' },
+    { day: 0, start: '17:30', end: '18:00', type: 'unbedient' },
     // Di
     { day: 1, start: '08:30', end: '12:00', type: 'bedient' },
-    { day: 1, start: '12:00', end: '13:30', type: 'unbedient' },
-    { day: 1, start: '13:30', end: '17:00', type: 'bedient' },
-    { day: 1, start: '17:00', end: '18:00', type: 'unbedient' },
+    { day: 1, start: '12:00', end: '14:00', type: 'unbedient' },
+    { day: 1, start: '14:00', end: '17:00', type: 'bedient' },
+    { day: 1, start: '17:00', end: '17:30', type: 'bedient' },
+    { day: 1, start: '17:30', end: '18:00', type: 'unbedient' },
     // Mi
     { day: 2, start: '08:30', end: '12:00', type: 'bedient' },
     { day: 2, start: '12:00', end: '18:00', type: 'unbedient' },
     // Do
     { day: 3, start: '08:30', end: '12:00', type: 'bedient' },
-    { day: 3, start: '12:00', end: '13:30', type: 'unbedient' },
-    { day: 3, start: '13:30', end: '17:00', type: 'bedient' },
-    { day: 3, start: '17:00', end: '18:00', type: 'unbedient' },
+    { day: 3, start: '12:00', end: '14:00', type: 'unbedient' },
+    { day: 3, start: '14:00', end: '17:00', type: 'bedient' },
+    { day: 3, start: '17:00', end: '17:30', type: 'bedient' },
+    { day: 3, start: '17:30', end: '18:00', type: 'unbedient' },
     // Fr
     { day: 4, start: '08:30', end: '12:00', type: 'bedient' },
-    { day: 4, start: '12:00', end: '13:30', type: 'unbedient' },
+    { day: 4, start: '12:00', end: '13:00', type: 'unbedient' },
+    { day: 4, start: '13:00', end: '13:30', type: 'bedient' },
     { day: 4, start: '13:30', end: '16:00', type: 'bedient' },
-    { day: 4, start: '16:00', end: '18:00', type: 'unbedient' },
+    { day: 4, start: '16:00', end: '16:30', type: 'bedient' },
+    { day: 4, start: '16:30', end: '18:00', type: 'unbedient' },
 ];
 
 const Cell = ({ type }: { type: string }) => {
