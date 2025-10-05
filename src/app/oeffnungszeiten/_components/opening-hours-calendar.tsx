@@ -85,13 +85,17 @@ export function OpeningHoursCalendar() {
         <div className="col-span-6 h-px border-b border-border"></div>
         
         <div className="pointer-events-none absolute inset-0 grid grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(10,minmax(0,1fr))]">
-          <div className="col-start-2 col-end-7 row-start-2 row-end-6 flex items-center justify-center">
+          <div className="col-start-1 col-end-1 row-start-1 row-end-1"></div>
+          <div className="col-start-2 col-end-6 row-start-1 row-end-5 flex items-center justify-center">
             <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
           </div>
-          <div className="col-start-2 col-end-5 row-start-8 row-end-12 flex items-center justify-center">
+          <div className="col-start-2 col-end-3 row-start-7 row-end-11 flex items-center justify-center">
             <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
           </div>
-           <div className="col-start-5 col-end-7 row-start-8 row-end-10 flex items-center justify-center">
+          <div className="col-start-3 col-end-5 row-start-7 row-end-11 flex items-center justify-center">
+            <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
+          </div>
+          <div className="col-start-5 col-end-6 row-start-6 row-end-10 flex items-center justify-center">
             <span className="text-center font-semibold text-2xl text-foreground">Sprechstunde</span>
           </div>
         </div>
