@@ -45,6 +45,66 @@ export default function DatenschutzerklaerungPage() {
                 </Card>
                 <Card>
                     <CardHeader>
+                        <CardTitle className="font-headline text-2xl font-bold text-primary">Rechte der betroffenen Person</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6 text-base text-foreground/80">
+                        <div>
+                            <h3 className="font-bold">Recht auf Bestätigung</h3>
+                            <p>Jede betroffene Person hat das Recht, vom Betreiber der Website eine Bestätigung darüber zu verlangen, ob sie betreffende personenbezogene Daten verarbeitet werden. Wenn Sie dieses Bestätigungsrecht ausüben möchten, können Sie sich jederzeit an den Datenschutzbeauftragten wenden.</p>
+                        </div>
+                        <div>
+                            <h3 className="font-bold">Auskunftsrecht</h3>
+                            <p>Jede von der Verarbeitung personenbezogener Daten betroffene Person hat das Recht, vom Betreiber dieser Website jederzeit unentgeltlich Auskunft über die zu ihrer Person gespeicherten Daten und eine Kopie dieser Auskunft zu erhalten. Darüber hinaus kann ggf. Auskunft über Folgendes erteilt werden: Zwecke der Verarbeitung, Kategorien der verarbeiteten personenbezogenen Daten, Empfänger, an die die personenbezogenen Daten weitergegeben wurden oder werden, wenn möglich, die geplante Dauer der Speicherung der personenbezogenen Daten oder, falls dies nicht möglich ist, die Kriterien für die Festlegung dieser Dauer, das Bestehen eines Rechts auf Berichtigung oder Löschung der sie betreffenden personenbezogenen Daten oder auf Einschränkung der Verarbeitung durch den für die Verarbeitung Verantwortlichen oder ein Recht auf Widerspruch gegen eine solche Verarbeitung, das Bestehen eines Beschwerderechts bei einer Aufsichtsbehörde, wenn die personenbezogenen Daten nicht bei der betroffenen Person erhoben werden: Alle verfügbaren Informationen über die Herkunft der Daten.</p>
+                            <p className="mt-2">Außerdem hat die betroffene Person das Recht, darüber informiert zu werden, ob personenbezogene Daten in ein Drittland oder an eine internationale Organisation übermittelt worden sind. Ist dies der Fall, so hat die betroffene Person außerdem das Recht, Auskunft über die geeigneten Garantien im Zusammenhang mit der Übermittlung zu erhalten.</p>
+                            <p className="mt-2">Wenn Sie von diesem Auskunftsrecht Gebrauch machen möchten, können Sie sich jederzeit an unseren Datenschutzbeauftragten wenden.</p>
+                        </div>
+                        <div>
+                            <h3 className="font-bold">Recht auf Berichtigung</h3>
+                            <p>Jede von der Verarbeitung personenbezogener Daten betroffene Person hat das Recht, die unverzügliche Berichtigung sie betreffender unrichtiger personenbezogener Daten zu verlangen. Darüber hinaus hat die betroffene Person das Recht, unter Berücksichtigung der Zwecke der Verarbeitung, die Vervollständigung unvollständiger personenbezogener Daten – auch mittels einer ergänzenden Erklärung – zu verlangen.</p>
+                            <p className="mt-2">Wenn Sie dieses Recht auf Berichtigung ausüben möchten, können Sie sich jederzeit an unseren Datenschutzbeauftragten wenden.</p>
+                        </div>
+                        <div>
+                            <h3 className="font-bold">Recht auf Löschung</h3>
+                            <p>Jede von der Verarbeitung personenbezogener Daten betroffene Person hat das Recht, von dem für die Verarbeitung Verantwortlichen dieser Website die unverzügliche Löschung der sie betreffenden personenbezogenen Daten zu verlangen, sofern einer der folgenden Gründe zutrifft und die Verarbeitung nicht mehr erforderlich ist:</p>
+                            <ul className="list-disc pl-6 mt-2 space-y-2">
+                                <li>Die personenbezogenen Daten wurden für Zwecke erhoben oder auf sonstige Weise verarbeitet, für die sie nicht mehr erforderlich sind.</li>
+                                <li>Die betroffene Person widerruft die Einwilligung, auf der die Verarbeitung beruhte, und es gibt keine andere Rechtsgrundlage für die Verarbeitung</li>
+                                <li>Die betroffene Person legt aus Gründen, die sich aus ihrer besonderen Situation ergeben, Widerspruch gegen die Verarbeitung ein, und es liegen keine vorrangigen berechtigten Gründe für die Verarbeitung vor, oder die betroffene Person legt im Falle von Direktwerbung und damit verbundenem Profiling Widerspruch gegen die Verarbeitung ein</li>
+                                <li>Die personenbezogenen Daten wurden unrechtmäßig verarbeitet</li>
+                                <li>Die Löschung der personenbezogenen Daten ist zur Erfüllung einer rechtlichen Verpflichtung nach dem Unionsrecht oder dem Recht der Mitgliedstaaten erforderlich, dem der für die Verarbeitung Verantwortliche unterliegt</li>
+                                <li>Die personenbezogenen Daten wurden in Bezug auf angebotene Dienste der Informationsgesellschaft erhoben, die direkt an ein Kind gerichtet sind</li>
+                            </ul>
+                            <p className="mt-2">Wenn einer der oben genannten Gründe zutrifft und Sie die Löschung von personenbezogenen Daten, die beim Betreiber dieser Website gespeichert sind, veranlassen möchten, können Sie sich jederzeit an unseren Datenschutzbeauftragten wenden. Der Datenschutzbeauftragte dieser Website wird veranlassen, dass dem Löschverlangen unverzüglich nachgekommen wird.</p>
+                        </div>
+                        <div>
+                            <h3 className="font-bold">Recht auf Einschränkung der Verarbeitung</h3>
+                            <p>Jede von der Verarbeitung personenbezogener Daten betroffene Person hat das Recht, von dem für die Verarbeitung Verantwortlichen dieser Website die Einschränkung der Verarbeitung zu verlangen, wenn eine der folgenden Bedingungen erfüllt ist: Die Richtigkeit der personenbezogenen Daten wird von der betroffenen Person bestritten, und zwar für einen Zeitraum, der es dem für die Verarbeitung Verantwortlichen ermöglicht, die Richtigkeit der personenbezogenen Daten zu überprüfen.</p>
+                             <ul className="list-disc pl-6 mt-2 space-y-2">
+                                <li>Die Verarbeitung ist unrechtmäßig, die betroffene Person legt Widerspruch gegen die Löschung der personenbezogenen Daten ein und verlangt stattdessen die Einschränkung der Nutzung der personenbezogenen Daten</li>
+                                <li>Der für die Verarbeitung Verantwortliche benötigt die personenbezogenen Daten nicht mehr für die Zwecke der Verarbeitung, die betroffene Person benötigt sie jedoch für die Geltendmachung, Die betroffene Person hat aus Gründen, die sich aus ihrer besonderen Situation ergeben, Widerspruch gegen die Verarbeitung eingelegt, und es steht noch nicht fest, ob die berechtigten Interessen des Verantwortlichen gegenüber denen der betroffenen Person überwiegen.</li>
+                            </ul>
+                            <p className="mt-2">Wenn eine der vorgenannten Voraussetzungen gegeben ist, können Sie sich jederzeit an unseren Datenschutzbeauftragten wenden, um die Einschränkung der Verarbeitung personenbezogener Daten beim Betreiber dieser Website zu verlangen. Der Datenschutzbeauftragte dieser Website wird die Einschränkung der Verarbeitung veranlassen.</p>
+                        </div>
+                         <div>
+                            <h3 className="font-bold">Recht auf Datenübertragbarkeit</h3>
+                            <p>Jede von der Verarbeitung personenbezogener Daten betroffene Person hat das Recht, die sie betreffenden personenbezogenen Daten in einem strukturierten, gängigen und maschinenlesbaren Format zu erhalten. Darüber hinaus hat die betroffene Person das Recht, zu erwirken, dass die personenbezogenen Daten direkt von einem für die Verarbeitung Verantwortlichen an einen anderen für die Verarbeitung Verantwortlichen übermittelt werden, sofern dies technisch machbar ist und sofern dadurch nicht die Rechte und Freiheiten anderer Personen beeinträchtigt werden.</p>
+                            <p className="mt-2">Um das Recht auf Datenübertragbarkeit geltend zu machen, können Sie sich jederzeit an den vom Betreiber dieser Website benannten Datenschutzbeauftragten wenden.</p>
+                        </div>
+                         <div>
+                            <h3 className="font-bold">Ein Widerspruchsrecht</h3>
+                            <p>Jede von der Verarbeitung personenbezogener Daten betroffene Person hat das Recht, aus Gründen, die sich aus ihrer besonderen Situation ergeben, jederzeit gegen die Verarbeitung sie betreffender personenbezogener Daten Widerspruch einzulegen.</p>
+                            <p className="mt-2">Der Betreiber dieser Website wird die personenbezogenen Daten im Falle des Widerspruchs nicht mehr verarbeiten, es sei denn, wir können zwingende schutzwürdige Gründe für die Verarbeitung nachweisen, die die Interessen, Rechte und Freiheiten der betroffenen Person überwiegen, oder die Verarbeitung dient der Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen.</p>
+                            <p className="mt-2">Um von Ihrem Widerspruchsrecht Gebrauch zu machen, können Sie sich direkt an den Datenschutzbeauftragten dieser Website wenden.</p>
+                        </div>
+                        <div>
+                            <h3 className="font-bold">Recht auf Widerruf einer datenschutzrechtlichen Einwilligung</h3>
+                            <p>Jede von der Verarbeitung personenbezogener Daten betroffene Person hat das Recht, eine erteilte Einwilligung in die Verarbeitung personenbezogener Daten jederzeit zu widerrufen.</p>
+                            <p className="mt-2">Wenn Sie von Ihrem Recht auf Widerruf einer Einwilligung Gebrauch machen möchten, können Sie sich jederzeit an unseren Datenschutzbeauftragten wenden.</p>
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
                         <CardTitle className="font-headline text-2xl font-bold text-primary">Cookies</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 text-base text-foreground/80">
