@@ -22,7 +22,7 @@ export default function TeamPage() {
             <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-3 md:gap-12">
               <div className="relative mx-auto w-full max-w-xs md:max-w-none">
                 <Image
-                  src="https://picsum.photos/seed/doc1/400/400"
+                  src="/images/team/Ortmanns.jpg"
                   alt="Portrait von G. Ortmanns"
                   data-ai-hint="doctor portrait"
                   width={400}
