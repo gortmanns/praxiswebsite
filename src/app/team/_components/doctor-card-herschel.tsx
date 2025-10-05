@@ -32,7 +32,7 @@ export const DoctorCardHerschel = () => (
                                 <div className="mt-[1.5cqw] text-[2.2cqw] leading-tight">
                                     <p className="font-bold">Facharzt für Orthopädische Chirurgie und Traumatologie des Bewegungsapparates</p>
                                 </div>
-                                <div className="relative mt-4 h-[10cqw] w-[30cqw]">
+                                <div className="relative mt-8 h-[10cqw] w-[30cqw]">
                                   <OrthozentrumLogo className="h-full w-auto" />
                                 </div>
                             </div>
