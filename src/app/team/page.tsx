@@ -14,21 +14,11 @@ const teamMembers = [
       role2: 'Berufsbildnerin',
       imageUrl: '/images/team/Garcia.jpg',
       imageHint: 'woman portrait',
-      backsideContent: (
-        <div className="space-y-4 text-center text-sm">
-          <p>
-            Früher habe ich schon einmal für rund 10 Jahre in dieser Praxis gearbeitet, damals noch bei Dr. Segginger.
-          </p>
-          <p>
-            Inzwischen bin ich - jetzt in der Funktion der Leitenden MPA - zurückgekehrt an meine alte Wirkungsstätte.
-          </p>
-        </div>
-      )
     },
     {
       name: 'Max Mustermann',
       role: 'Med. Praxisassistent',
-      imageUrl: 'https://picsum.photos/seed/mann1/400/400',
+      imageUrl: 'https://picsum.photos/seed/mann1/400/600',
       imageHint: 'man portrait',
     },
   ];
@@ -77,7 +67,6 @@ export default function TeamPage() {
                             role2={member.role2}
                             imageUrl={member.imageUrl}
                             imageHint={member.imageHint}
-                            backsideContent={member.backsideContent}
                         />
                     </div>
                 ))}
