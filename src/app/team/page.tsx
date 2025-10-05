@@ -6,6 +6,9 @@ import { DoctorCardSchemmer } from './_components/doctor-card-schemmer';
 import { doctors } from './_data/doctors';
 
 export default function TeamPage() {
+  const ortmanns = doctors.find(d => d.name === 'G. Ortmanns')!;
+  const schemmer = doctors.find(d => d.name === 'P. Schemmer')!;
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -23,12 +26,8 @@ export default function TeamPage() {
               </h3>
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
-            {doctors.map((doctor) => {
-              if (doctor.name === 'P. Schemmer') {
-                return <DoctorCardSchemmer key={doctor.name} doctor={doctor} />;
-              }
-              return <DoctorCard key={doctor.name} doctor={doctor} />;
-            })}
+            <DoctorCard doctor={ortmanns} />
+            <DoctorCardSchemmer doctor={schemmer} />
           </div>
         </div>
       </main>

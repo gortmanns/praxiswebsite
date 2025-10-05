@@ -79,7 +79,7 @@ export const doctors: Doctor[] = [
         point: 'Grosse chirurgische Eingriffe werden in enger Kooperation zwischen Chirurg und Hausarzt durchgeführt.',
         isList: true,
       },
-       {
+      {
         point: 'Vorbesprechung und Planung des Eingriffs erfolgen hier im PRAXISZENTRUM IM RING.',
         isParagraph: true,
       },
@@ -90,11 +90,7 @@ export const doctors: Doctor[] = [
       {
         point: 'Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt.',
         isParagraph: true,
-        subPoints: [
-          'Hirslanden',
-          'Lindehof-Spital',
-          'Siloah-Spital',
-        ]
+        subPoints: ['Hirslanden', 'Lindehof-Spital', 'Siloah-Spital'],
       },
       {
         point: 'Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder hier vor Ort im PRAXISZENTRUM IM RING statt.',
