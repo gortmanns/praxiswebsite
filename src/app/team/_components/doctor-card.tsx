@@ -35,7 +35,7 @@ export const DoctorCard = ({ doctor }: { doctor: Doctor }) => (
                                     ))}
                                 </div>
                                 {doctor.name === 'P. Schemmer' ? (
-                                    <div className="relative mt-[2.5cqw] h-[10cqw] w-[30cqw]">
+                                    <div className="relative mt-[2.5cqw]" style={{ width: '30cqw', height: '10cqw' }}>
                                         <Image
                                             src="/images/schemmer-worni-logo.png"
                                             alt="Schemmer & Worni Logo"

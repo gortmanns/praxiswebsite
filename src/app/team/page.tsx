@@ -5,9 +5,6 @@ import { DoctorCard } from './_components/doctor-card';
 import { doctors } from './_data/doctors';
 
 export default function TeamPage() {
-  const ortmanns = doctors.find(d => d.name === 'G. Ortmanns')!;
-  const schemmer = doctors.find(d => d.name === 'P. Schemmer')!;
-
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -25,8 +22,9 @@ export default function TeamPage() {
               </h3>
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
-            <DoctorCard doctor={ortmanns} />
-            <DoctorCard doctor={schemmer} />
+            {doctors.map(doctor => (
+              <DoctorCard key={doctor.name} doctor={doctor} />
+            ))}
           </div>
         </div>
       </main>
