@@ -85,12 +85,12 @@ export function OpeningHoursCalendar() {
 
       {/* Overlay Container */}
       <div 
-        className="pointer-events-none absolute bg-orange-500/20"
+        className="pointer-events-none bg-orange-500/20"
         style={{
-          gridColumnStart: 2, // Start after the time labels column
-          gridColumnEnd: 7,   // Span across all 5 day columns
-          gridRowStart: 2,      // Start at the first time slot row (after header)
-          gridRowEnd: 6,      // End after the 4th time slot row (8-9, 9-10, 10-11, 11-12)
+          gridColumnStart: 2,
+          gridColumnEnd: 7,
+          gridRowStart: 2,
+          gridRowEnd: 6,
         }}
       >
       </div>
