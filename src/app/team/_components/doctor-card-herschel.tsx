@@ -42,11 +42,11 @@ export const DoctorCardHerschel = () => (
                 <div className="absolute inset-0 flex flex-col items-start justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <ul className="space-y-1.5 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
                         <li className="font-bold text-primary mb-2">SPEZIALGEBIETE</li>
-                        <li className="mb-2">Allgemeine Orthopädie</li>
+                        <li>Allgemeine Orthopädie</li>
                         <li className="mb-4">Spezialgebiet Hüft- und Kniegelenke</li>
                         
                         <li className="font-bold text-primary mt-6 mb-2">LEISTUNGEN VOR ORT</li>
-                        <li className="mb-2">Röntgenuntersuchungen, Konsultationen und klinische Untersuchungen finden direkt im PRAXISZENTRUM IM RING statt.</li>
+                        <li className="mb-2">Röntgenuntersuchungen, Konsultationen und klinische Untersuchungen finden direkt im <span className="whitespace-nowrap">Praxiszentrum im Ring</span> statt.</li>
                         <li className="mb-4">Auch Gelenkinfiltrationen, z. B. bei Schmerzen, können zum Teil direkt vor Ort durchgeführt werden.</li>
 
                         <li className="font-bold text-primary mt-6 mb-2">OPERATIONEN</li>
