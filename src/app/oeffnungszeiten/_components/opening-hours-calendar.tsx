@@ -10,7 +10,6 @@ const timeSlots = [
 
 const days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
 
-// Represents the state of each 1-hour slot from 8:00 to 17:00 for each day
 const schedule: ('sprechstunde' | 'pause' | 'geschlossen')[][] = [
   // Montag
   ['sprechstunde', 'sprechstunde', 'sprechstunde', 'sprechstunde', 'pause', 'pause', 'sprechstunde', 'sprechstunde', 'sprechstunde', 'sprechstunde'],
@@ -25,15 +24,6 @@ const schedule: ('sprechstunde' | 'pause' | 'geschlossen')[][] = [
 ];
 
 const Cell = ({ type, dayIndex, hourIndex }: { type: string; dayIndex: number; hourIndex: number; }) => {
-  const isFirstRow = hourIndex === 0;
-  const isLastRow = hourIndex === timeSlots.length - 2;
-  const isFirstCol = dayIndex === 0;
-  const isLastCol = dayIndex === days.length - 1;
-
-  const baseClasses = 'h-full w-full';
-
-  let borderClasses = 'border-l border-t border-border/20';
-
   let colorClass = '';
   switch (type) {
     case 'sprechstunde':
@@ -55,7 +45,7 @@ const Cell = ({ type, dayIndex, hourIndex }: { type: string; dayIndex: number; h
   }
 
   return (
-    <div className={cn(baseClasses, colorClass, borderClasses)}></div>
+    <div className={cn('h-full w-full border-l border-t border-border/20', colorClass)}></div>
   );
 };
 
@@ -70,17 +60,15 @@ export function OpeningHoursCalendar() {
   }
 
   return (
-    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-secondary">
+    <div className="relative grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-secondary">
       {/* Header Row */}
       <div className="sticky top-0 z-10 bg-muted"></div>
       {days.map((day, dayIndex) => (
         <div 
           key={day} 
           className={cn(
-            "flex h-12 items-center justify-center bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base border-t-0",
-            dayIndex === 0 ? "border-l-0" : "border-l border-border/20",
-            "border-r border-b border-border/20",
-            dayIndex === days.length - 1 && "border-r-0"
+            "flex h-12 items-center justify-center bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base",
+            "border-b border-l border-border/20"
           )}
         >
           {day}
@@ -90,16 +78,29 @@ export function OpeningHoursCalendar() {
       {/* Time Axis and Content Grid */}
       {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
         <React.Fragment key={startTime}>
-          <div className="flex h-12 items-center justify-center bg-muted px-2 text-center text-xs font-bold text-muted-foreground border-l-0 border-t border-b-0 border-r border-border/20">
+          <div className="flex h-12 items-center justify-center bg-muted px-2 text-center text-xs font-bold text-muted-foreground border-t border-l border-border/20">
             {startTime} - {timeSlots[hourIndex + 1]}
           </div>
           {days.map((_day, dayIndex) => (
-            <div key={`${_day}-${startTime}`} className="h-12 border-b-0 border-r-0">
+            <div key={`${_day}-${startTime}`} className="h-12">
                <Cell type={grid[dayIndex][hourIndex]} dayIndex={dayIndex} hourIndex={hourIndex} />
             </div>
           ))}
         </React.Fragment>
       ))}
+
+        {/* Text Overlays */}
+        <div 
+            className="pointer-events-none absolute flex items-center justify-center"
+            style={{
+                gridColumnStart: 2,
+                gridColumnEnd: 7,
+                gridRowStart: 2,
+                gridRowEnd: 6,
+            }}
+        >
+            <span className="text-center text-lg font-bold text-foreground">Sprechstunde</span>
+        </div>
     </div>
   );
 }
