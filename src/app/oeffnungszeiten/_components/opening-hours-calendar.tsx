@@ -91,15 +91,25 @@ export function OpeningHoursCalendar() {
 
           {/* Time Axis Placeholder */}
           <div className="col-start-1"></div>
-
-          {/* Overlay Text */}
+          
           <div 
-            className="col-start-2 col-end-7 row-start-2 row-end-6 flex items-center justify-center pointer-events-auto"
-            style={{ gridColumn: '2 / 7', gridRow: '2 / 6' }}
+              className="flex items-center justify-center pointer-events-auto"
+              style={{ 
+                  gridColumn: '2 / 7', 
+                  gridRow: '2 / 6'
+              }}
           >
-              <span className="text-2xl font-bold text-foreground/80">
-                  Sprechstunde
-              </span>
+              <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
+          </div>
+          
+          <div 
+              className="flex items-center justify-center pointer-events-auto"
+              style={{ 
+                  gridColumn: '2 / 4', 
+                  gridRow: '8 / 12'
+              }}
+          >
+              <span className="text-2xl font-bold text-foreground/80">Sprechstunde</span>
           </div>
       </div>
     </div>
