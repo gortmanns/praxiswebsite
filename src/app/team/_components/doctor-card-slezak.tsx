@@ -13,8 +13,17 @@ export const DoctorCardSlezak = () => (
         >
             <Card className="absolute inset-0 overflow-hidden">
                 <CardContent className="h-full p-6 transition-opacity duration-300 group-hover:opacity-10">
-                    <div className="grid h-full grid-cols-1 items-center gap-[4.5%]">
-                        <div className="col-span-1">
+                    <div className="grid h-full grid-cols-3 items-center gap-[4.5%]">
+                        <div className="relative col-span-1 h-full w-full">
+                            <Image
+                                src="/images/team/Dr.Slezak.jpg"
+                                alt="Portrait von Dr. Slezak"
+                                data-ai-hint="doctor portrait"
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
+                        <div className="col-span-2">
                             <div className="flex h-full flex-col justify-center text-left text-foreground/80">
                                 <p className="text-[2.2cqw] text-primary">Dr. med.</p>
                                 <h4 className="font-headline text-[4.8cqw] font-bold leading-tight text-primary">
