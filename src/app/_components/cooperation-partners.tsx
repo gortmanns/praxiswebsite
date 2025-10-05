@@ -12,12 +12,16 @@ export function CooperationPartnersSection() {
       logoUrl: '/images/VASC-Alliance-Logo.png',
       websiteUrl: 'https://www.vasc-alliance.ch/',
       hint: 'partner logo',
+      width: 330,
+      height: 110,
     },
     {
       name: 'Schemmer & Worni',
       logoUrl: '/images/schemmer-worni-logo.png',
       websiteUrl: 'https://schemmer-worni.ch/de/',
       hint: 'partner logo',
+      width: 300,
+      height: 100,
     },
     {
       name: 'orthozentrum-bern',
@@ -32,18 +36,24 @@ export function CooperationPartnersSection() {
       logoUrl: '/images/go-medical-logo.png',
       websiteUrl: 'https://www.go-medical.ch/',
       hint: 'partner logo',
+      width: 300,
+      height: 100,
     },
     {
       name: 'MCL',
       logoUrl: '/images/mcl-labor-logo.png',
       websiteUrl: 'https://www.mcl.ch/de-de/',
       hint: 'partner logo',
+      width: 300,
+      height: 100,
     },
     {
       name: 'doxnet',
       logoUrl: '/images/doxnet_logo.png',
       websiteUrl: 'https://www.doxnet.ch/',
       hint: 'partner logo',
+      width: 300,
+      height: 100,
     },
   ];
 
@@ -69,8 +79,8 @@ export function CooperationPartnersSection() {
                       <Image
                         src={partner.logoUrl}
                         alt={`${partner.name} Logo`}
-                        width={300}
-                        height={100}
+                        width={partner.width}
+                        height={partner.height}
                         className="object-contain"
                         data-ai-hint={partner.hint}
                       />
@@ -114,8 +124,8 @@ export function CooperationPartnersSection() {
                     <Image
                       src={partner.logoUrl!}
                       alt={`${partner.name} Logo`}
-                      width={300}
-                      height={100}
+                      width={partner.width}
+                      height={partner.height}
                       className="object-contain"
                       data-ai-hint={partner.hint}
                     />
