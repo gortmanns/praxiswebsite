@@ -53,7 +53,14 @@ export const DoctorCard = ({ doctor }: { doctor: Doctor }) => (
                             if (item.isParagraph) {
                                 return (
                                     <li key={index} className="font-medium text-background">
-                                        {item.point}
+                                        <span>{item.point}</span>
+                                        {item.subPoints && (
+                                            <ul className="list-disc space-y-px pl-9 pt-1 text-[clamp(0.7rem,2.3cqw,1rem)] font-normal text-background/80">
+                                                {item.subPoints.map((sub, subIndex) => (
+                                                    <li key={subIndex}>{sub}</li>
+                                                ))}
+                                            </ul>
+                                        )}
                                     </li>
                                 );
                             }
@@ -64,7 +71,7 @@ export const DoctorCard = ({ doctor }: { doctor: Doctor }) => (
                                         <div className="mt-1 pl-9 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
                                             {item.subPointsTitle && (
                                                 <h5 className="mb-1 tracking-wide text-background/90">
-                                                    {item.subPointsTitle}:
+                                                    {item.subPointsTitle}
                                                 </h5>
                                             )}
                                             <ul className="list-disc space-y-px pl-5 font-normal">

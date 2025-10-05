@@ -92,10 +92,10 @@ export const doctors: Doctor[] = [
         point: 'Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt.',
         isParagraph: true,
         subPoints: [
-          'Klinik Beau-Site, Bern',
-          'SALEM-SPITAL, Bern',
-          'Hirslanden-Klinik, Bern',
-        ],
+          'Hirslanden',
+          'Lindehof-Spital',
+          'Siloah-Spital',
+        ]
       },
       {
         point: 'Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder hier vor Ort im PRAXISZENTRUM IM RING statt.',
