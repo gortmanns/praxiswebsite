@@ -40,7 +40,7 @@ export function PhoneHoursCalendar() {
       <div className="col-start-1 col-end-2 row-start-2 row-end-[22] grid grid-rows-20">
         {timeSlots.slice(0, -1).map((startTime, index) => (
           <div key={startTime} className="flex h-6 items-center justify-center border-b border-l border-border bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
-            {startTime}
+            {startTime} - {timeSlots[index + 1]}
           </div>
         ))}
       </div>
