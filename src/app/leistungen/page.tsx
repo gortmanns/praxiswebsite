@@ -74,7 +74,11 @@ const leistungen = [
     name: 'TWINT',
     image: '/images/leistungen/twint_logo.png',
     hint: 'twint logo',
-    backsideContent: <></>,
+    backsideContent: <>
+        <p>Zusatzleistungen können Sie nicht nur in bar sondern auch modern und bequem mit dem Handy per TWINT bezahlen.</p>
+        <br />
+        <p>Alle Leistungen die von Ihrer Kasse übernommen werden, rechnen wir natürlich weiterhin direkt mit dieser ab.</p>
+      </>,
   },
   {
     name: 'Verkehrsmedizinische Untersuchungen',
@@ -134,7 +138,8 @@ export default function LeistungenPage() {
                           alt={leistung.name}
                           fill
                           className={cn(
-                            leistung.name === 'TWINT' ? "object-contain p-4" : "object-cover"
+                            "object-cover",
+                            leistung.name === 'TWINT' && "object-contain"
                           )}
                           data-ai-hint={leistung.hint}
                         />
