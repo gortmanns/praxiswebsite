@@ -77,35 +77,41 @@ export function OpeningHoursCalendar() {
         ))}
       </div>
 
-      <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
+      <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-orange-500">
           {/* Header Row - transparent for correct sizing */}
-          <div className="h-12 border-b border-orange-500"></div>
+          <div className="h-12"></div>
           {days.map((day) => (
-              <div key={`${day}-overlay-header`} className="flex h-12 items-center justify-center border-b border-l border-orange-500 text-center text-sm font-bold text-transparent sm:text-base">{day}</div>
+              <div key={`${day}-overlay-header`} className="flex h-12 items-center justify-center border-l border-b border-orange-500 text-center text-sm font-bold text-transparent sm:text-base">{day}</div>
           ))}
 
           {/* Time Axis + Cell Grid - transparent for correct sizing */}
           {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
               <React.Fragment key={`${startTime}-overlay-row`}>
-                  <div className="flex h-12 items-center justify-center border-b border-l border-orange-500 px-2 text-center text-xs font-bold text-transparent">
+                  <div className="flex h-12 items-center justify-center border-l border-b border-orange-500 px-2 text-center text-xs font-bold text-transparent">
                       {startTime} - {timeSlots[hourIndex + 1]}
                   </div>
                   {days.map((_day, dayIndex) => (
-                      <div key={`${_day}-${startTime}-overlay-cell`} className="h-12 border-b border-l border-orange-500 bg-transparent">
+                      <div key={`${_day}-${startTime}-overlay-cell`} className="h-12 border-l border-b border-orange-500 bg-transparent">
                       </div>
                   ))}
               </React.Fragment>
           ))}
           
-          {/* Right border for the last column */}
-          <div className="absolute top-0 right-0 h-full w-px bg-orange-500"></div>
+          <div
+            className="pointer-events-auto flex items-center justify-center"
+            style={{
+              gridRow: '6 / 8', // 12:00 to 14:00
+              gridColumn: '2 / 7', // Montag to Freitag
+            }}
+          >
+             <span className="font-bold text-primary">Mittagspause</span>
+          </div>
 
-          {/* Block for Mittagspause */}
           <div
             className="pointer-events-auto bg-orange-500/20"
             style={{
-              gridRow: '6 / 8', // From 12:00 to 14:00
-              gridColumn: '2 / 7', // From Montag to Freitag
+              gridRow: '8 / 12', // 14:00 to 18:00
+              gridColumn: '2 / 4', // Montag to Dienstag
             }}
           >
           </div>
