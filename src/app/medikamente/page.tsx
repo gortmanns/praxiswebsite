@@ -9,30 +9,12 @@ import { cn } from '@/lib/utils';
 import { Phone, Mail } from 'lucide-react';
 
 export default function MedikamentePage() {
-  const fontDemos = [
-    { name: 'Source Code Pro', import: "@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');" },
-    { name: 'IBM Plex Mono', import: "@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap');" },
-    { name: 'JetBrains Mono', import: "@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');" },
-    { name: 'Space Mono', import: "@import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');" },
-    { name: 'Fira Code', import: "@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');" },
-    { name: 'Inconsolata', import: "@import url('https://fonts.googleapis.com/css2?family=Inconsolata&display=swap');" },
-    { name: 'Overpass Mono', import: "@import url('https://fonts.googleapis.com/css2?family=Overpass+Mono&display=swap');" },
-    { name: 'Anonymous Pro', import: "@import url('https://fonts.googleapis.com/css2?family=Anonymous+Pro&display=swap');" },
-    { name: 'Cutive Mono', import: "@import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');" },
-    { name: 'Nanum Gothic Coding', import: "@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&display=swap');" },
-  ];
-
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
         <div className="container py-16 sm:py-24">
-          <div className="mx-auto max-w-7xl text-center">
-            <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
-              MEDIKAMENTE
-            </h2>
-          </div>
-          <div className="mx-auto mt-16 max-w-7xl">
+          <div className="mx-auto max-w-7xl">
             <Card>
               <CardContent className="p-6">
                 <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
@@ -148,23 +130,6 @@ export default function MedikamentePage() {
                                 <pre className="mt-2 rounded-md bg-muted p-4 font-code text-base text-muted-foreground">ATORVASTATIN Mepha Lactab 40 mg</pre>
                             </div>
                             
-                            {/* Font Demos */}
-                            <div className="mt-8 space-y-4">
-                              <h5 className="font-headline text-xl font-bold text-primary">Schriftart-Vorschau</h5>
-                              {fontDemos.map(font => (
-                                <div key={font.name}>
-                                  <style>{font.import}</style>
-                                  <pre
-                                    className="rounded-md bg-muted p-4 text-base text-muted-foreground"
-                                    style={{ fontFamily: `'${font.name}', monospace` }}
-                                  >
-                                    ATORVASTATIN Mepha Lactab 40 mg ({font.name})
-                                  </pre>
-                                </div>
-                              ))}
-                            </div>
-
-
                             <p>Alternativ können Sie auch ganz unkompliziert Fotos der Verpackungen schicken, auf denen die Bezeichnung des jeweiligen Medikaments gut erkennbar ist.</p>
                             
                             <div className="space-y-2 rounded-md border border-border bg-card p-4">
