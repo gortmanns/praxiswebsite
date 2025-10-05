@@ -11,6 +11,10 @@ export type ImagePlaceholder = {
 const updatedImages = data.placeholderImages.map(img => {
   if (img.id === 'luftbild') {
     return { ...img, imageUrl: '/images/luftbild.jpg' };
+  } else if (img.id === 'rettungswagen') {
+    return { ...img, imageUrl: '/images/notfall/rtw-bern.jpg' };
+  } else if (img.id === 'medphone-logo') {
+    return { ...img, imageUrl: '/images/notfall/medphone_logo.png' };
   }
   return img;
 });

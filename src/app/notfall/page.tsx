@@ -24,7 +24,7 @@ export default function NotfallPage() {
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
                     <div className="mx-auto w-full max-w-lg">
                       <Image
-                        src="/images/rtw-bern.jpg"
+                        src="/images/notfall/rtw-bern.jpg"
                         alt="Ambulanz"
                         width={1200}
                         height={800}
@@ -50,7 +50,7 @@ export default function NotfallPage() {
                   <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
                     <div className='mx-auto w-full max-w-lg'>
                         <Image
-                          src="https://www.abvbernregio.ch/images/content/layout/partner/medphone_logo.png"
+                          src="/images/notfall/medphone_logo.png"
                           alt="Medphone Logo"
                           width={1024}
                           height={241}
@@ -79,7 +79,7 @@ export default function NotfallPage() {
                     <div className="mx-auto w-full max-w-lg">
                       <Link href="https://www.toxinfo.ch/" target="_blank" rel="noopener noreferrer">
                         <Image
-                          src="/images/toxinfo-logo.svg"
+                          src="/images/notfall/toxinfo-logo.svg"
                           alt="Tox Info Suisse Logo"
                           width={300}
                           height={100}
