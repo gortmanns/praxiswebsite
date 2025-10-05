@@ -38,14 +38,13 @@ const schedule = [
 ];
 
 const Cell = ({ type }: { type: string }) => {
-    const baseClass = 'border-t border-l border-[#EEEEEE]';
     switch (type) {
         case 'bedient':
-            return <div className={cn(baseClass, 'bg-background')}></div>;
+            return <div className="bg-background h-full w-full"></div>;
         case 'unbedient':
-            return <div className={cn(baseClass, 'bg-secondary')}></div>;
+            return <div className="bg-secondary h-full w-full"></div>;
         default:
-            return <div className={cn(baseClass, 'bg-background')}></div>;
+            return <div className="bg-background h-full w-full"></div>;
     }
 };
 
@@ -64,11 +63,11 @@ export function PhoneHoursCalendar() {
   });
 
   return (
-    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border-b border-r border-[#EEEEEE]">
+    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-[#EEEEEE]">
       {/* Header Row */}
-      <div className="sticky top-0 z-10 border-b border-r border-[#EEEEEE] bg-muted"></div>
+      <div className="sticky top-0 z-10 bg-muted"></div>
       {days.map((day) => (
-        <div key={day} className="flex h-12 items-center justify-center border-b border-l border-[#EEEEEE] bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
+        <div key={day} className="flex h-12 items-center justify-center border-l border-[#EEEEEE] bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
           {day}
         </div>
       ))}

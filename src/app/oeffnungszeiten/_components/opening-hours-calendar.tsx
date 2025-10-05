@@ -36,22 +36,20 @@ const schedule = [
     // Fr
     { day: 4, start: '08:00', end: '12:00', type: 'sprechstunde' },
     { day: 4, start: '12:00', end: '13:00', type: 'pause' },
-    { day: 4, start: '13:00', end: '14:00', type: 'sprechstunde' },
-    { day: 4, start: '14:00', end: '17:00', type: 'sprechstunde' },
+    { day: 4, start: '13:00', end: '17:00', type: 'sprechstunde' },
     { day: 4, start: '17:00', end: '18:00', type: 'geschlossen' },
 ];
 
 const Cell = ({ type }: { type: string }) => {
-    const baseClass = 'border-t border-l border-[#EEEEEE]';
     switch (type) {
         case 'sprechstunde':
-            return <div className={cn(baseClass, 'bg-background')}></div>;
+            return <div className='bg-background h-full w-full'></div>;
         case 'pause':
-            return <div className={cn(baseClass, 'bg-secondary')}></div>;
+            return <div className='bg-secondary h-full w-full'></div>;
         case 'geschlossen':
-            return <div className={cn(baseClass, 'bg-secondary')}></div>;
+            return <div className='bg-secondary h-full w-full'></div>;
         default:
-             return <div className={cn(baseClass, 'bg-background')}></div>;
+             return <div className='bg-background h-full w-full'></div>;
     }
 };
 
@@ -69,11 +67,11 @@ export function OpeningHoursCalendar() {
   });
 
   return (
-    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border-b border-r border-[#EEEEEE]">
+    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-[#EEEEEE]">
       {/* Header Row */}
-      <div className="sticky top-0 z-10 border-b border-r border-[#EEEEEE] bg-muted"></div>
+      <div className="sticky top-0 z-10 bg-muted"></div>
       {days.map((day) => (
-        <div key={day} className="flex h-12 items-center justify-center border-b border-l border-[#EEEEEE] bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
+        <div key={day} className="flex h-12 items-center justify-center border-l border-[#EEEEEE] bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
             {day}
         </div>
       ))}
@@ -100,10 +98,13 @@ export function OpeningHoursCalendar() {
         <div className="col-start-1 col-end-3 row-start-7 row-end-11 pointer-events-none flex items-center justify-center p-2">
             <span className="text-lg font-semibold text-foreground">Sprechstunde</span>
         </div>
-         <div className="col-start-4 col-end-6 row-start-7 row-end-10 pointer-events-none flex items-center justify-center p-2">
+         <div className="col-start-4 col-end-5 row-start-7 row-end-10 pointer-events-none flex items-center justify-center p-2">
             <span className="text-lg font-semibold text-foreground">Sprechstunde</span>
         </div>
-        <div className="col-start-1 col-end-6 row-start-5 row-end-6 pointer-events-none flex items-center justify-center p-2">
+        <div className="col-start-5 col-end-6 row-start-7 row-end-10 pointer-events-none flex items-center justify-center p-2">
+            <span className="text-lg font-semibold text-foreground">Sprechstunde</span>
+        </div>
+        <div className="col-start-1 col-end-6 row-start-5 row-end-7 pointer-events-none flex items-center justify-center p-2">
              <span className="text-base font-semibold text-secondary-foreground">Mittagspause</span>
         </div>
         <div className="col-start-3 col-end-4 row-start-7 row-end-11 pointer-events-none flex items-center justify-center p-2">
