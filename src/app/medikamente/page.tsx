@@ -9,6 +9,19 @@ import { cn } from '@/lib/utils';
 import { Phone, Mail } from 'lucide-react';
 
 export default function MedikamentePage() {
+  const fontDemos = [
+    { name: 'Source Code Pro', import: "@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');" },
+    { name: 'IBM Plex Mono', import: "@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap');" },
+    { name: 'JetBrains Mono', import: "@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');" },
+    { name: 'Space Mono', import: "@import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');" },
+    { name: 'Fira Code', import: "@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');" },
+    { name: 'Inconsolata', import: "@import url('https://fonts.googleapis.com/css2?family=Inconsolata&display=swap');" },
+    { name: 'Overpass Mono', import: "@import url('https://fonts.googleapis.com/css2?family=Overpass+Mono&display=swap');" },
+    { name: 'Anonymous Pro', import: "@import url('https://fonts.googleapis.com/css2?family=Anonymous+Pro&display=swap');" },
+    { name: 'Cutive Mono', import: "@import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');" },
+    { name: 'Nanum Gothic Coding', import: "@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&display=swap');" },
+  ];
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -93,7 +106,7 @@ export default function MedikamentePage() {
                 <Card>
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg text-foreground/80">
-                            <h4 className="font-headline text-2xl font-bold text-primary text-left">Vorbestellung per Telefon</h4>
+                            <h4 className="text-left font-headline text-2xl font-bold text-primary">Vorbestellung per Telefon</h4>
                             <p>Unsere Bestellhotline für Medikamente erreichen Sie Tag und Nacht an 365 Tagen im Jahr unter der Rufnummer</p>
                             
                             <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold text-foreground transition-colors hover:text-primary md:text-3xl lg:text-4xl">
@@ -115,7 +128,7 @@ export default function MedikamentePage() {
                 <Card>
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg text-foreground/80">
-                            <h4 className="font-headline text-2xl font-bold text-primary text-left">Vorbestellung per E-Mail</h4>
+                            <h4 className="text-left font-headline text-2xl font-bold text-primary">Vorbestellung per E-Mail</h4>
                             <p>Die Bestellung per E-Mail ist ganz einfach. Schreiben Sie eine Email an</p>
                             
                             <ObfuscatedLink
@@ -134,6 +147,23 @@ export default function MedikamentePage() {
                                 <p>Zum Beispiel:</p>
                                 <pre className="mt-2 rounded-md bg-muted p-4 font-code text-base text-muted-foreground">ATORVASTATIN Mepha Lactab 40 mg</pre>
                             </div>
+                            
+                            {/* Font Demos */}
+                            <div className="mt-8 space-y-4">
+                              <h5 className="font-headline text-xl font-bold text-primary">Schriftart-Vorschau</h5>
+                              {fontDemos.map(font => (
+                                <div key={font.name}>
+                                  <style>{font.import}</style>
+                                  <pre
+                                    className="rounded-md bg-muted p-4 text-base text-muted-foreground"
+                                    style={{ fontFamily: `'${font.name}', monospace` }}
+                                  >
+                                    ATORVASTATIN Mepha Lactab 40 mg ({font.name})
+                                  </pre>
+                                </div>
+                              ))}
+                            </div>
+
 
                             <p>Alternativ können Sie auch ganz unkompliziert Fotos der Verpackungen schicken, auf denen die Bezeichnung des jeweiligen Medikaments gut erkennbar ist.</p>
                             
