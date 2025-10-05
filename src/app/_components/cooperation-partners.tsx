@@ -9,13 +9,13 @@ export function CooperationPartnersSection() {
   const topPartners = [
     {
       name: 'VASC-ALLIANCE',
-      logoUrl: '/images/partners/VASC-Alliance-Logo.png',
+      logoUrl: '/images/VASC-Alliance-Logo.png',
       websiteUrl: 'https://www.vasc-alliance.ch/',
       hint: 'partner logo',
     },
     {
       name: 'Schemmer & Worni',
-      logoUrl: '/images/partners/schemmer-worni-logo.png',
+      logoUrl: '/images/schemmer-worni-logo.png',
       websiteUrl: 'https://schemmer-worni.ch/de/',
       hint: 'partner logo',
     },
@@ -29,19 +29,19 @@ export function CooperationPartnersSection() {
   const otherPartners = [
     {
       name: 'go-medical',
-      logoUrl: '/images/partners/go-medical-logo.png',
+      logoUrl: '/images/go-medical-logo.png',
       websiteUrl: 'https://www.go-medical.ch/',
       hint: 'partner logo',
     },
     {
       name: 'MCL',
-      logoUrl: '/images/partners/mcl-logo.png',
+      logoUrl: '/images/mcl-labor-logo.png',
       websiteUrl: 'https://www.mcl.ch/de-de/',
       hint: 'partner logo',
     },
     {
       name: 'doxnet',
-      logoUrl: '/images/partners/doxnet-logo.jpg',
+      logoUrl: '/images/doxnet_logo.png',
       websiteUrl: 'https://www.doxnet.ch/',
       hint: 'partner logo',
     },
