@@ -52,8 +52,8 @@ export function CooperationPartnersSection() {
       logoUrl: '/images/doxnet-logo.jpg',
       websiteUrl: 'https://www.doxnet.ch/',
       hint: 'partner logo',
-      width: 270,
-      height: 90,
+      width: 243,
+      height: 81,
     },
   ];
 
