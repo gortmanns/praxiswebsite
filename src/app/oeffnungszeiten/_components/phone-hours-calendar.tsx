@@ -16,7 +16,7 @@ const commonLabelClosed = "Telefon nicht bedient";
 
 const renderBlock = (label: string, className: string, style: React.CSSProperties) => (
   <div
-    className={cn("flex items-center justify-center p-1 border-border/50", className)}
+    className={cn("flex items-center justify-center p-1 border-[#EEEEEE]", className)}
     style={style}
   >
     <span className="text-center font-semibold text-base">
@@ -27,11 +27,11 @@ const renderBlock = (label: string, className: string, style: React.CSSPropertie
 
 export function PhoneHoursCalendar() {
   return (
-    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-border/50">
+    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-[#EEEEEE]">
       {/* Header Row */}
-      <div className="sticky top-0 z-10 border-b border-r border-border/50 bg-muted"></div>
+      <div className="sticky top-0 z-10 border-b border-r border-[#EEEEEE] bg-muted"></div>
       {days.map((day) => (
-        <div key={day} className="flex h-12 items-center justify-center border-b border-l border-border/50 bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
+        <div key={day} className="flex h-12 items-center justify-center border-b border-l border-[#EEEEEE] bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
           {day}
         </div>
       ))}
@@ -39,7 +39,7 @@ export function PhoneHoursCalendar() {
       {/* Time Axis */}
       <div className="col-start-1 col-end-2 row-start-2 row-end-[21] grid grid-rows-19">
         {timeSlots.slice(0, -1).map((startTime, index) => (
-          <div key={startTime} className="flex h-6 items-center justify-center border-t border-r border-border/50 bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
+          <div key={startTime} className="flex h-6 items-center justify-center border-t border-r border-[#EEEEEE] bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
             {startTime} - {timeSlots[index + 1]}
           </div>
         ))}
