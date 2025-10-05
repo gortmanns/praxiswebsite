@@ -216,21 +216,24 @@ export function Header() {
                             </div>
                         );
                     }
-                    return (
-                    <Link
-                        key={link.href}
-                        href={link.href}
-                        className={cn(
-                        'rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                        isActive
-                            ? 'bg-primary text-primary-foreground'
-                            : 'text-muted-foreground hover:text-primary',
-                        link.label === 'NOTFALL' ? 'uppercase' : ''
-                        )}
-                    >
-                        {link.label}
-                    </Link>
-                    );
+                    if (link.href === '/notfall' || link.href === '/team' || link.href === '/') {
+                      return (
+                        <Link
+                            key={link.href}
+                            href={link.href}
+                            className={cn(
+                            'rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                            isActive
+                                ? 'bg-primary text-primary-foreground'
+                                : 'text-muted-foreground hover:text-primary',
+                            link.label === 'NOTFALL' ? 'uppercase' : ''
+                            )}
+                        >
+                            {link.label}
+                        </Link>
+                      );
+                    }
+                    return null;
                 })}
                 </nav>
             </div>
