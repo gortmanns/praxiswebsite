@@ -12,8 +12,8 @@ export function CooperationPartnersSection() {
       logoUrl: '/images/VASC-Alliance-Logo.png',
       websiteUrl: 'https://www.vasc-alliance.ch/',
       hint: 'partner logo',
-      width: 363,
-      height: 121,
+      width: 381,
+      height: 127,
     },
     {
       name: 'Schemmer & Worni',
@@ -49,7 +49,7 @@ export function CooperationPartnersSection() {
     },
     {
       name: 'doxnet',
-      logoUrl: '/images/doxnet_logo.png',
+      logoUrl: '/images/doxnet-logo.jpg',
       websiteUrl: 'https://www.doxnet.ch/',
       hint: 'partner logo',
       width: 300,
