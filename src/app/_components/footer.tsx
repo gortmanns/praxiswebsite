@@ -138,7 +138,7 @@ export function Footer() {
             <h3 className="text-lg font-bold uppercase text-primary">Qualitätslabel</h3>
             <div className="w-full">
               <Image
-                src="https://picsum.photos/seed/quality/200/64"
+                src="/images/mehrfacharzt-logo.png"
                 alt="Mehrfacharzt Logo"
                 data-ai-hint="quality label"
                 width={200}

@@ -23,7 +23,7 @@ export default function NotfallPage() {
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
                     <div className="mx-auto w-full max-w-lg">
                       <Image
-                        src="https://picsum.photos/seed/ambulance/600/400"
+                        src="/images/rtw-bern.jpg"
                         alt="Ambulanz"
                         data-ai-hint="ambulance"
                         width={600}
@@ -49,7 +49,7 @@ export default function NotfallPage() {
                   <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
                     <div className='mx-auto w-full max-w-lg'>
                       <Image
-                        src="https://picsum.photos/seed/medphone/600/141"
+                        src="/images/medphone-logo.png"
                         alt="Medphone Logo"
                         data-ai-hint="medphone logo"
                         width={600}
@@ -78,7 +78,7 @@ export default function NotfallPage() {
                     <div className="mx-auto w-full max-w-lg">
                       <Link href="https://www.toxinfo.ch/" target="_blank" rel="noopener noreferrer">
                         <Image
-                          src="https://picsum.photos/seed/toxinfo/300/100"
+                          src="/images/partners/tox-info-suisse-logo.png"
                           alt="Tox Info Suisse Logo"
                           data-ai-hint="toxinfo logo"
                           width={300}
