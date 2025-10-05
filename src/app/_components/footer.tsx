@@ -44,7 +44,7 @@ export function Footer() {
 
   return (
     <footer className="bg-accent text-background/80 debug-outline">
-      <div className="container py-12 debug-outline">
+      <div className="mx-auto w-full px-4 py-12 sm:px-6 lg:px-8 debug-outline">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4 debug-outline">
           {/* Col 1: Medikamentenbestellung & Rechtliches */}
           <div className="space-y-8 debug-outline">
