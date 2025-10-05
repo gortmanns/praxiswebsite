@@ -6,39 +6,44 @@ import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
 
 export function CooperationPartnersSection() {
-
   const topPartners = [
     {
       name: 'VASC-ALLIANCE',
-      logoUrl: '/images/partners/VASC-Alliance-Logo.png',
+      logoUrl: 'https://picsum.photos/seed/vasc/300/100',
       websiteUrl: 'https://www.vasc-alliance.ch/',
+      hint: 'partner logo',
     },
     {
       name: 'Schemmer & Worni',
-      logoUrl: '/images/partners/schemmer-worni-logo.png',
+      logoUrl: 'https://picsum.photos/seed/schemmer/300/100',
       websiteUrl: 'https://schemmer-worni.ch/de/',
+      hint: 'partner logo',
     },
     {
       name: 'orthozentrum-bern',
       websiteUrl: 'https://www.orthozentrum-bern.ch/',
+      hint: 'partner logo',
     },
   ];
 
   const otherPartners = [
     {
       name: 'go-medical',
-      logoUrl: '/images/partners/go-medical-logo.png',
+      logoUrl: 'https://picsum.photos/seed/gomedical/300/100',
       websiteUrl: 'https://www.go-medical.ch/',
+      hint: 'partner logo',
     },
     {
       name: 'MCL',
-      logoUrl: '/images/partners/mcl-logo.png',
+      logoUrl: 'https://picsum.photos/seed/mcl/300/100',
       websiteUrl: 'https://www.mcl.ch/de-de/',
+      hint: 'partner logo',
     },
     {
       name: 'doxnet',
-      logoUrl: '/images/partners/doxnet-logo.jpg',
+      logoUrl: 'https://picsum.photos/seed/doxnet/300/100',
       websiteUrl: 'https://www.doxnet.ch/',
+      hint: 'partner logo',
     },
   ];
 
@@ -49,34 +54,34 @@ export function CooperationPartnersSection() {
           Unsere ärztlichen Kooperationspartner
         </h2>
         <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {topPartners.map((partner) => {
-            return (
-              <Link
-                key={partner.name}
-                href={partner.websiteUrl!}
-                target={partner.websiteUrl === '#' ? '_self' : '_blank'}
-                rel="noopener noreferrer"
-                className="group"
-              >
-                <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
-                  <CardContent className="flex w-full items-center justify-center p-0">
-                    {partner.logoUrl ? (
-                      <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                        <Image
-                          src={partner.logoUrl}
-                          alt={`${partner.name} Logo`}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    ) : partner.name === 'orthozentrum-bern' ? (
-                      <OrthozentrumLogo className="h-20 w-auto" />
-                    ) : null}
-                  </CardContent>
-                </Card>
-              </Link>
-            );
-          })}
+          {topPartners.map(partner => (
+            <Link
+              key={partner.name}
+              href={partner.websiteUrl!}
+              target={partner.websiteUrl === '#' ? '_self' : '_blank'}
+              rel="noopener noreferrer"
+              className="group"
+            >
+              <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
+                <CardContent className="flex w-full items-center justify-center p-0">
+                  {partner.logoUrl ? (
+                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                      <Image
+                        src={partner.logoUrl}
+                        alt={`${partner.name} Logo`}
+                        width={300}
+                        height={100}
+                        className="object-contain"
+                        data-ai-hint={partner.hint}
+                      />
+                    </div>
+                  ) : partner.name === 'orthozentrum-bern' ? (
+                    <OrthozentrumLogo className="h-20 w-auto" />
+                  ) : null}
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
           <Link
             href="https://neurologie-plus.ch/"
             target="_blank"
@@ -95,7 +100,7 @@ export function CooperationPartnersSection() {
         </h3>
         <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3 lg:grid-cols-8">
           <div className="hidden lg:block"></div> {/* Empty spacer */}
-          {otherPartners.map((partner) => (
+          {otherPartners.map(partner => (
             <Link
               key={partner.name}
               href={partner.websiteUrl}
@@ -109,8 +114,10 @@ export function CooperationPartnersSection() {
                     <Image
                       src={partner.logoUrl!}
                       alt={`${partner.name} Logo`}
-                      fill
+                      width={300}
+                      height={100}
                       className="object-contain"
+                      data-ai-hint={partner.hint}
                     />
                   </div>
                 </CardContent>

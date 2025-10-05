@@ -91,8 +91,9 @@ export function Header() {
       <div className="flex h-28 items-center justify-between px-8">
         <Link href="/">
               <Image
-                src="/images/logo.png"
+                src="https://picsum.photos/seed/logo/520/105"
                 alt="Praxiszentrum im Ring Logo"
+                data-ai-hint="practice logo"
                 width={520}
                 height={105}
                 className="h-auto w-auto max-w-[300px] md:max-w-[520px]"
@@ -167,8 +168,9 @@ export function Header() {
             <div className="p-4">
                 <Link href="/" className="mb-8 block">
                     <Image
-                      src="/images/logo.png"
+                      src="https://picsum.photos/seed/logo/180/37"
                       alt="Praxiszentrum im Ring Logo"
+                      data-ai-hint="practice logo"
                       width={180}
                       height={37}
                       className="h-auto"

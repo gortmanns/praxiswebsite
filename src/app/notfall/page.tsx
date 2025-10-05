@@ -23,8 +23,9 @@ export default function NotfallPage() {
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
                     <div className="mx-auto w-full max-w-lg">
                       <Image
-                        src="/images/notfall/ambulance.jpg"
+                        src="https://picsum.photos/seed/ambulance/600/400"
                         alt="Ambulanz"
+                        data-ai-hint="ambulance"
                         width={600}
                         height={400}
                         className="h-auto w-full object-cover"
@@ -48,8 +49,9 @@ export default function NotfallPage() {
                   <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
                     <div className='mx-auto w-full max-w-lg'>
                       <Image
-                        src="/images/notfall/medphone-logo.png"
+                        src="https://picsum.photos/seed/medphone/600/141"
                         alt="Medphone Logo"
+                        data-ai-hint="medphone logo"
                         width={600}
                         height={141}
                         className="h-auto w-full"
@@ -76,8 +78,9 @@ export default function NotfallPage() {
                     <div className="mx-auto w-full max-w-lg">
                       <Link href="https://www.toxinfo.ch/" target="_blank" rel="noopener noreferrer">
                         <Image
-                          src="/images/notfall/toxinfo-logo.png"
+                          src="https://picsum.photos/seed/toxinfo/300/100"
                           alt="Tox Info Suisse Logo"
+                          data-ai-hint="toxinfo logo"
                           width={300}
                           height={100}
                           className="h-auto w-full"
