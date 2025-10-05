@@ -156,6 +156,15 @@ export default function DatenschutzerklaerungPage() {
                         <p>Sie haben das Recht, der Erstellung dieser Nutzerprofile zu widersprechen, wobei Sie sich zur Ausübung dieses Rechts an Google wenden müssen. Nähere Informationen zu Zweck und Umfang der Datenerhebung und -verarbeitung durch Google sowie weitere Informationen zu Ihren diesbezüglichen Rechten und Einstellungsmöglichkeiten zum Schutz Ihrer Privatsphäre finden Sie unter: www.google.de/intl/de/policies/privacy.</p>
                     </CardContent>
                 </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline text-2xl font-bold text-primary">YouTube</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4 text-base text-foreground/80">
+                        <p>Auf dieser Website können Funktionen des Dienstes «YouTube» integriert sein oder werden. «YouTube» ist Eigentum von Google Ireland Limited, einem nach irischem Recht gegründeten und betriebenen Unternehmen mit Sitz in Gordon House, Barrow Street, Dublin 4, Irland, das die Dienste im Europäischen Wirtschaftsraum und in der Schweiz betreibt.</p>
+                        <p>Ihre rechtliche Vereinbarung mit «YouTube» besteht aus den Bedingungen, die Sie unter dem folgenden Link finden: <a href="https://www.youtube.com/static?gl=de&template=terms&hl=de" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://www.youtube.com/static?gl=de&template=terms&hl=de</a>. Diese Bedingungen stellen eine rechtsverbindliche Vereinbarung zwischen Ihnen und «YouTube» bezüglich Ihrer Nutzung der Dienste dar. In den Datenschutzbestimmungen von Google wird erläutert, wie «YouTube» Ihre persönlichen Daten behandelt und schützt, wenn Sie den Dienst nutzen.</p>
+                    </CardContent>
+                </Card>
             </div>
         </div>
       </main>
@@ -163,7 +172,5 @@ export default function DatenschutzerklaerungPage() {
     </div>
   );
 }
-
-    
 
     
