@@ -23,7 +23,9 @@ const schedule: ('sprechstunde' | 'pause' | 'geschlossen')[][] = [
   ['sprechstunde', 'sprechstunde', 'sprechstunde', 'sprechstunde', 'pause', 'sprechstunde', 'sprechstunde', 'sprechstunde', 'sprechstunde', 'geschlossen'],
 ];
 
-const Cell = ({ type, dayIndex, hourIndex }: { type: string; dayIndex: number; hourIndex: number; }) => {
+const Cell = ({ dayIndex, hourIndex }: { dayIndex: number; hourIndex: number; }) => {
+  const type = schedule[dayIndex][hourIndex];
+  
   let colorClass = '';
   switch (type) {
     case 'sprechstunde':
@@ -75,7 +77,7 @@ export function OpeningHoursCalendar() {
           </div>
           {days.map((_day, dayIndex) => (
             <div key={`${_day}-${startTime}`} className="h-12 border-l border-t border-border/20">
-               <Cell type={schedule[dayIndex][hourIndex]} dayIndex={dayIndex} hourIndex={hourIndex} />
+               <Cell dayIndex={dayIndex} hourIndex={hourIndex} />
             </div>
           ))}
         </React.Fragment>
