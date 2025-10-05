@@ -22,7 +22,6 @@ export default function ImpressumPage() {
             <CardContent className="space-y-6 text-lg text-foreground/80">
                 <div className="space-y-1">
                     <p>Dipl. med. G. Ortmanns</p>
-                    <p>Praktischer Arzt</p>
                 </div>
                 <div className="space-y-1">
                     <h3 className="font-headline text-2xl font-bold text-primary">Anschrift</h3>
