@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -42,8 +41,6 @@ export function Footer() {
     { href: '/datenschutzerklaerung', label: 'Datenschutzerklärung' },
   ];
   const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Praxiszentrum+im+Ring,+Kappelenring+6,+3032+Hinterkappelen";
-  const qualityLabelImage = PlaceHolderImages.find(p => p.id === 'quality-label');
-
 
   return (
     <footer className="bg-accent text-background/80">
@@ -140,16 +137,13 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="text-lg font-bold uppercase text-primary">Qualitätslabel</h3>
             <div className="w-full">
-              {qualityLabelImage && (
-                <Image 
-                  src={qualityLabelImage.imageUrl} 
-                  alt="Mehrfacharzt Logo" 
-                  width={200}
-                  height={64}
-                  className="h-auto w-full object-contain"
-                  data-ai-hint={qualityLabelImage.imageHint}
-                  />
-              )}
+              <Image 
+                src="/images/mehrfacharzt-logo.png" 
+                alt="Mehrfacharzt Logo" 
+                width={200}
+                height={64}
+                className="h-auto w-full object-contain"
+                />
             </div>
           </div>
         </div>
