@@ -35,7 +35,8 @@ export const DoctorCardSchemmer = () => (
                                   <Image
                                     src="/images/schemmer-worni-logo.png"
                                     alt="Schemmer & Worni Logo"
-                                    fill
+                                    width={300}
+                                    height={100}
                                     className="object-contain"
                                     data-ai-hint="partner logo"
                                   />
@@ -49,7 +50,7 @@ export const DoctorCardSchemmer = () => (
                         <li className="font-bold text-primary mt-6 mb-4">
                             KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT VOR ORT IM PRAXISZENTRUM IM RING ERFOLGEN
                         </li>
-                        <li className="font-bold text-primary mt-6 mb-4">
+                        <li className="font-bold text-primary mt-2 mb-4">
                             GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT
                         </li>
                         <li className="mb-4">Die Vorbesprechung und Planung des Eingriffs erfolgen im PRAXISZENTRUM IM RING.</li>
