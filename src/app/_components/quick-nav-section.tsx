@@ -52,7 +52,7 @@ export function QuickNavSection() {
                   className="absolute flex h-full w-full flex-col items-center justify-center gap-4 rounded-lg bg-secondary p-6 text-secondary-foreground debug-outline"
                   style={{ backfaceVisibility: 'hidden' }}
                 >
-                  <item.Icon className="h-14 w-14" />
+                  <item.Icon className="h-20 w-20" />
                   <span className="text-xl font-bold uppercase tracking-wider">
                     {item.label}
                   </span>
@@ -62,7 +62,7 @@ export function QuickNavSection() {
                   className="absolute flex h-full w-full flex-col items-center justify-center gap-4 rounded-lg bg-primary p-6 text-primary-foreground debug-outline"
                   style={{ backfaceVisibility: 'hidden', transform: 'rotateX(180deg)' }}
                 >
-                  <item.Icon className="h-14 w-14" />
+                  <item.Icon className="h-20 w-20" />
                   <span className="text-xl font-bold uppercase tracking-wider">
                     {item.label}
                   </span>
