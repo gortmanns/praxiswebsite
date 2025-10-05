@@ -50,7 +50,7 @@ export default function TeamPage() {
                   </div>
                 </div>
               </CardContent>
-              <div className="absolute inset-0 flex flex-col items-start bg-accent p-8 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <div className="absolute inset-0 flex flex-col items-start overflow-y-auto bg-accent p-8 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 <ul className="space-y-4 text-lg">
                   <li className="font-bold text-primary">
                     Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
@@ -64,7 +64,7 @@ export default function TeamPage() {
                   <li className="font-bold text-primary">
                     Projektmanagement im Gesundheitswesen in Europa und Australien
                      <div className="mt-2 pl-4 text-background/80">
-                        <h5 className="font-bold uppercase tracking-wider text-base mb-2">Meilensteine</h5>
+                        <h5 className="mb-2 text-base font-bold uppercase tracking-wider">Meilensteine</h5>
                         <ul className="list-disc space-y-2 pl-5 text-base">
                           <li>Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
                           <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
