@@ -80,7 +80,7 @@ const leistungen = [
     ),
   },
   {
-    name: 'Wundversorgung',
+    name: 'Wundversorgung und Kleinchirurgie',
     image: '/images/leistungen/wundversorgung.jpg',
     hint: 'wound dressing',
     backsideContent: (
