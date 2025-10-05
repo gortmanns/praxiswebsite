@@ -55,9 +55,7 @@ const BaseCell = ({ dayIndex, hourIndex }: { dayIndex: number; hourIndex: number
 export function OpeningHoursCalendar() {
   return (
     <div className="relative">
-      {/* Base Calendar Grid */}
       <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-secondary">
-        {/* Header Row */}
         <div className="sticky top-0 z-10 bg-muted"></div>
         {days.map((day) => (
           <div 
@@ -67,8 +65,6 @@ export function OpeningHoursCalendar() {
             {day}
           </div>
         ))}
-
-        {/* Time Axis and Content Grid */}
         {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
           <React.Fragment key={startTime}>
             <div className="flex h-12 items-center justify-center border-l border-t border-border bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
@@ -83,26 +79,25 @@ export function OpeningHoursCalendar() {
         ))}
       </div>
 
-      {/* Orange Overlay Grid for Borders */}
       <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
-          {/* Invisible Header Row for alignment */}
           <div className="h-12"></div>
           {days.map((day) => (
               <div key={`${day}-overlay-header`} className="flex h-12 items-center justify-center border-l border-t border-orange-500 text-center text-sm font-bold text-transparent sm:text-base">{day}</div>
           ))}
-
-          {/* Invisible Time Axis and grid cells for alignment */}
           {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
               <React.Fragment key={`${startTime}-overlay-row`}>
                   <div className="flex h-12 items-center justify-center border-l border-t border-orange-500 px-2 text-center text-xs font-bold text-transparent">
                       {startTime} - {timeSlots[hourIndex + 1]}
                   </div>
-                  {days.map((_day) => (
-                      <div key={`${_day}-${startTime}-overlay-cell`} className="h-12 border-l border-t border-orange-500 bg-transparent"></div>
+                  {days.map((_day, dayIndex) => (
+                      <div key={`${_day}-${startTime}-overlay-cell`} className="h-12 border-l border-t border-orange-500 bg-transparent">
+                      </div>
                   ))}
               </React.Fragment>
           ))}
           <div className="absolute inset-0 h-full w-full border-b border-r border-orange-500"></div>
+
+          <div className="absolute top-[3rem] left-[calc(var(--time-col-width))] h-[12rem] w-[calc(100%-var(--time-col-width))] bg-orange-500/20" style={{'--time-col-width': 'calc(4rem + 1px)'} as React.CSSProperties}></div>
       </div>
     </div>
   );
