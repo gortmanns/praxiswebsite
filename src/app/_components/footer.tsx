@@ -40,7 +40,7 @@ export function Footer() {
     { href: '/impressum', label: 'Impressum' },
     { href: '/datenschutzerklaerung', label: 'Datenschutzerklärung' },
   ];
-  const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Praxiszentrum+im+Ring,+Kappelenring+6,+3023+Hinterkappelen";
+  const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Praxiszentrum+im+Ring,+Kappelenring+6,+3032+Hinterkappelen";
 
   return (
     <footer className="bg-accent text-background/80">
@@ -71,7 +71,7 @@ export function Footer() {
                 <div className="flex flex-col">
                     <span>PRAXISZENTRUM IM RING</span>
                     <span>Kappelenring 6</span>
-                    <span>3023 Hinterkappelen</span>
+                    <span>3032 Hinterkappelen</span>
                 </div>
             </a>
           </div>
