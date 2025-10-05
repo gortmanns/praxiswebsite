@@ -55,11 +55,11 @@ const leistungen = [
 
 export default function LeistungenPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background debug-outline">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="flex-1 debug-outline">
-        <div className="container py-16 sm:py-24 debug-outline">
-            <div className="mx-auto max-w-5xl text-center debug-outline">
+      <main className="flex-1">
+        <div className="container py-16 sm:py-24">
+            <div className="mx-auto max-w-5xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
                     UNSERE LEISTUNGEN
                 </h2>
@@ -68,10 +68,10 @@ export default function LeistungenPage() {
                 </p>
             </div>
 
-            <div className="mx-auto mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 debug-outline">
+            <div className="mx-auto mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {leistungen.map((leistung) => (
-                <div key={leistung.name} className="flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl debug-outline">
-                  <div className="relative h-56 w-full debug-outline">
+                <div key={leistung.name} className="flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl">
+                  <div className="relative w-full aspect-square">
                     <Image
                       src={leistung.image}
                       alt={leistung.name}
@@ -80,8 +80,8 @@ export default function LeistungenPage() {
                       data-ai-hint={leistung.hint}
                     />
                   </div>
-                  <div className="flex flex-1 flex-col justify-between p-6 debug-outline">
-                    <div className='debug-outline'>
+                  <div className="flex flex-1 flex-col justify-between p-6">
+                    <div>
                       <h3 className="font-headline text-xl font-bold text-primary">{leistung.name}</h3>
                       <p className="mt-2 text-base text-foreground/80">{leistung.description}</p>
                     </div>
