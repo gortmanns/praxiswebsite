@@ -15,34 +15,64 @@ export default function ImpressumPage() {
                   IMPRESSUM
               </h2>
           </div>
-          <Card className="mt-16">
-            <CardHeader>
-              <CardTitle className="font-headline text-2xl font-bold text-primary">Für den Inhalt der Seite verantwortlich</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6 text-lg text-foreground/80">
-                <div className="space-y-1">
-                    <p>PRAXISZENTRUM IM RING</p>
-                    <p>Dipl. med. G. Ortmanns</p>
-                    <p>Kappelenring 6</p>
-                    <p>3032 Hinterkappelen</p>
-                </div>
-                <div className="space-y-1">
-                    <p>Telefon: 031 316 26 00</p>
-                    <p>Fax: 031 589 68 60</p>
-                    <ObfuscatedLink
-                        user="empfang"
-                        domain="praxiszentrum-im-ring.ch"
-                        className="text-primary hover:underline"
-                    >
-                        empfang@praxiszentrum-im-ring.ch
-                    </ObfuscatedLink>
-                </div>
-                <div className="space-y-1">
-                    <p>GLN: 7601003456677</p>
-                    <p>ZSR: U57432</p>
-                </div>
-            </CardContent>
-          </Card>
+          <div className="mt-16 space-y-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-headline text-2xl font-bold text-primary">Für den Inhalt der Seite verantwortlich</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-lg text-foreground/80">
+                  <div className="space-y-1">
+                      <p>PRAXISZENTRUM IM RING</p>
+                      <p>Dipl. med. G. Ortmanns</p>
+                      <p>Kappelenring 6</p>
+                      <p>3032 Hinterkappelen</p>
+                  </div>
+                  <div className="space-y-1 pt-4">
+                      <p>Telefon: 031 316 26 00</p>
+                      <p>Fax: 031 589 68 60</p>
+                      <ObfuscatedLink
+                          user="empfang"
+                          domain="praxiszentrum-im-ring.ch"
+                          className="text-primary hover:underline"
+                      >
+                          empfang@praxiszentrum-im-ring.ch
+                      </ObfuscatedLink>
+                  </div>
+                  <div className="space-y-1 pt-4">
+                      <p>GLN: 7601003456677</p>
+                      <p>ZSR: U57432</p>
+                  </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-headline text-2xl font-bold text-primary">Haftungsausschluss</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 text-base text-foreground/80">
+                <p>Der Autor übernimmt keine Gewähr für die Richtigkeit, Genauigkeit, Aktualität, Zuverlässigkeit und Vollständigkeit der Informationen. Haftungsansprüche gegen den Autor wegen Schäden materieller oder immaterieller Art, die aus dem Zugriff oder der Nutzung bzw. Nichtnutzung der veröffentlichten Informationen, durch Missbrauch der Verbindung oder durch technische Störungen entstanden sind, werden ausgeschlossen.</p>
+                <p>Alle Angebote sind freibleibend. Der Autor behält es sich ausdrücklich vor, Teile der Seiten oder das gesamte Angebot ohne gesonderte Ankündigung zu verändern, zu ergänzen, zu löschen oder die Veröffentlichung zeitweise oder endgültig einzustellen.</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-headline text-2xl font-bold text-primary">Haftungsausschluss für Inhalte und Links</CardTitle>
+              </CardHeader>
+              <CardContent className="text-base text-foreground/80">
+                <p>Verweise und Links auf Webseiten Dritter liegen ausserhalb unseres Verantwortungsbereichs. Es wird jegliche Verantwortung für solche Webseiten abgelehnt. Der Zugriff und die Nutzung solcher Webseiten erfolgen auf eigene Gefahr des jeweiligen Nutzers.</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-headline text-2xl font-bold text-primary">Urheberrechtserklärung</CardTitle>
+              </CardHeader>
+              <CardContent className="text-base text-foreground/80">
+                <p>Die Urheber- und alle anderen Rechte an Inhalten, Bildern, Fotos oder anderen Dateien auf dieser Website, gehören ausschliesslich Praxiszentrum im Ring oder den speziell genannten Rechteinhabern. Für die Reproduktion jeglicher Elemente ist die schriftliche Zustimmung des Urheberrechtsträgers im Voraus einzuholen.</p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
       <Footer />
