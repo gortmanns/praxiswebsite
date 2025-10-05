@@ -15,12 +15,13 @@ export default function TeamPage() {
             </h2>
           </div>
 
-          <div className="mx-auto mt-16">
+          <div className="mx-auto mt-16 max-w-5xl">
             <h3 className="mb-8 border-b-2 border-primary pb-2 font-headline text-2xl font-bold text-primary">
               Ärzte
             </h3>
 
             <div className="flex flex-col space-y-12">
+                <DoctorCard />
                 <DoctorCard />
                 <DoctorCard />
                 <DoctorCard />
