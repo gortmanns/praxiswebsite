@@ -26,6 +26,23 @@ export default function DatenschutzerklaerungPage() {
                         <p>Durch die Nutzung dieser Website erklären Sie sich mit der Erhebung, Verarbeitung und Nutzung von Daten gemäss der nachfolgenden Beschreibung einverstanden. Diese Website kann grundsätzlich ohne Registrierung besucht werden. Daten wie aufgerufene Seiten oder Namen von aufgerufenen Dateien, Datum und Uhrzeit werden zu statistischen Zwecken auf dem Server gespeichert, ohne dass diese Daten unmittelbar auf Ihre Person bezogen werden. Soweit auf unseren Seiten personenbezogene Daten (beispielsweise Name, Anschrift oder eMail-Adressen) erhoben werden, erfolgt dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben.</p>
                     </CardContent>
                 </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline text-2xl font-bold text-primary">Verarbeitung personenbezogener Daten</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4 text-base text-foreground/80">
+                        <p>Personenbezogene Daten sind alle Informationen, die sich auf eine identifizierte oder identifizierbare Person beziehen. Eine betroffene Person ist eine Person, über die personenbezogene Daten verarbeitet werden. Die Verarbeitung umfasst jeden Umgang mit personenbezogenen Daten, unabhängig von den verwendeten Mitteln und Verfahren, insbesondere die Speicherung, Weitergabe, Beschaffung, Löschung, Aufbewahrung, Veränderung, Vernichtung und Verwendung personenbezogener Daten.</p>
+                        <p>Wir verarbeiten personenbezogene Daten in Übereinstimmung mit dem Schweizer Datenschutzrecht. Sofern und soweit die EU-DSGVO anwendbar ist, verarbeiten wir personenbezogene Daten darüber hinaus auf folgenden Rechtsgrundlagen in Verbindung mit Art. 6 (1) GDPR:</p>
+                        <ul className="list-disc pl-6 space-y-2">
+                            <li>lit. a) Verarbeitung personenbezogener Daten mit Einwilligung der betroffenen Person.</li>
+                            <li>lit. b) Verarbeitung personenbezogener Daten zur Erfüllung eines Vertrages mit der betroffenen Person sowie zur Durchführung entsprechender vorvertraglicher Maßnahmen.</li>
+                            <li>lit. c) Verarbeitung personenbezogener Daten zur Erfüllung einer rechtlichen Verpflichtung, der wir nach geltendem Recht der EU oder nach geltendem Recht eines Landes, in dem die GDPR ganz oder teilweise anwendbar ist, unterliegen.</li>
+                            <li>lit. d) Verarbeitung personenbezogener Daten zur Wahrung lebenswichtiger Interessen der betroffenen Person oder einer anderen natürlichen Person.</li>
+                            <li>lit. f) Verarbeitung personenbezogener Daten zur Wahrung der berechtigten Interessen von uns oder von Dritten, sofern nicht die Grundfreiheiten und Rechte und Interessen der betroffenen Person überwiegen. Zu den berechtigten Interessen gehören insbesondere unser geschäftliches Interesse, unsere Website bereitstellen zu können, die Informationssicherheit, die Durchsetzung eigener Rechtsansprüche und die Einhaltung des schweizerischen Rechts.</li>
+                        </ul>
+                        <p>Wir verarbeiten personenbezogene Daten für die Dauer, die für den jeweiligen Zweck oder die jeweiligen Zwecke erforderlich ist. Bei längerfristigen Aufbewahrungspflichten aufgrund gesetzlicher und anderer Verpflichtungen, denen wir unterliegen, schränken wir die Bearbeitung entsprechend ein.</p>
+                    </CardContent>
+                </Card>
             </div>
         </div>
       </main>
