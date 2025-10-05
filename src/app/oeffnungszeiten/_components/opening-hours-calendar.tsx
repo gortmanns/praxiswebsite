@@ -45,7 +45,7 @@ const Cell = ({ type, dayIndex, hourIndex }: { type: string; dayIndex: number; h
   }
 
   return (
-    <div className={cn('h-full w-full border-l border-t border-border/20', colorClass)}></div>
+    <div className={cn('h-full w-full', colorClass)}></div>
   );
 };
 
@@ -82,7 +82,7 @@ export function OpeningHoursCalendar() {
             {startTime} - {timeSlots[hourIndex + 1]}
           </div>
           {days.map((_day, dayIndex) => (
-            <div key={`${_day}-${startTime}`} className="h-12">
+            <div key={`${_day}-${startTime}`} className="h-12 border-l border-t border-border/20">
                <Cell type={grid[dayIndex][hourIndex]} dayIndex={dayIndex} hourIndex={hourIndex} />
             </div>
           ))}
