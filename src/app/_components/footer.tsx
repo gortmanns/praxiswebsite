@@ -138,7 +138,7 @@ export function Footer() {
             <h3 className="text-lg font-bold uppercase text-primary">Qualitätslabel</h3>
             <div className="w-full">
               <Image 
-                src="/images/mehrfacharzt-logo.png" 
+                src="https://www.ihrehausarztpraxis.ch/uploads/3/8/1/8/38180191/logo-mehrfacharzt-pos-rgb_orig.png" 
                 alt="Mehrfacharzt Logo" 
                 width={200}
                 height={64}

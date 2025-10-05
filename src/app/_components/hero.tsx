@@ -5,7 +5,7 @@ export function Hero() {
   return (
     <section className="relative w-full">
         <Image
-          src="/images/luftbild.jpg"
+          src="https://www.praxiszentrum-im-ring.ch/s/img/emotionheader.jpg"
           alt="Aerial view of the practice location."
           width={1200}
           height={400}
