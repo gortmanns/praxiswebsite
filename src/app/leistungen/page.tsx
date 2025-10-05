@@ -93,9 +93,9 @@ const leistungen = [
   },
   {
     name: 'TWINT',
+    subtitle: 'Mit dem Handy bezahlen',
     image: '/images/leistungen/twint-logo.png',
     hint: 'twint logo',
-    description: 'Mit dem Handy bezahlen'
   }
 ];
 
@@ -120,8 +120,8 @@ export default function LeistungenPage() {
                         <h3 className="font-headline text-2xl font-bold text-primary">
                           {leistung.name}
                         </h3>
-                        {leistung.description && (
-                          <p className="mt-1 text-base text-muted-foreground">{leistung.description}</p>
+                        {leistung.subtitle && (
+                          <p className="mt-1 text-base text-primary">{leistung.subtitle}</p>
                         )}
                       </div>
                     </div>
