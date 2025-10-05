@@ -77,6 +77,17 @@ export default function DatenschutzerklaerungPage() {
                         <p>Diese Daten sind nicht bestimmten Personen zuordenbar. Eine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht vorgenommen. Wir behalten uns vor, diese Daten nachträglich zu prüfen, wenn uns konkrete Anhaltspunkte für eine rechtswidrige Nutzung bekannt werden.</p>
                     </CardContent>
                 </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline text-2xl font-bold text-primary">Dienste von Drittanbietern</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4 text-base text-foreground/80">
+                        <p>Diese Website kann Google Maps zur Einbettung von Karten, Google Invisible reCAPTCHA zum Schutz vor Bots und Spam und YouTube zur Einbettung von Videos nutzen.</p>
+                        <p>Diese Dienste der amerikanischen Google LLC verwenden u.a. Cookies, wodurch Daten an Google in die USA übertragen werden, wobei wir davon ausgehen, dass in diesem Zusammenhang allein durch die Nutzung unserer Website kein personenbezogenes Tracking stattfindet.</p>
+                        <p>Google hat sich verpflichtet, einen angemessenen Datenschutz gemäß dem US-amerikanisch-europäischen und dem US-amerikanisch-schweizerischen Privacy Shield zu gewährleisten.</p>
+                        <p>Weitere Informationen finden Sie in den Datenschutzbestimmungen von Google.</p>
+                    </CardContent>
+                </Card>
             </div>
         </div>
       </main>
