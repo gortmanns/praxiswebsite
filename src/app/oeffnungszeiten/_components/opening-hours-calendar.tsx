@@ -32,7 +32,8 @@ const schedule = [
     // Fr
     { day: 4, start: '08:00', end: '12:00', type: 'sprechstunde' },
     { day: 4, start: '12:00', end: '13:00', type: 'pause' },
-    { day: 4, start: '13:00', end: '17:00', type: 'sprechstunde' },
+    { day: 4, start: '13:00', end: '14:00', type: 'sprechstunde' },
+    { day: 4, start: '14:00', end: '17:00', type: 'sprechstunde' },
     { day: 4, start: '17:00', end: '18:00', type: 'geschlossen' },
 ];
 
@@ -97,7 +98,7 @@ export function OpeningHoursCalendar() {
          <div className="col-start-4 col-end-5 row-start-7 row-end-10 pointer-events-none flex items-center justify-center p-2">
             <span className="text-lg font-semibold text-foreground">Sprechstunde</span>
         </div>
-        <div className="col-start-5 col-end-6 row-start-7 row-end-10 pointer-events-none flex items-center justify-center p-2">
+        <div className="col-start-5 col-end-6 row-start-6 row-end-10 pointer-events-none flex items-center justify-center p-2">
             <span className="text-lg font-semibold text-foreground">Sprechstunde</span>
         </div>
         <div className="col-start-1 col-end-6 row-start-5 row-end-6 pointer-events-none flex items-center justify-center p-2">
