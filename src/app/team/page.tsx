@@ -11,6 +11,7 @@ const teamMembers = [
     {
       name: 'S. Garcia',
       role: 'Leitende Medizinische Praxisassistentin',
+      role2: 'Berufsbildnerin',
       imageUrl: '/images/team/Garcia.jpg',
       imageHint: 'woman portrait',
     },
@@ -58,24 +59,17 @@ export default function TeamPage() {
               </p>
             </div>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                <div className="mx-auto w-full max-w-sm">
-                    <TeamMemberCard 
-                        key={teamMembers[0].name}
-                        name={teamMembers[0].name}
-                        role={teamMembers[0].role}
-                        imageUrl={teamMembers[0].imageUrl}
-                        imageHint={teamMembers[0].imageHint}
-                    />
-                </div>
-                <div className="mx-auto w-full max-w-sm">
-                    <TeamMemberCard 
-                        key={teamMembers[1].name}
-                        name={teamMembers[1].name}
-                        role={teamMembers[1].role}
-                        imageUrl={teamMembers[1].imageUrl}
-                        imageHint={teamMembers[1].imageHint}
-                    />
-                </div>
+                {teamMembers.map((member) => (
+                    <div key={member.name} className="mx-auto w-full max-w-sm">
+                        <TeamMemberCard 
+                            name={member.name}
+                            role={member.role}
+                            role2={member.role2}
+                            imageUrl={member.imageUrl}
+                            imageHint={member.imageHint}
+                        />
+                    </div>
+                ))}
             </div>
           </div>
 
