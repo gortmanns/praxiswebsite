@@ -6,6 +6,7 @@ import { DoctorCardOrtmanns } from './_components/doctor-card-ortmanns';
 import { DoctorCardSchemmer } from './_components/doctor-card-schemmer';
 import { DoctorCardRosenov } from './_components/doctor-card-rosenov';
 import { DoctorCardHerschel } from './_components/doctor-card-herschel';
+import { DoctorCardSlezak } from './_components/doctor-card-slezak';
 
 export default function TeamPage() {
   return (
@@ -29,6 +30,7 @@ export default function TeamPage() {
             <DoctorCardSchemmer />
             <DoctorCardRosenov />
             <DoctorCardHerschel />
+            <DoctorCardSlezak />
           </div>
         </div>
       </main>
