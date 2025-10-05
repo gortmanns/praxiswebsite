@@ -59,8 +59,9 @@ export default function ImpressumPage() {
               <CardHeader>
                 <CardTitle className="font-headline text-2xl font-bold text-primary">Haftungsausschluss für Inhalte und Links</CardTitle>
               </CardHeader>
-              <CardContent className="text-base text-foreground/80">
+              <CardContent className="space-y-4 text-base text-foreground/80">
                 <p>Verweise und Links auf Webseiten Dritter liegen ausserhalb unseres Verantwortungsbereichs. Es wird jegliche Verantwortung für solche Webseiten abgelehnt. Der Zugriff und die Nutzung solcher Webseiten erfolgen auf eigene Gefahr des jeweiligen Nutzers.</p>
+                <p>Mit der Setzung eines Links machen wir uns den Inhalt externer Seiten ausdrücklich nicht zu Eigen sondern die Linksetzung dient nur dem Komfort des Seitenbenutzers.</p>
               </CardContent>
             </Card>
 
