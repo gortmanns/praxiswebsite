@@ -61,9 +61,9 @@ export default function TeamPage() {
                   <li className="font-bold uppercase">
                     Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor
                   </li>
-                  <li>
-                     <span className="font-bold uppercase">Projektmanagement</span> im Gesundheitswesen in Europa und Australien
-                     <div className="mt-2 pl-4">
+                  <li className="font-bold uppercase">
+                    Projektmanagement im Gesundheitswesen in Europa und Australien
+                     <div className="mt-2 pl-4 text-primary-foreground/80">
                         <h5 className="font-bold uppercase">Meilensteine:</h5>
                         <ul className="list-disc space-y-1 pl-4">
                           <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
@@ -72,9 +72,9 @@ export default function TeamPage() {
                         </ul>
                      </div>
                   </li>
-                  <li className='mt-2'>
-                    <span className="font-bold uppercase">Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz:</span>
-                    <ul className="list-disc space-y-1 pl-8 mt-1">
+                  <li className='mt-2 font-bold uppercase'>
+                    Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz:
+                    <ul className="list-disc space-y-1 pl-8 mt-1 text-primary-foreground/80">
                         <li>Universitätsspital Basel (USB)</li>
                         <li>Kantonsspital Baselland (KSBL)</li>
                         <li>Kantonsspital Winterthur (KSW)</li>
