@@ -84,8 +84,9 @@ export function OpeningHoursCalendar() {
         {/* Bottom border for the last row */}
         <div className="col-span-6 h-px border-b border-secondary"></div>
       </div>
+      
        {/* Overlay Grid */}
-      <div className="absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(10,minmax(0,1fr))]">
+      <div className="absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(10,minmax(0,1fr))] pointer-events-none">
         {/* This div is just for occupying the header row space in the grid */}
         <div className="col-span-6 h-12"></div>
         {/* This div is for the time axis column */}
@@ -93,10 +94,12 @@ export function OpeningHoursCalendar() {
         
         {/* Sprechstunde Mo-Fr 8-12 */}
         <div
-          className="flex items-center justify-center bg-[rgba(255,165,0,0.1)]"
+          className="bg-orange-500/10"
           style={{
-            gridColumn: '2 / span 5',
-            gridRow: '1 / span 4',
+            gridColumnStart: 2,
+            gridColumnEnd: 7,
+            gridRowStart: 1,
+            gridRowEnd: 5,
           }}
         >
         </div>
