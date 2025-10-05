@@ -50,19 +50,19 @@ export default function TeamPage() {
                   </div>
                 </div>
               </CardContent>
-              <div className="absolute inset-0 flex flex-col items-start justify-center bg-primary/90 p-6 text-left text-xs text-primary-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <ul className="space-y-2">
+              <div className="absolute inset-0 flex flex-col items-start justify-center bg-primary/90 p-6 text-left text-primary-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <ul className="space-y-2 text-sm">
                   <li>
-                    <span className="font-bold uppercase">MEDIZINSTUDIUM</span> IN BONN UND HOBART (AUSTRALIEN)
+                    <span className="font-bold uppercase">Medizinstudium</span> in Bonn und Hobart (Australien)
                   </li>
                   <li>
-                    <span className="font-bold uppercase">MASTERSTUDIUM</span> PUBLIC HEALTH UND HEALTH MANAGEMENT IN SYDNEY (AUSTRALIEN)
+                    <span className="font-bold uppercase">Masterstudium</span> Public Health und Health Management in Sydney (Australien)
                   </li>
                   <li>
-                    <span className="font-bold uppercase">UNTERNEHMENSBERATUNG</span> MIT SPEZIALISIERUNG AUF DEN GESUNDHEITSSEKTOR
+                    <span className="font-bold uppercase">Unternehmensberatung</span> mit Spezialisierung auf den Gesundheitssektor
                   </li>
                   <li>
-                     <span className="font-bold uppercase">PROJEKTMANAGEMENT</span> IM GESUNDHEITSWESEN IN EUROPA UND AUSTRALIEN
+                     <span className="font-bold uppercase">Projektmanagement</span> im Gesundheitswesen in Europa und Australien
                      <div className="mt-2 pl-4">
                         <h5 className="font-bold uppercase">Meilensteine:</h5>
                         <ul className="list-disc space-y-1 pl-4">
@@ -83,8 +83,8 @@ export default function TeamPage() {
                     </ul>
                   </li>
                 </ul>
-                 <p className='mt-4 text-xs'><span className="font-bold uppercase">Wissensch. Mitarbeiter:</span> Pneumologie (Universität Zürich / USZ)</p>
-                 <p className='text-xs'><span className="font-bold uppercase">Lehrbeauftragter:</span> Hausarztmedizin (Universität Bern)</p>
+                 <p className='mt-4 text-sm'><span className="font-bold uppercase">Wissensch. Mitarbeiter:</span> Pneumologie (Universität Zürich / USZ)</p>
+                 <p className='text-sm'><span className="font-bold uppercase">Lehrbeauftragter:</span> Hausarztmedizin (Universität Bern)</p>
               </div>
             </Card>
           </div>
