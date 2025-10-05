@@ -31,6 +31,18 @@ export const DoctorCardSchemmer = () => (
                                 <div className="mt-[1.5cqw] text-[2.2cqw] leading-tight">
                                     <p className="font-bold">Facharzt für Allgemein- und Viszeralchirurgie</p>
                                 </div>
+                                <div className="mt-[2.5cqw] text-[1.6cqw] italic">
+                                   <div className="relative flex h-[77px] w-full items-center justify-start overflow-hidden">
+                                        <Image
+                                        src="/images/schemmer-worni-logo.png"
+                                        alt="Schemmer & Worni Logo"
+                                        width={300}
+                                        height={100}
+                                        className="object-contain"
+                                        data-ai-hint="partner logo"
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
