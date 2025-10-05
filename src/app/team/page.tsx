@@ -3,6 +3,7 @@ import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { DoctorCardOrtmanns } from './_components/doctor-card-ortmanns';
 import { DoctorCardSchemmer } from './_components/doctor-card-schemmer';
+import { DoctorCardRosenov } from './_components/doctor-card-rosenov';
 
 export default function TeamPage() {
   return (
@@ -24,6 +25,7 @@ export default function TeamPage() {
             </div>
             <DoctorCardOrtmanns />
             <DoctorCardSchemmer />
+            <DoctorCardRosenov />
           </div>
         </div>
       </main>
