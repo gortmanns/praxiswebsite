@@ -84,7 +84,7 @@ export const doctors: Doctor[] = [
         ]
       },
       {
-        point: '',
+        point: 'Partnerkliniken',
         isList: true,
         subPoints: [
             'Hirslanden',
