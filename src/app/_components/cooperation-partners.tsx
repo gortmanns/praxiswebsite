@@ -61,20 +61,10 @@ export function CooperationPartnersSection() {
               >
                 <Card className="flex h-32 items-center p-6 transition-all group-hover:-translate-y-1 group-hover:shadow-lg">
                   <CardContent className="flex w-full items-center justify-center p-0">
-                    {partner.name === 'VASC-ALLIANCE' ? (
-                      <div className="relative flex h-[68px] w-full items-center justify-center overflow-hidden">
+                    {partner.logoUrl ? (
+                      <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
                         <Image
-                          src={partner.logoUrl!}
-                          alt={`${partner.name} Logo`}
-                          width={578}
-                          height={116}
-                          className="h-auto w-full object-contain"
-                        />
-                      </div>
-                    ) : partner.name === 'Schemmer & Worni' ? (
-                      <div className="relative flex h-[55px] w-full items-center justify-center overflow-hidden">
-                        <Image
-                          src={partner.logoUrl!}
+                          src={partner.logoUrl}
                           alt={`${partner.name} Logo`}
                           fill
                           className="object-contain"
@@ -82,16 +72,7 @@ export function CooperationPartnersSection() {
                       </div>
                     ) : partner.name === 'orthozentrum-bern' ? (
                       <OrthozentrumLogo className="h-20 w-auto" />
-                    ) : (
-                      <div className="relative flex h-[50px] w-full items-center justify-center overflow-hidden">
-                        <Image
-                          src={partner.logoUrl!}
-                          alt={`${partner.name} Logo`}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    )}
+                    ) : null}
                   </CardContent>
                 </Card>
               </Link>
