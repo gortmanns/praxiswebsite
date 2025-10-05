@@ -57,27 +57,26 @@ export function Header() {
 
 
   return (
-    <header className="w-full border-b bg-background debug-outline">
-      {/* Top bar */}
-      <div className="bg-primary text-primary-foreground debug-outline">
-        <div className="w-full px-8 debug-outline">
-            <div className="flex h-10 items-center justify-end debug-outline">
-                <div className="flex items-center gap-6 text-sm debug-outline">
+    <header className="w-full border-b bg-background">
+      <div className="bg-primary text-primary-foreground">
+        <div className="w-full px-8">
+            <div className="flex h-10 items-center justify-end">
+                <div className="flex items-center gap-6 text-sm">
                     <a
                     href="tel:0313162600"
-                    className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80 debug-outline"
+                    className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
                     >
                     <PhoneIcon className="h-[21px] w-[21px]" />
                     <span>031 316 26 00</span>
                     </a>
-                    <div className="flex items-center gap-2 font-medium text-sm text-primary-foreground debug-outline">
+                    <div className="flex items-center gap-2 font-medium text-sm text-primary-foreground">
                     <PrinterIcon className="h-[21px] w-[21px]" />
                     <span>031 589 68 60</span>
                     </div>
                     <ObfuscatedLink
                     user="empfang"
                     domain="praxiszentrum-im-ring.ch"
-                    className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80 debug-outline"
+                    className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
                     >
                     <MailIcon className="h-[21px] w-[21px]" />
                     <span>empfang@praxiszentrum-im-ring.ch</span>
@@ -87,9 +86,8 @@ export function Header() {
         </div>
       </div>
 
-      {/* Main header */}
-      <div className="flex h-28 items-center justify-between px-8 debug-outline">
-        <Link href="/" className="debug-outline">
+      <div className="flex h-28 items-center justify-between px-8">
+        <Link href="/">
               <Image
                 src="/images/praxiszentrum-logo.png"
                 alt="Praxiszentrum im Ring Logo"
@@ -101,7 +99,7 @@ export function Header() {
               />
         </Link>
 
-        <nav className="hidden md:flex md:items-center md:space-x-4 debug-outline">
+        <nav className="hidden md:flex md:items-center md:space-x-4">
             {mainNavLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -109,7 +107,7 @@ export function Header() {
                     key={link.href}
                     href={link.href}
                     className={cn(
-                    'whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors debug-outline',
+                    'whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
                     isActive
                         ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                         : 'text-muted-foreground hover:text-primary'
@@ -122,7 +120,7 @@ export function Header() {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <div className={cn(
-                        'flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors debug-outline',
+                        'flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
                         (pathname === '/oeffnungszeiten' || pathname === '/praxisferien')
                             ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                             : 'text-muted-foreground hover:text-primary'
@@ -130,7 +128,7 @@ export function Header() {
                         Zeiten <ChevronDown className="h-4 w-4" />
                     </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="debug-outline">
+                <DropdownMenuContent>
                     {zeitenLinks.map(link => (
                         <DropdownMenuItem key={link.href} asChild>
                             <Link href={link.href}>{link.label}</Link>
@@ -144,7 +142,7 @@ export function Header() {
                  key={notfallLink.href}
                  href={notfallLink.href}
                  className={cn(
-                 'whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors debug-outline',
+                 'whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
                  pathname === notfallLink.href
                      ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                      : 'text-muted-foreground hover:text-primary',
@@ -156,7 +154,7 @@ export function Header() {
             )}
         </nav>
 
-        <div className="flex items-center md:hidden debug-outline">
+        <div className="flex items-center md:hidden">
         <Sheet>
             <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
@@ -164,9 +162,9 @@ export function Header() {
                 <span className="sr-only">Menü öffnen</span>
             </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="debug-outline">
-            <div className="p-4 debug-outline">
-                <Link href="/" className="mb-8 block debug-outline">
+            <SheetContent side="right">
+            <div className="p-4">
+                <Link href="/" className="mb-8 block">
                     <Image
                       src="/images/praxiszentrum-logo.png"
                       alt="Praxiszentrum im Ring Logo"
@@ -176,10 +174,10 @@ export function Header() {
                       className="h-auto"
                     />
                 </Link>
-                <div className="mb-6 space-y-4 text-sm debug-outline">
+                <div className="mb-6 space-y-4 text-sm">
                 <a
                     href="tel:0313162600"
-                    className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary debug-outline"
+                    className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary"
                 >
                     <PhoneIcon className="h-[21px] w-[21px]" />
                     <span>031 316 26 00</span>
@@ -187,30 +185,30 @@ export function Header() {
                 <ObfuscatedLink
                     user="empfang"
                     domain="praxiszentrum-im-ring.ch"
-                    className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary debug-outline"
+                    className="flex items-center gap-2 text-muted-foreground transition-colors hover:text-primary"
                 >
                     <MailIcon className="h-[21px] w-[21px]" />
                     <span>empfang@praxiszentrum-im-ring.ch</span>
                 </ObfuscatedLink>
                 </div>
-                <nav className="flex flex-col space-y-4 debug-outline">
+                <nav className="flex flex-col space-y-4">
                 {navLinks.map((link) => {
                     const isActive = pathname === link.href;
                     if (link.href === '/oeffnungszeiten') {
                         return (
-                            <div key={link.href} className="debug-outline">
+                            <div key={link.href}>
                                 <h3 className={cn(
-                                    'rounded-md px-3 py-2 text-lg font-bold debug-outline',
+                                    'rounded-md px-3 py-2 text-lg font-bold',
                                     (isActive || pathname === '/praxisferien') ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'
                                 )}>
                                     Zeiten
                                 </h3>
-                                <div className="flex flex-col space-y-2 pl-6 pt-2 debug-outline">
+                                <div className="flex flex-col space-y-2 pl-6 pt-2">
                                     {zeitenLinks.map(subLink => (
                                         <Link
                                             key={subLink.href}
                                             href={subLink.href}
-                                            className="rounded-md px-3 py-2 text-base font-bold text-muted-foreground hover:text-primary debug-outline"
+                                            className="rounded-md px-3 py-2 text-base font-bold text-muted-foreground hover:text-primary"
                                         >
                                             {subLink.label}
                                         </Link>
@@ -225,7 +223,7 @@ export function Header() {
                             key={link.href}
                             href={link.href}
                             className={cn(
-                            'rounded-md px-3 py-2 text-lg font-bold transition-colors debug-outline',
+                            'rounded-md px-3 py-2 text-lg font-bold transition-colors',
                             isActive
                                 ? 'bg-primary text-primary-foreground'
                                 : 'text-muted-foreground hover:text-primary',

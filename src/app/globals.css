@@ -13,10 +13,10 @@
     --popover: 0 0% 100%;
     --popover-foreground: 224 71.4% 4.1%;
 
-    --primary: 197 100% 47%; /* #00aaef */
+    --primary: 197 100% 47%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 209 15% 65%; /* #98a7b5 */
+    --secondary: 209 15% 65%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 180 8% 86%;
@@ -49,8 +49,4 @@
   body {
     @apply text-foreground;
   }
-}
-
-.debug-outline {
-  border: 2px solid orange !important;
 }

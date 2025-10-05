@@ -58,25 +58,25 @@ export function CooperationPartnersSection() {
   ];
 
   return (
-    <section id="partners" className="w-full bg-primary debug-outline">
-      <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8 debug-outline">
+    <section id="partners" className="w-full bg-primary">
+      <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
           Unsere ärztlichen Kooperationspartner
         </h2>
         
-        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 debug-outline">
+        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {topPartners.map(partner => (
             <Link
               key={partner.name}
               href={partner.websiteUrl!}
               target={partner.websiteUrl === '#' ? '_self' : '_blank'}
               rel="noopener noreferrer"
-              className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 debug-outline"
+              className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
-              <Card className="flex h-full w-full items-center p-6 debug-outline">
-                <CardContent className="flex w-full items-center justify-center p-0 debug-outline">
+              <Card className="flex h-full w-full items-center p-6">
+                <CardContent className="flex w-full items-center justify-center p-0">
                   {partner.logoUrl ? (
-                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden debug-outline">
+                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
                       <Image
                         src={partner.logoUrl}
                         alt={`${partner.name} Logo`}
@@ -91,7 +91,7 @@ export function CooperationPartnersSection() {
                   ) : null}
                 </CardContent>
               </Card>
-              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 debug-outline"></div>
+              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             </Link>
           ))}
            <Link
@@ -99,14 +99,14 @@ export function CooperationPartnersSection() {
               href="https://neurologie-plus.ch/"
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 debug-outline"
+              className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
-              <Card className="flex h-full w-full items-center p-6 debug-outline">
-                <CardContent className="flex w-full items-center justify-center p-0 debug-outline">
+              <Card className="flex h-full w-full items-center p-6">
+                <CardContent className="flex w-full items-center justify-center p-0">
                    <AgnieszkaSlezakLogo className="h-20 w-auto text-special-green" />
                 </CardContent>
               </Card>
-              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 debug-outline"></div>
+              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             </Link>
         </div>
 
@@ -114,19 +114,19 @@ export function CooperationPartnersSection() {
         <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
           Unsere weiteren Partner
         </h3>
-        <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3 lg:grid-cols-8 debug-outline">
-          <div className="hidden lg:block debug-outline"></div> {/* Empty spacer */}
+        <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3 lg:grid-cols-8">
+          <div className="hidden lg:block"></div>
           {otherPartners.map(partner => (
             <Link
               key={partner.name}
               href={partner.websiteUrl}
               target={partner.websiteUrl === '#' ? '_self' : '_blank'}
               rel="noopener noreferrer"
-              className="group relative sm:col-span-1 lg:col-span-2 h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 debug-outline"
+              className="group relative sm:col-span-1 lg:col-span-2 h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
-              <Card className="flex h-full w-full items-center justify-center p-6 debug-outline">
-                <CardContent className="flex w-full items-center justify-center p-0 debug-outline">
-                  <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden debug-outline">
+              <Card className="flex h-full w-full items-center justify-center p-6">
+                <CardContent className="flex w-full items-center justify-center p-0">
+                  <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
                     <Image
                       src={partner.logoUrl!}
                       alt={`${partner.name} Logo`}
@@ -138,10 +138,10 @@ export function CooperationPartnersSection() {
                   </div>
                 </CardContent>
               </Card>
-              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 debug-outline"></div>
+              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             </Link>
           ))}
-          <div className="hidden lg:block debug-outline"></div> {/* Empty spacer */}
+          <div className="hidden lg:block"></div>
         </div>
       </div>
     </section>

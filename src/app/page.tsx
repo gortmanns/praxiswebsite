@@ -8,9 +8,9 @@ import { CooperationPartnersSection } from './_components/cooperation-partners';
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col bg-background debug-outline">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="flex-1 debug-outline">
+      <main className="flex-1">
         <Hero />
         <WelcomeSection />
         <QuickNavSection />
