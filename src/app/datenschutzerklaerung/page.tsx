@@ -82,7 +82,7 @@ export default function DatenschutzerklaerungPage() {
                         <CardTitle className="font-headline text-2xl font-bold text-primary">Speicherung der IP-Adresse</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 text-base text-foreground/80">
-                        <p>Unsere Kommentarfunktion speichert die IP-Adressen der Nutzer, die Kommentare abgeben. Da wir die Kommentare auf unserer Seite nicht überprüfen, bevor sie freigeschaltet werden, benötigen wir diese Daten, um im Falle von Rechtsverstößen wie Beleidigungen oder Propaganda gegen den Verfasser vorgehen zu können.</p>
+                        <p>IP-Adressen werden serverseitig gespeichert, um die Sicherheit der Seite zu gewährleisten und Angriffe abzuwehren. Diese Daten werden nicht mit anderen personenbezogenen Daten zusammengeführt.</p>
                     </CardContent>
                 </Card>
                 <Card>
