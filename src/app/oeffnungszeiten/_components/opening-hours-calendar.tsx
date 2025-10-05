@@ -77,32 +77,36 @@ export function OpeningHoursCalendar() {
         ))}
       </div>
 
-      <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(10,minmax(0,1fr))] border-orange-500">
-          <div
-            className="pointer-events-auto flex items-center justify-center"
-            style={{
-              gridRow: '2 / 6', 
-              gridColumn: '2 / 7', 
-            }}
-          >
-             <span className="font-bold text-primary">Sprechstunde</span>
-          </div>
+      <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(10,minmax(0,1fr))]">
+          {Array.from({ length: 10 * 5 }).map((_, i) => (
+            <div key={i} className="border-r border-b border-orange-500"></div>
+          ))}
 
           <div
-            className="pointer-events-auto flex items-center justify-center"
+            className="pointer-events-auto flex items-center justify-center font-bold text-primary"
             style={{
-              gridRow: '6 / 8', 
+              gridRow: '1 / 5', 
               gridColumn: '2 / 7', 
             }}
           >
-             <span className="font-bold text-white">Mittagspause</span>
+            Sprechstunde
           </div>
           
           <div
+            className="pointer-events-auto flex items-center justify-center font-bold text-white"
+            style={{
+              gridRow: '5 / 7', 
+              gridColumn: '2 / 7',
+            }}
+          >
+            Mittagspause
+          </div>
+
+          <div
             className="pointer-events-auto bg-orange-500/20"
             style={{
-              gridRow: '8 / 12', 
-              gridColumn: '2 / 4', 
+              gridRow: '7 / 11',
+              gridColumn: '2 / 4',
             }}
           >
           </div>
