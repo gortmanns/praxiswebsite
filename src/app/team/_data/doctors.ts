@@ -88,49 +88,4 @@ export const doctors: Doctor[] = [
         }
     ],
   },
-  {
-    name: 'G. Ortmanns (Kopie 1)',
-    title: 'Dipl. med.',
-    specialties: [
-      'Praktischer Arzt',
-      'Master of Public Health (UNSW)',
-      'Master of Health Management (UNSW)',
-    ],
-    position: 'Medizinische und Administrative Leitung\nPraxiszentrum im Ring',
-    imageUrl: '/images/team/Ortmanns.jpg',
-    cv: [
-      { point: 'Medizinstudium in Bonn (Deutschland) und Hobart (Australien)'},
-      { point: 'Masterstudium Public Health und Health Management in Sydney (Australien)'}
-    ],
-  },
-  {
-    name: 'G. Ortmanns (Kopie 2)',
-    title: 'Dipl. med.',
-    specialties: [
-      'Praktischer Arzt',
-      'Master of Public Health (UNSW)',
-      'Master of Health Management (UNSW)',
-    ],
-    position: 'Medizinische und Administrative Leitung\nPraxiszentrum im Ring',
-    imageUrl: '/images/team/Ortmanns.jpg',
-    cv: [
-      { point: 'Medizinstudium in Bonn (Deutschland) und Hobart (Australien)'},
-      { point: 'Masterstudium Public Health und Health Management in Sydney (Australien)'}
-    ],
-  },
-  {
-    name: 'G. Ortmanns (Kopie 3)',
-    title: 'Dipl. med.',
-    specialties: [
-      'Praktischer Arzt',
-      'Master of Public Health (UNSW)',
-      'Master of Health Management (UNSW)',
-    ],
-    position: 'Medizinische und Administrative Leitung\nPraxiszentrum im Ring',
-    imageUrl: '/images/team/Ortmanns.jpg',
-    cv: [
-      { point: 'Medizinstudium in Bonn (Deutschland) und Hobart (Australien)'},
-      { point: 'Masterstudium Public Health und Health Management in Sydney (Australien)'}
-    ],
-  },
 ];
