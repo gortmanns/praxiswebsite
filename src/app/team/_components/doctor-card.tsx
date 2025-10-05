@@ -48,26 +48,26 @@ export const DoctorCard = ({ doctor }: { doctor: Doctor }) => (
                     </div>
                 </CardContent>
                 <div className="absolute inset-0 flex flex-col items-start justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <ul className="space-y-1.5 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
+                    <ul className="list-disc space-y-1.5 pl-5 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
                         {doctor.cv.map((item, index) => {
                             if (item.isParagraph) {
                                 return (
-                                    <p key={index} className="font-medium text-background">
+                                    <li key={index} className="font-medium text-background">
                                         {item.point}
-                                    </p>
+                                    </li>
                                 );
                             }
                             return (
                                 <li key={index} className={`font-bold text-primary ${item.isList ? 'mt-2' : ''}`}>
                                     {item.point}
                                     {item.subPoints && (
-                                        <div className="mt-1 pl-4 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
+                                        <div className="mt-1 pl-9 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
                                             {item.subPointsTitle && (
                                                 <h5 className="mb-1 tracking-wide text-background/90">
                                                     {item.subPointsTitle}:
                                                 </h5>
                                             )}
-                                            <ul className="list-disc space-y-px pl-9 font-normal">
+                                            <ul className="list-disc space-y-px pl-5 font-normal">
                                                 {item.subPoints.map((sub, subIndex) => (
                                                     <li key={subIndex}>{sub}</li>
                                                 ))}
