@@ -53,7 +53,6 @@ const BaseCell = ({ dayIndex, hourIndex }: { dayIndex: number; hourIndex: number
 export function OpeningHoursCalendar() {
   return (
     <div className="relative">
-      {/* Base Grid */}
       <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-secondary">
         {/* Header */}
         <div className="sticky top-0 z-10 bg-muted"></div>
@@ -78,14 +77,6 @@ export function OpeningHoursCalendar() {
               </div>
             ))}
           </React.Fragment>
-        ))}
-      </div>
-
-      {/* Overlay Grid */}
-      <div className="pointer-events-none absolute inset-0 grid grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(10,minmax(0,1fr))]">
-        <div className="row-start-1 col-start-1 h-12"></div>
-        {Array.from({ length: 11 * 5 }).map((_, i) => (
-            <div key={i} className="border-r border-b border-orange-500"></div>
         ))}
       </div>
     </div>
