@@ -82,19 +82,6 @@ export function OpeningHoursCalendar() {
           ))}
         </React.Fragment>
       ))}
-
-        {/* Text Overlays */}
-        <div 
-            className="pointer-events-none absolute flex items-center justify-center"
-            style={{
-                gridColumnStart: 2,
-                gridColumnEnd: 7,
-                gridRowStart: 2,
-                gridRowEnd: 6,
-            }}
-        >
-            <span className="text-center text-lg font-bold text-foreground">Sprechstunde</span>
-        </div>
     </div>
   );
 }
