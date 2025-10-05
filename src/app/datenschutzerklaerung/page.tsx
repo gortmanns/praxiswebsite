@@ -52,6 +52,31 @@ export default function DatenschutzerklaerungPage() {
                         <p>Ein genereller Widerspruch gegen die Verwendung von Cookies zu Online-Marketing-Zwecken kann für eine Vielzahl der Dienste, insbesondere beim Tracking, über die US-Seite <a href="http://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">http://www.aboutads.info/choices/</a> oder die EU-Seite <a href="http://www.youronlinechoices.com/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">http://www.youronlinechoices.com/</a> erklärt werden. Darüber hinaus kann die Speicherung von Cookies durch Deaktivierung in den Browsereinstellungen erreicht werden. Bitte beachten Sie, dass in diesem Fall nicht alle Funktionen dieses Online-Angebots genutzt werden können.</p>
                     </CardContent>
                 </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline text-2xl font-bold text-primary">SSL/TLS-Verschlüsselung</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4 text-base text-foreground/80">
+                        <p>Diese Website verwendet aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte, wie z.B. Anfragen, die Sie an uns als Seitenbetreiber senden, eine SSL/TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie daran, dass die Adresszeile des Browsers von «http://» auf «https://» wechselt und an dem Schloss-Symbol in Ihrer Browserzeile.</p>
+                        <p>Wenn die SSL- oder TLS-Verschlüsselung aktiviert ist, können die Daten, die Sie an uns übermitteln, nicht von Dritten gelesen werden.</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline text-2xl font-bold text-primary">Server-Log-Dateien</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4 text-base text-foreground/80">
+                        <p>Der Provider dieser Website erhebt und speichert automatisch Informationen in so genannten Server-Log-Dateien, die Ihr Browser automatisch an uns übermittelt. Dies sind:</p>
+                        <ul className="list-disc space-y-2 pl-6">
+                            <li>Browsertyp und Browserversion</li>
+                            <li>Verwendetes Betriebssystem</li>
+                            <li>Referrer URL</li>
+                            <li>Hostname des zugreifenden Rechners</li>
+                            <li>Zeitpunkt der Serveranfrage</li>
+                        </ul>
+                        <p>Diese Daten sind nicht bestimmten Personen zuordenbar. Eine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht vorgenommen. Wir behalten uns vor, diese Daten nachträglich zu prüfen, wenn uns konkrete Anhaltspunkte für eine rechtswidrige Nutzung bekannt werden.</p>
+                    </CardContent>
+                </Card>
             </div>
         </div>
       </main>
