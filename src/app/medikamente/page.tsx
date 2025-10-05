@@ -14,7 +14,7 @@ export default function MedikamentePage() {
       <Header />
       <main className="flex-1">
         <div className="container py-16 sm:py-24">
-          <div className="mx-auto max-w-5xl text-center">
+          <div className="mx-auto max-w-7xl text-center">
             <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
               MEDIKAMENTE
             </h2>
@@ -58,38 +58,61 @@ export default function MedikamentePage() {
           <div className="mx-auto mt-12 max-w-7xl">
             <Tabs defaultValue="telefon" className="w-full">
               <TabsList className="grid h-auto w-full grid-cols-1 gap-4 sm:grid-cols-2">
-                  <a href="tel:0313162666">
-                    <TabsTrigger 
-                        value="telefon" 
-                        className={cn(
-                            'h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
-                        )}
-                    >
+                  <TabsTrigger 
+                      value="telefon" 
+                      asChild
+                      className={cn(
+                          'h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
+                      )}
+                  >
+                    <div className="flex flex-col items-center">
                         <div className="flex items-center gap-3">
                             <Phone className="h-6 w-6"/>
                             <span>Vorbestellung per Telefon</span>
                         </div>
                         <span className="text-base font-normal">031 316 26 66</span>
-                    </TabsTrigger>
-                  </a>
-                  <ObfuscatedLink
-                    user="medikamente"
-                    domain="praxiszentrum-im-ring.ch"
+                    </div>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                      value="email"
+                      asChild
+                      className={cn(
+                          'h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
+                      )}
                   >
-                    <TabsTrigger 
-                        value="email"
-                        className={cn(
-                            'h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
-                        )}
-                    >
-                       <div className="flex items-center gap-3">
+                     <div className="flex flex-col items-center">
+                        <div className="flex items-center gap-3">
                             <Mail className="h-6 w-6"/>
                             <span>Vorbestellung per Email</span>
                         </div>
-                        <span className="text-base font-normal break-all">medikamente@praxiszentrum-im-ring.ch</span>
-                    </TabsTrigger>
-                  </ObfuscatedLink>
+                        <span className="break-all text-base font-normal">medikamente@praxiszentrum-im-ring.ch</span>
+                     </div>
+                  </TabsTrigger>
               </TabsList>
+              <TabsContent value="telefon" className="mt-8">
+                <Card>
+                    <CardContent className="p-6 md:p-8">
+                        <div className="space-y-6 text-lg text-foreground/80">
+                            <h4 className="text-center font-headline text-2xl font-bold text-primary">Vorbestellung per Telefon</h4>
+                            <p>Unsere Bestellhotline für Medikamente erreichen Sie Tag und Nacht an 365 Tagen im Jahr unter der Rufnummer</p>
+                            
+                            <a href="tel:0313162666" className="my-4 flex items-center justify-center gap-4 text-2xl font-bold text-foreground transition-colors hover:text-primary md:text-3xl lg:text-4xl">
+                                <Phone className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
+                                <span>031 316 26 66</span>
+                            </a>
+                            
+                            <p>Befolgen Sie einfach die Anweisungen und deponieren Sie über das Dialogsystem Ihren Namen, Vornamen sowie das Geburtsdatum gefolgt von den benötigten Medikamenten. Um Missverständen vorzubeugen lesen Sie am einfachsten die Medikamente so vor, wie diese auf der Originalverpackung bezeichnet sind.</p>
+                            
+                            <div>
+                              <p>Zum Beispiel:</p>
+                              <pre className="mt-2 rounded-md bg-muted p-4 font-code text-base text-muted-foreground">ATORVASTATIN Mepha Lactab 40 mg</pre>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="email" className="mt-8">
+              </TabsContent>
             </Tabs>
           </div>
         </div>
