@@ -71,6 +71,11 @@ export default function LeistungenPage() {
             <div className="mx-auto mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {leistungen.map((leistung) => (
                 <div key={leistung.name} className="group relative flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl">
+                  <div className="p-6">
+                    <h3 className="font-headline text-xl font-bold text-primary text-center">
+                      {leistung.name}
+                    </h3>
+                  </div>
                   <div className="relative w-full aspect-square">
                     <Image
                       src={leistung.image}
@@ -79,14 +84,6 @@ export default function LeistungenPage() {
                       className="object-cover"
                       data-ai-hint={leistung.hint}
                     />
-                  </div>
-                  <div className="flex-1 p-6">
-                    <h3 className="font-headline text-xl font-bold text-primary">
-                      {leistung.name}
-                    </h3>
-                    <p className="mt-2 text-base text-foreground/80">
-                      {leistung.description}
-                    </p>
                   </div>
                 </div>
               ))}
