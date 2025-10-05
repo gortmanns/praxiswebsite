@@ -15,7 +15,7 @@ export const DoctorCardRosenov = () => (
                     <div className="grid h-full grid-cols-3 items-center gap-[4.5%]">
                         <div className="relative col-span-1 h-full w-full">
                             <Image
-                                src="/images/team/Dr.Rosenov.jpg"
+                                src="/images/team/Dr.Rosenov.png"
                                 alt="Portrait von Dr. Rosenov"
                                 data-ai-hint="doctor portrait"
                                 fill
@@ -83,7 +83,7 @@ export const DoctorCardRosenov = () => (
                     <div className="grid h-full grid-cols-3 items-center gap-[4.5%]">
                         <div className="relative col-span-1 h-full w-full">
                             <Image
-                                src="/images/team/Dr.Rosenov.png"
+                                src="/images/team/Dr.Rosenov.jpg"
                                 alt="Portrait von Dr. Rosenov"
                                 data-ai-hint="doctor portrait"
                                 fill
@@ -91,7 +91,7 @@ export const DoctorCardRosenov = () => (
                             />
                         </div>
                         <div className="col-span-2">
-                            <div className="flex h-full flex-col justify-center text.tsx-left text-foreground/80">
+                            <div className="flex h-full flex-col justify-center text-left text-foreground/80">
                                 <p className="text-[2.2cqw] text-primary">Dr. med.</p>
                                 <h4 className="font-headline text-[4.8cqw] font-bold leading-tight text-primary">
                                 P. Rosenov
