@@ -126,7 +126,10 @@ export default function LeistungenPage() {
                           )}
                         </div>
                     </div>
-                    <div className="relative flex-1">
+                    <div className={cn(
+                        "relative",
+                        leistung.name === 'TWINT' ? "h-auto w-full aspect-video" : "flex-1"
+                    )}>
                         <Image
                           src={leistung.image}
                           alt={leistung.name}
