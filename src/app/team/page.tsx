@@ -1,3 +1,4 @@
+
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { DoctorCardOrtmanns } from './_components/doctor-card-ortmanns';
@@ -24,6 +25,24 @@ const teamMembers = [
           <p>
             Inzwischen bin ich - jetzt in der Funktion der Leitenden MPA –
             zurückgekehrt an meine alte Wirkungsstätte.
+          </p>
+        </>
+      ),
+    },
+    {
+      name: 'B. Aeschlimann',
+      role: 'Medizinische Praxisassistentin',
+      role2: 'Berufsbildnerin',
+      imageUrl: '/images/team/Aeschlimann.jpg',
+      imageHint: 'woman portrait',
+      backsideContent: (
+        <>
+          <p>
+          Ich blicke zurück auf eine lange Erfahrung im Beruf als MPA aber bin neu im Praxiszentrum im Ring.
+          </p>
+          <br />
+          <p>
+          Als Berufsbildnerin bin ich für die Ausbildung der Lernenden zur MPA verantwortlich.
           </p>
         </>
       ),
