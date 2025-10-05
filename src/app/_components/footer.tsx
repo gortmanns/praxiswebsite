@@ -138,7 +138,7 @@ export function Footer() {
           {/* Col 3: Qualitätslabel */}
           <div className="space-y-4 debug-outline">
             <h3 className="text-lg font-bold uppercase text-primary">Qualitätslabel</h3>
-            <div className="w-full debug-outline">
+            <div className="w-1/2 debug-outline">
               <Image
                 src="/images/mehrfacharzt-logo.png"
                 alt="Mehrfacharzt Logo"
