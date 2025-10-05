@@ -22,6 +22,10 @@ export default function TeamPage() {
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
             <DoctorCard />
+            <DoctorCard />
+            <DoctorCard />
+            <DoctorCard />
+            <DoctorCard />
           </div>
         </div>
       </main>
