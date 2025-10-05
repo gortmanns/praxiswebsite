@@ -14,6 +14,16 @@ const teamMembers = [
       role2: 'Berufsbildnerin',
       imageUrl: '/images/team/Garcia.jpg',
       imageHint: 'woman portrait',
+      backsideContent: (
+        <div className="space-y-4 text-center text-sm">
+          <p>
+            Früher habe ich schon einmal für rund 10 Jahre in dieser Praxis gearbeitet, damals noch bei Dr. Segginger.
+          </p>
+          <p>
+            Inzwischen bin ich - jetzt in der Funktion der Leitenden MPA - zurückgekehrt an meine alte Wirkungsstätte.
+          </p>
+        </div>
+      )
     },
     {
       name: 'Max Mustermann',
@@ -58,7 +68,7 @@ export default function TeamPage() {
                 Die guten Geister, ohne die keine Arztpraxis funktioniert
               </p>
             </div>
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3">
                 {teamMembers.map((member) => (
                     <div key={member.name} className="mx-auto w-full max-w-sm">
                         <TeamMemberCard 
@@ -67,6 +77,7 @@ export default function TeamPage() {
                             role2={member.role2}
                             imageUrl={member.imageUrl}
                             imageHint={member.imageHint}
+                            backsideContent={member.backsideContent}
                         />
                     </div>
                 ))}
