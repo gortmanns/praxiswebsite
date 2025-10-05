@@ -23,7 +23,7 @@ const schedule: ('sprechstunde' | 'pause' | 'geschlossen')[][] = [
   ['sprechstunde', 'sprechstunde', 'sprechstunde', 'sprechstunde', 'pause', 'sprechstunde', 'sprechstunde', 'sprechstunde', 'sprechstunde', 'geschlossen'],
 ];
 
-const Cell = ({ dayIndex, hourIndex }: { dayIndex: number; hourIndex: number; }) => {
+const BaseCell = ({ dayIndex, hourIndex }: { dayIndex: number; hourIndex: number; }) => {
   const type = schedule[dayIndex][hourIndex];
   
   let colorClass = '';
@@ -76,13 +76,40 @@ export function OpeningHoursCalendar() {
             </div>
             {days.map((_day, dayIndex) => (
               <div key={`${_day}-${startTime}`} className="h-12 border-l border-t border-border">
-                 <Cell dayIndex={dayIndex} hourIndex={hourIndex} />
+                 <BaseCell dayIndex={dayIndex} hourIndex={hourIndex} />
               </div>
             ))}
           </React.Fragment>
         ))}
         {/* Bottom border for the last row */}
         <div className="col-span-6 h-px border-b border-border"></div>
+      </div>
+
+      {/* Overlay Grid */}
+      <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
+        {/* Header Row */}
+        <div></div>
+        {days.map((day) => (
+          <div 
+            key={`${day}-overlay`} 
+            className="h-12 border-l border-t border-orange-500/50 bg-orange-500/20"
+          >
+          </div>
+        ))}
+
+        {/* Time Axis and Content Grid */}
+        {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
+          <React.Fragment key={`${startTime}-overlay`}>
+            <div className="h-12 border-l border-t border-orange-500/50 bg-orange-500/20">
+            </div>
+            {days.map((_day, dayIndex) => (
+              <div key={`${_day}-${startTime}-overlay`} className="h-12 border-l border-t border-orange-500/50 bg-orange-500/20">
+              </div>
+            ))}
+          </React.Fragment>
+        ))}
+        {/* Bottom border for the last row */}
+        <div className="col-span-6 h-px border-b border-orange-500/50"></div>
       </div>
     </div>
   );
