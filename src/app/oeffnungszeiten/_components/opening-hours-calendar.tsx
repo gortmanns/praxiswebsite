@@ -82,19 +82,6 @@ export function OpeningHoursCalendar() {
           ))}
         </React.Fragment>
       ))}
-
-      {/* Overlay Container */}
-      <div 
-        className="pointer-events-none bg-orange-500/20"
-        style={{
-          gridColumnStart: 2,
-          gridColumnEnd: 7,
-          gridRowStart: 2,
-          gridRowEnd: 6,
-          zIndex: 2
-        }}
-      >
-      </div>
     </div>
   );
 }
