@@ -72,14 +72,6 @@ export const doctors: Doctor[] = [
     imageUrl: '/images/team/Prof.Schemmer.jpg',
     cv: [
       {
-        point: 'Kleinchirurgische Eingriffe können direkt vor Ort im PRAXISZENTRUM IM RING erfolgen.',
-        isList: true,
-      },
-      {
-        point: 'Grosse chirurgische Eingriffe werden in enger Kooperation zwischen Chirurg und Hausarzt durchgeführt.',
-        isList: true,
-      },
-      {
         point: 'Vorbesprechung und Planung des Eingriffs erfolgen hier im PRAXISZENTRUM IM RING.',
         isParagraph: true,
       },
