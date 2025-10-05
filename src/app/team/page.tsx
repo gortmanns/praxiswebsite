@@ -51,7 +51,7 @@ const otherTeamMembers = [
     {
       name: 'G. Öztürk',
       role: 'Praxishilfe',
-      imageUrl: '/images/team/Ozturk.jpg',
+      imageUrl: '/images/team/Oertmann.jpg',
       imageHint: 'man portrait',
       backsideContent: (
         <>
