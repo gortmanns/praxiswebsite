@@ -86,66 +86,30 @@ export function OpeningHoursCalendar() {
       </div>
       
       {/* Overlay Grid */}
-      <div className="absolute inset-0 grid grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(10,minmax(0,1fr))] pointer-events-none">
-        {/* This div is just for occupying the header row space in the grid */}
-        <div className="col-span-6 h-12"></div>
-        {/* This div is for the time axis column */}
-        <div className="row-span-10"></div>
-        
-        {/* Block Mo-Fr 8-12 */}
-        <div
-          className="bg-orange-500/20"
-          style={{
-            gridColumnStart: 1,
-            gridColumnEnd: 6,
-            gridRowStart: 1,
-            gridRowEnd: 5,
-          }}
-        ></div>
+      <div className="pointer-events-none absolute inset-0 grid grid-cols-[auto_repeat(5,minmax(0,1fr))]">
+        {/* Header Row */}
+        <div className="sticky top-0 z-10"></div>
+        {days.map((day) => (
+          <div
+            key={day}
+            className="h-12 border-l border-t border-orange-500 bg-orange-500/20"
+          ></div>
+        ))}
 
-        {/* Block Mo-Fr 12-14 */}
-         <div
-          className="bg-orange-500/20"
-          style={{
-            gridColumnStart: 1,
-            gridColumnEnd: 6,
-            gridRowStart: 5,
-            gridRowEnd: 7,
-          }}
-        ></div>
-        
-        {/* Block Mo-Di 14-18 */}
-        <div
-          className="bg-orange-500/20"
-          style={{
-            gridColumnStart: 1,
-            gridColumnEnd: 3,
-            gridRowStart: 7,
-            gridRowEnd: 11,
-          }}
-        ></div>
-
-        {/* Block Mi 14-18 */}
-        <div
-            className="bg-orange-500/20"
-            style={{
-                gridColumnStart: 3,
-                gridColumnEnd: 4,
-                gridRowStart: 7,
-                gridRowEnd: 11,
-            }}
-        ></div>
-        
-        {/* Block Do-Fr 14-15 */}
-         <div
-          className="bg-orange-500/20"
-          style={{
-            gridColumnStart: 4,
-            gridColumnEnd: 6,
-            gridRowStart: 7,
-            gridRowEnd: 8,
-          }}
-        ></div>
+        {/* Time Axis and Content Grid */}
+        {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
+          <React.Fragment key={startTime}>
+            <div className="h-12 border-l border-t border-orange-500 bg-orange-500/20"></div>
+            {days.map((_day) => (
+              <div
+                key={`${_day}-${startTime}-overlay`}
+                className="h-12 border-l border-t border-orange-500 bg-orange-500/20"
+              ></div>
+            ))}
+          </React.Fragment>
+        ))}
+        {/* Bottom border for the last row */}
+        <div className="col-span-6 h-px border-b border-orange-500"></div>
       </div>
     </div>
   );
