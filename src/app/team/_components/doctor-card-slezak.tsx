@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
 
 export const DoctorCardSlezak = () => (
     <div 
@@ -37,7 +36,6 @@ export const DoctorCardSlezak = () => (
                     </div>
                 </CardContent>
                 <div className="absolute inset-0 flex flex-col items-start justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <AgnieszkaSlezakLogo className="h-20 w-auto" />
                 </div>
             </Card>
         </div>
