@@ -7,7 +7,6 @@ const leistungen = [
   {
     name: 'Audiometrie',
     image: '/images/leistungen/audiometrie.jpg',
-    description: 'Hörtests zur Überprüfung und Diagnose der Hörfähigkeit.',
     hint: 'audiometry test',
     backsideContent: (
       <>
@@ -18,7 +17,6 @@ const leistungen = [
   {
     name: 'EKG',
     image: '/images/leistungen/ekg.jpg',
-    description: 'Messung der Herzströme zur Beurteilung der Herzfunktion.',
     hint: 'ecg machine',
     backsideContent: (
       <>
@@ -29,7 +27,6 @@ const leistungen = [
   {
     name: 'Labor',
     image: '/images/leistungen/labor.jpg',
-    description: 'Analyse von Blut- und Urinproben direkt in unserer Praxis.',
     hint: 'lab technician microscope',
     backsideContent: (
       <>
@@ -44,7 +41,6 @@ const leistungen = [
   {
     name: 'Praxisapotheke',
     image: '/images/leistungen/praxisapotheke.jpg',
-    description: 'Direkte Abgabe von Medikamenten aus unserer eigenen Apotheke.',
     hint: 'pharmacy shelf medication',
     backsideContent: (
       <>
@@ -55,7 +51,6 @@ const leistungen = [
   {
     name: 'Röntgen',
     image: '/images/leistungen/roentgen.jpg',
-    description: 'Moderne digitale Röntgendiagnostik für präzise Ergebnisse.',
     hint: 'x-ray scan',
     backsideContent: (
       <>
@@ -66,7 +61,6 @@ const leistungen = [
   {
     name: 'Spirometrie',
     image: '/images/leistungen/spirometrie.jpg',
-    description: 'Lungenfunktionstests zur Diagnose von Atemwegserkrankungen.',
     hint: 'spirometry test',
     backsideContent: (
       <>
@@ -76,8 +70,7 @@ const leistungen = [
   },
   {
     name: 'Verkehrsmedizinische Untersuchungen (VMU)',
-    image: '/images/leistungen/vmu.jpg',
-    description: 'Untersuchungen zur Beurteilung der Fahreignung.',
+    image: '/images/leistungen/vmu.png',
     hint: 'driving test eye chart',
     backsideContent: (
       <>
@@ -88,7 +81,6 @@ const leistungen = [
   {
     name: 'Wundversorgung',
     image: '/images/leistungen/wundversorgung.jpg',
-    description: 'Professionelle Versorgung von akuten und chronischen Wunden.',
     hint: 'wound dressing',
     backsideContent: (
       <>
