@@ -27,7 +27,7 @@ const leistungen = [
     ),
   },
   {
-    name: 'Labor',
+    name: 'Praxislabor',
     image: '/images/leistungen/labor.jpg',
     hint: 'lab technician microscope',
     backsideContent: (
@@ -74,11 +74,13 @@ const leistungen = [
     name: 'TWINT',
     image: '/images/leistungen/twint_logo.png',
     hint: 'twint logo',
-    backsideContent: <>
+    backsideContent: (
+      <>
         <p>Zusatzleistungen können Sie nicht nur in bar sondern auch modern und bequem mit dem Handy per TWINT bezahlen.</p>
         <br />
         <p>Alle Leistungen die von Ihrer Kasse übernommen werden, rechnen wir natürlich weiterhin direkt mit dieser ab.</p>
-      </>,
+      </>
+    ),
   },
   {
     name: 'Verkehrsmedizinische Untersuchungen',
@@ -139,7 +141,7 @@ export default function LeistungenPage() {
                           fill
                           className={cn(
                             "object-cover",
-                            leistung.name === 'TWINT' && "object-contain"
+                            leistung.name === 'TWINT' && "object-contain p-4"
                           )}
                           data-ai-hint={leistung.hint}
                         />
