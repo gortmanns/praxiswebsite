@@ -54,34 +54,54 @@ const Cell = ({ dayIndex, hourIndex }: { dayIndex: number; hourIndex: number; })
 
 export function OpeningHoursCalendar() {
   return (
-    <div className="relative grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-secondary">
-      {/* Header Row */}
-      <div className="sticky top-0 z-10 bg-muted"></div>
-      {days.map((day, dayIndex) => (
-        <div 
-          key={day} 
-          className={cn(
-            "flex h-12 items-center justify-center bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base",
-            "border-b border-l border-secondary"
-          )}
-        >
-          {day}
-        </div>
-      ))}
-
-      {/* Time Axis and Content Grid */}
-      {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
-        <React.Fragment key={startTime}>
-          <div className="flex h-12 items-center justify-center bg-muted px-2 text-center text-xs font-bold text-muted-foreground border-t border-l border-secondary">
-            {startTime} - {timeSlots[hourIndex + 1]}
+    <div className="relative">
+      <div className="relative grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-secondary">
+        {/* Header Row */}
+        <div className="sticky top-0 z-10 bg-muted"></div>
+        {days.map((day, dayIndex) => (
+          <div 
+            key={day} 
+            className={cn(
+              "flex h-12 items-center justify-center bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base",
+              "border-b border-l border-secondary"
+            )}
+          >
+            {day}
           </div>
-          {days.map((_day, dayIndex) => (
-            <div key={`${_day}-${startTime}`} className="h-12 border-l border-t border-secondary">
-               <Cell dayIndex={dayIndex} hourIndex={hourIndex} />
+        ))}
+
+        {/* Time Axis and Content Grid */}
+        {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
+          <React.Fragment key={startTime}>
+            <div className="flex h-12 items-center justify-center bg-muted px-2 text-center text-xs font-bold text-muted-foreground border-t border-l border-secondary">
+              {startTime} - {timeSlots[hourIndex + 1]}
             </div>
-          ))}
-        </React.Fragment>
-      ))}
+            {days.map((_day, dayIndex) => (
+              <div key={`${_day}-${startTime}`} className="h-12 border-l border-t border-secondary">
+                 <Cell dayIndex={dayIndex} hourIndex={hourIndex} />
+              </div>
+            ))}
+          </React.Fragment>
+        ))}
+      </div>
+
+      <div className="absolute top-0 left-0 h-full w-full grid grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[repeat(11,minmax(0,1fr))] pointer-events-none">
+          {/* Header Row Placeholder */}
+          <div className="row-start-1"></div>
+
+          {/* Time Axis Placeholder */}
+          <div className="col-start-1"></div>
+
+          {/* Overlay Text */}
+          <div 
+            className="col-start-2 col-end-7 row-start-2 row-end-6 flex items-center justify-center pointer-events-auto"
+            style={{ gridColumn: '2 / 7', gridRow: '2 / 6' }}
+          >
+              <span className="text-2xl font-bold text-foreground/80">
+                  Sprechstunde
+              </span>
+          </div>
+      </div>
     </div>
   );
 }
