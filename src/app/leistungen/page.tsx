@@ -126,16 +126,13 @@ export default function LeistungenPage() {
                           )}
                         </div>
                     </div>
-                    <div className={cn(
-                        "relative",
-                        leistung.name === 'TWINT' ? "h-auto w-full aspect-video" : "flex-1"
-                    )}>
+                    <div className="relative flex-1">
                         <Image
                           src={leistung.image}
                           alt={leistung.name}
                           fill
                           className={cn(
-                            leistung.name === 'TWINT' ? "object-contain p-8" : "object-cover"
+                            leistung.name === 'TWINT' ? "object-contain p-4" : "object-cover"
                           )}
                           data-ai-hint={leistung.hint}
                         />
