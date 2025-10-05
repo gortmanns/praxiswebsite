@@ -63,51 +63,7 @@ export function CooperationPartnersSection() {
         <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
           Unsere ärztlichen Kooperationspartner
         </h2>
-        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 debug-outline">
-          {topPartners.map(partner => (
-            <Link
-              key={partner.name}
-              href={partner.websiteUrl!}
-              target={partner.websiteUrl === '#' ? '_self' : '_blank'}
-              rel="noopener noreferrer"
-              className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 debug-outline"
-            >
-              <Card className="flex h-full w-full items-center p-6 debug-outline">
-                <CardContent className="flex w-full items-center justify-center p-0 debug-outline">
-                  {partner.logoUrl ? (
-                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden debug-outline">
-                      <Image
-                        src={partner.logoUrl}
-                        alt={`${partner.name} Logo`}
-                        width={partner.width}
-                        height={partner.height}
-                        className="object-contain"
-                        data-ai-hint={partner.hint}
-                      />
-                    </div>
-                  ) : partner.name === 'orthozentrum-bern' ? (
-                    <OrthozentrumLogo className="h-20 w-auto" />
-                  ) : null}
-                </CardContent>
-              </Card>
-              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 debug-outline"></div>
-            </Link>
-          ))}
-          <Link
-            href="https://neurologie-plus.ch/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 debug-outline"
-          >
-             <Card className="flex h-full w-full items-center justify-center p-6 text-center debug-outline">
-              <CardContent className="p-0 debug-outline">
-                <AgnieszkaSlezakLogo className="h-20 w-auto text-special-green" />
-              </CardContent>
-            </Card>
-            <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 debug-outline"></div>
-          </Link>
-        </div>
-
+        
         <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 debug-outline">
           {topPartners.map(partner => (
             <Link
