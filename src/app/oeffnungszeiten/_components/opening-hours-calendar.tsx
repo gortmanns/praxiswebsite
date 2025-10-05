@@ -10,7 +10,7 @@ const timeSlots = [
 
 const days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
 
-const schedule: ('sprechstunde' | 'pause' | 'geschlossen')[][] = [
+const schedule: ('pause' | 'geschlossen' | 'sprechstunde')[][] = [
   // Montag
   ['sprechstunde', 'sprechstunde', 'sprechstunde', 'sprechstunde', 'pause', 'pause', 'sprechstunde', 'sprechstunde', 'sprechstunde', 'sprechstunde'],
   // Dienstag
@@ -32,8 +32,6 @@ const BaseCell = ({ dayIndex, hourIndex }: { dayIndex: number; hourIndex: number
       colorClass = 'bg-background';
       break;
     case 'pause':
-      colorClass = 'bg-secondary';
-      break;
     case 'geschlossen':
       colorClass = 'bg-secondary';
       break;
@@ -102,12 +100,14 @@ export function OpeningHoursCalendar() {
           {/* Right border for the last column */}
           <div className="absolute top-0 right-0 h-full w-px bg-orange-500"></div>
 
-           {/* Block for Sprechstunde Vormittag */}
-           <div
-            className="pointer-events-auto absolute bg-orange-500/20"
+          {/* Block for Sprechstunde Vormittag */}
+          <div
+            className="pointer-events-auto bg-orange-500/20"
             style={{
-              gridRow: '2 / span 4',
-              gridColumn: '2 / span 5',
+              gridRowStart: 2,
+              gridRowEnd: 6,
+              gridColumnStart: 2,
+              gridColumnEnd: 7,
             }}
           ></div>
       </div>
