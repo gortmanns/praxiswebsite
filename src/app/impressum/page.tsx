@@ -24,7 +24,6 @@ export default function ImpressumPage() {
                     <p>Dipl. med. G. Ortmanns</p>
                 </div>
                 <div className="space-y-1">
-                    <h3 className="font-headline text-2xl font-bold text-primary">Anschrift</h3>
                     <p>PRAXISZENTRUM IM RING</p>
                     <p>Kappelenring 6</p>
                     <p>3032 Hinterkappelen</p>
