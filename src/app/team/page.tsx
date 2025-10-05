@@ -38,11 +38,12 @@ export default function TeamPage() {
                     <h4 className="font-headline text-3xl font-bold text-primary">
                       G. Ortmanns
                     </h4>
-                    <p className="mt-4 text-xl font-bold">Praktischer Arzt</p>
-                    <div className="mt-1 text-base">
+                    <div className="mt-4 text-base">
+                      <p className="text-xl font-bold">Praktischer Arzt</p>
                       <p>Master of Public Health (UNSW)</p>
                       <p>Master of Health Management (UNSW)</p>
                     </div>
+                    <p className="mt-4 text-base italic">Medizinische und Administrative Leitung Praxiszentrum im Ring</p>
                   </div>
                 </div>
               </CardContent>
