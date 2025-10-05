@@ -96,7 +96,7 @@ export default function MedikamentePage() {
                             <h4 className="text-center font-headline text-2xl font-bold text-primary">Vorbestellung per Telefon</h4>
                             <p>Unsere Bestellhotline für Medikamente erreichen Sie Tag und Nacht an 365 Tagen im Jahr unter der Rufnummer</p>
                             
-                            <a href="tel:0313162666" className="my-4 flex items-center justify-center gap-4 text-2xl font-bold text-foreground transition-colors hover:text-primary md:text-3xl lg:text-4xl">
+                            <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold text-foreground transition-colors hover:text-primary md:text-3xl lg:text-4xl">
                                 <Phone className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
                                 <span>031 316 26 66</span>
                             </a>
