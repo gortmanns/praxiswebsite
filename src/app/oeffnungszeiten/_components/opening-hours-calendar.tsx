@@ -79,6 +79,16 @@ export function OpeningHoursCalendar() {
           </React.Fragment>
         ))}
       </div>
+      <div className="mt-4 flex flex-col space-y-2 text-sm text-foreground/80">
+        <div className="flex items-center gap-3">
+          <div className="h-5 w-5 bg-secondary"></div>
+          <span>Praxis geschlossen</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="h-5 w-5 border border-muted-foreground bg-background"></div>
+          <span>Praxis geöffnet für Sprechstunde</span>
+        </div>
+      </div>
     </div>
   );
 }
