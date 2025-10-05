@@ -1,11 +1,10 @@
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
 
 export const DoctorCard = () => (
     <div 
         className="mx-auto max-w-5xl debug-outline" 
-        style={{ containerType: 'inline-size' } as React.CSSProperties}
+        style={{ 'container-type': 'inline-size' } as React.CSSProperties}
     >
         <div
             className="group relative w-full debug-outline"
