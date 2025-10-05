@@ -36,6 +36,23 @@ export const DoctorCardSlezak = () => (
                     </div>
                 </CardContent>
                 <div className="absolute inset-0 flex flex-col items-start justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <ul className="space-y-1.5 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
+                        <li className="font-bold text-primary">SPEZIALGEBIETE</li>
+                        <li>Allgemeine Neurologie</li>
+                        <li>Vaskuläre Erkrankungen</li>
+                        <li>Epilepsie</li>
+                        <li>Bewegungsstörungen (Schwerpunkt Parkinsonsyndrome)</li>
+                        <li>Kopfschmerzen und Migräne</li>
+                        <li>Neurorehabilitation</li>
+                        <li>&nbsp;</li>
+                        <li className="text-[clamp(0.7rem,2.3cqw,1rem)]">
+                            Viele Untersuchungen können direkt hier im <span className="whitespace-nowrap">Praxiszentrum im Ring</span> durchgeführt werden.
+                        </li>
+                        <li>&nbsp;</li>
+                        <li className="text-[clamp(0.7rem,2.3cqw,1rem)]">
+                            Wenn spezielle Untersuchungen wie z. B. die Bestimmung der Nervenleitgeschwindigkeit Geräte erfordern, die hier im <span className="whitespace-nowrap">Praxiszentrum</span> nicht zur Verfügung stehen, dann finden diese in den Räumlichkeiten an der Thunstrasse 95 in Bern statt.
+                        </li>
+                    </ul>
                 </div>
             </Card>
         </div>
