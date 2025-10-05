@@ -36,7 +36,7 @@ const schedule = [
     // Fr
     { day: 4, start: '08:00', end: '12:00', type: 'sprechstunde' },
     { day: 4, start: '12:00', end: '13:00', type: 'pause' },
-    { day: 4, start: '13:00', end: '14:00', type: 'empty' },
+    { day: 4, start: '13:00', end: '14:00', type: 'sprechstunde' },
     { day: 4, start: '14:00', end: '17:00', type: 'sprechstunde' },
     { day: 4, start: '17:00', end: '18:00', type: 'geschlossen' },
 ];
