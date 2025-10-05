@@ -78,13 +78,13 @@ export function OpeningHoursCalendar() {
       </div>
 
       <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
-          {/* Header Row */}
+          {/* Header Row - transparent for correct sizing */}
           <div className="h-12 border-b border-orange-500"></div>
           {days.map((day) => (
               <div key={`${day}-overlay-header`} className="flex h-12 items-center justify-center border-b border-l border-orange-500 text-center text-sm font-bold text-transparent sm:text-base">{day}</div>
           ))}
 
-          {/* Time Axis + Cell Grid */}
+          {/* Time Axis + Cell Grid - transparent for correct sizing */}
           {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
               <React.Fragment key={`${startTime}-overlay-row`}>
                   <div className="flex h-12 items-center justify-center border-b border-l border-orange-500 px-2 text-center text-xs font-bold text-transparent">
@@ -102,14 +102,14 @@ export function OpeningHoursCalendar() {
 
           {/* Block for Sprechstunde Vormittag */}
           <div
-            className="pointer-events-auto bg-orange-500/20"
+            className="pointer-events-auto bg-orange-500/20 flex items-center justify-center text-lg font-bold text-foreground/80"
             style={{
-              gridRowStart: 2,
-              gridRowEnd: 6,
-              gridColumnStart: 2,
-              gridColumnEnd: 7,
+              gridRow: '2 / 6', // From 08:00 to 12:00
+              gridColumn: '2 / 7', // From Montag to Freitag
             }}
-          ></div>
+          >
+            Sprechstunde
+          </div>
       </div>
     </div>
   );
