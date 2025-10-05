@@ -36,7 +36,7 @@ export default function TeamPage() {
                   G. Ortmanns
                 </h4>
                 <p className="mt-4 text-lg font-bold">Praktischer Arzt</p>
-                <div className="mt-4 text-base">
+                <div className="mt-1 text-base">
                   <p>Master of Public Health (UNSW)</p>
                   <p>Master of Health Management (UNSW)</p>
                 </div>
