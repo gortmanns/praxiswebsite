@@ -57,53 +57,39 @@ export default function MedikamentePage() {
 
           <div className="mx-auto mt-12 max-w-4xl">
             <Tabs defaultValue="telefon" className="w-full">
-              <TabsList className="grid h-auto w-full grid-cols-2 rounded-lg bg-transparent p-0">
-                  <TabsTrigger 
-                      value="telefon" 
-                      className={cn(
-                          'flex items-center justify-center gap-3 h-14 rounded-l-lg rounded-r-none border-b-2 border-transparent text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
-                      )}
+              <TabsList className="grid h-auto w-full grid-cols-1 gap-4 sm:grid-cols-2">
+                  <a href="tel:0313162666">
+                    <TabsTrigger 
+                        value="telefon" 
+                        className={cn(
+                            'h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
+                        )}
+                    >
+                        <div className="flex items-center gap-3">
+                            <Phone className="h-6 w-6"/>
+                            <span>Vorbestellung per Telefon</span>
+                        </div>
+                        <span className="text-base font-normal">031 316 26 66</span>
+                    </TabsTrigger>
+                  </a>
+                  <ObfuscatedLink
+                    user="medikamente"
+                    domain="praxiszentrum-im-ring.ch"
                   >
-                      <Phone className="h-6 w-6"/>
-                      Vorbestellung per Telefon
-                  </TabsTrigger>
-                  <TabsTrigger 
-                      value="email"
-                      className={cn(
-                          'flex items-center justify-center gap-3 h-14 rounded-r-lg rounded-l-none border-b-2 border-transparent text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
-                      )}
-                  >
-                      <Mail className="h-6 w-6"/>
-                      Vorbestellung per Email
-                  </TabsTrigger>
+                    <TabsTrigger 
+                        value="email"
+                        className={cn(
+                            'h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
+                        )}
+                    >
+                       <div className="flex items-center gap-3">
+                            <Mail className="h-6 w-6"/>
+                            <span>Vorbestellung per Email</span>
+                        </div>
+                        <span className="text-base font-normal break-all">medikamente@praxiszentrum-im-ring.ch</span>
+                    </TabsTrigger>
+                  </ObfuscatedLink>
               </TabsList>
-              <TabsContent value="telefon">
-                  <Card className="rounded-t-none">
-                      <CardContent className="flex items-center justify-center space-y-6 p-6 text-lg">
-                          <a
-                            href="tel:0313162666"
-                            className="flex items-center gap-4 text-2xl font-bold text-foreground transition-colors hover:text-primary"
-                          >
-                            <Phone className="h-8 w-8" />
-                            <span>031 316 26 66</span>
-                          </a>
-                      </CardContent>
-                  </Card>
-              </TabsContent>
-              <TabsContent value="email">
-                  <Card className="rounded-t-none">
-                      <CardContent className="flex items-center justify-center space-y-6 p-6 text-lg">
-                          <ObfuscatedLink
-                            user="medikamente"
-                            domain="praxiszentrum-im-ring.ch"
-                            className="flex items-center gap-4 text-2xl font-bold text-foreground transition-colors hover:text-primary"
-                          >
-                            <Mail className="h-8 w-8" />
-                            <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
-                          </ObfuscatedLink>
-                      </CardContent>
-                  </Card>
-              </TabsContent>
             </Tabs>
           </div>
         </div>
