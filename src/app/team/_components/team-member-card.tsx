@@ -32,7 +32,7 @@ export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsid
             </CardContent>
             {backsideContent && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center overflow-auto bg-accent p-6 text-left text-background opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <div className="text-center text-sm">
+                    <div className="text-center text-lg">
                         {backsideContent}
                     </div>
                 </div>
