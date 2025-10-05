@@ -71,10 +71,8 @@ export default function TeamPage() {
                     <li>Kantonsspital Wil (SRFT)</li>
                     <li>Hausarztpraxis in Winterthur</li>
                 </ul>
-                 <h5 className="mt-4 mb-2 font-bold uppercase">Wissenschaftlicher Mitarbeiter:</h5>
-                 <p className='text-xs'>Universität Zürich / USZ Pneumologie</p>
-                 <h5 className="mt-4 mb-2 font-bold uppercase">Lehrbeauftragter für Hausarztmedizin:</h5>
-                 <p className='text-xs'>Institut für Hausarztmedizin der Universität Bern</p>
+                 <p className='mt-4 mb-2 text-xs'><span className="font-bold uppercase">Wissensch. Mitarbeiter:</span> Pneumologie (Universität Zürich / USZ)</p>
+                 <p className='text-xs'><span className="font-bold uppercase">Lehrbeauftragter:</span> Hausarztmedizin (Universität Bern)</p>
               </div>
             </Card>
           </div>
