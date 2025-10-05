@@ -91,6 +91,7 @@ export function OpeningHoursCalendar() {
           gridColumnEnd: 7,
           gridRowStart: 2,
           gridRowEnd: 6,
+          zIndex: 2
         }}
       >
       </div>
