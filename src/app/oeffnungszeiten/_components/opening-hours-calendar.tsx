@@ -77,41 +77,32 @@ export function OpeningHoursCalendar() {
         ))}
       </div>
 
-      <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-orange-500">
-          {/* Header Row - transparent for correct sizing */}
-          <div className="h-12"></div>
-          {days.map((day) => (
-              <div key={`${day}-overlay-header`} className="flex h-12 items-center justify-center border-l border-b border-orange-500 text-center text-sm font-bold text-transparent sm:text-base">{day}</div>
-          ))}
-
-          {/* Time Axis + Cell Grid - transparent for correct sizing */}
-          {timeSlots.slice(0, -1).map((startTime, hourIndex) => (
-              <React.Fragment key={`${startTime}-overlay-row`}>
-                  <div className="flex h-12 items-center justify-center border-l border-b border-orange-500 px-2 text-center text-xs font-bold text-transparent">
-                      {startTime} - {timeSlots[hourIndex + 1]}
-                  </div>
-                  {days.map((_day, dayIndex) => (
-                      <div key={`${_day}-${startTime}-overlay-cell`} className="h-12 border-l border-b border-orange-500 bg-transparent">
-                      </div>
-                  ))}
-              </React.Fragment>
-          ))}
-          
+      <div className="pointer-events-none absolute inset-0 grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] grid-rows-[auto_repeat(10,minmax(0,1fr))] border-orange-500">
           <div
             className="pointer-events-auto flex items-center justify-center"
             style={{
-              gridRow: '6 / 8', // 12:00 to 14:00
-              gridColumn: '2 / 7', // Montag to Freitag
+              gridRow: '2 / 6', 
+              gridColumn: '2 / 7', 
             }}
           >
-             <span className="font-bold text-primary">Mittagspause</span>
+             <span className="font-bold text-primary">Sprechstunde</span>
           </div>
 
           <div
+            className="pointer-events-auto flex items-center justify-center"
+            style={{
+              gridRow: '6 / 8', 
+              gridColumn: '2 / 7', 
+            }}
+          >
+             <span className="font-bold text-white">Mittagspause</span>
+          </div>
+          
+          <div
             className="pointer-events-auto bg-orange-500/20"
             style={{
-              gridRow: '8 / 12', // 14:00 to 18:00
-              gridColumn: '2 / 4', // Montag to Dienstag
+              gridRow: '8 / 12', 
+              gridColumn: '2 / 4', 
             }}
           >
           </div>
