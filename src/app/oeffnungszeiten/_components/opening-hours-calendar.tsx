@@ -100,15 +100,14 @@ export function OpeningHoursCalendar() {
           {/* Right border for the last column */}
           <div className="absolute top-0 right-0 h-full w-px bg-orange-500"></div>
 
-          {/* Block for Sprechstunde Vormittag */}
+          {/* Block for Mittagspause */}
           <div
-            className="pointer-events-auto bg-orange-500/20 flex items-center justify-center text-lg font-bold text-foreground/80"
+            className="pointer-events-auto bg-orange-500/20"
             style={{
-              gridRow: '2 / 6', // From 08:00 to 12:00
+              gridRow: '6 / 8', // From 12:00 to 14:00
               gridColumn: '2 / 7', // From Montag to Freitag
             }}
           >
-            Sprechstunde
           </div>
       </div>
     </div>
