@@ -10,8 +10,8 @@ interface TeamMemberCardProps {
 
 export function TeamMemberCard({ name, role, imageUrl, imageHint }: TeamMemberCardProps) {
   return (
-    <Card className="flex flex-col items-center p-6 text-center transition-all hover:-translate-y-1 hover:shadow-xl">
-      <div className="relative h-40 w-40 overflow-hidden rounded-full">
+    <Card className="flex flex-col text-center transition-all hover:-translate-y-1 hover:shadow-xl overflow-hidden">
+      <div className="relative w-full" style={{ aspectRatio: '1 / 1' }}>
         <Image
           src={imageUrl}
           alt={`Portrait von ${name}`}
@@ -20,12 +20,14 @@ export function TeamMemberCard({ name, role, imageUrl, imageHint }: TeamMemberCa
           data-ai-hint={imageHint}
         />
       </div>
-      <CardHeader className="p-4">
-        <h4 className="text-xl font-bold text-primary">{name}</h4>
-      </CardHeader>
-      <CardContent className="p-0">
-        <p className="text-muted-foreground">{role}</p>
-      </CardContent>
+      <div className="flex flex-col p-6">
+        <CardHeader className="p-0">
+          <h4 className="text-xl font-bold text-primary">{name}</h4>
+        </CardHeader>
+        <CardContent className="p-0 pt-2">
+          <p className="text-muted-foreground">{role}</p>
+        </CardContent>
+      </div>
     </Card>
   );
 }
