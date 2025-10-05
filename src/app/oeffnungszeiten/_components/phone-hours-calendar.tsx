@@ -62,58 +62,44 @@ export function PhoneHoursCalendar() {
   });
 
   return (
-    <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))]">
-      {/* Header Row */}
-      <div className="sticky top-0 z-10 bg-muted"></div>
-      {days.map((day) => (
-        <div key={day} className="flex h-12 items-center justify-center bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
-          {day}
-        </div>
-      ))}
-
-      {/* Time Axis */}
-      <div className="col-start-1 col-end-2 row-start-2 row-end-[21] grid grid-rows-19">
-        {timeSlots.slice(0, -1).map((startTime, index) => (
-          <div key={startTime} className="flex h-6 items-center justify-center bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
-             {startTime} - {timeSlots[index + 1]}
+    <div className="relative">
+      <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-secondary">
+        {/* Header Row */}
+        <div className="sticky top-0 z-10 bg-muted"></div>
+        {days.map((day) => (
+          <div key={day} className="flex h-12 items-center justify-center border-l border-b border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
+            {day}
           </div>
         ))}
+
+        {/* Time Axis */}
+        <div className="col-start-1 col-end-2 row-start-2 row-end-[21] grid grid-rows-19">
+          {timeSlots.slice(0, -1).map((startTime, index) => (
+            <div key={startTime} className="flex h-6 items-center justify-center border-l border-b border-border bg-muted px-2 text-center text-xs font-bold text-muted-foreground">
+              {startTime} - {timeSlots[index + 1]}
+            </div>
+          ))}
+        </div>
+
+        {/* Content Grid */}
+        <div className="col-start-2 col-end-7 row-start-2 row-end-[21] grid grid-cols-5 grid-rows-19">
+          {grid.map((row, rowIndex) =>
+            row.map((type, colIndex) => (
+              <div key={`${rowIndex}-${colIndex}`} className="h-6 w-full border-l border-b border-border">
+                <Cell type={type} />
+              </div>
+            ))
+          )}
+        </div>
       </div>
-
-      {/* Content Grid */}
-      <div className="col-start-2 col-end-7 row-start-2 row-end-[21] grid grid-cols-5 grid-rows-19">
-        {grid.flat().map((type, index) => (
-          <Cell key={index} type={type} />
-        ))}
-
-        {/* Text Overlays */}
-        <div className="col-start-1 col-end-6 row-start-1 row-end-8 pointer-events-none flex items-center justify-center p-1">
-            <span className="text-center font-semibold text-base text-foreground">Telefon bedient</span>
+      <div className="mt-4 flex flex-col space-y-2 text-sm text-foreground/80">
+        <div className="flex items-center gap-3">
+          <div className="h-5 w-5 bg-secondary"></div>
+          <span>Telefon nicht bedient</span>
         </div>
-        <div className="col-start-1 col-end-3 row-start-11 row-end-18 pointer-events-none flex items-center justify-center p-1">
-            <span className="text-center font-semibold text-base text-foreground">Telefon bedient</span>
-        </div>
-        <div className="col-start-4 col-end-5 row-start-11 row-end-18 pointer-events-none flex items-center justify-center p-1">
-            <span className="text-center font-semibold text-base text-foreground">Telefon bedient</span>
-        </div>
-        <div className="col-start-5 col-end-6 row-start-11 row-end-16 pointer-events-none flex items-center justify-center p-1">
-            <span className="text-center font-semibold text-base text-foreground">Telefon bedient</span>
-        </div>
-
-        <div className="col-start-1 col-end-6 row-start-8 row-end-11 pointer-events-none flex items-center justify-center p-1">
-            <span className="text-center font-semibold text-base text-secondary-foreground">Telefon nicht bedient</span>
-        </div>
-        <div className="col-start-3 col-end-4 row-start-11 row-end-20 pointer-events-none flex items-center justify-center p-1">
-            <span className="text-center font-semibold text-base text-secondary-foreground">Telefon nicht bedient</span>
-        </div>
-        <div className="col-start-1 col-end-3 row-start-18 row-end-20 pointer-events-none flex items-center justify-center p-1">
-            <span className="text-center font-semibold text-base text-secondary-foreground">Telefon nicht bedient</span>
-        </div>
-        <div className="col-start-4 col-end-5 row-start-18 row-end-20 pointer-events-none flex items-center justify-center p-1">
-            <span className="text-center font-semibold text-base text-secondary-foreground">Telefon nicht bedient</span>
-        </div>
-         <div className="col-start-5 col-end-6 row-start-16 row-end-20 pointer-events-none flex items-center justify-center p-1">
-            <span className="text-center font-semibold text-base text-secondary-foreground">Telefon nicht bedient</span>
+        <div className="flex items-center gap-3">
+          <div className="h-5 w-5 border border-muted-foreground bg-background"></div>
+          <span>Telefon wird bedient</span>
         </div>
       </div>
     </div>
