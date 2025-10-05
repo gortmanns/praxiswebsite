@@ -63,6 +63,18 @@ export default function TeamPage() {
                   <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
                   <li>Direktor der Memory-Strategie (elektronisches Medikamenten-management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
                 </ul>
+                <h5 className="mt-4 mb-2 font-bold uppercase">Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz:</h5>
+                <ul className="list-disc space-y-1 pl-4">
+                    <li>Universitätsspital Basel (USB)</li>
+                    <li>Kantonsspital Baselland (KSBL)</li>
+                    <li>Kantonsspital Winterthur (KSW)</li>
+                    <li>Kantonsspital Wil (SRFT)</li>
+                    <li>Hausarztpraxis in Winterthur</li>
+                </ul>
+                 <h5 className="mt-4 mb-2 font-bold uppercase">Wissenschaftlicher Mitarbeiter:</h5>
+                 <p className='text-xs'>Universität Zürich / USZ Pneumologie</p>
+                 <h5 className="mt-4 mb-2 font-bold uppercase">Lehrbeauftragter für Hausarztmedizin:</h5>
+                 <p className='text-xs'>Institut für Hausarztmedizin der Universität Bern</p>
               </div>
             </Card>
           </div>
