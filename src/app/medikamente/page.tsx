@@ -41,6 +41,15 @@ export default function MedikamentePage() {
               </CardContent>
             </Card>
           </div>
+
+          <div className="mx-auto mt-16 max-w-7xl text-center">
+            <h3 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl">
+              So einfach bestellen Sie Ihre Medikamente
+            </h3>
+            <p className="mt-4 text-xl font-bold text-foreground">
+              Ganz bequem, wahlweise per Telefon oder E-Mail
+            </p>
+          </div>
         </div>
       </main>
       <Footer />
