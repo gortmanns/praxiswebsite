@@ -2,6 +2,20 @@ import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 import { cn } from '@/lib/utils';
+import { Montserrat, Open_Sans } from 'next/font/google';
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  variable: '--font-headline',
+  weight: ['400', '700'],
+});
+
+const openSans = Open_Sans({
+  subsets: ['latin'],
+  variable: '--font-body',
+  weight: ['400', '700'],
+});
+
 
 export const metadata: Metadata = {
   title: 'Praxiszentrum im Ring',
@@ -15,15 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className={cn('font-body antialiased')}>
+      <body className={cn('font-body antialiased', montserrat.variable, openSans.variable)}>
         {children}
         <Toaster />
       </body>
