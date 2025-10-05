@@ -126,7 +126,7 @@ export default function LeistungenPage() {
                           )}
                         </div>
                     </div>
-                    <div className="relative flex-1">
+                    <div className={cn("relative flex-1", leistung.name === 'TWINT' && "bg-white")}>
                         <Image
                           src={leistung.image}
                           alt={leistung.name}
