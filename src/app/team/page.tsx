@@ -58,7 +58,7 @@ export default function TeamPage() {
                 Die guten Geister, ohne die keine Arztpraxis funktioniert
               </p>
             </div>
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
                 {teamMembers.map((member) => (
                     <div key={member.name} className="mx-auto w-full max-w-sm">
                         <TeamMemberCard 
