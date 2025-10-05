@@ -147,6 +147,15 @@ export default function DatenschutzerklaerungPage() {
                 </Card>
                 <Card>
                     <CardHeader>
+                        <CardTitle className="font-headline text-2xl font-bold text-primary">Kontakt per E-Mail und Fax</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4 text-base text-foreground/80">
+                        <p>Wenn Sie per E-Mail mit uns Kontakt aufnehmen, erfolgt die Datenübertragung unter Umständen unverschlüsselt. Unverschlüsselte E-Mails können von unbefugten Dritten eingesehen und verändert werden. Die Vertraulichkeit ist bei der Übermittlung via unverschlüsselter E-Mail nicht gewährleistet.</p>
+                        <p>Für die Übermittlung von vertraulichen Informationen und medizinischen Daten bitten wir Sie dringend, ausschliesslich unsere sichere HIN-E-Mail-Adresse (`praxiszentrum-im-ring@hin.ch`) zu verwenden oder uns telefonisch oder per Fax zu kontaktieren. Wenn Sie uns über eine unverschlüsselte E-Mail kontaktieren, gehen wir davon aus, dass Sie die Risiken der elektronischen Kommunikation akzeptieren und uns gestatten, Ihnen ebenfalls auf diesem Weg zu antworten.</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
                         <CardTitle className="font-headline text-2xl font-bold text-primary">Google Maps</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 text-base text-foreground/80">
@@ -172,5 +181,3 @@ export default function DatenschutzerklaerungPage() {
     </div>
   );
 }
-
-    
