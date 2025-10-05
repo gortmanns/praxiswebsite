@@ -50,18 +50,9 @@ export default function ImpressumPage() {
                 <CardTitle className="font-headline text-2xl font-bold text-primary">Haftungsausschluss</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-base text-foreground/80">
-                <p>Der Autor übernimmt keine Gewähr für die Richtigkeit, Genauigkeit, Aktualität, Zuverlässigkeit und Vollständigkeit der Informationen. Haftungsansprüche gegen den Autor wegen Schäden materieller oder immaterieller Art, die aus dem Zugriff oder der Nutzung bzw. Nichtnutzung der veröffentlichten Informationen, durch Missbrauch der Verbindung oder durch technische Störungen entstanden sind, werden ausgeschlossen.</p>
-                <p>Alle Angebote sind freibleibend. Der Autor behält es sich ausdrücklich vor, Teile der Seiten oder das gesamte Angebot ohne gesonderte Ankündigung zu verändern, zu ergänzen, zu löschen oder die Veröffentlichung zeitweise oder endgültig einzustellen.</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-headline text-2xl font-bold text-primary">Haftungsausschluss für Inhalte und Links</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 text-base text-foreground/80">
-                <p>Verweise und Links auf Webseiten Dritter liegen ausserhalb unseres Verantwortungsbereichs. Es wird jegliche Verantwortung für solche Webseiten abgelehnt. Der Zugriff und die Nutzung solcher Webseiten erfolgen auf eigene Gefahr des jeweiligen Nutzers.</p>
-                <p>Mit der Setzung eines Links machen wir uns den Inhalt externer Seiten ausdrücklich nicht zu Eigen sondern die Linksetzung dient nur dem Komfort des Seitenbenutzers.</p>
+                <p>Alle Angaben auf unserer Website wurden sorgfältig geprüft. Wir sind bemüht, dafür Sorge zu tragen, dass die von uns bereitgestellten Informationen aktuell, richtig und vollständig sind. Dennoch ist das Auftreten von Fehlern nicht völlig auszuschließen, so dass wir für die Vollständigkeit, Richtigkeit und Aktualität der Informationen, auch journalistisch-redaktioneller Art, keine Gewähr übernehmen können. Haftungsansprüche, die sich auf Schäden materieller oder ideeller Art beziehen, welche durch die Nutzung oder Nichtnutzung der dargebotenen Informationen bzw. durch die Nutzung fehlerhafter und unvollständiger Informationen verursacht wurden, sind grundsätzlich ausgeschlossen.</p>
+                <p>Der Herausgeber kann Texte nach eigenem Ermessen und ohne vorherige Ankündigung ändern oder löschen und ist nicht dazu verpflichtet, die Inhalte dieser Website zu aktualisieren. Die Nutzung dieser Website bzw. der Zugang zu ihr erfolgt auf eigenes Risiko des Besuchers. Der Herausgeber, seine Kunden oder Partner sind nicht verantwortlich für Schäden, wie z.B. direkte, indirekte, zufällige oder Folgeschäden, die angeblich durch den Besuch dieser Website verursacht wurden und übernehmen folglich keine Haftung für solche Schäden.</p>
+                <p>Der Herausgeber übernimmt auch keine Verantwortung oder Haftung für den Inhalt und die Verfügbarkeit von Websites Dritter, die über externe Links von dieser Website aus erreicht werden können. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich. Der Herausgeber distanziert sich daher ausdrücklich von allen fremden Inhalten, die möglicherweise straf- oder haftungsrechtlich relevant sind oder gegen die guten Sitten verstoßen.</p>
               </CardContent>
             </Card>
 
