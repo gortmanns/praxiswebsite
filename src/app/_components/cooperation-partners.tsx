@@ -147,5 +147,3 @@ export function CooperationPartnersSection() {
     </section>
   );
 }
-
-    

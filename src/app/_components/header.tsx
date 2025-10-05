@@ -90,7 +90,7 @@ export function Header() {
       <div className="flex h-28 items-center justify-between px-8">
         <Link href="/">
             <Image
-            src="/images/logo.png"
+            src="/public/images/logo.png"
             alt="Praxiszentrum im Ring Logo"
             width={520}
             height={105}
@@ -166,7 +166,7 @@ export function Header() {
             <div className="p-4">
                 <Link href="/" className="mb-8 block">
                 <Image
-                    src="/images/logo.png"
+                    src="/public/images/logo.png"
                     alt="Praxiszentrum im Ring Logo"
                     width={180}
                     height={37}
@@ -244,5 +244,3 @@ export function Header() {
     </header>
   );
 }
-
-    
