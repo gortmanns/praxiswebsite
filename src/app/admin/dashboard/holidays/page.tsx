@@ -1,3 +1,4 @@
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -401,7 +402,7 @@ export default function HolidaysPage() {
                     <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground">Erster Ferientag</TableHead>
                     <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground">Letzter Ferientag</TableHead>
                     <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground">Ferienname</TableHead>
-                    <TableHead className="py-3 px-4 text-right text-sm font-semibold text-primary-foreground">Aktionen</TableHead>
+                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -417,10 +418,10 @@ export default function HolidaysPage() {
                   ) : holidays.length > 0 ? (
                     holidays.map((holiday) => (
                       <TableRow key={holiday.id} className={cn(conflictingHolidayId === holiday.id && "bg-yellow-100/70")}>
-                        <TableCell className="py-3 px-4 font-medium">{format(holiday.start, 'dd.MM.yyyy')}</TableCell>
-                        <TableCell className="py-3 px-4 font-medium">{format(holiday.end, 'dd.MM.yyyy')}</TableCell>
-                        <TableCell className="py-3 px-4 font-medium">{holiday.name}</TableCell>
-                        <TableCell className="py-3 px-4 text-right space-x-2">
+                        <TableCell className="py-3 px-4 font-bold">{format(holiday.start, 'dd.MM.yyyy')}</TableCell>
+                        <TableCell className="py-3 px-4 font-bold">{format(holiday.end, 'dd.MM.yyyy')}</TableCell>
+                        <TableCell className="py-3 px-4 font-bold">{holiday.name}</TableCell>
+                        <TableCell className="py-3 px-4 text-left space-x-2">
                            <Button variant="outline" size="sm" onClick={() => handleEdit(holiday)} disabled={isSubmitting || isDeleting}>
                                 <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
                            </Button>
