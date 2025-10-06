@@ -45,7 +45,7 @@ export const DoctorCardSchemmer = () => (
                         </div>
                     </div>
                 </CardContent>
-                <div className="absolute inset-0 flex translate-y-full flex-col items-start justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
+                <div className="absolute inset-0 flex translate-y-full flex-col items-start justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
                 <ul className="space-y-1.5 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
                         <li className="font-bold text-primary mt-6 mb-4">
                             KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT VOR ORT IM PRAXISZENTRUM IM RING ERFOLGEN
