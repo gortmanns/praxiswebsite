@@ -103,10 +103,11 @@ export default function FerienterminePage() {
       const holidaysCollection = collection(firestore, 'holidays');
       const docRef = await addDoc(holidaysCollection, newHolidayData);
       
-      // Optimistic UI update
-      setHolidays(prevHolidays => [...prevHolidays, { ...newHolidayData, id: docRef.id }].sort((a, b) => a.startDate.toMillis() - b.startDate.toMillis()));
+      // Optimistic UI update for instant feedback
+      const newHolidayWithId: Holiday = { ...newHolidayData, id: docRef.id };
+      setHolidays(prevHolidays => [...prevHolidays, newHolidayWithId].sort((a, b) => a.startDate.toMillis() - b.startDate.toMillis()));
       
-      form.reset();
+      form.reset(); // Clear form fields after successful submission
       toast({ title: 'Erfolg', description: 'Ferientermin wurde hinzugefügt.' });
 
     } catch (error) {
@@ -119,9 +120,9 @@ export default function FerienterminePage() {
     if (!firestore) return;
     try {
       await deleteDoc(doc(firestore, 'holidays', id));
-      toast({ title: 'Erfolg', description: 'Ferientermin wurde gelöscht.' });
       // Update state locally to reflect deletion immediately
       setHolidays((prevHolidays) => prevHolidays.filter((h) => h.id !== id));
+      toast({ title: 'Erfolg', description: 'Ferientermin wurde gelöscht.' });
     } catch (error) {
       console.error('Error deleting holiday: ', error);
       toast({ variant: 'destructive', title: 'Fehler', description: 'Termin konnte nicht gelöscht werden.' });
@@ -185,7 +186,9 @@ export default function FerienterminePage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Hinzufügen</Button>
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? 'Wird hinzugefügt...' : 'Hinzufügen'}
+              </Button>
             </form>
           </Form>
         </CardContent>
