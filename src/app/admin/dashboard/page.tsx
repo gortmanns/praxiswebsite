@@ -1,4 +1,5 @@
 
+
 import { signOut } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,7 +15,7 @@ import Link from 'next/link';
 
 const navItems = [
   { href: '/admin/dashboard/ferientermine', label: 'Ferientermine anpassen', Icon: CalendarDays },
-  { href: '/admin/dashboard/banner', label: 'Banner bearbeiten', Icon: PencilRuler },
+  { href: '#', label: 'Banner bearbeiten', Icon: PencilRuler },
 ];
 
 export default function DashboardPage() {

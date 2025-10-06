@@ -1,0 +1,59 @@
+
+{
+  "entities": {
+    "user": {
+      "title": "User",
+      "description": "A user of the application.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The user's name."
+        }
+      },
+      "required": ["name"]
+    },
+    "holiday": {
+      "title": "Holiday",
+      "description": "A holiday period for the practice.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the holiday (e.g., Summer Break)."
+        },
+        "start": {
+          "type": "string",
+          "description": "The start date of the holiday in dd.mm.yyyy format."
+        },
+        "end": {
+          "type": "string",
+          "description": "The end date of the holiday in dd.mm.yyyy format."
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The start date as a timestamp for sorting."
+        }
+      },
+      "required": ["name", "start", "end", "startDate"]
+    }
+  },
+  "auth": {
+    "providers": ["anonymous"]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/backend/entities/user"
+      },
+      "description": "Stores user profile information."
+    },
+    "/holidays/{holidayId}": {
+      "schema": {
+        "$ref": "#/backend/entities/holiday"
+      },
+      "description": "Stores holiday periods for the practice."
+    }
+  }
+}
