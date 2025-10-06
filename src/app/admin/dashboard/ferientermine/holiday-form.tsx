@@ -17,6 +17,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { addHoliday, deleteHoliday, Holiday } from './actions';
 import React, { useTransition } from 'react';
+import { useFirestore } from '@/firebase';
 
 const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/;
 
@@ -30,11 +31,13 @@ type HolidayFormValues = z.infer<typeof holidaySchema>;
 
 interface HolidayFormProps {
     setOptimistic: (action: { action: 'add' | 'delete'; holiday: Holiday | {id: string} }) => void;
+    holidays: Holiday[];
 }
 
-export function HolidayForm({ setOptimistic }: HolidayFormProps) {
+export function HolidayForm({ setOptimistic, holidays }: HolidayFormProps) {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
+  const { db } = useFirestore();
 
   const form = useForm<HolidayFormValues>({
     resolver: zodResolver(holidaySchema),
@@ -49,25 +52,21 @@ export function HolidayForm({ setOptimistic }: HolidayFormProps) {
     startTransition(async () => {
       const optimisticId = `optimistic-${Date.now()}`;
       const optimisticHoliday: Holiday = { ...data, id: optimisticId };
+      
       setOptimistic({ action: 'add', holiday: optimisticHoliday });
       form.reset();
 
-      try {
-        const result = await addHoliday(data);
-        if (result.success && result.id) {
-          toast({ title: 'Erfolg', description: result.message });
-          // Replace optimistic holiday with real one
-          setOptimistic({ action: 'delete', holiday: { id: optimisticId } });
-          setOptimistic({ action: 'add', holiday: { ...data, id: result.id } });
-        } else {
-          toast({ variant: 'destructive', title: 'Fehler', description: result.message });
-          // Rollback optimistic update
-           setOptimistic({ action: 'delete', holiday: { id: optimisticId } });
-        }
-      } catch (error) {
-         toast({ variant: 'destructive', title: 'Fehler', description: 'Ein unerwarteter Fehler ist aufgetreten.' });
-         // Rollback optimistic update
-         setOptimistic({ action: 'delete', holiday: { id: optimisticId } });
+      const result = await addHoliday(data, db);
+
+      if (result.success && result.id) {
+        toast({ title: 'Erfolg', description: result.message });
+        // Replace optimistic holiday with real one
+        setOptimistic({ action: 'delete', holiday: { id: optimisticId } });
+        setOptimistic({ action: 'add', holiday: { ...data, id: result.id } });
+      } else {
+        toast({ variant: 'destructive', title: 'Fehler', description: result.message });
+        // Rollback optimistic update
+        setOptimistic({ action: 'delete', holiday: { id: optimisticId } });
       }
     });
   };
@@ -134,18 +133,22 @@ interface HolidayDeleteButtonProps {
 export function HolidayDeleteButton({ id, setOptimistic }: HolidayDeleteButtonProps) {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
+  const { db } = useFirestore();
+
 
   const handleDelete = () => {
     startTransition(async () => {
+        const originalHoliday = holidays.find(h => h.id === id);
         setOptimistic({ action: 'delete', holiday: { id } });
 
-        const result = await deleteHoliday(id);
+        const result = await deleteHoliday(id, db);
         if (result.success) {
             toast({ title: 'Erfolg', description: result.message });
         } else {
             toast({ variant: 'destructive', title: 'Fehler', description: result.message });
-            // For a rollback, we would need the original holiday data to add it back
-            // This is a simplified example. A full implementation might fetch again.
+            if (originalHoliday) {
+              setOptimistic({ action: 'add', holiday: originalHoliday });
+            }
         }
     });
   };

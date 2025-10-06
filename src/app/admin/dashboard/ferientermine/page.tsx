@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useEffect, useOptimistic, useTransition, useReducer } from 'react';
+import { useState, useEffect, useReducer } from 'react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -17,62 +19,63 @@ import {
 } from '@/components/ui/table';
 import { HolidayForm, HolidayDeleteButton } from './holiday-form';
 import { getHolidays, Holiday } from './actions';
+import { useFirestore } from '@/firebase';
 
 type OptimisticAction = {
-  action: 'add' | 'delete';
-  holiday: Holiday | { id: string };
+  action: 'add' | 'delete' | 'set';
+  holiday?: Holiday;
+  holidays?: Holiday[];
 };
 
-function optimisticReducer(state: Holiday[], { action, holiday }: OptimisticAction) {
-  switch (action) {
+function optimisticReducer(state: Holiday[], action: OptimisticAction) {
+  switch (action.action) {
+    case 'set':
+      return action.holidays ? [...action.holidays] : state;
     case 'add':
-      const newState = [...state, holiday as Holiday];
+      if (!action.holiday) return state;
+      const newState = [...state, action.holiday];
       return newState.sort((a, b) => {
         const dateA = new Date(a.start.split('.').reverse().join('-'));
         const dateB = new Date(b.start.split('.').reverse().join('-'));
         return dateA.getTime() - dateB.getTime();
       });
     case 'delete':
-      return state.filter((h) => h.id !== holiday.id);
+      if (!action.holiday) return state;
+      return state.filter((h) => h.id !== action.holiday!.id);
     default:
       return state;
   }
 }
 
 export default function FerienterminePage() {
-  const [holidays, setHolidays] = useState<Holiday[]>([]);
+  const { db } = useFirestore();
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-
-  // Optimistic state for instant UI feedback
   const [optimisticHolidays, setOptimistic] = useReducer(optimisticReducer, []);
 
   useEffect(() => {
     async function fetchHolidays() {
       setLoading(true);
+      setError(null);
       try {
-        const fetchedHolidays = await getHolidays();
+        const fetchedHolidays = await getHolidays(db);
         const sortedHolidays = fetchedHolidays.sort((a, b) => {
           const dateA = new Date(a.start.split('.').reverse().join('-'));
           const dateB = new Date(b.start.split('.').reverse().join('-'));
           return dateA.getTime() - dateB.getTime();
         });
-        setHolidays(sortedHolidays);
-      } catch (error) {
+        setOptimistic({ action: 'set', holidays: sortedHolidays });
+      } catch (error: any) {
         console.error("Failed to fetch holidays:", error);
+        setError(error.message || 'Ein unbekannter Fehler ist aufgetreten.');
       } finally {
         setLoading(false);
       }
     }
-    fetchHolidays();
-  }, []);
-
-  // When real holidays load, update the optimistic state
-  useEffect(() => {
-    setOptimistic({ action: 'add', holiday: { id: '', name: '', start: '', end: '' } }); // dummy action to trigger reducer
-    setOptimistic({ action: 'delete', holiday: { id: '' } }); // dummy action to trigger reducer
-    holidays.forEach(h => setOptimistic({action: 'add', holiday: h}));
-  }, [holidays]);
-
+    if(db) {
+        fetchHolidays();
+    }
+  }, [db]);
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
@@ -82,12 +85,20 @@ export default function FerienterminePage() {
         </h1>
       </div>
 
+      {error && (
+         <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Fehler beim Laden der Daten</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>Neuen Ferientermin hinzufügen</CardTitle>
         </CardHeader>
         <CardContent>
-          <HolidayForm setOptimistic={setOptimistic} />
+          <HolidayForm setOptimistic={setOptimistic} holidays={optimisticHolidays} />
         </CardContent>
       </Card>
 
@@ -112,7 +123,7 @@ export default function FerienterminePage() {
                         Lade Daten...
                     </TableCell>
                 </TableRow>
-              ) : optimisticHolidays.length === 0 ? (
+              ) : !error && optimisticHolidays.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center">
                     Keine Ferientermine gefunden.
@@ -125,7 +136,7 @@ export default function FerienterminePage() {
                     <TableCell>{holiday.end}</TableCell>
                     <TableCell>{holiday.name}</TableCell>
                     <TableCell className="text-right">
-                      <HolidayDeleteButton id={holiday.id} setOptimistic={setOptimistic} />
+                      <HolidayDeleteButton id={holiday.id} setOptimistic={setOptimistic} holidays={optimisticHolidays} />
                     </TableCell>
                   </TableRow>
                 ))
