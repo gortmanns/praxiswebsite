@@ -30,14 +30,14 @@ import {
 } from '@/components/ui/card';
 
 const holidayFormSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Der Name muss mindestens 2 Zeichen lang sein.',
-  }),
   start: z.date({
     required_error: 'Ein Startdatum ist erforderlich.',
   }),
   end: z.date({
     required_error: 'Ein Enddatum ist erforderlich.',
+  }),
+  name: z.string().min(2, {
+    message: 'Der Name muss mindestens 2 Zeichen lang sein.',
   }),
 }).refine((data) => data.end >= data.start, {
   message: 'Das Enddatum darf nicht vor dem Startdatum liegen.',
@@ -55,9 +55,9 @@ export default function HolidaysPage() {
     // Hier wird die Logik zum Speichern der Daten implementiert.
     // Vorerst geben wir die Daten nur in der Konsole aus.
     console.log({
-      name: data.name,
       start: format(data.start, 'yyyy-MM-dd'),
       end: format(data.end, 'yyyy-MM-dd'),
+      name: data.name,
     });
   }
 
@@ -75,22 +75,6 @@ export default function HolidaysPage() {
             <h3 className="mb-4 text-lg font-medium">Neuen Termin erfassen</h3>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 gap-6 sm:grid-cols-4">
-                <div className="sm:col-span-2">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ferienname</FormLabel>
-                        <FormControl>
-                          <Input placeholder="z.B. Weihnachtsferien" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                
                 <FormField
                   control={form.control}
                   name="start"
@@ -172,6 +156,21 @@ export default function HolidaysPage() {
                     </FormItem>
                   )}
                 />
+                <div className="sm:col-span-2">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ferienname</FormLabel>
+                        <FormControl>
+                          <Input placeholder="z.B. Weihnachtsferien" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 
                 <div className="flex items-end sm:col-span-4">
                   <Button type="submit">Neuen Termin speichern</Button>
