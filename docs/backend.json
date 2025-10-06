@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "UserProfile": {
@@ -21,6 +22,28 @@
         }
       },
       "required": ["uid", "email"]
+    },
+    "Holiday": {
+      "title": "Holiday",
+      "description": "Defines a holiday period for the practice.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the holiday period (e.g., 'Christmas Break')."
+        },
+        "start": {
+          "type": "string",
+          "format": "date",
+          "description": "The start date of the holiday period."
+        },
+        "end": {
+          "type": "string",
+          "format": "date",
+          "description": "The end date of the holiday period."
+        }
+      },
+      "required": ["name", "start", "end"]
     }
   },
   "auth": {
@@ -36,6 +59,16 @@
             "$ref": "#/backend/entities/UserProfile"
           },
           "description": "Stores public-facing user profile information."
+        }
+      },
+      {
+        "path": "/holidays/{holidayId}",
+        "definition": {
+          "entityName": "Holiday",
+          "schema": {
+            "$ref": "#/backend/entities/Holiday"
+          },
+          "description": "Stores the practice's holiday periods."
         }
       }
     ]

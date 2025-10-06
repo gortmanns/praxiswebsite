@@ -4,9 +4,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { format } from 'date-fns';
+import { format, isWithinInterval, parseISO } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { CalendarIcon, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useFirestore } from '@/firebase';
+import { collection, addDoc, getDocs, query, orderBy } from 'firebase/firestore';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -36,38 +39,130 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
 
-const holidayFormSchema = z.object({
-  start: z.date({
-    required_error: 'Ein Startdatum ist erforderlich.',
-  }),
-  end: z.date({
-    required_error: 'Ein Enddatum ist erforderlich.',
-  }),
-  name: z.string().min(2, {
-    message: 'Der Name muss mindestens 2 Zeichen lang sein.',
-  }),
+const holidaySchema = z.object({
+  start: z.date({ required_error: 'Ein Startdatum ist erforderlich.' }),
+  end: z.date({ required_error: 'Ein Enddatum ist erforderlich.' }),
+  name: z.string().min(2, { message: 'Der Name muss mindestens 2 Zeichen lang sein.' }),
 }).refine((data) => data.end >= data.start, {
   message: 'Das Enddatum darf nicht vor dem Startdatum liegen.',
   path: ['end'],
 });
 
-type HolidayFormValues = z.infer<typeof holidayFormSchema>;
+type HolidayFormValues = z.infer<typeof holidaySchema>;
+
+interface Holiday extends HolidayFormValues {
+  id: string;
+}
 
 export default function HolidaysPage() {
+  const { toast } = useToast();
+  const [holidays, setHolidays] = useState<Holiday[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const firestore = useFirestore();
+
   const form = useForm<HolidayFormValues>({
-    resolver: zodResolver(holidayFormSchema),
+    resolver: zodResolver(holidaySchema),
+    defaultValues: {
+      name: '',
+    },
   });
 
-  function onSubmit(data: HolidayFormValues) {
-    // Hier wird die Logik zum Speichern der Daten implementiert.
-    // Vorerst geben wir die Daten nur in der Konsole aus.
-    console.log({
-      start: format(data.start, 'yyyy-MM-dd'),
-      end: format(data.end, 'yyyy-MM-dd'),
-      name: data.name,
+  const fetchHolidays = async () => {
+    if (!firestore) return;
+    setIsLoading(true);
+    try {
+      const holidaysCollection = collection(firestore, 'holidays');
+      const q = query(holidaysCollection, orderBy('start', 'asc'));
+      const querySnapshot = await getDocs(q);
+      const holidaysData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        name: doc.data().name,
+        // Timestamps in Firestore are converted to Date objects
+        start: doc.data().start.toDate(),
+        end: doc.data().end.toDate(),
+      }));
+      setHolidays(holidaysData);
+    } catch (error) {
+      console.error("Fehler beim Laden der Ferientermine: ", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Die Ferientermine konnten nicht geladen werden.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (firestore) {
+      fetchHolidays();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firestore]);
+
+
+  const checkForOverlap = (newStart: Date, newEnd: Date): boolean => {
+    return holidays.some(existing => {
+      const existingStart = existing.start;
+      const existingEnd = existing.end;
+      // Check if new range starts within an existing range
+      const newStartIsWithin = newStart >= existingStart && newStart <= existingEnd;
+      // Check if new range ends within an existing range
+      const newEndIsWithin = newEnd >= existingStart && newEnd <= existingEnd;
+      // Check if new range envelops an existing range
+      const newEnvelopsExisting = newStart <= existingStart && newEnd >= existingEnd;
+      
+      return newStartIsWithin || newEndIsWithin || newEnvelopsExisting;
     });
+  };
+
+
+  async function onSubmit(data: HolidayFormValues) {
+    if (!firestore) return;
+
+    if (checkForOverlap(data.start, data.end)) {
+        form.setError("root", { 
+            type: "manual", 
+            message: "Der angegebene Zeitraum überschneidet sich mit einem bestehenden Termin."
+        });
+        toast({
+            variant: "destructive",
+            title: "Fehler: Überschneidung",
+            description: "Der Termin überschneidet sich mit einem bestehenden Ferientermin.",
+        });
+        return;
+    }
+
+    try {
+      await addDoc(collection(firestore, 'holidays'), {
+        name: data.name,
+        start: data.start,
+        end: data.end,
+      });
+
+      toast({
+        title: 'Gespeichert!',
+        description: 'Der neue Ferientermin wurde erfolgreich hinzugefügt.',
+      });
+
+      form.reset();
+      fetchHolidays(); // Refresh the list from the database
+
+    } catch (error) {
+      console.error("Fehler beim Speichern: ", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Der Ferientermin konnte nicht gespeichert werden.",
+      });
+    }
   }
+  
+  const { isSubmitting } = form.formState;
 
   return (
     <div className="flex flex-1 items-start p-4 sm:p-6">
@@ -98,6 +193,7 @@ export default function HolidaysPage() {
                                 'w-full pl-3 text-left font-normal',
                                 !field.value && 'text-muted-foreground'
                               )}
+                              disabled={isSubmitting}
                             >
                               {field.value ? (
                                 format(field.value, 'dd.MM.yyyy', { locale: de })
@@ -139,6 +235,7 @@ export default function HolidaysPage() {
                                 'w-full pl-3 text-left font-normal',
                                 !field.value && 'text-muted-foreground'
                               )}
+                              disabled={isSubmitting}
                             >
                               {field.value ? (
                                 format(field.value, 'dd.MM.yyyy', { locale: de })
@@ -171,14 +268,16 @@ export default function HolidaysPage() {
                     <FormItem>
                       <FormLabel>Ferienname</FormLabel>
                       <FormControl>
-                        <Input placeholder="z.B. Weihnachtsferien" {...field} />
+                        <Input placeholder="z.B. Weihnachtsferien" {...field} disabled={isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
                 
-                <Button type="submit">Speichern</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? 'Wird gespeichert...' : 'Speichern'}
+                </Button>
               </form>
             </Form>
           </div>
@@ -195,11 +294,35 @@ export default function HolidaysPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
-                    <TableCell colSpan={4} className="text-center">
-                      Die Logik zum Laden der Termine wird in Kürze implementiert.
-                    </TableCell>
-                  </TableRow>
+                  {isLoading ? (
+                    Array.from({ length: 3 }).map((_, i) => (
+                      <TableRow key={i}>
+                        <TableCell><Skeleton className="h-6 w-24" /></TableCell>
+                        <TableCell><Skeleton className="h-6 w-24" /></TableCell>
+                        <TableCell><Skeleton className="h-6 w-48" /></TableCell>
+                        <TableCell className="text-right"><Skeleton className="h-8 w-8 ml-auto" /></TableCell>
+                      </TableRow>
+                    ))
+                  ) : holidays.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center">
+                        Keine Termine vorhanden.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    holidays.map((holiday) => (
+                      <TableRow key={holiday.id}>
+                        <TableCell>{format(holiday.start, 'dd.MM.yyyy', { locale: de })}</TableCell>
+                        <TableCell>{format(holiday.end, 'dd.MM.yyyy', { locale: de })}</TableCell>
+                        <TableCell>{holiday.name}</TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="ghost" size="icon" disabled>
+                              <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
           </div>
