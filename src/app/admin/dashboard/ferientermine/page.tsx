@@ -1,4 +1,3 @@
-
 'use client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,7 +13,7 @@ import {
   writeBatch,
   getDocs,
 } from 'firebase/firestore';
-import { useFirebase, useCollection } from '@/firebase';
+import { useFirebase } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -38,7 +37,7 @@ import {
 import { parse } from 'date-fns';
 import initialHolidays from '@/lib/holidays.json';
 import { useToast } from '@/hooks/use-toast';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/;
 
@@ -57,16 +56,8 @@ interface Holiday extends HolidayForm {
 export default function FerienterminePage() {
   const { db: firestore } = useFirebase();
   const { toast } = useToast();
-  const importDone = useRef(false);
-
-  const holidaysCollection = firestore
-    ? collection(firestore, 'holidays')
-    : null;
-  const holidaysQuery = holidaysCollection
-    ? query(holidaysCollection, orderBy('startDate', 'asc'))
-    : null;
-
-  const { data: holidays, loading } = useCollection<Holiday>(holidaysQuery);
+  const [holidays, setHolidays] = useState<Holiday[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const form = useForm<HolidayForm>({
     resolver: zodResolver(holidaySchema),
@@ -78,60 +69,85 @@ export default function FerienterminePage() {
   });
   
   useEffect(() => {
-    if (!firestore || !holidaysCollection || importDone.current) return;
+    if (!firestore) return;
 
-    const importInitialHolidays = async () => {
-      const snapshot = await getDocs(query(holidaysCollection));
-      if (snapshot.empty) {
-        console.log('Ferien-Datenbank ist leer. Importiere Altdaten...');
-        try {
+    const fetchAndImportHolidays = async () => {
+      setLoading(true);
+      try {
+        const holidaysCollection = collection(firestore, 'holidays');
+        const holidaysQuery = query(holidaysCollection, orderBy('startDate', 'asc'));
+        const snapshot = await getDocs(holidaysQuery);
+
+        if (snapshot.empty && initialHolidays.length > 0) {
+          console.log('Ferien-Datenbank ist leer. Importiere Altdaten...');
           const batch = writeBatch(firestore);
+          const importedHolidays: Holiday[] = [];
+          
           initialHolidays.forEach(holiday => {
             const docRef = doc(holidaysCollection); 
             
             const startDate = new Date(holiday.start);
             const endDate = new Date(holiday.end);
 
-            // Timezone offset correction
             const zonedStartDate = new Date(startDate.valueOf() + startDate.getTimezoneOffset() * 60 * 1000);
             const zonedEndDate = new Date(endDate.valueOf() + endDate.getTimezoneOffset() * 60 * 1000);
 
             const startFormatted = `${zonedStartDate.getDate().toString().padStart(2, '0')}.${(zonedStartDate.getMonth() + 1).toString().padStart(2, '0')}.${zonedStartDate.getFullYear()}`;
             const endFormatted = `${zonedEndDate.getDate().toString().padStart(2, '0')}.${(zonedEndDate.getMonth() + 1).toString().padStart(2, '0')}.${zonedEndDate.getFullYear()}`;
-
-            batch.set(docRef, {
+            
+            const newHoliday = {
               name: holiday.name,
               start: startFormatted,
               end: endFormatted,
               startDate: Timestamp.fromDate(zonedStartDate),
-            });
+            };
+
+            batch.set(docRef, newHoliday);
+            importedHolidays.push({ ...newHoliday, id: docRef.id });
           });
+
           await batch.commit();
+          setHolidays(importedHolidays.sort((a, b) => a.startDate.toMillis() - b.startDate.toMillis()));
           toast({ title: 'Erfolg', description: 'Altdaten wurden automatisch importiert.' });
-        } catch (error) {
-          console.error("Error importing holidays automatically: ", error);
-          toast({ variant: 'destructive', title: 'Fehler', description: 'Altdaten konnten nicht automatisch importiert werden.' });
+
+        } else {
+          const holidaysData = snapshot.docs.map(doc => ({ ...doc.data() as Omit<Holiday, 'id'>, id: doc.id }));
+          setHolidays(holidaysData as Holiday[]);
         }
+      } catch (error) {
+        console.error("Error fetching or importing holidays: ", error);
+        toast({ variant: 'destructive', title: 'Fehler', description: 'Daten konnten nicht geladen werden.' });
+      } finally {
+        setLoading(false);
       }
-      // Mark import as done regardless of whether it happened or not, to prevent re-running
-      importDone.current = true;
     };
 
-    importInitialHolidays();
-  }, [firestore, holidaysCollection, toast]);
+    fetchAndImportHolidays();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firestore]);
 
 
   const onSubmit = async (data: HolidayForm) => {
-    if (!firestore || !holidaysCollection) return;
+    if (!firestore) return;
     try {
       const startDate = parse(data.start, 'dd.MM.yyyy', new Date());
       
-      await addDoc(holidaysCollection, { 
+      const holidaysCollection = collection(firestore, 'holidays');
+      const newDocRef = await addDoc(holidaysCollection, { 
         name: data.name,
         start: data.start,
         end: data.end,
         startDate: Timestamp.fromDate(startDate),
       });
+
+      const newHoliday: Holiday = { 
+        ...data, 
+        id: newDocRef.id, 
+        startDate: Timestamp.fromDate(startDate) 
+      };
+
+      setHolidays(prev => [...prev, newHoliday].sort((a, b) => a.startDate.toMillis() - b.startDate.toMillis()));
+      
       form.reset();
       toast({ title: 'Erfolg', description: 'Ferientermin wurde hinzugefügt.' });
     } catch (error) {
@@ -144,6 +160,7 @@ export default function FerienterminePage() {
     if (!firestore) return;
     try {
       await deleteDoc(doc(firestore, 'holidays', id));
+      setHolidays(prev => prev.filter(h => h.id !== id));
       toast({ title: 'Erfolg', description: 'Ferientermin wurde gelöscht.' });
     } catch (error) {
       console.error('Error deleting holiday: ', error);
@@ -236,14 +253,14 @@ export default function FerienterminePage() {
                   </TableCell>
                 </TableRow>
               )}
-              {!loading && holidays?.length === 0 && (
+              {!loading && holidays.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center">
                     Keine Ferientermine gefunden.
                   </TableCell>
                 </TableRow>
               )}
-              {holidays?.map((holiday) => (
+              {!loading && holidays.map((holiday) => (
                 <TableRow key={holiday.id}>
                   <TableCell>{holiday.start}</TableCell>
                   <TableCell>{holiday.end}</TableCell>
@@ -267,5 +284,3 @@ export default function FerienterminePage() {
     </main>
   );
 }
-
-    
