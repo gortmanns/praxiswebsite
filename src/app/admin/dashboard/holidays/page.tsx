@@ -198,7 +198,7 @@ export default function HolidaysPage() {
     <div className="flex flex-1 items-start p-4 sm:p-6">
       <Card className="w-full">
         <CardHeader>
-          <CardTitle>Ferientermine bearbeiten</CardTitle>
+          <CardTitle className="text-primary">Ferientermine bearbeiten</CardTitle>
           <CardDescription>
             Hier können Sie die Daten für die Praxisferien verwalten.
           </CardDescription>
