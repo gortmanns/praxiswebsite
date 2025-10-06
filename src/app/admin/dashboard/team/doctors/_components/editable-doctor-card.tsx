@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -22,16 +21,34 @@ export const EditableDoctorCard = () => (
                         </div>
                         <div className="col-span-2">
                             <div className="flex h-full flex-col justify-center text-left text-foreground/80">
-                                <Input placeholder="Titel, z.B. Dipl. med." className="p-0 h-auto border-0 focus-visible:ring-0 bg-transparent text-[2.2cqw] text-primary placeholder:text-muted-foreground/50" />
-                                <Input placeholder="Name" className="p-0 h-auto border-0 focus-visible:ring-0 bg-transparent font-headline text-[4.8cqw] font-bold leading-tight text-primary placeholder:text-muted-foreground/50" />
+                                <Input 
+                                    placeholder="Titel, z.B. Dipl. med." 
+                                    className="p-0 h-auto border-0 focus-visible:ring-0 bg-transparent text-[2.2cqw] text-primary placeholder:text-primary/50" 
+                                />
+                                <Input 
+                                    placeholder="Name" 
+                                    className="p-0 h-auto border-0 focus-visible:ring-0 bg-transparent font-headline text-[4.8cqw] font-bold leading-tight text-primary placeholder:text-primary/50" 
+                                />
 
-                                <div className="mt-[1.5cqw] text-[2.2cqw] leading-tight space-y-1">
-                                    <Input placeholder="Fachrichtung" className="p-0 h-auto border-0 focus-visible:ring-0 bg-transparent font-bold placeholder:text-muted-foreground/50" />
-                                    <Input placeholder="Zusatztitel 1 (optional)" className="p-0 h-auto border-0 focus-visible:ring-0 bg-transparent placeholder:text-muted-foreground/50" />
-                                    <Input placeholder="Zusatztitel 2 (optional)" className="p-0 h-auto border-0 focus-visible:ring-0 bg-transparent placeholder:text-muted-foreground/50" />
+                                <div className="mt-[1.5cqw] text-[2.2cqw] leading-tight">
+                                    <Input 
+                                        placeholder="Fachrichtung" 
+                                        className="p-0 h-auto border-0 focus-visible:ring-0 bg-transparent font-bold placeholder:text-foreground/50" 
+                                    />
+                                    <Input 
+                                        placeholder="Zusatztitel 1 (optional)" 
+                                        className="p-0 h-auto border-0 focus-visible:ring-0 bg-transparent placeholder:text-foreground/50" 
+                                    />
+                                    <Input 
+                                        placeholder="Zusatztitel 2 (optional)" 
+                                        className="p-0 h-auto border-0 focus-visible:ring-0 bg-transparent placeholder:text-foreground/50" 
+                                    />
                                 </div>
                                 
-                                <Input placeholder="Zusatzinfo (optional)" className="p-0 h-auto border-0 focus-visible:ring-0 bg-transparent mt-[2.5cqw] text-[1.6cqw] italic placeholder:text-muted-foreground/50" />
+                                <Input 
+                                    placeholder="Zusatzinfo (optional)" 
+                                    className="p-0 h-auto border-0 focus-visible:ring-0 bg-transparent mt-[2.5cqw] text-[1.6cqw] italic placeholder:text-foreground/50" 
+                                />
                             </div>
                         </div>
                     </div>
