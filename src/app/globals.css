@@ -60,22 +60,17 @@
 
 @layer utilities {
     @keyframes marquee {
-        0% {
-            transform: translateX(0);
-        }
-        100% {
-            transform: translateX(-100%);
-        }
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-100%); }
+    }
+
+    .marquee {
+        width: fit-content;
     }
 
     .marquee span {
         display: inline-block;
-        white-space: nowrap;
         animation: marquee 90s linear infinite;
         padding-right: 2rem; /* Add some space between repetitions */
-    }
-
-    .marquee span.absolute {
-      left: 100%;
     }
 }

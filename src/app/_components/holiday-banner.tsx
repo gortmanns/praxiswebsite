@@ -85,10 +85,10 @@ export function HolidayBanner() {
                      bannerInfo.type === 'warning' ? 'text-black' : 'text-destructive-foreground'
                 )}>
                     <span>
-                        {bannerInfo.text} {separator} {bannerInfo.text} {separator}
+                        {bannerInfo.text} {separator}
                     </span>
-                    <span className="absolute">
-                         {bannerInfo.text} {separator} {bannerInfo.text} {separator}
+                    <span>
+                        {bannerInfo.text} {separator}
                     </span>
                 </p>
             </div>
