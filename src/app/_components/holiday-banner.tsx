@@ -76,7 +76,7 @@ export function HolidayBanner() {
         )}>
             <div className="flex-1 overflow-hidden">
                 <div className={cn(
-                    "marquee flex w-max items-center whitespace-nowrap text-3xl font-bold",
+                    "marquee flex w-max items-center whitespace-nowrap text-3xl font-bold py-2",
                      bannerInfo.type === 'warning' ? 'text-black' : 'text-destructive-foreground'
                 )}>
                     <span>
