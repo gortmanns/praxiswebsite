@@ -218,7 +218,7 @@ export const EditableDoctorCard = () => {
                                         />
                                     </div>
                                 </div>
-                            </div>
+                             </div>
                         </div>
                         {/* Rechte Spalte: Vita */}
                         <div className="flex flex-col items-start justify-start overflow-auto bg-accent/95 p-6 text-left text-background">
@@ -231,7 +231,7 @@ export const EditableDoctorCard = () => {
                                         </TooltipTrigger>
                                         <TooltipContent side="left" className="max-w-xs">
                                             <p>Verwenden Sie "---" (drei Bindestriche) in einer neuen Zeile, um Abschnitte zu trennen.</p>
-                                            <p>Verwenden Sie "&lt;Meilensteine&gt;" zu Beginn einer Zeile, um eine Liste von Meilensteinen zu erstellen.</p>
+                                            <p>Verwenden Sie "<Meilensteine>" zu Beginn einer Zeile, um eine Liste von Meilensteinen zu erstellen.</p>
                                         </TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
@@ -248,5 +248,3 @@ export const EditableDoctorCard = () => {
         </div>
     );
 };
-
-    
