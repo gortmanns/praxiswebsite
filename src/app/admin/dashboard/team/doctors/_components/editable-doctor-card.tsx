@@ -68,8 +68,10 @@ const EditDialog: React.FC<EditDialogProps> = ({
     };
     
     React.useEffect(() => {
-        setCurrentValue(initialValue);
-    }, [initialValue]);
+        if (isDialogOpen) {
+            setCurrentValue(initialValue);
+        }
+    }, [initialValue, isDialogOpen]);
 
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -91,7 +93,8 @@ const EditDialog: React.FC<EditDialogProps> = ({
                             id="edit-input"
                             value={currentValue}
                             onChange={(e) => setCurrentValue(e.target.value)}
-                            rows={5}
+                            rows={15}
+                            className="text-sm"
                         />
                     ) : (
                         <Input
@@ -185,7 +188,7 @@ export const EditableDoctorCard = () => {
                                             <DialogDescription>
                                                 Wählen Sie ein bestehendes Bild aus oder laden Sie ein neues hoch. 
                                                 Für eine optimale Darstellung sollte das Bild ein Seitenverhältnis von 2:3 haben.
-                                                Bitte geben Sie zuerst einen Namen für den Arzt ein.
+                                                {!name && <span className="mt-2 block font-semibold text-destructive">Bitte geben Sie zuerst einen Namen für den Arzt ein, bevor Sie ein Bild hochladen.</span>}
                                             </DialogDescription>
                                         </DialogHeader>
                                         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -277,23 +280,19 @@ export const EditableDoctorCard = () => {
                         <div className="flex flex-col items-start justify-start overflow-auto bg-accent/95 p-6 text-left text-background">
                             <div className="flex w-full items-center justify-between">
                                 <h3 className="mb-4 font-bold text-primary">Vita / Lebenslauf</h3>
-                                <TooltipProvider>
-                                    <Tooltip>
-                                        <TooltipTrigger>
-                                            <Info className="h-4 w-4 text-primary/80" />
-                                        </TooltipTrigger>
-                                        <TooltipContent side="left" className="max-w-xs">
-                                            <p>Verwenden Sie "---" (drei Bindestriche) in einer neuen Zeile, um Abschnitte zu trennen.</p>
-                                            <p>Verwenden Sie "&lt;Meilensteine&gt;" zu Beginn einer Zeile, um eine Liste von Meilensteinen zu erstellen.</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
+                                <EditDialog
+                                    dialogTitle="Vita bearbeiten"
+                                    dialogDescription="Hier können Sie den Lebenslauf bearbeiten. Verwenden Sie '---' für Abschnittstrenner und '<Meilensteine>' für Aufzählungen."
+                                    initialValue={vita}
+                                    onSave={setVita}
+                                    inputLabel="Lebenslauf"
+                                    isTextarea={true}
+                                    triggerText={<Pencil className="h-4 w-4 text-primary/80" />}
+                                />
                             </div>
-                            <Textarea
-                                value={vita}
-                                onChange={(e) => setVita(e.target.value)}
-                                className="h-full w-full flex-1 resize-none border-0 bg-transparent p-0 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight text-background placeholder:text-background/50 focus-visible:ring-0 focus-visible:ring-offset-0"
-                            />
+                            <div className="text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight whitespace-pre-wrap">
+                                {vita}
+                            </div>
                         </div>
                     </div>
                 </CardContent>
