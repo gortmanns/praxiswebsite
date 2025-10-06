@@ -6,8 +6,8 @@ import { getFirestore, collection, addDoc, deleteDoc, doc, Timestamp, getDocs, q
 import { revalidatePath } from 'next/cache';
 import { firebaseConfig } from '@/firebase/config';
 
-// Robust singleton pattern for Firebase server-side initialization.
-const getDb = () => {
+// Robuster Singleton-Pattern für die serverseitige Firebase-Initialisierung.
+function getDb() {
   if (getApps().length === 0) {
     initializeApp(firebaseConfig);
   }
