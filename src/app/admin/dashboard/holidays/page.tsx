@@ -84,7 +84,8 @@ export default function HolidaysPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [holidayToDelete, setHolidayToDelete] = useState<string | null>(null);
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
-  const [editMode, setEditMode] = useState<string | null>(null); // State for editing: holds the ID of the holiday being edited
+  const [editMode, setEditMode] = useState<string | null>(null);
+  const [conflictingHolidayId, setConflictingHolidayId] = useState<string | null>(null);
 
   const firestore = useFirestore();
 
@@ -125,26 +126,28 @@ export default function HolidaysPage() {
   }, [firestore]);
 
 
-  const checkForOverlap = (newStart: Date, newEnd: Date, excludeId: string | null): boolean => {
-    return holidays.some(existing => {
-      // Exclude the entry being currently edited from the check
-      if (existing.id === excludeId) {
-        return false;
-      }
-      const existingStart = existing.start;
-      const existingEnd = existing.end;
-      const newStartIsWithin = newStart >= existingStart && newStart <= existingEnd;
-      const newEndIsWithin = newEnd >= existingStart && newEnd <= existingEnd;
-      const newEnvelopsExisting = newStart <= existingStart && newEnd >= existingEnd;
-      
-      return newStartIsWithin || newEndIsWithin || newEnvelopsExisting;
-    });
+  const checkForOverlap = (newStart: Date, newEnd: Date, excludeId: string | null): string | null => {
+    for (const existing of holidays) {
+        if (existing.id === excludeId) continue;
+        
+        const existingStart = existing.start;
+        const existingEnd = existing.end;
+        const newStartIsWithin = newStart >= existingStart && newStart <= existingEnd;
+        const newEndIsWithin = newEnd >= existingStart && newEnd <= existingEnd;
+        const newEnvelopsExisting = newStart <= existingStart && newEnd >= existingEnd;
+        
+        if (newStartIsWithin || newEndIsWithin || newEnvelopsExisting) {
+            return existing.id;
+        }
+    }
+    return null;
   };
 
   const handleCancel = () => {
     setEditMode(null);
     form.reset({ name: '', start: undefined, end: undefined });
     setStatus(null);
+    setConflictingHolidayId(null);
     form.clearErrors();
   };
 
@@ -152,20 +155,22 @@ export default function HolidaysPage() {
     if (!firestore) return;
     setIsSubmitting(true);
     setStatus(null);
+    setConflictingHolidayId(null);
 
-    if (checkForOverlap(data.start, data.end, editMode)) {
+    const conflictingId = checkForOverlap(data.start, data.end, editMode);
+    if (conflictingId) {
         form.setError("root", { 
             type: "manual", 
             message: "Der angegebene Zeitraum überschneidet sich mit einem bestehenden Termin."
         });
         setStatus({ type: 'error', message: "Der Termin überschneidet sich mit einem bestehenden Ferientermin." });
+        setConflictingHolidayId(conflictingId);
         setIsSubmitting(false);
         return;
     }
 
     try {
       if (editMode) {
-        // Update existing holiday
         const holidayDoc = doc(firestore, 'holidays', editMode);
         await updateDoc(holidayDoc, {
             name: data.name,
@@ -174,7 +179,6 @@ export default function HolidaysPage() {
         });
         setStatus({ type: 'success', message: 'Der Ferientermin wurde erfolgreich aktualisiert.' });
       } else {
-        // Create new holiday
         await addDoc(collection(firestore, 'holidays'), {
             name: data.name,
             start: data.start,
@@ -183,7 +187,7 @@ export default function HolidaysPage() {
         setStatus({ type: 'success', message: 'Der neue Ferientermin wurde erfolgreich hinzugefügt.' });
       }
       
-      handleCancel(); // Reset form and edit mode
+      handleCancel();
       await fetchHolidays();
 
     } catch (error) {
@@ -223,6 +227,7 @@ export default function HolidaysPage() {
     form.setValue('start', holiday.start);
     form.setValue('end', holiday.end);
     setStatus(null);
+    setConflictingHolidayId(null);
     form.clearErrors();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -238,7 +243,7 @@ export default function HolidaysPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="mb-8 border-b pb-8">
+          <div className="mb-8 rounded-lg border bg-muted/30 p-6 pb-8 shadow-sm">
             <h3 className="mb-4 text-lg font-bold">{editMode ? 'Termin bearbeiten' : 'Neuen Termin erfassen'}</h3>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -367,7 +372,7 @@ export default function HolidaysPage() {
                   </div>
                 </div>
                  {status && (
-                  <Alert variant={status.type === 'error' ? 'destructive' : 'default'} className={cn(status.type === 'success' && 'border-green-500 text-green-700 dark:border-green-700')}>
+                  <Alert variant={status.type === 'error' ? 'destructive' : 'default'} className={cn('mt-6', status.type === 'success' && 'border-green-500 text-green-700 dark:border-green-700')}>
                     {status.type === 'success' ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
                     <AlertTitle>{status.type === 'success' ? 'Erfolg' : 'Fehler'}</AlertTitle>
                     <AlertDescription>
@@ -376,7 +381,7 @@ export default function HolidaysPage() {
                   </Alert>
                 )}
                  {form.formState.errors.root && (
-                    <Alert variant="destructive">
+                    <Alert variant="destructive" className="mt-6">
                       <AlertCircle className="h-4 w-4" />
                       <AlertTitle>Fehler</AlertTitle>
                       <AlertDescription>
@@ -392,11 +397,11 @@ export default function HolidaysPage() {
             <div className="rounded-md border">
               <Table>
                 <TableHeader>
-                  <TableRow className="hover:bg-transparent">
-                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-muted-foreground">Erster Ferientag</TableHead>
-                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-muted-foreground">Letzter Ferientag</TableHead>
-                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-muted-foreground">Ferienname</TableHead>
-                    <TableHead className="py-3 px-4 text-right text-sm font-semibold text-muted-foreground">Aktionen</TableHead>
+                  <TableRow className="border-b-0 bg-primary hover:bg-primary/90">
+                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground">Erster Ferientag</TableHead>
+                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground">Letzter Ferientag</TableHead>
+                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground">Ferienname</TableHead>
+                    <TableHead className="py-3 px-4 text-right text-sm font-semibold text-primary-foreground">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -411,7 +416,7 @@ export default function HolidaysPage() {
                     ))
                   ) : holidays.length > 0 ? (
                     holidays.map((holiday) => (
-                      <TableRow key={holiday.id} className="even:bg-muted/50">
+                      <TableRow key={holiday.id} className={cn(conflictingHolidayId === holiday.id && "bg-yellow-100/70")}>
                         <TableCell className="py-3 px-4 font-medium">{format(holiday.start, 'dd.MM.yyyy')}</TableCell>
                         <TableCell className="py-3 px-4 font-medium">{format(holiday.end, 'dd.MM.yyyy')}</TableCell>
                         <TableCell className="py-3 px-4 font-medium">{holiday.name}</TableCell>
@@ -458,5 +463,3 @@ export default function HolidaysPage() {
     </>
   );
 }
-
-    
