@@ -53,7 +53,11 @@ export default function UeberUnsPage() {
                             <li>Wir möchten eine einfache Notfall-Versorgung für die kleinen Dinge die im Alltag schiefgehen innerhalb der Öffnungszeiten jederzeit ohne Voranmeldung anbieten können, so dass unsere Patienten nur für schwerere Notfälle noch in die Stadt Bern müssen.</li>
                             <li>Wir möchten weitere Spezialisten gewinnen, die Ihre Sprechstunden bei uns im Praxiszentrum anbieten. Idealerweise decken wir irgendwann fast das ganze medizinische Spektum ab, soweit es jedenfalls die technischen Möglichkeiten und Räumlichkeiten bei uns zulassen.</li>
                         </ul>
-                        <p className="pt-4">An dieser Stelle bedanke ich mich für das mir entgegengebrachte Vertrauen.</p>
+                        <div className="pt-8 space-y-4">
+                            <p>An dieser Stelle möchte ich mich für das entgegengebrachte Vertrauen bedanken. Mir ist bewusst dass die Gewöhnung an einen neuen Hausarzt schwierig ist, zumal wenn der alte Hausarzt über Jahrzehnte hinweg an dieser Stelle tätig war und der "Neue" vieles anders macht.</p>
+                            <p className="font-bold">Gernot Ortmanns</p>
+                            <p className="text-base text-foreground/70">(Im Oktober 2025)</p>
+                        </div>
                     </CardContent>
                 </Card>
             </div>
