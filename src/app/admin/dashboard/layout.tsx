@@ -1,5 +1,4 @@
 
-import { signOut } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -63,17 +62,9 @@ export default function DashboardLayout({
               <DropdownMenuLabel>Mein Konto</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <form
-                  action={async () => {
-                    'use server';
-                    await signOut({ redirectTo: '/admin' });
-                  }}
-                  className="w-full"
-                >
-                  <button type="submit" className="w-full text-left">
+                 <Link href="/admin" className="w-full text-left">
                     Abmelden
-                  </button>
-                </form>
+                  </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

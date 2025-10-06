@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -14,10 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { useToast } from '@/hooks/use-toast';
-import { addHoliday, deleteHoliday, Holiday } from './actions';
-import React, { useTransition } from 'react';
-import { useFirestore } from '@/firebase';
+import { Holiday } from './page';
 
 const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/;
 
@@ -30,15 +28,10 @@ const holidaySchema = z.object({
 type HolidayFormValues = z.infer<typeof holidaySchema>;
 
 interface HolidayFormProps {
-    setOptimistic: (action: { action: 'add' | 'delete'; holiday: Holiday | {id: string} }) => void;
     holidays: Holiday[];
 }
 
-export function HolidayForm({ setOptimistic, holidays }: HolidayFormProps) {
-  const { toast } = useToast();
-  const [isPending, startTransition] = useTransition();
-  const { db } = useFirestore();
-
+export function HolidayForm({ holidays }: HolidayFormProps) {
   const form = useForm<HolidayFormValues>({
     resolver: zodResolver(holidaySchema),
     defaultValues: {
@@ -49,26 +42,9 @@ export function HolidayForm({ setOptimistic, holidays }: HolidayFormProps) {
   });
 
   const onSubmit = (data: HolidayFormValues) => {
-    startTransition(async () => {
-      const optimisticId = `optimistic-${Date.now()}`;
-      const optimisticHoliday: Holiday = { ...data, id: optimisticId };
-      
-      setOptimistic({ action: 'add', holiday: optimisticHoliday });
-      form.reset();
-
-      const result = await addHoliday(data, db);
-
-      if (result.success && result.id) {
-        toast({ title: 'Erfolg', description: result.message });
-        // Replace optimistic holiday with real one
-        setOptimistic({ action: 'delete', holiday: { id: optimisticId } });
-        setOptimistic({ action: 'add', holiday: { ...data, id: result.id } });
-      } else {
-        toast({ variant: 'destructive', title: 'Fehler', description: result.message });
-        // Rollback optimistic update
-        setOptimistic({ action: 'delete', holiday: { id: optimisticId } });
-      }
-    });
+    // Placeholder function
+    alert('Formular gesendet (Funktion nicht implementiert)');
+    console.log(data);
   };
 
   return (
@@ -116,8 +92,8 @@ export function HolidayForm({ setOptimistic, holidays }: HolidayFormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending}>
-          {isPending ? 'Wird hinzugefügt...' : 'Hinzufügen'}
+        <Button type="submit">
+          Hinzufügen
         </Button>
       </form>
     </Form>
@@ -127,30 +103,12 @@ export function HolidayForm({ setOptimistic, holidays }: HolidayFormProps) {
 
 interface HolidayDeleteButtonProps {
     id: string;
-    setOptimistic: (action: { action: 'add' | 'delete'; holiday: Holiday | {id: string} }) => void;
 }
 
-export function HolidayDeleteButton({ id, setOptimistic }: HolidayDeleteButtonProps) {
-  const { toast } = useToast();
-  const [isPending, startTransition] = useTransition();
-  const { db } = useFirestore();
-
-
+export function HolidayDeleteButton({ id }: HolidayDeleteButtonProps) {
   const handleDelete = () => {
-    startTransition(async () => {
-        const originalHoliday = holidays.find(h => h.id === id);
-        setOptimistic({ action: 'delete', holiday: { id } });
-
-        const result = await deleteHoliday(id, db);
-        if (result.success) {
-            toast({ title: 'Erfolg', description: result.message });
-        } else {
-            toast({ variant: 'destructive', title: 'Fehler', description: result.message });
-            if (originalHoliday) {
-              setOptimistic({ action: 'add', holiday: originalHoliday });
-            }
-        }
-    });
+    // Placeholder function
+    alert(`Löschen geklickt für ID: ${id} (Funktion nicht implementiert)`);
   };
 
   return (
@@ -158,7 +116,6 @@ export function HolidayDeleteButton({ id, setOptimistic }: HolidayDeleteButtonPr
       variant="ghost"
       size="icon"
       onClick={handleDelete}
-      disabled={isPending || id.startsWith('optimistic-')}
       aria-label="Termin löschen"
     >
       <X className="h-4 w-4 text-destructive" />

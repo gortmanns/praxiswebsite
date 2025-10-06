@@ -4,7 +4,6 @@ import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Montserrat, Open_Sans } from 'next/font/google';
-import { FirebaseClientProvider } from '@/firebase';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -31,9 +30,7 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className={cn('font-body antialiased', montserrat.variable, openSans.variable)}>
-        <FirebaseClientProvider>
-          {children}
-        </FirebaseClientProvider>
+        {children}
         <Toaster />
       </body>
     </html>
