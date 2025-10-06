@@ -370,55 +370,54 @@ export default function HolidaysPage() {
               </form>
             </Form>
           </div>
-
-          <div className="mt-8">
-             <h3 className="mb-4 text-lg font-bold">Bestehende Termine</h3>
+          <div>
+            <h3 className="mb-4 text-lg font-bold">Bestehende Termine</h3>
+            <div className="rounded-md border">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Ferienname</TableHead>
                     <TableHead>Erster Ferientag</TableHead>
                     <TableHead>Letzter Ferientag</TableHead>
-                    <TableHead className="text-right">Aktion</TableHead>
+                    <TableHead>Ferienname</TableHead>
+                    <TableHead className="text-right">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {isLoading ? (
                     Array.from({ length: 3 }).map((_, i) => (
                       <TableRow key={i}>
-                        <TableCell><Skeleton className="h-6 w-48" /></TableCell>
-                        <TableCell><Skeleton className="h-6 w-24" /></TableCell>
-                        <TableCell><Skeleton className="h-6 w-24" /></TableCell>
-                        <TableCell className="text-right"><Skeleton className="h-8 w-20 ml-auto" /></TableCell>
+                        <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+                        <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+                        <TableCell><Skeleton className="h-5 w-40" /></TableCell>
+                        <TableCell className="text-right"><Skeleton className="h-8 w-20" /></TableCell>
                       </TableRow>
                     ))
-                  ) : holidays.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={4} className="text-center">
-                        Keine Termine vorhanden.
-                      </TableCell>
-                    </TableRow>
-                  ) : (
+                  ) : holidays.length > 0 ? (
                     holidays.map((holiday) => (
                       <TableRow key={holiday.id}>
+                        <TableCell>{format(holiday.start, 'dd.MM.yyyy')}</TableCell>
+                        <TableCell>{format(holiday.end, 'dd.MM.yyyy')}</TableCell>
                         <TableCell>{holiday.name}</TableCell>
-                        <TableCell>{format(holiday.start, 'dd.MM.yyyy', { locale: de })}</TableCell>
-                        <TableCell>{format(holiday.end, 'dd.MM.yyyy', { locale: de })}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button variant="ghost" size="icon" onClick={() => handleEdit(holiday)} aria-label="Bearbeiten">
-                                <Pencil className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" onClick={() => openDeleteDialog(holiday.id)} aria-label="Löschen">
-                                <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
+                        <TableCell className="text-right space-x-2">
+                           <Button variant="outline" size="sm" onClick={() => handleEdit(holiday)} disabled={isSubmitting || isDeleting}>
+                                <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                           </Button>
+                           <Button variant="destructive" size="sm" onClick={() => openDeleteDialog(holiday.id)} disabled={isSubmitting || isDeleting}>
+                                <Trash2 className="mr-2 h-4 w-4" /> Löschen
+                           </Button>
                         </TableCell>
                       </TableRow>
                     ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center">
+                        Keine Ferientermine gefunden.
+                      </TableCell>
+                    </TableRow>
                   )}
                 </TableBody>
               </Table>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -428,19 +427,17 @@ export default function HolidaysPage() {
             <AlertDialogHeader>
             <AlertDialogTitle>Sind Sie sicher?</AlertDialogTitle>
             <AlertDialogDescription>
-                Dieser Ferientermin wird endgültig gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.
+                Möchten Sie diesen Ferientermin wirklich unwiderruflich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
             </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setHolidayToDelete(null)}>Abbrechen</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
+            <AlertDialogCancel disabled={isDeleting}>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className={buttonVariants({ variant: "destructive" })}>
                 {isDeleting ? 'Wird gelöscht...' : 'Löschen'}
             </AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>
-  </>
+    </>
   );
 }
-
-    
