@@ -97,6 +97,16 @@ export default function HolidaysPage() {
     },
   });
 
+  useEffect(() => {
+    if (status) {
+      const timer = setTimeout(() => {
+        setStatus(null);
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [status]);
+
+
   const fetchHolidays = async () => {
     if (!firestore) return;
     setIsLoading(true);
@@ -371,24 +381,26 @@ export default function HolidaysPage() {
                     )}
                   </div>
                 </div>
-                 {status && (
-                  <Alert variant={status.type === 'error' ? 'destructive' : 'default'} className={cn('mt-6', status.type === 'success' && 'border-green-500 text-green-700 dark:border-green-700')}>
-                    {status.type === 'success' ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
-                    <AlertTitle>{status.type === 'success' ? 'Erfolg' : 'Fehler'}</AlertTitle>
-                    <AlertDescription>
-                      {status.message}
-                    </AlertDescription>
-                  </Alert>
-                )}
-                 {form.formState.errors.root && (
-                    <Alert variant="destructive" className="mt-6">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertTitle>Fehler</AlertTitle>
-                      <AlertDescription>
-                        {form.formState.errors.root.message}
-                      </AlertDescription>
+                 <div className="mt-6 min-h-[60px]">
+                    {status && (
+                    <Alert variant={status.type === 'error' ? 'destructive' : 'default'} className={cn(status.type === 'success' && 'border-green-500 text-green-700 dark:border-green-700')}>
+                        {status.type === 'success' ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+                        <AlertTitle>{status.type === 'success' ? 'Erfolg' : 'Fehler'}</AlertTitle>
+                        <AlertDescription>
+                        {status.message}
+                        </AlertDescription>
                     </Alert>
-                 )}
+                    )}
+                    {form.formState.errors.root && (
+                        <Alert variant="destructive">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertTitle>Fehler</AlertTitle>
+                        <AlertDescription>
+                            {form.formState.errors.root.message}
+                        </AlertDescription>
+                        </Alert>
+                    )}
+                 </div>
               </form>
             </Form>
           </div>
@@ -463,6 +475,3 @@ export default function HolidaysPage() {
     </>
   );
 }
-
-    
-    
