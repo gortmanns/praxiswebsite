@@ -26,6 +26,10 @@ export default async function DashboardLayout({
   const session = await authSession();
 
   if (!session?.user) {
+    // This redirect is problematic and redundant. The middleware already handles protection.
+    // The session might not be immediately available here on the first login cycle,
+    // causing a redirect loop.
+    // The middleware is the correct place to enforce auth boundaries.
     redirect('/admin');
   }
 
