@@ -174,9 +174,8 @@ export function Header() {
                  href={notfallLink.href}
                  onMouseEnter={handleMouseEnter}
                  className={cn(
-                  'relative z-10 whitespace-nowrap rounded-md bg-destructive/80 px-3 py-2 text-xl font-bold text-destructive-foreground transition-colors hover:bg-destructive/90',
-                  pathname === notfallLink.href && 'bg-destructive ring-2 ring-destructive-foreground ring-offset-2 ring-offset-background',
-                  'uppercase'
+                  'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold uppercase text-emergency-red transition-colors hover:text-emergency-red/80',
+                  pathname === notfallLink.href && 'ring-2 ring-emergency-red ring-offset-2 ring-offset-background'
                  )}
              >
                  {notfallLink.label}
@@ -256,8 +255,8 @@ export function Header() {
                           key={link.href}
                           href={link.href}
                           className={cn(
-                            'rounded-md px-3 py-2 text-lg font-bold text-destructive-foreground transition-colors uppercase',
-                            isActive ? 'bg-destructive' : 'bg-destructive/80 hover:bg-destructive'
+                            'rounded-md px-3 py-2 text-lg font-bold uppercase transition-colors',
+                            isActive ? 'text-emergency-red ring-2 ring-emergency-red' : 'text-emergency-red/80 hover:text-emergency-red'
                           )}
                         >
                           {link.label}
