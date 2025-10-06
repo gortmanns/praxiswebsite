@@ -1,6 +1,6 @@
 
 'use client';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
@@ -12,7 +12,7 @@ import {
   orderBy,
   Timestamp,
 } from 'firebase/firestore';
-import { useFirestore, useCollection } from '@/firebase';
+import { useFirebase, useCollection } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -33,7 +33,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { format, parse } from 'date-fns';
+import { parse } from 'date-fns';
 
 const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/;
 
@@ -50,7 +50,7 @@ interface Holiday extends HolidayForm {
 }
 
 export default function FerienterminePage() {
-  const { db: firestore } = useFirestore();
+  const { db: firestore } = useFirebase();
 
   const holidaysCollection = firestore
     ? collection(firestore, 'holidays')
