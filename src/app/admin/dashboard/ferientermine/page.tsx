@@ -1,21 +1,4 @@
-
-'use client';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import {
-  collection,
-  addDoc,
-  deleteDoc,
-  doc,
-  query,
-  orderBy,
-  Timestamp,
-  getDocs,
-} from 'firebase/firestore';
-import { useFirebase } from '@/firebase';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -24,110 +7,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { X } from 'lucide-react';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { parse } from 'date-fns';
-import { useToast } from '@/hooks/use-toast';
-import { useState, useEffect, useCallback } from 'react';
+import { getHolidays } from './actions';
+import { HolidayForm, HolidayDeleteButton } from './holiday-form';
 
-const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/;
+export const dynamic = 'force-dynamic';
 
-const holidaySchema = z.object({
-  name: z.string().min(1, { message: 'Name ist erforderlich.' }),
-  start: z.string().regex(dateRegex, { message: 'Ungültiges Datum (TT.MM.JJJJ)' }),
-  end: z.string().regex(dateRegex, { message: 'Ungültiges Datum (TT.MM.JJJJ)' }),
-});
-
-type HolidayForm = z.infer<typeof holidaySchema>;
-interface Holiday extends HolidayForm {
-  id: string;
-  startDate: Timestamp;
-}
-
-export default function FerienterminePage() {
-  const { db: firestore } = useFirebase();
-  const { toast } = useToast();
-  const [holidays, setHolidays] = useState<Holiday[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const form = useForm<HolidayForm>({
-    resolver: zodResolver(holidaySchema),
-    defaultValues: {
-      name: '',
-      start: '',
-      end: '',
-    },
-  });
-
-  const fetchHolidays = useCallback(async () => {
-    if (!firestore) return;
-    setLoading(true);
-    try {
-      const holidaysCollection = collection(firestore, 'holidays');
-      const holidaysQuery = query(holidaysCollection, orderBy('startDate', 'asc'));
-      const snapshot = await getDocs(holidaysQuery);
-      
-      const holidaysData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })) as Holiday[];
-      setHolidays(holidaysData);
-    } catch (error) {
-      console.error("Error fetching holidays: ", error);
-      toast({ variant: 'destructive', title: 'Fehler', description: 'Daten konnten nicht geladen werden.' });
-    } finally {
-      setLoading(false);
-    }
-  }, [firestore, toast]);
-
-  useEffect(() => {
-    fetchHolidays();
-  }, [fetchHolidays]);
-
-  const onSubmit = async (data: HolidayForm) => {
-    if (!firestore) return;
-    try {
-      const startDate = parse(data.start, 'dd.MM.yyyy', new Date());
-      const newHolidayData = { 
-        name: data.name,
-        start: data.start,
-        end: data.end,
-        startDate: Timestamp.fromDate(startDate),
-      };
-
-      const holidaysCollection = collection(firestore, 'holidays');
-      const docRef = await addDoc(holidaysCollection, newHolidayData);
-      
-      // Optimistic UI update for instant feedback
-      const newHolidayWithId: Holiday = { ...newHolidayData, id: docRef.id };
-      setHolidays(prevHolidays => [...prevHolidays, newHolidayWithId].sort((a, b) => a.startDate.toMillis() - b.startDate.toMillis()));
-      
-      form.reset(); // Clear form fields after successful submission
-      toast({ title: 'Erfolg', description: 'Ferientermin wurde hinzugefügt.' });
-
-    } catch (error) {
-      console.error('Error adding holiday: ', error);
-      toast({ variant: 'destructive', title: 'Fehler', description: 'Termin konnte nicht hinzugefügt werden.' });
-    }
-  };
-
-  const deleteHoliday = async (id: string) => {
-    if (!firestore) return;
-    try {
-      await deleteDoc(doc(firestore, 'holidays', id));
-      // Update state locally to reflect deletion immediately
-      setHolidays((prevHolidays) => prevHolidays.filter((h) => h.id !== id));
-      toast({ title: 'Erfolg', description: 'Ferientermin wurde gelöscht.' });
-    } catch (error) {
-      console.error('Error deleting holiday: ', error);
-      toast({ variant: 'destructive', title: 'Fehler', description: 'Termin konnte nicht gelöscht werden.' });
-    }
-  };
+export default async function FerienterminePage() {
+  const holidays = await getHolidays();
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
@@ -142,55 +28,7 @@ export default function FerienterminePage() {
           <CardTitle>Neuen Ferientermin hinzufügen</CardTitle>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="grid grid-cols-1 gap-4 md:grid-cols-4 md:items-end"
-            >
-              <FormField
-                control={form.control}
-                name="start"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Erster Ferientag</FormLabel>
-                    <FormControl>
-                      <Input placeholder="dd.mm.yyyy" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="end"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Letzter Ferientag</FormLabel>
-                    <FormControl>
-                      <Input placeholder="dd.mm.yyyy" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ferienname</FormLabel>
-                    <FormControl>
-                      <Input placeholder="z.B. Sommerferien" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? 'Wird hinzugefügt...' : 'Hinzufügen'}
-              </Button>
-            </form>
-          </Form>
+          <HolidayForm />
         </CardContent>
       </Card>
 
@@ -209,37 +47,24 @@ export default function FerienterminePage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {loading && (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center">
-                    Lade Daten...
-                  </TableCell>
-                </TableRow>
-              )}
-              {!loading && holidays.length === 0 && (
+              {holidays.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center">
                     Keine Ferientermine gefunden.
                   </TableCell>
                 </TableRow>
+              ) : (
+                holidays.map((holiday) => (
+                  <TableRow key={holiday.id}>
+                    <TableCell>{holiday.start}</TableCell>
+                    <TableCell>{holiday.end}</TableCell>
+                    <TableCell>{holiday.name}</TableCell>
+                    <TableCell className="text-right">
+                      <HolidayDeleteButton id={holiday.id} />
+                    </TableCell>
+                  </TableRow>
+                ))
               )}
-              {!loading && holidays.map((holiday) => (
-                <TableRow key={holiday.id}>
-                  <TableCell>{holiday.start}</TableCell>
-                  <TableCell>{holiday.end}</TableCell>
-                  <TableCell>{holiday.name}</TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => deleteHoliday(holiday.id)}
-                      aria-label="Termin löschen"
-                    >
-                      <X className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
             </TableBody>
           </Table>
         </CardContent>

@@ -15,23 +15,17 @@ import {
 } from './provider';
 import { FirebaseClientProvider } from './client-provider';
 
-let app: FirebaseApp;
-let auth: Auth;
-let db: Firestore;
-
+// This function is for CLIENT-SIDE use only.
 function initializeFirebase() {
   if (getApps().length === 0) {
-    app = initializeApp(firebaseConfig);
-    auth = getAuth(app);
-    db = getFirestore(app);
+    return initializeApp(firebaseConfig);
   } else {
-    app = getApp();
-    auth = getAuth(app);
-    db = getFirestore(app);
+    return getApp();
   }
-  return { app, auth, db };
 }
 
+// These hooks and providers are for CLIENT-SIDE use.
+// For server-side logic, see src/firebase/server.ts
 export {
   initializeFirebase,
   FirebaseProvider,
