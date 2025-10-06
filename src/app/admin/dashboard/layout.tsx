@@ -17,7 +17,6 @@ import {
   SidebarInset,
   SidebarMenuSub,
   SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
@@ -32,8 +31,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 
 export default function DashboardLayout({
@@ -110,30 +107,23 @@ export default function DashboardLayout({
                 </Link>
              </SidebarMenuItem>
             ))}
-             <Collapsible open={isTeamMenuOpen} onOpenChange={setIsTeamMenuOpen}>
-                <SidebarMenuItem>
-                    <CollapsibleTrigger asChild>
-                        <SidebarMenuButton tooltip="Anpassungen Team" className="w-full">
-                            <Users />
-                            <span>Anpassungen Team</span>
-                            <ChevronRight className={cn("ml-auto h-4 w-4 shrink-0 transition-transform", isTeamMenuOpen && "rotate-90")} />
-                        </SidebarMenuButton>
-                    </CollapsibleTrigger>
-                </SidebarMenuItem>
-                <CollapsibleContent asChild>
-                    <SidebarMenuSub>
-                        {teamNavItems.map((item) => (
-                             <SidebarMenuSubItem key={item.href}>
-                                <Link href={item.href} passHref>
-                                    <SidebarMenuSubButton isActive={pathname === item.href}>
-                                        {item.label}
-                                    </SidebarMenuSubButton>
-                                </Link>
-                            </SidebarMenuSubItem>
-                        ))}
-                    </SidebarMenuSub>
-                </CollapsibleContent>
-             </Collapsible>
+            <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Anpassungen Team" className="w-full pointer-events-none">
+                    <Users />
+                    <span>Anpassungen Team</span>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuSub>
+                {teamNavItems.map((item) => (
+                    <SidebarMenuSubItem key={item.href}>
+                        <Link href={item.href} passHref>
+                            <SidebarMenuSubButton isActive={pathname === item.href}>
+                                {item.label}
+                            </SidebarMenuSubButton>
+                        </Link>
+                    </SidebarMenuSubItem>
+                ))}
+            </SidebarMenuSub>
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
