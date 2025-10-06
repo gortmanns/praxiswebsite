@@ -1,4 +1,3 @@
-
 import type { NextAuthConfig } from 'next-auth';
  
 export const authConfig = {
@@ -9,17 +8,23 @@ export const authConfig = {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith('/admin/dashboard');
-      
+      const isAdminPage = nextUrl.pathname === '/admin';
+
       if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
-        // If logged in, redirect from /admin to /admin/dashboard
-        if (nextUrl.pathname === '/admin') {
-            return Response.redirect(new URL('/admin/dashboard', nextUrl));
+        // If on dashboard, must be logged in
+        return isLoggedIn;
+      } 
+      
+      if (isLoggedIn) {
+        // If logged in and trying to access login page, redirect to dashboard
+        if (isAdminPage) {
+          return Response.redirect(new URL('/admin/dashboard', nextUrl));
         }
+        // If logged in and on any other page, allow access
+        return true;
       }
-      // Allow unauthenticated access to /admin (login page) and all other pages
+      
+      // If not logged in and not on a protected route, allow access
       return true;
     },
   },
