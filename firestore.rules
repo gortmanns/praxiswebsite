@@ -1,0 +1,134 @@
+/**
+ * @fileoverview Firestore Security Rules for the backend application.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a hybrid security model, combining user-based access control with role-based access control for administrative privileges.
+ *
+ * Data Structure:
+ * - /users/{userId}: Stores user account information, secured with owner-only access.
+ * - /roles_admin/{userId}: An existence-based collection. If a document exists for a user ID, that user is an admin.
+ * - /doctors/{doctorId}: Data about doctors.
+ * - /contactFormEntries/{contactFormEntryId}: Data from contact form entries. Public can write, admins can read.
+ *
+ * Key Security Decisions:
+ * - User listing is disallowed to prevent information disclosure.
+ * - Admin privileges are determined solely by the presence of a document in the `/roles_admin/{userId}` collection.
+ * - Contact form entries are publicly writable, but readable only by admins.
+ *
+ * Denormalization for Authorization:
+ * - Admin status is checked via the presence of a document in the dedicated `/roles_admin/{userId}` collection. This allows `isAdmin()` to avoid costly `get()` calls to the user document itself.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Secure user accounts with owner-only access.
+     * @path /users/{userId}
+     * @allow (create) Authenticated user creates their own account.
+     * @allow (get, update, delete) Authenticated user accesses their own account.
+     * @deny (create) Authenticated user attempts to create an account with a different user ID.
+     * @deny (get, update, delete) Authenticated user attempts to access another user's account.
+     * @principle Enforces document ownership for writes and restricts access to a user's own data tree.
+     */
+    match /users/{userId} {
+      // Helper function to check if the user is signed in
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      // Helper function to check if the user is the owner of the document
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+
+      // Helper function to check if the user is the existing owner of the document
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Secure the admin roles collection. Only a user with a matching document can be considered an admin.
+     * @path /roles_admin/{userId}
+     * @allow (create) An admin creates a role document for another user.
+     * @allow (get) Any user can check if they are an admin.
+     * @allow (delete) An admin can delete a role document for another user.
+     * @deny (create, delete) A non-admin user attempts to create or delete an admin role.
+     * @principle Uses existence of document in a collection to assign admin roles.
+     */
+    match /roles_admin/{userId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isAdmin() {
+        return exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+      }
+
+      allow get: if isSignedIn();
+      allow list: if false;
+      allow create: if isAdmin();
+      allow update: if false;
+      allow delete: if isAdmin();
+    }
+
+        /**
+     * @description Rules for doctors collection
+     * @path /doctors/{doctorId}
+     * @allow (get, list) Everyone can read the doctor profiles
+     * @allow (create) Admins can create doctor profiles
+     * @allow (update, delete) Admins can update/delete doctor profiles
+     * @deny If not signed in or not an admin
+     * @principle Only admins can modify doctors collection.
+     */
+        match /doctors/{doctorId} {
+          function isSignedIn() {
+            return request.auth != null;
+          }
+
+          function isAdmin() {
+            return exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+          }
+
+          function isExistingDocument() {
+            return resource != null;
+          }
+
+          allow get: if true;
+          allow list: if true;
+          allow create: if isSignedIn() && isAdmin();
+          allow update: if isSignedIn() && isAdmin() && isExistingDocument();
+          allow delete: if isSignedIn() && isAdmin() && isExistingDocument();
+        }
+
+        /**
+         * @description Rules for the contact form entries collection.
+         * @path /contactFormEntries/{contactFormEntryId}
+         * @allow (create) Anyone can submit a contact form entry.
+         * @allow (get, list) Admins can read all contact form entries.
+         * @deny (update, delete) Only admins can create, update and delete contact form entries.
+         * @principle Allows public write access while restricting read access to admins.
+         */
+        match /contactFormEntries/{contactFormEntryId} {
+          function isSignedIn() {
+            return request.auth != null;
+          }
+
+          function isAdmin() {
+            return exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+          }
+
+          allow get: if isSignedIn() && isAdmin();
+          allow list: if isSignedIn() && isAdmin();
+          allow create: if true;
+          allow update: if false;
+          allow delete: if false;
+        }
+  }
+}
