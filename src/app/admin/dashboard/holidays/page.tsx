@@ -6,10 +6,10 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { CalendarIcon, Trash2, AlertCircle, CheckCircle, Pencil } from 'lucide-react';
+import { CalendarIcon, Trash2, AlertCircle, CheckCircle, Pencil, TriangleAlert } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useFirestore } from '@/firebase';
-import { collection, addDoc, getDocs, query, orderBy, deleteDoc, doc, updateDoc, writeBatch } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, orderBy, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 
 import { cn } from '@/lib/utils';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -84,7 +84,7 @@ export default function HolidaysPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [holidayToDelete, setHolidayToDelete] = useState<string | null>(null);
-  const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [status, setStatus] = useState<{ type: 'success' | 'error' | 'warning'; message: string } | null>(null);
   const [editMode, setEditMode] = useState<string | null>(null);
   const [conflictingHolidayId, setConflictingHolidayId] = useState<string | null>(null);
 
@@ -167,11 +167,12 @@ export default function HolidaysPage() {
     setIsSubmitting(true);
     setStatus(null);
     setConflictingHolidayId(null);
+    form.clearErrors('root');
 
     const conflictingId = checkForOverlap(data.start, data.end, editMode);
     if (conflictingId) {
-        form.setError("root", { 
-            type: "manual", 
+        setStatus({ 
+            type: "warning", 
             message: "Der angegebene Zeitraum darf sich nicht mit einem bereits bestehenden Ferienzeitraum überschneiden. Der den Konflikt erzeugende Eintrag wurde in der Tabelle hervorgehoben."
         });
         setConflictingHolidayId(conflictingId);
@@ -241,6 +242,41 @@ export default function HolidaysPage() {
     form.clearErrors();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+  
+  const getStatusAlert = () => {
+    if (!status) return null;
+
+    const commonClasses = "border-2";
+    let variant: 'default' | 'destructive' | 'warning' = 'default';
+    let icon = <CheckCircle className="h-4 w-4" />;
+    let title = "Erfolg";
+    let alertClasses = "border-green-500 text-green-800 bg-green-50";
+
+    switch(status.type) {
+        case 'error':
+            variant = 'destructive';
+            icon = <AlertCircle className="h-4 w-4" />;
+            title = "Fehler";
+            alertClasses = "border-red-500 text-red-800 bg-red-50";
+            break;
+        case 'warning':
+            variant = 'warning';
+            icon = <TriangleAlert className="h-4 w-4" />;
+            title = "Warnung";
+            alertClasses = "border-yellow-500 text-yellow-800 bg-yellow-50";
+            break;
+    }
+    
+    return (
+        <Alert className={cn(commonClasses, alertClasses)}>
+            {icon}
+            <AlertTitle>{title}</AlertTitle>
+            <AlertDescription>
+                {status.message}
+            </AlertDescription>
+        </Alert>
+    );
+};
   
   return (
     <>
@@ -381,25 +417,8 @@ export default function HolidaysPage() {
                     )}
                   </div>
                 </div>
-                 <div className="mt-6 min-h-[60px]">
-                    {status && (
-                    <Alert variant={status.type === 'error' ? 'destructive' : 'default'} className={cn(status.type === 'success' && 'border-green-500 text-green-700 dark:border-green-700')}>
-                        {status.type === 'success' ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
-                        <AlertTitle>{status.type === 'success' ? 'Erfolg' : 'Fehler'}</AlertTitle>
-                        <AlertDescription>
-                        {status.message}
-                        </AlertDescription>
-                    </Alert>
-                    )}
-                    {form.formState.errors.root && (
-                        <Alert variant="destructive">
-                        <AlertCircle className="h-4 w-4" />
-                        <AlertTitle>Fehler</AlertTitle>
-                        <AlertDescription>
-                            {form.formState.errors.root.message}
-                        </AlertDescription>
-                        </Alert>
-                    )}
+                 <div className="mt-6 min-h-[76px]">
+                  {getStatusAlert()}
                  </div>
               </form>
             </Form>

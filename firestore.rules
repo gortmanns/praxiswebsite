@@ -1,69 +1,82 @@
 /**
  * @file Firestore Security Rules
- * @description This ruleset enforces a user-ownership model for user profiles
- * and allows public read access for holidays, with owner-only writes.
+ * @description This ruleset enforces a strict user-ownership model for user profiles
+ * and allows public read access to holiday information while restricting modifications to authenticated users.
  *
  * Data Structure:
- * - /users/{userId}: Stores public user profile data, accessible only by the user themselves.
- * - /holidays/{holidayId}: Stores public holiday information, editable only by authenticated users.
+ * - /users/{userId}: Stores user profile information, accessible only by the user themselves.
+ * - /holidays/{holidayId}: Stores public holiday information, write-protected.
  *
  * Key Security Decisions:
- * - Users can only access their own profile data.
- * - Holiday data is publicly readable but writable only by authenticated users.
- * - Data validation is minimal to allow for rapid prototyping. Only authorization-critical fields are validated.
+ * - User profiles are private and only accessible to the owning user. Listing of users is disallowed.
+ * - Holidays are publicly readable but only modifiable by authenticated users.
  *
- * Denormalization for Authorization:
- * - User profiles are stored under /users/{userId}, which allows using the `isOwner(userId)` function for simplified authorization.
- * - Holidays do not currently denormalize ownership, but the ruleset is prepared for this in the future (see TODO).
- *
- * Structural Segregation:
- * - User profiles and holiday data are stored in separate collections based on access control needs.
+ * Denormalization for Authorization: N/A. The rules directly enforce ownership based on the `userId` path segment.
+ * Structural Segregation: N/A.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Controls access to user profile information.
+     * @description Controls access to user profile documents.
      * @path /users/{userId}
-     * @allow (create) - User with UID 'user123' can create their profile at /users/user123.
-     * @allow (get) - User with UID 'user123' can read their profile at /users/user123.
-     * @allow (update) - User with UID 'user123' can update their profile at /users/user123.
-     * @allow (delete) - User with UID 'user123' can delete their profile at /users/user123.
-     * @deny (create) - User with UID 'user456' cannot create a profile at /users/user123.
-     * @deny (get) - User with UID 'user456' cannot read the profile at /users/user123.
+     * @allow (get) User with uid 'user123' can read their own profile.
+     * @allow (create) User with uid 'user123' can create their own profile.
+     * @allow (update) User with uid 'user123' can update their own profile.
+     * @allow (delete) User with uid 'user123' can delete their own profile.
+     * @deny (get) User with uid 'user456' cannot read user 'user123' profile.
+     * @deny (create) User with uid 'user456' cannot create user 'user123' profile.
+     * @deny (update) User with uid 'user456' cannot update user 'user123' profile.
+     * @deny (delete) User with uid 'user456' cannot delete user 'user123' profile.
      * @principle Enforces document ownership for all operations.
      */
     match /users/{userId} {
-      function isOwner(userId) {
-        return request.auth.uid == userId;
-      }
-      allow get: if isOwner(userId);
-      allow list: if false;
-      allow create: if isOwner(userId) && request.resource.data.uid == userId;
-      allow update: if isOwner(userId) && resource.data.uid == userId;
-      allow delete: if isOwner(userId) && resource.data.uid == userId;
+      // Allow anyone to get a user profile.  This is required so the application can tell whether or not the profile exists.
+      allow get: if isSignedIn() && isOwner(userId);
+      allow list: if false; // Listing all users is not permitted
+
+      // Only allow creation if the user is signed in and the userId matches the authenticated user's uid
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.uid == request.auth.uid;
+
+      // Only allow updates if the user is signed in and is the owner
+      allow update: if isSignedIn() && isExistingOwner(userId) && request.resource.data.uid == resource.data.uid; // Enforce immutable uid
+
+      // Only allow deletion if the user is signed in and is the owner
+      allow delete: if isSignedIn() && isExistingOwner(userId);
     }
 
     /**
-     * @description Controls access to holiday information.
+     * @description Controls access to holiday documents.
      * @path /holidays/{holidayId}
-     * @allow (get) - Any user can read holiday information.
-     * @allow (create) - Any signed-in user can create holiday information. The authorId must match their UID.
-     * @allow (update) - Only the owner of a holiday can update it.
-     * @allow (delete) - Only the owner of a holiday can delete it.
-     * @deny (create) - An anonymous user cannot create a holiday.
-     * @deny (update) - A user cannot update a holiday they don't own.
-     * @principle Allows public read access but restricts writes to owners.
+     * @allow (get) Any user can read holiday information.
+     * @allow (list) Any user can list holiday information.
+     * @allow (create) Only authenticated users can create holiday documents.
+     * @allow (update) Only authenticated users can update holiday documents.
+     * @allow (delete) Only authenticated users can delete holiday documents.
+     * @deny (create) Anonymous users cannot create holiday documents.
+     * @deny (update) Anonymous users cannot update holiday documents.
+     * @deny (delete) Anonymous users cannot delete holiday documents.
+     * @principle Allows public read access but restricts write access to authenticated users.
      */
     match /holidays/{holidayId} {
       allow get, list: if true;
       allow create: if isSignedIn();
-      allow update, delete: if isSignedIn() && false; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
 
+    // --- Helper functions ---
     function isSignedIn() {
       return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    function isExistingOwner(userId) {
+      return isSignedIn() && isOwner(userId) && resource != null;
     }
   }
 }
