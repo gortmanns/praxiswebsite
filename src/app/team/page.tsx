@@ -23,7 +23,7 @@ const garcia = {
         </p>
         <br />
         <p>
-        Inzwischen bin ich - jetzt in der Funktion der Leitenden MPA –
+        Inzwischen bin ich – jetzt in der Funktion der Leitenden MPA –
         zurückgekehrt an meine alte Wirkungsstätte.
         </p>
     </>
@@ -40,7 +40,7 @@ const otherTeamMembers = [
       backsideContent: (
         <>
           <p>
-          Ich blicke zurück auf eine lange Erfahrung im Beruf als MPA aber bin neu im Praxiszentrum im Ring.
+          Ich blicke zurück auf eine lange Erfahrung im Beruf als MPA, bin aber neu im Praxiszentrum im Ring.
           </p>
           <br />
           <p>
@@ -74,7 +74,7 @@ const otherTeamMembers = [
           </p>
           <br />
           <p>
-            Daher aktuell "nur" als Praxishilfe tätig, jedoch hoffentlich bald als weiterer Hausarzt hier im Praxiszentrum.
+            Daher bin ich aktuell „nur“ als Praxishilfe tätig, jedoch hoffentlich bald als weiterer Hausarzt hier im Praxiszentrum.
           </p>
         </>
       ),

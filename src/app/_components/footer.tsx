@@ -119,7 +119,7 @@ export function Footer() {
                     <span className="break-all">empfang@praxiszentrum-im-ring.ch</span>
                   </ObfuscatedLink>
                   <div className="flex flex-col items-start gap-2 pt-2">
-                      <p className="text-base font-medium text-background/80">Sichere HIN-Email</p>
+                      <p className="text-base font-medium text-background/80">Sichere HIN-E-Mail</p>
                       <ObfuscatedLink
                         user="praxiszentrum-im-ring"
                         domain="hin.ch"
@@ -135,7 +135,7 @@ export function Footer() {
           
           <div className="space-y-4">
             <h3 className="text-lg font-bold uppercase text-primary">Zertifizierte Qualität</h3>
-            <p className="text-sm">Für ein hohes Qualitätsniveau haben wir unsere Praxis nach strengen Kriterien zertifzieren lassen und dürfen daher dieses Zeichen führen.</p>
+            <p className="text-sm">Für ein hohes Qualitätsniveau haben wir unsere Praxis nach strengen Kriterien zertifizieren lassen und dürfen daher dieses Zeichen führen.</p>
             <div className="w-1/2 pt-4">
               <Image
                 src="/images/mehrfacharzt-logo.png"

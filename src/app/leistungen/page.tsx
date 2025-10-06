@@ -34,7 +34,7 @@ const leistungen = [
       <>
         <p>In unserem modernen Praxislabor können wir viele Analysen noch während der Sprechstunde durchführen und so eine Behandlung ohne Verzögerung sicherstellen.</p>
         <br />
-        <p>Für Analysen die wir nicht vor Ort durchführen können arbeiten wir mit MCL, einem der grössten Labordienstleister der Schweiz, zusammen.</p>
+        <p>Für Analysen, die wir nicht vor Ort durchführen können, arbeiten wir mit MCL, einem der grössten Labordienstleister der Schweiz, zusammen.</p>
         <br />
         <p>Auf Wunsch führen wir auch Laboranalysen durch, die nicht durch die Grundversicherung abgedeckt sind (z. B. Bestimmungen von Vitaminspiegeln oder Durchführung von Covid-Tests).</p>
       </>
@@ -76,9 +76,9 @@ const leistungen = [
     hint: 'twint logo',
     backsideContent: (
       <>
-        <p>Zusatzleistungen können Sie nicht nur in bar sondern auch modern und bequem mit dem Handy per TWINT bezahlen.</p>
+        <p>Zusatzleistungen können Sie nicht nur in bar, sondern auch modern und bequem mit dem Handy per TWINT bezahlen.</p>
         <br />
-        <p>Alle Leistungen die von Ihrer Kasse übernommen werden, rechnen wir natürlich weiterhin direkt mit dieser ab.</p>
+        <p>Alle Leistungen, die von Ihrer Kasse übernommen werden, rechnen wir natürlich weiterhin direkt mit dieser ab.</p>
       </>
     ),
   },
@@ -88,7 +88,7 @@ const leistungen = [
     hint: 'driving test eye chart',
     backsideContent: (
       <>
-        <p>Wir führen Verkehrsmedizinische Untersuchungen der Stufe 1 durch (für Senioren). Dieses ist eine Wahlleistung und nicht über die Krankenversicherung gedeckt.</p>
+        <p>Wir führen Verkehrsmedizinische Untersuchungen der Stufe 1 durch (für Senioren). Dies ist eine Wahlleistung und nicht über die Krankenversicherung gedeckt.</p>
       </>
     ),
   },

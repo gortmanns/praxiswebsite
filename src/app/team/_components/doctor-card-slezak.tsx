@@ -41,7 +41,7 @@ export const DoctorCardSlezak = () => (
                         <li>Allgemeine Neurologie</li>
                         <li>Vaskuläre Erkrankungen</li>
                         <li>Epilepsie</li>
-                        <li>Bewegungsstörungen (Schwerpunkt Parkinsonsyndrome)</li>
+                        <li>Bewegungsstörungen (Schwerpunkt Parkinson-Syndrome)</li>
                         <li>Kopfschmerzen und Migräne</li>
                         <li>Neurorehabilitation</li>
                         <li>&nbsp;</li>

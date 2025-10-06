@@ -50,7 +50,7 @@ export default function ImpressumPage() {
                 <CardTitle className="font-headline text-2xl font-bold text-primary">Haftungsausschluss</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-base text-foreground/80">
-                <p>Der Autor übernimmt keinerlei Gewähr hinsichtlich der inhaltlichen Richtigkeit, Genauigkeit, Aktualität, Zuverlässigkeit und Vollständigkeit der Informationen. Obwohl wir bemüht sind, die Informationen aktuell, richtig und vollständig zu halten, ist das Auftreten von Fehlern nicht völlig auszuschließen.</p>
+                <p>Der Autor übernimmt keinerlei Gewähr hinsichtlich der inhaltlichen Richtigkeit, Genauigkeit, Aktualität, Zuverlässigkeit und Vollständigkeit der Informationen. Obwohl wir bemüht sind, die Informationen aktuell, richtig und vollständig zu halten, ist das Auftreten von Fehlern nicht völlig auszuschliessen.</p>
                 <p>Haftungsansprüche gegen den Autor wegen Schäden materieller oder immaterieller Art, welche aus dem Zugriff oder der Nutzung bzw. Nichtnutzung der veröffentlichten Informationen, durch Missbrauch der Verbindung oder durch technische Störungen entstanden sind, werden ausgeschlossen. Die Nutzung dieser Website bzw. der Zugang zu ihr erfolgt auf eigenes Risiko des Besuchers.</p>
                 <p>Alle Angebote sind unverbindlich. Der Autor behält es sich ausdrücklich vor, Teile der Seiten oder das gesamte Angebot ohne besondere Ankündigung zu verändern, zu ergänzen, zu löschen oder die Veröffentlichung zeitweise oder endgültig einzustellen.</p>
                 <p>Verweise und Links auf Webseiten Dritter liegen ausserhalb unseres Verantwortungsbereichs. Es wird jegliche Verantwortung für solche Webseiten abgelehnt. Der Zugriff und die Nutzung solcher Webseiten erfolgen auf eigene Gefahr des Nutzers oder der Nutzerin. Der Herausgeber distanziert sich ausdrücklich von allen fremden Inhalten, die möglicherweise straf- oder haftungsrechtlich relevant sind oder gegen die guten Sitten verstossen.</p>
@@ -62,7 +62,7 @@ export default function ImpressumPage() {
                 <CardTitle className="font-headline text-2xl font-bold text-primary">Urheberrechtserklärung</CardTitle>
               </CardHeader>
               <CardContent className="text-base text-foreground/80">
-                <p>Die Urheber- und alle anderen Rechte an Inhalten, Bildern, Fotos oder anderen Dateien auf dieser Website, gehören ausschliesslich Praxiszentrum im Ring oder den speziell genannten Rechteinhabern. Für die Reproduktion jeglicher Elemente ist die schriftliche Zustimmung des Urheberrechtsträgers im Voraus einzuholen.</p>
+                <p>Die Urheber- und alle anderen Rechte an Inhalten, Bildern, Fotos oder anderen Dateien auf dieser Website gehören ausschliesslich dem Praxiszentrum im Ring oder den speziell genannten Rechteinhabern. Für die Reproduktion jeglicher Elemente ist die schriftliche Zustimmung des Urheberrechtsträgers im Voraus einzuholen.</p>
               </CardContent>
             </Card>
           </div>

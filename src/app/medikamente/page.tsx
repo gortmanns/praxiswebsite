@@ -30,7 +30,7 @@ export default function MedikamentePage() {
                   <div className="flex flex-col justify-center space-y-4">
                     <h3 className="font-headline text-2xl font-bold text-primary">Ihre Medikamente direkt vom Hausarzt</h3>
                     <p className="text-lg text-foreground/80">
-                      Als Patient können Sie alle Ihre Medikamente bequem bei uns beziehen. So sparen Sie nicht nur Geld sondern Sie haben auch die Gewissheit, dass Sie wirklich nur die Medikamente erhalten und einnehmen, die Sie auch benötigen. Bei jeder Abgabe eines Medikaments wird dieses mit den in Ihrer Krankenakte hinterlegten Medikamenten abgeglichen.
+                      Als Patient können Sie alle Ihre Medikamente bequem bei uns beziehen. So sparen Sie nicht nur Geld, sondern Sie haben auch die Gewissheit, dass Sie wirklich nur die Medikamente erhalten und einnehmen, die Sie auch benötigen. Bei jeder Abgabe eines Medikaments wird dieses mit den in Ihrer Krankenakte hinterlegten Medikamenten abgeglichen.
                     </p>
                     <p className="text-lg text-foreground/80">
                       Um Ihnen den Bezug der Medikamente so einfach wie möglich zu machen, bieten wir Ihnen die Möglichkeit, die Medikamente vorzubestellen.
@@ -78,7 +78,7 @@ export default function MedikamentePage() {
                      <div className="flex flex-col items-center">
                         <div className="flex items-center gap-3">
                             <Mail className="h-6 w-6"/>
-                            <span>Vorbestellung per Email</span>
+                            <span>Vorbestellung per E-Mail</span>
                         </div>
                         <span className="break-all text-base font-normal">medikamente@praxiszentrum-im-ring.ch</span>
                      </div>
@@ -89,14 +89,14 @@ export default function MedikamentePage() {
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg text-foreground/80">
                             <h4 className="text-left font-headline text-2xl font-bold text-primary">Vorbestellung per Telefon</h4>
-                            <p>Unsere Bestellhotline für Medikamente erreichen Sie Tag und Nacht an 365 Tagen im Jahr unter der Rufnummer</p>
+                            <p>Unsere Bestellhotline für Medikamente erreichen Sie Tag und Nacht an 365 Tagen im Jahr unter der Rufnummer:</p>
                             
                             <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold text-foreground transition-colors hover:text-primary md:text-3xl lg:text-4xl">
                                 <Phone className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
                                 <span>031 316 26 66</span>
                             </a>
                             
-                            <p>Befolgen Sie einfach die Anweisungen und deponieren Sie über das Dialogsystem Ihren Namen, Vornamen sowie das Geburtsdatum gefolgt von den benötigten Medikamenten. Um Missverständen vorzubeugen lesen Sie am einfachsten die Medikamente so vor, wie diese auf der Originalverpackung bezeichnet sind.</p>
+                            <p>Befolgen Sie einfach die Anweisungen und deponieren Sie über das Dialogsystem Ihren Namen, Vornamen sowie das Geburtsdatum, gefolgt von den benötigten Medikamenten. Um Missverständnissen vorzubeugen, lesen Sie am einfachsten die Medikamente so vor, wie diese auf der Originalverpackung bezeichnet sind.</p>
                             
                             <div>
                               <p>Zum Beispiel:</p>
@@ -111,7 +111,7 @@ export default function MedikamentePage() {
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg text-foreground/80">
                             <h4 className="text-left font-headline text-2xl font-bold text-primary">Vorbestellung per E-Mail</h4>
-                            <p>Die Bestellung per E-Mail ist ganz einfach. Schreiben Sie eine Email an</p>
+                            <p>Die Bestellung per E-Mail ist ganz einfach. Schreiben Sie eine E-Mail an:</p>
                             
                             <ObfuscatedLink
                                 user="medikamente"
@@ -134,7 +134,7 @@ export default function MedikamentePage() {
                             
                             <div className="space-y-2 rounded-md border border-border bg-card p-4">
                                 <h5 className="font-bold text-primary">Hinweis zum Datenschutz</h5>
-                                <p className="text-base">E-Mails werden im Internet unverschlüsselt übertragen und passieren dabei mehrere Server und Zwischenstationen. Das heisst mit ausreichendem technischem Wissen kann jeder der Zugriff auf diese Zwischenstationen hat, den Inhalt der E-Mails lesen. Eine E-Mail entspricht also am ehesten einer Postkarte und nicht einem geschlossenen Brief. Bitte bedenken Sie dieses, wenn Sie diesen Weg der Vorbestellung wählen. Wenn Sie Bedenken bezüglich Vertraulichkeit und Datenschutz haben, nutzen Sie im Zweifel lieber die telefonische Bestellhotline.</p>
+                                <p className="text-base">E-Mails werden im Internet unverschlüsselt übertragen und passieren dabei mehrere Server und Zwischenstationen. Das heisst, mit ausreichendem technischem Wissen kann jeder, der Zugriff auf diese Zwischenstationen hat, den Inhalt der E-Mails lesen. Eine E-Mail entspricht also am ehesten einer Postkarte und nicht einem geschlossenen Brief. Bitte bedenken Sie dies, wenn Sie diesen Weg der Vorbestellung wählen. Wenn Sie Bedenken bezüglich Vertraulichkeit und Datenschutz haben, nutzen Sie im Zweifel lieber die telefonische Bestellhotline.</p>
                             </div>
                         </div>
                     </CardContent>
@@ -148,8 +148,8 @@ export default function MedikamentePage() {
               <CardContent className="p-6 md:p-8">
                 <div className="space-y-6 text-lg text-foreground/80">
                   <h3 className="font-headline text-2xl font-bold text-primary">Abholung Ihrer bestellten Medikamente</h3>
-                  <p>Ihre Medikamente sind in der Regel spätestens 2 Werktage nach Ihrer Bestellung zur Abholung im Praxiszentrum im Ring bereit.</p>
-                  <p>Um Wartezeiten und Störungen des Sprechstundenbetriebs zu minimieren bitten wir darum, dass Sie wann immer möglich die Medikamente vorbestellen und sie zu den folgenden Zeiten abholen:</p>
+                  <p>Ihre Medikamente sind in der Regel spätestens zwei Werktage nach Ihrer Bestellung zur Abholung im Praxiszentrum im Ring bereit.</p>
+                  <p>Um Wartezeiten und Störungen des Sprechstundenbetriebs zu minimieren, bitten wir darum, dass Sie wann immer möglich die Medikamente vorbestellen und sie zu den folgenden Zeiten abholen:</p>
                   <ul className="space-y-2 text-foreground">
                     <li>Montags 10-12 Uhr</li>
                     <li>Dienstag 15-17 Uhr</li>

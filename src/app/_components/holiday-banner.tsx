@@ -52,7 +52,7 @@ export function HolidayBanner() {
             const diff = differenceInDays(zonedStartDate, now);
             if (diff >= 0 && diff <= 14) {
                  activeBanner = {
-                    text: `Liebe Patienten. Vom ${formatDate(zonedStartDate)} bis ${formatDate(zonedEndDate)} bleibt das Praxiszentrum ferienhalber geschlossen. Bitte beziehen Sie allenfalls benötigte Medikamente noch rechtzeitig vorher.`,
+                    text: `Liebe Patienten, vom ${formatDate(zonedStartDate)} bis ${formatDate(zonedEndDate)} bleibt das Praxiszentrum ferienhalber geschlossen. Bitte beziehen Sie allenfalls benötigte Medikamente noch rechtzeitig vorher.`,
                     type: 'warning',
                 };
                 break;

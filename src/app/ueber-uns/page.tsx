@@ -52,13 +52,13 @@ export default function UeberUnsPage() {
                         <ul className="list-disc space-y-4 pl-6">
                             <li>Langfristig möchten wir so viele Hausärzte für die Arbeit hier im Praxiszentrum gewinnen, dass wir Montag bis Samstag von 8 bis 20 Uhr durchgehend öffnen können.</li>
                             <li>Wir möchten eine einfache Notfall-Versorgung für die kleinen Dinge, die im Alltag schiefgehen, innerhalb der Öffnungszeiten jederzeit ohne Voranmeldung anbieten können, sodass unsere Patienten nur für schwerere Notfälle noch in die Stadt Bern müssen.</li>
-                            <li>Wir möchten weitere Spezialisten gewinnen, die Ihre Sprechstunden bei uns im Praxiszentrum anbieten. Idealerweise decken wir irgendwann fast das ganze medizinische Spektrum ab, soweit es jedenfalls die technischen Möglichkeiten und Räumlichkeiten bei uns zulassen.</li>
+                            <li>Wir möchten weitere Spezialisten gewinnen, die ihre Sprechstunden bei uns im Praxiszentrum anbieten. Idealerweise decken wir irgendwann fast das ganze medizinische Spektrum ab, soweit es jedenfalls die technischen Möglichkeiten und Räumlichkeiten bei uns zulassen.</li>
                         </ul>
                         <div className="pt-8 space-y-4">
-                            <p>An dieser Stelle möchte ich mich bedanken. Einerseits bei meinem Vorgänger Dr. Segginger, der mich sehr bei der Umsetzung der Veränderungen und der Verwirklichung meiner Ziele unterstützt. Ich weiss, der Abschied von "seiner Praxis" und "seinen Patienten" kann ihm nicht leichtgefallen sein, hat er doch weit über die übliche Zeit hinweg gearbeitet, zu der er in den Ruhestand hätte gehen können.</p>
-                            <p>Andererseits möchte ich mich aber auch bei Ihnen, meinen Patienten, bedanken, die Sie mir Ihr Vertrauen entgegenbringen. Ich weiss, dass die Gewöhnung an einen neuen Hausarzt nicht jedem leichtfällt, zumal wenn der alte Hausarzt über viele Jahrzehnte diese Praxis aufgebaut und geführt hat und "der Neue" nicht nur kein Berndeutsch redet (auch wenn ich gelernt habe, es zu verstehen), sondern auch noch vieles anders macht.</p>
+                            <p>An dieser Stelle möchte ich mich bedanken. Einerseits bei meinem Vorgänger Dr. Segginger, der mich sehr bei der Umsetzung der Veränderungen und der Verwirklichung meiner Ziele unterstützt. Ich weiss, der Abschied von „seiner Praxis“ und „seinen Patienten“ kann ihm nicht leichtgefallen sein, hat er doch weit über die übliche Zeit hinweg gearbeitet, zu der er in den Ruhestand hätte gehen können.</p>
+                            <p>Andererseits möchte ich mich aber auch bei Ihnen, meinen Patienten, bedanken, die Sie mir Ihr Vertrauen entgegenbringen. Ich weiss, dass die Gewöhnung an einen neuen Hausarzt nicht jedem leichtfällt, zumal wenn der alte Hausarzt über viele Jahrzehnte diese Praxis aufgebaut und geführt hat und „der Neue“ nicht nur kein Berndeutsch redet (auch wenn ich gelernt habe, es zu verstehen), sondern auch noch vieles anders macht.</p>
                             <p className="pt-8 italic">Gernot Ortmanns</p>
-                            <p className="pt-8 text-base text-foreground/70">(Im Oktober 2025)</p>
+                            <p className="pt-8 text-base text-foreground/70">(im Oktober 2025)</p>
                         </div>
                     </CardContent>
                 </Card>
