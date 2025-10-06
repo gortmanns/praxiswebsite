@@ -3,7 +3,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { FirebaseProvider } from './provider';
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
-import { getAuth, Auth } from 'firebase/auth';
+import { getAuth, Auth, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
 import { firebaseConfig } from './config';
 
@@ -14,18 +14,26 @@ type FirebaseInstances = {
 };
 
 // This function is for CLIENT-SIDE use only.
-function initializeFirebase(): FirebaseInstances {
+async function initializeFirebase(): Promise<FirebaseInstances> {
+  let app;
   if (getApps().length === 0) {
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    return { app, auth, db };
+    app = initializeApp(firebaseConfig);
   } else {
-    const app = getApp();
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    return { app, auth, db };
+    app = getApp();
   }
+  
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  try {
+    // This is crucial for NextAuth working with Firebase auth in some server-ish environments
+    await setPersistence(auth, browserLocalPersistence);
+  } catch (error) {
+    // This might fail in a pure SSR context, but it's fine for the client-side provider.
+    // console.log("Failed to set persistence, might be in SSR:", error);
+  }
+
+  return { app, auth, db };
 }
 
 type FirebaseClientProviderProps = {
@@ -38,8 +46,11 @@ export function FirebaseClientProvider({
   const [firebase, setFirebase] = useState<FirebaseInstances | null>(null);
 
   useEffect(() => {
-    const firebaseInstances = initializeFirebase();
-    setFirebase(firebaseInstances);
+    const init = async () => {
+        const firebaseInstances = await initializeFirebase();
+        setFirebase(firebaseInstances);
+    };
+    init();
   }, []);
 
   if (!firebase) {
