@@ -43,7 +43,6 @@ export default function DashboardLayout({
   const { user } = useUser();
   const auth = useAuth();
   const router = useRouter();
-  const [isTeamMenuOpen, setIsTeamMenuOpen] = useState(pathname.startsWith('/admin/dashboard/team'));
 
   const handleLogout = async () => {
     if (auth) {
