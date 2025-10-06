@@ -26,7 +26,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { X, Upload } from 'lucide-react';
+import { X } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -38,7 +38,7 @@ import {
 import { parse } from 'date-fns';
 import initialHolidays from '@/lib/holidays.json';
 import { useToast } from '@/hooks/use-toast';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/;
 
@@ -57,6 +57,7 @@ interface Holiday extends HolidayForm {
 export default function FerienterminePage() {
   const { db: firestore } = useFirebase();
   const { toast } = useToast();
+  const importDone = useRef(false);
 
   const holidaysCollection = firestore
     ? collection(firestore, 'holidays')
@@ -75,12 +76,12 @@ export default function FerienterminePage() {
       end: '',
     },
   });
-
+  
   useEffect(() => {
+    if (!firestore || !holidaysCollection || importDone.current) return;
+
     const importInitialHolidays = async () => {
-      if (!firestore || !holidaysCollection) return;
-      
-      const snapshot = await getDocs(holidaysQuery);
+      const snapshot = await getDocs(holidaysQuery!);
       if (snapshot.empty) {
         console.log('Ferien-Datenbank ist leer. Importiere Altdaten...');
         try {
@@ -89,15 +90,15 @@ export default function FerienterminePage() {
             const docRef = doc(holidaysCollection); 
             const startDate = new Date(holiday.start);
             const endDate = new Date(holiday.end);
-            const startFormatted = `${startDate.getDate().toString().padStart(2, '0')}.${(startDate.getMonth() + 1).toString().padStart(2, '0')}.${startDate.getFullYear()}`;
-            const endFormatted = `${endDate.getDate().toString().padStart(2, '0')}.${(endDate.getMonth() + 1).toString().padStart(2, '0')}.${endDate.getFullYear()}`;
+            // Korrigieren der Datumsformatierung für die Anzeige
+            const startFormatted = `${startDate.getUTCDate().toString().padStart(2, '0')}.${(startDate.getUTCMonth() + 1).toString().padStart(2, '0')}.${startDate.getUTCFullYear()}`;
+            const endFormatted = `${endDate.getUTCDate().toString().padStart(2, '0')}.${(endDate.getUTCMonth() + 1).toString().padStart(2, '0')}.${endDate.getUTCFullYear()}`;
 
             batch.set(docRef, {
               name: holiday.name,
               start: startFormatted,
               end: endFormatted,
               startDate: Timestamp.fromDate(startDate),
-              endDate: Timestamp.fromDate(endDate)
             });
           });
           await batch.commit();
@@ -107,25 +108,23 @@ export default function FerienterminePage() {
           toast({ variant: 'destructive', title: 'Fehler', description: 'Altdaten konnten nicht automatisch importiert werden.' });
         }
       }
+      importDone.current = true;
     };
 
-    if (firestore && holidaysCollection && holidaysQuery) {
-      importInitialHolidays();
-    }
+    importInitialHolidays();
   }, [firestore, holidaysCollection, holidaysQuery, toast]);
+
 
   const onSubmit = async (data: HolidayForm) => {
     if (!firestore || !holidaysCollection) return;
     try {
       const startDate = parse(data.start, 'dd.MM.yyyy', new Date());
-      const endDate = parse(data.end, 'dd.MM.yyyy', new Date());
       
       await addDoc(holidaysCollection, { 
         name: data.name,
         start: data.start,
         end: data.end,
         startDate: Timestamp.fromDate(startDate),
-        endDate: Timestamp.fromDate(endDate),
       });
       form.reset();
       toast({ title: 'Erfolg', description: 'Ferientermin wurde hinzugefügt.' });
