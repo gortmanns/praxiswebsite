@@ -1,3 +1,4 @@
+
 import type { NextAuthConfig } from 'next-auth';
  
 export const authConfig = {
@@ -6,6 +7,11 @@ export const authConfig = {
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
+      // VORÜBERGEHEND DEAKTIVIERT FÜR ENTWICKLUNG
+      // Wenn dies aktiv ist, wird jeder Zugriff auf den Admin-Bereich erlaubt.
+      return true;
+
+      /*
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith('/admin/dashboard');
       
@@ -20,6 +26,7 @@ export const authConfig = {
       }
       // Allow unauthenticated access to /admin (login page) and all other pages
       return true;
+      */
     },
   },
   providers: [], // Add providers with an empty array for now
