@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -15,10 +18,43 @@ import {
 import { HolidayForm, HolidayDeleteButton } from './holiday-form';
 import { getHolidays } from './actions';
 
-export const dynamic = 'force-dynamic';
+type Holiday = {
+  id: string;
+  name: string;
+  start: string;
+  end: string;
+};
 
-export default async function FerienterminePage() {
-  const holidays = await getHolidays();
+export default function FerienterminePage() {
+  const [holidays, setHolidays] = useState<Holiday[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchHolidays() {
+      setLoading(true);
+      const fetchedHolidays = await getHolidays();
+      setHolidays(fetchedHolidays);
+      setLoading(false);
+    }
+    fetchHolidays();
+  }, []);
+
+  const handleHolidayAdded = (newHoliday: Holiday) => {
+    // Optimistically update UI and re-sort
+    setHolidays(currentHolidays => 
+      [...currentHolidays, newHoliday].sort((a, b) => {
+        const dateA = new Date(a.start.split('.').reverse().join('-'));
+        const dateB = new Date(b.start.split('.').reverse().join('-'));
+        return dateA.getTime() - dateB.getTime();
+      })
+    );
+  };
+
+  const handleHolidayDeleted = (deletedId: string) => {
+    setHolidays(currentHolidays =>
+      currentHolidays.filter(holiday => holiday.id !== deletedId)
+    );
+  };
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
@@ -33,7 +69,7 @@ export default async function FerienterminePage() {
           <CardTitle>Neuen Ferientermin hinzufügen</CardTitle>
         </CardHeader>
         <CardContent>
-          <HolidayForm />
+          <HolidayForm onHolidayAdded={handleHolidayAdded} />
         </CardContent>
       </Card>
 
@@ -52,7 +88,13 @@ export default async function FerienterminePage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {holidays.length === 0 ? (
+              {loading ? (
+                 <TableRow>
+                    <TableCell colSpan={4} className="text-center">
+                        Lade Daten...
+                    </TableCell>
+                </TableRow>
+              ) : holidays.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center">
                     Keine Ferientermine gefunden.
@@ -65,7 +107,7 @@ export default async function FerienterminePage() {
                     <TableCell>{holiday.end}</TableCell>
                     <TableCell>{holiday.name}</TableCell>
                     <TableCell className="text-right">
-                      <HolidayDeleteButton id={holiday.id} />
+                      <HolidayDeleteButton id={holiday.id} onHolidayDeleted={handleHolidayDeleted} />
                     </TableCell>
                   </TableRow>
                 ))

@@ -28,7 +28,7 @@ const holidaySchema = z.object({
 
 type HolidayFormValues = z.infer<typeof holidaySchema>;
 
-export function HolidayForm() {
+export function HolidayForm({ onHolidayAdded }: { onHolidayAdded: (holiday: any) => void }) {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
 
@@ -49,8 +49,9 @@ export function HolidayForm() {
       formData.append('end', data.end);
       
       const result = await addHoliday(formData);
-      if (result.success) {
+      if (result.success && result.id) {
         toast({ title: 'Erfolg', description: result.message });
+        onHolidayAdded({ id: result.id, ...data });
         form.reset();
       } else {
         toast({ variant: 'destructive', title: 'Fehler', description: result.message });
@@ -111,7 +112,7 @@ export function HolidayForm() {
   );
 }
 
-export function HolidayDeleteButton({ id }: { id: string }) {
+export function HolidayDeleteButton({ id, onHolidayDeleted }: { id: string, onHolidayDeleted: (id: string) => void }) {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
 
@@ -120,6 +121,7 @@ export function HolidayDeleteButton({ id }: { id: string }) {
       const result = await deleteHoliday(id);
       if (result.success) {
         toast({ title: 'Erfolg', description: result.message });
+        onHolidayDeleted(id);
       } else {
         toast({ variant: 'destructive', title: 'Fehler', description: result.message });
       }

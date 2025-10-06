@@ -36,7 +36,7 @@ export async function addHoliday(formData: FormData) {
   try {
     const startDate = parseDate(start);
 
-    await addDoc(collection(db, 'holidays'), {
+    const docRef = await addDoc(collection(db, 'holidays'), {
       name,
       start,
       end,
@@ -44,7 +44,7 @@ export async function addHoliday(formData: FormData) {
     });
 
     revalidatePath('/admin/dashboard/ferientermine');
-    return { success: true, message: 'Ferientermin hinzugefügt.' };
+    return { success: true, message: 'Ferientermin hinzugefügt.', id: docRef.id };
   } catch (error) {
     console.error('Error adding holiday: ', error);
     let message = 'Termin konnte nicht hinzugefügt werden.';
