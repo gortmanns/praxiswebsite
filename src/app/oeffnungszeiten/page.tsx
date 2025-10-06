@@ -25,11 +25,13 @@ export default function OeffnungszeitenPage() {
 
             <div className="mx-auto mt-16">
                 <Tabs defaultValue="oeffnungszeiten" className="w-full">
-                    <TabsList className="grid h-auto w-full grid-cols-2 rounded-lg bg-transparent p-0">
+                    <TabsList className="grid h-auto w-full grid-cols-2 p-0">
                         <TabsTrigger 
                             value="oeffnungszeiten" 
                             className={cn(
-                                'flex items-center justify-center gap-3 h-14 rounded-l-lg rounded-r-none border-b-2 border-transparent text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
+                                'flex h-14 items-center justify-center gap-3 rounded-t-lg rounded-b-none border-b-0 text-xl font-bold',
+                                'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-secondary data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:bg-secondary/80',
+                                'data-[state=active]:bg-card data-[state=active]:text-primary'
                             )}
                         >
                             <DoorOpen className="h-6 w-6"/>
@@ -38,7 +40,9 @@ export default function OeffnungszeitenPage() {
                         <TabsTrigger 
                             value="telefonzeiten"
                             className={cn(
-                                'flex items-center justify-center gap-3 h-14 rounded-r-lg rounded-l-none border-b-2 border-transparent text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
+                                'flex h-14 items-center justify-center gap-3 rounded-t-lg rounded-b-none border-b-0 text-xl font-bold',
+                                'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-secondary data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:bg-secondary/80',
+                                'data-[state=active]:bg-card data-[state=active]:text-primary'
                             )}
                         >
                             <Phone className="h-6 w-6"/>

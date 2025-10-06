@@ -58,12 +58,13 @@ export default function MedikamentePage() {
 
           <div className="mx-auto mt-12 max-w-7xl">
             <Tabs defaultValue="telefon" className="w-full">
-              <TabsList className="grid h-auto w-full grid-cols-1 gap-4 sm:grid-cols-2">
+               <TabsList className="grid h-auto w-full grid-cols-1 gap-4 bg-transparent p-0 sm:grid-cols-2">
                   <TabsTrigger 
                       value="telefon" 
-                      asChild
                       className={cn(
-                          'h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
+                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg rounded-b-none border-b-0 p-6 text-xl font-bold',
+                        'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-secondary data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:bg-secondary/80',
+                        'data-[state=active]:bg-card data-[state=active]:text-primary'
                       )}
                   >
                     <div className="flex flex-col items-center">
@@ -76,9 +77,10 @@ export default function MedikamentePage() {
                   </TabsTrigger>
                   <TabsTrigger 
                       value="email"
-                      asChild
                       className={cn(
-                          'h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold text-secondary-foreground transition-colors data-[state=inactive]:bg-secondary data-[state=inactive]:hover:bg-secondary/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg'
+                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg rounded-b-none border-b-0 p-6 text-xl font-bold',
+                        'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-secondary data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:bg-secondary/80',
+                        'data-[state=active]:bg-card data-[state=active]:text-primary'
                       )}
                   >
                      <div className="flex flex-col items-center">
@@ -90,8 +92,8 @@ export default function MedikamentePage() {
                      </div>
                   </TabsTrigger>
               </TabsList>
-              <TabsContent value="telefon" className="mt-8">
-                <Card>
+              <TabsContent value="telefon" className="mt-0">
+                <Card className="rounded-t-none">
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg text-foreground/80">
                             <h4 className="text-left font-headline text-2xl font-bold text-primary">Vorbestellung per Telefon</h4>
@@ -112,8 +114,8 @@ export default function MedikamentePage() {
                     </CardContent>
                 </Card>
               </TabsContent>
-              <TabsContent value="email" className="mt-8">
-                <Card>
+              <TabsContent value="email" className="mt-0">
+                <Card className="rounded-t-none">
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg text-foreground/80">
                             <h4 className="text-left font-headline text-2xl font-bold text-primary">Vorbestellung per E-Mail</h4>
