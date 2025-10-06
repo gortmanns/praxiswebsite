@@ -1,4 +1,3 @@
-
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -205,7 +204,7 @@ export default function HolidaysPage() {
         </CardHeader>
         <CardContent>
           <div className="mb-8 border-b pb-8">
-            <h3 className="mb-4 text-lg font-medium">Neuen Termin erfassen</h3>
+            <h3 className="mb-4 text-lg font-bold">Neuen Termin erfassen</h3>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid grid-cols-1 items-start gap-6 sm:grid-cols-[1fr_1fr_2fr_auto]">
@@ -324,7 +323,7 @@ export default function HolidaysPage() {
           </div>
 
           <div className="mt-8">
-             <h3 className="mb-4 text-lg font-medium">Bestehende Termine</h3>
+             <h3 className="mb-4 text-lg font-bold">Bestehende Termine</h3>
               <Table>
                 <TableHeader>
                   <TableRow>
