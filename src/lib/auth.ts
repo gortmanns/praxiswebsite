@@ -37,14 +37,14 @@ export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
             const password = credentials.password as string;
 
             try {
-                // Versuche, den Benutzer direkt anzumelden.
+                // Try to sign in the user directly.
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 return { id: userCredential.user.uid, name: userCredential.user.displayName, email: userCredential.user.email };
             } catch (error) {
                  const authError = error as AuthError;
 
-                // Wenn der Benutzer nicht existiert UND es der Admin-Login ist,
-                // erstellen wir ihn einmalig.
+                // If the user is not found AND it's the admin login attempt,
+                // create the user once.
                 if (authError.code === 'auth/user-not-found' && credentials.username === 'admin' && password === '1234') {
                     try {
                         const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -57,15 +57,15 @@ export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
                             createdAt: serverTimestamp(),
                         });
                         
-                        // Gib den neu erstellten Benutzer zurück.
+                        // Return the newly created user to establish the session.
                         return { id: user.uid, name: user.displayName, email: user.email };
                     } catch (creationError) {
-                        // Die Erstellung ist fehlgeschlagen.
+                        // If user creation fails, the login fails.
                         return null;
                     }
                 }
                 
-                // Bei allen anderen Fehlern (z.B. falsches Passwort) ist die Anmeldung fehlgeschlagen.
+                // For all other errors (e.g., wrong password), the login fails.
                 return null;
             }
         }
