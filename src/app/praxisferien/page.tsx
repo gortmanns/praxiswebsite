@@ -14,8 +14,13 @@ function formatDate(dateString: string) {
 
 export default function PraxisferienPage() {
   const now = new Date();
-  now.setHours(0,0,0,0);
-  const upcomingHolidays = holidays.filter(holiday => new Date(holiday.end) >= now);
+  now.setHours(0, 0, 0, 0);
+
+  const upcomingHolidays = holidays
+    // 1. Filtere alle Ferien heraus, die in der Vergangenheit liegen
+    .filter(holiday => new Date(holiday.end) >= now)
+    // 2. Sortiere die verbleibenden Ferien chronologisch nach dem Startdatum
+    .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
