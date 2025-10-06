@@ -3,12 +3,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { format, isWithinInterval, parse } from 'date-fns';
+import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { CalendarIcon, Trash2, AlertCircle, CheckCircle } from 'lucide-react';
+import { CalendarIcon, Trash2, AlertCircle, CheckCircle, Pencil } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useFirestore } from '@/firebase';
-import { collection, addDoc, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, orderBy, deleteDoc, doc, updateDoc, writeBatch } from 'firebase/firestore';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -79,10 +79,12 @@ interface Holiday extends HolidayFormValues {
 export default function HolidaysPage() {
   const [holidays, setHolidays] = useState<Holiday[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [holidayToDelete, setHolidayToDelete] = useState<string | null>(null);
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [editMode, setEditMode] = useState<string | null>(null); // State for editing: holds the ID of the holiday being edited
 
   const firestore = useFirestore();
 
@@ -123,8 +125,12 @@ export default function HolidaysPage() {
   }, [firestore]);
 
 
-  const checkForOverlap = (newStart: Date, newEnd: Date): boolean => {
+  const checkForOverlap = (newStart: Date, newEnd: Date, excludeId: string | null): boolean => {
     return holidays.some(existing => {
+      // Exclude the entry being currently edited from the check
+      if (existing.id === excludeId) {
+        return false;
+      }
       const existingStart = existing.start;
       const existingEnd = existing.end;
       const newStartIsWithin = newStart >= existingStart && newStart <= existingEnd;
@@ -135,35 +141,56 @@ export default function HolidaysPage() {
     });
   };
 
+  const handleCancel = () => {
+    setEditMode(null);
+    form.reset({ name: '', start: undefined, end: undefined });
+    setStatus(null);
+    form.clearErrors();
+  };
 
   async function onSubmit(data: HolidayFormValues) {
     if (!firestore) return;
+    setIsSubmitting(true);
     setStatus(null);
 
-    if (checkForOverlap(data.start, data.end)) {
+    if (checkForOverlap(data.start, data.end, editMode)) {
         form.setError("root", { 
             type: "manual", 
             message: "Der angegebene Zeitraum überschneidet sich mit einem bestehenden Termin."
         });
         setStatus({ type: 'error', message: "Der Termin überschneidet sich mit einem bestehenden Ferientermin." });
+        setIsSubmitting(false);
         return;
     }
 
     try {
-      await addDoc(collection(firestore, 'holidays'), {
-        name: data.name,
-        start: data.start,
-        end: data.end,
-      });
-
-      setStatus({ type: 'success', message: 'Der neue Ferientermin wurde erfolgreich hinzugefügt.' });
+      if (editMode) {
+        // Update existing holiday
+        const holidayDoc = doc(firestore, 'holidays', editMode);
+        await updateDoc(holidayDoc, {
+            name: data.name,
+            start: data.start,
+            end: data.end,
+        });
+        setStatus({ type: 'success', message: 'Der Ferientermin wurde erfolgreich aktualisiert.' });
+      } else {
+        // Create new holiday
+        await addDoc(collection(firestore, 'holidays'), {
+            name: data.name,
+            start: data.start,
+            end: data.end,
+        });
+        setStatus({ type: 'success', message: 'Der neue Ferientermin wurde erfolgreich hinzugefügt.' });
+      }
       
-      form.reset({ name: '', start: undefined, end: undefined });
+      handleCancel(); // Reset form and edit mode
       await fetchHolidays();
 
     } catch (error) {
       console.error("Fehler beim Speichern: ", error);
       setStatus({ type: 'error', message: 'Der Ferientermin konnte nicht gespeichert werden.' });
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -180,18 +207,26 @@ export default function HolidaysPage() {
       setStatus({ type: 'error', message: 'Der Ferientermin konnte nicht gelöscht werden.' });
     } finally {
       setIsDeleting(false);
-      setDialogOpen(false);
+      setDeleteDialogOpen(false);
       setHolidayToDelete(null);
     }
   };
 
   const openDeleteDialog = (id: string) => {
     setHolidayToDelete(id);
-    setDialogOpen(true);
+    setDeleteDialogOpen(true);
   };
   
-  const { isSubmitting } = form.formState;
-
+  const handleEdit = (holiday: Holiday) => {
+    setEditMode(holiday.id);
+    form.setValue('name', holiday.name);
+    form.setValue('start', holiday.start);
+    form.setValue('end', holiday.end);
+    setStatus(null);
+    form.clearErrors();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
   return (
     <>
     <div className="flex flex-1 items-start p-4 sm:p-6">
@@ -204,7 +239,7 @@ export default function HolidaysPage() {
         </CardHeader>
         <CardContent>
           <div className="mb-8 border-b pb-8">
-            <h3 className="mb-4 text-lg font-bold">Neuen Termin erfassen</h3>
+            <h3 className="mb-4 text-lg font-bold">{editMode ? 'Termin bearbeiten' : 'Neuen Termin erfassen'}</h3>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid grid-cols-1 items-start gap-6 sm:grid-cols-[1fr_1fr_2fr_auto]">
@@ -303,10 +338,15 @@ export default function HolidaysPage() {
                       </FormItem>
                     )}
                   />
-                  <div className="flex items-end h-full">
+                  <div className="flex h-full items-end gap-2">
                     <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto">
                       {isSubmitting ? 'Wird gespeichert...' : 'Speichern'}
                     </Button>
+                    {editMode && (
+                        <Button type="button" variant="outline" onClick={handleCancel} disabled={isSubmitting}>
+                            Abbrechen
+                        </Button>
+                    )}
                   </div>
                 </div>
                  {status && (
@@ -318,6 +358,15 @@ export default function HolidaysPage() {
                     </AlertDescription>
                   </Alert>
                 )}
+                 {form.formState.errors.root && (
+                    <Alert variant="destructive">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertTitle>Fehler</AlertTitle>
+                      <AlertDescription>
+                        {form.formState.errors.root.message}
+                      </AlertDescription>
+                    </Alert>
+                 )}
               </form>
             </Form>
           </div>
@@ -340,7 +389,7 @@ export default function HolidaysPage() {
                         <TableCell><Skeleton className="h-6 w-48" /></TableCell>
                         <TableCell><Skeleton className="h-6 w-24" /></TableCell>
                         <TableCell><Skeleton className="h-6 w-24" /></TableCell>
-                        <TableCell className="text-right"><Skeleton className="h-8 w-8 ml-auto" /></TableCell>
+                        <TableCell className="text-right"><Skeleton className="h-8 w-20 ml-auto" /></TableCell>
                       </TableRow>
                     ))
                   ) : holidays.length === 0 ? (
@@ -356,9 +405,14 @@ export default function HolidaysPage() {
                         <TableCell>{format(holiday.start, 'dd.MM.yyyy', { locale: de })}</TableCell>
                         <TableCell>{format(holiday.end, 'dd.MM.yyyy', { locale: de })}</TableCell>
                         <TableCell className="text-right">
-                          <Button variant="ghost" size="icon" onClick={() => openDeleteDialog(holiday.id)}>
-                              <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <div className="flex justify-end gap-2">
+                            <Button variant="ghost" size="icon" onClick={() => handleEdit(holiday)} aria-label="Bearbeiten">
+                                <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="icon" onClick={() => openDeleteDialog(holiday.id)} aria-label="Löschen">
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))
@@ -369,7 +423,7 @@ export default function HolidaysPage() {
         </CardContent>
       </Card>
     </div>
-    <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+    <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
             <AlertDialogHeader>
             <AlertDialogTitle>Sind Sie sicher?</AlertDialogTitle>
@@ -388,3 +442,5 @@ export default function HolidaysPage() {
   </>
   );
 }
+
+    
