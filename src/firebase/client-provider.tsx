@@ -2,7 +2,7 @@
 'use client';
 import { ReactNode, useEffect, useState } from 'react';
 import { FirebaseProvider, FirebaseContextType } from './provider';
-import { initializeFirebase } from '.';
+import { initializeFirebase } from './index';
 
 type FirebaseClientProviderProps = {
   children: ReactNode;
