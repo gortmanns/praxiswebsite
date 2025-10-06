@@ -3,12 +3,14 @@
 import React, { useState, useRef, ChangeEvent } from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { User, Upload, ImageIcon, Info } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { User, Upload, ImageIcon, Info, Pencil } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
+import { Label } from '@/components/ui/label';
 
 const initialVita = `Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
 Masterstudium Public Health und Health Management in Sydney (Australien)
@@ -34,6 +36,82 @@ Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für
 Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)
 `;
 
+interface EditDialogProps {
+    triggerText: React.ReactNode;
+    dialogTitle: string;
+    dialogDescription: string;
+    initialValue: string;
+    onSave: (value: string) => void;
+    inputLabel: string;
+    isTextarea?: boolean;
+    className?: string;
+    textClassName?: string;
+}
+
+const EditDialog: React.FC<EditDialogProps> = ({
+    triggerText,
+    dialogTitle,
+    dialogDescription,
+    initialValue,
+    onSave,
+    inputLabel,
+    isTextarea = false,
+    className,
+    textClassName
+}) => {
+    const [currentValue, setCurrentValue] = useState(initialValue);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    const handleSave = () => {
+        onSave(currentValue);
+        setIsDialogOpen(false);
+    };
+    
+    React.useEffect(() => {
+        setCurrentValue(initialValue);
+    }, [initialValue]);
+
+    return (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+                <div className={cn("group relative cursor-pointer", className)}>
+                    <div className={cn(textClassName)}>{triggerText}</div>
+                    <Pencil className="absolute top-1/2 right-0 h-4 w-4 -translate-y-1/2 text-primary opacity-0 transition-opacity group-hover:opacity-100" />
+                </div>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{dialogTitle}</DialogTitle>
+                    <DialogDescription>{dialogDescription}</DialogDescription>
+                </DialogHeader>
+                <div className="mt-4 space-y-2">
+                    <Label htmlFor="edit-input">{inputLabel}</Label>
+                    {isTextarea ? (
+                         <Textarea
+                            id="edit-input"
+                            value={currentValue}
+                            onChange={(e) => setCurrentValue(e.target.value)}
+                            rows={5}
+                        />
+                    ) : (
+                        <Input
+                            id="edit-input"
+                            value={currentValue}
+                            onChange={(e) => setCurrentValue(e.target.value)}
+                        />
+                    )}
+                </div>
+                <div className="mt-6 flex justify-end gap-2">
+                    <DialogClose asChild>
+                        <Button variant="outline">Abbrechen</Button>
+                    </DialogClose>
+                    <Button onClick={handleSave}>Speichern</Button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
 
 export const EditableDoctorCard = () => {
     const [title, setTitle] = useState('');
@@ -44,7 +122,7 @@ export const EditableDoctorCard = () => {
     const [additionalInfo, setAdditionalInfo] = useState('');
     const [vita, setVita] = useState(initialVita);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleImageUploadClick = () => {
@@ -57,7 +135,7 @@ export const EditableDoctorCard = () => {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result as string);
-                setIsDialogOpen(false); 
+                setIsImageDialogOpen(false); 
             };
             reader.readAsDataURL(file);
         }
@@ -81,7 +159,7 @@ export const EditableDoctorCard = () => {
                             style={{ 'containerType': 'inline-size', aspectRatio: '1000 / 495' } as React.CSSProperties}
                         >
                              <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
-                                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                                <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
                                     <DialogTrigger asChild>
                                         <div className="group relative col-span-1 h-full w-full cursor-pointer overflow-hidden rounded-md bg-muted transition-colors hover:bg-muted/80">
                                             {imagePreview ? (
@@ -118,7 +196,6 @@ export const EditableDoctorCard = () => {
                                              <TooltipProvider>
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
-                                                        {/* The Tooltip needs a child that can accept a ref, so we wrap the button */}
                                                         <div className="inline-block w-full">
                                                             <Button onClick={handleImageUploadClick} disabled={!name} className="w-full">
                                                                 <Upload className="mr-2 h-4 w-4" />
@@ -139,44 +216,59 @@ export const EditableDoctorCard = () => {
                                 
                                 <div className="col-span-2">
                                     <div className="flex h-full flex-col justify-center gap-1 text-left text-foreground/80">
-                                        <Input
-                                            placeholder="Titel"
-                                            value={title}
-                                            onChange={(e) => setTitle(e.target.value)}
-                                            className="h-auto border-0 bg-transparent p-0 text-[2.2cqw] text-primary placeholder:text-primary/50 focus-visible:ring-0 focus-visible:ring-offset-0"
-                                        />
-                                        <Input
-                                            placeholder="Name"
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                            className="h-auto border-0 bg-transparent p-0 font-headline text-[4.8cqw] font-bold leading-tight text-primary placeholder:text-primary/50 focus-visible:ring-0 focus-visible:ring-offset-0"
-                                        />
-                                        <div className="mt-[1.5cqw] space-y-1 text-[2.2cqw] leading-tight">
-                                            <Input
-                                                placeholder="Spezialisierung"
-                                                value={specialty}
-                                                onChange={(e) => setSpecialty(e.target.value)}
-                                                className="h-auto border-0 bg-transparent p-0 font-bold placeholder:text-foreground/50 focus-visible:ring-0 focus-visible:ring-offset-0"
-                                            />
-                                            <Input
-                                                placeholder="Zusatzqualifikation 1 (Optional)"
-                                                value={qualification1}
-                                                onChange={(e) => setQualification1(e.target.value)}
-                                                className="h-auto border-0 bg-transparent p-0 placeholder:text-foreground/50 focus-visible:ring-0 focus-visible:ring-offset-0"
-                                            />
-                                            <Input
-                                                placeholder="Zusatzqualifikation 2 (Optional)"
-                                                value={qualification2}
-                                                onChange={(e) => setQualification2(e.target.value)}
-                                                className="h-auto border-0 bg-transparent p-0 placeholder:text-foreground/50 focus-visible:ring-0 focus-visible:ring-offset-0"
-                                            />
-                                        </div>
-                                        <Input
-                                            placeholder="Zusatzinformationen / Position (alternativ Logo)"
-                                            value={additionalInfo}
-                                            onChange={(e) => setAdditionalInfo(e.target.value)}
-                                            className="mt-[2.5cqw] h-auto border-0 bg-transparent p-0 text-[1.6cqw] italic placeholder:text-foreground/50 focus-visible:ring-0 focus-visible:ring-offset-0"
-                                        />
+                                       <EditDialog 
+                                         dialogTitle="Titel bearbeiten"
+                                         dialogDescription="Geben Sie den akademischen Titel des Arztes ein."
+                                         initialValue={title}
+                                         onSave={setTitle}
+                                         inputLabel="Titel"
+                                         triggerText={title || '[Titel]'}
+                                         textClassName="text-[2.2cqw] text-primary"
+                                       />
+                                       <EditDialog 
+                                         dialogTitle="Name bearbeiten"
+                                         dialogDescription="Geben Sie den Vor- und Nachnamen des Arztes ein."
+                                         initialValue={name}
+                                         onSave={setName}
+                                         inputLabel="Name"
+                                         triggerText={<h4 className="font-headline text-[4.8cqw] font-bold leading-tight text-primary">{name || '[Name]'}</h4>}
+                                       />
+                                       <div className="mt-[1.5cqw] space-y-1 text-[2.2cqw] leading-tight">
+                                           <EditDialog 
+                                             dialogTitle="Spezialisierung bearbeiten"
+                                             dialogDescription="Geben Sie die Spezialisierung des Arztes ein."
+                                             initialValue={specialty}
+                                             onSave={setSpecialty}
+                                             inputLabel="Spezialisierung"
+                                             triggerText={<p className="font-bold">{specialty || '[Spezialisierung]'}</p>}
+                                           />
+                                            <EditDialog 
+                                             dialogTitle="Zusatzqualifikation 1 bearbeiten"
+                                             dialogDescription="Geben Sie eine optionale Zusatzqualifikation ein."
+                                             initialValue={qualification1}
+                                             onSave={setQualification1}
+                                             inputLabel="Zusatzqualifikation 1"
+                                             triggerText={qualification1 || '[Zusatzqualifikation 1]'}
+                                           />
+                                            <EditDialog 
+                                             dialogTitle="Zusatzqualifikation 2 bearbeiten"
+                                             dialogDescription="Geben Sie eine weitere optionale Zusatzqualifikation ein."
+                                             initialValue={qualification2}
+                                             onSave={setQualification2}
+                                             inputLabel="Zusatzqualifikation 2"
+                                             triggerText={qualification2 || '[Zusatzqualifikation 2]'}
+                                           />
+                                       </div>
+                                       <EditDialog
+                                            dialogTitle="Zusatzinformationen bearbeiten"
+                                            dialogDescription="Geben Sie Zusatzinformationen oder die Position des Arztes ein. Dies kann auch für ein Partnerlogo verwendet werden."
+                                            initialValue={additionalInfo}
+                                            onSave={setAdditionalInfo}
+                                            inputLabel="Zusatzinformationen"
+                                            triggerText={<p className="italic">{additionalInfo || '[Zusatzinfo / Logo]'}</p>}
+                                            className="mt-[2.5cqw]"
+                                            textClassName="text-[1.6cqw]"
+                                       />
                                     </div>
                                 </div>
                              </div>
@@ -192,7 +284,7 @@ export const EditableDoctorCard = () => {
                                         </TooltipTrigger>
                                         <TooltipContent side="left" className="max-w-xs">
                                             <p>Verwenden Sie "---" (drei Bindestriche) in einer neuen Zeile, um Abschnitte zu trennen.</p>
-                                            <p>Verwenden Sie "<Meilensteine>" zu Beginn einer Zeile, um eine Liste von Meilensteinen zu erstellen.</p>
+                                            <p>Verwenden Sie "&lt;Meilensteine&gt;" zu Beginn einer Zeile, um eine Liste von Meilensteinen zu erstellen.</p>
                                         </TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
