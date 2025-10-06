@@ -289,7 +289,7 @@ export default function HolidaysPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="mb-8 rounded-lg border bg-muted/40 p-6 pb-8 shadow-sm">
+          <div className="mb-8 rounded-lg border bg-muted p-6 pb-8 shadow-sm">
             <h3 className="mb-4 text-lg font-bold">{editMode ? 'Termin bearbeiten' : 'Neuen Termin erfassen'}</h3>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
