@@ -10,7 +10,6 @@ import {
   query,
   orderBy,
   Timestamp,
-  writeBatch,
   getDocs,
 } from 'firebase/firestore';
 import { useFirebase } from '@/firebase';
@@ -35,7 +34,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { parse } from 'date-fns';
-import initialHolidays from '@/lib/holidays.json';
 import { useToast } from '@/hooks/use-toast';
 import { useState, useEffect } from 'react';
 
@@ -71,58 +69,25 @@ export default function FerienterminePage() {
   useEffect(() => {
     if (!firestore) return;
 
-    const fetchAndImportHolidays = async () => {
+    const fetchHolidays = async () => {
       setLoading(true);
       try {
         const holidaysCollection = collection(firestore, 'holidays');
         const holidaysQuery = query(holidaysCollection, orderBy('startDate', 'asc'));
         const snapshot = await getDocs(holidaysQuery);
+        
+        const holidaysData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })) as Holiday[];
+        setHolidays(holidaysData);
 
-        if (snapshot.empty && initialHolidays.length > 0) {
-          console.log('Ferien-Datenbank ist leer. Importiere Altdaten...');
-          const batch = writeBatch(firestore);
-          const importedHolidays: Holiday[] = [];
-          
-          initialHolidays.forEach(holiday => {
-            const docRef = doc(holidaysCollection); 
-            
-            const startDate = new Date(holiday.start);
-            const endDate = new Date(holiday.end);
-
-            const zonedStartDate = new Date(startDate.valueOf() + startDate.getTimezoneOffset() * 60 * 1000);
-            const zonedEndDate = new Date(endDate.valueOf() + endDate.getTimezoneOffset() * 60 * 1000);
-
-            const startFormatted = `${zonedStartDate.getDate().toString().padStart(2, '0')}.${(zonedStartDate.getMonth() + 1).toString().padStart(2, '0')}.${zonedStartDate.getFullYear()}`;
-            const endFormatted = `${zonedEndDate.getDate().toString().padStart(2, '0')}.${(zonedEndDate.getMonth() + 1).toString().padStart(2, '0')}.${zonedEndDate.getFullYear()}`;
-            
-            const newHoliday = {
-              name: holiday.name,
-              start: startFormatted,
-              end: endFormatted,
-              startDate: Timestamp.fromDate(zonedStartDate),
-            };
-
-            batch.set(docRef, newHoliday);
-            importedHolidays.push({ ...newHoliday, id: docRef.id });
-          });
-
-          await batch.commit();
-          setHolidays(importedHolidays.sort((a, b) => a.startDate.toMillis() - b.startDate.toMillis()));
-          toast({ title: 'Erfolg', description: 'Altdaten wurden automatisch importiert.' });
-
-        } else {
-          const holidaysData = snapshot.docs.map(doc => ({ ...doc.data() as Omit<Holiday, 'id'>, id: doc.id }));
-          setHolidays(holidaysData as Holiday[]);
-        }
       } catch (error) {
-        console.error("Error fetching or importing holidays: ", error);
+        console.error("Error fetching holidays: ", error);
         toast({ variant: 'destructive', title: 'Fehler', description: 'Daten konnten nicht geladen werden.' });
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAndImportHolidays();
+    fetchHolidays();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firestore]);
 
@@ -132,13 +97,15 @@ export default function FerienterminePage() {
     try {
       const startDate = parse(data.start, 'dd.MM.yyyy', new Date());
       
-      const holidaysCollection = collection(firestore, 'holidays');
-      const newDocRef = await addDoc(holidaysCollection, { 
+      const newHolidayData = { 
         name: data.name,
         start: data.start,
         end: data.end,
         startDate: Timestamp.fromDate(startDate),
-      });
+      };
+
+      const holidaysCollection = collection(firestore, 'holidays');
+      const newDocRef = await addDoc(holidaysCollection, newHolidayData);
 
       const newHoliday: Holiday = { 
         ...data, 
