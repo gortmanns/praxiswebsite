@@ -1,11 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, ChangeEvent } from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { User, Upload, Image as ImageIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { User, Upload, ImageIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
@@ -73,9 +71,35 @@ const VitaSection = ({ content }: { content: string }) => {
 
 export const EditableDoctorCard = () => {
     const [vita, setVita] = useState(initialVita);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleImageUploadClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+                setIsDialogOpen(false); // Close dialog after selecting a file
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     return (
         <div className="mx-auto max-w-7xl">
+             <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+                accept="image/png, image/jpeg, image/webp"
+            />
             <Card className="overflow-hidden">
                 <CardContent className="p-0">
                     <div className="grid grid-cols-1 md:grid-cols-2">
@@ -85,11 +109,23 @@ export const EditableDoctorCard = () => {
                             style={{ 'containerType': 'inline-size', aspectRatio: '1000 / 495' } as React.CSSProperties}
                         >
                             <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
-                                <Dialog>
+                                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                     <DialogTrigger asChild>
-                                        <div className="relative col-span-1 h-full w-full cursor-pointer">
-                                            <div className="flex h-full w-full items-center justify-center rounded-md bg-muted transition-colors hover:bg-muted/80">
-                                                <User className="h-1/2 w-1/2 text-muted-foreground" />
+                                        <div className="group relative col-span-1 h-full w-full cursor-pointer overflow-hidden rounded-md bg-muted transition-colors hover:bg-muted/80">
+                                            {imagePreview ? (
+                                                <Image
+                                                    src={imagePreview}
+                                                    alt="Vorschau des Arztportraits"
+                                                    fill
+                                                    className="object-cover"
+                                                />
+                                            ) : (
+                                                <div className="flex h-full w-full items-center justify-center">
+                                                    <User className="h-1/2 w-1/2 text-muted-foreground" />
+                                                </div>
+                                            )}
+                                             <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+                                                <Upload className="h-10 w-10 text-white" />
                                             </div>
                                         </div>
                                     </DialogTrigger>
@@ -102,11 +138,11 @@ export const EditableDoctorCard = () => {
                                             </DialogDescription>
                                         </DialogHeader>
                                         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                            <Button variant="outline">
+                                            <Button variant="outline" disabled>
                                                 <ImageIcon className="mr-2 h-4 w-4" />
                                                 Bestehendes auswählen
                                             </Button>
-                                            <Button>
+                                            <Button onClick={handleImageUploadClick}>
                                                 <Upload className="mr-2 h-4 w-4" />
                                                 Neu hochladen
                                             </Button>
