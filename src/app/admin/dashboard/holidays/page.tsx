@@ -162,7 +162,7 @@ export default function HolidaysPage() {
     if (conflictingId) {
         form.setError("root", { 
             type: "manual", 
-            message: "Der angegebene Zeitraum überschneidet sich mit einem bestehenden Termin."
+            message: "Der angegebene Zeitraum darf sich nicht mit einem bereits bestehenden Ferienzeitraum überschneiden. Der den Konflikt erzeugende Eintrag wurde in der Tabelle hervorgehoben."
         });
         setConflictingHolidayId(conflictingId);
         setIsSubmitting(false);
@@ -464,4 +464,5 @@ export default function HolidaysPage() {
   );
 }
 
+    
     
