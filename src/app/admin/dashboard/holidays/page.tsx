@@ -11,7 +11,7 @@ import { useFirestore } from '@/firebase';
 import { collection, addDoc, getDocs, query, orderBy, deleteDoc, doc, updateDoc, writeBatch } from 'firebase/firestore';
 
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Form,
@@ -432,7 +432,7 @@ export default function HolidaysPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
             <AlertDialogCancel disabled={isDeleting}>Abbrechen</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className={buttonVariants({ variant: "destructive" })}>
+            <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className={cn(buttonVariants({ variant: "destructive" }))}>
                 {isDeleting ? 'Wird gelöscht...' : 'Löschen'}
             </AlertDialogAction>
             </AlertDialogFooter>
