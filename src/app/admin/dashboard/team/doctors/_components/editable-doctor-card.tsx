@@ -31,7 +31,7 @@ export const EditableDoctorCard = () => (
                                     <p>Zusatzqualifikation 2 (Optional)</p>
                                 </div>
                                 <p className="mt-[2.5cqw] text-[1.6cqw] italic">
-                                    <span className="whitespace-nowrap">Zusatzinformationen / Position</span>{' '}
+                                    <span className="whitespace-nowrap">Zusatzinformationen / Position (alternativ Logo)</span>{' '}
                                 </p>
                             </div>
                         </div>
