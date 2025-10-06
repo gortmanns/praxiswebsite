@@ -34,22 +34,26 @@ export function HolidayBanner() {
         for (const holiday of holidays) {
             const startDate = new Date(holiday.start);
             const endDate = new Date(holiday.end);
-            startDate.setHours(0,0,0,0);
-            endDate.setHours(23,59,59,999);
+            // Adjust dates to be timezone-independent by considering them as UTC
+            const zonedStartDate = new Date(startDate.valueOf() + startDate.getTimezoneOffset() * 60 * 1000);
+            const zonedEndDate = new Date(endDate.valueOf() + endDate.getTimezoneOffset() * 60 * 1000);
 
-            if (isWithinInterval(now, { start: startDate, end: endDate })) {
-                const dayAfterEnd = addDays(endDate, 1);
+            zonedStartDate.setHours(0,0,0,0);
+            zonedEndDate.setHours(23,59,59,999);
+
+            if (isWithinInterval(now, { start: zonedStartDate, end: zonedEndDate })) {
+                const dayAfterEnd = addDays(zonedEndDate, 1);
                 activeBanner = {
-                    text: `Ferienhalber bleibt das Praxiszentrum vom ${formatDate(startDate)} bis ${formatDate(endDate)} geschlossen. Nach den ${holiday.name} sind wir ab dem ${formatDate(dayAfterEnd)} wieder wie gewohnt für Sie erreichbar. Die Notfall-Telefonnummern finden Sie im Menü unter dem Punkt NOTFALL.`,
+                    text: `Ferienhalber bleibt das Praxiszentrum vom ${formatDate(zonedStartDate)} bis ${formatDate(zonedEndDate)} geschlossen. Nach den ${holiday.name} sind wir ab dem ${formatDate(dayAfterEnd)} wieder wie gewohnt für Sie erreichbar. Die Notfall-Telefonnummern finden Sie im Menü unter dem Punkt NOTFALL.`,
                     type: 'info',
                 };
                 break; 
             }
 
-            const diff = differenceInDays(startDate, now);
+            const diff = differenceInDays(zonedStartDate, now);
             if (diff >= 0 && diff <= 14) {
                  activeBanner = {
-                    text: `Liebe Patienten. Vom ${formatDate(startDate)} bis ${formatDate(endDate)} bleibt das Praxiszentrum ferienhalber geschlossen. Bitte beziehen Sie allenfalls benötigte Medikamente noch rechtzeitig vorher.`,
+                    text: `Liebe Patienten. Vom ${formatDate(zonedStartDate)} bis ${formatDate(zonedEndDate)} bleibt das Praxiszentrum ferienhalber geschlossen. Bitte beziehen Sie allenfalls benötigte Medikamente noch rechtzeitig vorher.`,
                     type: 'warning',
                 };
                 break;
@@ -66,17 +70,17 @@ export function HolidayBanner() {
 
     return (
         <div className={cn(
-            "relative flex h-auto items-center justify-between overflow-hidden px-4 py-3",
+            "relative flex h-auto min-h-[4.5rem] items-center gap-4 overflow-hidden px-4 py-3",
             bannerInfo.type === 'warning' ? 'bg-yellow-400/80' : 'bg-destructive/80'
         )}>
             <Megaphone className={cn(
                 "h-6 w-6 flex-shrink-0",
-                bannerInfo.type === 'warning' ? 'text-yellow-800' : 'text-destructive-foreground'
+                bannerInfo.type === 'warning' ? 'text-black' : 'text-destructive-foreground'
             )} />
-            <div className="relative flex-1 overflow-hidden whitespace-nowrap">
+            <div className="flex-1 overflow-hidden">
                 <p className={cn(
-                    "marquee absolute text-sm font-bold",
-                     bannerInfo.type === 'warning' ? 'text-yellow-800' : 'text-destructive-foreground'
+                    "marquee whitespace-nowrap text-lg font-bold",
+                     bannerInfo.type === 'warning' ? 'text-black' : 'text-destructive-foreground'
                 )}>
                     {bannerInfo.text}
                 </p>
