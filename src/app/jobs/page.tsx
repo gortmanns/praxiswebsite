@@ -54,7 +54,7 @@ export default function JobsPage() {
                         </div>
 
                          <div className="space-y-4">
-                            <p>Wir sind ebenso stets auf der Suche nach engagierten Medizinischen Praxisassistentinnen (MPA), die unser Kernteam verstärken möchten.</p>
+                            <p>In dem Masse, wie wir neue ärztliche Mitarbeiter und Kooperationspartner gewinnen können, steigt auch der Bedarf an qualifizierten MPAs. Initiativbewerbungen sind daher jederzeit willkommen.</p>
                             
                             <p className="pt-2">Sollten Sie Interesse haben, freuen wir uns über Ihre Initiativbewerbung an:</p>
                              <ObfuscatedLink
