@@ -98,7 +98,8 @@ export default function HolidaysPage() {
   });
 
   useEffect(() => {
-    if (status) {
+    // Nur für Nachrichten, die nicht vom Typ 'info' sind, einen Timer setzen.
+    if (status && status.type !== 'info') {
       const timer = setTimeout(() => {
         setStatus(null);
       }, 10000);
