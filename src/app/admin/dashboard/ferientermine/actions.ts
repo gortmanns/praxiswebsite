@@ -4,7 +4,7 @@ import { getApp, getApps, initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, deleteDoc, doc, Timestamp, getDocs, query, orderBy } from 'firebase/firestore';
 import { firebaseConfig } from '@/firebase/config';
 
-// Robust Singleton-Pattern für die Client-seitige Firebase-Initialisierung.
+// Robust Singleton-Pattern for client-side Firebase initialization.
 function getDb() {
   if (getApps().length === 0) {
     initializeApp(firebaseConfig);
@@ -27,7 +27,7 @@ export type Holiday = {
   end: string;
 };
 
-type HolidayInput = Omit<Holiday, 'id'>;
+export type HolidayInput = Omit<Holiday, 'id'>;
 
 export async function addHoliday(data: HolidayInput) {
   const { name, start, end } = data;
@@ -61,6 +61,10 @@ export async function addHoliday(data: HolidayInput) {
 export async function deleteHoliday(id: string) {
   const db = getDb();
   try {
+    // Prevent deleting optimistic entries
+    if (id.startsWith('optimistic-')) {
+      return { success: false, message: 'Cannot delete an entry that is still being saved.'};
+    }
     await deleteDoc(doc(db, 'holidays', id));
     return { success: true, message: 'Ferientermin gelöscht.' };
   } catch (error) {
@@ -97,8 +101,6 @@ export async function getHolidays(): Promise<Holiday[]> {
         return holidays;
     } catch (error) {
         console.error("Error fetching holidays:", error);
-        // Depending on requirements, you might want to throw the error
-        // or return an empty array to prevent the app from crashing.
-        return [];
+        throw error;
     }
 }

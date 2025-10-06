@@ -30,10 +30,9 @@ type HolidayFormValues = z.infer<typeof holidaySchema>;
 
 interface HolidayFormProps {
     setOptimistic: (action: { action: 'add' | 'delete'; holiday: Holiday | {id: string} }) => void;
-    onHolidayAdded: (holiday: Holiday) => void;
 }
 
-export function HolidayForm({ setOptimistic, onHolidayAdded }: HolidayFormProps) {
+export function HolidayForm({ setOptimistic }: HolidayFormProps) {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
 
@@ -48,25 +47,27 @@ export function HolidayForm({ setOptimistic, onHolidayAdded }: HolidayFormProps)
 
   const onSubmit = (data: HolidayFormValues) => {
     startTransition(async () => {
-      const optimisticHoliday: Holiday = { ...data, id: `optimistic-${Date.now()}` };
+      const optimisticId = `optimistic-${Date.now()}`;
+      const optimisticHoliday: Holiday = { ...data, id: optimisticId };
       setOptimistic({ action: 'add', holiday: optimisticHoliday });
+      form.reset();
 
       try {
         const result = await addHoliday(data);
         if (result.success && result.id) {
           toast({ title: 'Erfolg', description: result.message });
           // Replace optimistic holiday with real one
-          onHolidayAdded({ id: result.id, ...data });
-          form.reset();
+          setOptimistic({ action: 'delete', holiday: { id: optimisticId } });
+          setOptimistic({ action: 'add', holiday: { ...data, id: result.id } });
         } else {
           toast({ variant: 'destructive', title: 'Fehler', description: result.message });
           // Rollback optimistic update
-           onHolidayAdded(optimisticHoliday); 
+           setOptimistic({ action: 'delete', holiday: { id: optimisticId } });
         }
       } catch (error) {
          toast({ variant: 'destructive', title: 'Fehler', description: 'Ein unerwarteter Fehler ist aufgetreten.' });
          // Rollback optimistic update
-         onHolidayAdded(optimisticHoliday);
+         setOptimistic({ action: 'delete', holiday: { id: optimisticId } });
       }
     });
   };
@@ -128,10 +129,9 @@ export function HolidayForm({ setOptimistic, onHolidayAdded }: HolidayFormProps)
 interface HolidayDeleteButtonProps {
     id: string;
     setOptimistic: (action: { action: 'add' | 'delete'; holiday: Holiday | {id: string} }) => void;
-    onHolidayDeleted: (id: string) => void;
 }
 
-export function HolidayDeleteButton({ id, setOptimistic, onHolidayDeleted }: HolidayDeleteButtonProps) {
+export function HolidayDeleteButton({ id, setOptimistic }: HolidayDeleteButtonProps) {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
 
@@ -142,10 +142,10 @@ export function HolidayDeleteButton({ id, setOptimistic, onHolidayDeleted }: Hol
         const result = await deleteHoliday(id);
         if (result.success) {
             toast({ title: 'Erfolg', description: result.message });
-            onHolidayDeleted(id);
         } else {
             toast({ variant: 'destructive', title: 'Fehler', description: result.message });
-            // Here you might want to re-fetch to rollback, or add the item back
+            // For a rollback, we would need the original holiday data to add it back
+            // This is a simplified example. A full implementation might fetch again.
         }
     });
   };
@@ -155,7 +155,7 @@ export function HolidayDeleteButton({ id, setOptimistic, onHolidayDeleted }: Hol
       variant="ghost"
       size="icon"
       onClick={handleDelete}
-      disabled={isPending}
+      disabled={isPending || id.startsWith('optimistic-')}
       aria-label="Termin löschen"
     >
       <X className="h-4 w-4 text-destructive" />

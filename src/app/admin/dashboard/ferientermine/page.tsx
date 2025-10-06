@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useOptimistic } from 'react';
+import { useState, useEffect, useOptimistic, useTransition, useReducer } from 'react';
 import {
   Card,
   CardContent,
@@ -18,62 +18,60 @@ import {
 import { HolidayForm, HolidayDeleteButton } from './holiday-form';
 import { getHolidays, Holiday } from './actions';
 
+type OptimisticAction = {
+  action: 'add' | 'delete';
+  holiday: Holiday | { id: string };
+};
+
+function optimisticReducer(state: Holiday[], { action, holiday }: OptimisticAction) {
+  switch (action) {
+    case 'add':
+      const newState = [...state, holiday as Holiday];
+      return newState.sort((a, b) => {
+        const dateA = new Date(a.start.split('.').reverse().join('-'));
+        const dateB = new Date(b.start.split('.').reverse().join('-'));
+        return dateA.getTime() - dateB.getTime();
+      });
+    case 'delete':
+      return state.filter((h) => h.id !== holiday.id);
+    default:
+      return state;
+  }
+}
+
 export default function FerienterminePage() {
   const [holidays, setHolidays] = useState<Holiday[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Optimistic state for instant UI feedback
-  const [optimisticHolidays, setOptimisticHolidays] = useOptimistic(
-    holidays,
-    (state, { action, holiday }: { action: 'add' | 'delete', holiday: Holiday | {id: string} }) => {
-      switch (action) {
-        case 'add':
-          // Need to sort after adding
-          const newState = [...state, holiday as Holiday];
-          return newState.sort((a, b) => {
-            const dateA = new Date(a.start.split('.').reverse().join('-'));
-            const dateB = new Date(b.start.split('.').reverse().join('-'));
-            return dateA.getTime() - dateB.getTime();
-          });
-        case 'delete':
-          return state.filter((h) => h.id !== holiday.id);
-        default:
-          return state;
-      }
-    }
-  );
+  const [optimisticHolidays, setOptimistic] = useReducer(optimisticReducer, []);
 
   useEffect(() => {
     async function fetchHolidays() {
       setLoading(true);
-      const fetchedHolidays = await getHolidays();
-      // Sort initial holidays
-      const sortedHolidays = fetchedHolidays.sort((a, b) => {
-        const dateA = new Date(a.start.split('.').reverse().join('-'));
-        const dateB = new Date(b.start.split('.').reverse().join('-'));
-        return dateA.getTime() - dateB.getTime();
-      });
-      setHolidays(sortedHolidays);
-      setLoading(false);
+      try {
+        const fetchedHolidays = await getHolidays();
+        const sortedHolidays = fetchedHolidays.sort((a, b) => {
+          const dateA = new Date(a.start.split('.').reverse().join('-'));
+          const dateB = new Date(b.start.split('.').reverse().join('-'));
+          return dateA.getTime() - dateB.getTime();
+        });
+        setHolidays(sortedHolidays);
+      } catch (error) {
+        console.error("Failed to fetch holidays:", error);
+      } finally {
+        setLoading(false);
+      }
     }
     fetchHolidays();
   }, []);
 
-  const handleHolidayAdded = (newHoliday: Holiday) => {
-    setHolidays(currentHolidays => 
-      [...currentHolidays, newHoliday].sort((a, b) => {
-        const dateA = new Date(a.start.split('.').reverse().join('-'));
-        const dateB = new Date(b.start.split('.').reverse().join('-'));
-        return dateA.getTime() - dateB.getTime();
-      })
-    );
-  };
-  
-  const handleHolidayDeleted = (deletedId: string) => {
-     setHolidays(currentHolidays =>
-      currentHolidays.filter(holiday => holiday.id !== deletedId)
-    );
-  };
+  // When real holidays load, update the optimistic state
+  useEffect(() => {
+    setOptimistic({ action: 'add', holiday: { id: '', name: '', start: '', end: '' } }); // dummy action to trigger reducer
+    setOptimistic({ action: 'delete', holiday: { id: '' } }); // dummy action to trigger reducer
+    holidays.forEach(h => setOptimistic({action: 'add', holiday: h}));
+  }, [holidays]);
 
 
   return (
@@ -89,7 +87,7 @@ export default function FerienterminePage() {
           <CardTitle>Neuen Ferientermin hinzufügen</CardTitle>
         </CardHeader>
         <CardContent>
-          <HolidayForm setOptimistic={setOptimisticHolidays} onHolidayAdded={handleHolidayAdded} />
+          <HolidayForm setOptimistic={setOptimistic} />
         </CardContent>
       </Card>
 
@@ -122,12 +120,12 @@ export default function FerienterminePage() {
                 </TableRow>
               ) : (
                 optimisticHolidays.map(holiday => (
-                  <TableRow key={holiday.id}>
+                  <TableRow key={holiday.id} className={holiday.id.startsWith('optimistic-') ? 'opacity-50' : ''}>
                     <TableCell>{holiday.start}</TableCell>
                     <TableCell>{holiday.end}</TableCell>
                     <TableCell>{holiday.name}</TableCell>
                     <TableCell className="text-right">
-                      <HolidayDeleteButton id={holiday.id} setOptimistic={setOptimisticHolidays} onHolidayDeleted={handleHolidayDeleted} />
+                      <HolidayDeleteButton id={holiday.id} setOptimistic={setOptimistic} />
                     </TableCell>
                   </TableRow>
                 ))

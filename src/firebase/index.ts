@@ -15,7 +15,7 @@ import {
 } from './provider';
 import { FirebaseClientProvider } from './client-provider';
 
-// This function is for CLIENT-SIDE use only.
+
 function initializeFirebase() {
   if (getApps().length === 0) {
     return initializeApp(firebaseConfig);
@@ -24,8 +24,6 @@ function initializeFirebase() {
   }
 }
 
-// These hooks and providers are for CLIENT-SIDE use.
-// For server-side logic, see src/firebase/server.ts
 export {
   initializeFirebase,
   FirebaseProvider,
