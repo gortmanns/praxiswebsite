@@ -68,9 +68,11 @@ export function HolidayBanner() {
         return null;
     }
 
+    const separator = <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;♦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</>;
+
     return (
         <div className={cn(
-            "relative flex h-auto min-h-[4.5rem] items-center gap-4 overflow-hidden px-4 py-3",
+            "relative flex h-auto min-h-[4.5rem] items-center gap-4 overflow-hidden px-4 py-1",
             bannerInfo.type === 'warning' ? 'bg-yellow-400/80' : 'bg-destructive/80'
         )}>
             <Megaphone className={cn(
@@ -79,10 +81,15 @@ export function HolidayBanner() {
             )} />
             <div className="flex-1 overflow-hidden">
                 <p className={cn(
-                    "marquee whitespace-nowrap text-lg font-bold",
+                    "marquee whitespace-nowrap text-xl font-bold",
                      bannerInfo.type === 'warning' ? 'text-black' : 'text-destructive-foreground'
                 )}>
-                    {bannerInfo.text}
+                    <span>
+                        {bannerInfo.text} {separator} {bannerInfo.text} {separator}
+                    </span>
+                    <span className="absolute">
+                         {bannerInfo.text} {separator} {bannerInfo.text} {separator}
+                    </span>
                 </p>
             </div>
         </div>
