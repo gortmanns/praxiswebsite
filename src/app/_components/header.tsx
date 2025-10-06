@@ -14,7 +14,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu";
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
+import { HolidayBanner } from './holiday-banner';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -38,6 +39,7 @@ export function Header() {
   const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({ opacity: 0 });
+  const activeLinkRef = useRef<HTMLAnchorElement>(null);
 
   const navLinks = [
     { href: '/', label: 'Startseite' },
@@ -62,17 +64,24 @@ export function Header() {
       const targetRect = target.getBoundingClientRect();
       setIndicatorStyle({
         '--indicator-width': `${targetRect.width}px`,
-        '--indicator-height': `${targetRect.height}px`,
         '--indicator-left': `${targetRect.left - navRect.left}px`,
-        'opacity': 1,
+        opacity: 1,
       });
     }
   }, []);
   
   const hideIndicator = useCallback(() => {
-    setIndicatorStyle({ opacity: 0 });
-  }, []);
-
+    if (activeLinkRef.current) {
+      updateIndicator(activeLinkRef.current.parentElement);
+    } else {
+      setIndicatorStyle({ opacity: 0 });
+    }
+  }, [updateIndicator]);
+  
+  const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
+    updateIndicator(e.currentTarget);
+  };
+  
   return (
     <header className="w-full border-b bg-background">
       <div className="bg-primary text-primary-foreground">
@@ -111,7 +120,7 @@ export function Header() {
                 data-ai-hint="practice logo"
                 width={1511}
                 height={306}
-                className="h-auto w-[647px]"
+                className="h-auto w-[455px]"
                 priority
               />
         </Link>
@@ -125,7 +134,8 @@ export function Header() {
                 <Link
                     key={link.href}
                     href={link.href}
-                    onMouseEnter={(e) => updateIndicator(e.currentTarget)}
+                    ref={isActive ? activeLinkRef : null}
+                    onMouseEnter={handleMouseEnter}
                     data-active={isActive}
                     className={cn(
                       'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
@@ -139,7 +149,7 @@ export function Header() {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <div 
-                      onMouseEnter={(e) => updateIndicator(e.currentTarget)}
+                      onMouseEnter={handleMouseEnter}
                       data-active={pathname === '/oeffnungszeiten' || pathname === '/praxisferien'}
                       className={cn(
                         'relative z-10 flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
@@ -161,12 +171,13 @@ export function Header() {
                  <Link
                  key={notfallLink.href}
                  href={notfallLink.href}
-                 onMouseEnter={(e) => updateIndicator(e.currentTarget)}
+                 ref={pathname === notfallLink.href ? activeLinkRef : null}
+                 onMouseEnter={handleMouseEnter}
                  data-active={pathname === notfallLink.href}
                  className={cn(
                   'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
                   pathname === notfallLink.href ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground',
-                  notfallLink.label === 'NOTFALL' ? 'uppercase' : ''
+                  'uppercase'
                  )}
              >
                  {notfallLink.label}
@@ -265,6 +276,7 @@ export function Header() {
         </Sheet>
         </div>
       </div>
+      <HolidayBanner />
     </header>
   );
 }

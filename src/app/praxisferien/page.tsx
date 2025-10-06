@@ -1,8 +1,19 @@
 
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
+import holidays from '@/lib/holidays.json';
+import { format, addDays } from 'date-fns';
+import { de } from 'date-fns/locale';
+
+function formatDate(dateString: string) {
+  const date = new Date(dateString);
+  return format(date, 'd. MMMM yyyy', { locale: de });
+}
 
 export default function PraxisferienPage() {
+  const now = new Date();
+  const upcomingHolidays = holidays.filter(holiday => new Date(holiday.end) >= now);
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -17,15 +28,19 @@ export default function PraxisferienPage() {
                 </p>
             </div>
             <div className="mx-auto mt-16 w-full max-w-2xl space-y-8">
-              <div className="space-y-2">
-                <p className="text-xl font-bold text-primary">Herbstferien 2025</p>
-                <p className="text-lg text-foreground/80">4. Oktober 2025 - 12. Oktober 2025</p>
-              </div>
-              <hr className="border-t border-border" />
-              <div className="space-y-2">
-                <p className="text-xl font-bold text-primary">Weihnachtsferien 2025 / 2026</p>
-                <p className="text-lg text-foreground/80">20.12.2025 - 4. Januar 2026</p>
-              </div>
+              {upcomingHolidays.length > 0 ? (
+                upcomingHolidays.map((holiday, index) => (
+                  <div key={holiday.name}>
+                    <div className="space-y-2">
+                      <p className="text-xl font-bold text-primary">{holiday.name}</p>
+                      <p className="text-lg text-foreground/80">{formatDate(holiday.start)} - {formatDate(holiday.end)}</p>
+                    </div>
+                    {index < upcomingHolidays.length - 1 && <hr className="mt-8 border-t border-border" />}
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-lg text-foreground/80">Aktuell sind keine Praxisferien geplant.</p>
+              )}
             </div>
         </div>
       </main>

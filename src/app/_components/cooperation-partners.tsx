@@ -34,7 +34,7 @@ export function CooperationPartnersSection() {
     {
       name: 'go-medical',
       logoUrl: '/images/go-medical-logo.png',
-      websiteUrl: 'https://www.go-medical.ch/',
+      websiteUrl: '#',
       hint: 'partner logo',
       width: 300,
       height: 100,
@@ -117,29 +117,48 @@ export function CooperationPartnersSection() {
         <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3 lg:grid-cols-8">
           <div className="hidden lg:block"></div>
           {otherPartners.map(partner => (
-            <Link
-              key={partner.name}
-              href={partner.websiteUrl}
-              target={partner.websiteUrl === '#' ? '_self' : '_blank'}
-              rel="noopener noreferrer"
-              className="group relative sm:col-span-1 lg:col-span-2 h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            >
-              <Card className="flex h-full w-full items-center justify-center p-6">
-                <CardContent className="flex w-full items-center justify-center p-0">
-                  <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                    <Image
-                      src={partner.logoUrl!}
-                      alt={`${partner.name} Logo`}
-                      width={partner.width}
-                      height={partner.height}
-                      className="object-contain"
-                      data-ai-hint={partner.hint}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-            </Link>
+            partner.websiteUrl === '#' ? (
+              <div key={partner.name} className="group relative sm:col-span-1 lg:col-span-2 h-32 w-full overflow-hidden rounded-lg shadow-lg">
+                <Card className="flex h-full w-full items-center justify-center p-6">
+                  <CardContent className="flex w-full items-center justify-center p-0">
+                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                      <Image
+                        src={partner.logoUrl!}
+                        alt={`${partner.name} Logo`}
+                        width={partner.width}
+                        height={partner.height}
+                        className="object-contain"
+                        data-ai-hint={partner.hint}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ) : (
+              <Link
+                key={partner.name}
+                href={partner.websiteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative sm:col-span-1 lg:col-span-2 h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              >
+                <Card className="flex h-full w-full items-center justify-center p-6">
+                  <CardContent className="flex w-full items-center justify-center p-0">
+                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                      <Image
+                        src={partner.logoUrl!}
+                        alt={`${partner.name} Logo`}
+                        width={partner.width}
+                        height={partner.height}
+                        className="object-contain"
+                        data-ai-hint={partner.hint}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+                <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+              </Link>
+            )
           ))}
           <div className="hidden lg:block"></div>
         </div>
