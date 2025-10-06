@@ -11,6 +11,7 @@ import {
   query,
   orderBy,
   Timestamp,
+  writeBatch,
 } from 'firebase/firestore';
 import { useFirebase, useCollection } from '@/firebase';
 import { Button } from '@/components/ui/button';
@@ -24,7 +25,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { X } from 'lucide-react';
+import { X, Upload } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -34,6 +35,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { parse } from 'date-fns';
+import initialHolidays from '@/lib/holidays.json';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
 
 const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/;
 
@@ -51,6 +55,8 @@ interface Holiday extends HolidayForm {
 
 export default function FerienterminePage() {
   const { db: firestore } = useFirebase();
+  const { toast } = useToast();
+  const [isImporting, setIsImporting] = useState(false);
 
   const holidaysCollection = firestore
     ? collection(firestore, 'holidays')
@@ -84,8 +90,10 @@ export default function FerienterminePage() {
         endDate: Timestamp.fromDate(endDate),
       });
       form.reset();
+      toast({ title: 'Erfolg', description: 'Ferientermin wurde hinzugefügt.' });
     } catch (error) {
       console.error('Error adding holiday: ', error);
+      toast({ variant: 'destructive', title: 'Fehler', description: 'Termin konnte nicht hinzugefügt werden.' });
     }
   };
 
@@ -93,17 +101,55 @@ export default function FerienterminePage() {
     if (!firestore) return;
     try {
       await deleteDoc(doc(firestore, 'holidays', id));
+      toast({ title: 'Erfolg', description: 'Ferientermin wurde gelöscht.' });
     } catch (error) {
       console.error('Error deleting holiday: ', error);
+      toast({ variant: 'destructive', title: 'Fehler', description: 'Termin konnte nicht gelöscht werden.' });
+    }
+  };
+  
+  const importInitialHolidays = async () => {
+    if (!firestore || !holidaysCollection) return;
+    setIsImporting(true);
+    try {
+      const batch = writeBatch(firestore);
+      initialHolidays.forEach(holiday => {
+        const docRef = doc(holidaysCollection); 
+        const startDate = new Date(holiday.start);
+        const endDate = new Date(holiday.end);
+        const startFormatted = `${startDate.getDate().toString().padStart(2, '0')}.${(startDate.getMonth() + 1).toString().padStart(2, '0')}.${startDate.getFullYear()}`;
+        const endFormatted = `${endDate.getDate().toString().padStart(2, '0')}.${(endDate.getMonth() + 1).toString().padStart(2, '0')}.${endDate.getFullYear()}`;
+
+        batch.set(docRef, {
+          name: holiday.name,
+          start: startFormatted,
+          end: endFormatted,
+          startDate: Timestamp.fromDate(startDate),
+          endDate: Timestamp.fromDate(endDate)
+        });
+      });
+      await batch.commit();
+      toast({ title: 'Erfolg', description: 'Altdaten wurden erfolgreich importiert.' });
+    } catch (error) {
+      console.error("Error importing holidays: ", error);
+      toast({ variant: 'destructive', title: 'Fehler', description: 'Altdaten konnten nicht importiert werden.' });
+    } finally {
+      setIsImporting(false);
     }
   };
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-      <div className="flex items-center">
+      <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold md:text-2xl">
           Ferientermine anpassen
         </h1>
+        {holidays?.length === 0 && !loading && (
+          <Button onClick={importInitialHolidays} disabled={isImporting}>
+            <Upload className="mr-2 h-4 w-4" />
+            {isImporting ? 'Importiere...' : 'Altdaten importieren'}
+          </Button>
+        )}
       </div>
 
       <Card>
