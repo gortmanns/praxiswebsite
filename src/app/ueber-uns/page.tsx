@@ -1,8 +1,7 @@
 
-
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function UeberUnsPage() {
   return (
@@ -19,7 +18,7 @@ export default function UeberUnsPage() {
                 <Card>
                     <CardContent className="space-y-6 p-8">
                         <p>Als die Überbauung im Kappelenring in den 1970er-Jahren noch ganz frisch war, eröffnete Dr. Segginger hier im Erdgeschoss des Hauses Kappelenring 6 eine Hausarztpraxis. Nebenan gab es bereits die Zahnarztpraxis von Dr. Debrunner.</p>
-                        <p>Nach vielen Jahren ist Dr. Segginger zum Jahresende 2022 in den wohlverdienten Ruhestand gegangen, und ich habe die Praxis von ihm übernommen. Da auch Dr. Debrunner kurz darauf in den Ruhestand gegangen ist, ohne einen Nachfolger für seine Praxis zu haben, bot sich die einmalige Gelegenheit, diese Räumlichkeiten zu übernehmen, miteinander zu verbinden und die Hausarztpraxis zu einem neuen, modernen Praxiszentrum weiterzuentwickeln.</p>
+                        <p>Nach vielen Jahren ist Dr. Segginger zum Jahresende 2022 in den wohlverdienten Ruhestand gegangen und ich habe die Praxis von ihm übernommen. Da auch Dr. Debrunner kurz darauf in den Ruhestand gegangen ist, ohne einen Nachfolger für seine Praxis zu haben, bot sich die einmalige Gelegenheit, diese Räumlichkeiten zu übernehmen, miteinander zu verbinden und die Hausarztpraxis zu einem neuen, modernen Praxiszentrum weiterzuentwickeln.</p>
                         
                         <h3 className="pt-4 font-headline text-2xl font-bold text-primary">Was ist seither passiert?</h3>
                         <ul className="list-disc space-y-4 pl-6">
@@ -56,8 +55,9 @@ export default function UeberUnsPage() {
                             <li>Wir möchten weitere Spezialisten gewinnen, die Ihre Sprechstunden bei uns im Praxiszentrum anbieten. Idealerweise decken wir irgendwann fast das ganze medizinische Spektrum ab, soweit es jedenfalls die technischen Möglichkeiten und Räumlichkeiten bei uns zulassen.</li>
                         </ul>
                         <div className="pt-8 space-y-4">
-                            <p>An dieser Stelle möchte ich mich für das entgegengebrachte Vertrauen bedanken. Mir ist bewusst, dass die Gewöhnung an einen neuen Hausarzt schwierig ist, zumal wenn der alte Hausarzt über Jahrzehnte hinweg an dieser Stelle tätig war und der «Neue» vieles anders macht.</p>
-                            <p className="text-3xl italic">Gernot Ortmanns</p>
+                            <p>An dieser Stelle möchte ich mich bedanken. Einerseits bei meinem Vorgänger Dr. Segginger, der mich sehr bei der Umsetzung der Veränderungen und der Verwirklichung meiner Ziele unterstützt. Ich weiss, der Abschied von "seiner Praxis" und "seinen Patienten" kann ihm nicht leichtgefallen sein, hat er doch weit über die übliche Zeit hinweg gearbeitet, zu der er in den Ruhestand hätte gehen können.</p>
+                            <p>Andererseits möchte ich mich aber auch bei Ihnen, meinen Patienten, bedanken, die Sie mir Ihr Vertrauen entgegenbringen. Ich weiss, dass die Gewöhnung an einen neuen Hausarzt nicht jedem leichtfällt, zumal wenn der alte Hausarzt über viele Jahrzehnte diese Praxis aufgebaut und geführt hat und "der Neue" nicht nur kein Berndeutsch redet (auch wenn ich gelernt habe, es zu verstehen), sondern auch noch vieles anders macht.</p>
+                            <p className="pt-8 italic">Gernot Ortmanns</p>
                             <p className="pt-8 text-base text-foreground/70">(Im Oktober 2025)</p>
                         </div>
                     </CardContent>
