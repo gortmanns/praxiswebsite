@@ -112,21 +112,20 @@ export function Header() {
         </div>
       </div>
 
-      <div className="flex h-[130px] items-center justify-between px-8">
+      <div className="flex h-[140px] items-center justify-between px-8">
         <Link href="/">
               <Image
                 src="/images/praxiszentrum-logo.png"
                 alt="Praxiszentrum im Ring Logo"
                 data-ai-hint="practice logo"
-                width={1314}
-                height={266}
-                className="h-auto w-auto max-w-[370px] md:max-w-[635px]"
+                width={1511}
+                height={306}
+                className="h-auto w-auto max-w-[425px] md:max-w-[730px]"
                 priority
               />
         </Link>
 
         <nav ref={navRef} className="relative hidden md:flex md:items-center md:space-x-4" onMouseLeave={hideIndicator}>
-            <div className="nav-link-indicator bg-primary" />
             <div className="nav-link-indicator-hover bg-accent" style={indicatorStyle} />
 
             {mainNavLinks.map((link) => {
@@ -140,10 +139,9 @@ export function Header() {
                     className={cn(
                       'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
                       'text-muted-foreground hover:text-primary',
-                      isActive && 'text-primary-foreground'
+                      isActive && 'bg-primary text-primary-foreground'
                       )}
                 >
-                    {isActive && <div className="absolute inset-0 -z-10 rounded-md bg-primary" />}
                     {link.label}
                 </Link>
                 );
@@ -156,9 +154,8 @@ export function Header() {
                       className={cn(
                         'relative z-10 flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
                         'text-muted-foreground hover:text-primary',
-                        (pathname === '/oeffnungszeiten' || pathname === '/praxisferien') && 'text-primary-foreground'
+                        (pathname === '/oeffnungszeiten' || pathname === '/praxisferien') && 'bg-primary text-primary-foreground'
                     )}>
-                       {(pathname === '/oeffnungszeiten' || pathname === '/praxisferien') && <div className="bg-primary -z-10 absolute inset-0 rounded-md" />}
                         Zeiten <ChevronDown className="h-4 w-4" />
                     </div>
                 </DropdownMenuTrigger>
@@ -181,10 +178,9 @@ export function Header() {
                   'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
                  'text-muted-foreground hover:text-primary',
                  notfallLink.label === 'NOTFALL' ? 'uppercase' : '',
-                 pathname === notfallLink.href && 'text-primary-foreground'
+                 pathname === notfallLink.href && 'bg-primary text-primary-foreground'
                  )}
              >
-                 {pathname === notfallLink.href && <div className="bg-primary -z-10 absolute inset-0 rounded-md" />}
                  {notfallLink.label}
              </Link>
             )}

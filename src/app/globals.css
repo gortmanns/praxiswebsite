@@ -45,15 +45,10 @@
 @layer base {
   * {
     @apply border-border;
-    border: 1px solid orange;
   }
   body {
     @apply text-foreground;
   }
-}
-
-.nav-link-indicator {
-  @apply absolute -z-10 rounded-md;
 }
 
 .nav-link-indicator-hover {
