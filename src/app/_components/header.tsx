@@ -39,7 +39,6 @@ export function Header() {
   const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
   const [indicatorStyle, setIndicatorStyle] = useState({});
-  const [isInitial, setIsInitial] = useState(true);
 
   const navLinks = [
     { href: '/', label: 'Startseite' },
@@ -75,26 +74,17 @@ export function Header() {
   }, []);
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
-    setIsInitial(false);
     updateIndicator(e.currentTarget);
   };
   
   const handleMouseLeave = useCallback(() => {
-    const activeLink = navRef.current?.querySelector('[data-active="true"]');
-    if (activeLink) {
-        updateIndicator(activeLink as HTMLElement);
-    } else {
-        setIndicatorStyle({});
-    }
-  }, [updateIndicator]);
+    setIndicatorStyle({});
+  }, []);
+
 
   useEffect(() => {
-    const activeLink = navRef.current?.querySelector('[data-active="true"]');
-    if (activeLink) {
-        updateIndicator(activeLink as HTMLElement);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, updateIndicator]);
+    // No-op, just to ensure state is updated on path change
+  }, [pathname]);
   
   return (
     <header className="w-full border-b bg-background">
@@ -140,7 +130,7 @@ export function Header() {
         </Link>
 
         <nav ref={navRef} className="relative hidden items-center md:flex" onMouseLeave={handleMouseLeave}>
-            <div className={cn("nav-link-indicator bg-accent", isInitial && 'transition-none')} style={indicatorStyle} />
+            <div className="nav-link-indicator bg-accent" style={indicatorStyle} />
 
             {mainNavLinks.map((link) => {
                 const isActive = activePath === link.href;
@@ -149,9 +139,8 @@ export function Header() {
                     key={link.href}
                     href={link.href}
                     onMouseEnter={handleMouseEnter}
-                    data-active={isActive}
                     className={cn(
-                        'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                        'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold transition-colors',
                         isActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}
                 >
@@ -163,9 +152,8 @@ export function Header() {
                 <DropdownMenuTrigger asChild>
                     <div 
                       onMouseEnter={handleMouseEnter}
-                      data-active={zeitenActive}
                       className={cn(
-                        'relative z-10 flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                        'relative z-10 flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold transition-colors',
                         zeitenActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}>
                         Zeiten <ChevronDown className="h-4 w-4" />
@@ -185,9 +173,8 @@ export function Header() {
                  key={notfallLink.href}
                  href={notfallLink.href}
                  onMouseEnter={handleMouseEnter}
-                 data-active={pathname === notfallLink.href}
                  className={cn(
-                  'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                  'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold transition-colors',
                   pathname === notfallLink.href ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground',
                   'uppercase'
                  )}
