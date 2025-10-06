@@ -74,7 +74,7 @@ export default function HolidaysPage() {
           <div className="mb-8 border-b pb-8">
             <h3 className="mb-4 text-lg font-medium">Neuen Termin erfassen</h3>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 gap-6 sm:grid-cols-4">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 items-end gap-6 sm:grid-cols-[1fr_1fr_2fr_auto]">
                 <FormField
                   control={form.control}
                   name="start"
@@ -156,25 +156,21 @@ export default function HolidaysPage() {
                     </FormItem>
                   )}
                 />
-                <div className="sm:col-span-2">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ferienname</FormLabel>
-                        <FormControl>
-                          <Input placeholder="z.B. Weihnachtsferien" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Ferienname</FormLabel>
+                      <FormControl>
+                        <Input placeholder="z.B. Weihnachtsferien" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 
-                <div className="flex items-end sm:col-span-4">
-                  <Button type="submit">Neuen Termin speichern</Button>
-                </div>
+                <Button type="submit">Speichern</Button>
               </form>
             </Form>
           </div>
