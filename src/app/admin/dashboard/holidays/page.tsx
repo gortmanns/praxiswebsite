@@ -249,37 +249,46 @@ export default function HolidaysPage() {
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
                         <FormLabel>Erster Ferientag</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full justify-start text-left font-normal",
-                                  !field.value && "text-muted-foreground"
-                                )}
+                        <div className="flex items-center gap-2">
+                           <Input
+                                type="text"
+                                placeholder={format(new Date(), 'dd.MM.yyyy')}
+                                value={field.value ? format(field.value, 'dd.MM.yyyy') : ''}
+                                onChange={(e) => {
+                                    // Basic parsing, can be improved with a date-fns parse
+                                    const dateParts = e.target.value.split('.');
+                                    if (dateParts.length === 3) {
+                                        const date = new Date(Number(dateParts[2]), Number(dateParts[1]) - 1, Number(dateParts[0]));
+                                        if (!isNaN(date.getTime())) {
+                                            field.onChange(date);
+                                        }
+                                    }
+                                }}
                                 disabled={isSubmitting}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {field.value ? (
-                                  format(field.value, 'dd.MM.yyyy')
-                                ) : (
-                                  <span>Datum wählen</span>
-                                )}
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) => date < new Date("1900-01-01")}
-                              initialFocus
-                              locale={de}
+                                className="w-full"
                             />
-                          </PopoverContent>
-                        </Popover>
+                            <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                variant={"outline"}
+                                className={cn("h-10 w-10 p-0", !field.value && "text-muted-foreground")}
+                                disabled={isSubmitting}
+                                >
+                                <CalendarIcon className="h-5 w-5" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) => date < new Date("1900-01-01")}
+                                initialFocus
+                                locale={de}
+                                />
+                            </PopoverContent>
+                            </Popover>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -290,37 +299,45 @@ export default function HolidaysPage() {
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
                         <FormLabel>Letzter Ferientag</FormLabel>
-                         <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full justify-start text-left font-normal",
-                                  !field.value && "text-muted-foreground"
-                                )}
+                        <div className="flex items-center gap-2">
+                           <Input
+                                type="text"
+                                placeholder={format(new Date(), 'dd.MM.yyyy')}
+                                value={field.value ? format(field.value, 'dd.MM.yyyy') : ''}
+                                onChange={(e) => {
+                                    const dateParts = e.target.value.split('.');
+                                    if (dateParts.length === 3) {
+                                        const date = new Date(Number(dateParts[2]), Number(dateParts[1]) - 1, Number(dateParts[0]));
+                                        if (!isNaN(date.getTime())) {
+                                            field.onChange(date);
+                                        }
+                                    }
+                                }}
                                 disabled={isSubmitting}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {field.value ? (
-                                  format(field.value, 'dd.MM.yyyy')
-                                ) : (
-                                  <span>Datum wählen</span>
-                                )}
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) => date < (form.getValues('start') || new Date('1900-01-01'))}
-                              initialFocus
-                              locale={de}
+                                className="w-full"
                             />
-                          </PopoverContent>
-                        </Popover>
+                            <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                variant={"outline"}
+                                className={cn("h-10 w-10 p-0", !field.value && "text-muted-foreground")}
+                                disabled={isSubmitting}
+                                >
+                                <CalendarIcon className="h-5 w-5" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                disabled={(date) => date < (form.getValues('start') || new Date('1900-01-01'))}
+                                initialFocus
+                                locale={de}
+                                />
+                            </PopoverContent>
+                            </Popover>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -375,30 +392,30 @@ export default function HolidaysPage() {
             <div className="rounded-md border">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>Erster Ferientag</TableHead>
-                    <TableHead>Letzter Ferientag</TableHead>
-                    <TableHead>Ferienname</TableHead>
-                    <TableHead className="text-right">Aktionen</TableHead>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-muted-foreground">Erster Ferientag</TableHead>
+                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-muted-foreground">Letzter Ferientag</TableHead>
+                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-muted-foreground">Ferienname</TableHead>
+                    <TableHead className="py-3 px-4 text-right text-sm font-semibold text-muted-foreground">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {isLoading ? (
                     Array.from({ length: 3 }).map((_, i) => (
                       <TableRow key={i}>
-                        <TableCell><Skeleton className="h-5 w-24" /></TableCell>
-                        <TableCell><Skeleton className="h-5 w-24" /></TableCell>
-                        <TableCell><Skeleton className="h-5 w-40" /></TableCell>
-                        <TableCell className="text-right"><Skeleton className="h-8 w-20" /></TableCell>
+                        <TableCell className="py-4 px-4"><Skeleton className="h-5 w-24" /></TableCell>
+                        <TableCell className="py-4 px-4"><Skeleton className="h-5 w-24" /></TableCell>
+                        <TableCell className="py-4 px-4"><Skeleton className="h-5 w-40" /></TableCell>
+                        <TableCell className="py-4 px-4 text-right space-x-2"><Skeleton className="h-9 w-24 inline-block" /><Skeleton className="h-9 w-24 inline-block" /></TableCell>
                       </TableRow>
                     ))
                   ) : holidays.length > 0 ? (
                     holidays.map((holiday) => (
-                      <TableRow key={holiday.id}>
-                        <TableCell>{format(holiday.start, 'dd.MM.yyyy')}</TableCell>
-                        <TableCell>{format(holiday.end, 'dd.MM.yyyy')}</TableCell>
-                        <TableCell>{holiday.name}</TableCell>
-                        <TableCell className="text-right space-x-2">
+                      <TableRow key={holiday.id} className="even:bg-muted/50">
+                        <TableCell className="py-3 px-4 font-medium">{format(holiday.start, 'dd.MM.yyyy')}</TableCell>
+                        <TableCell className="py-3 px-4 font-medium">{format(holiday.end, 'dd.MM.yyyy')}</TableCell>
+                        <TableCell className="py-3 px-4 font-medium">{holiday.name}</TableCell>
+                        <TableCell className="py-3 px-4 text-right space-x-2">
                            <Button variant="outline" size="sm" onClick={() => handleEdit(holiday)} disabled={isSubmitting || isDeleting}>
                                 <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
                            </Button>
@@ -410,7 +427,7 @@ export default function HolidaysPage() {
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center">
+                      <TableCell colSpan={4} className="py-8 px-4 text-center text-muted-foreground">
                         Keine Ferientermine gefunden.
                       </TableCell>
                     </TableRow>
@@ -441,3 +458,5 @@ export default function HolidaysPage() {
     </>
   );
 }
+
+    
