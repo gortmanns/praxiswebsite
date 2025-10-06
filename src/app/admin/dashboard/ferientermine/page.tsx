@@ -1,3 +1,4 @@
+
 'use client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,6 +12,7 @@ import {
   orderBy,
   Timestamp,
   getDocs,
+  writeBatch,
 } from 'firebase/firestore';
 import { useFirebase } from '@/firebase';
 import { Button } from '@/components/ui/button';
@@ -24,7 +26,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { X } from 'lucide-react';
+import { X, AlertTriangle } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -66,27 +68,26 @@ export default function FerienterminePage() {
     },
   });
   
-  useEffect(() => {
+  const fetchHolidays = async () => {
     if (!firestore) return;
+    setLoading(true);
+    try {
+      const holidaysCollection = collection(firestore, 'holidays');
+      const holidaysQuery = query(holidaysCollection, orderBy('startDate', 'asc'));
+      const snapshot = await getDocs(holidaysQuery);
+      
+      const holidaysData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })) as Holiday[];
+      setHolidays(holidaysData);
 
-    const fetchHolidays = async () => {
-      setLoading(true);
-      try {
-        const holidaysCollection = collection(firestore, 'holidays');
-        const holidaysQuery = query(holidaysCollection, orderBy('startDate', 'asc'));
-        const snapshot = await getDocs(holidaysQuery);
-        
-        const holidaysData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })) as Holiday[];
-        setHolidays(holidaysData);
+    } catch (error) {
+      console.error("Error fetching holidays: ", error);
+      toast({ variant: 'destructive', title: 'Fehler', description: 'Daten konnten nicht geladen werden.' });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      } catch (error) {
-        console.error("Error fetching holidays: ", error);
-        toast({ variant: 'destructive', title: 'Fehler', description: 'Daten konnten nicht geladen werden.' });
-      } finally {
-        setLoading(false);
-      }
-    };
-
+  useEffect(() => {
     fetchHolidays();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firestore]);
@@ -105,18 +106,11 @@ export default function FerienterminePage() {
       };
 
       const holidaysCollection = collection(firestore, 'holidays');
-      const newDocRef = await addDoc(holidaysCollection, newHolidayData);
-
-      const newHoliday: Holiday = { 
-        ...data, 
-        id: newDocRef.id, 
-        startDate: Timestamp.fromDate(startDate) 
-      };
-
-      setHolidays(prev => [...prev, newHoliday].sort((a, b) => a.startDate.toMillis() - b.startDate.toMillis()));
+      await addDoc(holidaysCollection, newHolidayData);
       
       form.reset();
       toast({ title: 'Erfolg', description: 'Ferientermin wurde hinzugefügt.' });
+      fetchHolidays(); // Refresh the list
     } catch (error) {
       console.error('Error adding holiday: ', error);
       toast({ variant: 'destructive', title: 'Fehler', description: 'Termin konnte nicht hinzugefügt werden.' });
@@ -135,12 +129,36 @@ export default function FerienterminePage() {
     }
   };
 
+  const deleteAllHolidays = async () => {
+    if (!firestore) return;
+    if (!confirm('Sind Sie sicher, dass Sie alle Ferientermine unwiderruflich löschen möchten?')) {
+      return;
+    }
+    try {
+      const holidaysCollection = collection(firestore, 'holidays');
+      const snapshot = await getDocs(holidaysCollection);
+      const batch = writeBatch(firestore);
+      snapshot.docs.forEach(d => batch.delete(d.ref));
+      await batch.commit();
+      setHolidays([]);
+      toast({ title: 'Erfolg', description: 'Alle Ferientermine wurden gelöscht.' });
+    } catch (error) {
+      console.error('Error deleting all holidays:', error);
+      toast({ variant: 'destructive', title: 'Fehler', description: 'Termine konnten nicht gelöscht werden.' });
+    }
+  };
+
+
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold md:text-2xl">
           Ferientermine anpassen
         </h1>
+        <Button variant="destructive" onClick={deleteAllHolidays}>
+          <AlertTriangle className="mr-2 h-4 w-4" />
+          Alle Termine löschen
+        </Button>
       </div>
 
       <Card>
