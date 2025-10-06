@@ -1,4 +1,3 @@
-
 'use client';
 
 import { FirebaseApp } from 'firebase/app';
@@ -8,10 +7,7 @@ import {
   ReactNode,
   createContext,
   useContext,
-  useEffect,
-  useState,
 } from 'react';
-import { initializeFirebase } from '.';
 
 export type FirebaseContextType = {
   app: FirebaseApp;
@@ -23,20 +19,14 @@ const FirebaseContext = createContext<FirebaseContextType | undefined>(
   undefined
 );
 
-export function FirebaseProvider({ children }: { children: ReactNode }) {
-  const [firebase, setFirebase] = useState<FirebaseContextType | null>(null);
+type FirebaseProviderProps = {
+  children: ReactNode;
+} & FirebaseContextType;
 
-  useEffect(() => {
-    const firebaseInstances = initializeFirebase();
-    setFirebase(firebaseInstances);
-  }, []);
 
-  if (!firebase) {
-    return null; // or a loading spinner
-  }
-
+export function FirebaseProvider({ children, ...value }: FirebaseProviderProps) {
   return (
-    <FirebaseContext.Provider value={firebase}>
+    <FirebaseContext.Provider value={value}>
       {children}
     </FirebaseContext.Provider>
   );
