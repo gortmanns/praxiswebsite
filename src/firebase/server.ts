@@ -1,7 +1,7 @@
 // IMPORTANT: This file is for SERVER-SIDE use only.
 // It is crucial to not import this file in any client-side code.
 
-import { initializeApp, getApps, getApp, cert, App } from 'firebase-admin/app';
+import { initializeApp, getApps, getApp, App } from 'firebase-admin/app';
 import { getFirestore, Firestore } from 'firebase-admin/firestore';
 import { getAuth, Auth } from 'firebase-admin/auth';
 
