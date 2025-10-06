@@ -121,7 +121,7 @@ export function Header() {
                 data-ai-hint="practice logo"
                 width={1511}
                 height={306}
-                className="h-auto w-[490px]"
+                className="h-auto w-[563px]"
                 priority
               />
         </Link>
@@ -139,8 +139,7 @@ export function Header() {
                     data-active={isActive}
                     className={cn(
                       'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                      'text-muted-foreground hover:text-primary',
-                      isActive && 'bg-primary text-primary-foreground'
+                      isActive ? 'text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                       )}
                 >
                     {link.label}
@@ -154,8 +153,7 @@ export function Header() {
                       data-active={pathname === '/oeffnungszeiten' || pathname === '/praxisferien'}
                       className={cn(
                         'relative z-10 flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                        'text-muted-foreground hover:text-primary',
-                        (pathname === '/oeffnungszeiten' || pathname === '/praxisferien') && 'bg-primary text-primary-foreground'
+                        (pathname === '/oeffnungszeiten' || pathname === '/praxisferien') ? 'text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}>
                         Zeiten <ChevronDown className="h-4 w-4" />
                     </div>
@@ -177,9 +175,8 @@ export function Header() {
                  data-active={pathname === notfallLink.href}
                  className={cn(
                   'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                 'text-muted-foreground hover:text-primary',
-                 notfallLink.label === 'NOTFALL' ? 'uppercase' : '',
-                 pathname === notfallLink.href && 'bg-primary text-primary-foreground'
+                  pathname === notfallLink.href ? 'text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground',
+                  notfallLink.label === 'NOTFALL' ? 'uppercase' : ''
                  )}
              >
                  {notfallLink.label}
