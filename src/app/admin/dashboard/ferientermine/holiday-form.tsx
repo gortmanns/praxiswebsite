@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { addHoliday, deleteHoliday } from './actions';
-import { useRef } from 'react';
+import { useTransition } from 'react';
 
 const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/;
 
@@ -30,7 +30,8 @@ type HolidayFormValues = z.infer<typeof holidaySchema>;
 
 export function HolidayForm() {
   const { toast } = useToast();
-  const formRef = useRef<HTMLFormElement>(null);
+  const [isPending, startTransition] = useTransition();
+
   const form = useForm<HolidayFormValues>({
     resolver: zodResolver(holidaySchema),
     defaultValues: {
@@ -40,21 +41,27 @@ export function HolidayForm() {
     },
   });
 
-  const handleAction = async (formData: FormData) => {
-    const result = await addHoliday(formData);
-    if (result.success) {
-      toast({ title: 'Erfolg', description: result.message });
-      form.reset();
-    } else {
-      toast({ variant: 'destructive', title: 'Fehler', description: result.message });
-    }
+  const onSubmit = (data: HolidayFormValues) => {
+    startTransition(async () => {
+      const formData = new FormData();
+      formData.append('name', data.name);
+      formData.append('start', data.start);
+      formData.append('end', data.end);
+      
+      const result = await addHoliday(formData);
+      if (result.success) {
+        toast({ title: 'Erfolg', description: result.message });
+        form.reset();
+      } else {
+        toast({ variant: 'destructive', title: 'Fehler', description: result.message });
+      }
+    });
   };
 
   return (
     <Form {...form}>
       <form
-        ref={formRef}
-        action={handleAction}
+        onSubmit={form.handleSubmit(onSubmit)}
         className="grid grid-cols-1 gap-4 md:grid-cols-4 md:items-end"
       >
         <FormField
@@ -96,8 +103,8 @@ export function HolidayForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? 'Wird hinzugefügt...' : 'Hinzufügen'}
+        <Button type="submit" disabled={isPending}>
+          {isPending ? 'Wird hinzugefügt...' : 'Hinzufügen'}
         </Button>
       </form>
     </Form>
@@ -105,25 +112,29 @@ export function HolidayForm() {
 }
 
 export function HolidayDeleteButton({ id }: { id: string }) {
-    const { toast } = useToast();
+  const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
 
-    const handleDelete = async () => {
-        const result = await deleteHoliday(id);
-        if (result.success) {
-          toast({ title: 'Erfolg', description: result.message });
-        } else {
-          toast({ variant: 'destructive', title: 'Fehler', description: result.message });
-        }
-    };
+  const handleDelete = () => {
+    startTransition(async () => {
+      const result = await deleteHoliday(id);
+      if (result.success) {
+        toast({ title: 'Erfolg', description: result.message });
+      } else {
+        toast({ variant: 'destructive', title: 'Fehler', description: result.message });
+      }
+    });
+  };
 
-    return (
-        <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleDelete}
-            aria-label="Termin löschen"
-        >
-            <X className="h-4 w-4 text-destructive" />
-        </Button>
-    );
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={handleDelete}
+      disabled={isPending}
+      aria-label="Termin löschen"
+    >
+      <X className="h-4 w-4 text-destructive" />
+    </Button>
+  );
 }

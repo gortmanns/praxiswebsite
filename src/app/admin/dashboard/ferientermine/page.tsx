@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -7,8 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { getHolidays } from './actions';
 import { HolidayForm, HolidayDeleteButton } from './holiday-form';
+import { getHolidays } from './actions';
 
 export const dynamic = 'force-dynamic';
 
@@ -54,7 +59,7 @@ export default async function FerienterminePage() {
                   </TableCell>
                 </TableRow>
               ) : (
-                holidays.map((holiday) => (
+                holidays.map(holiday => (
                   <TableRow key={holiday.id}>
                     <TableCell>{holiday.start}</TableCell>
                     <TableCell>{holiday.end}</TableCell>

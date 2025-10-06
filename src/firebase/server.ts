@@ -9,16 +9,11 @@ let app: App;
 let auth: Auth;
 let db: Firestore;
 
+// This function is for SERVER-SIDE use only.
 function initializeFirebase() {
-    if (!process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
-        throw new Error("The FIREBASE_SERVICE_ACCOUNT_JSON environment variable is not set. It is required for server-side Firebase operations.");
-    }
-
+    // The service account is injected by the App Hosting environment.
     if (getApps().length === 0) {
-        const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
-        app = initializeApp({
-            credential: cert(serviceAccount)
-        });
+        app = initializeApp();
         auth = getAuth(app);
         db = getFirestore(app);
     } else {
