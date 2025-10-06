@@ -7,7 +7,7 @@ export function WelcomeSection() {
             WILLKOMMEN BEIM PRAXISZENTRUM IM RING
           </h2>
           <p className="mt-6 text-lg text-foreground/80">
-            Im Herzen des Kappelenrings gelegen verstehen wir uns als Ansprechpartner und Ratgeber in allen Gesundheitsfragen für unsere Patienten. Als Ausbildungspraxis für Hausarztmedizin der Universität Bern unterstützen wir ausserdem aktiv die Ausbildung der nächsten Generation.
+            Im Herzen des Kappelenrings gelegen verstehen wir uns als Ansprechpartner und Ratgeber in allen Gesundheitsfragen für unsere Patienten. Als Ausbildungspraxis für Hausarztmedizin der Universität Bern unterstützen wir ausserdem aktiv die Ausbildung der nächsten Ärztegeneration. Auch sind wir Ausbildungsbetrieb für Medizinische Praxisassistentinnen.
           </p>
         </div>
       </div>

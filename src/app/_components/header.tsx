@@ -126,15 +126,15 @@ export function Header() {
         </div>
       </div>
 
-      <div className="flex h-40 items-center justify-between px-8">
+      <div className="flex h-[130px] items-center justify-between px-8">
         <Link href="/">
               <Image
                 src="/images/praxiszentrum-logo.png"
                 alt="Praxiszentrum im Ring Logo"
                 data-ai-hint="practice logo"
-                width={1143}
-                height={231}
-                className="h-auto w-auto max-w-[507px] md:max-w-[879px]"
+                width={1314}
+                height={266}
+                className="h-auto w-auto max-w-[322px] md:max-w-[552px]"
                 priority
               />
         </Link>
@@ -158,7 +158,8 @@ export function Header() {
                     data-active={isActive}
                     className={cn(
                       'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                      'text-muted-foreground hover:text-primary'
+                      'text-muted-foreground hover:text-primary',
+                      isActive && 'text-primary-foreground'
                       )}
                 >
                     {isActive && <div className="absolute inset-0 -z-10 rounded-md bg-primary" />}
@@ -173,7 +174,8 @@ export function Header() {
                       data-active={pathname === '/oeffnungszeiten' || pathname === '/praxisferien'}
                       className={cn(
                         'relative z-10 flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                        'text-muted-foreground hover:text-primary'
+                        'text-muted-foreground hover:text-primary',
+                        (pathname === '/oeffnungszeiten' || pathname === '/praxisferien') && 'text-primary-foreground'
                     )}>
                        {(pathname === '/oeffnungszeiten' || pathname === '/praxisferien') && <div className="bg-primary -z-10 absolute inset-0 rounded-md" />}
                         Zeiten <ChevronDown className="h-4 w-4" />
@@ -204,7 +206,8 @@ export function Header() {
                  className={cn(
                   'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
                  'text-muted-foreground hover:text-primary',
-                 notfallLink.label === 'NOTFALL' ? 'uppercase' : ''
+                 notfallLink.label === 'NOTFALL' ? 'uppercase' : '',
+                 pathname === notfallLink.href && 'text-primary-foreground'
                  )}
              >
                  {pathname === notfallLink.href && <div className="bg-primary -z-10 absolute inset-0 rounded-md" />}
