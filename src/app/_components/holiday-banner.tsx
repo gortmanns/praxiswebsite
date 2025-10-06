@@ -5,7 +5,13 @@ import { format, addDays, differenceInDays, isWithinInterval } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy } from 'firebase/firestore';
+import { collection, query, where, orderBy, Timestamp } from 'firebase/firestore';
+
+interface HolidayDocument {
+    name: string;
+    start: Timestamp;
+    end: Timestamp;
+}
 
 interface Holiday {
     name: string;
@@ -19,7 +25,6 @@ interface BannerInfo {
 }
 
 function formatDate(date: Date): string {
-    // Da die Daten von Firestore bereits als Date-Objekte kommen, ist keine manuelle Zeitzonenkorrektur mehr nötig.
     return format(date, 'd. MMMM yyyy', { locale: de });
 }
 
@@ -27,39 +32,43 @@ export function HolidayBanner() {
     const firestore = useFirestore();
     const [bannerInfo, setBannerInfo] = useState<BannerInfo | null>(null);
 
-    const twoWeeksFromNow = addDays(new Date(), 14);
-
     const holidaysQuery = useMemoFirebase(() => {
         if (!firestore) return null;
-        // Query für Ferien, die entweder jetzt aktiv sind oder in den nächsten 14 Tagen beginnen.
+        // Query für Ferien, die entweder jetzt aktiv sind oder bald enden.
+        // Wir filtern nach Enddatum >= heute, um alte Einträge auszuschliessen.
         return query(
             collection(firestore, 'holidays'),
-            where('end', '>=', new Date()), // Nur zukünftige oder aktuelle Ferien
+            where('end', '>=', new Date()),
             orderBy('end', 'asc')
         );
     }, [firestore]);
 
-    const { data: holidays, isLoading } = useCollection<Holiday>(holidaysQuery);
+    const { data: holidayDocs, isLoading } = useCollection<HolidayDocument>(holidaysQuery);
 
     useEffect(() => {
-        if (isLoading || !holidays) {
+        if (isLoading || !holidayDocs) {
             return;
         }
+
+        // Konvertiere Firestore Timestamps in JS Date-Objekte
+        const holidays: Holiday[] = holidayDocs.map(doc => ({
+            ...doc,
+            start: doc.start.toDate(),
+            end: doc.end.toDate()
+        }));
 
         const now = new Date();
         now.setHours(0, 0, 0, 0); 
 
         let activeBanner: BannerInfo | null = null;
         
-        // Da die Query bereits vorsortiert ist (nach Enddatum), nehmen wir den relevantesten Eintrag.
-        // Wir sortieren hier nochmals nach Startdatum, um den *nächsten* Beginn zu finden.
+        // Sortiere nach Startdatum, um den *nächsten* Beginn zu finden.
         const sortedHolidays = [...holidays].sort((a, b) => a.start.getTime() - b.start.getTime());
 
         for (const holiday of sortedHolidays) {
             const startDate = holiday.start;
             const endDate = holiday.end;
             
-            // Setze Stunden auf definierte Werte, um reine Datumsvergleiche zu gewährleisten.
             startDate.setHours(0, 0, 0, 0);
             endDate.setHours(23, 59, 59, 999);
 
@@ -71,7 +80,7 @@ export function HolidayBanner() {
                     text: `Ferienhalber bleibt das Praxiszentrum vom ${formatDate(startDate)} bis ${formatDate(endDate)} geschlossen. Nach den ${holiday.name} sind wir ab dem ${formatDate(dayAfterEnd)} wieder wie gewohnt für Sie erreichbar. Die Notfall-Telefonnummern finden Sie im Menü unter dem Punkt NOTFALL.`,
                     type: 'info',
                 };
-                break; // Wichtigste Meldung, keine weitere Prüfung nötig
+                break;
             }
 
             // Prüfung 2: Stehen die Ferien kurz bevor (innerhalb der nächsten 14 Tage)?
@@ -81,13 +90,13 @@ export function HolidayBanner() {
                     text: `Liebe Patienten, vom ${formatDate(startDate)} bis ${formatDate(endDate)} bleibt das Praxiszentrum ferienhalber geschlossen. Bitte beziehen Sie allenfalls benötigte Medikamente noch rechtzeitig vorher.`,
                     type: 'warning',
                 };
-                break; // Nächstwichtigste Meldung, keine weitere Prüfung nötig
+                break;
             }
         }
         
         setBannerInfo(activeBanner);
 
-    }, [holidays, isLoading]);
+    }, [holidayDocs, isLoading]);
 
     if (!bannerInfo) {
         return null;

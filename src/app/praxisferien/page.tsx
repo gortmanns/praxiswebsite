@@ -5,8 +5,15 @@ import { Footer } from '../_components/footer';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy } from 'firebase/firestore';
+import { collection, query, where, orderBy, Timestamp } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+
+interface HolidayDocument {
+  id: string;
+  name: string;
+  start: Timestamp;
+  end: Timestamp;
+}
 
 interface Holiday {
   id: string;
@@ -16,7 +23,6 @@ interface Holiday {
 }
 
 function formatDate(date: Date) {
-  // Da die Daten von Firestore bereits als Date-Objekte kommen, ist keine manuelle Zeitzonenkorrektur mehr nötig.
   return format(date, 'd. MMMM yyyy', { locale: de });
 }
 
@@ -35,10 +41,19 @@ export default function PraxisferienPage() {
     );
   }, [firestore, now]);
 
-  const { data: upcomingHolidays, isLoading } = useCollection<Holiday>(holidaysQuery);
+  const { data: upcomingHolidayDocs, isLoading } = useCollection<HolidayDocument>(holidaysQuery);
   
-  // Da Firestore bereits nach 'end' sortiert, sortieren wir hier clientseitig final nach 'start'
-  const sortedHolidays = upcomingHolidays ? [...upcomingHolidays].sort((a, b) => a.start.getTime() - b.start.getTime()) : [];
+  // Konvertiere Timestamps und sortiere clientseitig final nach 'start'
+  const sortedHolidays: Holiday[] = useMemo(() => {
+    if (!upcomingHolidayDocs) return [];
+    return upcomingHolidayDocs
+      .map(doc => ({
+        ...doc,
+        start: doc.start.toDate(),
+        end: doc.end.toDate(),
+      }))
+      .sort((a, b) => a.start.getTime() - b.start.getTime());
+  }, [upcomingHolidayDocs]);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
