@@ -52,12 +52,10 @@
 }
 
 .nav-link-indicator {
-  @apply absolute rounded-md transition-all duration-500 ease-in-out;
+  @apply absolute top-0 h-full rounded-md transition-all duration-500 ease-in-out;
   width: var(--indicator-width, 0);
-  height: var(--indicator-height, 0);
   transform: translateX(var(--indicator-left, 0));
-  z-index: 1;
-  opacity: var(--indicator-opacity, 0);
+  z-index: 5;
 }
 
 @layer components {

@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Megaphone } from 'lucide-react';
+import { Megaphone } from 'lucide-react';
 import holidays from '@/lib/holidays.json';
-import { format, addDays, differenceInDays } from 'date-fns';
+import { format, addDays, differenceInDays, isWithinInterval } from 'date-fns';
 import { de } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 
 interface Holiday {
     name: string;
@@ -12,60 +13,74 @@ interface Holiday {
     end: string;
 }
 
+interface BannerInfo {
+    text: string;
+    type: 'warning' | 'info';
+}
+
 function formatDate(date: Date): string {
     return format(date, 'd. MMMM yyyy', { locale: de });
 }
 
 export function HolidayBanner() {
-    const [isVisible, setIsVisible] = useState(false);
-    const [activeHoliday, setActiveHoliday] = useState<Holiday | null>(null);
+    const [bannerInfo, setBannerInfo] = useState<BannerInfo | null>(null);
 
     useEffect(() => {
         const now = new Date();
-        const upcomingHoliday = holidays
-            .map(h => ({ ...h, startDate: new Date(h.start) }))
-            .filter(h => h.startDate >= now && differenceInDays(h.startDate, now) <= 30)
-            .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())[0];
+        now.setHours(0, 0, 0, 0); 
 
-        if (upcomingHoliday) {
-            setActiveHoliday(upcomingHoliday);
-            
-            const storedState = localStorage.getItem(`holidayBanner-${upcomingHoliday.name}`);
-            if (storedState !== 'closed') {
-                setIsVisible(true);
+        let activeBanner: BannerInfo | null = null;
+
+        for (const holiday of holidays) {
+            const startDate = new Date(holiday.start);
+            const endDate = new Date(holiday.end);
+            startDate.setHours(0,0,0,0);
+            endDate.setHours(23,59,59,999);
+
+            if (isWithinInterval(now, { start: startDate, end: endDate })) {
+                const dayAfterEnd = addDays(endDate, 1);
+                activeBanner = {
+                    text: `Ferienhalber bleibt das Praxiszentrum vom ${formatDate(startDate)} bis ${formatDate(endDate)} geschlossen. Nach den ${holiday.name} sind wir ab dem ${formatDate(dayAfterEnd)} wieder wie gewohnt für Sie erreichbar. Die Notfall-Telefonnummern finden Sie im Menü unter dem Punkt NOTFALL.`,
+                    type: 'info',
+                };
+                break; 
+            }
+
+            const diff = differenceInDays(startDate, now);
+            if (diff >= 0 && diff <= 14) {
+                 activeBanner = {
+                    text: `Liebe Patienten. Vom ${formatDate(startDate)} bis ${formatDate(endDate)} bleibt das Praxiszentrum ferienhalber geschlossen. Bitte beziehen Sie allenfalls benötigte Medikamente noch rechtzeitig vorher.`,
+                    type: 'warning',
+                };
+                break;
             }
         }
+        
+        setBannerInfo(activeBanner);
+
     }, []);
 
-    const handleClose = () => {
-        setIsVisible(false);
-        if (activeHoliday) {
-            localStorage.setItem(`holidayBanner-${activeHoliday.name}`, 'closed');
-        }
-    };
-
-    if (!isVisible || !activeHoliday) {
+    if (!bannerInfo) {
         return null;
     }
 
-    const startDate = new Date(activeHoliday.start);
-    const endDate = new Date(activeHoliday.end);
-    const dayAfterEnd = addDays(endDate, 1);
-
-    const text = `Ferienhalber bleibt das Praxiszentrum vom ${formatDate(startDate)} bis ${formatDate(endDate)} geschlossen. Nach den ${activeHoliday.name} sind wir ab dem ${formatDate(dayAfterEnd)} wieder wie gewohnt für Sie erreichbar. Die Notfall-Telefonnummern finden sie im Menü unter dem Punkt NOTFALL.`;
-
     return (
-        <div className="relative flex items-center justify-between overflow-hidden bg-destructive/30 px-4 py-2 text-destructive-foreground">
-            <Megaphone className="h-6 w-6 flex-shrink-0 text-destructive" />
+        <div className={cn(
+            "relative flex h-auto items-center justify-between overflow-hidden px-4 py-2",
+            bannerInfo.type === 'warning' ? 'bg-yellow-400/80' : 'bg-destructive/80'
+        )}>
+            <Megaphone className={cn(
+                "h-6 w-6 flex-shrink-0",
+                bannerInfo.type === 'warning' ? 'text-yellow-800' : 'text-destructive-foreground'
+            )} />
             <div className="relative flex-1 overflow-hidden whitespace-nowrap">
-                <p className="marquee absolute text-sm font-bold text-destructive">
-                    {text}
+                <p className={cn(
+                    "marquee absolute text-sm font-bold",
+                     bannerInfo.type === 'warning' ? 'text-yellow-800' : 'text-destructive-foreground'
+                )}>
+                    {bannerInfo.text}
                 </p>
             </div>
-            <button onClick={handleClose} className="ml-4 p-1 text-destructive hover:opacity-80">
-                <X className="h-5 w-5" />
-                <span className="sr-only">Schliessen</span>
-            </button>
         </div>
     );
 }

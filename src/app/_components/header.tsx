@@ -38,8 +38,8 @@ const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export function Header() {
   const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
-  const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({ opacity: 0 });
-  const activeLinkRef = useRef<HTMLAnchorElement>(null);
+  const [indicatorStyle, setIndicatorStyle] = useState({});
+  const [isInitial, setIsInitial] = useState(true);
 
   const navLinks = [
     { href: '/', label: 'Startseite' },
@@ -49,7 +49,7 @@ export function Header() {
     { href: '/oeffnungszeiten', label: 'Zeiten' },
     { href: '/notfall', label: 'NOTFALL' },
   ];
-
+  
   const mainNavLinks = navLinks.filter(l => !['/oeffnungszeiten', '/notfall'].includes(l.href));
   const notfallLink = navLinks.find(l => l.href === '/notfall');
 
@@ -58,29 +58,43 @@ export function Header() {
     { href: '/praxisferien', label: 'Praxisferien' }
   ];
 
-  const updateIndicator = useCallback((target: HTMLElement | null) => {
-    if (target && navRef.current) {
-      const navRect = navRef.current.getBoundingClientRect();
-      const targetRect = target.getBoundingClientRect();
-      setIndicatorStyle({
-        '--indicator-width': `${targetRect.width}px`,
-        '--indicator-left': `${targetRect.left - navRect.left}px`,
-        opacity: 1,
-      });
+  const pagesWithQuickNav = ['/team', '/leistungen', '/medikamente', '/notfall'];
+  const activePath = pagesWithQuickNav.includes(pathname) ? pathname : '/';
+
+  const zeitenActive = pathname === '/oeffnungszeiten' || pathname === '/praxisferien';
+
+  const updateIndicator = useCallback((element: HTMLElement | null) => {
+    if (element && navRef.current) {
+        const navRect = navRef.current.getBoundingClientRect();
+        const elemRect = element.getBoundingClientRect();
+        setIndicatorStyle({
+            '--indicator-width': `${elemRect.width}px`,
+            '--indicator-left': `${elemRect.left - navRect.left}px`,
+        });
     }
   }, []);
-  
-  const hideIndicator = useCallback(() => {
-    if (activeLinkRef.current) {
-      updateIndicator(activeLinkRef.current.parentElement);
-    } else {
-      setIndicatorStyle({ opacity: 0 });
-    }
-  }, [updateIndicator]);
-  
+
   const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
+    setIsInitial(false);
     updateIndicator(e.currentTarget);
   };
+  
+  const handleMouseLeave = useCallback(() => {
+    const activeLink = navRef.current?.querySelector('[data-active="true"]');
+    if (activeLink) {
+        updateIndicator(activeLink as HTMLElement);
+    } else {
+        setIndicatorStyle({});
+    }
+  }, [updateIndicator]);
+
+  useEffect(() => {
+    const activeLink = navRef.current?.querySelector('[data-active="true"]');
+    if (activeLink) {
+        updateIndicator(activeLink as HTMLElement);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, updateIndicator]);
   
   return (
     <header className="w-full border-b bg-background">
@@ -120,27 +134,26 @@ export function Header() {
                 data-ai-hint="practice logo"
                 width={1511}
                 height={306}
-                className="h-auto w-[455px]"
+                className="h-auto w-[523px]"
                 priority
               />
         </Link>
 
-        <nav ref={navRef} className="relative hidden md:flex md:items-center md:space-x-4" onMouseLeave={hideIndicator}>
-            <div className="nav-link-indicator bg-accent" style={indicatorStyle} />
+        <nav ref={navRef} className="relative hidden items-center md:flex" onMouseLeave={handleMouseLeave}>
+            <div className={cn("nav-link-indicator bg-accent", isInitial && 'transition-none')} style={indicatorStyle} />
 
             {mainNavLinks.map((link) => {
-                const isActive = pathname === link.href;
+                const isActive = activePath === link.href;
                 return (
                 <Link
                     key={link.href}
                     href={link.href}
-                    ref={isActive ? activeLinkRef : null}
                     onMouseEnter={handleMouseEnter}
                     data-active={isActive}
                     className={cn(
-                      'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                      isActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
-                      )}
+                        'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                        isActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
+                    )}
                 >
                     {link.label}
                 </Link>
@@ -150,15 +163,15 @@ export function Header() {
                 <DropdownMenuTrigger asChild>
                     <div 
                       onMouseEnter={handleMouseEnter}
-                      data-active={pathname === '/oeffnungszeiten' || pathname === '/praxisferien'}
+                      data-active={zeitenActive}
                       className={cn(
                         'relative z-10 flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                        (pathname === '/oeffnungszeiten' || pathname === '/praxisferien') ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
+                        zeitenActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}>
                         Zeiten <ChevronDown className="h-4 w-4" />
                     </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent onMouseLeave={hideIndicator}>
+                <DropdownMenuContent onMouseLeave={handleMouseLeave}>
                     {zeitenLinks.map(link => (
                         <DropdownMenuItem key={link.href} asChild>
                             <Link href={link.href}>{link.label}</Link>
@@ -171,7 +184,6 @@ export function Header() {
                  <Link
                  key={notfallLink.href}
                  href={notfallLink.href}
-                 ref={pathname === notfallLink.href ? activeLinkRef : null}
                  onMouseEnter={handleMouseEnter}
                  data-active={pathname === notfallLink.href}
                  className={cn(
