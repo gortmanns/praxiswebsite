@@ -1,7 +1,21 @@
 
+
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+const signatureFonts = [
+    { name: 'Dancing Script', class: 'font-dancing-script' },
+    { name: 'Pacifico', class: 'font-pacifico' },
+    { name: 'Great Vibes', class: 'font-great-vibes' },
+    { name: 'Sacramento', class: 'font-sacramento' },
+    { name: 'Tangerine', class: 'font-tangerine' },
+    { name: 'Caveat', class: 'font-caveat' },
+    { name: 'Allura', class: 'font-allura' },
+    { name: 'Parisienne', class: 'font-parisienne' },
+    { name: 'Rochester', class: 'font-rochester' },
+    { name: 'La Belle Aurore', class: 'font-la-belle-aurore' },
+]
 
 export default function UeberUnsPage() {
   return (
@@ -27,7 +41,7 @@ export default function UeberUnsPage() {
                             <li>Ein Monitor im Wartebereich liefert nun aktuelle Informationen zu gesundheitsrelevanten Themen und verkürzt die gefühlte Wartezeit.</li>
                             <li>Ein separater, kleinerer Wartebereich für infektiöse Patienten wurde geschaffen, damit Ansteckungen im Wartebereich nach Möglichkeit vermieden werden.</li>
                             <li>Der alte Wartebereich wurde zu einem Interventionsraum für kleinchirurgische Eingriffe und Wundversorgung umgestaltet.</li>
-                            <li>Alle Fenster der Praxis erhielten einen neuen, modernen Sichtschutz in Form von Folierung, sodass auf die alten, unhygienischen Gardinen verzichtet werden kann.</li>
+                            <li>Alle Fenster der Praxis erhielten einen neuen, modernen Sichtschutz in Form von Folierung, so dass auf die alten, unhygienischen Gardinen verzichtet werden kann.</li>
                             <li>Der ehemalige kleine Arbeitsplatz der MPAs im Labor wurde durch einen kompletten Büroplatz im neuen Praxisteil ersetzt.</li>
                             <li>Zugleich ist dort auch ein Aufenthaltsbereich für die Mitarbeiter entstanden.</li>
                             <li>Die alte Einrichtung des Sprechzimmers von Dr. Segginger wurde erneuert und heller, moderner und freundlicher gestaltet.</li>
@@ -55,9 +69,17 @@ export default function UeberUnsPage() {
                             <li>Wir möchten weitere Spezialisten gewinnen, die ihre Sprechstunden bei uns im Praxiszentrum anbieten. Idealerweise decken wir irgendwann fast das ganze medizinische Spektrum ab, soweit es jedenfalls die technischen Möglichkeiten und Räumlichkeiten bei uns zulassen.</li>
                         </ul>
                         <div className="pt-8 space-y-4">
-                            <p>An dieser Stelle möchte ich mich für das entgegengebrachte Vertrauen bedanken. Mir ist bewusst, dass die Gewöhnung an einen neuen Hausarzt schwierig ist, zumal wenn der alte Hausarzt über Jahrzehnte hinweg an dieser Stelle tätig war und der "Neue" vieles anders macht.</p>
-                            <p className="font-bold">Gernot Ortmanns</p>
-                            <p className="text-base text-foreground/70">(Im Oktober 2025)</p>
+                            <p>An dieser Stelle möchte ich mich für das entgegengebrachte Vertrauen bedanken. Mir ist bewusst, dass die Gewöhnung an einen neuen Hausarzt schwierig ist, zumal wenn der alte Hausarzt über Jahrzehnte hinweg an dieser Stelle tätig war und der «Neue» vieles anders macht.</p>
+                            <div className="pt-8 space-y-6">
+                                <p className="font-bold">Bitte wählen Sie eine Schriftart für die Unterschrift:</p>
+                                {signatureFonts.map(font => (
+                                    <div key={font.name}>
+                                        <p className="text-sm text-muted-foreground">{font.name}</p>
+                                        <p className={`text-4xl ${font.class}`}>Gernot Ortmanns</p>
+                                    </div>
+                                ))}
+                            </div>
+                            <p className="pt-8 text-base text-foreground/70">(Im Oktober 2025)</p>
                         </div>
                     </CardContent>
                 </Card>
