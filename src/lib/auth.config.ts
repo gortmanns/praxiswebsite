@@ -8,23 +8,17 @@ export const authConfig = {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith('/admin/dashboard');
-      const isAdminPage = nextUrl.pathname === '/admin';
-
-      if (isOnDashboard) {
-        // If on dashboard, must be logged in
-        return isLoggedIn;
-      } 
       
-      if (isLoggedIn) {
-        // If logged in and trying to access login page, redirect to dashboard
-        if (isAdminPage) {
-          return Response.redirect(new URL('/admin/dashboard', nextUrl));
-        }
-        // If logged in and on any other page, allow access
-        return true;
+      if (isOnDashboard) {
+        if (isLoggedIn) return true;
+        return false; // Redirect unauthenticated users to login page
+      } else if (isLoggedIn) {
+        // If logged in and on a page that is NOT the dashboard, redirect to dashboard
+        // This handles the case after login where the user might be on '/'
+        return Response.redirect(new URL('/admin/dashboard', nextUrl));
       }
       
-      // If not logged in and not on a protected route, allow access
+      // Allow access to all other pages for unauthenticated users (e.g., login page)
       return true;
     },
   },

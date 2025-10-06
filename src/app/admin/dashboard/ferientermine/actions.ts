@@ -1,5 +1,3 @@
-'use client';
-
 import { getApp, getApps, initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, deleteDoc, doc, Timestamp, getDocs, query, orderBy, Firestore } from 'firebase/firestore';
 import { firebaseConfig } from '@/firebase/config';
