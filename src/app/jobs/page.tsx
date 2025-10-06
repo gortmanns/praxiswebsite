@@ -48,12 +48,14 @@ export default function JobsPage() {
                         <CardTitle className="font-headline text-2xl font-bold text-primary">Offene Stellen & Initiativbewerbungen</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6 text-lg text-foreground/80">
+                        <div className="space-y-4 rounded-md border border-border bg-card p-6">
+                            <h4 className="font-headline text-xl font-bold text-primary">Hausärztin / Hausarzt (10-100%)</h4>
+                            <p className="text-base">Zur Verstärkung unseres Kernteams suchen wir flexible Hausärztinnen und Hausärzte, die Wert auf selbstbestimmtes Arbeiten legen. Wir bieten Ihnen die Freiheit, Ihren Arbeitsumfang nach Ihren Wünschen zu gestalten – egal ob Sie nur wenige Stunden oder volles Pensum arbeiten möchten. Unser Modell ist ideal für den Wiedereinstieg nach einer Kinderpause oder um Beruf und Familie optimal zu vereinbaren.</p>
+                        </div>
+
                          <div className="space-y-4">
-                            <p>Wir sind ebenso stets auf der Suche nach engagierten Hausärztinnen, Hausärzten und Medizinischen Praxisassistentinnen (MPA), die unser Kernteam verstärken möchten.</p>
-                             <ul className="list-disc space-y-2 pl-6">
-                                <li>Fachärztinnen und Fachärzte für Allgemeinmedizin</li>
-                                <li>Medizinische Praxisassistentinnen und Praxisassistenten (MPA)</li>
-                            </ul>
+                            <p>Wir sind ebenso stets auf der Suche nach engagierten Medizinischen Praxisassistentinnen (MPA), die unser Kernteam verstärken möchten.</p>
+                            
                             <p className="pt-2">Sollten Sie Interesse haben, freuen wir uns über Ihre Initiativbewerbung an:</p>
                              <ObfuscatedLink
                                 user="empfang"
