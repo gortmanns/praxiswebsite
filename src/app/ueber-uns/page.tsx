@@ -27,7 +27,7 @@ export default function UeberUnsPage() {
                             <li>Ein Monitor im Wartebereich liefert nun aktuelle Informationen zu gesundheitsrelevanten Themen und verkürzt die gefühlte Wartezeit.</li>
                             <li>Ein separater, kleinerer Wartebreich für infektiöse Patienten wurde geschaffen, damit Ansteckungen im Wartebereich nach Möglichkeit vermieden werden.</li>
                             <li>Der alte Wartebreich wurde zu einem Interventionsraum für kleinchirurgische EIngriffe und Wundversorgung umgestaltet.</li>
-                            <li>Alle Fenster der Praxis erhielten einen neuen, modernen Sichtschutz in Form von Folierung, So dass auf die alten, unhygienischen Gardienen verzichtet werden kann.</li>
+                            <li>Alle Fenster der Praxis erhielten einen neuen, modernen Sichtschutz in Form von Folierung, so dass auf die alten, unhygienischen Gardienen verzichtet werden kann.</li>
                             <li>Der ehemalige kleine Arbeitsplatz der MPAs im Labor wurde durch einen kompletten Büroplatz im neuen Praxisteil ersetzt.</li>
                             <li>Zugleich ist dort auch ein Aufenthaltsbereich für die Mitarbeiter entstanden.</li>
                             <li>Die alte Einrichtung des Sprechzimmers von Dr. Segginger wurde erneuert und heller, moderner und freundlicher gestaltet.</li>
