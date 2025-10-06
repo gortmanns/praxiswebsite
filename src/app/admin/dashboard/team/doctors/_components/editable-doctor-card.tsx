@@ -3,7 +3,7 @@
 import React, { useState, useRef, ChangeEvent } from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { User, Upload, ImageIcon, Info, Pencil } from 'lucide-react';
+import { User, Upload, ImageIcon, Info, Pencil, AlertCircle } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const initialVita = `Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
 Masterstudium Public Health und Health Management in Sydney (Australien)
@@ -188,9 +189,19 @@ export const EditableDoctorCard = () => {
                                             <DialogDescription>
                                                 Wählen Sie ein bestehendes Bild aus oder laden Sie ein neues hoch. 
                                                 Für eine optimale Darstellung sollte das Bild ein Seitenverhältnis von 2:3 haben.
-                                                {!name && <span className="mt-2 block font-semibold text-destructive">Bitte geben Sie zuerst einen Namen für den Arzt ein, bevor Sie ein Bild hochladen.</span>}
                                             </DialogDescription>
                                         </DialogHeader>
+
+                                        {!name && (
+                                            <Alert variant="destructive" className="mt-4">
+                                                <AlertCircle className="h-4 w-4" />
+                                                <AlertTitle>Fehlender Name</AlertTitle>
+                                                <AlertDescription>
+                                                    Bitte geben Sie zuerst einen Namen für den Arzt ein, bevor Sie ein Bild hochladen.
+                                                </AlertDescription>
+                                            </Alert>
+                                        )}
+
                                         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                                             <Button variant="outline" disabled>
                                                 <ImageIcon className="mr-2 h-4 w-4" />
