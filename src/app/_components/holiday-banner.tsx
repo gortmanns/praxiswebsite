@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Megaphone } from 'lucide-react';
 import holidays from '@/lib/holidays.json';
 import { format, addDays, differenceInDays, isWithinInterval } from 'date-fns';
 import { de } from 'date-fns/locale';
@@ -68,29 +67,25 @@ export function HolidayBanner() {
         return null;
     }
 
-    const separator = <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;♦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</>;
+    const separator = <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;♦&nbsp;&nbsp;♦&nbsp;&nbsp;♦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</>;
 
     return (
         <div className={cn(
-            "relative flex h-auto min-h-[4.5rem] items-center gap-4 overflow-hidden px-4 py-1",
+            "relative flex h-auto min-h-[4.5rem] items-center gap-4 overflow-hidden py-1",
             bannerInfo.type === 'warning' ? 'bg-yellow-400/80' : 'bg-destructive/80'
         )}>
-            <Megaphone className={cn(
-                "h-6 w-6 flex-shrink-0",
-                bannerInfo.type === 'warning' ? 'text-black' : 'text-destructive-foreground'
-            )} />
             <div className="flex-1 overflow-hidden">
-                <p className={cn(
-                    "marquee whitespace-nowrap text-xl font-bold",
+                <div className={cn(
+                    "marquee flex w-max items-center whitespace-nowrap text-3xl font-bold",
                      bannerInfo.type === 'warning' ? 'text-black' : 'text-destructive-foreground'
                 )}>
                     <span>
                         {bannerInfo.text} {separator}
                     </span>
-                    <span>
+                    <span className="pl-4">
                         {bannerInfo.text} {separator}
                     </span>
-                </p>
+                </div>
             </div>
         </div>
     );
