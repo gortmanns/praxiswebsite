@@ -4,12 +4,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { format, isWithinInterval, parseISO } from 'date-fns';
+import { format, isWithinInterval, parse } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { CalendarIcon, Trash2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useFirestore } from '@/firebase';
-import { collection, addDoc, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -41,12 +41,32 @@ import {
 } from "@/components/ui/table";
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
+
+const dateSchema = z.preprocess((arg) => {
+  if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+}, z.date({ required_error: 'Ein Datum ist erforderlich.' }));
 
 const holidaySchema = z.object({
-  start: z.date({ required_error: 'Ein Startdatum ist erforderlich.' }),
-  end: z.date({ required_error: 'Ein Enddatum ist erforderlich.' }),
+  start: dateSchema,
+  end: dateSchema,
   name: z.string().min(2, { message: 'Der Name muss mindestens 2 Zeichen lang sein.' }),
-}).refine((data) => data.end >= data.start, {
+}).refine((data) => {
+    if (data.start && data.end) {
+        return data.end >= data.start;
+    }
+    return true;
+}, {
   message: 'Das Enddatum darf nicht vor dem Startdatum liegen.',
   path: ['end'],
 });
@@ -61,6 +81,10 @@ export default function HolidaysPage() {
   const { toast } = useToast();
   const [holidays, setHolidays] = useState<Holiday[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [holidayToDelete, setHolidayToDelete] = useState<string | null>(null);
+
   const firestore = useFirestore();
 
   const form = useForm<HolidayFormValues>({
@@ -80,7 +104,6 @@ export default function HolidaysPage() {
       const holidaysData = querySnapshot.docs.map(doc => ({
         id: doc.id,
         name: doc.data().name,
-        // Timestamps in Firestore are converted to Date objects
         start: doc.data().start.toDate(),
         end: doc.data().end.toDate(),
       }));
@@ -109,11 +132,8 @@ export default function HolidaysPage() {
     return holidays.some(existing => {
       const existingStart = existing.start;
       const existingEnd = existing.end;
-      // Check if new range starts within an existing range
       const newStartIsWithin = newStart >= existingStart && newStart <= existingEnd;
-      // Check if new range ends within an existing range
       const newEndIsWithin = newEnd >= existingStart && newEnd <= existingEnd;
-      // Check if new range envelops an existing range
       const newEnvelopsExisting = newStart <= existingStart && newEnd >= existingEnd;
       
       return newStartIsWithin || newEndIsWithin || newEnvelopsExisting;
@@ -149,8 +169,8 @@ export default function HolidaysPage() {
         description: 'Der neue Ferientermin wurde erfolgreich hinzugefügt.',
       });
 
-      form.reset();
-      fetchHolidays(); // Refresh the list from the database
+      form.reset({ name: '', start: undefined, end: undefined });
+      await fetchHolidays();
 
     } catch (error) {
       console.error("Fehler beim Speichern: ", error);
@@ -161,10 +181,40 @@ export default function HolidaysPage() {
       });
     }
   }
+
+  const handleDelete = async () => {
+    if (!firestore || !holidayToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deleteDoc(doc(firestore, 'holidays', holidayToDelete));
+      toast({
+        title: 'Gelöscht!',
+        description: 'Der Ferientermin wurde erfolgreich entfernt.',
+      });
+      await fetchHolidays();
+    } catch (error) {
+      console.error("Fehler beim Löschen: ", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Der Ferientermin konnte nicht gelöscht werden.",
+      });
+    } finally {
+      setIsDeleting(false);
+      setDialogOpen(false);
+      setHolidayToDelete(null);
+    }
+  };
+
+  const openDeleteDialog = (id: string) => {
+    setHolidayToDelete(id);
+    setDialogOpen(true);
+  };
   
   const { isSubmitting } = form.formState;
 
   return (
+    <>
     <div className="flex flex-1 items-start p-4 sm:p-6">
       <Card className="w-full">
         <CardHeader>
@@ -178,85 +228,102 @@ export default function HolidaysPage() {
             <h3 className="mb-4 text-lg font-medium">Neuen Termin erfassen</h3>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 items-end gap-6 sm:grid-cols-[1fr_1fr_2fr_auto]">
-                <FormField
+                 <FormField
                   control={form.control}
                   name="start"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel>Erster Ferientag</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
+                        <div className="relative">
                           <FormControl>
-                            <Button
-                              variant={'outline'}
-                              className={cn(
-                                'w-full pl-3 text-left font-normal',
-                                !field.value && 'text-muted-foreground'
-                              )}
-                              disabled={isSubmitting}
-                            >
-                              {field.value ? (
-                                format(field.value, 'dd.MM.yyyy', { locale: de })
-                              ) : (
-                                <span>Datum wählen</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
+                              <Input
+                                  placeholder="dd.mm.yyyy"
+                                  value={field.value ? format(field.value, 'dd.MM.yyyy') : ''}
+                                  onChange={(e) => {
+                                      const parsedDate = parse(e.target.value, 'dd.MM.yyyy', new Date());
+                                      if (!isNaN(parsedDate.getTime())) {
+                                          field.onChange(parsedDate);
+                                      } else if (e.target.value === '') {
+                                          field.onChange(undefined);
+                                      }
+                                  }}
+                                  onBlur={field.onBlur}
+                                  disabled={isSubmitting}
+                              />
                           </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => date < new Date('1900-01-01')}
-                            initialFocus
-                            locale={de}
-                          />
-                        </PopoverContent>
-                      </Popover>
+                          <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 text-muted-foreground"
+                                  disabled={isSubmitting}
+                                >
+                                  <CalendarIcon className="h-4 w-4" />
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0" align="start">
+                                  <Calendar
+                                      mode="single"
+                                      selected={field.value}
+                                      onSelect={field.onChange}
+                                      disabled={(date) => date < new Date('1900-01-01')}
+                                      initialFocus
+                                      locale={de}
+                                  />
+                              </PopoverContent>
+                          </Popover>
+                        </div>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
                 <FormField
                   control={form.control}
                   name="end"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel>Letzter Ferientag</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={'outline'}
-                              className={cn(
-                                'w-full pl-3 text-left font-normal',
-                                !field.value && 'text-muted-foreground'
-                              )}
+                      <div className="relative">
+                        <FormControl>
+                          <Input
+                              placeholder="dd.mm.yyyy"
+                              value={field.value ? format(field.value, 'dd.MM.yyyy') : ''}
+                              onChange={(e) => {
+                                  const parsedDate = parse(e.target.value, 'dd.MM.yyyy', new Date());
+                                  if (!isNaN(parsedDate.getTime())) {
+                                      field.onChange(parsedDate);
+                                  } else if (e.target.value === '') {
+                                      field.onChange(undefined);
+                                  }
+                              }}
+                              onBlur={field.onBlur}
                               disabled={isSubmitting}
-                            >
-                              {field.value ? (
-                                format(field.value, 'dd.MM.yyyy', { locale: de })
-                              ) : (
-                                <span>Datum wählen</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => date < (form.getValues('start') || new Date('1900-01-01'))}
-                            initialFocus
-                            locale={de}
                           />
-                        </PopoverContent>
-                      </Popover>
+                        </FormControl>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 text-muted-foreground"
+                                disabled={isSubmitting}
+                              >
+                                <CalendarIcon className="h-4 w-4" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                    mode="single"
+                                    selected={field.value}
+                                    onSelect={field.onChange}
+                                    disabled={(date) => date < (form.getValues('start') || new Date('1900-01-01'))}
+                                    initialFocus
+                                    locale={de}
+                                />
+                            </PopoverContent>
+                        </Popover>
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -316,7 +383,7 @@ export default function HolidaysPage() {
                         <TableCell>{format(holiday.end, 'dd.MM.yyyy', { locale: de })}</TableCell>
                         <TableCell>{holiday.name}</TableCell>
                         <TableCell className="text-right">
-                          <Button variant="ghost" size="icon" disabled>
+                          <Button variant="ghost" size="icon" onClick={() => openDeleteDialog(holiday.id)}>
                               <Trash2 className="h-4 w-4" />
                           </Button>
                         </TableCell>
@@ -329,5 +396,24 @@ export default function HolidaysPage() {
         </CardContent>
       </Card>
     </div>
+    <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+            <AlertDialogTitle>Sind Sie sicher?</AlertDialogTitle>
+            <AlertDialogDescription>
+                Dieser Ferientermin wird endgültig gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.
+            </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setHolidayToDelete(null)}>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
+                {isDeleting ? 'Wird gelöscht...' : 'Löschen'}
+            </AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
+  </>
   );
 }
+
+    
