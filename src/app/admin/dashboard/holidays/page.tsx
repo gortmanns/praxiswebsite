@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, Trash2 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -28,6 +28,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const holidayFormSchema = z.object({
   start: z.date({
@@ -177,7 +185,23 @@ export default function HolidaysPage() {
 
           <div className="mt-8">
              <h3 className="mb-4 text-lg font-medium">Bestehende Termine</h3>
-             <p>Die Liste der bestehenden Termine wird hier in Kürze verfügbar sein.</p>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Ferienname</TableHead>
+                    <TableHead>Erster Ferientag</TableHead>
+                    <TableHead>Letzter Ferientag</TableHead>
+                    <TableHead className="text-right">Aktion</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center">
+                      Die Logik zum Laden der Termine wird in Kürze implementiert.
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
           </div>
         </CardContent>
       </Card>
