@@ -80,7 +80,8 @@ export function PhoneHoursCalendar() {
         <div className="sticky top-0 z-10 bg-muted"></div>
         {days.map((day) => (
           <div key={day.full} className="flex h-12 items-center justify-center border-l border-b border-border bg-muted px-2 text-center text-sm font-bold text-muted-foreground sm:text-base">
-            {day.full}
+            <span className="hidden sm:inline">{day.full}</span>
+            <span className="sm:hidden">{day.short}</span>
           </div>
         ))}
 
