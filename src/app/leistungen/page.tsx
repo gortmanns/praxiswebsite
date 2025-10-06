@@ -147,7 +147,7 @@ export default function LeistungenPage() {
                         />
                     </div>
                      {leistung.backsideContent && (
-                          <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
+                          <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
                               <div className="text-center text-lg">
                                   {leistung.backsideContent}
                               </div>
