@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
-import { Home, Calendar, User as UserIcon, LogOut } from 'lucide-react';
+import { Home, Calendar, User as UserIcon, LogOut, Users, Settings } from 'lucide-react';
 import {
   SidebarProvider,
   Sidebar,
@@ -15,6 +15,9 @@ import {
   SidebarFooter,
   SidebarTrigger,
   SidebarInset,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
@@ -29,6 +32,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ChevronRight } from 'lucide-react';
+import { useState } from 'react';
 
 export default function DashboardLayout({
   children,
@@ -39,6 +45,7 @@ export default function DashboardLayout({
   const { user } = useUser();
   const auth = useAuth();
   const router = useRouter();
+  const [isTeamMenuOpen, setIsTeamMenuOpen] = useState(pathname.startsWith('/admin/dashboard/team'));
 
   const handleLogout = async () => {
     if (auth) {
@@ -54,8 +61,13 @@ export default function DashboardLayout({
   
   const navItems = [
     { href: '/admin/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/admin/dashboard/banner', label: 'Banner anpassen', icon: Home },
+    { href: '/admin/dashboard/banner', label: 'Banner anpassen', icon: Settings },
     { href: '/admin/dashboard/holidays', label: 'Ferientermine', icon: Calendar },
+  ];
+
+  const teamNavItems = [
+      { href: '/admin/dashboard/team/doctors', label: 'Ärzte' },
+      { href: '/admin/dashboard/team/staff', label: 'Praxispersonal' },
   ];
 
   return (
@@ -98,6 +110,30 @@ export default function DashboardLayout({
                 </Link>
              </SidebarMenuItem>
             ))}
+             <Collapsible open={isTeamMenuOpen} onOpenChange={setIsTeamMenuOpen}>
+                <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                        <SidebarMenuButton tooltip="Anpassungen Team" className="w-full">
+                            <Users />
+                            <span>Anpassungen Team</span>
+                            <ChevronRight className={cn("ml-auto h-4 w-4 shrink-0 transition-transform", isTeamMenuOpen && "rotate-90")} />
+                        </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                </SidebarMenuItem>
+                <CollapsibleContent asChild>
+                    <SidebarMenuSub>
+                        {teamNavItems.map((item) => (
+                             <SidebarMenuSubItem key={item.href}>
+                                <Link href={item.href} passHref>
+                                    <SidebarMenuSubButton isActive={pathname === item.href}>
+                                        {item.label}
+                                    </SidebarMenuSubButton>
+                                </Link>
+                            </SidebarMenuSubItem>
+                        ))}
+                    </SidebarMenuSub>
+                </CollapsibleContent>
+             </Collapsible>
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
@@ -127,7 +163,7 @@ export default function DashboardLayout({
       <SidebarInset>
         <header className="flex h-14 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm">
             <SidebarTrigger className="md:hidden"/>
-            <h1 className="text-lg font-semibold">{navItems.find(item => item.href === pathname)?.label || 'Dashboard'}</h1>
+            <h1 className="text-lg font-semibold">{[...navItems, ...teamNavItems].find(item => item.href === pathname)?.label || 'Dashboard'}</h1>
         </header>
         {children}
       </SidebarInset>
