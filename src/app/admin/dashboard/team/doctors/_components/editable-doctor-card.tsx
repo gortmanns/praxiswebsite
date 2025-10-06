@@ -22,18 +22,15 @@ export const EditableDoctorCard = () => (
                         </div>
                         <div className="col-span-2">
                             <div className="flex h-full flex-col justify-center text-left text-foreground/80">
-                                <p className="text-[2.2cqw] text-primary">Dipl. med.</p>
+                                <p className="text-[2.2cqw] text-primary">Titel</p>
                                 <h4 className="font-headline text-[4.8cqw] font-bold leading-tight text-primary">
-                                G. Ortmanns
+                                Name
                                 </h4>
                                 <div className="mt-[1.5cqw] text-[2.2cqw] leading-tight">
-                                    <p className="font-bold">Praktischer Arzt</p>
-                                    <p>Master of Public Health (UNSW)</p>
-                                    <p>Master of Health Management (UNSW)</p>
+                                    <p className="font-bold">Spezialisierung</p>
                                 </div>
                                 <p className="mt-[2.5cqw] text-[1.6cqw] italic">
-                                    <span className="whitespace-nowrap">Medizinische und Administrative Leitung</span>{' '}
-                                    <span className="whitespace-nowrap">Praxiszentrum im Ring</span>{' '}
+                                    <span className="whitespace-nowrap">Zusatzinformationen / Position</span>{' '}
                                 </p>
                             </div>
                         </div>
