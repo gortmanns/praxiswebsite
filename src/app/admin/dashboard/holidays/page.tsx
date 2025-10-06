@@ -164,7 +164,6 @@ export default function HolidaysPage() {
             type: "manual", 
             message: "Der angegebene Zeitraum überschneidet sich mit einem bestehenden Termin."
         });
-        setStatus({ type: 'error', message: "Der Termin überschneidet sich mit einem bestehenden Ferientermin." });
         setConflictingHolidayId(conflictingId);
         setIsSubmitting(false);
         return;
