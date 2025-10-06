@@ -18,25 +18,21 @@ export default function JobsPage() {
             <div className="mx-auto mt-16 max-w-4xl space-y-8">
                 <Card>
                     <CardHeader>
-                        <CardTitle className="font-headline text-2xl font-bold text-primary">Werden Sie Teil unseres Teams</CardTitle>
+                        <CardTitle className="font-headline text-2xl font-bold text-primary">Gestalten Sie die Zukunft der medizinischen Versorgung mit uns</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6 text-lg text-foreground/80">
-                        <p>Wir sind stets auf der Suche nach engagierten und qualifizierten Fachkräften, die unsere Vision einer patientenorientierten und umfassenden medizinischen Versorgung teilen. Im Praxiszentrum im Ring bieten wir ein modernes Arbeitsumfeld, ein kollegiales Team und die Möglichkeit, sich aktiv in die Weiterentwicklung der Praxis einzubringen.</p>
-                        
+                        <p>Unsere Vision ist es, das Praxiszentrum im Ring zu einem umfassenden Gesundheitsstandort zu entwickeln, der unseren Patientinnen und Patienten eine integrierte und wohnortnahe Versorgung auf höchstem Niveau bietet. Ein zentraler Baustein dieser Vision ist die enge Zusammenarbeit mit qualifizierten Fachärztinnen und Fachärzten verschiedenster Richtungen.</p>
+
                         <div className="space-y-4 rounded-md border border-border bg-card p-6">
-                            <h4 className="font-headline text-xl font-bold text-primary">Aktuell offene Stellen</h4>
-                            <p className="text-base">Zurzeit haben wir keine spezifischen Stellen ausgeschrieben. Wir sind jedoch immer an talentierten Persönlichkeiten interessiert.</p>
+                            <h4 className="font-headline text-xl font-bold text-primary">Kooperationsangebot für Fachärztinnen und Fachärzte</h4>
+                            <p className="text-base">Sie sind Fachärztin oder Facharzt und möchten Ihren Patientenstamm erweitern oder suchen nach einer flexiblen Möglichkeit, Ihre Expertise in einem modernen und kollegialen Umfeld anzubieten? Wir laden Sie herzlich ein, Teil unseres wachsenden Netzwerks zu werden.</p>
+                            <p className="text-base">Wir bieten Ihnen die Möglichkeit, unsere voll ausgestatteten und modernen Praxisräumlichkeiten für Ihre eigenen Sprechstunden zu nutzen. Die Kooperationsmöglichkeiten sind dabei äusserst flexibel und passen sich Ihren Bedürfnissen an – von einer einmaligen Sprechstunde pro Monat bis hin zu mehrmaligen Terminen pro Woche ist alles denkbar.</p>
                         </div>
                         
                         <div className="space-y-4">
-                            <h4 className="font-headline text-xl font-bold text-primary">Initiativbewerbungen</h4>
-                            <p>Wenn Sie glauben, dass Ihre Fähigkeiten und Ihre Persönlichkeit gut zu uns passen, freuen wir uns über Ihre Initiativbewerbung. Wir sind besonders interessiert an:</p>
-                            <ul className="list-disc space-y-2 pl-6">
-                                <li>Fachärztinnen und Fachärzte für Allgemeinmedizin</li>
-                                <li>Medizinische Praxisassistentinnen und Praxisassistenten (MPA)</li>
-                                <li>Fachspezialisten, die unser medizinisches Angebot erweitern möchten</li>
-                            </ul>
-                            <p className="pt-2">Bitte senden Sie Ihre vollständigen Bewerbungsunterlagen per E-Mail an:</p>
+                            <h4 className="font-headline text-xl font-bold text-primary">Interesse an einer Zusammenarbeit?</h4>
+                            <p>Wenn Sie daran interessiert sind, die medizinische Versorgung in der Region gemeinsam mit uns zu verbessern und unser Leistungsspektrum zu bereichern, dann freuen wir uns darauf, von Ihnen zu hören. Lassen Sie uns in einem unverbindlichen Gespräch die Möglichkeiten einer Partnerschaft ausloten.</p>
+                            <p className="pt-2">Kontaktieren Sie uns für weitere Informationen per E-Mail:</p>
                             <ObfuscatedLink
                                 user="empfang"
                                 domain="praxiszentrum-im-ring.ch"
@@ -45,8 +41,30 @@ export default function JobsPage() {
                                 empfang@praxiszentrum-im-ring.ch
                             </ObfuscatedLink>
                         </div>
+                    </CardContent>
+                </Card>
+                 <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline text-2xl font-bold text-primary">Offene Stellen & Initiativbewerbungen</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6 text-lg text-foreground/80">
+                         <div className="space-y-4">
+                            <p>Wir sind ebenso stets auf der Suche nach engagierten Hausärztinnen, Hausärzten und Medizinischen Praxisassistentinnen (MPA), die unser Kernteam verstärken möchten.</p>
+                             <ul className="list-disc space-y-2 pl-6">
+                                <li>Fachärztinnen und Fachärzte für Allgemeinmedizin</li>
+                                <li>Medizinische Praxisassistentinnen und Praxisassistenten (MPA)</li>
+                            </ul>
+                            <p className="pt-2">Sollten Sie Interesse haben, freuen wir uns über Ihre Initiativbewerbung an:</p>
+                             <ObfuscatedLink
+                                user="empfang"
+                                domain="praxiszentrum-im-ring.ch"
+                                className="font-bold text-primary hover:underline"
+                            >
+                                empfang@praxiszentrum-im-ring.ch
+                            </ObfuscatedLink>
+                        </div>
 
-                        <p className="pt-4">Wir behandeln alle Bewerbungen streng vertraulich und freuen uns darauf, von Ihnen zu hören.</p>
+                        <p className="pt-4">Wir behandeln alle Bewerbungen streng vertraulich.</p>
                     </CardContent>
                 </Card>
             </div>
