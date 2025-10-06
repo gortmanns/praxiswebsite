@@ -14,7 +14,13 @@ export default function MedikamentePage() {
       <Header />
       <main className="flex-1">
         <div className="container py-16 sm:py-24">
-          <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-5xl text-center">
+              <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
+                  MEDIKAMENTE
+              </h2>
+          </div>
+
+          <div className="mx-auto mt-16 max-w-7xl">
             <Card>
               <CardContent className="p-6">
                 <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
