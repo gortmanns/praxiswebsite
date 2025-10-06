@@ -23,7 +23,8 @@ export default function UeberUnsPage() {
                         <h3 className="pt-4 font-headline text-2xl font-bold text-primary">Was ist seither passiert?</h3>
                         <ul className="list-disc space-y-4 pl-6">
                             <li>Die alten Räumlichkeiten der Zahnarztpraxis wurden komplett erneuert und durch einen Mauerdurchbruch mit der Hausarztpraxis verbunden.</li>
-                            <li>Der Wartebereich wurde in den neuen Räumlichkeiten komplett neu, offen und freundlich gestaltet.</li>
+                            <li>Der Wartebereich wurde in die neuen Räumlichkeiten verlegt und komplett neu, offen und freundlich gestaltet.</li>
+                            <li>Ein Monitor im Wartebereich liefert nun aktuelle Informationen zu gesundheitsrelevanten Themen und verkürzt die gefühlte Wartezeit.</li>
                             <li>Ein separater, kleinerer Wartebreich für infektiöse Patienten wurde geschaffen, damit Ansteckungen im Wartebereich nach Möglichkeit vermieden werden.</li>
                             <li>Der alte Wartebreich wurde zu einem Interventionsraum für kleinchirurgische EIngriffe und Wundversorgung umgestaltet.</li>
                             <li>Alle Fenster der Praxis erhielten einen neuen, modernen Sichtschutz in Form von Folierung, So dass auf die alten, unhygienischen Gardienen verzichtet werden kann.</li>
