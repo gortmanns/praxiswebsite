@@ -81,7 +81,8 @@ const otherTeamMembers = [
     },
     {
       name: 'E. Sommer',
-      role: 'MPA in Ausbildung',
+      role: 'Medizinische Praxisassistentin',
+      role2: 'in Ausbildung',
       imageUrl: '/images/team/Sommer.jpg',
       imageHint: 'woman portrait',
       backsideContent: (
