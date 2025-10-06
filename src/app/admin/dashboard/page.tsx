@@ -9,7 +9,7 @@ export default function DashboardPage() {
       <form
           action={async () => {
             'use server';
-            await signOut({ redirectTo: '/admin/login'});
+            await signOut({ redirectTo: '/admin'});
           }}
         >
           <button type="submit">

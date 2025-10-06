@@ -2,7 +2,7 @@ import type { NextAuthConfig } from 'next-auth';
  
 export const authConfig = {
   pages: {
-    signIn: '/admin/login',
+    signIn: '/admin',
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
@@ -10,11 +10,17 @@ export const authConfig = {
       const isOnAdminArea = nextUrl.pathname.startsWith('/admin');
       
       if (isOnAdminArea) {
+        // Allow access to the login page itself
+        if (nextUrl.pathname === '/admin') {
+            // Redirect logged in users from login page to dashboard
+            if (isLoggedIn) {
+                return Response.redirect(new URL('/admin/dashboard', nextUrl));
+            }
+            return true;
+        }
+
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn && nextUrl.pathname.startsWith('/admin/login')) {
-         // Redirect logged in users from login page to dashboard
-         return Response.redirect(new URL('/admin/dashboard', nextUrl));
       }
       
       return true;
