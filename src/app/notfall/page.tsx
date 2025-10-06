@@ -49,7 +49,7 @@ export default function NotfallPage() {
                   <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
                     <div className='mx-auto w-full max-w-lg'>
                       <Image
-                        src="/images/medphone-logo.png"
+                        src="/images/medphone_logo.png"
                         alt="Medphone Logo"
                         data-ai-hint="medphone logo"
                         width={600}
@@ -78,7 +78,7 @@ export default function NotfallPage() {
                     <div className="mx-auto w-full max-w-lg">
                       <Link href="https://www.toxinfo.ch/" target="_blank" rel="noopener noreferrer">
                         <Image
-                          src="/images/partners/tox-info-suisse-logo.png"
+                          src="/images/toxinfo-logo.svg"
                           alt="Tox Info Suisse Logo"
                           data-ai-hint="toxinfo logo"
                           width={300}
