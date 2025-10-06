@@ -8,6 +8,8 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Info } from 'lucide-react';
 import { DoctorCardOrtmanns } from '@/app/team/_components/doctor-card-ortmanns';
 import { DoctorCardSchemmer } from '@/app/team/_components/doctor-card-schemmer';
 import { DoctorCardRosenov } from '@/app/team/_components/doctor-card-rosenov';
@@ -33,6 +35,13 @@ export default function DoctorsPage() {
                 <div className="mt-6">
                  <EditableDoctorCard />
                 </div>
+                <Alert variant="info" className="mt-4 border-blue-500 text-blue-800 bg-blue-50">
+                    <Info className="h-4 w-4" />
+                    <AlertTitle>Information</AlertTitle>
+                    <AlertDescription>
+                        Jede Information dieser Karte kann durch Anklicken des entsprechenden Elements geändert werden.
+                    </AlertDescription>
+                </Alert>
             </div>
 
             <Separator className="my-8" />
