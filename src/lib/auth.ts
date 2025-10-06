@@ -1,14 +1,13 @@
 
-'use client';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
 import { 
   getAuth, 
   signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  setPersistence, 
-  browserLocalPersistence 
+  createUserWithEmailAndPassword,
+  setPersistence,
+  inMemoryPersistence, // Use in-memory persistence for server-side
 } from 'firebase/auth';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { firebaseConfig } from '@/firebase/config';
@@ -28,28 +27,26 @@ export const { auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       async authorize(credentials) {
-        const { username, password } = credentials;
-
-        if (typeof username !== 'string' || typeof password !== 'string') {
+        if (typeof credentials.username !== 'string' || typeof credentials.password !== 'string') {
           return null;
         }
-        
+
+        const { username, password } = credentials;
         const auth = getFirebaseAuth();
 
         // Use a fixed email for the admin user
         const email = `${username}@praxis-admin.local`;
 
         try {
-          // Set persistence to avoid "auth/web-storage-unsupported" errors in this environment
-          await setPersistence(auth, browserLocalPersistence);
+          // Use in-memory persistence for server-side operations to avoid browser dependency
+          await setPersistence(auth, inMemoryPersistence);
           const userCredential = await signInWithEmailAndPassword(auth, email, password);
           if (userCredential.user) {
-            // Return a user object that NextAuth understands
             return { id: userCredential.user.uid, name: username, email: userCredential.user.email };
           }
           return null;
         } catch (error: any) {
-          if (error.code === 'auth/user-not-found') {
+          if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
             try {
               // If user doesn't exist, create it. This is for the first-time setup.
               const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -63,9 +60,6 @@ export const { auth, signIn, signOut } = NextAuth({
             }
           } else if (error.code === 'auth/wrong-password') {
              console.log('Invalid credentials');
-             return null;
-          } else if (error.code === 'auth/invalid-credential') {
-             console.log('Invalid credentials, potentially wrong password or user does not exist.');
              return null;
           }
 
