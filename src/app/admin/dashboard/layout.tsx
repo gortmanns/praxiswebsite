@@ -107,7 +107,7 @@ export default function DashboardLayout({
                 </Link>
              </SidebarMenuItem>
             ))}
-            <SidebarMenuItem>
+             <SidebarMenuItem>
                 <SidebarMenuButton tooltip="Anpassungen Team" className="w-full pointer-events-none">
                     <Users />
                     <span>Anpassungen Team</span>
@@ -116,7 +116,7 @@ export default function DashboardLayout({
             <SidebarMenuSub>
                 {teamNavItems.map((item) => (
                     <SidebarMenuSubItem key={item.href}>
-                        <Link href={item.href} passHref>
+                        <Link href={item.href} asChild>
                             <SidebarMenuSubButton isActive={pathname === item.href}>
                                 {item.label}
                             </SidebarMenuSubButton>
