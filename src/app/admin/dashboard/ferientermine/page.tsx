@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -17,6 +17,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { HolidayForm, HolidayDeleteButton } from './holiday-form';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { useFirestore } from '@/firebase';
 
 export type Holiday = {
   id: string;
@@ -25,14 +27,36 @@ export type Holiday = {
   end: string;
 };
 
-// Beispiel-Daten, da kein Backend mehr vorhanden ist
-const sampleHolidays: Holiday[] = [
-    { id: '1', name: 'Sommerferien', start: '01.07.2024', end: '15.08.2024' },
-    { id: '2', name: 'Herbstferien', start: '10.10.2024', end: '20.10.2024' },
-];
-
 export default function FerienterminePage() {
-  const [holidays, setHolidays] = useState<Holiday[]>(sampleHolidays);
+  const [holidays, setHolidays] = useState<Holiday[]>([]);
+  const [loading, setLoading] = useState(true);
+  const firestore = useFirestore();
+
+  useEffect(() => {
+    if (!firestore) return;
+    
+    const q = query(collection(firestore, 'holidays'), orderBy('start', 'asc'));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const holidaysData: Holiday[] = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        holidaysData.push({ 
+          id: doc.id, 
+          name: data.name,
+          start: data.start,
+          end: data.end
+        });
+      });
+      setHolidays(holidaysData);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching holidays: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [firestore]);
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
@@ -47,7 +71,7 @@ export default function FerienterminePage() {
           <CardTitle>Neuen Ferientermin hinzufügen</CardTitle>
         </CardHeader>
         <CardContent>
-          <HolidayForm holidays={holidays} />
+          <HolidayForm />
         </CardContent>
       </Card>
 
@@ -66,7 +90,13 @@ export default function FerienterminePage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {holidays.length === 0 ? (
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center">
+                    Lade Termine...
+                  </TableCell>
+                </TableRow>
+              ) : holidays.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center">
                     Keine Ferientermine gefunden.

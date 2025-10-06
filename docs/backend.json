@@ -1,182 +1,43 @@
 {
   "entities": {
-    "User": {
+    "UserProfile": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "User",
+      "title": "User Profile",
       "type": "object",
-      "description": "Represents a user account for the application backend.",
+      "description": "Represents a user's profile information.",
       "properties": {
-        "id": {
+        "uid": {
           "type": "string",
-          "description": "Unique identifier for the user entity."
-        },
-        "username": {
-          "type": "string",
-          "description": "The username of the user."
-        },
-        "passwordHash": {
-          "type": "string",
-          "description": "The password hash for the user's account."
-        },
-        "isAdmin": {
-          "type": "boolean",
-          "description": "Flag indicating whether the user has administrative privileges."
-        }
-      },
-      "required": [
-        "id",
-        "username",
-        "passwordHash",
-        "isAdmin"
-      ]
-    },
-    "Doctor": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Doctor",
-      "type": "object",
-      "description": "Represents a doctor profile in the practice.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the doctor."
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the doctor."
-        },
-        "specialty": {
-          "type": "string",
-          "description": "The doctor's area of specialization."
-        },
-        "profileImageUrl": {
-          "type": "string",
-          "description": "URL to the doctor's profile image.",
-          "format": "uri"
-        },
-        "bio": {
-          "type": "string",
-          "description": "A short biography of the doctor."
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "specialty",
-        "profileImageUrl",
-        "bio"
-      ]
-    },
-    "ContactFormEntry": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "ContactFormEntry",
-      "type": "object",
-      "description": "Represents an entry from the contact form.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the contact form entry."
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the person submitting the contact form."
+          "description": "The user's unique ID from Firebase Auth."
         },
         "email": {
           "type": "string",
-          "description": "The email address of the person submitting the contact form.",
-          "format": "email"
+          "format": "email",
+          "description": "The user's email address."
         },
-        "message": {
+        "displayName": {
           "type": "string",
-          "description": "The message content from the contact form."
-        },
-        "submissionDate": {
-          "type": "string",
-          "description": "The date and time the contact form was submitted.",
-          "format": "date-time"
+          "description": "The user's display name."
         }
       },
-      "required": [
-        "id",
-        "name",
-        "email",
-        "message",
-        "submissionDate"
-      ]
+      "required": ["uid", "email"]
     }
   },
   "auth": {
-    "providers": [
-      "password",
-      "anonymous"
-    ]
+    "providers": ["password", "anonymous"]
   },
   "firestore": {
     "structure": [
       {
         "path": "/users/{userId}",
         "definition": {
-          "entityName": "User",
+          "entityName": "UserProfile",
           "schema": {
-            "$ref": "#/backend/entities/User"
+            "$ref": "#/backend/entities/UserProfile"
           },
-          "description": "Stores user account information. The userId parameter is the unique identifier for each user.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "Unique identifier for the user document."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/roles_admin/{userId}",
-        "definition": {
-          "entityName": "adminRole",
-          "schema": {
-            "$ref": "#/backend/entities/User"
-          },
-          "description": "Documents in this collection indicate admin privileges. The existence of a document for a user signifies that they have admin rights.  Authorization independence is achieved using existence check rather than content, simplifying security rules.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The ID of the user with admin privileges."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/doctors/{doctorId}",
-        "definition": {
-          "entityName": "Doctor",
-          "schema": {
-            "$ref": "#/backend/entities/Doctor"
-          },
-          "description": "Stores information about doctors. The doctorId parameter is the unique identifier for each doctor.",
-          "params": [
-            {
-              "name": "doctorId",
-              "description": "Unique identifier for the doctor document."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/contactFormEntries/{contactFormEntryId}",
-        "definition": {
-          "entityName": "ContactFormEntry",
-          "schema": {
-            "$ref": "#/backend/entities/ContactFormEntry"
-          },
-          "description": "Stores contact form entries. The contactFormEntryId parameter is the unique identifier for each entry.",
-          "params": [
-            {
-              "name": "contactFormEntryId",
-              "description": "Unique identifier for the contact form entry document."
-            }
-          ]
+          "description": "Stores public-facing user profile information."
         }
       }
-    ],
-    "reasoning": "This Firestore structure is designed to support a basic backend with user authentication and authorization for an admin panel. The primary goal is to securely manage user accounts and potentially other backend data in the future, adhering to the principles of Authorization Independence and Structural Segregation. Since it's a greenfield project, it's designed with scalability in mind. The `Users` collection holds user data, including credentials and admin status, with each document representing a single user. The `admins` collection uses an existence-based approach for role management. The contact form entries are stored in a separate collection that anyone can create but only admins can read. The structure avoids hierarchical authorization dependencies, which is crucial for maintaining data integrity during atomic operations and for simplified security rules."
+    ]
   }
 }

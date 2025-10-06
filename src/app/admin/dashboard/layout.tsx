@@ -10,17 +10,25 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { CircleUser, CalendarDays, PencilRuler } from 'lucide-react';
 import Link from 'next/link';
+import { signOut, auth as authSession } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 const navItems = [
   { href: '/admin/dashboard/ferientermine', label: 'Ferientermine anpassen', Icon: CalendarDays },
   { href: '#', label: 'Banner bearbeiten', Icon: PencilRuler },
 ];
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await authSession();
+
+  if (!session?.user) {
+    redirect('/admin');
+  }
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-muted/40 md:block">
@@ -59,12 +67,20 @@ export default function DashboardLayout({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Mein Konto</DropdownMenuLabel>
+              <DropdownMenuLabel>{session.user.email}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                 <Link href="/admin" className="w-full text-left">
-                    Abmelden
-                  </Link>
+              <DropdownMenuItem asChild>
+                 <form
+                    action={async () => {
+                      'use server';
+                      await signOut();
+                    }}
+                    className="w-full"
+                  >
+                    <button type="submit" className="w-full text-left">
+                      Abmelden
+                    </button>
+                  </form>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

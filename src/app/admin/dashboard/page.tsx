@@ -1,5 +1,14 @@
 
-export default function DashboardPage() {
+import { authSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
+
+export default async function DashboardPage() {
+  const session = await authSession();
+
+  if (!session?.user) {
+    redirect('/admin');
+  }
+  
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       <div className="flex items-center">

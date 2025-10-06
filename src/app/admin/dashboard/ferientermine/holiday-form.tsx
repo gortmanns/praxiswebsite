@@ -15,7 +15,9 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Holiday } from './page';
+import { useFirestore } from '@/firebase';
+import { addDoc, collection, deleteDoc, doc } from 'firebase/firestore';
+import { useToast } from '@/hooks/use-toast';
 
 const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/;
 
@@ -27,11 +29,11 @@ const holidaySchema = z.object({
 
 type HolidayFormValues = z.infer<typeof holidaySchema>;
 
-interface HolidayFormProps {
-    holidays: Holiday[];
-}
 
-export function HolidayForm({ holidays }: HolidayFormProps) {
+export function HolidayForm() {
+  const firestore = useFirestore();
+  const { toast } = useToast();
+
   const form = useForm<HolidayFormValues>({
     resolver: zodResolver(holidaySchema),
     defaultValues: {
@@ -41,10 +43,23 @@ export function HolidayForm({ holidays }: HolidayFormProps) {
     },
   });
 
-  const onSubmit = (data: HolidayFormValues) => {
-    // Placeholder function
-    alert('Formular gesendet (Funktion nicht implementiert)');
-    console.log(data);
+  const onSubmit = async (data: HolidayFormValues) => {
+    if (!firestore) return;
+    try {
+      await addDoc(collection(firestore, 'holidays'), data);
+      toast({
+        title: "Erfolg!",
+        description: "Der Ferientermin wurde hinzugefügt.",
+      });
+      form.reset();
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Der Termin konnte nicht gespeichert werden.",
+      });
+    }
   };
 
   return (
@@ -106,9 +121,25 @@ interface HolidayDeleteButtonProps {
 }
 
 export function HolidayDeleteButton({ id }: HolidayDeleteButtonProps) {
-  const handleDelete = () => {
-    // Placeholder function
-    alert(`Löschen geklickt für ID: ${id} (Funktion nicht implementiert)`);
+  const firestore = useFirestore();
+  const { toast } = useToast();
+
+  const handleDelete = async () => {
+    if (!firestore) return;
+    try {
+      await deleteDoc(doc(firestore, 'holidays', id));
+      toast({
+        title: "Erfolg!",
+        description: "Der Ferientermin wurde gelöscht.",
+      });
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Der Termin konnte nicht gelöscht werden.",
+      });
+    }
   };
 
   return (
