@@ -1,8 +1,18 @@
+
 'use server';
 
-import { initializeFirebase } from '@/firebase/server';
+import { getApp, getApps, initializeApp } from 'firebase/app';
+import { getFirestore, collection, addDoc, deleteDoc, doc, Timestamp, getDocs, query, orderBy } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-import { collection, addDoc, deleteDoc, doc, Timestamp, getDocs, query, orderBy } from 'firebase/firestore';
+import { firebaseConfig } from '@/firebase/config';
+
+// Helper function to initialize Firebase on the server.
+function getDb() {
+  if (getApps().length === 0) {
+    initializeApp(firebaseConfig);
+  }
+  return getFirestore(getApp());
+}
 
 const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/;
 
@@ -13,7 +23,7 @@ function parseDate(dateString: string): Date {
 }
 
 export async function addHoliday(formData: FormData) {
-  const { db } = initializeFirebase();
+  const db = getDb();
   const name = formData.get('name') as string;
   const start = formData.get('start') as string;
   const end = formData.get('end') as string;
@@ -45,7 +55,7 @@ export async function addHoliday(formData: FormData) {
 }
 
 export async function deleteHoliday(id: string) {
-  const { db } = initializeFirebase();
+  const db = getDb();
   try {
     await deleteDoc(doc(db, 'holidays', id));
     revalidatePath('/admin/dashboard/ferientermine');
@@ -61,7 +71,7 @@ export async function deleteHoliday(id: string) {
 }
 
 export async function getHolidays() {
-    const { db } = initializeFirebase();
+    const db = getDb();
     const holidaysCollection = collection(db, 'holidays');
     const holidaysQuery = query(holidaysCollection, orderBy('startDate', 'asc'));
     const snapshot = await getDocs(holidaysQuery);
