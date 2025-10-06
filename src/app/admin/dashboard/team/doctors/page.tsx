@@ -4,13 +4,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { Trash2, AlertCircle, CheckCircle, Pencil, TriangleAlert, Info } from 'lucide-react';
+import { AlertCircle, CheckCircle, TriangleAlert, Info } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, addDoc, query, orderBy, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, doc, updateDoc } from 'firebase/firestore';
 
 import { cn } from '@/lib/utils';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -27,34 +27,18 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Skeleton } from '@/components/ui/skeleton';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Textarea } from '@/components/ui/textarea';
 
 
 const doctorSchema = z.object({
   title: z.string().optional(),
   name: z.string().min(2, { message: 'Der Name muss mindestens 2 Zeichen lang sein.' }),
   specialty: z.string().min(5, { message: 'Die Spezialität muss mindestens 5 Zeichen lang sein.' }),
+  imageUrl: z.string().url({ message: "Bitte geben Sie eine gültige URL ein." }).optional().or(z.literal('')),
+  vita: z.string().optional(),
   displayOrder: z.preprocess(
-    (a) => parseInt(z.string().parse(a), 10),
+    (a) => (a ? parseInt(z.string().parse(a), 10) : undefined),
     z.number().min(1, "Die Anzeigereihenfolge ist erforderlich.")
   )
 });
@@ -66,12 +50,7 @@ interface Doctor extends DoctorFormValues {
 }
 
 export default function DoctorsPage() {
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [doctorToDelete, setDoctorToDelete] = useState<string | null>(null);
   const [status, setStatus] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
   const [editMode, setEditMode] = useState<string | null>(null);
 
@@ -82,15 +61,7 @@ export default function DoctorsPage() {
     return query(collection(firestore, 'doctors'), orderBy('displayOrder', 'asc'));
   }, [firestore]);
 
-  const { data: doctorDocs, isLoading: isLoadingCollection } = useCollection<Doctor>(doctorsQuery);
-
-  useEffect(() => {
-      setIsLoading(isLoadingCollection);
-      if (doctorDocs) {
-        setDoctors(doctorDocs);
-      }
-  }, [doctorDocs, isLoadingCollection]);
-
+  const { data: doctorDocs } = useCollection<Doctor>(doctorsQuery);
 
   const form = useForm<DoctorFormValues>({
     resolver: zodResolver(doctorSchema),
@@ -98,6 +69,8 @@ export default function DoctorsPage() {
       title: '',
       name: '',
       specialty: '',
+      imageUrl: '',
+      vita: '',
       displayOrder: 1,
     },
   });
@@ -114,16 +87,17 @@ export default function DoctorsPage() {
 
   const handleCancel = () => {
     setEditMode(null);
-    form.reset({ title: '', name: '', specialty: '', displayOrder: (doctors.length + 1) });
+    const newDisplayOrder = doctorDocs ? doctorDocs.length + 1 : 1;
+    form.reset({ title: '', name: '', specialty: '', imageUrl: '', vita: '', displayOrder: newDisplayOrder });
     setStatus(null);
     form.clearErrors();
   };
 
   useEffect(() => {
-    if (!editMode && doctors.length > 0) {
-        form.setValue('displayOrder', doctors.length + 1);
+    if (!editMode && doctorDocs) {
+        form.setValue('displayOrder', doctorDocs.length + 1);
     }
-  }, [doctors, editMode, form]);
+  }, [doctorDocs, editMode, form]);
 
   async function onSubmit(data: DoctorFormValues) {
     if (!firestore) return;
@@ -142,7 +116,6 @@ export default function DoctorsPage() {
       }
       
       handleCancel();
-      // Data will be refetched by useCollection hook
 
     } catch (error) {
       console.error("Fehler beim Speichern: ", error);
@@ -152,40 +125,6 @@ export default function DoctorsPage() {
     }
   }
 
-  const handleDelete = async () => {
-    if (!firestore || !doctorToDelete) return;
-    setIsDeleting(true);
-    setStatus(null);
-    try {
-      await deleteDoc(doc(firestore, 'doctors', doctorToDelete));
-      setStatus({ type: 'success', message: 'Der Arzt wurde erfolgreich entfernt.' });
-      // Data will be refetched by useCollection hook
-    } catch (error) {
-      console.error("Fehler beim Löschen: ", error);
-      setStatus({ type: 'error', message: 'Der Arzt konnte nicht gelöscht werden.' });
-    } finally {
-      setIsDeleting(false);
-      setDeleteDialogOpen(false);
-      setDoctorToDelete(null);
-    }
-  };
-
-  const openDeleteDialog = (id: string) => {
-    setDoctorToDelete(id);
-    setDeleteDialogOpen(true);
-  };
-  
-  const handleEdit = (doctor: Doctor) => {
-    setEditMode(doctor.id);
-    form.setValue('title', doctor.title);
-    form.setValue('name', doctor.name);
-    form.setValue('specialty', doctor.specialty);
-    form.setValue('displayOrder', doctor.displayOrder);
-    setStatus({ type: 'info', message: 'Sie können nun den markierten Eintrag bearbeiten.' });
-    form.clearErrors();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-  
   const getStatusAlert = () => {
     if (!status) return null;
 
@@ -284,7 +223,33 @@ export default function DoctorsPage() {
                       <FormItem>
                         <FormLabel>Reihenfolge</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} disabled={isSubmitting} />
+                          <Input type="number" {...field} disabled={isSubmitting} onChange={e => field.onChange(e.target.valueAsNumber)} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                   <FormField
+                    control={form.control}
+                    name="imageUrl"
+                    render={({ field }) => (
+                      <FormItem className="lg:col-span-3">
+                        <FormLabel>Bild-URL</FormLabel>
+                        <FormControl>
+                          <Input placeholder="https://beispiel.com/bild.jpg" {...field} disabled={isSubmitting} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="vita"
+                    render={({ field }) => (
+                      <FormItem className="lg:col-span-4">
+                        <FormLabel>Vita / Beschreibung</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Lebenslauf oder weitere Informationen..." {...field} disabled={isSubmitting} rows={10} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -307,77 +272,9 @@ export default function DoctorsPage() {
               </form>
             </Form>
           </div>
-          <div>
-            <h3 className="mb-4 text-lg font-bold">Bestehende Ärzte</h3>
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow className="border-b-0 bg-primary hover:bg-primary/90">
-                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground">Titel</TableHead>
-                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground">Name</TableHead>
-                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground">Spezialität</TableHead>
-                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground w-[100px]">Reihenfolge</TableHead>
-                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground w-[220px]">Aktionen</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {isLoading ? (
-                    Array.from({ length: 3 }).map((_, i) => (
-                      <TableRow key={i}>
-                        <TableCell className="py-4 px-4"><Skeleton className="h-5 w-20" /></TableCell>
-                        <TableCell className="py-4 px-4"><Skeleton className="h-5 w-32" /></TableCell>
-                        <TableCell className="py-4 px-4"><Skeleton className="h-5 w-48" /></TableCell>
-                        <TableCell className="py-4 px-4"><Skeleton className="h-5 w-12" /></TableCell>
-                        <TableCell className="py-4 px-4 text-left space-x-2"><Skeleton className="h-9 w-24 inline-block" /><Skeleton className="h-9 w-24 inline-block" /></TableCell>
-                      </TableRow>
-                    ))
-                  ) : doctors.length > 0 ? (
-                    doctors.map((doctor) => (
-                      <TableRow key={doctor.id} className={cn(editMode === doctor.id && "bg-blue-100/70")}>
-                        <TableCell className="py-3 px-4 font-medium">{doctor.title}</TableCell>
-                        <TableCell className="py-3 px-4 font-bold">{doctor.name}</TableCell>
-                        <TableCell className="py-3 px-4">{doctor.specialty}</TableCell>
-                        <TableCell className="py-3 px-4 text-center">{doctor.displayOrder}</TableCell>
-                        <TableCell className="py-3 px-4 text-left space-x-2">
-                           <Button variant="outline" size="sm" onClick={() => handleEdit(doctor)} disabled={isSubmitting || isDeleting}>
-                                <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                           </Button>
-                           <Button variant="destructive" size="sm" onClick={() => openDeleteDialog(doctor.id)} disabled={isSubmitting || isDeleting}>
-                                <Trash2 className="mr-2 h-4 w-4" /> Löschen
-                           </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={5} className="py-8 px-4 text-center text-muted-foreground">
-                        Keine Ärzte gefunden.
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
         </CardContent>
       </Card>
     </div>
-    <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-            <AlertDialogHeader>
-            <AlertDialogTitle>Sind Sie sicher?</AlertDialogTitle>
-            <AlertDialogDescription>
-                Möchten Sie diesen Eintrag wirklich unwiderruflich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-            </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Abbrechen</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className={cn(buttonVariants({ variant: "destructive" }))}>
-                {isDeleting ? 'Wird gelöscht...' : 'Löschen'}
-            </AlertDialogAction>
-            </AlertDialogFooter>
-        </AlertDialogContent>
-    </AlertDialog>
     </>
   );
 }
