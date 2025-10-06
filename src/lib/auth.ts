@@ -37,19 +37,20 @@ export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
             const password = credentials.password as string;
 
             try {
-                // Try to sign in
+                // Versuche, den Benutzer direkt anzumelden.
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 return { id: userCredential.user.uid, name: userCredential.user.displayName, email: userCredential.user.email };
             } catch (error) {
                 const authError = error as AuthError;
                 
+                // Wenn der Benutzer nicht existiert UND es der erste Admin-Login ist, erstelle ihn.
                 if (authError.code === 'auth/user-not-found' && credentials.username === 'admin' && String(credentials.password) === '1234') {
-                    // If user does not exist, and it's the initial admin setup, create them
                     try {
+                        // Erstelle den neuen Benutzer in Firebase Auth.
                         const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
                         const user = newUserCredential.user;
                         
-                        // Create user profile in Firestore
+                        // Lege ein Profil für den Benutzer in Firestore an.
                         await setDoc(doc(db, "users", user.uid), {
                             uid: user.uid,
                             email: user.email,
@@ -57,19 +58,18 @@ export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
                             createdAt: serverTimestamp(),
                         });
                         
-                        // Retry sign-in after creation
-                        const finalUserCredential = await signInWithEmailAndPassword(auth, email, password);
-                        return { id: finalUserCredential.user.uid, name: finalUserCredential.user.displayName, email: finalUserCredential.user.email };
+                        // Gib den neu erstellten Benutzer direkt zurück. NextAuth meldet ihn an.
+                        return { id: user.uid, name: user.displayName, email: user.email };
 
                     } catch (creationError) {
-                        console.error("Error creating user:", creationError);
+                        console.error("Fehler beim Erstellen des Admin-Benutzers:", creationError);
+                        // Wenn die Erstellung fehlschlägt, ist die Anmeldung fehlgeschlagen.
                         return null;
                     }
-                } else {
-                    // For other errors (like wrong password), or if user-not-found but not the initial admin
-                    console.log('Invalid credentials');
-                    return null;
                 }
+                
+                // Bei allen anderen Fehlern (z.B. falsches Passwort) ist die Anmeldung fehlgeschlagen.
+                return null;
             }
         }
     }),
