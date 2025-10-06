@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { cn } from '@/lib/utils';
 
 const timeSlots = [
   '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
@@ -8,7 +9,13 @@ const timeSlots = [
   '16:00', '16:30', '17:00', '17:30', '18:00'
 ];
 
-const days = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'];
+const days = [
+  { full: 'Montag', short: 'Mo' },
+  { full: 'Dienstag', short: 'Di' },
+  { full: 'Mittwoch', short: 'Mi' },
+  { full: 'Donnerstag', short: 'Do' },
+  { full: 'Freitag', short: 'Fr' },
+];
 
 const schedule = [
     // Mo
@@ -67,13 +74,13 @@ export function PhoneHoursCalendar() {
   });
 
   return (
-    <div className="relative">
-      <div className="grid w-full grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-secondary">
+    <div className="relative overflow-x-auto">
+      <div className="grid w-full min-w-[500px] grid-cols-[auto_repeat(5,minmax(0,1fr))] border border-secondary">
         {/* Header Row */}
         <div className="sticky top-0 z-10 bg-muted"></div>
         {days.map((day) => (
-          <div key={day} className="flex h-12 items-center justify-center border-l border-b border-border bg-muted text-center text-sm font-bold text-muted-foreground sm:text-base">
-            {day}
+          <div key={day.full} className="flex h-12 items-center justify-center border-l border-b border-border bg-muted px-2 text-center text-sm font-bold text-muted-foreground sm:text-base">
+            {day.full}
           </div>
         ))}
 

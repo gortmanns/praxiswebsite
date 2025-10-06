@@ -25,13 +25,13 @@ export default function OeffnungszeitenPage() {
 
             <div className="mx-auto mt-16">
                 <Tabs defaultValue="oeffnungszeiten" className="w-full">
-                    <TabsList className="grid h-auto w-full grid-cols-2 p-0">
+                    <TabsList className="grid h-auto w-full grid-cols-1 p-0 sm:grid-cols-2">
                         <TabsTrigger 
                             value="oeffnungszeiten" 
                             className={cn(
-                                'flex h-14 items-center justify-center gap-3 rounded-t-lg rounded-b-none border-b-0 text-xl font-bold',
+                                'flex h-14 items-center justify-center gap-3 rounded-t-lg rounded-b-none border-b-0 p-3 text-xl font-bold',
                                 'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-secondary data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:bg-secondary/80',
-                                'data-[state=active]:bg-card data-[state=active]:text-primary'
+                                'data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:border-b-transparent data-[state=active]:border-x data-[state=active]:border-t'
                             )}
                         >
                             <DoorOpen className="h-6 w-6"/>
@@ -40,17 +40,17 @@ export default function OeffnungszeitenPage() {
                         <TabsTrigger 
                             value="telefonzeiten"
                             className={cn(
-                                'flex h-14 items-center justify-center gap-3 rounded-t-lg rounded-b-none border-b-0 text-xl font-bold',
+                                'flex h-14 items-center justify-center gap-3 rounded-t-lg rounded-b-none border-b-0 p-3 text-xl font-bold',
                                 'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-secondary data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:bg-secondary/80',
-                                'data-[state=active]:bg-card data-[state=active]:text-primary'
+                                'data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:border-b-transparent data-[state=active]:border-x data-[state=active]:border-t'
                             )}
                         >
                             <Phone className="h-6 w-6"/>
                             Telefonzeiten
                         </TabsTrigger>
                     </TabsList>
-                    <TabsContent value="oeffnungszeiten">
-                        <Card className="rounded-t-none">
+                    <TabsContent value="oeffnungszeiten" className="mt-0">
+                        <Card className="rounded-t-none border-t-0">
                             <CardContent className="space-y-6 p-6 text-lg">
                                 <h3 className="text-center font-headline text-2xl font-bold tracking-tight text-primary">
                                     Unsere Öffnungszeiten
@@ -59,9 +59,9 @@ export default function OeffnungszeitenPage() {
                             </CardContent>
                         </Card>
                     </TabsContent>
-                    <TabsContent value="telefonzeiten">
-                        <Card className="rounded-t-none">
-                            <CardContent className="space-y-6 p-6 text-lg overflow-x-auto">
+                    <TabsContent value="telefonzeiten" className="mt-0">
+                        <Card className="rounded-t-none border-t-0">
+                            <CardContent className="space-y-6 p-6 text-lg">
                                 <h3 className="text-center font-headline text-2xl font-bold tracking-tight text-primary">
                                     Unsere Telefonzeiten
                                 </h3>
