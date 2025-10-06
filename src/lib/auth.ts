@@ -41,16 +41,15 @@ export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 return { id: userCredential.user.uid, name: userCredential.user.displayName, email: userCredential.user.email };
             } catch (error) {
-                const authError = error as AuthError;
-                
-                // Wenn der Benutzer nicht existiert UND es der erste Admin-Login ist, erstelle ihn.
-                if (authError.code === 'auth/user-not-found' && credentials.username === 'admin' && String(credentials.password) === '1234') {
+                 const authError = error as AuthError;
+
+                // Wenn der Benutzer nicht existiert UND es der Admin-Login ist,
+                // erstellen wir ihn einmalig.
+                if (authError.code === 'auth/user-not-found' && credentials.username === 'admin' && password === '1234') {
                     try {
-                        // Erstelle den neuen Benutzer in Firebase Auth.
                         const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
                         const user = newUserCredential.user;
                         
-                        // Lege ein Profil für den Benutzer in Firestore an.
                         await setDoc(doc(db, "users", user.uid), {
                             uid: user.uid,
                             email: user.email,
@@ -58,12 +57,10 @@ export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
                             createdAt: serverTimestamp(),
                         });
                         
-                        // Gib den neu erstellten Benutzer direkt zurück. NextAuth meldet ihn an.
+                        // Gib den neu erstellten Benutzer zurück.
                         return { id: user.uid, name: user.displayName, email: user.email };
-
                     } catch (creationError) {
-                        console.error("Fehler beim Erstellen des Admin-Benutzers:", creationError);
-                        // Wenn die Erstellung fehlschlägt, ist die Anmeldung fehlgeschlagen.
+                        // Die Erstellung ist fehlgeschlagen.
                         return null;
                     }
                 }
