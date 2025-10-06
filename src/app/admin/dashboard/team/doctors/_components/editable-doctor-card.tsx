@@ -1,4 +1,3 @@
-
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { UserPlus } from 'lucide-react';
@@ -28,6 +27,8 @@ export const EditableDoctorCard = () => (
                                 </h4>
                                 <div className="mt-[1.5cqw] text-[2.2cqw] leading-tight">
                                     <p className="font-bold">Spezialisierung</p>
+                                    <p>Zusatzqualifikation 1 (Optional)</p>
+                                    <p>Zusatzqualifikation 2 (Optional)</p>
                                 </div>
                                 <p className="mt-[2.5cqw] text-[1.6cqw] italic">
                                     <span className="whitespace-nowrap">Zusatzinformationen / Position</span>{' '}
