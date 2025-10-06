@@ -2,7 +2,7 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, type FirebaseAuthError } from 'firebase/auth';
 import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
 import { firebaseConfig } from '@/firebase/config';
 
@@ -30,12 +30,9 @@ export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
             const password = credentials.password as string;
 
             try {
-                // Diese Funktion prüft nur, ob der Benutzer in Firebase existiert und das Passwort stimmt.
-                // Die Erstellung des Admin-Benutzers findet in der `authenticate` Server Action statt.
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 
                 if (userCredential.user) {
-                    // Wenn erfolgreich, gebe das Benutzerobjekt für die NextAuth-Sitzung zurück.
                     return { 
                         id: userCredential.user.uid, 
                         name: userCredential.user.displayName, 
@@ -44,9 +41,12 @@ export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
                 }
                 return null;
             } catch (error) {
-                // Wenn ein Fehler auftritt (z.B. user-not-found, wrong-password),
-                // gib null zurück. NextAuth wird dies als fehlgeschlagene Anmeldung interpretieren.
-                console.log('Authorize error:', error);
+                const authError = error as FirebaseAuthError;
+                // Log the specific error for server-side debugging if needed
+                // console.log('Firebase Auth Error in authorize:', authError.code);
+                
+                // Return null for any auth error (user not found, wrong password, etc.)
+                // NextAuth will then throw a CredentialsSignin error.
                 return null;
             }
         }
