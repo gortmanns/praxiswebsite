@@ -21,7 +21,6 @@ export default {
         body: ['var(--font-body)', 'sans-serif'],
         headline: ['var(--font-headline)', 'sans-serif'],
         code: ['var(--font-code)', 'monospace'],
-        tangerine: ['var(--font-tangerine)', 'cursive'],
       },
       colors: {
         background: 'hsl(var(--background))',

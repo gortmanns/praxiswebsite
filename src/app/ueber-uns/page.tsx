@@ -53,11 +53,11 @@ export default function UeberUnsPage() {
                         <ul className="list-disc space-y-4 pl-6">
                             <li>Langfristig möchten wir so viele Hausärzte für die Arbeit hier im Praxiszentrum gewinnen, dass wir Montag bis Samstag von 8 bis 20 Uhr durchgehend öffnen können.</li>
                             <li>Wir möchten eine einfache Notfall-Versorgung für die kleinen Dinge, die im Alltag schiefgehen, innerhalb der Öffnungszeiten jederzeit ohne Voranmeldung anbieten können, sodass unsere Patienten nur für schwerere Notfälle noch in die Stadt Bern müssen.</li>
-                            <li>Wir möchten weitere Spezialisten gewinnen, die ihre Sprechstunden bei uns im Praxiszentrum anbieten. Idealerweise decken wir irgendwann fast das ganze medizinische Spektrum ab, soweit es jedenfalls die technischen Möglichkeiten und Räumlichkeiten bei uns zulassen.</li>
+                            <li>Wir möchten weitere Spezialisten gewinnen, die Ihre Sprechstunden bei uns im Praxiszentrum anbieten. Idealerweise decken wir irgendwann fast das ganze medizinische Spektrum ab, soweit es jedenfalls die technischen Möglichkeiten und Räumlichkeiten bei uns zulassen.</li>
                         </ul>
                         <div className="pt-8 space-y-4">
                             <p>An dieser Stelle möchte ich mich für das entgegengebrachte Vertrauen bedanken. Mir ist bewusst, dass die Gewöhnung an einen neuen Hausarzt schwierig ist, zumal wenn der alte Hausarzt über Jahrzehnte hinweg an dieser Stelle tätig war und der «Neue» vieles anders macht.</p>
-                            <p className="font-tangerine text-5xl italic">Gernot Ortmanns</p>
+                            <p className="text-3xl italic">Gernot Ortmanns</p>
                             <p className="pt-8 text-base text-foreground/70">(Im Oktober 2025)</p>
                         </div>
                     </CardContent>
