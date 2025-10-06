@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import { Montserrat, Open_Sans, JetBrains_Mono } from 'next/font/google';
+import { Montserrat, Open_Sans } from 'next/font/google';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -17,13 +17,6 @@ const openSans = Open_Sans({
   weight: ['400', '700'],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-code',
-  weight: ['400', '700'],
-});
-
-
 export const metadata: Metadata = {
   title: 'Praxiszentrum im Ring',
   description: 'Ihre Gesundheit, Unsere Priorität.',
@@ -36,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de">
-      <body className={cn('font-body antialiased', montserrat.variable, openSans.variable, jetbrainsMono.variable)}>
+      <body className={cn('font-body antialiased', montserrat.variable, openSans.variable)}>
         {children}
         <Toaster />
       </body>

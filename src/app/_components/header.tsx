@@ -14,6 +14,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu";
+import { useState, useRef, useEffect } from 'react';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -33,9 +34,33 @@ const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
+const useSlidingIndicator = () => {
+    const navRef = useRef<HTMLElement>(null);
+    const indicatorRef = useRef<HTMLDivElement>(null);
+
+    const updateIndicator = (target: HTMLElement) => {
+        if (!navRef.current || !indicatorRef.current) return;
+        const navRect = navRef.current.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        indicatorRef.current.style.width = `${targetRect.width}px`;
+        indicatorRef.current.style.height = `${targetRect.height}px`;
+        indicatorRef.current.style.left = `${targetRect.left - navRect.left}px`;
+        indicatorRef.current.style.opacity = '1';
+    };
+
+    const hideIndicator = () => {
+        if (!indicatorRef.current) return;
+        indicatorRef.current.style.opacity = '0';
+    };
+
+    return { navRef, indicatorRef, updateIndicator, hideIndicator };
+};
+
 
 export function Header() {
   const pathname = usePathname();
+  const { navRef, indicatorRef, updateIndicator, hideIndicator } = useSlidingIndicator();
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const navLinks = [
     { href: '/', label: 'Startseite' },
@@ -54,6 +79,21 @@ export function Header() {
     { href: '/oeffnungszeiten', label: 'Öffnungs- & Telefonzeiten' },
     { href: '/praxisferien', label: 'Praxisferien' }
   ];
+
+  useEffect(() => {
+    const activeLink = navRef.current?.querySelector<HTMLElement>(`[data-active="true"]`);
+    if (activeLink) {
+        setTimeout(() => {
+            if (indicatorRef.current) {
+                indicatorRef.current.style.transition = 'width 0.3s, height 0.3s, left 0.3s, opacity 0.3s';
+            }
+            setIsInitialLoad(false);
+        }, 100);
+        updateIndicator(activeLink);
+    } else {
+        hideIndicator();
+    }
+}, [pathname, updateIndicator, hideIndicator]);
 
 
   return (
@@ -86,49 +126,67 @@ export function Header() {
         </div>
       </div>
 
-      <div className="flex h-28 items-center justify-between px-8">
+      <div className="flex h-40 items-center justify-between px-8">
         <Link href="/">
               <Image
                 src="/images/praxiszentrum-logo.png"
                 alt="Praxiszentrum im Ring Logo"
                 data-ai-hint="practice logo"
-                width={520}
-                height={105}
-                className="h-auto w-auto max-w-[300px] md:max-w-[520px]"
+                width={1143}
+                height={231}
+                className="h-auto w-auto max-w-[507px] md:max-w-[879px]"
                 priority
               />
         </Link>
 
-        <nav className="hidden md:flex md:items-center md:space-x-4">
+        <nav ref={navRef} className="relative hidden md:flex md:items-center md:space-x-4" onMouseLeave={() => {
+            const activeLink = navRef.current?.querySelector<HTMLElement>(`[data-active="true"]`);
+            if (activeLink) {
+                updateIndicator(activeLink);
+            } else {
+                hideIndicator();
+            }
+        }}>
+            <div ref={indicatorRef} className="nav-link-indicator bg-accent" style={{ opacity: 0, transition: isInitialLoad ? 'none' : 'width 0.3s, height 0.3s, left 0.3s, opacity 0.3s' }} />
             {mainNavLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
                 <Link
                     key={link.href}
                     href={link.href}
+                    onMouseEnter={(e) => updateIndicator(e.currentTarget)}
+                    data-active={isActive}
                     className={cn(
-                    'whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                    isActive
-                        ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                        : 'text-muted-foreground hover:text-primary'
-                    )}
+                      'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                      'text-muted-foreground hover:text-primary'
+                      )}
                 >
+                    {isActive && <div className="absolute inset-0 -z-10 rounded-md bg-primary" />}
                     {link.label}
                 </Link>
                 );
             })}
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <div className={cn(
-                        'flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                        (pathname === '/oeffnungszeiten' || pathname === '/praxisferien')
-                            ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                            : 'text-muted-foreground hover:text-primary'
+                    <div 
+                      onMouseEnter={(e) => updateIndicator(e.currentTarget)}
+                      data-active={pathname === '/oeffnungszeiten' || pathname === '/praxisferien'}
+                      className={cn(
+                        'relative z-10 flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                        'text-muted-foreground hover:text-primary'
                     )}>
+                       {(pathname === '/oeffnungszeiten' || pathname === '/praxisferien') && <div className="bg-primary -z-10 absolute inset-0 rounded-md" />}
                         Zeiten <ChevronDown className="h-4 w-4" />
                     </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
+                <DropdownMenuContent onMouseLeave={() => {
+                     const activeLink = navRef.current?.querySelector<HTMLElement>(`[data-active="true"]`);
+                     if (activeLink) {
+                         updateIndicator(activeLink);
+                     } else {
+                         hideIndicator();
+                     }
+                }}>
                     {zeitenLinks.map(link => (
                         <DropdownMenuItem key={link.href} asChild>
                             <Link href={link.href}>{link.label}</Link>
@@ -141,14 +199,15 @@ export function Header() {
                  <Link
                  key={notfallLink.href}
                  href={notfallLink.href}
+                 onMouseEnter={(e) => updateIndicator(e.currentTarget)}
+                 data-active={pathname === notfallLink.href}
                  className={cn(
-                 'whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                 pathname === notfallLink.href
-                     ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                     : 'text-muted-foreground hover:text-primary',
+                  'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                 'text-muted-foreground hover:text-primary',
                  notfallLink.label === 'NOTFALL' ? 'uppercase' : ''
                  )}
              >
+                 {pathname === notfallLink.href && <div className="bg-primary -z-10 absolute inset-0 rounded-md" />}
                  {notfallLink.label}
              </Link>
             )}
@@ -217,7 +276,7 @@ export function Header() {
                             </div>
                         );
                     }
-                    if (link.href === '/notfall' || link.href === '/team' || link.href === '/') {
+                    if (link.href === '/notfall' || link.href === '/team' || link.href === '/' || link.href === '/leistungen' || link.href === '/medikamente') {
                       return (
                         <Link
                             key={link.href}

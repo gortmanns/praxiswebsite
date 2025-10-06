@@ -50,3 +50,7 @@
     @apply text-foreground;
   }
 }
+
+.nav-link-indicator {
+  @apply absolute -z-10 inset-0 rounded-md;
+}
