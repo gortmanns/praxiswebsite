@@ -134,7 +134,7 @@ export function Header() {
                 data-ai-hint="practice logo"
                 width={1511}
                 height={306}
-                className="h-auto w-[523px]"
+                className="h-auto w-[601px]"
                 priority
               />
         </Link>
