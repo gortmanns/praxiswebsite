@@ -60,7 +60,7 @@ const dateSchema = z.preprocess((arg) => {
 const holidaySchema = z.object({
   start: dateSchema,
   end: dateSchema,
-  name: z.string().min(2, { message: 'Der Name muss mindestens 2 Zeichen lang sein.' }),
+  name: z.string().min(2, { message: 'Die Bezeichnung muss mindestens 2 Zeichen lang sein.' }),
 }).refine((data) => {
     if (data.start && data.end) {
         return data.end >= data.start;
@@ -353,7 +353,7 @@ export default function HolidaysPage() {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Ferienname</FormLabel>
+                        <FormLabel>Bezeichnung</FormLabel>
                         <FormControl>
                           <Input placeholder="z.B. Weihnachtsferien" {...field} disabled={isSubmitting} />
                         </FormControl>
@@ -401,7 +401,7 @@ export default function HolidaysPage() {
                   <TableRow className="border-b-0 bg-primary hover:bg-primary/90">
                     <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground">Erster Ferientag</TableHead>
                     <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground">Letzter Ferientag</TableHead>
-                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground">Ferienname</TableHead>
+                    <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground">Bezeichnung</TableHead>
                     <TableHead className="py-3 px-4 text-left text-sm font-semibold text-primary-foreground">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -412,7 +412,7 @@ export default function HolidaysPage() {
                         <TableCell className="py-4 px-4"><Skeleton className="h-5 w-24" /></TableCell>
                         <TableCell className="py-4 px-4"><Skeleton className="h-5 w-24" /></TableCell>
                         <TableCell className="py-4 px-4"><Skeleton className="h-5 w-40" /></TableCell>
-                        <TableCell className="py-4 px-4 text-right space-x-2"><Skeleton className="h-9 w-24 inline-block" /><Skeleton className="h-9 w-24 inline-block" /></TableCell>
+                        <TableCell className="py-4 px-4 text-left space-x-2"><Skeleton className="h-9 w-24 inline-block" /><Skeleton className="h-9 w-24 inline-block" /></TableCell>
                       </TableRow>
                     ))
                   ) : holidays.length > 0 ? (
@@ -464,3 +464,5 @@ export default function HolidaysPage() {
     </>
   );
 }
+
+    
