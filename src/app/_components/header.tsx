@@ -140,7 +140,7 @@ export function Header() {
                     href={link.href}
                     onMouseEnter={handleMouseEnter}
                     className={cn(
-                        'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold transition-colors',
+                        'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold uppercase transition-colors',
                         isActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}
                 >
@@ -153,7 +153,7 @@ export function Header() {
                     <div 
                       onMouseEnter={handleMouseEnter}
                       className={cn(
-                        'relative z-10 flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold transition-colors',
+                        'relative z-10 flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold uppercase transition-colors',
                         zeitenActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}>
                         Zeiten <ChevronDown className="h-4 w-4" />
@@ -162,7 +162,7 @@ export function Header() {
                 <DropdownMenuContent onMouseLeave={handleMouseLeave}>
                     {zeitenLinks.map(link => (
                         <DropdownMenuItem key={link.href} asChild>
-                            <Link href={link.href}>{link.label}</Link>
+                            <Link href={link.href} className="uppercase">{link.label}</Link>
                         </DropdownMenuItem>
                     ))}
                 </DropdownMenuContent>
@@ -174,8 +174,8 @@ export function Header() {
                  href={notfallLink.href}
                  onMouseEnter={handleMouseEnter}
                  className={cn(
-                  'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold transition-colors',
-                  pathname === notfallLink.href ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground',
+                  'relative z-10 whitespace-nowrap rounded-md bg-destructive/80 px-3 py-2 text-xl font-bold text-destructive-foreground transition-colors hover:bg-destructive/90',
+                  pathname === notfallLink.href && 'bg-destructive ring-2 ring-destructive-foreground ring-offset-2 ring-offset-background',
                   'uppercase'
                  )}
              >
@@ -228,7 +228,7 @@ export function Header() {
                         return (
                             <div key={link.href}>
                                 <h3 className={cn(
-                                    'rounded-md px-3 py-2 text-lg font-bold',
+                                    'rounded-md px-3 py-2 text-lg font-bold uppercase',
                                     (isActive || pathname === '/praxisferien') ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'
                                 )}>
                                     Zeiten
@@ -250,17 +250,30 @@ export function Header() {
                             </div>
                         );
                     }
-                    if (link.href === '/notfall' || link.href === '/team' || link.href === '/' || link.href === '/leistungen' || link.href === '/medikamente') {
+                    if (link.href === '/notfall') {
+                      return (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className={cn(
+                            'rounded-md px-3 py-2 text-lg font-bold text-destructive-foreground transition-colors uppercase',
+                            isActive ? 'bg-destructive' : 'bg-destructive/80 hover:bg-destructive'
+                          )}
+                        >
+                          {link.label}
+                        </Link>
+                      );
+                    }
+                    if (link.href === '/team' || link.href === '/' || link.href === '/leistungen' || link.href === '/medikamente') {
                       return (
                         <Link
                             key={link.href}
                             href={link.href}
                             className={cn(
-                            'rounded-md px-3 py-2 text-lg font-bold transition-colors',
+                            'rounded-md px-3 py-2 text-lg font-bold transition-colors uppercase',
                             isActive
                                 ? 'bg-primary text-primary-foreground'
-                                : 'text-muted-foreground hover:text-primary',
-                            link.label === 'NOTFALL' ? 'uppercase' : ''
+                                : 'text-muted-foreground hover:text-primary'
                             )}
                         >
                             {link.label}
