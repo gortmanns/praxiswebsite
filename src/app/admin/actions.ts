@@ -9,7 +9,10 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
-    await signIn('credentials', formData);
+    await signIn('credentials', Object.fromEntries(formData));
+    // Redirect is now handled by the middleware upon successful sign-in.
+    // However, to be explicit, we can redirect here.
+    redirect('/admin/dashboard');
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
@@ -19,8 +22,6 @@ export async function authenticate(
           return 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.';
       }
     }
-    // Redirect to dashboard on success, required for Next.js 15
-    // see: https://nextjs.org/docs/app/building-your-application/routing/redirecting#in-server-actions
-    redirect('/admin/dashboard');
+    throw error;
   }
 }
