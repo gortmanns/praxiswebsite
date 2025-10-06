@@ -14,7 +14,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu";
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -34,33 +34,10 @@ const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
-const useSlidingIndicator = () => {
-    const navRef = useRef<HTMLElement>(null);
-    const indicatorRef = useRef<HTMLDivElement>(null);
-
-    const updateIndicator = (target: HTMLElement) => {
-        if (!navRef.current || !indicatorRef.current) return;
-        const navRect = navRef.current.getBoundingClientRect();
-        const targetRect = target.getBoundingClientRect();
-        indicatorRef.current.style.width = `${targetRect.width}px`;
-        indicatorRef.current.style.height = `${targetRect.height}px`;
-        indicatorRef.current.style.left = `${targetRect.left - navRect.left}px`;
-        indicatorRef.current.style.opacity = '1';
-    };
-
-    const hideIndicator = () => {
-        if (!indicatorRef.current) return;
-        indicatorRef.current.style.opacity = '0';
-    };
-
-    return { navRef, indicatorRef, updateIndicator, hideIndicator };
-};
-
-
 export function Header() {
   const pathname = usePathname();
-  const { navRef, indicatorRef, updateIndicator, hideIndicator } = useSlidingIndicator();
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const navRef = useRef<HTMLElement>(null);
+  const [indicatorStyle, setIndicatorStyle] = useState({});
 
   const navLinks = [
     { href: '/', label: 'Startseite' },
@@ -74,26 +51,35 @@ export function Header() {
   const mainNavLinks = navLinks.filter(l => !['/oeffnungszeiten', '/notfall'].includes(l.href));
   const notfallLink = navLinks.find(l => l.href === '/notfall');
 
-
   const zeitenLinks = [
     { href: '/oeffnungszeiten', label: 'Öffnungs- & Telefonzeiten' },
     { href: '/praxisferien', label: 'Praxisferien' }
   ];
 
-  useEffect(() => {
-    const activeLink = navRef.current?.querySelector<HTMLElement>(`[data-active="true"]`);
-    if (activeLink) {
-        setTimeout(() => {
-            if (indicatorRef.current) {
-                indicatorRef.current.style.transition = 'width 0.3s, height 0.3s, left 0.3s, opacity 0.3s';
-            }
-            setIsInitialLoad(false);
-        }, 100);
-        updateIndicator(activeLink);
+  const updateIndicator = useCallback((target: HTMLElement | null) => {
+    if (target && navRef.current) {
+      const navRect = navRef.current.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      setIndicatorStyle({
+        '--indicator-width': `${targetRect.width}px`,
+        '--indicator-height': `${targetRect.height}px`,
+        '--indicator-left': `${targetRect.left - navRect.left}px`,
+        opacity: 1,
+      });
     } else {
-        hideIndicator();
+      setIndicatorStyle({ opacity: 0 });
     }
-}, [pathname, updateIndicator, hideIndicator]);
+  }, []);
+
+  const hideIndicator = useCallback(() => {
+    const activeLink = navRef.current?.querySelector<HTMLElement>('[data-active="true"]');
+    updateIndicator(activeLink || null);
+  }, [updateIndicator]);
+
+  useEffect(() => {
+    const activeLink = navRef.current?.querySelector<HTMLElement>('[data-active="true"]');
+    updateIndicator(activeLink);
+  }, [pathname, updateIndicator]);
 
 
   return (
@@ -134,20 +120,15 @@ export function Header() {
                 data-ai-hint="practice logo"
                 width={1314}
                 height={266}
-                className="h-auto w-auto max-w-[322px] md:max-w-[552px]"
+                className="h-auto w-auto max-w-[370px] md:max-w-[635px]"
                 priority
               />
         </Link>
 
-        <nav ref={navRef} className="relative hidden md:flex md:items-center md:space-x-4" onMouseLeave={() => {
-            const activeLink = navRef.current?.querySelector<HTMLElement>(`[data-active="true"]`);
-            if (activeLink) {
-                updateIndicator(activeLink);
-            } else {
-                hideIndicator();
-            }
-        }}>
-            <div ref={indicatorRef} className="nav-link-indicator bg-accent" style={{ opacity: 0, transition: isInitialLoad ? 'none' : 'width 0.3s, height 0.3s, left 0.3s, opacity 0.3s' }} />
+        <nav ref={navRef} className="relative hidden md:flex md:items-center md:space-x-4" onMouseLeave={hideIndicator}>
+            <div className="nav-link-indicator bg-primary" />
+            <div className="nav-link-indicator-hover bg-accent" style={indicatorStyle} />
+
             {mainNavLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -181,14 +162,7 @@ export function Header() {
                         Zeiten <ChevronDown className="h-4 w-4" />
                     </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent onMouseLeave={() => {
-                     const activeLink = navRef.current?.querySelector<HTMLElement>(`[data-active="true"]`);
-                     if (activeLink) {
-                         updateIndicator(activeLink);
-                     } else {
-                         hideIndicator();
-                     }
-                }}>
+                <DropdownMenuContent onMouseLeave={hideIndicator}>
                     {zeitenLinks.map(link => (
                         <DropdownMenuItem key={link.href} asChild>
                             <Link href={link.href}>{link.label}</Link>
