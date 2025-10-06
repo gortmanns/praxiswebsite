@@ -37,7 +37,7 @@ const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export function Header() {
   const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
-  const [indicatorStyle, setIndicatorStyle] = useState({});
+  const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({ opacity: 0 });
 
   const navLinks = [
     { href: '/', label: 'Startseite' },
@@ -64,17 +64,18 @@ export function Header() {
         '--indicator-width': `${targetRect.width}px`,
         '--indicator-height': `${targetRect.height}px`,
         '--indicator-left': `${targetRect.left - navRect.left}px`,
-        opacity: 1,
+        'opacity': 1,
       });
     } else {
       setIndicatorStyle({ opacity: 0 });
     }
   }, []);
-
+  
   const hideIndicator = useCallback(() => {
     const activeLink = navRef.current?.querySelector<HTMLElement>('[data-active="true"]');
     updateIndicator(activeLink || null);
   }, [updateIndicator]);
+
 
   useEffect(() => {
     const activeLink = navRef.current?.querySelector<HTMLElement>('[data-active="true"]');
@@ -120,13 +121,13 @@ export function Header() {
                 data-ai-hint="practice logo"
                 width={1511}
                 height={306}
-                className="h-auto w-auto max-w-[425px] md:max-w-[730px]"
+                className="h-auto w-[490px]"
                 priority
               />
         </Link>
 
         <nav ref={navRef} className="relative hidden md:flex md:items-center md:space-x-4" onMouseLeave={hideIndicator}>
-            <div className="nav-link-indicator-hover bg-accent" style={indicatorStyle} />
+            <div className="nav-link-indicator bg-accent" style={indicatorStyle} />
 
             {mainNavLinks.map((link) => {
                 const isActive = pathname === link.href;

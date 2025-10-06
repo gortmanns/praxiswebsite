@@ -51,9 +51,10 @@
   }
 }
 
-.nav-link-indicator-hover {
-  @apply absolute -z-10 rounded-md transition-all duration-300;
-  width: var(--indicator-width);
-  height: var(--indicator-height);
-  transform: translateX(var(--indicator-left));
+.nav-link-indicator {
+  @apply absolute rounded-md transition-all duration-300 ease-in-out;
+  width: var(--indicator-width, 0);
+  height: var(--indicator-height, 0);
+  transform: translateX(var(--indicator-left, 0));
+  z-index: 0;
 }

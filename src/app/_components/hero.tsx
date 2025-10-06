@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export function Hero() {
   return (
-    <section className="relative h-[550px] w-full">
+    <section className="relative w-full aspect-[1511/721]">
       <Image
         src="/images/luftbild.jpg"
         alt="Aerial view of the practice location."
