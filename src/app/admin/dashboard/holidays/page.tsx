@@ -188,9 +188,9 @@ export default function HolidaysPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Ferienname</TableHead>
                     <TableHead>Erster Ferientag</TableHead>
                     <TableHead>Letzter Ferientag</TableHead>
+                    <TableHead>Ferienname</TableHead>
                     <TableHead className="text-right">Aktion</TableHead>
                   </TableRow>
                 </TableHeader>
