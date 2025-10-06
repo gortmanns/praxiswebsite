@@ -43,7 +43,7 @@ export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
             } catch (error) {
                 const authError = error as AuthError;
                 
-                if (authError.code === 'auth/user-not-found' && credentials.username === 'admin' && credentials.password === '1234') {
+                if (authError.code === 'auth/user-not-found' && credentials.username === 'admin' && String(credentials.password) === '1234') {
                     // If user does not exist, and it's the initial admin setup, create them
                     try {
                         const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -65,13 +65,9 @@ export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
                         console.error("Error creating user:", creationError);
                         return null;
                     }
-                } else if (authError.code === 'auth/wrong-password') {
+                } else {
+                    // For other errors (like wrong password), or if user-not-found but not the initial admin
                     console.log('Invalid credentials');
-                    return null;
-                }
-                else {
-                    // For other errors, or if user-not-found but not the initial admin
-                    console.error("Authentication error:", authError.message);
                     return null;
                 }
             }
