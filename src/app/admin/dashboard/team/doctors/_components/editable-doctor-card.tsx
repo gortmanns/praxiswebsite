@@ -19,7 +19,7 @@ Projektmanagement im Gesundheitswesen in Europa und Australien
 Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)
 Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien
 Direktor der Memory-Strategie (Elektronisches Medikamenten-Management und Elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien
-</Meilensteine>
+</Meilenstealen>
 ---
 Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz
 <Meilensteine>
@@ -28,50 +28,11 @@ Kantonsspital Baselland (KSBL)
 Kantonsspital Winterthur (KSW)
 Kantonsspital Wil (SRFT)
 Hausarztpraxis in Winterthur
-</Meilensteine>
+</Meilenstealen>
 ---
 Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)
 Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)
 `;
-
-const VitaSection = ({ content }: { content: string }) => {
-    const sections = content.split('---').map(s => s.trim());
-
-    return (
-        <ul className="space-y-1.5 leading-tight">
-            {sections.map((section, sectionIndex) => (
-                <React.Fragment key={sectionIndex}>
-                    {section.split('\n').map((line, lineIndex) => {
-                        if (line.startsWith('<Meilensteine>')) {
-                            const subItemsText = section.split('<Meilensteine>')[1] || '';
-                            const subItems = subItemsText.split('\n').filter(item => item.trim() !== '' && !item.startsWith('</Meilensteine>'));
-                            const mainMilestoneLine = line.replace('<Meilensteine>', '').trim();
-                            
-                            return (
-                                <li key={`${sectionIndex}-${lineIndex}`} className="font-bold text-primary mt-6 mb-4">
-                                    {mainMilestoneLine}
-                                    <div className="mt-1 pl-9 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
-                                        <h5 className="mb-1 tracking-wide text-background/90">Meilensteine</h5>
-                                        <ul className="list-disc space-y-px pl-5 font-normal">
-                                            {subItems.map((item, subIndex) => (
-                                                <li key={`${sectionIndex}-${lineIndex}-${subIndex}`}>{item.trim()}</li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </li>
-                            );
-                        }
-                        if (line.includes('</Meilensteine>') || (section.includes('<Meilensteine>') && !line.startsWith('<Meilensteine>'))) {
-                            return null;
-                        }
-                        return <li key={`${sectionIndex}-${lineIndex}`}>{line}</li>;
-                    })}
-                    {sectionIndex < sections.length - 1 && <li className='py-2'></li>}
-                </React.Fragment>
-            ))}
-        </ul>
-    );
-};
 
 
 export const EditableDoctorCard = () => {
