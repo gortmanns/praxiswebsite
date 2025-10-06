@@ -1,15 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import holidays from '@/lib/holidays.json';
 import { format, addDays, differenceInDays, isWithinInterval } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where, orderBy } from 'firebase/firestore';
 
 interface Holiday {
     name: string;
-    start: string;
-    end: string;
+    start: Date;
+    end: Date;
 }
 
 interface BannerInfo {
@@ -18,50 +19,75 @@ interface BannerInfo {
 }
 
 function formatDate(date: Date): string {
+    // Da die Daten von Firestore bereits als Date-Objekte kommen, ist keine manuelle Zeitzonenkorrektur mehr nötig.
     return format(date, 'd. MMMM yyyy', { locale: de });
 }
 
 export function HolidayBanner() {
+    const firestore = useFirestore();
     const [bannerInfo, setBannerInfo] = useState<BannerInfo | null>(null);
 
+    const twoWeeksFromNow = addDays(new Date(), 14);
+
+    const holidaysQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        // Query für Ferien, die entweder jetzt aktiv sind oder in den nächsten 14 Tagen beginnen.
+        return query(
+            collection(firestore, 'holidays'),
+            where('end', '>=', new Date()), // Nur zukünftige oder aktuelle Ferien
+            orderBy('end', 'asc')
+        );
+    }, [firestore]);
+
+    const { data: holidays, isLoading } = useCollection<Holiday>(holidaysQuery);
+
     useEffect(() => {
+        if (isLoading || !holidays) {
+            return;
+        }
+
         const now = new Date();
         now.setHours(0, 0, 0, 0); 
 
         let activeBanner: BannerInfo | null = null;
+        
+        // Da die Query bereits vorsortiert ist (nach Enddatum), nehmen wir den relevantesten Eintrag.
+        // Wir sortieren hier nochmals nach Startdatum, um den *nächsten* Beginn zu finden.
+        const sortedHolidays = [...holidays].sort((a, b) => a.start.getTime() - b.start.getTime());
 
-        for (const holiday of holidays) {
-            const startDate = new Date(holiday.start);
-            const endDate = new Date(holiday.end);
-            // Adjust dates to be timezone-independent by considering them as UTC
-            const zonedStartDate = new Date(startDate.valueOf() + startDate.getTimezoneOffset() * 60 * 1000);
-            const zonedEndDate = new Date(endDate.valueOf() + endDate.getTimezoneOffset() * 60 * 1000);
+        for (const holiday of sortedHolidays) {
+            const startDate = holiday.start;
+            const endDate = holiday.end;
+            
+            // Setze Stunden auf definierte Werte, um reine Datumsvergleiche zu gewährleisten.
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setHours(23, 59, 59, 999);
 
-            zonedStartDate.setHours(0,0,0,0);
-            zonedEndDate.setHours(23,59,59,999);
-
-            if (isWithinInterval(now, { start: zonedStartDate, end: zonedEndDate })) {
-                const dayAfterEnd = addDays(zonedEndDate, 1);
+            // Prüfung 1: Sind wir aktuell in den Ferien?
+            if (isWithinInterval(now, { start: startDate, end: endDate })) {
+                const dayAfterEnd = addDays(endDate, 1);
+                dayAfterEnd.setHours(0, 0, 0, 0);
                 activeBanner = {
-                    text: `Ferienhalber bleibt das Praxiszentrum vom ${formatDate(zonedStartDate)} bis ${formatDate(zonedEndDate)} geschlossen. Nach den ${holiday.name} sind wir ab dem ${formatDate(dayAfterEnd)} wieder wie gewohnt für Sie erreichbar. Die Notfall-Telefonnummern finden Sie im Menü unter dem Punkt NOTFALL.`,
+                    text: `Ferienhalber bleibt das Praxiszentrum vom ${formatDate(startDate)} bis ${formatDate(endDate)} geschlossen. Nach den ${holiday.name} sind wir ab dem ${formatDate(dayAfterEnd)} wieder wie gewohnt für Sie erreichbar. Die Notfall-Telefonnummern finden Sie im Menü unter dem Punkt NOTFALL.`,
                     type: 'info',
                 };
-                break; 
+                break; // Wichtigste Meldung, keine weitere Prüfung nötig
             }
 
-            const diff = differenceInDays(zonedStartDate, now);
+            // Prüfung 2: Stehen die Ferien kurz bevor (innerhalb der nächsten 14 Tage)?
+            const diff = differenceInDays(startDate, now);
             if (diff >= 0 && diff <= 14) {
                  activeBanner = {
-                    text: `Liebe Patienten, vom ${formatDate(zonedStartDate)} bis ${formatDate(zonedEndDate)} bleibt das Praxiszentrum ferienhalber geschlossen. Bitte beziehen Sie allenfalls benötigte Medikamente noch rechtzeitig vorher.`,
+                    text: `Liebe Patienten, vom ${formatDate(startDate)} bis ${formatDate(endDate)} bleibt das Praxiszentrum ferienhalber geschlossen. Bitte beziehen Sie allenfalls benötigte Medikamente noch rechtzeitig vorher.`,
                     type: 'warning',
                 };
-                break;
+                break; // Nächstwichtigste Meldung, keine weitere Prüfung nötig
             }
         }
         
         setBannerInfo(activeBanner);
 
-    }, []);
+    }, [holidays, isLoading]);
 
     if (!bannerInfo) {
         return null;
