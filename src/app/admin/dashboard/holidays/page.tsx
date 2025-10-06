@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { CalendarIcon, Trash2, AlertCircle, CheckCircle, Pencil, TriangleAlert } from 'lucide-react';
+import { CalendarIcon, Trash2, AlertCircle, CheckCircle, Pencil, TriangleAlert, Info } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useFirestore } from '@/firebase';
 import { collection, addDoc, getDocs, query, orderBy, deleteDoc, doc, updateDoc } from 'firebase/firestore';
@@ -84,7 +84,7 @@ export default function HolidaysPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [holidayToDelete, setHolidayToDelete] = useState<string | null>(null);
-  const [status, setStatus] = useState<{ type: 'success' | 'error' | 'warning'; message: string } | null>(null);
+  const [status, setStatus] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
   const [editMode, setEditMode] = useState<string | null>(null);
   const [conflictingHolidayId, setConflictingHolidayId] = useState<string | null>(null);
 
@@ -237,7 +237,7 @@ export default function HolidaysPage() {
     form.setValue('name', holiday.name);
     form.setValue('start', holiday.start);
     form.setValue('end', holiday.end);
-    setStatus(null);
+    setStatus({ type: 'info', message: 'Sie können nun den markierten Termin bearbeiten.' });
     setConflictingHolidayId(null);
     form.clearErrors();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -247,7 +247,7 @@ export default function HolidaysPage() {
     if (!status) return null;
 
     const commonClasses = "border-2";
-    let variant: 'default' | 'destructive' | 'warning' = 'default';
+    let variant: 'default' | 'destructive' | 'warning' | 'info' = 'default';
     let icon = <CheckCircle className="h-4 w-4" />;
     let title = "Erfolg";
     let alertClasses = "border-green-500 text-green-800 bg-green-50";
@@ -265,10 +265,16 @@ export default function HolidaysPage() {
             title = "Warnung";
             alertClasses = "border-yellow-500 text-yellow-800 bg-yellow-50";
             break;
+        case 'info':
+            variant = 'info';
+            icon = <Info className="h-4 w-4" />;
+            title = "Information";
+            alertClasses = "border-blue-500 text-blue-800 bg-blue-50";
+            break;
     }
     
     return (
-        <Alert className={cn(commonClasses, alertClasses)}>
+        <Alert variant={variant} className={cn(commonClasses, alertClasses)}>
             {icon}
             <AlertTitle>{title}</AlertTitle>
             <AlertDescription>
@@ -447,7 +453,10 @@ export default function HolidaysPage() {
                     ))
                   ) : holidays.length > 0 ? (
                     holidays.map((holiday) => (
-                      <TableRow key={holiday.id} className={cn(conflictingHolidayId === holiday.id && "bg-yellow-100/70")}>
+                      <TableRow key={holiday.id} className={cn(
+                          conflictingHolidayId === holiday.id && "bg-yellow-100/70",
+                          editMode === holiday.id && "bg-blue-100/70"
+                        )}>
                         <TableCell className="py-3 px-4 font-bold">{format(holiday.start, 'dd.MM.yyyy')}</TableCell>
                         <TableCell className="py-3 px-4 font-bold">{format(holiday.end, 'dd.MM.yyyy')}</TableCell>
                         <TableCell className="py-3 px-4 font-bold">{holiday.name}</TableCell>
