@@ -1,3 +1,4 @@
+
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
@@ -5,45 +6,35 @@ import {
   getAuth, 
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  AuthError,
-  User
+  type AuthError,
 } from 'firebase/auth';
 import { doc, setDoc, getFirestore, serverTimestamp } from 'firebase/firestore';
-import { initializeFirebase } from '@/firebase';
+import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
+import { firebaseConfig } from '@/firebase/config';
 
-// Initialize Firebase Admin SDK
-const { firebaseApp } = initializeFirebase();
+// Server-side Firebase initialization
+function initializeServerSideFirebase(): FirebaseApp {
+    if (getApps().length) {
+        return getApp();
+    }
+    return initializeApp(firebaseConfig);
+}
+
+const firebaseApp = initializeServerSideFirebase();
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
-
-async function getUser(email: string): Promise<User | null> {
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, '1234');
-        return userCredential.user;
-    } catch (error) {
-        const authError = error as AuthError;
-        if (authError.code === 'auth/user-not-found') {
-            return null;
-        }
-        if (authError.code === 'auth/wrong-password') {
-            return null;
-        }
-        // Re-throw other errors
-        throw error;
-    }
-}
  
 export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
   ...authConfig,
   providers: [
     Credentials({
         async authorize(credentials) {
-            if (credentials.username !== 'admin' || credentials.password !== '1234') {
+            if (!credentials.username || !credentials.password) {
                 return null;
             }
 
-            const email = 'admin@example.com';
-            const password = '1234';
+            const email = `${credentials.username}@example.com`;
+            const password = credentials.password as string;
 
             try {
                 // Try to sign in
@@ -51,8 +42,9 @@ export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
                 return { id: userCredential.user.uid, name: userCredential.user.displayName, email: userCredential.user.email };
             } catch (error) {
                 const authError = error as AuthError;
-                if (authError.code === 'auth/user-not-found') {
-                    // If user does not exist, create them
+                
+                if (authError.code === 'auth/user-not-found' && credentials.username === 'admin' && credentials.password === '1234') {
+                    // If user does not exist, and it's the initial admin setup, create them
                     try {
                         const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
                         const user = newUserCredential.user;
@@ -65,7 +57,9 @@ export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
                             createdAt: serverTimestamp(),
                         });
                         
-                        return { id: user.uid, name: user.displayName, email: user.email };
+                        // Retry sign-in after creation
+                        const finalUserCredential = await signInWithEmailAndPassword(auth, email, password);
+                        return { id: finalUserCredential.user.uid, name: finalUserCredential.user.displayName, email: finalUserCredential.user.email };
 
                     } catch (creationError) {
                         console.error("Error creating user:", creationError);
@@ -73,10 +67,11 @@ export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
                     }
                 } else if (authError.code === 'auth/wrong-password') {
                     console.log('Invalid credentials');
-                    return null; // For wrong password
+                    return null;
                 }
                 else {
-                    console.error("Authentication error:", error);
+                    // For other errors, or if user-not-found but not the initial admin
+                    console.error("Authentication error:", authError.message);
                     return null;
                 }
             }
