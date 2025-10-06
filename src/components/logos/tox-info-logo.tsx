@@ -28,7 +28,7 @@ export function ToxInfoLogo({ className }: { className?: string }) {
         x="137.8"
         y="75.2"
         className="tox-text tox-black"
-        fontSize="88.7"
+        fontSize="88.Tox"
       >
         Info
       </text>
