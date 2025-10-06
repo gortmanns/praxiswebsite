@@ -12,7 +12,6 @@ import {
   orderBy,
   Timestamp,
   getDocs,
-  writeBatch,
 } from 'firebase/firestore';
 import { useFirebase } from '@/firebase';
 import { Button } from '@/components/ui/button';
@@ -26,7 +25,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { X, AlertTriangle } from 'lucide-react';
+import { X } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -37,7 +36,7 @@ import {
 } from '@/components/ui/form';
 import { parse } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/;
 
@@ -67,8 +66,8 @@ export default function FerienterminePage() {
       end: '',
     },
   });
-  
-  const fetchHolidays = async () => {
+
+  const fetchHolidays = useCallback(async () => {
     if (!firestore) return;
     setLoading(true);
     try {
@@ -78,28 +77,22 @@ export default function FerienterminePage() {
       
       const holidaysData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })) as Holiday[];
       setHolidays(holidaysData);
-
     } catch (error) {
       console.error("Error fetching holidays: ", error);
       toast({ variant: 'destructive', title: 'Fehler', description: 'Daten konnten nicht geladen werden.' });
     } finally {
       setLoading(false);
     }
-  };
+  }, [firestore, toast]);
 
   useEffect(() => {
-    if (firestore) {
-      fetchHolidays();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firestore]);
-
+    fetchHolidays();
+  }, [fetchHolidays]);
 
   const onSubmit = async (data: HolidayForm) => {
     if (!firestore) return;
     try {
       const startDate = parse(data.start, 'dd.MM.yyyy', new Date());
-      
       const newHolidayData = { 
         name: data.name,
         start: data.start,
@@ -108,11 +101,14 @@ export default function FerienterminePage() {
       };
 
       const holidaysCollection = collection(firestore, 'holidays');
-      await addDoc(holidaysCollection, newHolidayData);
+      const docRef = await addDoc(holidaysCollection, newHolidayData);
+      
+      // Optimistic UI update
+      setHolidays(prevHolidays => [...prevHolidays, { ...newHolidayData, id: docRef.id }].sort((a, b) => a.startDate.toMillis() - b.startDate.toMillis()));
       
       form.reset();
       toast({ title: 'Erfolg', description: 'Ferientermin wurde hinzugefügt.' });
-      fetchHolidays(); // Refresh the list
+
     } catch (error) {
       console.error('Error adding holiday: ', error);
       toast({ variant: 'destructive', title: 'Fehler', description: 'Termin konnte nicht hinzugefügt werden.' });
