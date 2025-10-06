@@ -56,5 +56,6 @@
   width: var(--indicator-width, 0);
   height: var(--indicator-height, 0);
   transform: translateX(var(--indicator-left, 0));
-  z-index: 0;
+  z-index: 1;
+  opacity: var(--indicator-opacity, 0);
 }

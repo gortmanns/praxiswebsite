@@ -66,22 +66,12 @@ export function Header() {
         '--indicator-left': `${targetRect.left - navRect.left}px`,
         'opacity': 1,
       });
-    } else {
-      setIndicatorStyle({ opacity: 0 });
     }
   }, []);
   
   const hideIndicator = useCallback(() => {
-    const activeLink = navRef.current?.querySelector<HTMLElement>('[data-active="true"]');
-    updateIndicator(activeLink || null);
-  }, [updateIndicator]);
-
-
-  useEffect(() => {
-    const activeLink = navRef.current?.querySelector<HTMLElement>('[data-active="true"]');
-    updateIndicator(activeLink);
-  }, [pathname, updateIndicator]);
-
+    setIndicatorStyle({ opacity: 0 });
+  }, []);
 
   return (
     <header className="w-full border-b bg-background">
@@ -91,19 +81,19 @@ export function Header() {
                 <div className="flex items-center gap-6 text-sm">
                     <a
                     href="tel:0313162600"
-                    className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
+                    className="flex items-center gap-2 font-bold text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
                     >
                     <PhoneIcon className="h-[21px] w-[21px]" />
                     <span>031 316 26 00</span>
                     </a>
-                    <div className="flex items-center gap-2 font-medium text-sm text-primary-foreground">
+                    <div className="flex items-center gap-2 font-bold text-sm text-primary-foreground">
                     <PrinterIcon className="h-[21px] w-[21px]" />
                     <span>031 589 68 60</span>
                     </div>
                     <ObfuscatedLink
                     user="empfang"
                     domain="praxiszentrum-im-ring.ch"
-                    className="flex items-center gap-2 font-medium text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
+                    className="flex items-center gap-2 font-bold text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
                     >
                     <MailIcon className="h-[21px] w-[21px]" />
                     <span>empfang@praxiszentrum-im-ring.ch</span>
@@ -121,7 +111,7 @@ export function Header() {
                 data-ai-hint="practice logo"
                 width={1511}
                 height={306}
-                className="h-auto w-[563px]"
+                className="h-auto w-[647px]"
                 priority
               />
         </Link>
@@ -139,7 +129,7 @@ export function Header() {
                     data-active={isActive}
                     className={cn(
                       'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                      isActive ? 'text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
+                      isActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                       )}
                 >
                     {link.label}
@@ -153,7 +143,7 @@ export function Header() {
                       data-active={pathname === '/oeffnungszeiten' || pathname === '/praxisferien'}
                       className={cn(
                         'relative z-10 flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                        (pathname === '/oeffnungszeiten' || pathname === '/praxisferien') ? 'text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
+                        (pathname === '/oeffnungszeiten' || pathname === '/praxisferien') ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}>
                         Zeiten <ChevronDown className="h-4 w-4" />
                     </div>
@@ -175,7 +165,7 @@ export function Header() {
                  data-active={pathname === notfallLink.href}
                  className={cn(
                   'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-lg font-bold transition-colors',
-                  pathname === notfallLink.href ? 'text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground',
+                  pathname === notfallLink.href ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground',
                   notfallLink.label === 'NOTFALL' ? 'uppercase' : ''
                  )}
              >
@@ -238,7 +228,10 @@ export function Header() {
                                         <Link
                                             key={subLink.href}
                                             href={subLink.href}
-                                            className="rounded-md px-3 py-2 text-base font-bold text-muted-foreground hover:text-primary"
+                                            className={cn(
+                                                "rounded-md px-3 py-2 text-base font-bold",
+                                                pathname === subLink.href ? "text-primary" : "text-muted-foreground hover:text-primary"
+                                            )}
                                         >
                                             {subLink.label}
                                         </Link>
