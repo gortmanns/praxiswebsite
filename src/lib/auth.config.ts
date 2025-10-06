@@ -12,13 +12,13 @@ export const authConfig = {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login page
       } else if (isLoggedIn) {
-        // Redirect logged-in users trying to access the login page to the dashboard
-        if (nextUrl.pathname === '/admin') {
-          return Response.redirect(new URL('/admin/dashboard', nextUrl));
-        }
+         if (nextUrl.pathname.startsWith('/admin')) {
+            return true;
+         }
+         // This can be adjusted if you want to redirect logged-in users from other pages
       }
       return true;
     },
   },
-  providers: [], // Add providers with an empty array for now
+  providers: [],
 } satisfies NextAuthConfig;
