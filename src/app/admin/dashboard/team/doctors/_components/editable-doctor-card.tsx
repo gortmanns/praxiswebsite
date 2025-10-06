@@ -1,6 +1,7 @@
 
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
+import { UserPlus } from 'lucide-react';
 
 export const EditableDoctorCard = () => (
     <div 
@@ -15,13 +16,9 @@ export const EditableDoctorCard = () => (
                 <CardContent className="h-full p-6 transition-opacity duration-300">
                     <div className="grid h-full grid-cols-3 items-center gap-[4.5%]">
                         <div className="relative col-span-1 h-full w-full">
-                            <Image
-                                src="/images/team/Ortmanns.jpg"
-                                alt="Portrait von G. Ortmanns"
-                                data-ai-hint="doctor portrait"
-                                fill
-                                className="object-cover"
-                            />
+                           <div className="flex h-full w-full items-center justify-center rounded-md bg-muted">
+                                <UserPlus className="h-1/2 w-1/2 text-muted-foreground" />
+                           </div>
                         </div>
                         <div className="col-span-2">
                             <div className="flex h-full flex-col justify-center text-left text-foreground/80">
