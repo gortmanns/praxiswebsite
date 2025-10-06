@@ -37,6 +37,7 @@ export function Footer() {
   const year = new Date().getFullYear();
   const navLinks = [
     { href: '/ueber-uns', label: 'Über uns' },
+    { href: '/jobs', label: 'Jobs & Mitarbeit' },
     { href: '/impressum', label: 'Impressum' },
     { href: '/datenschutzerklaerung', label: 'Datenschutzerklärung' },
   ];
