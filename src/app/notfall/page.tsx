@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Phone } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ToxInfoLogo } from '@/components/logos/tox-info-logo';
 
 export default function NotfallPage() {
   return (
@@ -78,14 +79,7 @@ export default function NotfallPage() {
                   <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
                     <div className="mx-auto w-full max-w-lg">
                       <Link href="https://www.toxinfo.ch/" target="_blank" rel="noopener noreferrer">
-                        <Image
-                          src="/images/toxinfo-logo.svg"
-                          alt="Tox Info Suisse Logo"
-                          data-ai-hint="toxinfo logo"
-                          width={300}
-                          height={100}
-                          className="h-auto w-full"
-                        />
+                        <ToxInfoLogo className="h-auto w-full" />
                       </Link>
                     </div>
                     <div className="space-y-4 text-left">
