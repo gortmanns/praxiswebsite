@@ -89,27 +89,27 @@ export function Header() {
   return (
     <header className="w-full border-b bg-background">
       <div className="bg-primary text-primary-foreground">
-        <div className="w-full px-8">
-            <div className="flex h-10 items-center justify-end">
-                <div className="flex items-center gap-6 text-sm">
+        <div className="w-full px-4 sm:px-8">
+            <div className="flex h-auto items-center justify-center py-2 md:h-10 md:justify-end">
+                <div className="flex flex-col items-center gap-2 text-sm md:flex-row md:gap-6">
                     <a
                     href="tel:0313162600"
-                    className="flex items-center gap-2 font-bold text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
+                    className="flex items-center gap-2 font-bold text-primary-foreground transition-colors hover:text-primary-foreground/80"
                     >
                     <PhoneIcon className="h-[21px] w-[21px]" />
                     <span>031 316 26 00</span>
                     </a>
-                    <div className="flex items-center gap-2 font-bold text-sm text-primary-foreground">
+                    <div className="hidden items-center gap-2 font-bold text-primary-foreground lg:flex">
                     <PrinterIcon className="h-[21px] w-[21px]" />
                     <span>031 589 68 60</span>
                     </div>
                     <ObfuscatedLink
                     user="empfang"
                     domain="praxiszentrum-im-ring.ch"
-                    className="flex items-center gap-2 font-bold text-sm text-primary-foreground transition-colors hover:text-primary-foreground/80"
+                    className="flex items-center gap-2 font-bold text-primary-foreground transition-colors hover:text-primary-foreground/80"
                     >
                     <MailIcon className="h-[21px] w-[21px]" />
-                    <span>empfang@praxiszentrum-im-ring.ch</span>
+                    <span className="break-all">empfang@praxiszentrum-im-ring.ch</span>
                     </ObfuscatedLink>
                 </div>
             </div>
