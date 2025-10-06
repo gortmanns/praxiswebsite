@@ -81,24 +81,29 @@ export default function FerienterminePage() {
     if (!firestore || !holidaysCollection || importDone.current) return;
 
     const importInitialHolidays = async () => {
-      const snapshot = await getDocs(holidaysQuery!);
+      const snapshot = await getDocs(query(holidaysCollection));
       if (snapshot.empty) {
         console.log('Ferien-Datenbank ist leer. Importiere Altdaten...');
         try {
           const batch = writeBatch(firestore);
           initialHolidays.forEach(holiday => {
             const docRef = doc(holidaysCollection); 
+            
             const startDate = new Date(holiday.start);
             const endDate = new Date(holiday.end);
-            // Korrigieren der Datumsformatierung für die Anzeige
-            const startFormatted = `${startDate.getUTCDate().toString().padStart(2, '0')}.${(startDate.getUTCMonth() + 1).toString().padStart(2, '0')}.${startDate.getUTCFullYear()}`;
-            const endFormatted = `${endDate.getUTCDate().toString().padStart(2, '0')}.${(endDate.getUTCMonth() + 1).toString().padStart(2, '0')}.${endDate.getUTCFullYear()}`;
+
+            // Timezone offset correction
+            const zonedStartDate = new Date(startDate.valueOf() + startDate.getTimezoneOffset() * 60 * 1000);
+            const zonedEndDate = new Date(endDate.valueOf() + endDate.getTimezoneOffset() * 60 * 1000);
+
+            const startFormatted = `${zonedStartDate.getDate().toString().padStart(2, '0')}.${(zonedStartDate.getMonth() + 1).toString().padStart(2, '0')}.${zonedStartDate.getFullYear()}`;
+            const endFormatted = `${zonedEndDate.getDate().toString().padStart(2, '0')}.${(zonedEndDate.getMonth() + 1).toString().padStart(2, '0')}.${zonedEndDate.getFullYear()}`;
 
             batch.set(docRef, {
               name: holiday.name,
               start: startFormatted,
               end: endFormatted,
-              startDate: Timestamp.fromDate(startDate),
+              startDate: Timestamp.fromDate(zonedStartDate),
             });
           });
           await batch.commit();
@@ -108,11 +113,12 @@ export default function FerienterminePage() {
           toast({ variant: 'destructive', title: 'Fehler', description: 'Altdaten konnten nicht automatisch importiert werden.' });
         }
       }
+      // Mark import as done regardless of whether it happened or not, to prevent re-running
       importDone.current = true;
     };
 
     importInitialHolidays();
-  }, [firestore, holidaysCollection, holidaysQuery, toast]);
+  }, [firestore, holidaysCollection, toast]);
 
 
   const onSubmit = async (data: HolidayForm) => {
@@ -261,3 +267,5 @@ export default function FerienterminePage() {
     </main>
   );
 }
+
+    
