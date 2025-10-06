@@ -15,6 +15,8 @@ export async function authenticate(
       switch (error.type) {
         case 'CredentialsSignin':
           return 'Ungültiger Benutzername oder falsches Passwort.';
+        case 'CallbackRouteError':
+            return 'Ungültiger Benutzername oder falsches Passwort.';
         default:
           return 'Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.';
       }

@@ -10,17 +10,17 @@ export const authConfig = {
       const isOnAdminArea = nextUrl.pathname.startsWith('/admin');
       
       if (isOnAdminArea) {
-        // Allow access to the login page itself
-        if (nextUrl.pathname === '/admin') {
-            // Redirect logged in users from login page to dashboard
-            if (isLoggedIn) {
+        if (isLoggedIn) {
+            // If the user is logged in and tries to access the login page, redirect to dashboard.
+            if (nextUrl.pathname === '/admin') {
                 return Response.redirect(new URL('/admin/dashboard', nextUrl));
             }
+            // Otherwise, allow access to other admin pages.
             return true;
         }
-
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
+        // If not logged in, only allow access to the login page itself.
+        // For all other admin pages, redirect to login.
+        return nextUrl.pathname === '/admin';
       }
       
       return true;
