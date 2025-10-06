@@ -44,6 +44,38 @@
         }
       },
       "required": ["name", "start", "end"]
+    },
+    "Doctor": {
+      "title": "Doctor",
+      "description": "Represents a doctor in the practice.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The doctor's academic title (e.g., 'Dr. med.')."
+        },
+        "name": {
+          "type": "string",
+          "description": "The doctor's name."
+        },
+        "specialty": {
+          "type": "string",
+          "description": "The doctor's medical specialty."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to the doctor's portrait image."
+        },
+        "vita": {
+          "type": "string",
+          "description": "A longer description or curriculum vitae for the doctor."
+        },
+        "displayOrder": {
+            "type": "number",
+            "description": "A number to control the display order in lists."
+        }
+      },
+      "required": ["name", "specialty", "displayOrder"]
     }
   },
   "auth": {
@@ -69,6 +101,16 @@
             "$ref": "#/backend/entities/Holiday"
           },
           "description": "Stores the practice's holiday periods."
+        }
+      },
+      {
+        "path": "/doctors/{doctorId}",
+        "definition": {
+            "entityName": "Doctor",
+            "schema": {
+                "$ref": "#/backend/entities/Doctor"
+            },
+            "description": "Stores information about the doctors."
         }
       }
     ]
