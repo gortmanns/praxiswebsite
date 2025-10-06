@@ -20,7 +20,7 @@ export default function UeberUnsPage() {
                         <p>Als die Überbauung im Kappelenring in die 1970er Jahren noch ganz frisch war, eröffnete Dr. Segginger hier im Erdgeschoss des Hauses Kappelenring 6 eine Hausarztpraxis. Nebenan gab es bereits die Zahnarztpraxis von Dr. Debrunner.</p>
                         <p>Nach vielen Jahren ist Dr. Segginger zum Jahresende 2022 in den wohlverdienten Ruhestand gegangen und ich habe die Praxis von ihm übernommen. Da auch Dr. Debrunner kurz darauf in den Ruhestand gegangen ist ohne einen Nachfolger für seine Praxis zu haben, bot sich die einmalige Gelegenheit diese Räumlichkeiten zu übernehmen, miteinander zu verbinden und die Hausarztpraxis zu einem neuen, modernen Praxiszentrum weiterzuentwickeln.</p>
                         
-                        <h3 className="pt-4 font-headline text-2xl font-bold text-primary">Seither ist viel passiert:</h3>
+                        <h3 className="pt-4 font-headline text-2xl font-bold text-primary">Was ist seither passiert?</h3>
                         <ul className="list-disc space-y-4 pl-6">
                             <li>Die alten Räumlichkeiten der Zahnarztpraxis wurden komplett erneuert und durch einen Mauerdurchbruch mit der Hausarztpraxis verbunden.</li>
                             <li>Der Wartebereich wurde in den neuen Räumlichkeiten komplett neu, offen und freundlich gestaltet.</li>
