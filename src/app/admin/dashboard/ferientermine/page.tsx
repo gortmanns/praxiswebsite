@@ -50,7 +50,7 @@ interface Holiday extends HolidayForm {
 }
 
 export default function FerienterminePage() {
-  const firestore = useFirestore();
+  const { db: firestore } = useFirestore();
 
   const holidaysCollection = firestore
     ? collection(firestore, 'holidays')
