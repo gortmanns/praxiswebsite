@@ -22,7 +22,7 @@ export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
             const firebaseApp = initializeServerSideFirebase();
             const auth = getAuth(firebaseApp);
 
-            if (!credentials.username || !credentials.password) {
+            if (!credentials?.username || !credentials?.password) {
                 return null;
             }
 
@@ -30,13 +30,23 @@ export const { handlers, signIn, signOut, auth: authSession } = NextAuth({
             const password = credentials.password as string;
 
             try {
+                // Diese Funktion prüft nur, ob der Benutzer in Firebase existiert und das Passwort stimmt.
+                // Die Erstellung des Admin-Benutzers findet in der `authenticate` Server Action statt.
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                
                 if (userCredential.user) {
-                    return { id: userCredential.user.uid, name: userCredential.user.displayName, email: userCredential.user.email };
+                    // Wenn erfolgreich, gebe das Benutzerobjekt für die NextAuth-Sitzung zurück.
+                    return { 
+                        id: userCredential.user.uid, 
+                        name: userCredential.user.displayName, 
+                        email: userCredential.user.email 
+                    };
                 }
                 return null;
             } catch (error) {
-                // Let NextAuth handle the error and show the "CredentialsSignin" message
+                // Wenn ein Fehler auftritt (z.B. user-not-found, wrong-password),
+                // gib null zurück. NextAuth wird dies als fehlgeschlagene Anmeldung interpretieren.
+                console.log('Authorize error:', error);
                 return null;
             }
         }
