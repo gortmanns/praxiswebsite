@@ -10,18 +10,25 @@ export const authConfig = {
       const isOnDashboard = nextUrl.pathname.startsWith('/admin/dashboard');
       
       if (isOnDashboard) {
-        if (isLoggedIn) return true;
+        if (isLoggedIn) {
+            // Check if the session has expired
+            if (auth.expires && new Date(auth.expires) < new Date()) {
+                // Session expired, redirect to login
+                return false;
+            }
+            return true;
+        }
         return false; // Redirect unauthenticated users to login page
       } else if (isLoggedIn) {
-        // If logged in and on a page that is NOT the dashboard, redirect to dashboard
-        // This handles the case after login where the user might be on '/'
-        return Response.redirect(new URL('/admin/dashboard', nextUrl));
+        // If logged in and trying to access the login page, redirect to dashboard
+        if (nextUrl.pathname === '/admin') {
+            return Response.redirect(new URL('/admin/dashboard', nextUrl));
+        }
       }
       
-      // Allow access to all other pages for unauthenticated users (e.g., login page)
+      // Allow access to all other pages (e.g., login page for unauthenticated users)
       return true;
     },
   },
   providers: [], // Add providers with an empty array for now
-  secret: process.env.AUTH_SECRET,
 } satisfies NextAuthConfig;
