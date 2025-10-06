@@ -1,17 +1,21 @@
 
 'use server';
 
-import { getApp, getApps, initializeApp } from 'firebase/app';
+import { getApp, getApps, initializeApp, deleteApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, deleteDoc, doc, Timestamp, getDocs, query, orderBy } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
 import { firebaseConfig } from '@/firebase/config';
 
 // Helper function to initialize Firebase on the server.
+// It ensures a single instance is created and reused.
 function getDb() {
-  if (getApps().length === 0) {
-    initializeApp(firebaseConfig);
+  const appName = 'server-actions-app';
+  const existingApp = getApps().find(app => app.name === appName);
+  if (existingApp) {
+    return getFirestore(existingApp);
   }
-  return getFirestore(getApp());
+  const newApp = initializeApp(firebaseConfig, appName);
+  return getFirestore(newApp);
 }
 
 const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/;
