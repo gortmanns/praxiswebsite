@@ -1,16 +1,16 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default function DashboardPage() {
+export default function HolidaysPage() {
   return (
     <div className="flex flex-1 items-start p-4 sm:p-6">
         <Card className="w-full">
             <CardHeader>
-                <CardTitle>Willkommen im Admin-Bereich</CardTitle>
-                <CardDescription>Bitte wählen Sie einen Menüpunkt auf der linken Seite, um Inhalte zu bearbeiten.</CardDescription>
+                <CardTitle>Ferientermine bearbeiten</CardTitle>
+                <CardDescription>Hier können Sie die Daten für die Praxisferien verwalten.</CardDescription>
             </CardHeader>
             <CardContent>
-                <p>Hier können Sie die Inhalte der Webseite verwalten.</p>
+                <p>Der Inhalt für die Ferien-Verwaltung wird hier in Kürze verfügbar sein.</p>
             </CardContent>
         </Card>
     </div>
