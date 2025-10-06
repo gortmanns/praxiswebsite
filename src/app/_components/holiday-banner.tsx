@@ -66,7 +66,7 @@ export function HolidayBanner() {
 
     return (
         <div className={cn(
-            "relative flex h-auto items-center justify-between overflow-hidden px-4 py-2",
+            "relative flex h-auto items-center justify-between overflow-hidden px-4 py-3",
             bannerInfo.type === 'warning' ? 'bg-yellow-400/80' : 'bg-destructive/80'
         )}>
             <Megaphone className={cn(

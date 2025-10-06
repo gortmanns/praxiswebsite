@@ -2,16 +2,19 @@
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import holidays from '@/lib/holidays.json';
-import { format, addDays } from 'date-fns';
+import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 
 function formatDate(dateString: string) {
   const date = new Date(dateString);
-  return format(date, 'd. MMMM yyyy', { locale: de });
+  // Add time to avoid off-by-one errors with timezones
+  const zonedDate = new Date(date.valueOf() + date.getTimezoneOffset() * 60 * 1000);
+  return format(zonedDate, 'd. MMMM yyyy', { locale: de });
 }
 
 export default function PraxisferienPage() {
   const now = new Date();
+  now.setHours(0,0,0,0);
   const upcomingHolidays = holidays.filter(holiday => new Date(holiday.end) >= now);
 
   return (
@@ -32,8 +35,10 @@ export default function PraxisferienPage() {
                 upcomingHolidays.map((holiday, index) => (
                   <div key={holiday.name}>
                     <div className="space-y-2">
-                      <p className="text-xl font-bold text-primary">{holiday.name}</p>
-                      <p className="text-lg text-foreground/80">{formatDate(holiday.start)} - {formatDate(holiday.end)}</p>
+                      <h3 className="text-xl font-bold text-primary">{holiday.name}</h3>
+                      <p className="text-lg text-foreground/80">
+                        {formatDate(holiday.start)} – {formatDate(holiday.end)}
+                      </p>
                     </div>
                     {index < upcomingHolidays.length - 1 && <hr className="mt-8 border-t border-border" />}
                   </div>
