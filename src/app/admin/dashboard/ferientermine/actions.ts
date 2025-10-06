@@ -1,19 +1,16 @@
-
-'use server';
+'use client';
 
 import { getApp, getApps, initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, deleteDoc, doc, Timestamp, getDocs, query, orderBy } from 'firebase/firestore';
-import { revalidatePath } from 'next/cache';
 import { firebaseConfig } from '@/firebase/config';
 
-// Robuster Singleton-Pattern für die serverseitige Firebase-Initialisierung.
+// Robust Singleton-Pattern für die Client-seitige Firebase-Initialisierung.
 function getDb() {
   if (getApps().length === 0) {
     initializeApp(firebaseConfig);
   }
   return getFirestore(getApp());
 };
-
 
 const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/;
 
@@ -23,11 +20,18 @@ function parseDate(dateString: string): Date {
     return new Date(year, month - 1, day);
 }
 
-export async function addHoliday(formData: FormData) {
+export type Holiday = {
+  id: string;
+  name: string;
+  start: string;
+  end: string;
+};
+
+type HolidayInput = Omit<Holiday, 'id'>;
+
+export async function addHoliday(data: HolidayInput) {
+  const { name, start, end } = data;
   const db = getDb();
-  const name = formData.get('name') as string;
-  const start = formData.get('start') as string;
-  const end = formData.get('end') as string;
 
   if (!name || !start || !end || !dateRegex.test(start) || !dateRegex.test(end)) {
     return { success: false, message: 'Ungültige Eingabe.' };
@@ -43,7 +47,6 @@ export async function addHoliday(formData: FormData) {
       startDate: Timestamp.fromDate(startDate),
     });
 
-    revalidatePath('/admin/dashboard/ferientermine');
     return { success: true, message: 'Ferientermin hinzugefügt.', id: docRef.id };
   } catch (error) {
     console.error('Error adding holiday: ', error);
@@ -59,7 +62,6 @@ export async function deleteHoliday(id: string) {
   const db = getDb();
   try {
     await deleteDoc(doc(db, 'holidays', id));
-    revalidatePath('/admin/dashboard/ferientermine');
     return { success: true, message: 'Ferientermin gelöscht.' };
   } catch (error) {
     console.error('Error deleting holiday: ', error);
@@ -71,25 +73,32 @@ export async function deleteHoliday(id: string) {
   }
 }
 
-export async function getHolidays() {
+export async function getHolidays(): Promise<Holiday[]> {
     const db = getDb();
-    const holidaysCollection = collection(db, 'holidays');
-    const holidaysQuery = query(holidaysCollection, orderBy('startDate', 'asc'));
-    const snapshot = await getDocs(holidaysQuery);
-    
-    if (snapshot.empty) {
+    try {
+        const holidaysCollection = collection(db, 'holidays');
+        const holidaysQuery = query(holidaysCollection, orderBy('startDate', 'asc'));
+        const snapshot = await getDocs(holidaysQuery);
+        
+        if (snapshot.empty) {
+            return [];
+        }
+
+        const holidays = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                name: data.name,
+                start: data.start,
+                end: data.end,
+            };
+        });
+
+        return holidays;
+    } catch (error) {
+        console.error("Error fetching holidays:", error);
+        // Depending on requirements, you might want to throw the error
+        // or return an empty array to prevent the app from crashing.
         return [];
     }
-
-    const holidays = snapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-            id: doc.id,
-            name: data.name,
-            start: data.start,
-            end: data.end,
-        };
-    });
-
-    return holidays;
 }

@@ -15,8 +15,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { addHoliday, deleteHoliday } from './actions';
-import { useTransition } from 'react';
+import { addHoliday, deleteHoliday, Holiday } from './actions';
+import React, { useTransition } from 'react';
 
 const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/;
 
@@ -28,7 +28,12 @@ const holidaySchema = z.object({
 
 type HolidayFormValues = z.infer<typeof holidaySchema>;
 
-export function HolidayForm({ onHolidayAdded }: { onHolidayAdded: (holiday: any) => void }) {
+interface HolidayFormProps {
+    setOptimistic: (action: { action: 'add' | 'delete'; holiday: Holiday | {id: string} }) => void;
+    onHolidayAdded: (holiday: Holiday) => void;
+}
+
+export function HolidayForm({ setOptimistic, onHolidayAdded }: HolidayFormProps) {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
 
@@ -43,18 +48,25 @@ export function HolidayForm({ onHolidayAdded }: { onHolidayAdded: (holiday: any)
 
   const onSubmit = (data: HolidayFormValues) => {
     startTransition(async () => {
-      const formData = new FormData();
-      formData.append('name', data.name);
-      formData.append('start', data.start);
-      formData.append('end', data.end);
-      
-      const result = await addHoliday(formData);
-      if (result.success && result.id) {
-        toast({ title: 'Erfolg', description: result.message });
-        onHolidayAdded({ id: result.id, ...data });
-        form.reset();
-      } else {
-        toast({ variant: 'destructive', title: 'Fehler', description: result.message });
+      const optimisticHoliday: Holiday = { ...data, id: `optimistic-${Date.now()}` };
+      setOptimistic({ action: 'add', holiday: optimisticHoliday });
+
+      try {
+        const result = await addHoliday(data);
+        if (result.success && result.id) {
+          toast({ title: 'Erfolg', description: result.message });
+          // Replace optimistic holiday with real one
+          onHolidayAdded({ id: result.id, ...data });
+          form.reset();
+        } else {
+          toast({ variant: 'destructive', title: 'Fehler', description: result.message });
+          // Rollback optimistic update
+           onHolidayAdded(optimisticHoliday); 
+        }
+      } catch (error) {
+         toast({ variant: 'destructive', title: 'Fehler', description: 'Ein unerwarteter Fehler ist aufgetreten.' });
+         // Rollback optimistic update
+         onHolidayAdded(optimisticHoliday);
       }
     });
   };
@@ -112,19 +124,29 @@ export function HolidayForm({ onHolidayAdded }: { onHolidayAdded: (holiday: any)
   );
 }
 
-export function HolidayDeleteButton({ id, onHolidayDeleted }: { id: string, onHolidayDeleted: (id: string) => void }) {
+
+interface HolidayDeleteButtonProps {
+    id: string;
+    setOptimistic: (action: { action: 'add' | 'delete'; holiday: Holiday | {id: string} }) => void;
+    onHolidayDeleted: (id: string) => void;
+}
+
+export function HolidayDeleteButton({ id, setOptimistic, onHolidayDeleted }: HolidayDeleteButtonProps) {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
 
   const handleDelete = () => {
     startTransition(async () => {
-      const result = await deleteHoliday(id);
-      if (result.success) {
-        toast({ title: 'Erfolg', description: result.message });
-        onHolidayDeleted(id);
-      } else {
-        toast({ variant: 'destructive', title: 'Fehler', description: result.message });
-      }
+        setOptimistic({ action: 'delete', holiday: { id } });
+
+        const result = await deleteHoliday(id);
+        if (result.success) {
+            toast({ title: 'Erfolg', description: result.message });
+            onHolidayDeleted(id);
+        } else {
+            toast({ variant: 'destructive', title: 'Fehler', description: result.message });
+            // Here you might want to re-fetch to rollback, or add the item back
+        }
     });
   };
 

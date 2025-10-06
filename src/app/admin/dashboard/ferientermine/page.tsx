@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useOptimistic } from 'react';
 import {
   Card,
   CardContent,
@@ -16,31 +16,50 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { HolidayForm, HolidayDeleteButton } from './holiday-form';
-import { getHolidays } from './actions';
-
-type Holiday = {
-  id: string;
-  name: string;
-  start: string;
-  end: string;
-};
+import { getHolidays, Holiday } from './actions';
 
 export default function FerienterminePage() {
   const [holidays, setHolidays] = useState<Holiday[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Optimistic state for instant UI feedback
+  const [optimisticHolidays, setOptimisticHolidays] = useOptimistic(
+    holidays,
+    (state, { action, holiday }: { action: 'add' | 'delete', holiday: Holiday | {id: string} }) => {
+      switch (action) {
+        case 'add':
+          // Need to sort after adding
+          const newState = [...state, holiday as Holiday];
+          return newState.sort((a, b) => {
+            const dateA = new Date(a.start.split('.').reverse().join('-'));
+            const dateB = new Date(b.start.split('.').reverse().join('-'));
+            return dateA.getTime() - dateB.getTime();
+          });
+        case 'delete':
+          return state.filter((h) => h.id !== holiday.id);
+        default:
+          return state;
+      }
+    }
+  );
+
   useEffect(() => {
     async function fetchHolidays() {
       setLoading(true);
       const fetchedHolidays = await getHolidays();
-      setHolidays(fetchedHolidays);
+      // Sort initial holidays
+      const sortedHolidays = fetchedHolidays.sort((a, b) => {
+        const dateA = new Date(a.start.split('.').reverse().join('-'));
+        const dateB = new Date(b.start.split('.').reverse().join('-'));
+        return dateA.getTime() - dateB.getTime();
+      });
+      setHolidays(sortedHolidays);
       setLoading(false);
     }
     fetchHolidays();
   }, []);
 
   const handleHolidayAdded = (newHoliday: Holiday) => {
-    // Optimistically update UI and re-sort
     setHolidays(currentHolidays => 
       [...currentHolidays, newHoliday].sort((a, b) => {
         const dateA = new Date(a.start.split('.').reverse().join('-'));
@@ -49,12 +68,13 @@ export default function FerienterminePage() {
       })
     );
   };
-
+  
   const handleHolidayDeleted = (deletedId: string) => {
-    setHolidays(currentHolidays =>
+     setHolidays(currentHolidays =>
       currentHolidays.filter(holiday => holiday.id !== deletedId)
     );
   };
+
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
@@ -69,7 +89,7 @@ export default function FerienterminePage() {
           <CardTitle>Neuen Ferientermin hinzufügen</CardTitle>
         </CardHeader>
         <CardContent>
-          <HolidayForm onHolidayAdded={handleHolidayAdded} />
+          <HolidayForm setOptimistic={setOptimisticHolidays} onHolidayAdded={handleHolidayAdded} />
         </CardContent>
       </Card>
 
@@ -94,20 +114,20 @@ export default function FerienterminePage() {
                         Lade Daten...
                     </TableCell>
                 </TableRow>
-              ) : holidays.length === 0 ? (
+              ) : optimisticHolidays.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center">
                     Keine Ferientermine gefunden.
                   </TableCell>
                 </TableRow>
               ) : (
-                holidays.map(holiday => (
+                optimisticHolidays.map(holiday => (
                   <TableRow key={holiday.id}>
                     <TableCell>{holiday.start}</TableCell>
                     <TableCell>{holiday.end}</TableCell>
                     <TableCell>{holiday.name}</TableCell>
                     <TableCell className="text-right">
-                      <HolidayDeleteButton id={holiday.id} onHolidayDeleted={handleHolidayDeleted} />
+                      <HolidayDeleteButton id={holiday.id} setOptimistic={setOptimisticHolidays} onHolidayDeleted={handleHolidayDeleted} />
                     </TableCell>
                   </TableRow>
                 ))
