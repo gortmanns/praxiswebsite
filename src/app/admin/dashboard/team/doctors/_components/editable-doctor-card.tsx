@@ -13,6 +13,8 @@ import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/comp
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { VitaEditorDialog } from './vita-editor-dialog';
+
 
 const initialVita = `Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
 Masterstudium Public Health und Health Management in Sydney (Australien)
@@ -213,12 +215,12 @@ export const EditableDoctorCard = () => {
                                             </DialogDescription>
                                         </DialogHeader>
                                         
-                                        {!name && !imagePreview && (
+                                        {!name && imageSourceType !== 'existing-gallery' && (
                                             <Alert variant="destructive" className="mt-4">
                                                 <AlertCircle className="h-4 w-4" />
                                                 <AlertTitle>Fehlender Name</AlertTitle>
                                                 <AlertDescription>
-                                                    Bitte geben Sie zuerst einen Namen für den Arzt ein, bevor Sie ein Bild verwalten.
+                                                    Bitte geben Sie zuerst einen Namen für den Arzt ein, bevor Sie ein Bild hochladen.
                                                 </AlertDescription>
                                             </Alert>
                                         )}
@@ -341,15 +343,12 @@ export const EditableDoctorCard = () => {
                              </div>
                         </div>
                         <div className="relative flex flex-col items-start justify-start overflow-auto bg-accent/95 p-6 text-left text-background">
-                            <EditDialog
-                                dialogTitle="Vita bearbeiten"
-                                dialogDescription="Hier können Sie den Lebenslauf bearbeiten. Verwenden Sie '---' für Abschnittstrenner und '<Meilensteine>' für Aufzählungen."
+                            <VitaEditorDialog
                                 initialValue={vita}
                                 onSave={setVita}
-                                inputLabel="Lebenslauf"
-                                isTextarea={true}
                                 trigger={<Pencil className="absolute top-4 right-4 h-4 w-4 text-primary/80 cursor-pointer hover:text-primary" />}
                             />
+
                             <div className="w-full text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight whitespace-pre-wrap">
                                 {vita.split('---').map((section, sectionIndex) => (
                                     <div key={sectionIndex} className={sectionIndex > 0 ? 'mt-4 pt-4 border-t border-background/20' : ''}>
