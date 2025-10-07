@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogClose, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Bold, Minus, List, Text, Palette, Info } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 
 interface VitaEditorDialogProps {
   trigger: React.ReactNode;
@@ -125,19 +126,25 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
           ref={textareaRef}
           value={vitaContent}
           onChange={(e) => setVitaContent(e.target.value)}
-          className="flex-1 mt-4 text-sm font-mono whitespace-pre-wrap"
+          className={cn(
+            "flex-1 mt-4 text-sm font-mono whitespace-pre-wrap",
+            "bg-accent/95 text-background border-accent placeholder:text-background/50 focus-visible:ring-primary"
+          )}
           placeholder="Geben Sie hier den Lebenslauf ein..."
         />
 
-        <Alert variant="info" className="mt-4 text-xs">
-          <Info className="h-4 w-4" />
-          <AlertTitle>Formatierungs-Hilfe</AlertTitle>
+        <Alert className={cn(
+          "mt-4 text-xs",
+          "bg-accent/95 text-background/80 border-accent"
+        )}>
+          <Info className="h-4 w-4 text-background/80" />
+          <AlertTitle className="text-background">Formatierungs-Hilfe</AlertTitle>
           <AlertDescription>
             <p>Jede Zeile im Textfeld wird als eigener Absatz dargestellt. Benutzen Sie die Werkzeuge, um Text zu formatieren:</p>
             <ul className="list-disc pl-4 space-y-1 mt-2">
                 <li><strong className="text-primary">[blau]...[/blau]</strong>: Text in Primärfarbe (blau).</li>
-                <li><strong>[weiss]...[/weiss]</strong>: Normaler Text auf dem dunklen Hintergrund.</li>
-                <li><strong className="text-muted-foreground">[grau]...[/grau]</strong>: Leicht abgetönter Text.</li>
+                <li><strong className="text-background">[weiss]...[/weiss]</strong>: Normaler Text auf dem dunklen Hintergrund.</li>
+                <li><strong className="text-background/70">[grau]...[/grau]</strong>: Leicht abgetönter Text.</li>
                 <li><strong>[fett]...[/fett]</strong>: Fetter Text.</li>
                 <li><strong>[klein]...[/klein]</strong>: Etwas kleinere Schriftgrösse.</li>
                 <li><strong>[liste]...[/liste]</strong>: Formatiert eine Zeile als Aufzählungspunkt.</li>
