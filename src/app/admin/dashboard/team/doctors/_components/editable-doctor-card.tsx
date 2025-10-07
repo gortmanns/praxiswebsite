@@ -14,13 +14,13 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { VitaEditorDialog } from './vita-editor-dialog';
 import { VitaRenderer } from './vita-renderer';
 
-const initialVita = `[blau][fett]Dies ist ein blauer, fetter Text[/fett][/blau]
-Dies ist normaler Text auf dunklem Grund.
+const initialVita = `Dies ist ganz normaler Text auf dunklem Grund.
+[blau]Dies ist ein blauer, fetter Text[/blau]
+[fett]Dieser Text ist fett[/fett]
+[blau][fett]Dieser Text ist fett und blau[/fett][/blau]
 [break]
-[grau][klein]Dieser Text ist klein und grau.[/klein][/grau]
-[linie]
 [liste]Ein Listenpunkt[/liste]
-[liste]Noch ein Listenpunkt[/liste]
+[liste][grau][klein]Noch ein Listenpunkt, aber grau und klein[/klein][/grau][/liste]
 `;
 
 const existingImages = [
@@ -330,4 +330,5 @@ export const EditableDoctorCard = () => {
     );
 };
 
+    
     

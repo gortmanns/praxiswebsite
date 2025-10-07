@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Bold, Minus, List, Text, Palette, Info, Eye, Pilcrow } from 'lucide-react';
+import { Bold, Minus, List, Palette, Info, Eye, Pilcrow } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -118,7 +118,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
                 <Bold className="h-4 w-4" />
               </ToolbarButton>
               <ToolbarButton tooltip="Kleine Schrift" onClick={() => applyMarkup('[klein]', '[/klein]')}>
-                <Text className="h-3 w-3" />
+                <span className="font-serif text-sm font-bold">k</span>
               </ToolbarButton>
               <ToolbarButton tooltip="Listenpunkt" onClick={() => applyMarkup('[liste]', '[/liste]')}>
                 <List className="h-4 w-4" />
@@ -185,3 +185,5 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
     </Dialog>
   );
 };
+
+    
