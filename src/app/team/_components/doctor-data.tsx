@@ -2,7 +2,7 @@
 
 export const doctorBacksides = {
   ortmanns: (
-    <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col space-y-3">
+    <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col space-y-2">
       <p>Medizinstudium in Bonn und Hobart (Australien)</p>
       <p>Masterstudium Public Health und Health Management in Sydney (Australien)</p>
       <p>Projektmanagement im Gesundheitswesen in Europa und Australien</p>
