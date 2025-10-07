@@ -11,10 +11,10 @@ import { TeamMemberCard } from './_components/team-member-card';
 
 const doctorBacksides = {
   ortmanns: (
-    <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary space-y-1">
-      <p>Medizinstudium in Bonn und Hobart (Australien)</p>
-      <p>Masterstudium Public Health und Health Management in Sydney (Australien)</p>
-      <p>Projektmanagement im Gesundheitswesen in Europa und Australien</p>
+    <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
+      <p className="mb-1">Medizinstudium in Bonn und Hobart (Australien)</p>
+      <p className="mb-1">Masterstudium Public Health und Health Management in Sydney (Australien)</p>
+      <p className="mb-1">Projektmanagement im Gesundheitswesen in Europa und Australien</p>
       <div className="mb-4">
           <p>Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor</p>
           <ul className="flex list-disc flex-col pl-5 pt-1 text-background/80" style={{ gap: '0.15rem' }}>
@@ -33,8 +33,8 @@ const doctorBacksides = {
               <li>Hausarztpraxis in Winterthur</li>
           </ul>
       </div>
-       <p>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Klinik für Pneumologie)</p>
-       <p>Leitung <span className="whitespace-nowrap">Praxiszentrum im Ring</span> (Ärztliche und administrative Leitung)</p>
+       <p className="mb-1">Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Klinik für Pneumologie)</p>
+       <p className="mb-1">Leitung <span className="whitespace-nowrap">Praxiszentrum im Ring</span> (Ärztliche und administrative Leitung)</p>
        <p>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
     </div>
   ),
@@ -44,17 +44,17 @@ const doctorBacksides = {
         <div>
             <p className="font-bold text-primary">GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT</p>
             <ul className="flex flex-col space-y-1 pt-1 pl-5">
-                <li className="text-foreground">Vorbesprechung und Planung des Eingriffs erfolgen im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span></li>
-                <li className="text-foreground">Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten</li>
-                <li className="text-foreground">
+                <li className="text-background/80">Vorbesprechung und Planung des Eingriffs erfolgen im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span></li>
+                <li className="text-background/80">Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten</li>
+                <li className="text-background/80">
                     Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt
-                    <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-foreground/80" style={{ gap: '0.15rem' }}>
+                    <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
                         <li>Hirslanden</li>
                         <li>Lindenhof-Spital</li>
                         <li>Siloah-Spital</li>
                     </ul>
                 </li>
-                <li className="text-foreground">Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> statt</li>
+                <li className="text-background/80">Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> statt</li>
             </ul>
         </div>
     </div>
