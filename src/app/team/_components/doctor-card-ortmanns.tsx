@@ -45,7 +45,7 @@ export const DoctorCardOrtmanns: React.FC<DoctorCardProps> = ({ backsideContent 
                     </div>
                 </CardContent>
             </Card>
-            <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
+            <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
                 {backsideContent}
             </div>
         </div>
