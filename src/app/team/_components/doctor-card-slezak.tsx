@@ -41,10 +41,7 @@ export const DoctorCardSlezak = () => {
                             <p className="font-bold text-primary">ALLGEMEINE NEUROLOGIE</p>
                             <p className="font-bold text-primary">VASKULÄRE ERKRANKUNGEN</p>
                             <p className="font-bold text-primary">EPILEPSIE</p>
-                            <div>
-                                <p className="font-bold text-primary">BEWEGUNGSSTÖRUNGEN</p>
-                                <p className="text-sm text-background/80">(Schwerpunkt Parkinsonsyndrome)</p>
-                            </div>
+                            <p><span className="font-bold text-primary">BEWEGUNGSSTÖRUNGEN</span> (Schwerpunkt Parkinsonsyndrome)</p>
                             <p className="font-bold text-primary">KOPFSCHMERZEN UND MIGRÄNE</p>
                             <p className="font-bold text-primary">NEUROREHABILITATION</p>
                             
