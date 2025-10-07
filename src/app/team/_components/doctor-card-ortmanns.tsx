@@ -43,7 +43,7 @@ export const DoctorCardOrtmanns = () => {
                     </div>
                     {/* RÜCKSEITE */}
                     <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                        <div className="text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight w-full space-y-3">
+                        <div className="w-full space-y-3 text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
                             <p>MEDIZINSTUDIUM IN BONN UND HOBART (AUSTRALIEN)</p>
                             <p>MASTERSTUDIUM PUBLIC HEALTH UND HEALTH MANAGEMENT IN SYDNEY (AUSTRALIEN)</p>
                             <p>UNTERNEHMENSBERATUNG MIT SPEZIALISIERUNG AUF DEN GESUNDHEITSSEKTOR</p>
@@ -55,6 +55,22 @@ export const DoctorCardOrtmanns = () => {
                                     <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesunheitsakte in Australien</li>
                                     <li>Direktor der Memory-Strategie (elektronisches Medikamenten-management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
                                 </ul>
+                            </div>
+                             <div className="pt-4 space-y-3">
+                                <p>WEITERBILDUNG IN ALLGEMEINER INNERER MEDIZIN IN DER SCHWEIZ</p>
+                                <div>
+                                    <p>STATIONEN:</p>
+                                    <ul className="mt-2 list-disc pl-5 space-y-2">
+                                        <li>Universitätsspital Basel (USB)</li>
+                                        <li>Kantonsspital Baselland (KSBL)</li>
+                                        <li>Kantonsspital Winterthur (KSW)</li>
+                                        <li>Kantonsspital Wil (SRFT)</li>
+                                        <li>Hausarztpraxis in Winterthur</li>
+                                    </ul>
+                                </div>
+                                <p>WISSENSCHAFTLICHER MITARBEITER UNIVERSITÄT ZÜRICH / USZ PNEUMOLOGIE</p>
+                                <p>LEITUNG PRAXISZENTRUM IM RING, ÄRZTLICHE UND ADMINISTRATIVE LEITUNG</p>
+                                <p>LEHRBEAUFTRAGTER FÜR HAUSARZTMEDIZIN, INSTITUT FÜR HAUSARZTMEDIZIN DER UNIVERSITÄT BERN</p>
                             </div>
                         </div>
                     </div>
