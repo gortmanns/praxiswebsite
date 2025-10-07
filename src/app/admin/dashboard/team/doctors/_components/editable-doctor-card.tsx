@@ -3,7 +3,7 @@
 import React, { useState, useRef, ChangeEvent } from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { User, Upload, ImageIcon, Info, Pencil, AlertCircle } from 'lucide-react';
+import { User, Upload, ImageIcon, Info, Pencil, AlertCircle, Trash2, Replace } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -144,6 +144,11 @@ export const EditableDoctorCard = () => {
             reader.readAsDataURL(file);
         }
     };
+    
+    const handleDeleteImage = () => {
+        setImagePreview(null);
+        setIsImageDialogOpen(false);
+    };
 
     return (
         <div className="mx-auto max-w-7xl">
@@ -179,52 +184,66 @@ export const EditableDoctorCard = () => {
                                                 </div>
                                             )}
                                              <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-                                                <Upload className="h-10 w-10 text-white" />
+                                                {imagePreview ? <Replace className="h-10 w-10 text-white" /> : <Upload className="h-10 w-10 text-white" />}
                                             </div>
                                         </div>
                                     </DialogTrigger>
                                     <DialogContent>
                                         <DialogHeader>
-                                            <DialogTitle>Bild für Arztprofil auswählen</DialogTitle>
+                                            <DialogTitle>Bild für Arztprofil</DialogTitle>
                                             <DialogDescription>
-                                                Wählen Sie ein bestehendes Bild aus oder laden Sie ein neues hoch. 
-                                                Für eine optimale Darstellung sollte das Bild ein Seitenverhältnis von 2:3 haben.
+                                                Verwalten Sie das Profilbild. Für eine optimale Darstellung sollte das Bild ein Seitenverhältnis von 2:3 haben.
                                             </DialogDescription>
                                         </DialogHeader>
 
-                                        {!name && (
-                                            <Alert variant="destructive" className="mt-4">
-                                                <AlertCircle className="h-4 w-4" />
-                                                <AlertTitle>Fehlender Name</AlertTitle>
-                                                <AlertDescription>
-                                                    Bitte geben Sie zuerst einen Namen für den Arzt ein, bevor Sie ein Bild hochladen.
-                                                </AlertDescription>
-                                            </Alert>
-                                        )}
+                                        {imagePreview ? (
+                                            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                                <Button variant="outline" onClick={handleImageUploadClick}>
+                                                    <Replace className="mr-2 h-4 w-4" />
+                                                    Bild ersetzen
+                                                </Button>
+                                                <Button variant="destructive" onClick={handleDeleteImage}>
+                                                    <Trash2 className="mr-2 h-4 w-4" />
+                                                    Bild löschen
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                {!name && (
+                                                    <Alert variant="destructive" className="mt-4">
+                                                        <AlertCircle className="h-4 w-4" />
+                                                        <AlertTitle>Fehlender Name</AlertTitle>
+                                                        <AlertDescription>
+                                                            Bitte geben Sie zuerst einen Namen für den Arzt ein, bevor Sie ein Bild hochladen.
+                                                        </AlertDescription>
+                                                    </Alert>
+                                                )}
 
-                                        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                            <Button variant="outline" disabled>
-                                                <ImageIcon className="mr-2 h-4 w-4" />
-                                                Bestehendes auswählen
-                                            </Button>
-                                             <TooltipProvider>
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <div className="inline-block w-full">
-                                                            <Button onClick={handleImageUploadClick} disabled={!name} className="w-full">
-                                                                <Upload className="mr-2 h-4 w-4" />
-                                                                Neu hochladen
-                                                            </Button>
-                                                        </div>
-                                                    </TooltipTrigger>
-                                                    { !name && (
-                                                        <TooltipContent>
-                                                            <p>Bitte geben Sie zuerst einen Namen ein.</p>
-                                                        </TooltipContent>
-                                                    )}
-                                                </Tooltip>
-                                            </TooltipProvider>
-                                        </div>
+                                                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                                    <Button variant="outline" disabled>
+                                                        <ImageIcon className="mr-2 h-4 w-4" />
+                                                        Bestehendes auswählen
+                                                    </Button>
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <div className="inline-block w-full">
+                                                                    <Button onClick={handleImageUploadClick} disabled={!name} className="w-full">
+                                                                        <Upload className="mr-2 h-4 w-4" />
+                                                                        Neu hochladen
+                                                                    </Button>
+                                                                </div>
+                                                            </TooltipTrigger>
+                                                            {!name && (
+                                                                <TooltipContent>
+                                                                    <p>Bitte geben Sie zuerst einen Namen ein.</p>
+                                                                </TooltipContent>
+                                                            )}
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                </div>
+                                            </>
+                                        )}
                                     </DialogContent>
                                 </Dialog>
                                 
