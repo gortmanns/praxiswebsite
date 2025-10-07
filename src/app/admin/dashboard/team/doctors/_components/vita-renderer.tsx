@@ -59,9 +59,12 @@ const applyStyling = (content: string): React.ReactNode[] => {
 
 
 const renderLine = (line: string, index: number): React.ReactNode => {
-    // Handle the new [break] tag for smaller vertical space
-    if (line.trim() === '[break]') {
+    const trimmedLine = line.trim();
+    if (trimmedLine === '[break]') {
         return <div key={index} className="h-[0.5em]"></div>;
+    }
+    if (trimmedLine === '[linie]') {
+        return <hr key={index} className="my-4 border-t border-background/20" />;
     }
     
     // If the line is wrapped in [liste], it's handled by applyStyling.
@@ -85,19 +88,11 @@ export const VitaRenderer: React.FC<VitaRendererProps> = ({ text }) => {
     if (!text) {
         return null;
     }
-    const sections = text.split('---');
+    const lines = text.split('\n');
 
     return (
         <>
-            {sections.map((section, sectionIndex) => {
-                const lines = section.trim().split('\n');
-                
-                return (
-                    <div key={sectionIndex} className={cn(sectionIndex > 0 && 'mt-4 pt-4 border-t border-background/20')}>
-                        {lines.map((line, lineIndex) => renderLine(line, lineIndex))}
-                    </div>
-                );
-            })}
+            {lines.map((line, index) => renderLine(line, index))}
         </>
     );
 };

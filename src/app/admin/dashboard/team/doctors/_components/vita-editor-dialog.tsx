@@ -131,7 +131,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
                <ToolbarButton tooltip="Kleiner Abstand" onClick={() => applyMarkup('\n[break]\n', '')}>
                 <Pilcrow className="h-4 w-4" />
               </ToolbarButton>
-              <ToolbarButton tooltip="Abschnitts-Trennlinie" onClick={() => applyMarkup('\n---\n', '')}>
+              <ToolbarButton tooltip="Abschnitts-Trennlinie" onClick={() => applyMarkup('\n[linie]\n', '')}>
                 <Minus className="h-4 w-4" />
               </ToolbarButton>
 
@@ -175,7 +175,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
               <li><strong>[klein]...[/klein]</strong>: Etwas kleinere Schriftgrösse.</li>
               <li><strong>[liste]...[/liste]</strong>: Formatiert eine Zeile als Aufzählungspunkt.</li>
               <li><strong>[break]</strong>: Fügt einen kleinen vertikalen Abstand ein (ca. eine halbe Zeile hoch).</li>
-              <li><strong>---</strong>: Fügt eine horizontale Trennlinie zwischen Abschnitten ein.</li>
+              <li><strong>[linie]</strong>: Fügt eine horizontale Trennlinie zwischen Abschnitten ein.</li>
             </ul>
           </AlertDescription>
         </Alert>
