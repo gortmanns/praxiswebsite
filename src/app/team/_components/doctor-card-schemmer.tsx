@@ -51,10 +51,10 @@ export const DoctorCardSchemmer = () => {
                             <p className="font-bold text-primary">KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT VOR ORT IM PRAXISZENTRUM IM RING ERFOLGEN</p>
                             <div>
                                 <p className="font-bold text-primary">GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT</p>
-                                <ul className="flex flex-col space-y-1 pt-1 pl-5 text-sm text-background/80">
-                                    <li>Vorbesprechung und Planung des Eingriffs erfolgen hier im PRAXISZENTRUM IM RING</li>
-                                    <li>Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls hier im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten</li>
-                                    <li>
+                                <ul className="flex flex-col space-y-1 pt-1 pl-5">
+                                    <li className="text-background">Vorbesprechung und Planung des Eingriffs erfolgen hier im PRAXISZENTRUM IM RING</li>
+                                    <li className="text-background">Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls hier im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten</li>
+                                    <li className="text-background">
                                         Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt
                                         <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
                                             <li>Hirslanden</li>
@@ -62,7 +62,7 @@ export const DoctorCardSchemmer = () => {
                                             <li>Siloah-Spital</li>
                                         </ul>
                                     </li>
-                                    <li>Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder hier vor Ort im PRAXISZENTRUM IM RING statt</li>
+                                    <li className="text-background">Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder hier vor Ort im PRAXISZENTRUM IM RING statt</li>
                                 </ul>
                             </div>
                         </div>
