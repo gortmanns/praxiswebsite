@@ -66,10 +66,10 @@ export const DoctorCardOrtmanns = () => {
                                     <li>Hausarztpraxis in Winterthur</li>
                                 </ul>
                             </div>
-                            <div className="space-y-1">
+                             <div className="space-y-1">
                                 <p>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Klinik für Pneumologie)</p>
-                                <p>Leitung Praxiszentrum im Ring, (Ärztliche und administrative Leitung)</p>
-                                <p>Lehrbeauftragter für Hausarztmedizin, Institut für Hausarztmedizin der Universität Bern</p>
+                                <p>Leitung Praxiszentrum im Ring (Ärztliche und administrative Leitung)</p>
+                                <p>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
                             </div>
                         </div>
                     </div>
