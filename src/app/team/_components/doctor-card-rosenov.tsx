@@ -1,30 +1,19 @@
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { VitaRenderer } from '@/app/admin/dashboard/team/doctors/_components/vita-renderer';
-
-const vita = `[fett][blau]VITA / LEBENSLAUF[/blau][/fett]
-[linie]
-[fett][blau]FACHGEBIETE[/blau][/fett]
-[liste]Spezialist für Arterien-, Venen- und Lymphgefässerkrankungen[/liste]
-[liste]Behandlung von Thrombosen, Krampfadern, „offenen Beinen“, Schaufensterkrankheit, Aneurysmen, diabetischem Fusssyndrom, Lymphödemen und Erektionsstörungen.[/liste]
-[break]
-[fett][blau]SPRACHEN[/blau][/fett]
-[liste]Deutsch, Englisch, Bulgarisch, Russisch, Grundkenntnisse in Französisch und Italienisch[/liste]
-[break]
-[fett][blau]WERDEGANG[/blau][/fett]
-[liste]Medizinstudium an der Medizinischen Universität Varna, Bulgarien[/liste]
-[liste]Weiterbildung zum Facharzt für Angiologie in Deutschland und der Schweiz (Universitätsspital Zürich, Kantonsspital Winterthur)[/liste]
-[liste]Oberarzt Angiologie am Kantonsspital Winterthur und Lehrtätigkeit an der Universität Zürich[/liste]
-`;
 
 export const DoctorCardRosenov = () => (
     <div 
-        className="mx-auto max-w-7xl"
+        className="mx-auto max-w-7xl group/card"
+        style={{ perspective: '1000px' }}
     >
-        <Card className="overflow-hidden">
-            <CardContent className="p-0">
-                <div className="grid grid-cols-1 md:grid-cols-2">
-                    {/* Linke Spalte: Hauptkarte */}
+        <Card 
+            className="relative h-[490px] w-full overflow-hidden transition-transform duration-1000 [transform-style:preserve-3d] group-hover/card:[transform:rotateY(180deg)]"
+        >
+            {/* Vorderseite */}
+            <CardContent 
+                className="absolute h-full w-full p-0 [backface-visibility:hidden]"
+            >
+                <div className="grid h-full grid-cols-1 md:grid-cols-2">
                     <div
                         className="relative w-full bg-card"
                         style={{ 'containerType': 'inline-size', aspectRatio: '1000 / 495' } as React.CSSProperties}
@@ -62,11 +51,42 @@ export const DoctorCardRosenov = () => (
                             </div>
                         </div>
                     </div>
-                    {/* Rechte Spalte: Vita */}
-                    <div className="relative bg-accent/95 p-6 text-left text-background">
-                         <div className="h-full overflow-y-auto text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
-                           <VitaRenderer text={vita} />
-                        </div>
+                    <div className="hidden h-full items-center justify-center bg-accent/95 p-6 text-left text-background md:flex">
+                        <p className="text-center text-lg">
+                           Klicken Sie auf die Karte, um mehr zu erfahren.
+                        </p>
+                    </div>
+                </div>
+            </CardContent>
+            {/* Rückseite */}
+            <CardContent
+                className="absolute h-full w-full overflow-y-auto bg-accent/95 p-6 text-left text-background [backface-visibility:hidden] [transform:rotateY(180deg)]"
+            >
+                <div className="space-y-4 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
+                    <div>
+                        <h5 className="font-bold uppercase text-primary">Vita / Lebenslauf</h5>
+                    </div>
+                    <hr className="my-3 border-t border-background/20" />
+                    <div>
+                        <h5 className="font-bold text-primary">FACHGEBIETE</h5>
+                        <ul className="mt-2 list-disc space-y-1 pl-6">
+                            <li>Spezialist für Arterien-, Venen- und Lymphgefässerkrankungen</li>
+                            <li>Behandlung von Thrombosen, Krampfadern, „offenen Beinen“, Schaufensterkrankheit, Aneurysmen, diabetischem Fusssyndrom, Lymphödemen und Erektionsstörungen.</li>
+                        </ul>
+                    </div>
+                     <div>
+                        <h5 className="pt-4 font-bold text-primary">SPRACHEN</h5>
+                        <ul className="mt-2 list-disc space-y-1 pl-6">
+                            <li>Deutsch, Englisch, Bulgarisch, Russisch, Grundkenntnisse in Französisch und Italienisch</li>
+                        </ul>
+                    </div>
+                     <div>
+                        <h5 className="pt-4 font-bold text-primary">WERDEGANG</h5>
+                        <ul className="mt-2 list-disc space-y-1 pl-6">
+                            <li>Medizinstudium an der Medizinischen Universität Varna, Bulgarien</li>
+                            <li>Weiterbildung zum Facharzt für Angiologie in Deutschland und der Schweiz (Universitätsspital Zürich, Kantonsspital Winterthur)</li>
+                            <li>Oberarzt Angiologie am Kantonsspital Winterthur und Lehrtätigkeit an der Universität Zürich</li>
+                        </ul>
                     </div>
                 </div>
             </CardContent>

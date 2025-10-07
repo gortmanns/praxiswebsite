@@ -1,30 +1,19 @@
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { VitaRenderer } from '@/app/admin/dashboard/team/doctors/_components/vita-renderer';
-
-const vita = `[fett][blau]LEISTUNGSSPEKTRUM[/blau][/fett]
-[linie]
-[fett][blau]SPEZIALGEBIETE[/blau][/fett]
-[liste]Allgemeine Neurologie[/liste]
-[liste]Vaskuläre Erkrankungen[/liste]
-[liste]Epilepsie[/liste]
-[liste]Bewegungsstörungen (Schwerpunkt Parkinson-Syndrome)[/liste]
-[liste]Kopfschmerzen und Migräne[/liste]
-[liste]Neurorehabilitation[/liste]
-[break]
-[klein][grau]Viele Untersuchungen können direkt hier im <span class="whitespace-nowrap">Praxiszentrum im Ring</span> durchgeführt werden.[/grau][/klein]
-[break]
-[klein][grau]Wenn spezielle Untersuchungen wie z. B. die Bestimmung der Nervenleitgeschwindigkeit Geräte erfordern, die hier im <span class="whitespace-nowrap">Praxiszentrum</span> nicht zur Verfügung stehen, dann finden diese in den Räumlichkeiten an der Thunstrasse 95 in Bern statt.[/grau][/klein]
-`;
 
 export const DoctorCardSlezak = () => (
     <div 
-        className="mx-auto max-w-7xl"
+        className="mx-auto max-w-7xl group/card"
+        style={{ perspective: '1000px' }}
     >
-        <Card className="overflow-hidden">
-            <CardContent className="p-0">
-                <div className="grid grid-cols-1 md:grid-cols-2">
-                    {/* Linke Spalte: Hauptkarte */}
+        <Card 
+            className="relative h-[490px] w-full overflow-hidden transition-transform duration-1000 [transform-style:preserve-3d] group-hover/card:[transform:rotateY(180deg)]"
+        >
+            {/* Vorderseite */}
+            <CardContent 
+                className="absolute h-full w-full p-0 [backface-visibility:hidden]"
+            >
+                <div className="grid h-full grid-cols-1 md:grid-cols-2">
                     <div
                         className="relative w-full bg-card"
                         style={{ 'containerType': 'inline-size', aspectRatio: '1000 / 495' } as React.CSSProperties}
@@ -52,12 +41,44 @@ export const DoctorCardSlezak = () => (
                             </div>
                         </div>
                     </div>
-                    {/* Rechte Spalte: Vita */}
-                    <div className="relative bg-accent/95 p-6 text-left text-background">
-                         <div className="h-full overflow-y-auto text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
-                            <VitaRenderer text={vita} />
-                        </div>
+                    <div className="hidden h-full items-center justify-center bg-accent/95 p-6 text-left text-background md:flex">
+                        <p className="text-center text-lg">
+                           Klicken Sie auf die Karte, um mehr zu erfahren.
+                        </p>
                     </div>
+                </div>
+            </CardContent>
+            {/* Rückseite */}
+            <CardContent
+                className="absolute h-full w-full overflow-y-auto bg-accent/95 p-6 text-left text-background [backface-visibility:hidden] [transform:rotateY(180deg)]"
+            >
+                 <div className="space-y-4 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
+                    <h5 className="font-bold uppercase text-primary">LEISTUNGSSPEKTRUM</h5>
+                    <hr className="my-3 border-t border-background/20" />
+
+                    <div>
+                        <h5 className="font-bold text-primary">SPEZIALGEBIETE</h5>
+                        <ul className="mt-2 list-disc space-y-1 pl-6">
+                            <li>Allgemeine Neurologie</li>
+                            <li>Vaskuläre Erkrankungen</li>
+                            <li>Epilepsie</li>
+                            <li>Bewegungsstörungen (Schwerpunkt Parkinson-Syndrome)</li>
+                            <li>Kopfschmerzen und Migräne</li>
+                            <li>Neurorehabilitation</li>
+                        </ul>
+                    </div>
+
+                    <div className="h-2"></div>
+
+                    <p className="text-xs text-background/80">
+                        Viele Untersuchungen können direkt hier im <span className="whitespace-nowrap">Praxiszentrum im Ring</span> durchgeführt werden.
+                    </p>
+
+                    <div className="h-2"></div>
+                    
+                    <p className="text-xs text-background/80">
+                        Wenn spezielle Untersuchungen wie z. B. die Bestimmung der Nervenleitgeschwindigkeit Geräte erfordern, die hier im <span className="whitespace-nowrap">Praxiszentrum</span> nicht zur Verfügung stehen, dann finden diese in den Räumlichkeiten an der Thunstrasse 95 in Bern statt.
+                    </p>
                 </div>
             </CardContent>
         </Card>

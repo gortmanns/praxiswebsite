@@ -1,34 +1,19 @@
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { VitaRenderer } from '@/app/admin/dashboard/team/doctors/_components/vita-renderer';
-
-const vita = `[fett][blau]LEISTUNGSSPEKTRUM[/blau][/fett]
-[linie]
-[klein][grau]KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT VOR ORT IM PRAXISZENTRUM IM RING ERFOLGEN[/grau][/klein]
-[break]
-[klein][grau]GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT[/grau][/klein]
-[break]
-[liste]Die Vorbesprechung und Planung des Eingriffs erfolgen im PRAXISZENTRUM IM RING.[/liste]
-[liste]Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten.[/liste]
-[liste]Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt.
-    <ul class="list-disc space-y-px pl-9 pt-1 text-[clamp(0.7rem,2.3cqw,1rem)] font-normal text-background/80">
-        <li>Hirslanden</li>
-        <li>Lindehof-Spital</li>
-        <li>Siloah-Spital</li>
-    </ul>
-[/liste]
-[liste]Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder vor Ort im PRAXISZENTRUM IM RING statt.[/liste]
-`;
-
 
 export const DoctorCardSchemmer = () => (
     <div 
-        className="mx-auto max-w-7xl"
+        className="mx-auto max-w-7xl group/card"
+        style={{ perspective: '1000px' }}
     >
-        <Card className="overflow-hidden">
-            <CardContent className="p-0">
-                <div className="grid grid-cols-1 md:grid-cols-2">
-                    {/* Linke Spalte: Hauptkarte */}
+        <Card 
+            className="relative h-[490px] w-full overflow-hidden transition-transform duration-1000 [transform-style:preserve-3d] group-hover/card:[transform:rotateY(180deg)]"
+        >
+            {/* Vorderseite */}
+            <CardContent 
+                className="absolute h-full w-full p-0 [backface-visibility:hidden]"
+            >
+                <div className="grid h-full grid-cols-1 md:grid-cols-2">
                     <div
                         className="relative w-full bg-card"
                         style={{ 'containerType': 'inline-size', aspectRatio: '1000 / 495' } as React.CSSProperties}
@@ -66,12 +51,37 @@ export const DoctorCardSchemmer = () => (
                             </div>
                         </div>
                     </div>
-                    {/* Rechte Spalte: Vita */}
-                    <div className="relative bg-accent/95 p-6 text-left text-background">
-                        <div className="h-full overflow-y-auto text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
-                            <VitaRenderer text={vita} />
-                        </div>
+                     <div className="hidden h-full items-center justify-center bg-accent/95 p-6 text-left text-background md:flex">
+                        <p className="text-center text-lg">
+                           Klicken Sie auf die Karte, um mehr zu erfahren.
+                        </p>
                     </div>
+                </div>
+            </CardContent>
+            {/* Rückseite */}
+            <CardContent
+                className="absolute h-full w-full overflow-y-auto bg-accent/95 p-6 text-left text-background [backface-visibility:hidden] [transform:rotateY(180deg)]"
+            >
+                <div className="space-y-4 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
+                    <h5 className="font-bold uppercase text-primary">LEISTUNGSSPEKTRUM</h5>
+                    <hr className="my-3 border-t border-background/20" />
+                    <p className="text-xs text-background/80">KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT VOR ORT IM PRAXISZENTRUM IM RING ERFOLGEN</p>
+                    <div className="h-2"></div>
+                    <p className="text-xs text-background/80">GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT</p>
+                    <div className="h-2"></div>
+                     <ul className="list-disc space-y-2 pl-6">
+                        <li>Die Vorbesprechung und Planung des Eingriffs erfolgen im PRAXISZENTRUM IM RING.</li>
+                        <li>Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten.</li>
+                        <li>
+                            Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt.
+                            <ul className="list-disc space-y-px pl-9 pt-1 text-[clamp(0.7rem,2.3cqw,1rem)] font-normal text-background/80">
+                                <li>Hirslanden</li>
+                                <li>Lindehof-Spital</li>
+                                <li>Siloah-Spital</li>
+                            </ul>
+                        </li>
+                        <li>Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder vor Ort im PRAXISZENTRUM IM RING statt.</li>
+                    </ul>
                 </div>
             </CardContent>
         </Card>

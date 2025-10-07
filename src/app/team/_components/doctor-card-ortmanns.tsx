@@ -1,38 +1,19 @@
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { VitaRenderer } from '@/app/admin/dashboard/team/doctors/_components/vita-renderer';
-
-const vita = `[fett][blau]Medizinstudium & frühe Karriere[/blau][/fett]
-[liste]Medizinstudium in Bonn (Deutschland) und Hobart (Australien)[/liste]
-[liste]Masterstudium Public Health und Health Management in Sydney (Australien)[/liste]
-[liste]Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor[/liste]
-[linie]
-[fett][blau]Projektmanagement im Gesundheitswesen[/blau][/fett]
-[klein][grau]Wichtige Meilensteine[/grau][/klein]
-[liste]Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)[/liste]
-[liste]Manager für Klinische Sicherheit bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien[/liste]
-[liste]Direktor der Memory-Strategie für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien[/liste]
-[linie]
-[fett][blau]Weiterbildung & Lehre[/blau][/fett]
-[klein][grau]Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz[/grau][/klein]
-[liste]Universitätsspital Basel (USB)[/liste]
-[liste]Kantonsspital Baselland (KSBL)[/liste]
-[liste]Kantonsspital Winterthur (KSW)[/liste]
-[liste]Kantonsspital Wil (SRFT)[/liste]
-[liste]Hausarztpraxis in Winterthur[/liste]
-[break]
-[liste]Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)[/liste]
-[liste]Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)[/liste]
-`;
 
 export const DoctorCardOrtmanns = () => (
     <div 
-        className="mx-auto max-w-7xl" 
+        className="mx-auto max-w-7xl group/card" 
+        style={{ perspective: '1000px' }}
     >
-        <Card className="overflow-hidden">
-            <CardContent className="p-0">
-                <div className="grid grid-cols-1 md:grid-cols-2">
-                    {/* Linke Spalte: Hauptkarte */}
+        <Card 
+            className="relative h-[490px] w-full overflow-hidden transition-transform duration-1000 [transform-style:preserve-3d] group-hover/card:[transform:rotateY(180deg)]"
+        >
+            {/* Vorderseite */}
+            <CardContent 
+                className="absolute h-full w-full p-0 [backface-visibility:hidden]"
+            >
+                <div className="grid h-full grid-cols-1 md:grid-cols-2">
                     <div 
                         className="relative w-full bg-card"
                         style={{ 'containerType': 'inline-size', aspectRatio: '1000 / 495' } as React.CSSProperties}
@@ -66,11 +47,51 @@ export const DoctorCardOrtmanns = () => (
                             </div>
                         </div>
                     </div>
-                    {/* Rechte Spalte: Vita */}
-                    <div className="relative bg-accent/95 p-6 text-left text-background">
-                         <div className="h-full overflow-y-auto text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
-                            <VitaRenderer text={vita} />
-                        </div>
+                     <div className="hidden h-full items-center justify-center bg-accent/95 p-6 text-left text-background md:flex">
+                        <p className="text-center text-lg">
+                           Klicken Sie auf die Karte, um mehr zu erfahren.
+                        </p>
+                    </div>
+                </div>
+            </CardContent>
+            {/* Rückseite */}
+            <CardContent
+                className="absolute h-full w-full overflow-y-auto bg-accent/95 p-6 text-left text-background [backface-visibility:hidden] [transform:rotateY(180deg)]"
+            >
+                <div className="space-y-4 text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
+                    <div>
+                        <h5 className="font-bold text-primary">Medizinstudium & frühe Karriere</h5>
+                        <ul className="mt-2 list-disc space-y-1 pl-6">
+                            <li>Medizinstudium in Bonn (Deutschland) und Hobart (Australien)</li>
+                            <li>Masterstudium Public Health und Health Management in Sydney (Australien)</li>
+                            <li>Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor</li>
+                        </ul>
+                    </div>
+                    <hr className="my-3 border-t border-background/20" />
+                    <div>
+                        <h5 className="font-bold text-primary">Projektmanagement im Gesundheitswesen</h5>
+                        <p className="text-xs text-background/80">Wichtige Meilensteine</p>
+                        <ul className="mt-2 list-disc space-y-1 pl-6">
+                            <li>Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
+                            <li>Manager für Klinische Sicherheit bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
+                            <li>Direktor der Memory-Strategie für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
+                        </ul>
+                    </div>
+                    <hr className="my-3 border-t border-background/20" />
+                    <div>
+                        <h5 className="font-bold text-primary">Weiterbildung & Lehre</h5>
+                        <p className="text-xs text-background/80">Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz</p>
+                        <ul className="mt-2 list-disc space-y-1 pl-6">
+                            <li>Universitätsspital Basel (USB)</li>
+                            <li>Kantonsspital Baselland (KSBL)</li>
+                            <li>Kantonsspital Winterthur (KSW)</li>
+                            <li>Kantonsspital Wil (SRFT)</li>
+                            <li>Hausarztpraxis in Winterthur</li>
+                        </ul>
+                        <ul className="mt-3 list-disc space-y-1 pl-6">
+                           <li>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)</li>
+                           <li>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</li>
+                        </ul>
                     </div>
                 </div>
             </CardContent>
