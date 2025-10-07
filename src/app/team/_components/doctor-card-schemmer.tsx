@@ -3,26 +3,6 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 
 export const DoctorCardSchemmer = () => {
-    const backsideContent = (
-        <>
-            <p>
-                In enger Kooperation mit der Praxis <span className="font-bold">Schemmer & Worni</span> in Bern bieten wir eine hochspezialisierte viszeralchirurgische Versorgung direkt in unseren Räumlichkeiten an.
-            </p>
-            <br />
-            <p>
-                Herr Prof. Dr. med. Dr. h. c. P. Schemmer führt mehrmals im Monat Sprechstunden und kleinere Eingriffe in unserem Praxiszentrum durch. So können wir auch für komplexe chirurgische Fragestellungen eine wohnortnahe Betreuung auf universitärem Niveau sicherstellen.
-            </p>
-            <br />
-            <p className="font-bold text-primary">Leistungsspektrum im Praxiszentrum</p>
-            <hr className="my-2 border-t border-background/20" />
-            <ul className="list-disc space-y-1 pl-4 text-left">
-                <li>Beratung und Zweitmeinung</li>
-                <li>Kleinchirurgische Eingriffe in Lokalanästhesie</li>
-                <li>Vorbereitung und Nachsorge für Operationen</li>
-            </ul>
-        </>
-    );
-
     return (
         <div className="mx-auto max-w-7xl">
             <Card className="group relative w-full overflow-hidden">
@@ -68,7 +48,7 @@ export const DoctorCardSchemmer = () => {
                     {/* RÜCKSEITE */}
                     <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-center text-background transition-all duration-1000 group-hover:translate-y-0">
                         <div className="text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
-                            {backsideContent}
+                            [Hier den Text für die Rückseite einfügen]
                         </div>
                     </div>
                 </CardContent>

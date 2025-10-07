@@ -3,36 +3,12 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 
 export const DoctorCardOrtmanns = () => {
-    const backsideContent = (
-        <>
-            <p className="font-bold text-primary">Sprachen</p>
-            <hr className="my-2 border-t border-background/20" />
-            <p>Deutsch, Englisch, Französisch</p>
-            <br />
-            <p className="font-bold text-primary">Werdegang</p>
-            <hr className="my-2 border-t border-background/20" />
-            <p>Studium der Humanmedizin in Aachen (D)</p>
-            <p>Master of Public Health (Sydney, AUS)</p>
-            <p>Master of Health Management (Sydney, AUS)</p>
-            <br />
-            <p>Umfangreiche und langjährige klinische Erfahrung in verschiedenen Spitälern in der Schweiz und in Deutschland in den Bereichen</p>
-            <ul className="list-disc space-y-1 pl-4 text-left">
-                <li>Allgemeine Innere Medizin</li>
-                <li>Chirurgie</li>
-                <li>Onkologie</li>
-                <li>Psychiatrie</li>
-                <li>Geriatrie</li>
-                <li>Notfallmedizin</li>
-            </ul>
-        </>
-    );
-
     return (
         <div className="mx-auto max-w-7xl">
             <Card className="group relative w-full overflow-hidden">
                 <CardContent className="p-0">
                     {/* VORDERSEITE */}
-                    <div
+                    <div 
                         className="relative w-full bg-card"
                         style={{ 'containerType': 'inline-size', aspectRatio: '1000 / 495' } as React.CSSProperties}
                     >
@@ -68,7 +44,7 @@ export const DoctorCardOrtmanns = () => {
                     {/* RÜCKSEITE */}
                     <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-center text-background transition-all duration-1000 group-hover:translate-y-0">
                         <div className="text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
-                            {backsideContent}
+                            [Hier den Text für die Rückseite einfügen]
                         </div>
                     </div>
                 </CardContent>

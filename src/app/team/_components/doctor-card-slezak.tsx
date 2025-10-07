@@ -3,26 +3,6 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 
 export const DoctorCardSlezak = () => {
-    const backsideContent = (
-        <>
-            <p>
-                In Kooperation mit Frau Dr. med. A. Slezak bieten wir eine spezialisierte neurologische Sprechstunde direkt in unseren Praxisräumlichkeiten an.
-            </p>
-            <br />
-            <p className="font-bold text-primary">Leistungsspektrum</p>
-            <hr className="my-2 border-t border-background/20" />
-            <ul className="list-disc space-y-1 pl-4 text-left">
-                <li>Abklärung und Behandlung von Kopfschmerzen</li>
-                <li>Beurteilung von Gedächtnisstörungen</li>
-                <li>Nachsorge nach Hirnschlag</li>
-                <li>Diagnostik und Therapie bei Schwindel</li>
-                <li>Behandlung von Epilepsie</li>
-                <li>Betreuung bei Parkinson-Krankheit</li>
-                <li>Abklärung von Polyneuropathien</li>
-            </ul>
-        </>
-    );
-
     return (
         <div className="mx-auto max-w-7xl">
             <Card className="group relative w-full overflow-hidden">
@@ -58,7 +38,7 @@ export const DoctorCardSlezak = () => {
                      {/* RÜCKSEITE */}
                      <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-center text-background transition-all duration-1000 group-hover:translate-y-0">
                         <div className="text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
-                            {backsideContent}
+                            [Hier den Text für die Rückseite einfügen]
                         </div>
                     </div>
                 </CardContent>

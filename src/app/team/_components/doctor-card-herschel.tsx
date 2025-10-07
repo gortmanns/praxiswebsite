@@ -4,29 +4,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 
 export const DoctorCardHerschel = () => {
-    const backsideContent = (
-        <>
-            <p className="font-bold text-primary">Leistungen im Praxiszentrum im Ring</p>
-            <hr className="my-2 border-t border-background/20" />
-            <ul className="list-disc space-y-1 pl-4 text-left">
-                <li>Klinische Untersuchung</li>
-                <li>Zweitmeinung</li>
-                <li>Digitale Röntgenuntersuchung</li>
-                <li>Infiltrationen</li>
-            </ul>
-            <div className="h-[0.5em]"></div>
-            <p className="font-bold text-primary">Spezialgebiete</p>
-            <hr className="my-2 border-t border-background/20" />
-            <ul className="list-disc space-y-1 pl-4 text-left">
-                <li>Knie (Sportverletzungen, Verschleiss)</li>
-                <li>Schulter (Verschleiss, Sehnenverletzungen, Instabilität)</li>
-                <li>Hüfte (Verschleiss)</li>
-                <li>Hand (ohne Nervenkompression)</li>
-                <li>Fuss</li>
-            </ul>
-        </>
-    );
-
     return (
         <div className="mx-auto max-w-7xl">
             <Card className="group relative w-full overflow-hidden">
@@ -62,10 +39,10 @@ export const DoctorCardHerschel = () => {
                             </div>
                         </div>
                     </div>
-                     {/* RÜCKSEITE */}
+                    {/* RÜCKSEITE */}
                     <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-center text-background transition-all duration-1000 group-hover:translate-y-0">
                         <div className="text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
-                            {backsideContent}
+                           [Hier den Text für die Rückseite einfügen]
                         </div>
                     </div>
                 </CardContent>

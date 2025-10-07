@@ -3,26 +3,6 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 
 export const DoctorCardRosenov = () => {
-    const backsideContent = (
-        <>
-            <p>
-                In enger Kooperation mit der <span className="font-bold">VASC-ALLIANCE</span>, einem Zusammenschluss von Spezialisten im Bereich der Gefässmedizin, bieten wir Ihnen eine umfassende Versorgung bei Gefässerkrankungen.
-            </p>
-            <br />
-            <p>
-                Herr Dr. med. A. Rosenov führt regelmässig Sprechstunden in unseren Räumlichkeiten durch, sodass auch Patienten mit komplexen Gefässerkrankungen eine wohnortnahe Betreuung auf höchstem Niveau erhalten.
-            </p>
-            <br />
-            <p className="font-bold text-primary">Untersuchungsmethoden</p>
-            <hr className="my-2 border-t border-background/20" />
-            <ul className="list-disc space-y-1 pl-4 text-left">
-                <li>Farbcodierte Duplexsonographie (Ultraschall) der Arterien und Venen</li>
-                <li>Oszillographie/Photoplethysmographie</li>
-                <li>Knöchel-Arm-Druck-Index</li>
-            </ul>
-        </>
-    );
-
     return (
         <div className="mx-auto max-w-7xl">
             <Card className="group relative w-full overflow-hidden">
@@ -68,7 +48,7 @@ export const DoctorCardRosenov = () => {
                     {/* RÜCKSEITE */}
                     <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-center text-background transition-all duration-1000 group-hover:translate-y-0">
                         <div className="text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
-                            {backsideContent}
+                            [Hier den Text für die Rückseite einfügen]
                         </div>
                     </div>
                 </CardContent>
