@@ -34,7 +34,7 @@ export const DoctorCardOrtmanns = () => {
                                         <p>Master of Health Management (UNSW)</p>
                                     </div>
                                     <p className="mt-[2.5cqw] text-[1.6cqw] italic">
-                                        <span className="whitespace-nowrap">Medizinische und Administrative Leitung</span>{' '}
+                                        <span className="whitespace-nowrap">(Ärztliche und administrative Leitung)</span>{' '}
                                         <span className="whitespace-nowrap">Praxiszentrum im Ring</span>{' '}
                                     </p>
                                 </div>
@@ -48,7 +48,7 @@ export const DoctorCardOrtmanns = () => {
                             <p>Masterstudium Public Health und Health Management in Sydney (Australien)</p>
                             <p>Projektmanagement im Gesundheitswesen in Europa und Australien</p>
                             <div>
-                                <p>Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz</p>
+                                <p>Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz:</p>
                                 <ul className="flex list-disc flex-col pl-5 text-sm text-background/80" style={{ gap: '0.15rem' }}>
                                     <li>Universitätsspital Basel (USB)</li>
                                     <li>Kantonsspital Baselland (KSBL)</li>
