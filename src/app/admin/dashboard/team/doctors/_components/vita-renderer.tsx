@@ -59,6 +59,11 @@ const applyStyling = (content: string): React.ReactNode[] => {
 
 
 const renderLine = (line: string, index: number): React.ReactNode => {
+    // Handle the new [break] tag for smaller vertical space
+    if (line.trim() === '[break]') {
+        return <div key={index} className="h-[0.5em]"></div>;
+    }
+    
     // If the line is wrapped in [liste], it's handled by applyStyling.
     // Here we just handle plain text lines as paragraphs.
     const styledContent = applyStyling(line);

@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Bold, Minus, List, Text, Palette, Info, Eye } from 'lucide-react';
+import { Bold, Minus, List, Text, Palette, Info, Eye, Pilcrow } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -128,6 +128,9 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
               <ToolbarButton tooltip="Listenpunkt" onClick={() => applyMarkup('[liste]', '[/liste]')}>
                 <List className="h-4 w-4" />
               </ToolbarButton>
+               <ToolbarButton tooltip="Kleiner Abstand" onClick={() => applyMarkup('\n[break]\n', '')}>
+                <Pilcrow className="h-4 w-4" />
+              </ToolbarButton>
               <ToolbarButton tooltip="Abschnitts-Trennlinie" onClick={() => applyMarkup('\n---\n', '')}>
                 <Minus className="h-4 w-4" />
               </ToolbarButton>
@@ -141,7 +144,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
               ref={textareaRef}
               value={vitaContent}
               onChange={(e) => setVitaContent(e.target.value)}
-              className="flex-1 mt-0 text-sm font-mono whitespace-pre-wrap"
+              className="flex-1 mt-0 text-sm font-mono whitespace-pre-wrap bg-white text-black"
               placeholder="Geben Sie hier den Text für die Kartenrückseite ein..."
             />
           </div>
@@ -159,7 +162,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
           </div>
         </div>
 
-        <Alert variant="info" className="mt-4 text-xs">
+        <Alert variant="info" className="mt-4 text-xs bg-white text-black">
           <Info className="h-4 w-4" />
           <AlertTitle>Formatierungs-Hilfe</AlertTitle>
           <AlertDescription>
@@ -171,6 +174,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
               <li><strong>[fett]...[/fett]</strong>: Fetter Text.</li>
               <li><strong>[klein]...[/klein]</strong>: Etwas kleinere Schriftgrösse.</li>
               <li><strong>[liste]...[/liste]</strong>: Formatiert eine Zeile als Aufzählungspunkt.</li>
+              <li><strong>[break]</strong>: Fügt einen kleinen vertikalen Abstand ein (ca. eine halbe Zeile hoch).</li>
               <li><strong>---</strong>: Fügt eine horizontale Trennlinie zwischen Abschnitten ein.</li>
             </ul>
           </AlertDescription>
