@@ -46,9 +46,14 @@ export const DoctorCardRosenov = () => {
                         </div>
                     </div>
                     {/* RÜCKSEITE */}
-                    <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                        <div className="text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
-                            
+                    <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
+                        <div className="flex w-full flex-col space-y-4 text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
+                            <ul className="list-disc space-y-2 pl-5">
+                                <li>UNTERSUCHUNGEN DER VENEN UND ARTERIEN UND LYMPHGEFÄSSE</li>
+                                <li>ABKLÄRUNG VON EREKTIONSSTÖRUNGEN</li>
+                            </ul>
+                            <p>Viele Untersuchungen und Abklärungen können direkt im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> durchgeführt werden.</p>
+                            <p>Sind zusätzliche Spezialuntersuchungen oder weiterführende Eingriffe nötig, die mit den Geräten im Praxiszentrum nicht durchführbar sind, wird ein Folgetermin in den Räumlichkeiten der VASC ALLIANCE am Beau-site Spital in Bern vereinbart.</p>
                         </div>
                     </div>
                 </CardContent>
