@@ -49,7 +49,7 @@ export const DoctorCardOrtmanns = () => {
                             <p>Projektmanagement im Gesundheitswesen in Europa und Australien</p>
                             <div>
                                 <p>Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz:</p>
-                                <ul className="flex list-disc flex-col pl-5 text-sm text-background/80" style={{ gap: '0.15rem' }}>
+                                <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
                                     <li>Universitätsspital Basel (USB)</li>
                                     <li>Kantonsspital Baselland (KSBL)</li>
                                     <li>Kantonsspital Winterthur (KSW)</li>
