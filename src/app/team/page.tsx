@@ -172,7 +172,7 @@ const doctorBacksides = {
         <p className="font-bold text-primary">ALLGEMEINE NEUROLOGIE</p>
         <p className="font-bold text-primary">VASKULÄRE ERKRANKUNGEN</p>
         <p className="font-bold text-primary">EPILEPSIE</p>
-        <p className="font-bold text-primary">BEWEGUNGSSTÖRUNGEN <span className="font-bold text-primary">(Schwerpunkt Parkinsonsyndrome)</span></p>
+        <p className="font-bold text-primary">BEWEGUNGSSTÖRUNGEN <span className="text-primary font-bold">(Schwerpunkt Parkinsonsyndrome)</span></p>
         <p className="font-bold text-primary">KOPFSCHMERZEN UND MIGRÄNE</p>
         <p className="font-bold text-primary">NEUROREHABILITATION</p>
         
