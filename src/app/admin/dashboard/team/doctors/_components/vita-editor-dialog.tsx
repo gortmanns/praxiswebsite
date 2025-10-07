@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -22,12 +23,6 @@ interface VitaEditorDialogProps {
   initialValue: string;
   onSave: (value: string) => void;
 }
-
-const DialogClose: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const context = (Dialog as any).__private_getContext();
-    const handleClose = () => context.onOpenChange(false);
-    return <div onClick={handleClose}>{children}</div>;
-};
 
 export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, initialValue, onSave }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -179,7 +174,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
         </Alert>
 
         <div className="mt-6 flex justify-end gap-2 border-t pt-4">
-          <DialogClose>
+          <DialogClose asChild>
             <Button variant="outline">Abbrechen</Button>
           </DialogClose>
           <Button onClick={handleSave}>Speichern</Button>
