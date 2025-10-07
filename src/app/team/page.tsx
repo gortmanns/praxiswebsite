@@ -8,7 +8,6 @@ import { DoctorCardRosenov } from './_components/doctor-card-rosenov';
 import { DoctorCardHerschel } from './_components/doctor-card-herschel';
 import { DoctorCardSlezak } from './_components/doctor-card-slezak';
 import { TeamMemberCard } from './_components/team-member-card';
-import { Card, CardContent } from '@/components/ui/card';
 import { doctorBacksides } from './_components/doctor-data';
 
 const garcia = {
@@ -120,49 +119,24 @@ export default function TeamPage() {
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
             
-            <div id="ortmanns" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start p-2">
-              <div>
-                <DoctorCardOrtmanns />
-              </div>
-              <div className="h-full">
-                <Card className="h-full"><CardContent className="p-6">{doctorBacksides.ortmanns}</CardContent></Card>
-              </div>
+            <div id="ortmanns" className="mx-auto max-w-4xl p-2">
+                <DoctorCardOrtmanns backsideContent={doctorBacksides.ortmanns} />
             </div>
 
-            <div id="schemmer" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start p-2">
-              <div>
-                <DoctorCardSchemmer />
-              </div>
-              <div className="h-full">
-                <Card className="h-full"><CardContent className="p-6">{doctorBacksides.schemmer}</CardContent></Card>
-              </div>
+            <div id="schemmer" className="mx-auto max-w-4xl p-2">
+                <DoctorCardSchemmer backsideContent={doctorBacksides.schemmer} />
             </div>
 
-            <div id="rosenov" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start p-2">
-              <div>
-                <DoctorCardRosenov />
-              </div>
-              <div className="h-full">
-                <Card className="h-full"><CardContent className="p-6">{doctorBacksides.rosenov}</CardContent></Card>
-              </div>
+            <div id="rosenov" className="mx-auto max-w-4xl p-2">
+                <DoctorCardRosenov backsideContent={doctorBacksides.rosenov} />
             </div>
 
-            <div id="herschel" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start p-2">
-                <div>
-                  <DoctorCardHerschel />
-                </div>
-                <div className="h-full">
-                  <Card className="h-full"><CardContent className="p-6">{doctorBacksides.herschel}</CardContent></Card>
-                </div>
+            <div id="herschel" className="mx-auto max-w-4xl p-2">
+                <DoctorCardHerschel backsideContent={doctorBacksides.herschel} />
             </div>
 
-            <div id="slezak" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start p-2">
-                <div>
-                  <DoctorCardSlezak />
-                </div>
-                <div className="h-full">
-                  <Card className="h-full"><CardContent className="p-6">{doctorBacksides.slezak}</CardContent></Card>
-                </div>
+            <div id="slezak" className="mx-auto max-w-4xl p-2">
+                <DoctorCardSlezak backsideContent={doctorBacksides.slezak} />
             </div>
 
           </div>
