@@ -710,10 +710,12 @@ const SidebarMenuSubButton = React.forwardRef<
   React.ComponentProps<"a"> & {
     size?: "sm" | "md"
     isActive?: boolean
+    asChild?: boolean
   }
->(({ size = "md", isActive, className, ...props }, ref) => {
+>(({ size = "md", isActive, className, asChild = false, ...props }, ref) => {
+  const Comp = asChild ? Slot : "a"
   return (
-    <a
+    <Comp
       ref={ref}
       data-sidebar="menu-sub-button"
       data-size={size}
