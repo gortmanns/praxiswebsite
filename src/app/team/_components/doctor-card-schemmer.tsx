@@ -50,7 +50,7 @@ export const DoctorCardSchemmer = () => {
                         <div className="bg-accent/95 p-6 text-left text-background">
                            <div className="h-full overflow-y-auto text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
                                 <div className="flex w-full flex-col space-y-3">
-                                    <p className="font-bold text-primary">KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT VOR ORT IM <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> ERFOLGEN</p>
+                                    <p className="font-bold text-primary">KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT IM <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> ERFOLGEN</p>
                                     <div>
                                         <p className="font-bold text-primary">GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT</p>
                                         <ul className="flex flex-col space-y-1 pt-1 pl-5">
@@ -64,7 +64,7 @@ export const DoctorCardSchemmer = () => {
                                                     <li>Siloah-Spital</li>
                                                 </ul>
                                             </li>
-                                            <li className="text-background">Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder vor Ort im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> statt</li>
+                                            <li className="text-background">Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> statt</li>
                                         </ul>
                                     </div>
                                 </div>
