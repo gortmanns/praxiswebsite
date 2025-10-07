@@ -36,9 +36,22 @@ export const DoctorCardSlezak = () => {
                         </div>
                     </div>
                      {/* RÜCKSEITE */}
-                     <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                        <div className="text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
+                     <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
+                        <div className="flex w-full flex-col space-y-4 text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
+                            <p className="font-bold text-primary">ALLGEMEINE NEUROLOGIE</p>
+                            <p className="font-bold text-primary">VASKULÄRE ERKRANKUNGEN</p>
+                            <p className="font-bold text-primary">EPILEPSIE</p>
+                            <div>
+                                <p className="font-bold text-primary">BEWEGUNGSSTÖRUNGEN</p>
+                                <p className="text-sm text-background/80">(Schwerpunkt Parkinsonsyndrome)</p>
+                            </div>
+                            <p className="font-bold text-primary">KOPFSCHMERZEN UND MIGRÄNE</p>
+                            <p className="font-bold text-primary">NEUROREHABILITATION</p>
                             
+                            <div className="space-y-4 pt-4">
+                                <p>Viele Untersuchungen können direkt im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> durchgeführt werden.</p>
+                                <p>Wenn spezielle Untersuchungen wie z. B. die Bestimmung der Nervenleitgeschwindigkeit Geräte erfordern, die im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> nicht zur Verfügung stehen, dann finden diese in den Räumlichkeiten an der Thunstrasse 95 in Bern statt.</p>
+                            </div>
                         </div>
                     </div>
                 </CardContent>
