@@ -46,9 +46,15 @@ export const DoctorCardSchemmer = () => {
                         </div>
                     </div>
                     {/* RÜCKSEITE */}
-                    <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                        <div className="text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
-                            
+                    <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
+                        <div className="flex w-full flex-col space-y-3 text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
+                            <p>Medizinstudium in Heidelberg und Phoenix, AZ (USA)</p>
+                            <p>Dissertation und Habilitation in Heidelberg</p>
+                            <p>Chefarzt in Heidelberg</p>
+                            <p>Direktor der Universitätsklinik für Chirurgie, Graz (Österreich)</p>
+                            <p>Ärztlicher Direktor im Spital in Oberwart (Österreich)</p>
+                            <p>Chefarzt Universitätsklinik für Viszerale Transplantationschirurgie, Inselspital, Bern</p>
+                            <p>Chefarzt und Mitinhaber Privatklinik für Viszerale Chirurgie, Zürich</p>
                         </div>
                     </div>
                 </CardContent>
