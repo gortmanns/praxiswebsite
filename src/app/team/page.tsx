@@ -162,25 +162,25 @@ const doctorBacksides = {
      <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col space-y-4">
         <p className="font-bold text-primary">ALLGEMEINE ORTHOPÄDIE</p>
         <p className="font-bold text-primary">SPEZIALGEBIET HÜFT- UND KNIEGELENKE</p>
-        <p>Röntgenuntersuchungen, Konsultationen und klinische Untersuchungen finden direkt im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> statt.</p>
+        <p>Röntgenuntersuchungen, Konsultationen und klinische Untersuchungen finden direkt vor Ort im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> statt.</p>
         <p>Auch Gelenkinfiltrationen, z. B. bei Schmerzen, können zum Teil direkt vor Ort durchgeführt werden.</p>
         <p>Allenfalls nötige Operationen werden im gut erreichbaren Lindenhof-Spital durchgeführt.</p>
     </div>
   ),
   slezak: (
     <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col space-y-4">
-        <p className="font-bold text-primary">ALLGEMEINE NEUROLOGIE</p>
-        <p className="font-bold text-primary">VASKULÄRE ERKRANKUNGEN</p>
-        <p className="font-bold text-primary">EPILEPSIE</p>
-        <p className="font-bold text-primary">BEWEGUNGSSTÖRUNGEN <span className="text-primary font-bold">(Schwerpunkt Parkinsonsyndrome)</span></p>
-        <p className="font-bold text-primary">KOPFSCHMERZEN UND MIGRÄNE</p>
-        <p className="font-bold text-primary">NEUROREHABILITATION</p>
-        
-        <div className="space-y-4 pt-4">
-            <p>Viele Untersuchungen können direkt im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> durchgeführt werden.</p>
-            <p>Wenn spezielle Untersuchungen wie z. B. die Bestimmung der Nervenleitgeschwindigkeit Geräte erfordern, die im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> nicht zur Verfügung stehen, dann finden diese in den Räumlichkeiten an der Thunstrasse 95 in Bern statt.</p>
-        </div>
-    </div>
+      <p className="font-bold text-primary">ALLGEMEINE NEUROLOGIE</p>
+      <p className="font-bold text-primary">VASKULÄRE ERKRANKUNGEN</p>
+      <p className="font-bold text-primary">EPILEPSIE</p>
+      <p className="font-bold text-primary">BEWEGUNGSSTÖRUNGEN <span className="text-primary font-bold">(Schwerpunkt Parkinsonsyndrome)</span></p>
+      <p className="font-bold text-primary">KOPFSCHMERZEN UND MIGRÄNE</p>
+      <p className="font-bold text-primary">NEUROREHABILITATION</p>
+      
+      <div className="space-y-4 pt-4">
+          <p>Viele Untersuchungen können direkt im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> durchgeführt werden.</p>
+          <p>Wenn spezielle Untersuchungen wie z. B. die Bestimmung der Nervenleitgeschwindigkeit Geräte erfordern, die im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> nicht zur Verfügung stehen, dann finden diese in den Räumlichkeiten an der Thunstrasse 95 in Bern statt.</p>
+      </div>
+  </div>
   ),
 };
 
@@ -276,4 +276,3 @@ export default function TeamPage() {
     </div>
   );
 }
-
