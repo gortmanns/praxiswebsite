@@ -1,6 +1,21 @@
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
+import { VitaRenderer } from '@/app/admin/dashboard/team/doctors/_components/vita-renderer';
+
+const vita = `<span class="font-bold text-primary">LEISTUNGSSPEKTRUM</span>
+[linie]
+[fett][blau]SPEZIALGEBIETE[/blau][/fett]
+[liste]Allgemeine Orthopädie[/liste]
+[liste]Spezialgebiet Hüft- und Kniegelenke[/liste]
+[break]
+[fett][blau]LEISTUNGEN VOR ORT[/blau][/fett]
+[liste]Röntgenuntersuchungen, Konsultationen und klinische Untersuchungen finden direkt im <span class="whitespace-nowrap">Praxiszentrum im Ring</span> statt.[/liste]
+[liste]Auch Gelenkinfiltrationen, z. B. bei Schmerzen, können zum Teil direkt vor Ort durchgeführt werden.[/liste]
+[break]
+[fett][blau]OPERATIONEN[/blau][/fett]
+[liste]Allenfalls nötige Operationen werden im gut erreichbaren Lindenhof-Spital durchgeführt.[/liste]
+`;
 
 export const DoctorCardHerschel = () => (
     <div 
@@ -41,23 +56,9 @@ export const DoctorCardHerschel = () => (
                         </div>
                     </div>
                     {/* Rechte Spalte: Vita */}
-                    <div className="flex flex-col items-start justify-start overflow-auto bg-accent/95 p-6 text-left text-background">
-                         <h3 className="mb-4 font-bold text-primary">Leistungsspektrum</h3>
-                         <div className="text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
-                            <ul className="space-y-1">
-                                <li className="font-bold text-primary">SPEZIALGEBIETE</li>
-                                <li>Allgemeine Orthopädie</li>
-                                <li>Spezialgebiet Hüft- und Kniegelenke</li>
-                                
-                                <li>&nbsp;</li>
-                                <li className="font-bold text-primary">LEISTUNGEN VOR ORT</li>
-                                <li>Röntgenuntersuchungen, Konsultationen und klinische Untersuchungen finden direkt im <span className="whitespace-nowrap">Praxiszentrum im Ring</span> statt.</li>
-                                <li>Auch Gelenkinfiltrationen, z. B. bei Schmerzen, können zum Teil direkt vor Ort durchgeführt werden.</li>
-
-                                <li>&nbsp;</li>
-                                <li className="font-bold text-primary">OPERATIONEN</li>
-                                <li>Allenfalls nötige Operationen werden im gut erreichbaren Lindenhof-Spital durchgeführt.</li>
-                            </ul>
+                    <div className="relative flex flex-col items-start justify-start overflow-hidden bg-accent/95 p-6 text-left text-background">
+                         <div className="w-full h-full overflow-y-auto text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
+                            <VitaRenderer text={vita} />
                         </div>
                     </div>
                 </div>

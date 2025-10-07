@@ -311,14 +311,14 @@ export const EditableDoctorCard = () => {
                                 </div>
                              </div>
                         </div>
-                        <div className="relative flex flex-col items-start justify-start overflow-auto bg-accent/95 p-6 text-left text-background">
+                        <div className="relative flex flex-col items-start justify-start overflow-hidden bg-accent/95 p-6 text-left text-background">
                             <VitaEditorDialog
                                 initialValue={vita}
                                 onSave={setVita}
                                 trigger={<Pencil className="absolute top-4 right-4 h-5 w-5 text-primary/80 cursor-pointer hover:text-primary z-10" />}
                             />
 
-                            <div className="w-full text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
+                            <div className="w-full h-full overflow-y-auto text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
                                 <VitaRenderer text={vita} />
                             </div>
                         </div>
@@ -328,7 +328,3 @@ export const EditableDoctorCard = () => {
         </div>
     );
 };
-
-    
-    
-    

@@ -1,5 +1,25 @@
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
+import { VitaRenderer } from '@/app/admin/dashboard/team/doctors/_components/vita-renderer';
+
+const vita = `<span class="font-bold text-primary">LEISTUNGSSPEKTRUM</span>
+[linie]
+[fett][blau]KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT VOR ORT IM PRAXISZENTRUM IM RING ERFOLGEN[/blau][/fett]
+[break]
+[fett][blau]GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT[/blau][/fett]
+[break]
+[liste]Die Vorbesprechung und Planung des Eingriffs erfolgen im PRAXISZENTRUM IM RING.[/liste]
+[liste]Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten.[/liste]
+[liste]Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt.
+    <ul class="list-disc space-y-px pl-9 pt-1 text-[clamp(0.7rem,2.3cqw,1rem)] font-normal text-background/80">
+        <li>Hirslanden</li>
+        <li>Lindehof-Spital</li>
+        <li>Siloah-Spital</li>
+    </ul>
+[/liste]
+[liste]Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder vor Ort im PRAXISZENTRUM IM RING statt.[/liste]
+`;
+
 
 export const DoctorCardSchemmer = () => (
     <div 
@@ -47,28 +67,9 @@ export const DoctorCardSchemmer = () => (
                         </div>
                     </div>
                     {/* Rechte Spalte: Vita */}
-                    <div className="flex flex-col items-start justify-start overflow-auto bg-accent/95 p-6 text-left text-background">
-                        <h3 className="mb-4 font-bold text-primary">Leistungsspektrum</h3>
-                        <div className="text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
-                            <ul className="space-y-1.5">
-                                <li className="font-bold text-primary mt-6 mb-4">
-                                    KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT VOR ORT IM PRAXISZENTRUM IM RING ERFOLGEN
-                                </li>
-                                <li className="font-bold text-primary mt-2 mb-4">
-                                    GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT
-                                </li>
-                                <li className="mb-4">Die Vorbesprechung und Planung des Eingriffs erfolgen im PRAXISZENTRUM IM RING.</li>
-                                <li className="mb-4">Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten.</li>
-                                <li className="mb-4">
-                                    Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt.
-                                    <ul className="list-disc space-y-px pl-9 pt-1 text-[clamp(0.7rem,2.3cqw,1rem)] font-normal text-background/80">
-                                        <li>Hirslanden</li>
-                                        <li>Lindehof-Spital</li>
-                                        <li>Siloah-Spital</li>
-                                    </ul>
-                                </li>
-                                <li className="mb-4">Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder vor Ort im PRAXISZENTRUM IM RING statt.</li>
-                            </ul>
+                    <div className="relative flex flex-col items-start justify-start overflow-hidden bg-accent/95 p-6 text-left text-background">
+                        <div className="w-full h-full overflow-y-auto text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
+                            <VitaRenderer text={vita} />
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,21 @@
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
+import { VitaRenderer } from '@/app/admin/dashboard/team/doctors/_components/vita-renderer';
+
+const vita = `<span class="font-bold text-primary">LEISTUNGSSPEKTRUM</span>
+[linie]
+[fett][blau]SPEZIALGEBIETE[/blau][/fett]
+[liste]Allgemeine Neurologie[/liste]
+[liste]Vaskuläre Erkrankungen[/liste]
+[liste]Epilepsie[/liste]
+[liste]Bewegungsstörungen (Schwerpunkt Parkinson-Syndrome)[/liste]
+[liste]Kopfschmerzen und Migräne[/liste]
+[liste]Neurorehabilitation[/liste]
+[break]
+[klein]Viele Untersuchungen können direkt hier im <span class="whitespace-nowrap">Praxiszentrum im Ring</span> durchgeführt werden.[/klein]
+[break]
+[klein]Wenn spezielle Untersuchungen wie z. B. die Bestimmung der Nervenleitgeschwindigkeit Geräte erfordern, die hier im <span class="whitespace-nowrap">Praxiszentrum</span> nicht zur Verfügung stehen, dann finden diese in den Räumlichkeiten an der Thunstrasse 95 in Bern statt.[/klein]
+`;
 
 export const DoctorCardSlezak = () => (
     <div 
@@ -37,26 +53,9 @@ export const DoctorCardSlezak = () => (
                         </div>
                     </div>
                     {/* Rechte Spalte: Vita */}
-                    <div className="flex flex-col items-start justify-start overflow-auto bg-accent/95 p-6 text-left text-background">
-                         <h3 className="mb-4 font-bold text-primary">Leistungsspektrum</h3>
-                         <div className="text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
-                            <ul className="space-y-1.5">
-                                <li className="font-bold text-primary">SPEZIALGEBIETE</li>
-                                <li>Allgemeine Neurologie</li>
-                                <li>Vaskuläre Erkrankungen</li>
-                                <li>Epilepsie</li>
-                                <li>Bewegungsstörungen (Schwerpunkt Parkinson-Syndrome)</li>
-                                <li>Kopfschmerzen und Migräne</li>
-                                <li>Neurorehabilitation</li>
-                                <li>&nbsp;</li>
-                                <li className="text-[clamp(0.7rem,2.3cqw,1rem)]">
-                                    Viele Untersuchungen können direkt hier im <span className="whitespace-nowrap">Praxiszentrum im Ring</span> durchgeführt werden.
-                                </li>
-                                <li>&nbsp;</li>
-                                <li className="text-[clamp(0.7rem,2.3cqw,1rem)]">
-                                    Wenn spezielle Untersuchungen wie z. B. die Bestimmung der Nervenleitgeschwindigkeit Geräte erfordern, die hier im <span className="whitespace-nowrap">Praxiszentrum</span> nicht zur Verfügung stehen, dann finden diese in den Räumlichkeiten an der Thunstrasse 95 in Bern statt.
-                                </li>
-                            </ul>
+                    <div className="relative flex flex-col items-start justify-start overflow-hidden bg-accent/95 p-6 text-left text-background">
+                         <div className="w-full h-full overflow-y-auto text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
+                            <VitaRenderer text={vita} />
                         </div>
                     </div>
                 </div>
