@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Tooltip, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -37,11 +37,10 @@ Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für
 Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)
 `;
 
-// A temporary list of existing images. This would eventually be loaded from the server.
 const existingImages = [
     '/images/team/Dr.Herschel.jpg',
     '/images/team/Dr.Rosenov.jpg',
-    '/images/team/Dr.Schemmer.jpg',
+    '/images/team/Prof.Schemmer.jpg',
     '/images/team/Dr.Slezak.jpg',
     '/images/team/Ortmanns.jpg',
 ];
@@ -54,7 +53,6 @@ interface EditDialogProps {
     onSave: (value: string) => void;
     inputLabel: string;
     isTextarea?: boolean;
-    className?: string;
 }
 
 const EditDialog: React.FC<EditDialogProps> = ({
@@ -127,6 +125,7 @@ export const EditableDoctorCard = () => {
     const [additionalInfo, setAdditionalInfo] = useState('');
     const [vita, setVita] = useState(initialVita);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [imageSourceType, setImageSourceType] = useState<'none' | 'new-upload' | 'existing-gallery'>('none');
     const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -141,6 +140,7 @@ export const EditableDoctorCard = () => {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result as string);
+                setImageSourceType('new-upload');
                 setIsImageDialogOpen(false); 
             };
             reader.readAsDataURL(file);
@@ -149,11 +149,13 @@ export const EditableDoctorCard = () => {
     
     const handleDeleteImage = () => {
         setImagePreview(null);
+        setImageSourceType('none');
         setIsImageDialogOpen(false);
     };
 
     const handleSelectFromGallery = (imageSrc: string) => {
         setImagePreview(imageSrc);
+        setImageSourceType('existing-gallery');
         setIsGalleryOpen(false);
         setIsImageDialogOpen(false);
     };
@@ -177,7 +179,6 @@ export const EditableDoctorCard = () => {
             <Card className="overflow-hidden">
                 <CardContent className="p-0">
                     <div className="grid grid-cols-1 md:grid-cols-2">
-                        {/* Linke Spalte: Hauptkarte */}
                         <div 
                             className="relative w-full bg-card"
                             style={{ 'containerType': 'inline-size', aspectRatio: '1000 / 495' } as React.CSSProperties}
@@ -210,6 +211,16 @@ export const EditableDoctorCard = () => {
                                                 Verwalten Sie das Profilbild. Für eine optimale Darstellung sollte das Bild ein Seitenverhältnis von 2:3 haben.
                                             </DialogDescription>
                                         </DialogHeader>
+                                        
+                                        {!name && (
+                                            <Alert variant="destructive" className="mt-4">
+                                                <AlertCircle className="h-4 w-4" />
+                                                <AlertTitle>Fehlender Name</AlertTitle>
+                                                <AlertDescription>
+                                                    Bitte geben Sie zuerst einen Namen für den Arzt ein, bevor Sie ein Bild verwalten.
+                                                </AlertDescription>
+                                            </Alert>
+                                        )}
 
                                         {imagePreview ? (
                                             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -223,63 +234,51 @@ export const EditableDoctorCard = () => {
                                                 </Button>
                                             </div>
                                         ) : (
-                                            <>
-                                                {!name && (
-                                                    <Alert variant="destructive" className="mt-4">
-                                                        <AlertCircle className="h-4 w-4" />
-                                                        <AlertTitle>Fehlender Name</AlertTitle>
-                                                        <AlertDescription>
-                                                            Bitte geben Sie zuerst einen Namen für den Arzt ein, bevor Sie ein Bild hochladen.
-                                                        </AlertDescription>
-                                                    </Alert>
-                                                )}
-
-                                                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                                    <Dialog open={isGalleryOpen} onOpenChange={setIsGalleryOpen}>
-                                                        <DialogTrigger asChild>
-                                                            <Button variant="outline" disabled={!name}>
-                                                                <GalleryHorizontal className="mr-2 h-4 w-4" />
-                                                                Bestehendes auswählen
-                                                            </Button>
-                                                        </DialogTrigger>
-                                                        <DialogContent className="max-w-4xl">
-                                                            <DialogHeader>
-                                                                <DialogTitle>Bestehendes Bild auswählen</DialogTitle>
-                                                                <DialogDescription>
-                                                                    Wählen Sie ein bereits hochgeladenes Bild aus dem Team-Ordner.
-                                                                </DialogDescription>
-                                                            </DialogHeader>
-                                                            <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[60vh] overflow-y-auto p-1">
-                                                                {existingImages.map(imgSrc => (
-                                                                    <div key={imgSrc} className="cursor-pointer group" onClick={() => handleSelectFromGallery(imgSrc)}>
-                                                                        <div className="relative aspect-[2/3] w-full overflow-hidden rounded-md border-2 border-transparent group-hover:border-primary">
-                                                                            <Image src={imgSrc} alt={imgSrc} fill className="object-cover" />
-                                                                        </div>
+                                            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                                <Dialog open={isGalleryOpen} onOpenChange={setIsGalleryOpen}>
+                                                    <DialogTrigger asChild>
+                                                        <Button variant="outline" disabled={!name}>
+                                                            <GalleryHorizontal className="mr-2 h-4 w-4" />
+                                                            Bestehendes auswählen
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent className="max-w-4xl">
+                                                        <DialogHeader>
+                                                            <DialogTitle>Bestehendes Bild auswählen</DialogTitle>
+                                                            <DialogDescription>
+                                                                Wählen Sie ein bereits hochgeladenes Bild aus dem Team-Ordner.
+                                                            </DialogDescription>
+                                                        </DialogHeader>
+                                                        <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[60vh] overflow-y-auto p-1">
+                                                            {existingImages.map(imgSrc => (
+                                                                <div key={imgSrc} className="cursor-pointer group" onClick={() => handleSelectFromGallery(imgSrc)}>
+                                                                    <div className="relative aspect-[2/3] w-full overflow-hidden rounded-md border-2 border-transparent group-hover:border-primary">
+                                                                        <Image src={imgSrc} alt={imgSrc} fill className="object-cover" />
                                                                     </div>
-                                                                ))}
-                                                            </div>
-                                                        </DialogContent>
-                                                    </Dialog>
-
-                                                    <TooltipProvider>
-                                                        <Tooltip>
-                                                            <TooltipTrigger asChild>
-                                                                <div className="inline-block w-full">
-                                                                    <Button onClick={handleImageUploadClick} disabled={!name} className="w-full">
-                                                                        <Upload className="mr-2 h-4 w-4" />
-                                                                        Neu hochladen
-                                                                    </Button>
                                                                 </div>
-                                                            </TooltipTrigger>
-                                                            {!name && (
-                                                                <TooltipContent>
-                                                                    <p>Bitte geben Sie zuerst einen Namen ein.</p>
-                                                                </TooltipContent>
-                                                            )}
-                                                        </Tooltip>
-                                                    </TooltipProvider>
-                                                </div>
-                                            </>
+                                                            ))}
+                                                        </div>
+                                                    </DialogContent>
+                                                </Dialog>
+
+                                                <TooltipProvider>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <div className="inline-block w-full">
+                                                                <Button onClick={handleImageUploadClick} disabled={!name} className="w-full">
+                                                                    <Upload className="mr-2 h-4 w-4" />
+                                                                    Neu hochladen
+                                                                </Button>
+                                                            </div>
+                                                        </TooltipTrigger>
+                                                        {!name && (
+                                                            <TooltipContent>
+                                                                <p>Bitte geben Sie zuerst einen Namen ein.</p>
+                                                            </TooltipContent>
+                                                        )}
+                                                    </Tooltip>
+                                                </TooltipProvider>
+                                            </div>
                                         )}
                                     </DialogContent>
                                 </Dialog>
@@ -340,7 +339,6 @@ export const EditableDoctorCard = () => {
                                 </div>
                              </div>
                         </div>
-                        {/* Rechte Spalte: Vita */}
                         <div className="flex flex-col items-start justify-start overflow-auto bg-accent/95 p-6 text-left text-background">
                             <div className="flex w-full items-center justify-between">
                                 <h3 className="mb-4 font-bold text-primary">Vita / Lebenslauf</h3>
@@ -358,7 +356,7 @@ export const EditableDoctorCard = () => {
                                 {vita.split('---').map((section, sectionIndex) => (
                                     <div key={sectionIndex} className={sectionIndex > 0 ? 'mt-4 pt-4 border-t border-background/20' : ''}>
                                         {section.trim().split(/<Meilensteine>|<\/Meilenstealen>/).map((part, partIndex) => {
-                                            if (partIndex % 2 === 1) { // This is content within <Meilensteine>
+                                            if (partIndex % 2 === 1) { 
                                                 const milestones = part.trim().split('\n').filter(line => line.trim() !== '');
                                                 const title = milestones.shift();
                                                 return (
