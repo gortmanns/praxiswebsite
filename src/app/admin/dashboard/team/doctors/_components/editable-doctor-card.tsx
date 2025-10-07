@@ -346,7 +346,7 @@ export const EditableDoctorCard = () => {
                             <VitaEditorDialog
                                 initialValue={vita}
                                 onSave={setVita}
-                                trigger={<Pencil className="absolute top-4 right-4 h-4 w-4 text-primary/80 cursor-pointer hover:text-primary" />}
+                                trigger={<Pencil className="absolute top-4 right-4 h-5 w-5 text-primary/80 cursor-pointer hover:text-primary z-10" />}
                             />
 
                             <div className="w-full text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight whitespace-pre-wrap">
