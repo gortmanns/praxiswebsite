@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Bold, Minus, List, Text, Palette } from 'lucide-react';
+import { Bold, Minus, List, Text, Palette, Info } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -135,12 +135,12 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
           <AlertDescription>
             <p>Jede Zeile im Textfeld wird als eigener Absatz dargestellt. Benutzen Sie die Werkzeuge, um Text zu formatieren:</p>
             <ul className="list-disc pl-4 space-y-1 mt-2">
-                <li><strong className="text-primary">[blau]</strong>: Text in Primärfarbe (blau).</li>
-                <li><strong>[weiss]</strong>: Normaler Text auf dem dunklen Hintergrund.</li>
-                <li><strong className="text-muted-foreground">[grau]</strong>: Leicht abgetönter Text.</li>
-                <li><strong>[fett]</strong>: Fetter Text.</li>
-                <li><strong>[klein]</strong>: Etwas kleinere Schriftgrösse.</li>
-                <li><strong>[liste]</strong>: Formatiert eine Zeile als Aufzählungspunkt.</li>
+                <li><strong className="text-primary">[blau]...[/blau]</strong>: Text in Primärfarbe (blau).</li>
+                <li><strong>[weiss]...[/weiss]</strong>: Normaler Text auf dem dunklen Hintergrund.</li>
+                <li><strong className="text-muted-foreground">[grau]...[/grau]</strong>: Leicht abgetönter Text.</li>
+                <li><strong>[fett]...[/fett]</strong>: Fetter Text.</li>
+                <li><strong>[klein]...[/klein]</strong>: Etwas kleinere Schriftgrösse.</li>
+                <li><strong>[liste]...[/liste]</strong>: Formatiert eine Zeile als Aufzählungspunkt.</li>
                 <li><strong>---</strong>: Fügt eine horizontale Trennlinie zwischen Abschnitten ein.</li>
             </ul>
           </AlertDescription>

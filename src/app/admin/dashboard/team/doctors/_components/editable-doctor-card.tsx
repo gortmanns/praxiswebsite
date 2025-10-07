@@ -108,81 +108,62 @@ const parseAndRenderVita = (text: string) => {
 
     return sections.map((section, sectionIndex) => {
         const lines = section.trim().split('\n');
+        const listItems: React.ReactNode[] = [];
+
+        const renderLine = (line: string) => {
+            let processedLine: React.ReactNode = line;
+            
+            // This regex will find the innermost tags first, e.g., [b] in [color][b]text[/b][/color]
+            const tagRegex = /\[(\w+)\]((?:[^[]|\[(?!\/\1\]))*?)\[\/\1\]/g;
+
+            const applyStyling = (content: string): React.ReactNode => {
+                 let match;
+                 const parts: React.ReactNode[] = [];
+                 let lastIndex = 0;
+
+                 while((match = tagRegex.exec(content)) !== null) {
+                     const [fullMatch, tagName, innerContent] = match;
+                     
+                     // Text before the tag
+                     if (match.index > lastIndex) {
+                         parts.push(content.substring(lastIndex, match.index));
+                     }
+
+                     let className = '';
+                     switch(tagName) {
+                         case 'blau': className = 'text-primary'; break;
+                         case 'weiss': className = 'text-background'; break;
+                         case 'grau': className = 'text-background/80'; break;
+                         case 'fett': className = 'font-bold'; break;
+                         case 'klein': className = 'text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug'; break;
+                     }
+
+                     parts.push(<span key={match.index} className={className}>{applyStyling(innerContent)}</span>);
+                     
+                     lastIndex = match.index + fullMatch.length;
+                 }
+
+                 // Remaining text
+                 if(lastIndex < content.length) {
+                     parts.push(content.substring(lastIndex));
+                 }
+                 
+                 return parts;
+            };
+            
+            const listMatch = line.match(/^\[liste\](.*)\[\/liste\]$/);
+            if (listMatch) {
+                return <li key={line} className="list-disc ml-5 pl-2">{applyStyling(listMatch[1])}</li>
+            }
+
+            return <p key={line} className="min-h-[1.2em]">{applyStyling(line)}</p>;
+        };
         
         return (
             <div key={sectionIndex} className={cn(sectionIndex > 0 && 'mt-4 pt-4 border-t border-background/20')}>
-                {lines.map((line, lineIndex) => {
-                    let processedLine: React.ReactNode = line;
-                    const appliedClasses: string[] = [];
-                    let isList = false;
-
-                    // Match all tags, e.g., [tag]content[/tag]
-                    const tagRegex = /\[(\w+)\](.*?)\[\/\1\]/g;
-                    let match;
-                    
-                    const nodes: React.ReactNode[] = [];
-                    let lastIndex = 0;
-
-                    // Simplified parsing: We find all tags and their content
-                    const parseLine = (str: string): React.ReactNode[] => {
-                        const parts = [];
-                        let remainingStr = str;
-                        
-                        while(remainingStr.length > 0) {
-                            const match = /\[(\w+)\]/.exec(remainingStr);
-                            if (!match) {
-                                parts.push({ type: 'text', content: remainingStr });
-                                break;
-                            }
-                            
-                            const tagName = match[1];
-                            const tagStart = match.index;
-                            const tagEnd = tagStart + match[0].length;
-                            const endTag = `[/${tagName}]`;
-                            const endTagIndex = remainingStr.indexOf(endTag, tagEnd);
-
-                            if (endTagIndex === -1) {
-                                // Unmatched tag, treat as text
-                                parts.push({ type: 'text', content: remainingStr });
-                                break;
-                            }
-                            
-                            if (tagStart > 0) {
-                                parts.push({ type: 'text', content: remainingStr.substring(0, tagStart) });
-                            }
-
-                            const content = remainingStr.substring(tagEnd, endTagIndex);
-                            parts.push({ type: tagName, content: parseLine(content) });
-
-                            remainingStr = remainingStr.substring(endTagIndex + endTag.length);
-                        }
-                        return parts;
-                    }
-                    
-                    const renderParts = (parts: any[]): React.ReactNode => {
-                         return parts.map((part, i) => {
-                            if (part.type === 'text') {
-                                return <span key={i}>{part.content}</span>;
-                            }
-                            let classes = '';
-                            if (part.type === 'blau') classes = 'text-primary';
-                            if (part.type === 'weiss') classes = 'text-background';
-                            if (part.type === 'grau') classes = 'text-background/80';
-                            if (part.type === 'fett') classes = 'font-bold';
-                            if (part.type === 'klein') classes = 'text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug';
-
-                            if (part.type === 'liste') {
-                                return <li key={i} className="list-disc ml-5 pl-2">{renderParts(part.content)}</li>
-                            }
-
-                            return <span key={i} className={classes}>{renderParts(part.content)}</span>
-                         });
-                    };
-
-                    const parsedLine = parseLine(line);
-
-                    return <p key={lineIndex} className="min-h-[1.2em]">{renderParts(parsedLine)}</p>;
-                })}
+                {lines.map((line, lineIndex) => (
+                    renderLine(line)
+                ))}
             </div>
         );
     });
@@ -419,7 +400,7 @@ export const EditableDoctorCard = () => {
                                 trigger={<Pencil className="absolute top-4 right-4 h-5 w-5 text-primary/80 cursor-pointer hover:text-primary z-10" />}
                             />
 
-                            <div className="w-full text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight whitespace-pre-line">
+                            <div className="w-full text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
                                 {parseAndRenderVita(vita)}
                             </div>
                         </div>
