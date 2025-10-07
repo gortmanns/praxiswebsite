@@ -202,23 +202,23 @@ export default function TeamPage() {
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
             
-            <div id="ortmanns" className="mx-auto max-w-4xl p-2">
+            <div id="ortmanns" className="mx-auto max-w-[1000px] p-2">
                 <DoctorCardOrtmanns backsideContent={doctorBacksides.ortmanns} />
             </div>
 
-            <div id="schemmer" className="mx-auto max-w-4xl p-2">
+            <div id="schemmer" className="mx-auto max-w-[1000px] p-2">
                 <DoctorCardSchemmer backsideContent={doctorBacksides.schemmer} />
             </div>
 
-            <div id="rosenov" className="mx-auto max-w-4xl p-2">
+            <div id="rosenov" className="mx-auto max-w-[1000px] p-2">
                 <DoctorCardRosenov backsideContent={doctorBacksides.rosenov} />
             </div>
 
-            <div id="herschel" className="mx-auto max-w-4xl p-2">
+            <div id="herschel" className="mx-auto max-w-[1000px] p-2">
                 <DoctorCardHerschel backsideContent={doctorBacksides.herschel} />
             </div>
 
-            <div id="slezak" className="mx-auto max-w-4xl p-2">
+            <div id="slezak" className="mx-auto max-w-[1000px] p-2">
                 <DoctorCardSlezak backsideContent={doctorBacksides.slezak} />
             </div>
 
