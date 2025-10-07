@@ -5,65 +5,69 @@ import { Card, CardContent } from '@/components/ui/card';
 export const DoctorCardSchemmer = () => {
     return (
         <div className="mx-auto max-w-7xl">
-            <Card className="group relative w-full overflow-hidden">
+            <Card className="w-full overflow-hidden">
                 <CardContent className="p-0">
-                    {/* VORDERSEITE */}
-                    <div
-                        className="relative w-full bg-card"
-                        style={{ 'containerType': 'inline-size', aspectRatio: '1000 / 495' } as React.CSSProperties}
-                    >
-                        <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
-                            <div className="relative col-span-1 h-full w-full">
-                                <Image
-                                    src="/images/team/Prof.Schemmer.jpg"
-                                    alt="Portrait von P. Schemmer"
-                                    data-ai-hint="doctor portrait"
-                                    fill
-                                    className="object-cover"
-                                />
-                            </div>
-                            <div className="col-span-2">
-                                <div className="flex h-full flex-col justify-center text-left text-foreground/80">
-                                    <p className="text-[2.2cqw] text-primary">Prof. Dr. med. Dr. h. c.</p>
-                                    <h4 className="font-headline text-[4.8cqw] font-bold leading-tight text-primary">
-                                    P. Schemmer
-                                    </h4>
-                                    <div className="mt-[1.5cqw] text-[2.2cqw] leading-tight">
-                                        <p className="font-bold">Facharzt für Allgemein- und Viszeralchirurgie</p>
-                                    </div>
-                                    <div className="relative mt-[2.5cqw] h-[10cqw] w-[30cqw]">
-                                        <Image
-                                        src="/images/schemmer-worni-logo.png"
-                                        alt="Schemmer & Worni Logo"
-                                        width={300}
-                                        height={100}
-                                        className="object-contain"
-                                        data-ai-hint="partner logo"
-                                        />
+                    <div className="grid grid-cols-1 md:grid-cols-2">
+                        {/* VORDERSEITE */}
+                        <div
+                            className="relative w-full bg-card"
+                            style={{ 'containerType': 'inline-size', aspectRatio: '1000 / 495' } as React.CSSProperties}
+                        >
+                            <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
+                                <div className="relative col-span-1 h-full w-full">
+                                    <Image
+                                        src="/images/team/Prof.Schemmer.jpg"
+                                        alt="Portrait von P. Schemmer"
+                                        data-ai-hint="doctor portrait"
+                                        fill
+                                        className="object-cover"
+                                    />
+                                </div>
+                                <div className="col-span-2">
+                                    <div className="flex h-full flex-col justify-center text-left text-foreground/80">
+                                        <p className="text-[2.2cqw] text-primary">Prof. Dr. med. Dr. h. c.</p>
+                                        <h4 className="font-headline text-[4.8cqw] font-bold leading-tight text-primary">
+                                        P. Schemmer
+                                        </h4>
+                                        <div className="mt-[1.5cqw] text-[2.2cqw] leading-tight">
+                                            <p className="font-bold">Facharzt für Allgemein- und Viszeralchirurgie</p>
+                                        </div>
+                                        <div className="relative mt-[2.5cqw] h-[10cqw] w-[30cqw]">
+                                            <Image
+                                            src="/images/schemmer-worni-logo.png"
+                                            alt="Schemmer & Worni Logo"
+                                            width={300}
+                                            height={100}
+                                            className="object-contain"
+                                            data-ai-hint="partner logo"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    {/* RÜCKSEITE */}
-                    <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                        <div className="flex w-full flex-col space-y-3 text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
-                            <p className="font-bold text-primary">KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT VOR ORT IM PRAXISZENTRUM IM RING ERFOLGEN</p>
-                            <div>
-                                <p className="font-bold text-primary">GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT</p>
-                                <ul className="flex flex-col space-y-1 pt-1 pl-5">
-                                    <li className="text-background">Vorbesprechung und Planung des Eingriffs erfolgen im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span></li>
-                                    <li className="text-background">Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten</li>
-                                    <li className="text-background">
-                                        Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt
-                                        <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
-                                            <li>Hirslanden</li>
-                                            <li>Lindenhof-Spital</li>
-                                            <li>Siloah-Spital</li>
+                        {/* RÜCKSEITE */}
+                        <div className="bg-accent/95 p-6 text-left text-background">
+                           <div className="h-full overflow-y-auto text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
+                                <div className="flex w-full flex-col space-y-3">
+                                    <p className="font-bold text-primary">KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT VOR ORT IM <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> ERFOLGEN</p>
+                                    <div>
+                                        <p className="font-bold text-primary">GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT</p>
+                                        <ul className="flex flex-col space-y-1 pt-1 pl-5">
+                                            <li className="text-background">Vorbesprechung und Planung des Eingriffs erfolgen im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span></li>
+                                            <li className="text-background">Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten</li>
+                                            <li className="text-background">
+                                                Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt
+                                                <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
+                                                    <li>Hirslanden</li>
+                                                    <li>Lindenhof-Spital</li>
+                                                    <li>Siloah-Spital</li>
+                                                </ul>
+                                            </li>
+                                            <li className="text-background">Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder vor Ort im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> statt</li>
                                         </ul>
-                                    </li>
-                                    <li className="text-background">Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder vor Ort im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> statt</li>
-                                </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
