@@ -155,7 +155,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
           </div>
         </div>
 
-        <Alert variant="info" className="mt-4 bg-white text-black">
+        <Alert variant="info" className="mt-4">
           <Info className="h-4 w-4" />
           <AlertTitle>Formatierungs-Hilfe</AlertTitle>
           <AlertDescription>
