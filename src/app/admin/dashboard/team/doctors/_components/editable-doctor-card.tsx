@@ -18,9 +18,9 @@ import { AlertCircle } from 'lucide-react';
 const initialVita = `Dies ist ganz normaler Text
 [blau]Dies ist ein blauer Text[/blau]
 [fett]Dieser Text ist fett[/fett]
-[blau][fett]Dieser Text ist fett und blau[/fett][/blau]
-[liste]Dies ist ein Listenpunkt[/liste]
-[liste][grau][klein]Noch ein Listenpunkt, aber grau und klein[/klein][/grau][/liste]
+[blau][fett]Dieser Text ist sowohl fett als auch blau[/fett][/blau]
+[liste]Dieser Text ist als Teil einer Liste formatiert[/liste]
+[liste][grau][klein]Noch einmal ein Listenpunkt, diesmal aber in grau und klein[/klein][/grau][/liste]
 `;
 
 const existingImages = [
