@@ -42,9 +42,20 @@ export const DoctorCardOrtmanns = () => {
                         </div>
                     </div>
                     {/* RÜCKSEITE */}
-                    <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                        <div className="text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
-                            
+                    <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
+                        <div className="text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight w-full space-y-3">
+                            <p>MEDIZINSTUDIUM IN BONN UND HOBART (AUSTRALIEN)</p>
+                            <p>MASTERSTUDIUM PUBLIC HEALTH UND HEALTH MANAGEMENT IN SYDNEY (AUSTRALIEN)</p>
+                            <p>UNTERNEHMENSBERATUNG MIT SPEZIALISIERUNG AUF DEN GESUNDHEITSSEKTOR</p>
+                            <p>PROJEKTMANAGEMENT IM GESUNDHEITSWESEN IN EUROPA UND AUSTRALIEN</p>
+                            <div className="pt-4">
+                                <p className="font-bold">MEILENSTEINE:</p>
+                                <ul className="mt-2 list-disc pl-5 space-y-2">
+                                    <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
+                                    <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesunheitsakte in Australien</li>
+                                    <li>Direktor der Memory-Strategie (elektronisches Medikamenten-management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </CardContent>
