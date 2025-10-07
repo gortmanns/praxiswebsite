@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -91,7 +90,6 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
       <DialogContent className="max-w-6xl h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Text der Kartenrückseite bearbeiten</DialogTitle>
-          <DialogDescription>Markieren Sie Text und verwenden Sie die Werkzeugleiste, um ihn zu formatieren.</DialogDescription>
         </DialogHeader>
 
         <div className="flex-1 grid grid-cols-2 gap-4 overflow-hidden">
@@ -166,16 +164,16 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
           <Info className="h-4 w-4" />
           <AlertTitle>Formatierungs-Hilfe</AlertTitle>
           <AlertDescription>
-            <p>Jede Zeile im Textfeld wird als eigener Absatz dargestellt. Benutzen Sie die Werkzeuge, um Text zu formatieren:</p>
+            <p>Formatieren Sie Text, indem Sie ihn mit den entsprechenden Tags umschliessen. Benutzen Sie die Werkzeugleiste für eine schnellere Eingabe.</p>
             <ul className="list-disc pl-4 space-y-1 mt-2">
-              <li><strong className="text-primary">[blau]...[/blau]</strong>: Text in Primärfarbe (blau).</li>
-              <li><strong>[weiss]...[/weiss]</strong>: Normaler Text auf dem dunklen Hintergrund.</li>
-              <li><strong>[grau]...[/grau]</strong>: Leicht abgetönter Text.</li>
+              <li><strong className="text-primary">[blau]...[/blau]</strong>: Text in Blau.</li>
+              <li><strong>[weiss]...[/weiss]</strong>: Normaler Text (weiss auf dunklem Grund).</li>
+              <li><strong>[grau]...[/grau]</strong>: Leicht abgetönter Text (grau).</li>
               <li><strong>[fett]...[/fett]</strong>: Fetter Text.</li>
               <li><strong>[klein]...[/klein]</strong>: Etwas kleinere Schriftgrösse.</li>
               <li><strong>[liste]...[/liste]</strong>: Formatiert eine Zeile als Aufzählungspunkt.</li>
-              <li><strong>[break]</strong>: Fügt einen kleinen vertikalen Abstand ein (ca. eine halbe Zeile hoch).</li>
-              <li><strong>[linie]</strong>: Fügt eine horizontale Trennlinie zwischen Abschnitten ein.</li>
+              <li><strong>[break]</strong>: Fügt einen kleinen vertikalen Abstand ein.</li>
+              <li><strong>[linie]</strong>: Fügt eine horizontale Trennlinie ein.</li>
             </ul>
           </AlertDescription>
         </Alert>
