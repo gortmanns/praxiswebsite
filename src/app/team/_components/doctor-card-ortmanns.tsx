@@ -51,14 +51,14 @@ export const DoctorCardOrtmanns = () => {
                                 <p>Projektmanagement im Gesundheitswesen in Europa und Australien</p>
                             </div>
                             
-                            <div className="flex flex-col space-y-3 pt-2">
+                            <div className="flex flex-col space-y-1 pt-2">
                                 <ul className="flex list-disc flex-col pl-5 text-sm text-background/80" style={{ gap: '0.15rem' }}>
                                     <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
-                                    <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
+                                    <li>Verantwortlicher Manager für klinische Sicherheit und Design Assurance bei der Entwicklung der nationalen elektronischen Gesundheitsakte in Australien</li>
                                     <li>Direktor der eMeds-Strategie (elektronisches Medikamentenmanagement und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
                                 </ul>
                             </div>
-                             <div className="flex flex-col space-y-3 pt-2">
+                             <div className="flex flex-col space-y-1 pt-2">
                                 <p>Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz</p>
                                 <div>
                                     <ul className="flex list-disc flex-col pl-5 text-sm text-background/80" style={{ gap: '0.15rem' }}>
@@ -69,7 +69,7 @@ export const DoctorCardOrtmanns = () => {
                                         <li>Hausarztpraxis in Winterthur</li>
                                     </ul>
                                 </div>
-                                <p>Wissenschaftlicher Mitarbeiter Universität Zürich / USZ Pneumologie</p>
+                                <p>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ Pneumologie</p>
                                 <p>Leitung Praxiszentrum im Ring, ärztliche und administrative Leitung</p>
                                 <p>Lehrbeauftragter für Hausarztmedizin, Institut für Hausarztmedizin der Universität Bern</p>
                             </div>
