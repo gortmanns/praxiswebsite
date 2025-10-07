@@ -48,13 +48,23 @@ export const DoctorCardSchemmer = () => {
                     {/* RÜCKSEITE */}
                     <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
                         <div className="flex w-full flex-col space-y-3 text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
-                            <p>Medizinstudium in Heidelberg und Phoenix, AZ (USA)</p>
-                            <p>Dissertation und Habilitation in Heidelberg</p>
-                            <p>Chefarzt in Heidelberg</p>
-                            <p>Direktor der Universitätsklinik für Chirurgie, Graz (Österreich)</p>
-                            <p>Ärztlicher Direktor im Spital in Oberwart (Österreich)</p>
-                            <p>Chefarzt Universitätsklinik für Viszerale Transplantationschirurgie, Inselspital, Bern</p>
-                            <p>Chefarzt und Mitinhaber Privatklinik für Viszerale Chirurgie, Zürich</p>
+                            <p className="font-bold">KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT VOR ORT IM PRAXISZENTRUM IM RING ERFOLGEN</p>
+                            <div>
+                                <p className="font-bold">GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT</p>
+                                <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
+                                    <li>Vorbesprechung und Planung des Eingriffs erfolgen hier im PRAXISZENTRUM IM RING</li>
+                                    <li>Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls hier im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten</li>
+                                    <li>
+                                        Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt
+                                        <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
+                                            <li>Hirslanden</li>
+                                            <li>Lindenhof-Spital</li>
+                                            <li>Siloah-Spital</li>
+                                        </ul>
+                                    </li>
+                                    <li>Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder hier vor Ort im PRAXISZENTRUM IM RING statt</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </CardContent>
