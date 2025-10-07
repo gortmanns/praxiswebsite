@@ -45,12 +45,12 @@ export const DoctorCardOrtmanns = () => {
                         <div className="flex w-full flex-col space-y-3 text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
                             <p>Medizinstudium in Bonn und Hobart (Australien)</p>
                             <p>Masterstudium Public Health und Health Management in Sydney (Australien)</p>
-                            <p>Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor</p>
                             <p>Projektmanagement im Gesundheitswesen in Europa und Australien</p>
+                            <p>Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor</p>
                             
                             <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
                                 <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
-                                <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
+                                <li>Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
                                 <li>Direktor der Memory-Strategie (elektronisches Medikamenten-management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
                             </ul>
                             
@@ -65,8 +65,8 @@ export const DoctorCardOrtmanns = () => {
                                 </ul>
                             </div>
                              <p>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Klinik für Pneumologie)</p>
-                            <p>Leitung Praxiszentrum im Ring (Ärztliche und administrative Leitung)</p>
-                            <p>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
+                             <p>Leitung Praxiszentrum im Ring (Ärztliche und administrative Leitung)</p>
+                             <p>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
                         </div>
                     </div>
                 </CardContent>
