@@ -46,11 +46,11 @@ export const DoctorCardOrtmanns = () => {
                             <p>Medizinstudium in Bonn und Hobart (Australien)</p>
                             <p>Masterstudium Public Health und Health Management in Sydney (Australien)</p>
                             <p>Projektmanagement im Gesundheitswesen in Europa und Australien</p>
-                            <p>Unternehmensberatung (Accenture, pwc)</p>
+                            <p>Unternehmensberatung mit Schwerpunkt IT im Gesundheitswesen (Accenture, PriceWaterhouseCoopers)</p>
                             <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
                                 <li>Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
-                                <li>Direktor der Memory-Strategie (elektronisches Medikamenten-management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
                                 <li>Leiter klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
+                                <li>Direktor der Memory-Strategie (elektronisches Medikamenten-management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
                             </ul>
                             <div>
                                 <p>Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz:</p>
@@ -62,7 +62,7 @@ export const DoctorCardOrtmanns = () => {
                                     <li>Hausarztpraxis in Winterthur</li>
                                 </ul>
                             </div>
-                            <p>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Klinik für Pneumologie)</p>
+                             <p>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Klinik für Pneumologie)</p>
                             <p>Leitung Praxiszentrum im Ring (Ärztliche und administrative Leitung)</p>
                             <p>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
                         </div>
