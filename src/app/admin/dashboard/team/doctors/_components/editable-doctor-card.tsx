@@ -14,26 +14,13 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { VitaEditorDialog } from './vita-editor-dialog';
 import { VitaRenderer } from './vita-renderer';
 
-const initialVita = `[blau][fett]Medizinstudium & frühe Karriere[/fett][/blau]
-[weiss]Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
-Masterstudium Public Health und Health Management in Sydney (Australien)
-Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor[/weiss]
----
-[blau][fett]Projektmanagement im Gesundheitswesen[/fett][/blau]
-[grau][fett][klein]Wichtige Meilensteine[/klein][/fett][/grau]
-[liste][klein]Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)[/klein][/liste]
-[liste][klein]Manager für Klinische Sicherheit bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien[/klein][/liste]
-[liste][klein]Direktor der Memory-Strategie für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien[/klein][/liste]
----
-[blau][fett]Weiterbildung & Lehre[/fett][/blau]
-[grau][fett][klein]Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz[/klein][/fett][/grau]
-[liste][klein]Universitätsspital Basel (USB)[/klein][/liste]
-[liste][klein]Kantonsspital Baselland (KSBL)[/klein][/liste]
-[liste][klein]Kantonsspital Winterthur (KSW)[/klein][/liste]
-[liste][klein]Kantonsspital Wil (SRFT)[/klein][/liste]
-[liste][klein]Hausarztpraxis in Winterthur[/klein][/liste]
-[weiss]Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)
-Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)[/weiss]
+const initialVita = `[blau][fett]Dies ist ein blauer, fetter Text[/fett][/blau]
+[weiss]Dies ist normaler weisser Text auf dunklem Grund.[/weiss]
+[break]
+[grau][klein]Dieser Text ist klein und grau.[/klein][/grau]
+[linie]
+[liste]Ein Listenpunkt[/liste]
+[liste]Noch ein Listenpunkt[/liste]
 `;
 
 const existingImages = [
@@ -342,3 +329,5 @@ export const EditableDoctorCard = () => {
         </div>
     );
 };
+
+    
