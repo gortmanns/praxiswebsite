@@ -4,10 +4,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Bold, Heading2, List, Minus, Type } from 'lucide-react';
+import { Bold, Minus, List, Text, Palette } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface VitaEditorDialogProps {
   trigger: React.ReactNode;
@@ -59,7 +59,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
     setIsOpen(false);
   };
 
-  const ToolbarButton = ({ tooltip, onClick, children }: { tooltip: string, onClick: () => void, children: React.ReactNode}) => (
+  const ToolbarButton = ({ tooltip, onClick, children }: { tooltip: string, onClick: (e: React.MouseEvent) => void, children: React.ReactNode}) => (
      <TooltipProvider>
         <Tooltip>
             <TooltipTrigger asChild>
@@ -81,21 +81,42 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
         <DialogHeader>
           <DialogTitle>Lebenslauf bearbeiten</DialogTitle>
           <DialogDescription>
-            Bearbeiten Sie den Lebenslauf mit der Werkzeugleiste oder indem Sie die BBCode-ähnliche Syntax direkt eingeben.
+            Markieren Sie Text und verwenden Sie die Werkzeugleiste, um ihn zu formatieren.
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex items-center gap-2 p-2 rounded-md border bg-muted">
-            <ToolbarButton tooltip="Überschrift (blau)" onClick={() => applyMarkup('[h]', '[/h]')}>
-                <Heading2 className="h-4 w-4 text-primary" />
-            </ToolbarButton>
-            <ToolbarButton tooltip="Fetter Text (weiss)" onClick={() => applyMarkup('[b]', '[/b]')}>
+            <Popover>
+                <PopoverTrigger asChild>
+                    <Button variant="outline" size="icon" type="button" className="h-8 w-8">
+                        <Palette className="h-4 w-4" />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-1">
+                    <div className="flex flex-col gap-1">
+                        <Button variant="ghost" size="sm" onClick={() => applyMarkup('[blau]', '[/blau]')} className="justify-start">
+                            <div className="h-4 w-4 rounded-full bg-primary mr-2"></div> Blau
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => applyMarkup('[weiss]', '[/weiss]')} className="justify-start">
+                            <div className="h-4 w-4 rounded-full bg-background border mr-2"></div> Weiss
+                        </Button>
+                         <Button variant="ghost" size="sm" onClick={() => applyMarkup('[grau]', '[/grau]')} className="justify-start">
+                             <div className="h-4 w-4 rounded-full bg-background/80 border mr-2"></div> Grau
+                        </Button>
+                    </div>
+                </PopoverContent>
+            </Popover>
+
+            <ToolbarButton tooltip="Fett" onClick={() => applyMarkup('[fett]', '[/fett]')}>
                 <Bold className="h-4 w-4" />
             </ToolbarButton>
-            <ToolbarButton tooltip="Aufzählung (grau, klein)" onClick={() => applyMarkup('[list]\n', '\n[/list]')}>
-                <List className="h-4 w-4 text-muted-foreground" />
+            <ToolbarButton tooltip="Kleine Schrift" onClick={() => applyMarkup('[klein]', '[/klein]')}>
+                <Text className="h-3 w-3" />
             </ToolbarButton>
-             <ToolbarButton tooltip="Abschnitts-Trennlinie" onClick={() => applyMarkup('\n---\n', '')}>
+            <ToolbarButton tooltip="Listenpunkt" onClick={() => applyMarkup('[liste]', '[/liste]')}>
+                <List className="h-4 w-4" />
+            </ToolbarButton>
+            <ToolbarButton tooltip="Abschnitts-Trennlinie" onClick={() => applyMarkup('\n---\n', '')}>
                 <Minus className="h-4 w-4" />
             </ToolbarButton>
         </div>
@@ -109,14 +130,18 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
         />
 
         <Alert variant="info" className="mt-4 text-xs">
-          <Type className="h-4 w-4" />
+          <Info className="h-4 w-4" />
           <AlertTitle>Formatierungs-Hilfe</AlertTitle>
           <AlertDescription>
-            <ul className="list-disc pl-4 space-y-1">
-                <li>Umschliessen Sie Text mit <code className="font-bold">[h]...[/h]</code> für eine blaue, fette Überschrift.</li>
-                <li>Umschliessen Sie Text mit <code className="font-bold">[b]...[/b]</code> für fetten, weissen Text.</li>
-                <li>Umschliessen Sie eine Liste von Meilensteinen mit <code className="font-bold">[list]...[/list]</code>. Die erste Zeile wird zur Überschrift der Liste, jede weitere Zeile zu einem Punkt.</li>
-                <li>Fügen Sie <code className="font-bold">---</code> auf einer eigenen Zeile ein, um Abschnitte zu trennen.</li>
+            <p>Jede Zeile im Textfeld wird als eigener Absatz dargestellt. Benutzen Sie die Werkzeuge, um Text zu formatieren:</p>
+            <ul className="list-disc pl-4 space-y-1 mt-2">
+                <li><strong className="text-primary">[blau]</strong>: Text in Primärfarbe (blau).</li>
+                <li><strong>[weiss]</strong>: Normaler Text auf dem dunklen Hintergrund.</li>
+                <li><strong className="text-muted-foreground">[grau]</strong>: Leicht abgetönter Text.</li>
+                <li><strong>[fett]</strong>: Fetter Text.</li>
+                <li><strong>[klein]</strong>: Etwas kleinere Schriftgrösse.</li>
+                <li><strong>[liste]</strong>: Formatiert eine Zeile als Aufzählungspunkt.</li>
+                <li><strong>---</strong>: Fügt eine horizontale Trennlinie zwischen Abschnitten ein.</li>
             </ul>
           </AlertDescription>
         </Alert>

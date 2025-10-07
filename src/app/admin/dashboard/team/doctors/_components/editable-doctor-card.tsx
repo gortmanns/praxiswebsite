@@ -14,30 +14,26 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { VitaEditorDialog } from './vita-editor-dialog';
 
 
-const initialVita = `[h]Medizinstudium & frühe Karriere[/h]
-Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
+const initialVita = `[blau][fett]Medizinstudium & frühe Karriere[/fett][/blau]
+[weiss]Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
 Masterstudium Public Health und Health Management in Sydney (Australien)
-Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor
+Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor[/weiss]
 ---
-[h]Projektmanagement im Gesundheitswesen[/h]
-[list]
-Wichtige Meilensteine
-Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)
-Manager für Klinische Sicherheit bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien
-Direktor der Memory-Strategie für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien
-[/list]
+[blau][fett]Projektmanagement im Gesundheitswesen[/fett][/blau]
+[grau][fett][klein]Wichtige Meilensteine[/klein][/fett][/grau]
+[liste][klein]Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)[/klein][/liste]
+[liste][klein]Manager für Klinische Sicherheit bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien[/klein][/liste]
+[liste][klein]Direktor der Memory-Strategie für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien[/klein][/liste]
 ---
-[h]Weiterbildung & Lehre[/h]
-[list]
-Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz
-Universitätsspital Basel (USB)
-Kantonsspital Baselland (KSBL)
-Kantonsspital Winterthur (KSW)
-Kantonsspital Wil (SRFT)
-Hausarztpraxis in Winterthur
-[/list]
-Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)
-Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)
+[blau][fett]Weiterbildung & Lehre[/fett][/blau]
+[grau][fett][klein]Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz[/klein][/fett][/grau]
+[liste][klein]Universitätsspital Basel (USB)[/klein][/liste]
+[liste][klein]Kantonsspital Baselland (KSBL)[/klein][/liste]
+[liste][klein]Kantonsspital Winterthur (KSW)[/klein][/liste]
+[liste][klein]Kantonsspital Wil (SRFT)[/klein][/liste]
+[liste][klein]Hausarztpraxis in Winterthur[/klein][/liste]
+[weiss]Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)
+Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)[/weiss]
 `;
 
 const existingImages = [
@@ -106,6 +102,92 @@ const EditDialog: React.FC<EditDialogProps> = ({
     );
 };
 
+// Parser and Renderer for the new BBCode-like syntax
+const parseAndRenderVita = (text: string) => {
+    const sections = text.split('---');
+
+    return sections.map((section, sectionIndex) => {
+        const lines = section.trim().split('\n');
+        
+        return (
+            <div key={sectionIndex} className={cn(sectionIndex > 0 && 'mt-4 pt-4 border-t border-background/20')}>
+                {lines.map((line, lineIndex) => {
+                    let processedLine: React.ReactNode = line;
+                    const appliedClasses: string[] = [];
+                    let isList = false;
+
+                    // Match all tags, e.g., [tag]content[/tag]
+                    const tagRegex = /\[(\w+)\](.*?)\[\/\1\]/g;
+                    let match;
+                    
+                    const nodes: React.ReactNode[] = [];
+                    let lastIndex = 0;
+
+                    // Simplified parsing: We find all tags and their content
+                    const parseLine = (str: string): React.ReactNode[] => {
+                        const parts = [];
+                        let remainingStr = str;
+                        
+                        while(remainingStr.length > 0) {
+                            const match = /\[(\w+)\]/.exec(remainingStr);
+                            if (!match) {
+                                parts.push({ type: 'text', content: remainingStr });
+                                break;
+                            }
+                            
+                            const tagName = match[1];
+                            const tagStart = match.index;
+                            const tagEnd = tagStart + match[0].length;
+                            const endTag = `[/${tagName}]`;
+                            const endTagIndex = remainingStr.indexOf(endTag, tagEnd);
+
+                            if (endTagIndex === -1) {
+                                // Unmatched tag, treat as text
+                                parts.push({ type: 'text', content: remainingStr });
+                                break;
+                            }
+                            
+                            if (tagStart > 0) {
+                                parts.push({ type: 'text', content: remainingStr.substring(0, tagStart) });
+                            }
+
+                            const content = remainingStr.substring(tagEnd, endTagIndex);
+                            parts.push({ type: tagName, content: parseLine(content) });
+
+                            remainingStr = remainingStr.substring(endTagIndex + endTag.length);
+                        }
+                        return parts;
+                    }
+                    
+                    const renderParts = (parts: any[]): React.ReactNode => {
+                         return parts.map((part, i) => {
+                            if (part.type === 'text') {
+                                return <span key={i}>{part.content}</span>;
+                            }
+                            let classes = '';
+                            if (part.type === 'blau') classes = 'text-primary';
+                            if (part.type === 'weiss') classes = 'text-background';
+                            if (part.type === 'grau') classes = 'text-background/80';
+                            if (part.type === 'fett') classes = 'font-bold';
+                            if (part.type === 'klein') classes = 'text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug';
+
+                            if (part.type === 'liste') {
+                                return <li key={i} className="list-disc ml-5 pl-2">{renderParts(part.content)}</li>
+                            }
+
+                            return <span key={i} className={classes}>{renderParts(part.content)}</span>
+                         });
+                    };
+
+                    const parsedLine = parseLine(line);
+
+                    return <p key={lineIndex} className="min-h-[1.2em]">{renderParts(parsedLine)}</p>;
+                })}
+            </div>
+        );
+    });
+};
+
 
 export const EditableDoctorCard = () => {
     const [title, setTitle] = useState('');
@@ -157,41 +239,6 @@ export const EditableDoctorCard = () => {
             <Pencil className="absolute top-1/2 right-0 h-4 w-4 -translate-y-1/2 text-primary opacity-0 transition-opacity group-hover:opacity-100" />
         </div>
     );
-    
-    const renderVitaSection = (section: string, sectionIndex: number) => {
-        const parts = section.trim().split(/(\[list\].*?\[\/list\])/gs).filter(p => p);
-
-        return (
-            <div key={sectionIndex} className={sectionIndex > 0 ? 'mt-4 pt-4 border-t border-background/20' : ''}>
-                {parts.map((part, partIndex) => {
-                    if (part.startsWith('[list]')) {
-                        const listContent = part.replace('[list]', '').replace('[/list]', '').trim();
-                        const milestones = listContent.split('\n').filter(line => line.trim() !== '');
-                        const title = milestones.shift();
-                        return (
-                            <div key={partIndex} className="mt-1 pl-4 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
-                                <h5 className="mb-1 tracking-wide text-background/90">{title}</h5>
-                                <ul className="list-disc space-y-px pl-5 font-normal">
-                                    {milestones.map((item, itemIndex) => <li key={itemIndex}>{item.trim()}</li>)}
-                                </ul>
-                            </div>
-                        );
-                    } else {
-                        return part.split('\n').map((line, lineIndex) => {
-                            if (line.startsWith('[h]') && line.endsWith('[/h]')) {
-                                return <h4 key={lineIndex} className="font-bold text-primary mb-2">{line.substring(3, line.length - 4)}</h4>;
-                            }
-                            if (line.startsWith('[b]') && line.endsWith('[/b]')) {
-                                return <p key={lineIndex} className="font-bold">{line.substring(3, line.length - 4)}</p>;
-                            }
-                            return <p key={lineIndex}>{line}</p>;
-                        });
-                    }
-                })}
-            </div>
-        );
-    };
-
 
     return (
         <div className="mx-auto max-w-7xl">
@@ -372,8 +419,8 @@ export const EditableDoctorCard = () => {
                                 trigger={<Pencil className="absolute top-4 right-4 h-5 w-5 text-primary/80 cursor-pointer hover:text-primary z-10" />}
                             />
 
-                            <div className="w-full text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight whitespace-pre-wrap">
-                                {vita.split('---').map(renderVitaSection)}
+                            <div className="w-full text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight whitespace-pre-line">
+                                {parseAndRenderVita(vita)}
                             </div>
                         </div>
                     </div>
