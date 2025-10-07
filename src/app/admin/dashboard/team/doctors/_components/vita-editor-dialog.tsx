@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Bold, Minus, List, Text, Palette, Info } from 'lucide-react';
@@ -80,7 +80,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle>Lebenslauf bearbeiten</DialogTitle>
+          <DialogTitle>Text der Kartenrückseite bearbeiten</DialogTitle>
           <DialogDescription>
             Markieren Sie Text und verwenden Sie die Werkzeugleiste, um ihn zu formatieren.
           </DialogDescription>
@@ -130,7 +130,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
             "flex-1 mt-4 text-sm font-mono whitespace-pre-wrap",
             "bg-accent/95 text-background border-accent placeholder:text-background/50 focus-visible:ring-primary"
           )}
-          placeholder="Geben Sie hier den Lebenslauf ein..."
+          placeholder="Geben Sie hier den Text für die Kartenrückseite ein..."
         />
 
         <Alert className={cn(
