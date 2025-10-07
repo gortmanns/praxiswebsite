@@ -43,7 +43,7 @@ export const DoctorCardOrtmanns = () => {
                     </div>
                     {/* RÜCKSEITE */}
                     <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                        <div className="flex w-full flex-col space-y-3 text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
+                        <div className="flex w-full flex-col space-y-2 text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
                             <div className="space-y-1">
                                 <p>Medizinstudium in Bonn (Deutschland) und Hobart (Australien)</p>
                                 <p>Masterstudium Public Health und Health Management in Sydney (Australien)</p>
@@ -57,7 +57,7 @@ export const DoctorCardOrtmanns = () => {
                                 <p>Direktor der MEMORY Strategie (elektronisches Medikamentenmanagement und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</p>
                             </div>
 
-                            <div className="space-y-1 pt-2">
+                            <div className="space-y-1">
                                 <p>Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz</p>
                                 <ul className="flex list-disc flex-col pl-5 text-sm text-background/80" style={{ gap: '0.15rem' }}>
                                     <li>Universitätsspital Basel (USB)</li>
@@ -68,13 +68,13 @@ export const DoctorCardOrtmanns = () => {
                                 </ul>
                             </div>
 
-                            <div className="space-y-1 pt-2">
+                            <div className="space-y-1">
                                 <p>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ Pneumologie</p>
                             </div>
-                            <div className="space-y-1 pt-2">
+                            <div className="space-y-1">
                                 <p>Leitung Praxiszentrum im Ring, ärztliche und administrative Leitung</p>
                             </div>
-                            <div className="space-y-1 pt-2">
+                            <div className="space-y-1">
                                 <p>Lehrbeauftragter für Hausarztmedizin, Institut für Hausarztmedizin der Universität Bern</p>
                             </div>
                         </div>
