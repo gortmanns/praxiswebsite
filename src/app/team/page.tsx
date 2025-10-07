@@ -203,29 +203,49 @@ export default function TeamPage() {
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
             
-            <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
-              <DoctorCardOrtmanns />
-              <Card className="h-full"><CardContent className="p-6">{doctorBacksides.ortmanns}</CardContent></Card>
+            <div id="ortmanns" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start border-4 border-orange-500 p-2">
+              <div className="border-2 border-yellow-500">
+                <DoctorCardOrtmanns />
+              </div>
+              <div className="border-2 border-yellow-500">
+                <Card className="h-full"><CardContent className="p-6">{doctorBacksides.ortmanns}</CardContent></Card>
+              </div>
             </div>
 
-            <div id="schemmer" className="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
-              <DoctorCardSchemmer />
-              <Card className="h-full"><CardContent className="p-6">{doctorBacksides.schemmer}</CardContent></Card>
+            <div id="schemmer" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start border-4 border-orange-500 p-2">
+              <div className="border-2 border-yellow-500">
+                <DoctorCardSchemmer />
+              </div>
+              <div className="border-2 border-yellow-500">
+                <Card className="h-full"><CardContent className="p-6">{doctorBacksides.schemmer}</CardContent></Card>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
-              <DoctorCardRosenov />
-              <Card className="h-full"><CardContent className="p-6">{doctorBacksides.rosenov}</CardContent></Card>
+            <div id="rosenov" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start border-4 border-orange-500 p-2">
+              <div className="border-2 border-yellow-500">
+                <DoctorCardRosenov />
+              </div>
+              <div className="border-2 border-yellow-500">
+                <Card className="h-full"><CardContent className="p-6">{doctorBacksides.rosenov}</CardContent></Card>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
-                <DoctorCardHerschel />
-                <Card className="h-full"><CardContent className="p-6">{doctorBacksides.herschel}</CardContent></Card>
+            <div id="herschel" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start border-4 border-orange-500 p-2">
+                <div className="border-2 border-yellow-500">
+                  <DoctorCardHerschel />
+                </div>
+                <div className="border-2 border-yellow-500">
+                  <Card className="h-full"><CardContent className="p-6">{doctorBacksides.herschel}</CardContent></Card>
+                </div>
             </div>
 
-            <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2">
-                <DoctorCardSlezak />
-                <Card className="h-full"><CardContent className="p-6">{doctorBacksides.slezak}</CardContent></Card>
+            <div id="slezak" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start border-4 border-orange-500 p-2">
+                <div className="border-2 border-yellow-500">
+                  <DoctorCardSlezak />
+                </div>
+                <div className="border-2 border-yellow-500">
+                  <Card className="h-full"><CardContent className="p-6">{doctorBacksides.slezak}</CardContent></Card>
+                </div>
             </div>
 
           </div>
