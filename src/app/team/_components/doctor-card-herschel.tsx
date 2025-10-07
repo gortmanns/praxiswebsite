@@ -40,9 +40,13 @@ export const DoctorCardHerschel = () => {
                         </div>
                     </div>
                     {/* RÜCKSEITE */}
-                    <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                        <div className="text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
-                            
+                    <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
+                        <div className="flex w-full flex-col space-y-4 text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
+                            <p className="font-bold text-primary">ALLGEMEINE ORTHOPÄDIE</p>
+                            <p className="font-bold text-primary">SPEZIALGEBIET HÜFT- UND KNIEGELENKE</p>
+                            <p className="text-background">Röntgenuntersuchungen, Konsultationen und klinische Untersuchungen finden direkt im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> statt.</p>
+                            <p className="text-background">Auch Gelenkinfiltrationen, z. B. bei Schmerzen, können zum Teil direkt durchgeführt werden.</p>
+                            <p className="text-background">Allenfalls nötige Operationen werden im gut erreichbaren Lindenhof-Spital durchgeführt.</p>
                         </div>
                     </div>
                 </CardContent>
