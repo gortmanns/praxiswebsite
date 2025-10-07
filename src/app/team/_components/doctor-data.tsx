@@ -2,13 +2,13 @@
 
 export const doctorBacksides = {
   ortmanns: (
-    <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col space-y-2">
+    <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary" style={{ gap: '0.4rem' }}>
       <p>Medizinstudium in Bonn und Hobart (Australien)</p>
       <p>Masterstudium Public Health und Health Management in Sydney (Australien)</p>
       <p>Projektmanagement im Gesundheitswesen in Europa und Australien</p>
       <div>
           <p>Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor</p>
-          <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-foreground/80" style={{ gap: '0.15rem' }}>
+          <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
               <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
               <li>Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
               <li>Direktor der Memory-Strategie (elektronisches Medikamenten-Management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
@@ -16,7 +16,7 @@ export const doctorBacksides = {
       </div>
       <div>
           <p>Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz:</p>
-          <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-foreground/80" style={{ gap: '0.15rem' }}>
+          <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
               <li>Universitätsspital Basel (USB)</li>
               <li>Kantonsspital Baselland (KSBL)</li>
               <li>Kantonsspital Winterthur (KSW)</li>
@@ -35,17 +35,17 @@ export const doctorBacksides = {
         <div>
             <p className="font-bold text-primary">GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT</p>
             <ul className="flex flex-col space-y-1 pt-1 pl-5">
-                <li className="text-foreground">Vorbesprechung und Planung des Eingriffs erfolgen im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span></li>
-                <li className="text-foreground">Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten</li>
-                <li className="text-foreground">
+                <li className="text-background">Vorbesprechung und Planung des Eingriffs erfolgen im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span></li>
+                <li className="text-background">Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten</li>
+                <li className="text-background">
                     Die Operation selbst findet in einer der Partnerkliniken in der Stadt Bern statt
-                    <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-foreground/80" style={{ gap: '0.15rem' }}>
+                    <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
                         <li>Hirslanden</li>
                         <li>Lindenhof-Spital</li>
                         <li>Siloah-Spital</li>
                     </ul>
                 </li>
-                <li className="text-foreground">Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> statt</li>
+                <li className="text-background">Die Nachbetreuung (z. B. Fadenentfernung und Schmerzbehandlung) findet wieder im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> statt</li>
             </ul>
         </div>
     </div>
