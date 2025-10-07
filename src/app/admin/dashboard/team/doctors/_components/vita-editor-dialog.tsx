@@ -166,7 +166,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
           <AlertDescription>
             <p>Formatieren Sie Text, indem Sie ihn mit den entsprechenden Tags umschliessen. Benutzen Sie die Werkzeugleiste für eine schnellere Eingabe.</p>
             <ul className="list-disc pl-4 space-y-1 mt-2">
-              <li><strong className="text-primary">[blau]...[/blau]</strong>: Text in Blau.</li>
+              <li><strong>[blau]...[/blau]</strong>: Text in Blau.</li>
               <li><strong>[weiss]...[/weiss]</strong>: Normaler Text (weiss auf dunklem Grund).</li>
               <li><strong>[grau]...[/grau]</strong>: Leicht abgetönter Text (grau).</li>
               <li><strong>[fett]...[/fett]</strong>: Fetter Text.</li>
@@ -175,6 +175,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
               <li><strong>[break]</strong>: Fügt einen kleinen vertikalen Abstand ein.</li>
               <li><strong>[linie]</strong>: Fügt eine horizontale Trennlinie ein.</li>
             </ul>
+             <p className="mt-2">Die Formatierungen können kombiniert werden, z.B. <code>[blau][fett]Blauer, fetter Text[/fett][/blau]</code>.</p>
           </AlertDescription>
         </Alert>
 
