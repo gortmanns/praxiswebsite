@@ -107,9 +107,6 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
                     <Button variant="ghost" size="sm" onClick={() => applyMarkup('[blau]', '[/blau]')} className="justify-start">
                       <div className="h-4 w-4 rounded-full bg-primary mr-2"></div> Blau
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={() => applyMarkup('[weiss]', '[/weiss]')} className="justify-start">
-                      <div className="h-4 w-4 rounded-full bg-background border mr-2"></div> Weiss
-                    </Button>
                     <Button variant="ghost" size="sm" onClick={() => applyMarkup('[grau]', '[/grau]')} className="justify-start">
                       <div className="h-4 w-4 rounded-full bg-background/80 border mr-2"></div> Grau
                     </Button>
@@ -167,7 +164,6 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
             <p>Formatieren Sie Text, indem Sie ihn mit den entsprechenden Tags umschliessen. Benutzen Sie die Werkzeugleiste für eine schnellere Eingabe.</p>
             <ul className="list-disc pl-4 space-y-1 mt-2">
               <li><strong>[blau]...[/blau]</strong>: Text in Blau.</li>
-              <li><strong>[weiss]...[/weiss]</strong>: Normaler Text (weiss auf dunklem Grund).</li>
               <li><strong>[grau]...[/grau]</strong>: Leicht abgetönter Text (grau).</li>
               <li><strong>[fett]...[/fett]</strong>: Fetter Text.</li>
               <li><strong>[klein]...[/klein]</strong>: Etwas kleinere Schriftgrösse.</li>

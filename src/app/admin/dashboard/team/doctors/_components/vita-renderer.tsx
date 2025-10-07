@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 const applyStyling = (content: string): React.ReactNode[] => {
     // This regex looks for [tag]content[/tag] and handles nested tags.
     // It's non-greedy `(.*?)` and uses a negative lookahead to not jump over nested same tags.
-    const tagRegex = /\[(blau|weiss|grau|fett|klein|liste)\]([\s\S]*?)\[\/\1\]/gs;
+    const tagRegex = /\[(blau|grau|fett|klein|liste)\]([\s\S]*?)\[\/\1\]/gs;
 
     const parts: React.ReactNode[] = [];
     let lastIndex = 0;
@@ -26,7 +26,6 @@ const applyStyling = (content: string): React.ReactNode[] => {
 
         switch(tagName) {
             case 'blau': className = 'text-primary'; break;
-            case 'weiss': className = 'text-background'; break;
             case 'grau': className = 'text-background/80'; break;
             case 'fett': className = 'font-bold'; break;
             case 'klein': className = 'text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug'; break;

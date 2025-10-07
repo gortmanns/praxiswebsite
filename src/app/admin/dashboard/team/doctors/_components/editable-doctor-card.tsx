@@ -15,7 +15,7 @@ import { VitaEditorDialog } from './vita-editor-dialog';
 import { VitaRenderer } from './vita-renderer';
 
 const initialVita = `[blau][fett]Dies ist ein blauer, fetter Text[/fett][/blau]
-[weiss]Dies ist normaler weisser Text auf dunklem Grund.[/weiss]
+Dies ist normaler Text auf dunklem Grund.
 [break]
 [grau][klein]Dieser Text ist klein und grau.[/klein][/grau]
 [linie]
