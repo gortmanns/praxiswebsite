@@ -213,7 +213,7 @@ export const EditableDoctorCard = () => {
                                             </DialogDescription>
                                         </DialogHeader>
                                         
-                                        {!name && (
+                                        {!name && !imagePreview && (
                                             <Alert variant="destructive" className="mt-4">
                                                 <AlertCircle className="h-4 w-4" />
                                                 <AlertTitle>Fehlender Name</AlertTitle>
@@ -238,7 +238,7 @@ export const EditableDoctorCard = () => {
                                             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                                                 <Dialog open={isGalleryOpen} onOpenChange={setIsGalleryOpen}>
                                                     <DialogTrigger asChild>
-                                                        <Button variant="outline" disabled={!name}>
+                                                        <Button variant="outline">
                                                             <GalleryHorizontal className="mr-2 h-4 w-4" />
                                                             Bestehendes auswählen
                                                         </Button>
@@ -340,20 +340,17 @@ export const EditableDoctorCard = () => {
                                 </div>
                              </div>
                         </div>
-                        <div className="flex flex-col items-start justify-start overflow-auto bg-accent/95 p-6 text-left text-background">
-                            <div className="flex w-full items-center justify-between">
-                                <h3 className="mb-4 font-bold text-primary">Vita / Lebenslauf</h3>
-                                <EditDialog
-                                    dialogTitle="Vita bearbeiten"
-                                    dialogDescription="Hier können Sie den Lebenslauf bearbeiten. Verwenden Sie '---' für Abschnittstrenner und '<Meilensteine>' für Aufzählungen."
-                                    initialValue={vita}
-                                    onSave={setVita}
-                                    inputLabel="Lebenslauf"
-                                    isTextarea={true}
-                                    trigger={<Pencil className="h-4 w-4 text-primary/80 cursor-pointer" />}
-                                />
-                            </div>
-                            <div className="text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight whitespace-pre-wrap">
+                        <div className="relative flex flex-col items-start justify-start overflow-auto bg-accent/95 p-6 text-left text-background">
+                            <EditDialog
+                                dialogTitle="Vita bearbeiten"
+                                dialogDescription="Hier können Sie den Lebenslauf bearbeiten. Verwenden Sie '---' für Abschnittstrenner und '<Meilensteine>' für Aufzählungen."
+                                initialValue={vita}
+                                onSave={setVita}
+                                inputLabel="Lebenslauf"
+                                isTextarea={true}
+                                trigger={<Pencil className="absolute top-4 right-4 h-4 w-4 text-primary/80 cursor-pointer hover:text-primary" />}
+                            />
+                            <div className="w-full text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight whitespace-pre-wrap">
                                 {vita.split('---').map((section, sectionIndex) => (
                                     <div key={sectionIndex} className={sectionIndex > 0 ? 'mt-4 pt-4 border-t border-background/20' : ''}>
                                         {section.trim().split(/<Meilensteine>|<\/Meilenstealen>/).map((part, partIndex) => {
