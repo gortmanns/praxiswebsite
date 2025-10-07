@@ -50,18 +50,12 @@ export const DoctorCardOrtmanns = () => {
                                 <p>Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor</p>
                                 <p>Projektmanagement im Gesundheitswesen in Europa und Australien</p>
                             </div>
-                            
-                            <div>
-                                <p>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</p>
-                            </div>
 
-                            <div>
-                                <p>Verantwortlicher Manager für klinische Sicherheit und Design Assurance bei der Entwicklung der nationalen elektronischen Gesundheitsakte in Australien</p>
-                            </div>
-                            
-                            <div>
-                                <p>Direktor der MEMORY Strategie (elektronisches Medikamentenmanagement und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</p>
-                            </div>
+                            <ul className="flex list-disc flex-col pl-5 text-sm text-background/80" style={{ gap: '0.15rem' }}>
+                                <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
+                                <li>Verantwortlicher Manager für klinische Sicherheit und Design Assurance bei der Entwicklung der nationalen elektronischen Gesundheitsakte in Australien</li>
+                                <li>Direktor der MEMORY Strategie (elektronisches Medikamentenmanagement und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
+                            </ul>
 
                             <div>
                                 <p>Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz</p>
@@ -74,13 +68,9 @@ export const DoctorCardOrtmanns = () => {
                                 </ul>
                             </div>
 
-                            <div>
+                            <div className="space-y-1">
                                 <p>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ Pneumologie</p>
-                            </div>
-                            <div>
                                 <p>Leitung Praxiszentrum im Ring, ärztliche und administrative Leitung</p>
-                            </div>
-                            <div>
                                 <p>Lehrbeauftragter für Hausarztmedizin, Institut für Hausarztmedizin der Universität Bern</p>
                             </div>
                         </div>
