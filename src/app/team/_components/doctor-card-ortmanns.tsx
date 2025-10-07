@@ -49,7 +49,7 @@ export const DoctorCardOrtmanns = () => {
                             <p className="font-bold text-primary">UNTERNEHMENSBERATUNG MIT SPEZIALISIERUNG AUF DEN GESUNDHEITSSEKTOR</p>
                             <p className="font-bold text-primary">PROJEKTMANAGEMENT IM GESUNDHEITSWESEN IN EUROPA UND AUSTRALIEN</p>
                              <div className="pt-4">
-                                <ul className="mt-2 list-disc pl-5 space-y-2">
+                                <ul className="mt-2 list-disc pl-5 space-y-2 text-sm text-background/80">
                                     <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
                                     <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesunheitsakte in Australien</li>
                                     <li>Direktor der Memory-Strategie (elektronisches Medikamenten-management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
@@ -58,8 +58,7 @@ export const DoctorCardOrtmanns = () => {
                              <div className="pt-4 space-y-3">
                                 <p>WEITERBILDUNG IN ALLGEMEINER INNERER MEDIZIN IN DER SCHWEIZ</p>
                                 <div>
-                                    <p>STATIONEN:</p>
-                                    <ul className="mt-2 list-disc pl-5 space-y-2">
+                                    <ul className="mt-2 list-disc pl-5 space-y-2 text-sm text-background/80">
                                         <li>Universitätsspital Basel (USB)</li>
                                         <li>Kantonsspital Baselland (KSBL)</li>
                                         <li>Kantonsspital Winterthur (KSW)</li>
