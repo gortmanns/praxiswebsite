@@ -39,7 +39,7 @@ export default function DoctorsPage() {
                     <Info className="h-4 w-4" />
                     <AlertTitle>Information</AlertTitle>
                     <AlertDescription>
-                        Jede Information dieser Karte kann durch Anklicken des entsprechenden Elements geändert werden.
+                        Jede Information dieser Karte kann durch Anklicken des entsprechenden Elements geändert werden. Die Änderungen werden erst nach dem Klick auf einen finalen Speicher-Button übernommen.
                     </AlertDescription>
                 </Alert>
             </div>

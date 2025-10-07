@@ -3,12 +3,12 @@
 import React, { useState, useRef, ChangeEvent } from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { User, Upload, ImageIcon, Info, Pencil, AlertCircle, Trash2, Replace } from 'lucide-react';
+import { User, Upload, ImageIcon, Info, Pencil, AlertCircle, Trash2, Replace, GalleryHorizontal } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -37,8 +37,17 @@ Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für
 Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)
 `;
 
+// A temporary list of existing images. This would eventually be loaded from the server.
+const existingImages = [
+    '/images/team/Dr.Herschel.jpg',
+    '/images/team/Dr.Rosenov.jpg',
+    '/images/team/Dr.Schemmer.jpg',
+    '/images/team/Dr.Slezak.jpg',
+    '/images/team/Ortmanns.jpg',
+];
+
 interface EditDialogProps {
-    triggerText: React.ReactNode;
+    trigger: React.ReactNode;
     dialogTitle: string;
     dialogDescription: string;
     initialValue: string;
@@ -46,19 +55,16 @@ interface EditDialogProps {
     inputLabel: string;
     isTextarea?: boolean;
     className?: string;
-    textClassName?: string;
 }
 
 const EditDialog: React.FC<EditDialogProps> = ({
-    triggerText,
+    trigger,
     dialogTitle,
     dialogDescription,
     initialValue,
     onSave,
     inputLabel,
     isTextarea = false,
-    className,
-    textClassName
 }) => {
     const [currentValue, setCurrentValue] = useState(initialValue);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -76,12 +82,7 @@ const EditDialog: React.FC<EditDialogProps> = ({
 
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-                <div className={cn("group relative cursor-pointer", className)}>
-                    <div className={cn(textClassName)}>{triggerText}</div>
-                    <Pencil className="absolute top-1/2 right-0 h-4 w-4 -translate-y-1/2 text-primary opacity-0 transition-opacity group-hover:opacity-100" />
-                </div>
-            </DialogTrigger>
+            <DialogTrigger asChild>{trigger}</DialogTrigger>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{dialogTitle}</DialogTitle>
@@ -127,6 +128,7 @@ export const EditableDoctorCard = () => {
     const [vita, setVita] = useState(initialVita);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
+    const [isGalleryOpen, setIsGalleryOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleImageUploadClick = () => {
@@ -149,6 +151,19 @@ export const EditableDoctorCard = () => {
         setImagePreview(null);
         setIsImageDialogOpen(false);
     };
+
+    const handleSelectFromGallery = (imageSrc: string) => {
+        setImagePreview(imageSrc);
+        setIsGalleryOpen(false);
+        setIsImageDialogOpen(false);
+    };
+
+    const triggerDiv = (children: React.ReactNode, className?: string) => (
+        <div className={cn("group relative cursor-pointer", className)}>
+            {children}
+            <Pencil className="absolute top-1/2 right-0 h-4 w-4 -translate-y-1/2 text-primary opacity-0 transition-opacity group-hover:opacity-100" />
+        </div>
+    );
 
     return (
         <div className="mx-auto max-w-7xl">
@@ -220,10 +235,32 @@ export const EditableDoctorCard = () => {
                                                 )}
 
                                                 <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                                    <Button variant="outline" disabled>
-                                                        <ImageIcon className="mr-2 h-4 w-4" />
-                                                        Bestehendes auswählen
-                                                    </Button>
+                                                    <Dialog open={isGalleryOpen} onOpenChange={setIsGalleryOpen}>
+                                                        <DialogTrigger asChild>
+                                                            <Button variant="outline" disabled={!name}>
+                                                                <GalleryHorizontal className="mr-2 h-4 w-4" />
+                                                                Bestehendes auswählen
+                                                            </Button>
+                                                        </DialogTrigger>
+                                                        <DialogContent className="max-w-4xl">
+                                                            <DialogHeader>
+                                                                <DialogTitle>Bestehendes Bild auswählen</DialogTitle>
+                                                                <DialogDescription>
+                                                                    Wählen Sie ein bereits hochgeladenes Bild aus dem Team-Ordner.
+                                                                </DialogDescription>
+                                                            </DialogHeader>
+                                                            <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[60vh] overflow-y-auto p-1">
+                                                                {existingImages.map(imgSrc => (
+                                                                    <div key={imgSrc} className="cursor-pointer group" onClick={() => handleSelectFromGallery(imgSrc)}>
+                                                                        <div className="relative aspect-[2/3] w-full overflow-hidden rounded-md border-2 border-transparent group-hover:border-primary">
+                                                                            <Image src={imgSrc} alt={imgSrc} fill className="object-cover" />
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </DialogContent>
+                                                    </Dialog>
+
                                                     <TooltipProvider>
                                                         <Tooltip>
                                                             <TooltipTrigger asChild>
@@ -255,8 +292,7 @@ export const EditableDoctorCard = () => {
                                          initialValue={title}
                                          onSave={setTitle}
                                          inputLabel="Titel"
-                                         triggerText={title || '[Titel]'}
-                                         textClassName="text-[2.2cqw] text-primary"
+                                         trigger={triggerDiv(<p className="text-[2.2cqw] text-primary">{title || '[Titel]'}</p>)}
                                        />
                                        <EditDialog 
                                          dialogTitle="Name bearbeiten"
@@ -264,7 +300,7 @@ export const EditableDoctorCard = () => {
                                          initialValue={name}
                                          onSave={setName}
                                          inputLabel="Name"
-                                         triggerText={<h4 className="font-headline text-[4.8cqw] font-bold leading-tight text-primary">{name || '[Name]'}</h4>}
+                                         trigger={triggerDiv(<h4 className="font-headline text-[4.8cqw] font-bold leading-tight text-primary">{name || '[Name]'}</h4>)}
                                        />
                                        <div className="mt-[1.5cqw] space-y-1 text-[2.2cqw] leading-tight">
                                            <EditDialog 
@@ -273,7 +309,7 @@ export const EditableDoctorCard = () => {
                                              initialValue={specialty}
                                              onSave={setSpecialty}
                                              inputLabel="Spezialisierung"
-                                             triggerText={<p className="font-bold">{specialty || '[Spezialisierung]'}</p>}
+                                             trigger={triggerDiv(<p className="font-bold">{specialty || '[Spezialisierung]'}</p>)}
                                            />
                                             <EditDialog 
                                              dialogTitle="Zusatzqualifikation 1 bearbeiten"
@@ -281,7 +317,7 @@ export const EditableDoctorCard = () => {
                                              initialValue={qualification1}
                                              onSave={setQualification1}
                                              inputLabel="Zusatzqualifikation 1"
-                                             triggerText={qualification1 || '[Zusatzqualifikation 1]'}
+                                             trigger={triggerDiv(<p>{qualification1 || '[Zusatzqualifikation 1]'}</p>)}
                                            />
                                             <EditDialog 
                                              dialogTitle="Zusatzqualifikation 2 bearbeiten"
@@ -289,7 +325,7 @@ export const EditableDoctorCard = () => {
                                              initialValue={qualification2}
                                              onSave={setQualification2}
                                              inputLabel="Zusatzqualifikation 2"
-                                             triggerText={qualification2 || '[Zusatzqualifikation 2]'}
+                                             trigger={triggerDiv(<p>{qualification2 || '[Zusatzqualifikation 2]'}</p>)}
                                            />
                                        </div>
                                        <EditDialog
@@ -298,9 +334,7 @@ export const EditableDoctorCard = () => {
                                             initialValue={additionalInfo}
                                             onSave={setAdditionalInfo}
                                             inputLabel="Zusatzinformationen"
-                                            triggerText={<p className="italic">{additionalInfo || '[Zusatzinfo / Logo]'}</p>}
-                                            className="mt-[2.5cqw]"
-                                            textClassName="text-[1.6cqw]"
+                                            trigger={triggerDiv(<p className="italic">{additionalInfo || '[Zusatzinfo / Logo]'}</p>, "mt-[2.5cqw] text-[1.6cqw]")}
                                        />
                                     </div>
                                 </div>
@@ -317,11 +351,29 @@ export const EditableDoctorCard = () => {
                                     onSave={setVita}
                                     inputLabel="Lebenslauf"
                                     isTextarea={true}
-                                    triggerText={<Pencil className="h-4 w-4 text-primary/80" />}
+                                    trigger={<Pencil className="h-4 w-4 text-primary/80 cursor-pointer" />}
                                 />
                             </div>
                             <div className="text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight whitespace-pre-wrap">
-                                {vita}
+                                {vita.split('---').map((section, sectionIndex) => (
+                                    <div key={sectionIndex} className={sectionIndex > 0 ? 'mt-4 pt-4 border-t border-background/20' : ''}>
+                                        {section.trim().split(/<Meilensteine>|<\/Meilenstealen>/).map((part, partIndex) => {
+                                            if (partIndex % 2 === 1) { // This is content within <Meilensteine>
+                                                const milestones = part.trim().split('\n').filter(line => line.trim() !== '');
+                                                const title = milestones.shift();
+                                                return (
+                                                    <div key={partIndex} className="mt-1 pl-4 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
+                                                        <h5 className="mb-1 tracking-wide text-background/90">{title}</h5>
+                                                        <ul className="list-disc space-y-px pl-5 font-normal">
+                                                            {milestones.map((item, itemIndex) => <li key={itemIndex}>{item.trim()}</li>)}
+                                                        </ul>
+                                                    </div>
+                                                );
+                                            }
+                                            return <p key={partIndex} className="font-bold text-primary">{part.trim()}</p>;
+                                        })}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
