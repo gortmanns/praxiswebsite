@@ -141,10 +141,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
               ref={textareaRef}
               value={vitaContent}
               onChange={(e) => setVitaContent(e.target.value)}
-              className={cn(
-                'flex-1 mt-0 text-sm font-mono whitespace-pre-wrap',
-                'bg-accent/95 text-background border-accent placeholder:text-background/50 focus-visible:ring-primary'
-              )}
+              className="flex-1 mt-0 text-sm font-mono whitespace-pre-wrap"
               placeholder="Geben Sie hier den Text für die Kartenrückseite ein..."
             />
           </div>
@@ -162,15 +159,15 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
           </div>
         </div>
 
-        <Alert className={cn('mt-4 text-xs', 'bg-muted border-border')}>
-          <Info className="h-4 w-4 text-foreground/80" />
-          <AlertTitle className="text-foreground">Formatierungs-Hilfe</AlertTitle>
-          <AlertDescription className="text-foreground/80">
+        <Alert variant="info" className="mt-4 text-xs">
+          <Info className="h-4 w-4" />
+          <AlertTitle>Formatierungs-Hilfe</AlertTitle>
+          <AlertDescription>
             <p>Jede Zeile im Textfeld wird als eigener Absatz dargestellt. Benutzen Sie die Werkzeuge, um Text zu formatieren:</p>
             <ul className="list-disc pl-4 space-y-1 mt-2">
               <li><strong className="text-primary">[blau]...[/blau]</strong>: Text in Primärfarbe (blau).</li>
-              <li><strong className="text-foreground">[weiss]...[/weiss]</strong>: Normaler Text auf dem dunklen Hintergrund.</li>
-              <li><strong className="text-muted-foreground">[grau]...[/grau]</strong>: Leicht abgetönter Text.</li>
+              <li><strong>[weiss]...[/weiss]</strong>: Normaler Text auf dem dunklen Hintergrund.</li>
+              <li><strong>[grau]...[/grau]</strong>: Leicht abgetönter Text.</li>
               <li><strong>[fett]...[/fett]</strong>: Fetter Text.</li>
               <li><strong>[klein]...[/klein]</strong>: Etwas kleinere Schriftgrösse.</li>
               <li><strong>[liste]...[/liste]</strong>: Formatiert eine Zeile als Aufzählungspunkt.</li>
