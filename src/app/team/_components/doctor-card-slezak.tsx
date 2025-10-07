@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { VitaRenderer } from '@/app/admin/dashboard/team/doctors/_components/vita-renderer';
 
-const vita = `<span class="font-bold text-primary">LEISTUNGSSPEKTRUM</span>
+const vita = `[fett][blau]LEISTUNGSSPEKTRUM[/blau][/fett]
 [linie]
 [fett][blau]SPEZIALGEBIETE[/blau][/fett]
 [liste]Allgemeine Neurologie[/liste]
@@ -12,9 +12,9 @@ const vita = `<span class="font-bold text-primary">LEISTUNGSSPEKTRUM</span>
 [liste]Kopfschmerzen und Migräne[/liste]
 [liste]Neurorehabilitation[/liste]
 [break]
-[klein]Viele Untersuchungen können direkt hier im <span class="whitespace-nowrap">Praxiszentrum im Ring</span> durchgeführt werden.[/klein]
+[klein][grau]Viele Untersuchungen können direkt hier im <span class="whitespace-nowrap">Praxiszentrum im Ring</span> durchgeführt werden.[/grau][/klein]
 [break]
-[klein]Wenn spezielle Untersuchungen wie z. B. die Bestimmung der Nervenleitgeschwindigkeit Geräte erfordern, die hier im <span class="whitespace-nowrap">Praxiszentrum</span> nicht zur Verfügung stehen, dann finden diese in den Räumlichkeiten an der Thunstrasse 95 in Bern statt.[/klein]
+[klein][grau]Wenn spezielle Untersuchungen wie z. B. die Bestimmung der Nervenleitgeschwindigkeit Geräte erfordern, die hier im <span class="whitespace-nowrap">Praxiszentrum</span> nicht zur Verfügung stehen, dann finden diese in den Räumlichkeiten an der Thunstrasse 95 in Bern statt.[/grau][/klein]
 `;
 
 export const DoctorCardSlezak = () => (

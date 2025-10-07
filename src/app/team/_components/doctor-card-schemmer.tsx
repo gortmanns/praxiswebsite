@@ -2,11 +2,11 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { VitaRenderer } from '@/app/admin/dashboard/team/doctors/_components/vita-renderer';
 
-const vita = `<span class="font-bold text-primary">LEISTUNGSSPEKTRUM</span>
+const vita = `[fett][blau]LEISTUNGSSPEKTRUM[/blau][/fett]
 [linie]
-[fett][blau]KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT VOR ORT IM PRAXISZENTRUM IM RING ERFOLGEN[/blau][/fett]
+[klein][grau]KLEINCHIRURGISCHE EINGRIFFE KÖNNEN DIREKT VOR ORT IM PRAXISZENTRUM IM RING ERFOLGEN[/grau][/klein]
 [break]
-[fett][blau]GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT[/blau][/fett]
+[klein][grau]GROSSE CHIRURGISCHE EINGRIFFE WERDEN IN ENGER KOOPERATION ZWISCHEN CHIRURG UND HAUSARZT DURCHGEFÜHRT[/grau][/klein]
 [break]
 [liste]Die Vorbesprechung und Planung des Eingriffs erfolgen im PRAXISZENTRUM IM RING.[/liste]
 [liste]Allenfalls notwendige Abklärungen vor dem Eingriff finden ebenfalls im Praxiszentrum statt oder – falls nötig – per Überweisung an weitere Spezialisten.[/liste]

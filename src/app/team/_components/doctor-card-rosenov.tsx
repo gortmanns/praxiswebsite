@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { VitaRenderer } from '@/app/admin/dashboard/team/doctors/_components/vita-renderer';
 
-const vita = `<span class="font-bold text-primary">VITA / LEBENSLAUF</span>
+const vita = `[fett][blau]VITA / LEBENSLAUF[/blau][/fett]
 [linie]
 [fett][blau]FACHGEBIETE[/blau][/fett]
 [liste]Spezialist für Arterien-, Venen- und Lymphgefässerkrankungen[/liste]

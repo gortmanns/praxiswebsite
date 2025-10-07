@@ -2,27 +2,27 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { VitaRenderer } from '@/app/admin/dashboard/team/doctors/_components/vita-renderer';
 
-const vita = `<span class="text-primary"><span class="font-bold">Medizinstudium &amp; frühe Karriere</span></span>
-<span class="text-background">Medizinstudium in Bonn (Deutschland) und Hobart (Australien)</span>
-<span class="text-background">Masterstudium Public Health und Health Management in Sydney (Australien)</span>
-<span class="text-background">Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor</span>
+const vita = `[fett][blau]Medizinstudium & frühe Karriere[/blau][/fett]
+[liste]Medizinstudium in Bonn (Deutschland) und Hobart (Australien)[/liste]
+[liste]Masterstudium Public Health und Health Management in Sydney (Australien)[/liste]
+[liste]Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor[/liste]
 [linie]
-<span class="text-primary"><span class="font-bold">Projektmanagement im Gesundheitswesen</span></span>
-<span class="text-background/80"><span class="font-bold"><span class="text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug">Wichtige Meilensteine</span></span></span>
-[liste]<span class="text-background/80"><span class="text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug">Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)</span></span>[/liste]
-[liste]<span class="text-background/80"><span class="text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug">Manager für Klinische Sicherheit bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</span></span>[/liste]
-[liste]<span class="text-background/80"><span class="text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug">Direktor der Memory-Strategie für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</span></span>[/liste]
+[fett][blau]Projektmanagement im Gesundheitswesen[/blau][/fett]
+[klein][grau]Wichtige Meilensteine[/grau][/klein]
+[liste]Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)[/liste]
+[liste]Manager für Klinische Sicherheit bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien[/liste]
+[liste]Direktor der Memory-Strategie für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien[/liste]
 [linie]
-<span class="text-primary"><span class="font-bold">Weiterbildung &amp; Lehre</span></span>
-<span class="text-background/80"><span class="font-bold"><span class="text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug">Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz</span></span></span>
-[liste]<span class="text-background/80"><span class="text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug">Universitätsspital Basel (USB)</span></span>[/liste]
-[liste]<span class="text-background/80"><span class="text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug">Kantonsspital Baselland (KSBL)</span></span>[/liste]
-[liste]<span class="text-background/80"><span class="text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug">Kantonsspital Winterthur (KSW)</span></span>[/liste]
-[liste]<span class="text-background/80"><span class="text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug">Kantonsspital Wil (SRFT)</span></span>[/liste]
-[liste]<span class="text-background/80"><span class="text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug">Hausarztpraxis in Winterthur</span></span>[/liste]
+[fett][blau]Weiterbildung & Lehre[/blau][/fett]
+[klein][grau]Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz[/grau][/klein]
+[liste]Universitätsspital Basel (USB)[/liste]
+[liste]Kantonsspital Baselland (KSBL)[/liste]
+[liste]Kantonsspital Winterthur (KSW)[/liste]
+[liste]Kantonsspital Wil (SRFT)[/liste]
+[liste]Hausarztpraxis in Winterthur[/liste]
 [break]
-<span class="text-background">Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)</span>
-<span class="text-background">Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</span>
+[liste]Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)[/liste]
+[liste]Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)[/liste]
 `;
 
 export const DoctorCardOrtmanns = () => (

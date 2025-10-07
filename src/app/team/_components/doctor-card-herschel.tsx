@@ -3,9 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 import { VitaRenderer } from '@/app/admin/dashboard/team/doctors/_components/vita-renderer';
 
-const vita = `<span class="font-bold text-primary">LEISTUNGSSPEKTRUM</span>
-[linie]
-[fett][blau]SPEZIALGEBIETE[/blau][/fett]
+const vita = `[fett][blau]SPEZIALGEBIETE[/blau][/fett]
 [liste]Allgemeine Orthopädie[/liste]
 [liste]Spezialgebiet Hüft- und Kniegelenke[/liste]
 [break]

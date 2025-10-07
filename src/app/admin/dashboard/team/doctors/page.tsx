@@ -35,7 +35,7 @@ export default function DoctorsPage() {
                 <div className="mt-6">
                  <EditableDoctorCard />
                 </div>
-                <Alert variant="info" className="mt-4 border-blue-500 text-blue-800 bg-blue-50">
+                <Alert variant="info" className="mt-4">
                     <Info className="h-4 w-4" />
                     <AlertTitle>Information</AlertTitle>
                     <AlertDescription>

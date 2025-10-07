@@ -3,7 +3,7 @@
 import React, { useState, useRef, ChangeEvent } from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { User, Upload, Info, Pencil, AlertCircle, Trash2, Replace, GalleryHorizontal } from 'lucide-react';
+import { User, Upload, Pencil, Trash2, Replace, GalleryHorizontal } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { VitaEditorDialog } from './vita-editor-dialog';
 import { VitaRenderer } from './vita-renderer';
+import { AlertCircle } from 'lucide-react';
 
 const initialVita = `Dies ist ganz normaler Text
 [blau]Dies ist ein blauer Text[/blau]
