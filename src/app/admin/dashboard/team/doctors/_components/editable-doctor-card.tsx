@@ -14,7 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { VitaEditorDialog } from './vita-editor-dialog';
 import { VitaRenderer } from './vita-renderer';
 
-const initialVita = `Dies ist ganz normaler Text.
+const initialVita = `Dies ist ganz normaler Text
 [blau]Dies ist ein blauer Text[/blau]
 [fett]Dieser Text ist fett[/fett]
 [blau][fett]Dieser Text ist fett und blau[/fett][/blau]
@@ -329,5 +329,6 @@ export const EditableDoctorCard = () => {
     );
 };
 
+    
     
     
