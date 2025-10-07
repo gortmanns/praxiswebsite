@@ -43,7 +43,6 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
 
     setVitaContent(newText);
     
-    // Set focus back to textarea and adjust cursor position
     setTimeout(() => {
       textarea.focus();
       if (selectedText) {
@@ -82,18 +81,18 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
         <DialogHeader>
           <DialogTitle>Lebenslauf bearbeiten</DialogTitle>
           <DialogDescription>
-            Bearbeiten Sie den Lebenslauf mit der Werkzeugleiste oder indem Sie die Markdown-Syntax direkt eingeben.
+            Bearbeiten Sie den Lebenslauf mit der Werkzeugleiste oder indem Sie die BBCode-ähnliche Syntax direkt eingeben.
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex items-center gap-2 p-2 rounded-md border bg-muted">
-            <ToolbarButton tooltip="Überschrift (blau)" onClick={() => applyMarkup('### ', '')}>
+            <ToolbarButton tooltip="Überschrift (blau)" onClick={() => applyMarkup('[h]', '[/h]')}>
                 <Heading2 className="h-4 w-4 text-primary" />
             </ToolbarButton>
-            <ToolbarButton tooltip="Fetter Text (weiss)" onClick={() => applyMarkup('**', '**')}>
+            <ToolbarButton tooltip="Fetter Text (weiss)" onClick={() => applyMarkup('[b]', '[/b]')}>
                 <Bold className="h-4 w-4" />
             </ToolbarButton>
-            <ToolbarButton tooltip="Aufzählung (grau, klein)" onClick={() => applyMarkup('<Meilensteine>\n', '\n</Meilenstealen>')}>
+            <ToolbarButton tooltip="Aufzählung (grau, klein)" onClick={() => applyMarkup('[list]\n', '\n[/list]')}>
                 <List className="h-4 w-4 text-muted-foreground" />
             </ToolbarButton>
              <ToolbarButton tooltip="Abschnitts-Trennlinie" onClick={() => applyMarkup('\n---\n', '')}>
@@ -114,10 +113,10 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
           <AlertTitle>Formatierungs-Hilfe</AlertTitle>
           <AlertDescription>
             <ul className="list-disc pl-4 space-y-1">
-                <li><code className="font-bold">### Titel</code> für eine blaue, fette Überschrift.</li>
-                <li><code className="font-bold">**Text**</code> für fetten, weissen Text.</li>
-                <li>Umschliessen Sie eine Liste von Meilensteinen mit <code className="font-bold">&lt;Meilensteine&gt;</code> und <code className="font-bold">&lt;/Meilenstealen&gt;</code>, um sie als graue, kleinere Aufzählung darzustellen. Jede Zeile dazwischen wird zu einem Listenpunkt. Die erste Zeile innerhalb des Blocks wird zur Überschrift der Liste.</li>
-                <li><code className="font-bold">---</code> auf einer eigenen Zeile, um Abschnitte zu trennen.</li>
+                <li>Umschliessen Sie Text mit <code className="font-bold">[h]...[/h]</code> für eine blaue, fette Überschrift.</li>
+                <li>Umschliessen Sie Text mit <code className="font-bold">[b]...[/b]</code> für fetten, weissen Text.</li>
+                <li>Umschliessen Sie eine Liste von Meilensteinen mit <code className="font-bold">[list]...[/list]</code>. Die erste Zeile wird zur Überschrift der Liste, jede weitere Zeile zu einem Punkt.</li>
+                <li>Fügen Sie <code className="font-bold">---</code> auf einer eigenen Zeile ein, um Abschnitte zu trennen.</li>
             </ul>
           </AlertDescription>
         </Alert>

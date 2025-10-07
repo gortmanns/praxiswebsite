@@ -14,28 +14,28 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { VitaEditorDialog } from './vita-editor-dialog';
 
 
-const initialVita = `### Medizinstudium & frühe Karriere
+const initialVita = `[h]Medizinstudium & frühe Karriere[/h]
 Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
 Masterstudium Public Health und Health Management in Sydney (Australien)
 Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor
 ---
-### Projektmanagement im Gesundheitswesen
-<Meilensteine>
+[h]Projektmanagement im Gesundheitswesen[/h]
+[list]
 Wichtige Meilensteine
 Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)
 Manager für Klinische Sicherheit bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien
 Direktor der Memory-Strategie für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien
-</Meilenstealen>
+[/list]
 ---
-### Weiterbildung & Lehre
-<Meilensteine>
+[h]Weiterbildung & Lehre[/h]
+[list]
 Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz
 Universitätsspital Basel (USB)
 Kantonsspital Baselland (KSBL)
 Kantonsspital Winterthur (KSW)
 Kantonsspital Wil (SRFT)
 Hausarztpraxis in Winterthur
-</Meilenstealen>
+[/list]
 Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)
 Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)
 `;
@@ -157,6 +157,41 @@ export const EditableDoctorCard = () => {
             <Pencil className="absolute top-1/2 right-0 h-4 w-4 -translate-y-1/2 text-primary opacity-0 transition-opacity group-hover:opacity-100" />
         </div>
     );
+    
+    const renderVitaSection = (section: string, sectionIndex: number) => {
+        const parts = section.trim().split(/(\[list\].*?\[\/list\])/gs).filter(p => p);
+
+        return (
+            <div key={sectionIndex} className={sectionIndex > 0 ? 'mt-4 pt-4 border-t border-background/20' : ''}>
+                {parts.map((part, partIndex) => {
+                    if (part.startsWith('[list]')) {
+                        const listContent = part.replace('[list]', '').replace('[/list]', '').trim();
+                        const milestones = listContent.split('\n').filter(line => line.trim() !== '');
+                        const title = milestones.shift();
+                        return (
+                            <div key={partIndex} className="mt-1 pl-4 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
+                                <h5 className="mb-1 tracking-wide text-background/90">{title}</h5>
+                                <ul className="list-disc space-y-px pl-5 font-normal">
+                                    {milestones.map((item, itemIndex) => <li key={itemIndex}>{item.trim()}</li>)}
+                                </ul>
+                            </div>
+                        );
+                    } else {
+                        return part.split('\n').map((line, lineIndex) => {
+                            if (line.startsWith('[h]') && line.endsWith('[/h]')) {
+                                return <h4 key={lineIndex} className="font-bold text-primary mb-2">{line.substring(3, line.length - 4)}</h4>;
+                            }
+                            if (line.startsWith('[b]') && line.endsWith('[/b]')) {
+                                return <p key={lineIndex} className="font-bold">{line.substring(3, line.length - 4)}</p>;
+                            }
+                            return <p key={lineIndex}>{line}</p>;
+                        });
+                    }
+                })}
+            </div>
+        );
+    };
+
 
     return (
         <div className="mx-auto max-w-7xl">
@@ -192,7 +227,7 @@ export const EditableDoctorCard = () => {
                                             )}
                                              <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
                                                 {imagePreview ? <Replace className="h-10 w-10 text-white" /> : <Upload className="h-10 w-10 text-white" />}
-                                            </div>
+                                             </div>
                                         </div>
                                     </DialogTrigger>
                                     <DialogContent>
@@ -338,35 +373,7 @@ export const EditableDoctorCard = () => {
                             />
 
                             <div className="w-full text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight whitespace-pre-wrap">
-                                {vita.split('---').map((section, sectionIndex) => (
-                                    <div key={sectionIndex} className={sectionIndex > 0 ? 'mt-4 pt-4 border-t border-background/20' : ''}>
-                                        {section.trim().split(/<Meilensteine>|<\/Meilenstealen>/).map((part, partIndex) => {
-                                            const trimmedPart = part.trim();
-                                            if (partIndex % 2 === 1) { 
-                                                const milestones = trimmedPart.split('\n').filter(line => line.trim() !== '');
-                                                const title = milestones.shift();
-                                                return (
-                                                    <div key={partIndex} className="mt-1 pl-4 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
-                                                        <h5 className="mb-1 tracking-wide text-background/90">{title}</h5>
-                                                        <ul className="list-disc space-y-px pl-5 font-normal">
-                                                            {milestones.map((item, itemIndex) => <li key={itemIndex}>{item.trim()}</li>)}
-                                                        </ul>
-                                                    </div>
-                                                );
-                                            } else {
-                                                return trimmedPart.split('\n').map((line, lineIndex) => {
-                                                    if (line.startsWith('### ')) {
-                                                        return <h4 key={lineIndex} className="font-bold text-primary mb-2">{line.substring(4)}</h4>
-                                                    }
-                                                    if (line.startsWith('**') && line.endsWith('**')) {
-                                                        return <p key={lineIndex} className="font-bold">{line.substring(2, line.length - 2)}</p>;
-                                                    }
-                                                    return <p key={lineIndex}>{line}</p>;
-                                                });
-                                            }
-                                        })}
-                                    </div>
-                                ))}
+                                {vita.split('---').map(renderVitaSection)}
                             </div>
                         </div>
                     </div>
