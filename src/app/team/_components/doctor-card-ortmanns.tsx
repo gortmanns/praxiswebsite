@@ -50,14 +50,14 @@ export const DoctorCardOrtmanns = () => {
                                 <p>Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor</p>
                                 <p>Projektmanagement im Gesundheitswesen in Europa und Australien</p>
                             </div>
-
+                            
                             <ul className="flex list-disc flex-col pl-5 text-sm text-background/80" style={{ gap: '0.15rem' }}>
                                 <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
-                                <li>Verantwortlicher Manager für klinische Sicherheit und Design Assurance bei der Entwicklung der nationalen elektronischen Gesundheitsakte in Australien</li>
+                                <li>Manager für klinische Sicherheit und Design Assurance bei der Entwicklung der nationalen elektronischen Gesundheitsakte in Australien</li>
                                 <li>Direktor der MEMORY Strategie (elektronisches Medikamentenmanagement und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
                             </ul>
 
-                            <div>
+                            <div className="space-y-1">
                                 <p>Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz</p>
                                 <ul className="flex list-disc flex-col pl-5 text-sm text-background/80" style={{ gap: '0.15rem' }}>
                                     <li>Universitätsspital Basel (USB)</li>
