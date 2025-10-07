@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -16,6 +17,7 @@ import { DoctorCardRosenov } from '@/app/team/_components/doctor-card-rosenov';
 import { DoctorCardHerschel } from '@/app/team/_components/doctor-card-herschel';
 import { DoctorCardSlezak } from '@/app/team/_components/doctor-card-slezak';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
+import { doctorBacksides } from '@/app/team/_components/doctor-data';
 
 export default function DoctorsPage() {
   return (
@@ -50,11 +52,46 @@ export default function DoctorsPage() {
               <h3 className="text-2xl font-bold tracking-tight text-primary">Vorschau der bestehenden Ärzte</h3>
               <p className="text-muted-foreground">So erscheinen die Ärzte auf der Team-Seite.</p>
               <div className="mt-6 space-y-8">
-                <DoctorCardOrtmanns />
-                <DoctorCardSchemmer />
-                <DoctorCardRosenov />
-                <DoctorCardHerschel />
-                <DoctorCardSlezak />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start border-4 border-orange-500 p-2">
+                  <div className="border-2 border-orange-500">
+                    <DoctorCardOrtmanns />
+                  </div>
+                  <div className="border-2 border-orange-500 h-full">
+                    <Card className="h-full"><CardContent className="p-6">{doctorBacksides.ortmanns}</CardContent></Card>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start border-4 border-orange-500 p-2">
+                  <div className="border-2 border-orange-500">
+                    <DoctorCardSchemmer />
+                  </div>
+                  <div className="border-2 border-orange-500 h-full">
+                    <Card className="h-full"><CardContent className="p-6">{doctorBacksides.schemmer}</CardContent></Card>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start border-4 border-orange-500 p-2">
+                  <div className="border-2 border-orange-500">
+                    <DoctorCardRosenov />
+                  </div>
+                  <div className="border-2 border-orange-500 h-full">
+                    <Card className="h-full"><CardContent className="p-6">{doctorBacksides.rosenov}</CardContent></Card>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start border-4 border-orange-500 p-2">
+                  <div className="border-2 border-orange-500">
+                    <DoctorCardHerschel />
+                  </div>
+                  <div className="border-2 border-orange-500 h-full">
+                    <Card className="h-full"><CardContent className="p-6">{doctorBacksides.herschel}</CardContent></Card>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start border-4 border-orange-500 p-2">
+                  <div className="border-2 border-orange-500">
+                    <DoctorCardSlezak />
+                  </div>
+                  <div className="border-2 border-orange-500 h-full">
+                    <Card className="h-full"><CardContent className="p-6">{doctorBacksides.slezak}</CardContent></Card>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
