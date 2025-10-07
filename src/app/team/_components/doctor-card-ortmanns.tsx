@@ -67,8 +67,8 @@ export const DoctorCardOrtmanns = () => (
                         </div>
                     </div>
                     {/* Rechte Spalte: Vita */}
-                    <div className="relative flex flex-col items-start justify-start overflow-hidden bg-accent/95 p-6 text-left text-background">
-                         <div className="w-full h-full overflow-y-auto text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
+                    <div className="relative bg-accent/95 p-6 text-left text-background">
+                         <div className="h-full overflow-y-auto text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
                             <VitaRenderer text={vita} />
                         </div>
                     </div>
