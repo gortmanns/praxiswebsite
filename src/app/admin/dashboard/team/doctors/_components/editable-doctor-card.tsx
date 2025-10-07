@@ -102,67 +102,59 @@ const EditDialog: React.FC<EditDialogProps> = ({
     );
 };
 
-// Parser and Renderer for the new BBCode-like syntax
+const applyStyling = (content: string): React.ReactNode => {
+    const tagRegex = /\[(\w+)\]((?:[^[]|\[(?!\/\1\])|(?<=\\).)*?)\[\/\1\]/gs;
+
+    const parts: React.ReactNode[] = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = tagRegex.exec(content)) !== null) {
+        const [fullMatch, tagName, innerContent] = match;
+        
+        if (match.index > lastIndex) {
+            parts.push(content.substring(lastIndex, match.index));
+        }
+
+        let className = '';
+        switch(tagName) {
+            case 'blau': className = 'text-primary'; break;
+            case 'weiss': className = 'text-background'; break;
+            case 'grau': className = 'text-background/80'; break;
+            case 'fett': className = 'font-bold'; break;
+            case 'klein': className = 'text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug'; break;
+        }
+
+        parts.push(<span key={match.index} className={className}>{applyStyling(innerContent)}</span>);
+        
+        lastIndex = match.index + fullMatch.length;
+    }
+
+    if (lastIndex < content.length) {
+        parts.push(content.substring(lastIndex));
+    }
+    
+    return parts.length > 1 ? parts : parts[0] || '';
+};
+
+const renderLine = (line: string, index: number) => {
+    const listMatch = line.match(/^\[liste\](.*)\[\/liste\]$/);
+    if (listMatch) {
+        return <li key={index} className="list-disc ml-5 pl-2">{applyStyling(listMatch[1])}</li>
+    }
+    return <p key={index} className="min-h-[1.2em]">{applyStyling(line)}</p>;
+};
+
 const parseAndRenderVita = (text: string) => {
     const sections = text.split('---');
 
     return sections.map((section, sectionIndex) => {
         const lines = section.trim().split('\n');
-        const listItems: React.ReactNode[] = [];
-
-        const renderLine = (line: string) => {
-            let processedLine: React.ReactNode = line;
-            
-            // This regex will find the innermost tags first, e.g., [b] in [color][b]text[/b][/color]
-            const tagRegex = /\[(\w+)\]((?:[^[]|\[(?!\/\1\]))*?)\[\/\1\]/g;
-
-            const applyStyling = (content: string): React.ReactNode => {
-                 let match;
-                 const parts: React.ReactNode[] = [];
-                 let lastIndex = 0;
-
-                 while((match = tagRegex.exec(content)) !== null) {
-                     const [fullMatch, tagName, innerContent] = match;
-                     
-                     // Text before the tag
-                     if (match.index > lastIndex) {
-                         parts.push(content.substring(lastIndex, match.index));
-                     }
-
-                     let className = '';
-                     switch(tagName) {
-                         case 'blau': className = 'text-primary'; break;
-                         case 'weiss': className = 'text-background'; break;
-                         case 'grau': className = 'text-background/80'; break;
-                         case 'fett': className = 'font-bold'; break;
-                         case 'klein': className = 'text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug'; break;
-                     }
-
-                     parts.push(<span key={match.index} className={className}>{applyStyling(innerContent)}</span>);
-                     
-                     lastIndex = match.index + fullMatch.length;
-                 }
-
-                 // Remaining text
-                 if(lastIndex < content.length) {
-                     parts.push(content.substring(lastIndex));
-                 }
-                 
-                 return parts;
-            };
-            
-            const listMatch = line.match(/^\[liste\](.*)\[\/liste\]$/);
-            if (listMatch) {
-                return <li key={line} className="list-disc ml-5 pl-2">{applyStyling(listMatch[1])}</li>
-            }
-
-            return <p key={line} className="min-h-[1.2em]">{applyStyling(line)}</p>;
-        };
         
         return (
             <div key={sectionIndex} className={cn(sectionIndex > 0 && 'mt-4 pt-4 border-t border-background/20')}>
                 {lines.map((line, lineIndex) => (
-                    renderLine(line)
+                    renderLine(line, lineIndex)
                 ))}
             </div>
         );
@@ -410,3 +402,5 @@ export const EditableDoctorCard = () => {
         </div>
     );
 };
+
+    
