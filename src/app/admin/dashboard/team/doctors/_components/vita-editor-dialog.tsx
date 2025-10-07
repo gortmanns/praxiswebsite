@@ -7,11 +7,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Bold, Minus, List, Palette, Info, Eye, Pilcrow } from 'lucide-react';
+import { Bold, Minus, List, Palette, Info, Eye, Pilcrow, X } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -23,6 +22,12 @@ interface VitaEditorDialogProps {
   initialValue: string;
   onSave: (value: string) => void;
 }
+
+const DialogClose: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const context = (Dialog as any).__private_getContext();
+    const handleClose = () => context.onOpenChange(false);
+    return <div onClick={handleClose}>{children}</div>;
+};
 
 export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, initialValue, onSave }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -87,7 +92,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-6xl h-[90vh] flex flex-col">
+      <DialogContent className="max-w-6xl h-[90vh] flex flex-col bg-muted">
         <DialogHeader>
           <DialogTitle>Text der Kartenrückseite bearbeiten</DialogTitle>
         </DialogHeader>
@@ -95,7 +100,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
         <div className="flex-1 grid grid-cols-2 gap-4 overflow-hidden">
           {/* Editor Column */}
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-2 p-2 rounded-md border bg-muted flex-wrap">
+            <div className="flex h-14 items-center gap-2 p-2 rounded-md border bg-primary flex-wrap">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" size="icon" type="button" className="h-8 w-8">
@@ -129,10 +134,6 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
               <ToolbarButton tooltip="Abschnitts-Trennlinie" onClick={() => applyMarkup('\n[linie]\n', '')}>
                 <Minus className="h-4 w-4" />
               </ToolbarButton>
-
-              <Button variant="secondary" size="sm" type="button" onClick={() => setPreviewContent(vitaContent)} className="ml-auto h-8">
-                <Eye className="mr-2 h-4 w-4" /> Zeige Vorschau
-              </Button>
             </div>
 
             <Textarea
@@ -146,8 +147,10 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
 
           {/* Preview Column */}
           <div className="flex flex-col gap-4">
-             <div className="flex items-center p-2 rounded-md border bg-muted h-14">
-                <h3 className="font-medium text-muted-foreground">Vorschau</h3>
+             <div className="flex h-14 items-center justify-end p-2 rounded-md border bg-primary">
+                <Button variant="secondary" size="sm" type="button" onClick={() => setPreviewContent(vitaContent)} className="h-8">
+                    <Eye className="mr-2 h-4 w-4" /> Zeige Vorschau
+                </Button>
              </div>
              <div className="flex-1 overflow-auto bg-accent/95 p-6 text-left text-background rounded-md border border-accent">
                 <div className="w-full text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
@@ -157,7 +160,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
           </div>
         </div>
 
-        <Alert variant="info" className="mt-4 text-xs bg-white text-black">
+        <Alert variant="info" className="mt-4 bg-white text-black">
           <Info className="h-4 w-4" />
           <AlertTitle>Formatierungs-Hilfe</AlertTitle>
           <AlertDescription>
@@ -176,7 +179,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
         </Alert>
 
         <div className="mt-6 flex justify-end gap-2 border-t pt-4">
-          <DialogClose asChild>
+          <DialogClose>
             <Button variant="outline">Abbrechen</Button>
           </DialogClose>
           <Button onClick={handleSave}>Speichern</Button>
@@ -185,5 +188,3 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
     </Dialog>
   );
 };
-
-    
