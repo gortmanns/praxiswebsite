@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -53,8 +54,8 @@ export const DoctorCardOrtmanns = () => {
                             <div className="pt-2 space-y-2">
                                 <ul className="list-disc space-y-1 pl-5 text-sm text-background/80">
                                     <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
-                                    <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesunheitsakte in Australien</li>
-                                    <li>Direktor der Memory-Strategie (elektronisches Medikamenten-management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
+                                    <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
+                                    <li>Direktor der eMeds-Strategie (elektronisches Medikamentenmanagement und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
                                 </ul>
                             </div>
                              <div className="pt-2 space-y-2">
