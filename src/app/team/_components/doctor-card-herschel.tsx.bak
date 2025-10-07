@@ -4,33 +4,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 
 export const DoctorCardHerschel = () => {
-    const backsideContent = (
-        <>
-            <p className="font-bold text-primary">Leistungen im Praxiszentrum im Ring</p>
-            <hr className="my-2 border-t border-background/20" />
-            <ul className="list-disc space-y-1 pl-4 text-left">
-                <li>Klinische Untersuchung</li>
-                <li>Zweitmeinung</li>
-                <li>Digitale Röntgenuntersuchung</li>
-                <li>Infiltrationen</li>
-            </ul>
-            <div className="h-[0.5em]"></div>
-            <p className="font-bold text-primary">Spezialgebiete</p>
-            <hr className="my-2 border-t border-background/20" />
-            <ul className="list-disc space-y-1 pl-4 text-left">
-                <li>Knie (Sportverletzungen, Verschleiss)</li>
-                <li>Schulter (Verschleiss, Sehnenverletzungen, Instabilität)</li>
-                <li>Hüfte (Verschleiss)</li>
-                <li>Hand (ohne Nervenkompression)</li>
-                <li>Fuss</li>
-            </ul>
-        </>
-    );
-
     return (
         <div className="mx-auto max-w-7xl">
-            <Card className="w-full overflow-hidden">
+            <Card className="group relative w-full overflow-hidden">
                 <CardContent className="p-0">
+                    {/* VORDERSEITE */}
                     <div 
                         className="relative w-full bg-card"
                         style={{ 'containerType': 'inline-size', aspectRatio: '1000 / 495' } as React.CSSProperties}

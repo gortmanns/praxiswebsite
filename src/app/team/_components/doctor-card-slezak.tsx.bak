@@ -3,30 +3,11 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 
 export const DoctorCardSlezak = () => {
-    const backsideContent = (
-        <>
-            <p>
-                In Kooperation mit Frau Dr. med. A. Slezak bieten wir eine spezialisierte neurologische Sprechstunde direkt in unseren Praxisräumlichkeiten an.
-            </p>
-            <br />
-            <p className="font-bold text-primary">Leistungsspektrum</p>
-            <hr className="my-2 border-t border-background/20" />
-            <ul className="list-disc space-y-1 pl-4 text-left">
-                <li>Abklärung und Behandlung von Kopfschmerzen</li>
-                <li>Beurteilung von Gedächtnisstörungen</li>
-                <li>Nachsorge nach Hirnschlag</li>
-                <li>Diagnostik und Therapie bei Schwindel</li>
-                <li>Behandlung von Epilepsie</li>
-                <li>Betreuung bei Parkinson-Krankheit</li>
-                <li>Abklärung von Polyneuropathien</li>
-            </ul>
-        </>
-    );
-
     return (
         <div className="mx-auto max-w-7xl">
-            <Card className="w-full overflow-hidden">
+            <Card className="group relative w-full overflow-hidden">
                 <CardContent className="p-0">
+                    {/* VORDERSEITE */}
                     <div
                         className="relative w-full bg-card"
                         style={{ 'containerType': 'inline-size', aspectRatio: '1000 / 495' } as React.CSSProperties}

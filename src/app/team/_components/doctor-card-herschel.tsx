@@ -40,9 +40,9 @@ export const DoctorCardHerschel = () => {
                         </div>
                     </div>
                     {/* RÜCKSEITE */}
-                    <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-center text-background transition-all duration-1000 group-hover:translate-y-0">
+                    <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
                         <div className="text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
-                           [Hier den Text für die Rückseite einfügen]
+                            
                         </div>
                     </div>
                 </CardContent>
