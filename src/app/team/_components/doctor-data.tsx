@@ -2,11 +2,11 @@
 
 export const doctorBacksides = {
   ortmanns: (
-    <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col space-y-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
-      <p>Medizinstudium in Bonn und Hobart (Australien)</p>
-      <p>Masterstudium Public Health und Health Management in Sydney (Australien)</p>
-      <p>Projektmanagement im Gesundheitswesen in Europa und Australien</p>
-      <div>
+    <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
+      <p className="mb-1">Medizinstudium in Bonn und Hobart (Australien)</p>
+      <p className="mb-1">Masterstudium Public Health und Health Management in Sydney (Australien)</p>
+      <p className="mb-1">Projektmanagement im Gesundheitswesen in Europa und Australien</p>
+      <div className="mb-1">
           <p>Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor</p>
           <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
               <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
@@ -14,7 +14,7 @@ export const doctorBacksides = {
               <li>Direktor der Memory-Strategie (elektronisches Medikamenten-Management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
           </ul>
       </div>
-      <div>
+      <div className="mb-1">
           <p>Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz:</p>
           <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
               <li>Universitätsspital Basel (USB)</li>
@@ -24,8 +24,8 @@ export const doctorBacksides = {
               <li>Hausarztpraxis in Winterthur</li>
           </ul>
       </div>
-       <p>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Klinik für Pneumologie)</p>
-       <p>Leitung <span className="whitespace-nowrap">Praxiszentrum im Ring</span> (Ärztliche und administrative Leitung)</p>
+       <p className="mb-1">Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Klinik für Pneumologie)</p>
+       <p className="mb-1">Leitung <span className="whitespace-nowrap">Praxiszentrum im Ring</span> (Ärztliche und administrative Leitung)</p>
        <p>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
     </div>
   ),
