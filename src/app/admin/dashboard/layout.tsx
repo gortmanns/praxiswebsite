@@ -116,7 +116,7 @@ export default function DashboardLayout({
             <SidebarMenuSub>
                 {teamNavItems.map((item) => (
                     <SidebarMenuSubItem key={item.href}>
-                        <Link href={item.href} asChild>
+                        <Link href={item.href} passHref>
                             <SidebarMenuSubButton isActive={pathname === item.href}>
                                 {item.label}
                             </SidebarMenuSubButton>
