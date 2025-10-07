@@ -8,7 +8,7 @@ export const doctorBacksides = {
       <p className="mb-1">Projektmanagement im Gesundheitswesen in Europa und Australien</p>
       <div className="mb-1">
           <p>Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor</p>
-          <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
+          <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-[#ff0000]" style={{ gap: '0.15rem' }}>
               <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
               <li>Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
               <li>Direktor der Memory-Strategie (elektronisches Medikamenten-Management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
@@ -16,7 +16,7 @@ export const doctorBacksides = {
       </div>
       <div className="mb-1">
           <p>Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz:</p>
-          <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
+          <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-[#ff0000]" style={{ gap: '0.15rem' }}>
               <li>Universitätsspital Basel (USB)</li>
               <li>Kantonsspital Baselland (KSBL)</li>
               <li>Kantonsspital Winterthur (KSW)</li>
