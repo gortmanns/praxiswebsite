@@ -4,11 +4,10 @@
 import React, { useState, useRef, ChangeEvent } from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { User, Upload, ImageIcon, Info, Pencil, AlertCircle, Trash2, Replace, GalleryHorizontal } from 'lucide-react';
+import { User, Upload, Info, Pencil, AlertCircle, Trash2, Replace, GalleryHorizontal } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
@@ -16,26 +15,28 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { VitaEditorDialog } from './vita-editor-dialog';
 
 
-const initialVita = `Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
+const initialVita = `### Medizinstudium & frühe Karriere
+Medizinstudium in Bonn (Deutschland) und Hobart (Australien)
 Masterstudium Public Health und Health Management in Sydney (Australien)
 Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor
 ---
-Projektmanagement im Gesundheitswesen in Europa und Australien
+### Projektmanagement im Gesundheitswesen
 <Meilensteine>
+Wichtige Meilensteine
 Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)
-Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien
-Direktor der Memory-Strategie (Elektronisches Medikamenten-Management und Elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien
+Manager für Klinische Sicherheit bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien
+Direktor der Memory-Strategie für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien
 </Meilenstealen>
 ---
-Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz
+### Weiterbildung & Lehre
 <Meilensteine>
+Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz
 Universitätsspital Basel (USB)
 Kantonsspital Baselland (KSBL)
 Kantonsspital Winterthur (KSW)
 Kantonsspital Wil (SRFT)
 Hausarztpraxis in Winterthur
 </Meilenstealen>
----
 Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)
 Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)
 `;
@@ -55,7 +56,6 @@ interface EditDialogProps {
     initialValue: string;
     onSave: (value: string) => void;
     inputLabel: string;
-    isTextarea?: boolean;
 }
 
 const EditDialog: React.FC<EditDialogProps> = ({
@@ -65,7 +65,6 @@ const EditDialog: React.FC<EditDialogProps> = ({
     initialValue,
     onSave,
     inputLabel,
-    isTextarea = false,
 }) => {
     const [currentValue, setCurrentValue] = useState(initialValue);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -91,21 +90,11 @@ const EditDialog: React.FC<EditDialogProps> = ({
                 </DialogHeader>
                 <div className="mt-4 space-y-2">
                     <Label htmlFor="edit-input">{inputLabel}</Label>
-                    {isTextarea ? (
-                         <Textarea
-                            id="edit-input"
-                            value={currentValue}
-                            onChange={(e) => setCurrentValue(e.target.value)}
-                            rows={15}
-                            className="text-sm"
-                        />
-                    ) : (
-                        <Input
-                            id="edit-input"
-                            value={currentValue}
-                            onChange={(e) => setCurrentValue(e.target.value)}
-                        />
-                    )}
+                    <Input
+                        id="edit-input"
+                        value={currentValue}
+                        onChange={(e) => setCurrentValue(e.target.value)}
+                    />
                 </div>
                 <div className="mt-6 flex justify-end gap-2">
                     <DialogClose asChild>
@@ -215,12 +204,12 @@ export const EditableDoctorCard = () => {
                                             </DialogDescription>
                                         </DialogHeader>
                                         
-                                        {!name && imageSourceType !== 'existing-gallery' && (
+                                        {!name && imageSourceType === 'new-upload' && (
                                             <Alert variant="destructive" className="mt-4">
                                                 <AlertCircle className="h-4 w-4" />
                                                 <AlertTitle>Fehlender Name</AlertTitle>
                                                 <AlertDescription>
-                                                    Bitte geben Sie zuerst einen Namen für den Arzt ein, bevor Sie ein Bild hochladen.
+                                                    Bitte geben Sie zuerst einen Namen für den Arzt ein, bevor Sie ein neues Bild hochladen.
                                                 </AlertDescription>
                                             </Alert>
                                         )}
@@ -353,8 +342,9 @@ export const EditableDoctorCard = () => {
                                 {vita.split('---').map((section, sectionIndex) => (
                                     <div key={sectionIndex} className={sectionIndex > 0 ? 'mt-4 pt-4 border-t border-background/20' : ''}>
                                         {section.trim().split(/<Meilensteine>|<\/Meilenstealen>/).map((part, partIndex) => {
+                                            const trimmedPart = part.trim();
                                             if (partIndex % 2 === 1) { 
-                                                const milestones = part.trim().split('\n').filter(line => line.trim() !== '');
+                                                const milestones = trimmedPart.split('\n').filter(line => line.trim() !== '');
                                                 const title = milestones.shift();
                                                 return (
                                                     <div key={partIndex} className="mt-1 pl-4 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
@@ -364,8 +354,17 @@ export const EditableDoctorCard = () => {
                                                         </ul>
                                                     </div>
                                                 );
+                                            } else {
+                                                return trimmedPart.split('\n').map((line, lineIndex) => {
+                                                    if (line.startsWith('### ')) {
+                                                        return <h4 key={lineIndex} className="font-bold text-primary mb-2">{line.substring(4)}</h4>
+                                                    }
+                                                    if (line.startsWith('**') && line.endsWith('**')) {
+                                                        return <p key={lineIndex} className="font-bold">{line.substring(2, line.length - 2)}</p>;
+                                                    }
+                                                    return <p key={lineIndex}>{line}</p>;
+                                                });
                                             }
-                                            return <p key={partIndex} className="font-bold text-primary">{part.trim()}</p>;
                                         })}
                                     </div>
                                 ))}

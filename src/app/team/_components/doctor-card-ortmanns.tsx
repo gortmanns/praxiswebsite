@@ -44,38 +44,35 @@ export const DoctorCardOrtmanns = () => (
                     </div>
                     {/* Rechte Spalte: Vita */}
                     <div className="flex flex-col items-start justify-start overflow-auto bg-accent/95 p-6 text-left text-background">
-                         <h3 className="mb-4 font-bold text-primary">Vita / Lebenslauf</h3>
-                         <div className="text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
-                            <ul className="space-y-1.5 leading-tight">
-                                <li>Medizinstudium in Bonn (Deutschland) und Hobart (Australien)</li>
-                                <li>Masterstudium Public Health und Health Management in Sydney (Australien)</li>
-                                <li>Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor</li>
-                                <li className="font-bold text-primary mt-6 mb-4">
-                                    Projektmanagement im Gesundheitswesen in Europa und Australien
-                                    <div className="mt-1 pl-9 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
-                                        <h5 className="mb-1 tracking-wide text-background/90">Meilensteine</h5>
-                                        <ul className="list-disc space-y-px pl-5 font-normal">
-                                            <li>Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
-                                            <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
-                                            <li>Direktor der Memory-Strategie (Elektronisches Medikamenten-Management und Elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li className="font-bold text-primary mt-6 mb-4">
-                                    Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz
-                                    <div className="mt-1 pl-9 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
-                                        <ul className="list-disc space-y-px pl-5 font-normal">
-                                            <li>Universitätsspital Basel (USB)</li>
-                                            <li>Kantonsspital Baselland (KSBL)</li>
-                                            <li>Kantonsspital Winterthur (KSW)</li>
-                                            <li>Kantonsspital Wil (SRFT)</li>
-                                            <li>Hausarztpraxis in Winterthur</li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li className='mt-6 mb-4'>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)</li>
-                                <li className='mt-6 mb-4'>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</li>
-                            </ul>
+                         <div className="w-full text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight whitespace-pre-wrap">
+                            <h4 className="font-bold text-primary mb-2">Medizinstudium &amp; frühe Karriere</h4>
+                            <p>Medizinstudium in Bonn (Deutschland) und Hobart (Australien)</p>
+                            <p>Masterstudium Public Health und Health Management in Sydney (Australien)</p>
+                            <p>Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor</p>
+                            <div className="my-4 border-t border-background/20"></div>
+                            <h4 className="font-bold text-primary mb-2">Projektmanagement im Gesundheitswesen</h4>
+                            <div className="mt-1 pl-4 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
+                                <h5 className="mb-1 tracking-wide text-background/90">Wichtige Meilensteine</h5>
+                                <ul className="list-disc space-y-px pl-5 font-normal">
+                                    <li>Leiter Klinische Entwicklung und Analytik bei DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
+                                    <li>Manager für Klinische Sicherheit bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
+                                    <li>Direktor der Memory-Strategie für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
+                                </ul>
+                            </div>
+                            <div className="my-4 border-t border-background/20"></div>
+                            <h4 className="font-bold text-primary mb-2">Weiterbildung &amp; Lehre</h4>
+                             <div className="mt-1 pl-4 text-[clamp(0.7rem,2.3cqw,1rem)] leading-snug text-background/80">
+                                <h5 className="mb-1 tracking-wide text-background/90">Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz</h5>
+                                <ul className="list-disc space-y-px pl-5 font-normal">
+                                    <li>Universitätsspital Basel (USB)</li>
+                                    <li>Kantonsspital Baselland (KSBL)</li>
+                                    <li>Kantonsspital Winterthur (KSW)</li>
+                                    <li>Kantonsspital Wil (SRFT)</li>
+                                    <li>Hausarztpraxis in Winterthur</li>
+                                </ul>
+                            </div>
+                            <p className="mt-2">Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Abteilung für Pneumologie)</p>
+                            <p>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
                         </div>
                     </div>
                 </div>
