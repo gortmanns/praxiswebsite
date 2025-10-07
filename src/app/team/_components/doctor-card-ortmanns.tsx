@@ -47,6 +47,12 @@ export const DoctorCardOrtmanns = () => {
                             <p>Medizinstudium in Bonn und Hobart (Australien)</p>
                             <p>Masterstudium Public Health und Health Management in Sydney (Australien)</p>
                             <p>Projektmanagement im Gesundheitswesen in Europa und Australien</p>
+                            <p>Unternehmensberatung</p>
+                            <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
+                                <li>Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</li>
+                                <li>Direktor der Memory-Strategie (elektronisches Medikamenten-management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
+                                <li>Leiter klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
+                            </ul>
                             <div>
                                 <p>Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz:</p>
                                 <ul className="flex list-disc flex-col pl-5 pt-1 text-sm text-background/80" style={{ gap: '0.15rem' }}>
@@ -60,9 +66,6 @@ export const DoctorCardOrtmanns = () => {
                             <p>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Klinik für Pneumologie)</p>
                             <p>Leitung Praxiszentrum im Ring (Ärztliche und administrative Leitung)</p>
                             <p>Lehrbeauftragter für Hausarztmedizin (Institut für Hausarztmedizin der Universität Bern)</p>
-                            <p>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</p>
-                            <p>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesundheitsakte in Australien</p>
-                            <p>Direktor der Memory-Strategie (elektronisches Medikamenten-management und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</p>
                         </div>
                     </div>
                 </CardContent>
