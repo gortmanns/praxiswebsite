@@ -48,7 +48,7 @@ export const DoctorCardOrtmanns = () => {
                                 <p>Medizinstudium in Bonn (Deutschland) und Hobart (Australien)</p>
                                 <p>Masterstudium Public Health und Health Management in Sydney (Australien)</p>
                             </div>
-                            <div>
+                            <div className="space-y-1">
                                 <p>Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor</p>
                                 <ul className="flex list-disc flex-col pl-5 text-sm text-background/80" style={{ gap: '0.15rem' }}>
                                     <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
@@ -56,7 +56,7 @@ export const DoctorCardOrtmanns = () => {
                                     <li>Direktor der MEMORY Strategie (elektronisches Medikamentenmanagement und elektronische Patientenakten) für das Netzwerk der Kinderkrankenhäuser in Sydney, Australien</li>
                                 </ul>
                             </div>
-                            <div>
+                            <div className="space-y-1">
                                 <p>Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz</p>
                                 <ul className="flex list-disc flex-col pl-5 text-sm text-background/80" style={{ gap: '0.15rem' }}>
                                     <li>Universitätsspital Basel (USB)</li>
@@ -68,7 +68,7 @@ export const DoctorCardOrtmanns = () => {
                             </div>
                             <div className="space-y-1">
                                 <p>Wissenschaftlicher Mitarbeiter an der Universität Zürich / USZ (Klinik für Pneumologie)</p>
-                                <p>Leitung Praxiszentrum im Ring, ärztliche und administrative Leitung</p>
+                                <p>Leitung Praxiszentrum im Ring, (Ärztliche und administrative Leitung)</p>
                                 <p>Lehrbeauftragter für Hausarztmedizin, Institut für Hausarztmedizin der Universität Bern</p>
                             </div>
                         </div>
