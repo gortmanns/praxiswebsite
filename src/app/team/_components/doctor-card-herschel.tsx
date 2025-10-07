@@ -45,7 +45,7 @@ export const DoctorCardHerschel = () => {
                             <p className="font-bold text-primary">ALLGEMEINE ORTHOPÄDIE</p>
                             <p className="font-bold text-primary">SPEZIALGEBIET HÜFT- UND KNIEGELENKE</p>
                             <p className="text-background">Röntgenuntersuchungen, Konsultationen und klinische Untersuchungen finden direkt im <span className="whitespace-nowrap">PRAXISZENTRUM IM RING</span> statt.</p>
-                            <p className="text-background">Auch Gelenkinfiltrationen, z. B. bei Schmerzen, können zum Teil direkt durchgeführt werden.</p>
+                            <p className="text-background">Auch Gelenkinfiltrationen, z. B. bei Schmerzen, können zum Teil direkt vor Ort durchgeführt werden.</p>
                             <p className="text-background">Allenfalls nötige Operationen werden im gut erreichbaren Lindenhof-Spital durchgeführt.</p>
                         </div>
                     </div>
