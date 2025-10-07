@@ -1,7 +1,9 @@
+
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 
+/* START RESTORE BLOCK 2024-05-24-A -- Reverting to original card content and structure as per user request. */
 export const DoctorCardHerschel = () => (
     <div 
         className="mx-auto max-w-7xl group/card"
@@ -78,3 +80,4 @@ export const DoctorCardHerschel = () => (
         </Card>
     </div>
 );
+/* END RESTORE BLOCK 2024-05-24-A */

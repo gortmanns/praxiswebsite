@@ -1,6 +1,8 @@
+
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 
+/* START RESTORE BLOCK 2024-05-24-A -- Reverting to original card content and structure as per user request. */
 export const DoctorCardSlezak = () => (
     <div 
         className="mx-auto max-w-7xl group/card"
@@ -84,3 +86,4 @@ export const DoctorCardSlezak = () => (
         </Card>
     </div>
 );
+/* END RESTORE BLOCK 2024-05-24-A */
