@@ -43,14 +43,14 @@ export const DoctorCardOrtmanns = () => {
                     {/* RÜCKSEITE */}
                     <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
                          <div className="w-full space-y-2 text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
-                            <div>
-                                <p>MEDIZINSTUDIUM IN BONN (Deutschland) UND HOBART (AUSTRALIEN)</p>
-                                <p>MASTERSTUDIUM PUBLIC HEALTH UND HEALTH MANAGEMENT IN SYDNEY (AUSTRALIEN)</p>
-                                <p>UNTERNEHMENSBERATUNG MIT SPEZIALISIERUNG AUF DEN GESUNDHEITSSEKTOR</p>
-                                <p>PROJEKTMANAGEMENT IM GESUNDHEITSWESEN IN EUROPA UND AUSTRALIEN</p>
+                            <div className="space-y-0">
+                                <p>Medizinstudium in Bonn (Deutschland) und Hobart (Australien)</p>
+                                <p>Masterstudium Public Health und Health Management in Sydney (Australien)</p>
+                                <p>Unternehmensberatung mit Spezialisierung auf den Gesundheitssektor</p>
+                                <p>Projektmanagement im Gesundheitswesen in Europa und Australien</p>
                             </div>
                             
-                            <div className="pt-2">
+                            <div className="pt-2 space-y-2">
                                 <ul className="list-disc space-y-1 pl-5 text-sm text-background/80">
                                     <li>Leiter Klinische Entwicklung und Analytik für DxCG Gesundheitsanalytik GmbH (Deutschland)</li>
                                     <li>Verantwortlicher Manager für Klinische Sicherheit und Design Assurance bei der Entwicklung der Nationalen Elektronischen Gesunheitsakte in Australien</li>
@@ -58,7 +58,7 @@ export const DoctorCardOrtmanns = () => {
                                 </ul>
                             </div>
                              <div className="pt-2 space-y-2">
-                                <p>WEITERBILDUNG IN ALLGEMEINER INNERER MEDIZIN IN DER SCHWEIZ</p>
+                                <p>Weiterbildung in Allgemeiner Innerer Medizin in der Schweiz</p>
                                 <div>
                                     <ul className="list-disc space-y-1 pl-5 text-sm text-background/80">
                                         <li>Universitätsspital Basel (USB)</li>
@@ -68,9 +68,9 @@ export const DoctorCardOrtmanns = () => {
                                         <li>Hausarztpraxis in Winterthur</li>
                                     </ul>
                                 </div>
-                                <p>WISSENSCHAFTLICHER MITARBEITER UNIVERSITÄT ZÜRICH / USZ PNEUMOLOGIE</p>
-                                <p>LEITUNG PRAXISZENTRUM IM RING, ÄRZTLICHE UND ADMINISTRATIVE LEITUNG</p>
-                                <p>LEHRBEAUFTRAGTER FÜR HAUSARZTMEDIZIN, INSTITUT FÜR HAUSARZTMEDIZIN DER UNIVERSITÄT BERN</p>
+                                <p>Wissenschaftlicher Mitarbeiter Universität Zürich / USZ Pneumologie</p>
+                                <p>Leitung Praxiszentrum im Ring, ärztliche und administrative Leitung</p>
+                                <p>Lehrbeauftragter für Hausarztmedizin, Institut für Hausarztmedizin der Universität Bern</p>
                             </div>
                         </div>
                     </div>
