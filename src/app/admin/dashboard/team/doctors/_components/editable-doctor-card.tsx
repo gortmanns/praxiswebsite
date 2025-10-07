@@ -14,12 +14,11 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { VitaEditorDialog } from './vita-editor-dialog';
 import { VitaRenderer } from './vita-renderer';
 
-const initialVita = `Dies ist ganz normaler Text auf dunklem Grund.
-[blau]Dies ist ein blauer, fetter Text[/blau]
+const initialVita = `Dies ist ganz normaler Text.
+[blau]Dies ist ein blauer Text[/blau]
 [fett]Dieser Text ist fett[/fett]
 [blau][fett]Dieser Text ist fett und blau[/fett][/blau]
-[break]
-[liste]Ein Listenpunkt[/liste]
+[liste]Dies ist ein Listenpunkt[/liste]
 [liste][grau][klein]Noch ein Listenpunkt, aber grau und klein[/klein][/grau][/liste]
 `;
 
