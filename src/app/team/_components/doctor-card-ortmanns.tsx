@@ -1,4 +1,3 @@
-
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -45,10 +44,10 @@ export const DoctorCardOrtmanns = () => {
                     <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
                         <div className="w-full space-y-2 text-[clamp(0.8rem,2.5cqw,1.1rem)] leading-tight">
                             <div>
-                                <p className="font-bold text-primary">MEDIZINSTUDIUM IN BONN (Deutschland) UND HOBART (AUSTRALIEN)</p>
-                                <p className="font-bold text-primary">MASTERSTUDIUM PUBLIC HEALTH UND HEALTH MANAGEMENT IN SYDNEY (AUSTRALIEN)</p>
-                                <p className="font-bold text-primary">UNTERNEHMENSBERATUNG MIT SPEZIALISIERUNG AUF DEN GESUNDHEITSSEKTOR</p>
-                                <p className="font-bold text-primary">PROJEKTMANAGEMENT IM GESUNDHEITSWESEN IN EUROPA UND AUSTRALIEN</p>
+                                <p>MEDIZINSTUDIUM IN BONN (Deutschland) UND HOBART (AUSTRALIEN)</p>
+                                <p>MASTERSTUDIUM PUBLIC HEALTH UND HEALTH MANAGEMENT IN SYDNEY (AUSTRALIEN)</p>
+                                <p>UNTERNEHMENSBERATUNG MIT SPEZIALISIERUNG AUF DEN GESUNDHEITSSEKTOR</p>
+                                <p>PROJEKTMANAGEMENT IM GESUNDHEITSWESEN IN EUROPA UND AUSTRALIEN</p>
                             </div>
                             
                             <div className="pt-2">
