@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Header } from '../_components/header';
@@ -6,9 +7,115 @@ import { TeamMemberCard } from './_components/team-member-card';
 import { DoctorCard, Doctor } from './_components/doctor-card';
 import Link from 'next/link';
 
-// HINWEIS: Der ursprüngliche Inhalt wurde durch einen Fehler des Assistenten gelöscht.
-// Dies ist eine leere, aber funktionierende Vorlage, um die Seite wiederherzustellen.
-const doctors: Doctor[] = [];
+const doctors: Doctor[] = [
+  {
+    id: 'ortmanns',
+    title: 'Dipl. med.',
+    name: 'Gernot Ortmanns',
+    imageUrl: '/images/team/Ortmanns.jpg',
+    imageHint: 'man portrait glasses',
+    specialty: 'Facharzt für Allgemeinmedizin (D)',
+    qualifications: [
+      'Ausbildungspraxis für Hausarztmedizin der Universität Bern (BIHAM)',
+    ],
+    additionalInfo: 'Praxisinhaber',
+    vita: (
+      <>
+        <p>
+          Geboren 1968 in Aachen, Deutschland. Studium der Humanmedizin in
+          Aachen. Anschliessend über viele Jahre Tätigkeit als Arzt in der
+          Inneren Medizin und als Notarzt. Zuletzt als Oberarzt in der Inneren
+          Medizin und Chefarzt-Vertreter im Krankenhaus in Simmerath (D).
+        </p>
+        <br />
+        <p>
+          2015 Wechsel in die Schweiz. Zuerst als Oberarzt in der Inneren Medizin
+          im Spital in Riggisberg, dann als Hausarzt in der Gruppenpraxis in
+          Laupen.
+        </p>
+        <br />
+        <p>
+          Seit 1. Januar 2023 selbstständig als Inhaber des Praxiszentrum im
+          Ring.
+        </p>
+        <br />
+        <p className="font-bold">Sprachen: Deutsch, Englisch</p>
+      </>
+    ),
+  },
+  {
+    id: 'schemmer',
+    title: 'Prof. Dr. med. Dr. h.c.',
+    name: 'Wilko. W. Schemmer',
+    imageUrl: '/images/team/Prof.Schemmer.jpg',
+    imageHint: 'man portrait glasses',
+    specialty: 'Chirurgie FMH, Viszeralchirurgie',
+    qualifications: [
+      'Schwerpunkt spezielle Viszeralchirurgie (D)',
+      'Fellow of the American College of Surgeons (FACS)',
+    ],
+    additionalInfo: '',
+    partnerLogo: 'orthozentrum',
+    vita: (
+      <>
+        <p>
+          Nach dem Studium in Heidelberg, Tucson (USA) und Kapstadt (SA)
+          erfolgte die Ausbildung zum Chirurgen in Heidelberg und an der
+          Harvard Medical School, Boston (USA).
+        </p>
+        <br />
+        <p>
+          Er war 10 Jahre Oberarzt und zuletzt stellv. Klinikdirektor und
+          Leiter der Transplantationschirurgie an der Universitätsklinik
+          Heidelberg.
+        </p>
+        <br />
+        <p>
+          Seit 2015 ist er als Belegarzt und Konsiliar für komplexe Leber-,
+          Gallenwegs- und Bauchspeicheldrüsenchirurgie an verschiedenen
+          Kliniken in der Schweiz tätig und bietet Sprechstunden bei uns im
+          Praxiszentrum im Ring an.
+        </p>
+        <br />
+        <p className="font-bold">Sprachen: Deutsch, Englisch</p>
+      </>
+    ),
+  },
+    {
+    id: 'slezak',
+    title: 'Dr. med.',
+    name: 'Agnieszka Slezak',
+    imageUrl: '/images/team/Slezak.jpg',
+    imageHint: 'woman portrait',
+    specialty: 'Fachärztin für Neurologie',
+    qualifications: [],
+    additionalInfo: '',
+    partnerLogo: 'slezak',
+    vita: (
+      <>
+        <p>
+          Bietet als Konsiliarärztin eine neurologische Sprechstunde im
+          Praxiszentrum im Ring an.
+        </p>
+        <br />
+        <p>
+          Termine können über unsere Praxis vereinbart werden. Weitere
+          Informationen finden Sie unter{' '}
+          <Link
+            href="https://neurologie-plus.ch/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-primary"
+          >
+            neurologie-plus.ch
+          </Link>
+        </p>
+        <br />
+        <p className="font-bold">Sprachen: Deutsch, Englisch, Polnisch</p>
+      </>
+    ),
+  },
+];
 
 const garcia = {
     name: 'S. Garcia',
@@ -175,3 +282,5 @@ export default function TeamPage() {
     </div>
   );
 }
+
+    
