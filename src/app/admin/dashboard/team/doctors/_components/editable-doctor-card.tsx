@@ -191,19 +191,9 @@ export const EditableDoctorCard = () => {
                                         <DialogHeader>
                                             <DialogTitle>Bild für Arztprofil</DialogTitle>
                                             <DialogDescription>
-                                                Verwalten Sie das Profilbild. Das Bild wird automatisch auf ein Seitenverhältnis von 2:3 zugeschnitten.
+                                                Verwalten Sie das Profilbild. Ein hochgeladenes Bild muss auf ein Seitenverhältnis von 2:3 zugeschnitten werden.
                                             </DialogDescription>
                                         </DialogHeader>
-                                        
-                                        {!name && imageSourceType === 'new-upload' && (
-                                            <Alert variant="destructive" className="mt-4">
-                                                <AlertCircle className="h-4 w-4" />
-                                                <AlertTitle>Fehlender Name</AlertTitle>
-                                                <AlertDescription>
-                                                    Bitte geben Sie zuerst einen Namen für den Arzt ein, bevor Sie ein neues Bild hochladen.
-                                                </AlertDescription>
-                                            </Alert>
-                                        )}
 
                                         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                                             <Dialog open={isGalleryOpen} onOpenChange={setIsGalleryOpen}>
@@ -232,23 +222,10 @@ export const EditableDoctorCard = () => {
                                                 </DialogContent>
                                             </Dialog>
 
-                                            <TooltipProvider>
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <div className="inline-block w-full">
-                                                            <Button onClick={handleImageUploadClick} disabled={!name} className="w-full">
-                                                                <Upload className="mr-2 h-4 w-4" />
-                                                                Neu hochladen
-                                                            </Button>
-                                                        </div>
-                                                    </TooltipTrigger>
-                                                    {!name && (
-                                                        <TooltipContent>
-                                                            <p>Bitte geben Sie zuerst einen Namen ein.</p>
-                                                        </TooltipContent>
-                                                    )}
-                                                </Tooltip>
-                                            </TooltipProvider>
+                                            <Button onClick={handleImageUploadClick} className="w-full">
+                                                <Upload className="mr-2 h-4 w-4" />
+                                                Neu hochladen
+                                            </Button>
                                         </div>
                                          {imagePreview && (
                                             <div className="mt-4">
@@ -332,4 +309,5 @@ export const EditableDoctorCard = () => {
             </Card>
         </div>
     );
-};
+
+    
