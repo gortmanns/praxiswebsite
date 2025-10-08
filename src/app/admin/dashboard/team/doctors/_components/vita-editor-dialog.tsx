@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Textarea } from '@/components/ui/textarea';
+import { Separator } from '@/components/ui/separator';
 
 const MenuBar = ({ editor, isHtmlMode, onHtmlModeToggle }: { editor: Editor | null; isHtmlMode: boolean; onHtmlModeToggle: () => void; }) => {
   if (!editor) {
@@ -33,43 +34,21 @@ const MenuBar = ({ editor, isHtmlMode, onHtmlModeToggle }: { editor: Editor | nu
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2 rounded-t-md border border-input bg-transparent p-2">
-      <Toggle
+    <div className="flex flex-wrap items-center gap-1 rounded-t-md border border-input border-b-0 bg-transparent p-1">
+       {/* Group 1: Style */}
+       <Toggle
         size="sm"
-        pressed={editor.isActive('bold')}
-        onPressedChange={() => editor.chain().focus().toggleBold().run()}
+        pressed={editor.isActive({ textStyle: { fontSize: 'small' } })}
+        onPressedChange={() => editor.chain().focus().toggleTextStyle({ fontSize: 'small' }).run()}
         disabled={isHtmlMode}
+        title="Kleinere Schrift"
       >
-        <Bold className="h-4 w-4" />
-      </Toggle>
-      <Toggle
-        size="sm"
-        pressed={editor.isActive('italic')}
-        onPressedChange={() => editor.chain().focus().toggleItalic().run()}
-        disabled={isHtmlMode}
-      >
-        <Italic className="h-4 w-4" />
-      </Toggle>
-      <Toggle
-        size="sm"
-        pressed={editor.isActive('underline')}
-        onPressedChange={() => editor.chain().focus().toggleUnderline().run()}
-        disabled={isHtmlMode}
-      >
-        <UnderlineIcon className="h-4 w-4" />
-      </Toggle>
-      <Toggle
-        size="sm"
-        pressed={editor.isActive('bulletList')}
-        onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
-        disabled={isHtmlMode}
-      >
-        <List className="h-4 w-4" />
+        <Pilcrow className="h-4 w-4" />
       </Toggle>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="p-2" disabled={isHtmlMode}>
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-1.5" disabled={isHtmlMode} title="Textfarbe">
                 <Palette className="h-4 w-4" />
             </Button>
         </DropdownMenuTrigger>
@@ -86,22 +65,63 @@ const MenuBar = ({ editor, isHtmlMode, onHtmlModeToggle }: { editor: Editor | nu
         </DropdownMenuContent>
       </DropdownMenu>
 
+      <Separator orientation="vertical" className="h-6 mx-1" />
+
+      {/* Group 2: Formatting */}
       <Toggle
         size="sm"
-        pressed={editor.isActive({ textStyle: { fontSize: 'small' } })}
-        onPressedChange={() => editor.chain().focus().toggleTextStyle({ fontSize: 'small' }).run()}
+        pressed={editor.isActive('bold')}
+        onPressedChange={() => editor.chain().focus().toggleBold().run()}
         disabled={isHtmlMode}
+        title="Fett"
       >
-        <Pilcrow className="h-4 w-4" />
+        <Bold className="h-4 w-4" />
+      </Toggle>
+       <Toggle
+        size="sm"
+        pressed={editor.isActive('italic')}
+        onPressedChange={() => editor.chain().focus().toggleItalic().run()}
+        disabled={isHtmlMode}
+        title="Kursiv"
+      >
+        <Italic className="h-4 w-4" />
+      </Toggle>
+      <Toggle
+        size="sm"
+        pressed={editor.isActive('underline')}
+        onPressedChange={() => editor.chain().focus().toggleUnderline().run()}
+        disabled={isHtmlMode}
+        title="Unterstrichen"
+      >
+        <UnderlineIcon className="h-4 w-4" />
+      </Toggle>
+
+      <Separator orientation="vertical" className="h-6 mx-1" />
+
+      {/* Group 3: Structure */}
+      <Toggle
+        size="sm"
+        pressed={editor.isActive('bulletList')}
+        onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
+        disabled={isHtmlMode}
+        title="Aufzählungsliste"
+      >
+        <List className="h-4 w-4" />
       </Toggle>
       <Button
         size="sm"
         variant="ghost"
+        className="h-8 w-8 p-1.5"
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
         disabled={isHtmlMode}
+        title="Trennlinie einfügen"
       >
         <Minus className="h-4 w-4" />
       </Button>
+
+      <Separator orientation="vertical" className="h-6 mx-1" />
+      
+      {/* Group 4: Mode */}
       <Toggle
         size="sm"
         pressed={isHtmlMode}
@@ -130,11 +150,6 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
       StarterKit.configure({
         heading: false,
         horizontalRule: {},
-        bold: {
-          HTMLAttributes: {
-            // Keep strong tags for semantic meaning, but we'll control the style via CSS.
-          },
-        },
       }),
       Underline,
       TextStyle,
@@ -192,7 +207,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>Text der Kartenrückseite bearbeiten</DialogTitle>
           <DialogDescription>
