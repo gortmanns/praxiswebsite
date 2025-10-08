@@ -7,9 +7,87 @@ import { TeamMemberCard } from './_components/team-member-card';
 import { DoctorCard, Doctor } from './_components/doctor-card';
 import Link from 'next/link';
 
-// HINWEIS: Die ursprünglichen Daten wurden durch einen Fehler des Assistenten gelöscht.
-// Dies ist eine leere Struktur, um die Funktionalität der Seite wiederherzustellen.
-const doctors: Doctor[] = [];
+const doctors: Doctor[] = [
+  {
+    id: 'ortmanns',
+    title: 'Dipl. med.',
+    name: 'Gernot Ortmanns',
+    imageUrl: '/images/team/Ortmanns.jpg',
+    imageHint: 'man portrait',
+    specialty: 'Allgemeinmedizin FMH',
+    qualifications: [
+      'Verkehrsmedizinische Untersuchungen Stufe 1',
+      'Praxislabor KHM',
+      'Röntgendiagnostik KHM',
+    ],
+    additionalInfo: 'Praxisinhaber',
+    vita: (
+      <>
+        <p>
+          [Platzhalter: Der ursprüngliche Vita-Text wurde durch einen Fehler des Assistenten gelöscht und muss hier neu eingefügt werden.]
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'schemmer',
+    title: 'Prof. Dr. med. Dr. h.c.',
+    name: 'Wilko W. Schemmer',
+    imageUrl: '/images/team/Prof.Schemmer.jpg',
+    imageHint: 'man portrait',
+    specialty: 'Chirurgie FMH, Viszeralchirurgie',
+    qualifications: [
+      'Schwerpunkt spezielle Viszeralchirurgie (D)',
+      'Fellow of the American College of Surgeons (FACS)',
+    ],
+    additionalInfo: 'Ärztliche Leitung',
+    vita: (
+      <>
+        <p>
+          [Platzhalter: Der ursprüngliche Vita-Text wurde durch einen Fehler des Assistenten gelöscht und muss hier neu eingefügt werden.]
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'worni',
+    title: 'Prof. Dr. med.',
+    name: 'Mathias Worni',
+    imageUrl: '/images/team/Prof.Worni.jpg',
+    imageHint: 'man portrait',
+    specialty: 'Chirurgie FMH, Viszeralchirurgie',
+    qualifications: [
+      'Schwerpunkt spezielle Viszeralchirurgie (D)',
+      'Fellow of the American College of Surgeons (FACS)',
+    ],
+    partnerLogo: 'orthozentrum',
+    vita: (
+       <>
+        <p>
+          [Platzhalter: Der ursprüngliche Vita-Text wurde durch einen Fehler des Assistenten gelöscht und muss hier neu eingefügt werden.]
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'slezak',
+    title: 'Dr. med.',
+    name: 'Agnieszka Slezak',
+    imageUrl: '/images/team/Fr.Dr.Slezak.jpg',
+    imageHint: 'woman portrait',
+    specialty: 'Neurologie',
+    qualifications: [],
+    additionalInfo: 'Konsiliarärztin',
+    partnerLogo: 'slezak',
+    vita: (
+      <>
+        <p>
+          [Platzhalter: Der ursprüngliche Vita-Text wurde durch einen Fehler des Assistenten gelöscht und muss hier neu eingefügt werden.]
+        </p>
+      </>
+    ),
+  },
+];
 
 const garcia = {
     name: 'S. Garcia',
