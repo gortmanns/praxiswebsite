@@ -10,7 +10,7 @@ import Link from 'next/link';
 const doctors: Doctor[] = [
   {
     id: 'ortmanns',
-    title: 'Dipl. med.',
+    title: 'praktischer ARzt',
     name: 'Gernot Ortmanns',
     imageUrl: '/images/team/Ortmanns.jpg',
     imageHint: 'man portrait',
@@ -19,6 +19,8 @@ const doctors: Doctor[] = [
       'Verkehrsmedizinische Untersuchungen Stufe 1',
       'Praxislabor KHM',
       'Röntgendiagnostik KHM',
+      'Master of Public Health',
+      'Master of Health Management',
     ],
     additionalInfo: 'Praxisinhaber',
     vita: (
