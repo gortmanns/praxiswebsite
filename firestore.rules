@@ -2,24 +2,14 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Allow admins to manage all documents within the 'holidays' collection
-    match /holidays/{holidayId} {
-      allow get, write: if request.auth != null;
-    }
-    // Explicitly allow admins to list the 'holidays' collection
-    match /holidays {
-      allow list: if request.auth != null;
-    }
-
-    // Allow admins to manage all documents within the 'doctors' collection
+    // Admins can read and write to the doctors collection
     match /doctors/{doctorId} {
-      allow get, write: if request.auth != null;
-    }
-    // Explicitly allow admins to list the 'doctors' collection
-    match /doctors {
-      allow list: if request.auth != null;
+      allow read, write: if request.auth != null;
     }
 
+    // Admins can read and write to the holidays collection
+    match /holidays/{holidayId} {
+      allow read, write: if request.auth != null;
+    }
   }
 }
