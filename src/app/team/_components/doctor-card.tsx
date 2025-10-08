@@ -2,8 +2,6 @@
 
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
-import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
 import React, { useMemo } from 'react';
 import DOMPurify from 'dompurify';
 import { DoctorData } from '@/app/admin/dashboard/team/doctors/_components/editable-doctor-card';
@@ -11,38 +9,6 @@ import { WithId } from '@/firebase';
 
 
 export type Doctor = WithId<DoctorData>;
-
-const PartnerLogo: React.FC<{ logoUrl?: string | null }> = ({ logoUrl }) => {
-    if (!logoUrl) return null;
-    
-    // Hardcoded logos for specific partners, can be extended
-    if (logoUrl === 'orthozentrum') {
-        return (
-            <div className="relative mt-8 h-[10cqw] w-[30cqw]">
-                <OrthozentrumLogo className="h-full w-auto" />
-            </div>
-        );
-    }
-    if (logoUrl === 'slezak') {
-        return (
-            <div className="relative mt-8 h-[10cqw] w-[30cqw]">
-                <AgnieszkaSlezakLogo className="h-full w-auto" />
-            </div>
-        );
-    }
-    // Default to Image component for other URLs
-    return (
-        <div className="relative mt-[2.5cqw] h-[10cqw] w-[30cqw]">
-            <Image
-                src={logoUrl}
-                alt="Partner Logo"
-                fill
-                className="object-contain"
-                data-ai-hint="partner logo"
-            />
-        </div>
-    );
-};
 
 const ContentRenderer: React.FC<{ content: string }> = ({ content }) => {
   const sanitizedHtml = useMemo(() => {
@@ -109,7 +75,15 @@ export const DoctorCard: React.FC<Doctor> = ({
                                     </div>
                                     
                                     {additionalInfoType === 'logo' && additionalInfoLogo ? (
-                                        <PartnerLogo logoUrl={additionalInfoLogo} />
+                                        <div className="relative mt-[2.5cqw] w-[30cqw] aspect-[3/1]">
+                                            <Image
+                                                src={additionalInfoLogo}
+                                                alt="Partner Logo"
+                                                fill
+                                                className="object-contain"
+                                                data-ai-hint="partner logo"
+                                            />
+                                        </div>
                                     ) : additionalInfoType === 'text' && additionalInfoText ? (
                                         <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
                                             {additionalInfoText}
