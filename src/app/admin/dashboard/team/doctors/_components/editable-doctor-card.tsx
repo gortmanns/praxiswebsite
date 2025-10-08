@@ -1,10 +1,9 @@
-
 'use client';
 
 import React, { useState, useRef, ChangeEvent, useEffect } from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { User, Upload, Pencil, Trash2, Replace, GalleryHorizontal, Text, Image as ImageIcon } from 'lucide-react';
+import { User, Upload, Pencil, Trash2, Replace, GalleryHorizontal, Text, Image as ImageIcon, Save, RefreshCw } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,9 +16,40 @@ import DOMPurify from 'dompurify';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
+export interface DoctorData {
+    title: string;
+    name: string;
+    specialty: string;
+    imageUrl: string | null;
+    imageHint: string;
+    qualifications: string[];
+    additionalInfoType: 'text' | 'logo';
+    additionalInfoText: string;
+    additionalInfoLogo: string | null;
+    vita: string;
+    displayOrder: number;
+}
 
-// Initial content as a simple HTML string
+interface EditableDoctorCardProps {
+    onSave: (data: DoctorData) => void;
+    initialData?: DoctorData | null;
+    isSubmitting: boolean;
+}
+
 const initialVita = `<p>Diesen Text können Sie frei anpassen</p>`;
+const emptyDoctorData: DoctorData = {
+    title: '',
+    name: '',
+    specialty: '',
+    imageUrl: null,
+    imageHint: 'doctor portrait',
+    qualifications: ['', ''],
+    additionalInfoType: 'text',
+    additionalInfoText: '',
+    additionalInfoLogo: null,
+    vita: initialVita,
+    displayOrder: 0
+};
 
 const existingImages = [
     '/images/team/Dr.Herschel.jpg',
@@ -40,7 +70,6 @@ interface EditDialogProps {
 
 const VitaRenderer: React.FC<{ text: string }> = ({ text }) => {
   const sanitizedHtml = React.useMemo(() => {
-    // Ensure DOMPurify only runs on the client
     if (typeof window !== 'undefined') {
       return { __html: DOMPurify.sanitize(text) };
     }
@@ -109,7 +138,7 @@ const AdditionalInfoDialog: React.FC<{
     trigger: React.ReactNode;
     initialText: string;
     initialLogo: string | null;
-    onSave: (type: 'text' | 'logo', value: string) => void;
+    onSave: (type: 'text' | 'logo', value: string | null) => void;
 }> = ({ trigger, initialText, initialLogo, onSave }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [activeTab, setActiveTab] = useState(initialLogo ? 'logo' : 'text');
@@ -138,7 +167,7 @@ const AdditionalInfoDialog: React.FC<{
     const handleSave = () => {
         if (activeTab === 'text') {
             onSave('text', currentText);
-        } else if (activeTab === 'logo' && currentLogo) {
+        } else if (activeTab === 'logo') {
             onSave('logo', currentLogo);
         }
         setIsDialogOpen(false);
@@ -251,22 +280,22 @@ const AdditionalInfoDialog: React.FC<{
     );
 };
 
-export const EditableDoctorCard = () => {
-    const [title, setTitle] = useState('');
-    const [name, setName] = useState('');
-    const [specialty, setSpecialty] = useState('');
-    const [qualification1, setQualification1] = useState('');
-    const [qualification2, setQualification2] = useState('');
-    const [vita, setVita] = useState(initialVita);
+export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ onSave, initialData, isSubmitting }) => {
     
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [doctor, setDoctor] = useState<DoctorData>(initialData || emptyDoctorData);
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
 
-    const [additionalInfoType, setAdditionalInfoType] = useState<'text' | 'logo'>('text');
-    const [additionalInfoText, setAdditionalInfoText] = useState('');
-    const [additionalInfoLogo, setAdditionalInfoLogo] = useState<string | null>(null);
-
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const updateField = <K extends keyof DoctorData>(field: K, value: DoctorData[K]) => {
+        setDoctor(prev => ({ ...prev, [field]: value }));
+    };
+    
+    const updateQualification = (index: number, value: string) => {
+        const newQualifications = [...doctor.qualifications];
+        newQualifications[index] = value;
+        updateField('qualifications', newQualifications);
+    };
 
     const handleImageUploadClick = () => {
         fileInputRef.current?.click();
@@ -284,31 +313,39 @@ export const EditableDoctorCard = () => {
     };
     
     const handleCroppedPortrait = (croppedImage: string) => {
-        setImagePreview(croppedImage);
+        updateField('imageUrl', croppedImage);
         setImageToCrop(null); // Close the crop dialog
     };
     
-    const handleSaveAdditionalInfo = (type: 'text' | 'logo', value: string) => {
-        setAdditionalInfoType(type);
+    const handleSaveAdditionalInfo = (type: 'text' | 'logo', value: string | null) => {
+        updateField('additionalInfoType', type);
         if (type === 'text') {
-            setAdditionalInfoText(value);
-            setAdditionalInfoLogo(null);
+            updateField('additionalInfoText', value || '');
+            updateField('additionalInfoLogo', null);
         } else {
-            setAdditionalInfoLogo(value);
-            setAdditionalInfoText('');
+            updateField('additionalInfoLogo', value);
+            updateField('additionalInfoText', '');
         }
+    };
+
+    const handleSaveClick = () => {
+        onSave(doctor);
+    };
+
+    const handleReset = () => {
+        setDoctor(initialData || emptyDoctorData);
     };
 
     const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
     const handleDeleteImage = () => {
-        setImagePreview(null);
+        updateField('imageUrl', null);
         setIsImageDialogOpen(false);
     };
 
     const handleSelectFromGallery = (imageSrc: string) => {
-        setImagePreview(imageSrc);
+        updateField('imageUrl', imageSrc);
         setIsGalleryOpen(false);
         setIsImageDialogOpen(false);
     };
@@ -347,9 +384,9 @@ export const EditableDoctorCard = () => {
                                 <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
                                     <DialogTrigger asChild>
                                         <div className="group relative col-span-1 h-full w-full cursor-pointer overflow-hidden rounded-md bg-muted transition-colors hover:bg-muted/80">
-                                            {imagePreview ? (
+                                            {doctor.imageUrl ? (
                                                 <Image
-                                                    src={imagePreview}
+                                                    src={doctor.imageUrl}
                                                     alt="Vorschau des Arztportraits"
                                                     fill
                                                     className="object-cover"
@@ -360,7 +397,7 @@ export const EditableDoctorCard = () => {
                                                 </div>
                                             )}
                                              <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-                                                {imagePreview ? <Replace className="h-10 w-10 text-white" /> : <Upload className="h-10 w-10 text-white" />}
+                                                {doctor.imageUrl ? <Replace className="h-10 w-10 text-white" /> : <Upload className="h-10 w-10 text-white" />}
                                              </div>
                                         </div>
                                     </DialogTrigger>
@@ -404,7 +441,7 @@ export const EditableDoctorCard = () => {
                                                 Neu hochladen
                                             </Button>
                                         </div>
-                                         {imagePreview && (
+                                         {doctor.imageUrl && (
                                             <div className="mt-4">
                                                 <Button variant="destructive" onClick={handleDeleteImage} className="w-full">
                                                     <Trash2 className="mr-2 h-4 w-4" />
@@ -420,57 +457,57 @@ export const EditableDoctorCard = () => {
                                        <EditDialog 
                                          dialogTitle="Titel bearbeiten"
                                          dialogDescription="Geben Sie den akademischen Titel des Arztes ein."
-                                         initialValue={title}
-                                         onSave={setTitle}
+                                         initialValue={doctor.title}
+                                         onSave={(value) => updateField('title', value)}
                                          inputLabel="Titel"
-                                         trigger={triggerDiv(<p className="text-[2.2cqw] text-primary">{title || '[Titel]'}</p>)}
+                                         trigger={triggerDiv(<p className="text-[2.2cqw] text-primary">{doctor.title || '[Titel]'}</p>)}
                                        />
                                        <EditDialog 
                                          dialogTitle="Name bearbeiten"
                                          dialogDescription="Geben Sie den Vor- und Nachnamen des Arztes ein."
-                                         initialValue={name}
-                                         onSave={setName}
+                                         initialValue={doctor.name}
+                                         onSave={(value) => updateField('name', value)}
                                          inputLabel="Name"
-                                         trigger={triggerDiv(<h4 className="font-headline text-[4.8cqw] font-bold leading-tight text-primary">{name || '[Name]'}</h4>)}
+                                         trigger={triggerDiv(<h4 className="font-headline text-[4.8cqw] font-bold leading-tight text-primary">{doctor.name || '[Name]'}</h4>)}
                                        />
                                        <div className="mt-[1.5cqw] space-y-1 text-[2.2cqw] leading-tight">
                                            <EditDialog 
                                              dialogTitle="Spezialisierung bearbeiten"
                                              dialogDescription="Geben Sie die Spezialisierung des Arztes ein."
-                                             initialValue={specialty}
-                                             onSave={setSpecialty}
+                                             initialValue={doctor.specialty}
+                                             onSave={(value) => updateField('specialty', value)}
                                              inputLabel="Spezialisierung"
-                                             trigger={triggerDiv(<p className="font-bold">{specialty || '[Spezialisierung]'}</p>)}
+                                             trigger={triggerDiv(<p className="font-bold">{doctor.specialty || '[Spezialisierung]'}</p>)}
                                            />
                                             <EditDialog 
                                              dialogTitle="Zusatzqualifikation 1 bearbeiten"
                                              dialogDescription="Geben Sie eine optionale Zusatzqualifikation ein."
-                                             initialValue={qualification1}
-                                             onSave={setQualification1}
+                                             initialValue={doctor.qualifications[0] || ''}
+                                             onSave={(value) => updateQualification(0, value)}
                                              inputLabel="Zusatzqualifikation 1"
-                                             trigger={triggerDiv(<p>{qualification1 || '[Zusatzqualifikation 1]'}</p>)}
+                                             trigger={triggerDiv(<p>{doctor.qualifications[0] || '[Zusatzqualifikation 1]'}</p>)}
                                            />
                                             <EditDialog 
                                              dialogTitle="Zusatzqualifikation 2 bearbeiten"
                                              dialogDescription="Geben Sie eine weitere optionale Zusatzqualifikation ein."
-                                             initialValue={qualification2}
-                                             onSave={setQualification2}
+                                             initialValue={doctor.qualifications[1] || ''}
+                                             onSave={(value) => updateQualification(1, value)}
                                              inputLabel="Zusatzqualifikation 2"
-                                             trigger={triggerDiv(<p>{qualification2 || '[Zusatzqualifikation 2]'}</p>)}
+                                             trigger={triggerDiv(<p>{doctor.qualifications[1] || '[Zusatzqualifikation 2]'}</p>)}
                                            />
                                        </div>
                                        <AdditionalInfoDialog
-                                            initialText={additionalInfoText}
-                                            initialLogo={additionalInfoLogo}
+                                            initialText={doctor.additionalInfoText}
+                                            initialLogo={doctor.additionalInfoLogo}
                                             onSave={handleSaveAdditionalInfo}
                                             trigger={
                                                 <div className="group relative mt-[2.5cqw] cursor-pointer text-[1.6cqw]">
-                                                    {additionalInfoType === 'logo' && additionalInfoLogo ? (
+                                                    {doctor.additionalInfoType === 'logo' && doctor.additionalInfoLogo ? (
                                                         <div className="relative w-[30cqw] aspect-[3/1]">
-                                                            <Image src={additionalInfoLogo} alt="Partner Logo" fill className="object-contain" />
+                                                            <Image src={doctor.additionalInfoLogo} alt="Partner Logo" fill className="object-contain" />
                                                         </div>
                                                     ) : (
-                                                        <p className="italic">{additionalInfoText || '[Zusatzinfo / Logo]'}</p>
+                                                        <p className="italic">{doctor.additionalInfoText || '[Zusatzinfo / Logo]'}</p>
                                                     )}
                                                     <Pencil className="absolute top-1/2 right-0 h-4 w-4 -translate-y-1/2 text-primary opacity-0 transition-opacity group-hover:opacity-100" />
                                                 </div>
@@ -482,19 +519,36 @@ export const EditableDoctorCard = () => {
                         </div>
                          <div className="relative bg-accent/95 p-6 text-left text-background">
                             <VitaEditorDialog
-                                initialValue={vita}
-                                onSave={setVita}
+                                initialValue={doctor.vita}
+                                onSave={(value) => updateField('vita', value)}
                                 trigger={<Pencil className="absolute top-4 right-4 h-5 w-5 cursor-pointer text-background hover:text-background/80 z-10" />}
                             />
                             <div className="h-full overflow-y-auto text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
-                                <VitaRenderer text={vita} />
+                                <VitaRenderer text={doctor.vita} />
                             </div>
                         </div>
                     </div>
                 </CardContent>
             </Card>
+             <div className="mt-6 flex justify-end gap-2">
+                <Button variant="outline" onClick={handleReset} disabled={isSubmitting}>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Zurücksetzen
+                </Button>
+                <Button onClick={handleSaveClick} disabled={isSubmitting}>
+                    {isSubmitting ? (
+                        <>
+                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                            Wird gespeichert...
+                        </>
+                    ) : (
+                        <>
+                           <Save className="mr-2 h-4 w-4" />
+                           {initialData ? 'Änderungen speichern' : 'Neuen Arzt speichern'}
+                        </>
+                    )}
+                </Button>
+            </div>
         </div>
     );
 };
-
-    

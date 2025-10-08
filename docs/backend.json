@@ -50,30 +50,17 @@
       "description": "Represents a doctor in the practice.",
       "type": "object",
       "properties": {
-        "title": {
-          "type": "string",
-          "description": "The doctor's academic title (e.g., 'Dr. med.')."
-        },
-        "name": {
-          "type": "string",
-          "description": "The doctor's name."
-        },
-        "specialty": {
-          "type": "string",
-          "description": "The doctor's medical specialty."
-        },
-        "imageUrl": {
-          "type": "string",
-          "description": "URL to the doctor's portrait image."
-        },
-        "vita": {
-          "type": "string",
-          "description": "A longer description or curriculum vitae for the doctor."
-        },
-        "displayOrder": {
-            "type": "number",
-            "description": "A number to control the display order in lists."
-        }
+        "title": { "type": "string" },
+        "name": { "type": "string" },
+        "specialty": { "type": "string" },
+        "imageUrl": { "type": "string", "format": "uri" },
+        "imageHint": { "type": "string" },
+        "qualifications": { "type": "array", "items": { "type": "string" } },
+        "additionalInfoType": { "enum": ["text", "logo"] },
+        "additionalInfoText": { "type": "string" },
+        "additionalInfoLogo": { "type": "string", "format": "uri" },
+        "vita": { "type": "string" },
+        "displayOrder": { "type": "number" }
       },
       "required": ["name", "specialty", "displayOrder"]
     }
@@ -88,7 +75,7 @@
         "definition": {
           "entityName": "UserProfile",
           "schema": {
-            "$ref": "#/backend/entities/UserProfile"
+            "$ref": "#/entities/UserProfile"
           },
           "description": "Stores public-facing user profile information."
         }
@@ -98,7 +85,7 @@
         "definition": {
           "entityName": "Holiday",
           "schema": {
-            "$ref": "#/backend/entities/Holiday"
+            "$ref": "#/entities/Holiday"
           },
           "description": "Stores the practice's holiday periods."
         }
@@ -108,7 +95,7 @@
         "definition": {
             "entityName": "Doctor",
             "schema": {
-                "$ref": "#/backend/entities/Doctor"
+                "$ref": "#/entities/Doctor"
             },
             "description": "Stores information about the doctors."
         }

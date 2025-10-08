@@ -1,10 +1,13 @@
-
+'use client';
 
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { TeamMemberCard } from './_components/team-member-card';
-import { DoctorCard } from './_components/doctor-card';
-import { doctors } from './_components/doctors-data';
+import { DoctorCard, Doctor } from './_components/doctor-card';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, orderBy } from 'firebase/firestore';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const garcia = {
     name: 'S. Garcia',
@@ -97,6 +100,13 @@ const otherTeamMembers = [
 ];
 
 export default function TeamPage() {
+  const firestore = useFirestore();
+  const doctorsQuery = useMemoFirebase(
+      () => firestore ? query(collection(firestore, 'doctors'), orderBy('displayOrder', 'asc')) : null,
+      [firestore]
+  );
+  const { data: doctors, isLoading, error } = useCollection<Doctor>(doctorsQuery);
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -115,7 +125,13 @@ export default function TeamPage() {
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
             
-            {doctors.map(doctor => (
+            {isLoading && Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="mx-auto max-w-[1000px] p-2">
+                    <Skeleton className="h-[280px] w-full" />
+                </div>
+            ))}
+            {error && <Alert variant="destructive"><AlertTitle>Fehler</AlertTitle><AlertDescription>Die Ärzteliste konnte nicht geladen werden.</AlertDescription></Alert>}
+            {doctors?.map(doctor => (
                  <div key={doctor.id} id={doctor.id} className="mx-auto max-w-[1000px] p-2">
                     <DoctorCard {...doctor} />
                 </div>
