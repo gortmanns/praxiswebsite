@@ -4,7 +4,7 @@
 import React, { useState, useRef, ChangeEvent } from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { User, Upload, Pencil, Trash2, Replace, GalleryHorizontal } from 'lucide-react';
+import { User, Upload, Pencil, Trash2, Replace, GalleryHorizontal, Text, Image as ImageIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,9 +12,10 @@ import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/comp
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { VitaEditorDialog } from './vita-editor-dialog';
-import { AlertCircle } from 'lucide-react';
 import { ImageCropDialog } from './image-crop-dialog';
 import DOMPurify from 'dompurify';
+import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
 // Initial content as a simple HTML string
@@ -104,23 +105,19 @@ const EditDialog: React.FC<EditDialogProps> = ({
     );
 };
 
-export const EditableDoctorCard = () => {
-    const [title, setTitle] = useState('');
-    const [name, setName] = useState('');
-    const [specialty, setSpecialty] = useState('');
-    const [qualification1, setQualification1] = useState('');
-    const [qualification2, setQualification2] = useState('');
-    const [additionalInfo, setAdditionalInfo] = useState('');
-    const [vita, setVita] = useState(initialVita);
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [imageSourceType, setImageSourceType] = useState<'none' | 'new-upload' | 'existing-gallery'>('none');
+const AdditionalInfoDialog: React.FC<{
+    trigger: React.ReactNode;
+    initialText: string;
+    initialLogo: string | null;
+    onSave: (type: 'text' | 'logo', value: string) => void;
+}> = ({ trigger, initialText, initialLogo, onSave }) => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState(initialLogo ? 'logo' : 'text');
+    const [currentText, setCurrentText] = useState(initialText);
+    const [currentLogo, setCurrentLogo] = useState<string | null>(initialLogo);
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
-
-    const handleImageUploadClick = () => {
-        fileInputRef.current?.click();
-    };
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -134,9 +131,172 @@ export const EditableDoctorCard = () => {
     };
     
     const handleCroppedImage = (croppedImage: string) => {
-        setImagePreview(croppedImage);
-        setImageSourceType('new-upload');
+        setCurrentLogo(croppedImage);
         setImageToCrop(null); // Close the crop dialog
+    };
+    
+    const handleSave = () => {
+        if (activeTab === 'text') {
+            onSave('text', currentText);
+        } else if (activeTab === 'logo' && currentLogo) {
+            onSave('logo', currentLogo);
+        }
+        setIsDialogOpen(false);
+    };
+
+    const handleSelectFromGallery = (imageSrc: string) => {
+        setCurrentLogo(imageSrc);
+    };
+
+    useEffect(() => {
+        if (isDialogOpen) {
+            setCurrentText(initialText);
+            setCurrentLogo(initialLogo);
+            setActiveTab(initialLogo ? 'logo' : 'text');
+        }
+    }, [isDialogOpen, initialText, initialLogo]);
+
+    return (
+        <>
+            <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/png, image/jpeg, image/webp" />
+            {imageToCrop && (
+                <ImageCropDialog
+                    imageUrl={imageToCrop}
+                    aspectRatio={3/1}
+                    onCropComplete={handleCroppedImage}
+                    onClose={() => setImageToCrop(null)}
+                />
+            )}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>{trigger}</DialogTrigger>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Zusatzinformationen / Logo bearbeiten</DialogTitle>
+                        <DialogDescription>Wählen Sie, ob Sie einen Text oder ein Logo anzeigen möchten.</DialogDescription>
+                    </DialogHeader>
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="text"><Text className="mr-2 h-4 w-4" /> Text</TabsTrigger>
+                            <TabsTrigger value="logo"><ImageIcon className="mr-2 h-4 w-4" /> Logo</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="text" className="mt-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="info-text">Zusatzinformationen Text</Label>
+                                <Textarea
+                                    id="info-text"
+                                    value={currentText}
+                                    onChange={(e) => setCurrentText(e.target.value)}
+                                    placeholder="z.B. (Ärztliche und administrative Leitung)"
+                                />
+                            </div>
+                        </TabsContent>
+                        <TabsContent value="logo" className="mt-4">
+                            <div className="space-y-4">
+                                {currentLogo && (
+                                     <div className="relative w-full aspect-[3/1] rounded-md bg-muted flex items-center justify-center overflow-hidden">
+                                        <Image src={currentLogo} alt="Vorschau Logo" fill className="object-contain p-2"/>
+                                    </div>
+                                )}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                     <Dialog>
+                                        <DialogTrigger asChild>
+                                            <Button variant="outline">
+                                                <GalleryHorizontal className="mr-2 h-4 w-4" />
+                                                Bestehendes auswählen
+                                            </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="max-w-4xl">
+                                            <DialogHeader>
+                                                <DialogTitle>Bestehendes Bild auswählen</DialogTitle>
+                                                <DialogDescription>
+                                                    Wählen Sie ein bereits hochgeladenes Bild aus dem Team-Ordner.
+                                                </DialogDescription>
+                                            </DialogHeader>
+                                            <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[60vh] overflow-y-auto p-1">
+                                                {existingImages.map(imgSrc => (
+                                                    <DialogClose key={imgSrc} asChild>
+                                                        <div className="cursor-pointer group" onClick={() => handleSelectFromGallery(imgSrc)}>
+                                                            <div className="relative aspect-[2/3] w-full overflow-hidden rounded-md border-2 border-transparent group-hover:border-primary">
+                                                                <Image src={imgSrc} alt={imgSrc} fill className="object-cover" />
+                                                            </div>
+                                                        </div>
+                                                    </DialogClose>
+                                                ))}
+                                            </div>
+                                        </DialogContent>
+                                    </Dialog>
+
+                                    <Button onClick={() => fileInputRef.current?.click()}>
+                                        <Upload className="mr-2 h-4 w-4" />
+                                        Neu hochladen
+                                    </Button>
+                                </div>
+                                {currentLogo && (
+                                     <Button variant="destructive" onClick={() => setCurrentLogo(null)} className="w-full">
+                                        <Trash2 className="mr-2 h-4 w-4" /> Logo entfernen
+                                     </Button>
+                                )}
+                            </div>
+                        </TabsContent>
+                    </Tabs>
+                    <div className="mt-6 flex justify-end gap-2">
+                        <DialogClose asChild>
+                            <Button variant="outline">Abbrechen</Button>
+                        </DialogClose>
+                        <Button onClick={handleSave}>Speichern</Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </>
+    );
+};
+
+export const EditableDoctorCard = () => {
+    const [title, setTitle] = useState('');
+    const [name, setName] = useState('');
+    const [specialty, setSpecialty] = useState('');
+    const [qualification1, setQualification1] = useState('');
+    const [qualification2, setQualification2] = useState('');
+    const [vita, setVita] = useState(initialVita);
+    
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+
+    const [additionalInfoType, setAdditionalInfoType] = useState<'text' | 'logo'>('text');
+    const [additionalInfoText, setAdditionalInfoText] = useState('');
+    const [additionalInfoLogo, setAdditionalInfoLogo] = useState<string | null>(null);
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleImageUploadClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handlePortraitFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImageToCrop(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    
+    const handleCroppedPortrait = (croppedImage: string) => {
+        setImagePreview(croppedImage);
+        setImageToCrop(null); // Close the crop dialog
+    };
+    
+    const handleSaveAdditionalInfo = (type: 'text' | 'logo', value: string) => {
+        setAdditionalInfoType(type);
+        if (type === 'text') {
+            setAdditionalInfoText(value);
+            setAdditionalInfoLogo(null);
+        } else {
+            setAdditionalInfoLogo(value);
+            setAdditionalInfoText('');
+        }
     };
 
     const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
@@ -144,13 +304,11 @@ export const EditableDoctorCard = () => {
 
     const handleDeleteImage = () => {
         setImagePreview(null);
-        setImageSourceType('none');
         setIsImageDialogOpen(false);
     };
 
     const handleSelectFromGallery = (imageSrc: string) => {
         setImagePreview(imageSrc);
-        setImageSourceType('existing-gallery');
         setIsGalleryOpen(false);
         setIsImageDialogOpen(false);
     };
@@ -167,14 +325,14 @@ export const EditableDoctorCard = () => {
             <input
                 type="file"
                 ref={fileInputRef}
-                onChange={handleFileChange}
+                onChange={handlePortraitFileChange}
                 className="hidden"
                 accept="image/png, image/jpeg, image/webp"
             />
              {imageToCrop && (
                 <ImageCropDialog
                     imageUrl={imageToCrop}
-                    onCropComplete={handleCroppedImage}
+                    onCropComplete={handleCroppedPortrait}
                     onClose={() => setImageToCrop(null)}
                 />
             )}
@@ -301,14 +459,23 @@ export const EditableDoctorCard = () => {
                                              trigger={triggerDiv(<p>{qualification2 || '[Zusatzqualifikation 2]'}</p>)}
                                            />
                                        </div>
-                                       <EditDialog
-                                            dialogTitle="Zusatzinformationen bearbeiten"
-                                            dialogDescription="Geben Sie Zusatzinformationen oder die Position des Arztes ein. Dies kann auch für ein Partnerlogo verwendet werden."
-                                            initialValue={additionalInfo}
-                                            onSave={setAdditionalInfo}
-                                            inputLabel="Zusatzinformationen"
-                                            trigger={triggerDiv(<p className="italic">{additionalInfo || '[Zusatzinfo / Logo]'}</p>, "mt-[2.5cqw] text-[1.6cqw]")}
-                                       />
+                                       <AdditionalInfoDialog
+                                            initialText={additionalInfoText}
+                                            initialLogo={additionalInfoLogo}
+                                            onSave={handleSaveAdditionalInfo}
+                                            trigger={
+                                                <div className="group relative mt-[2.5cqw] cursor-pointer text-[1.6cqw]">
+                                                    {additionalInfoType === 'logo' && additionalInfoLogo ? (
+                                                        <div className="relative w-[30cqw] aspect-[3/1]">
+                                                            <Image src={additionalInfoLogo} alt="Partner Logo" fill className="object-contain" />
+                                                        </div>
+                                                    ) : (
+                                                        <p className="italic">{additionalInfoText || '[Zusatzinfo / Logo]'}</p>
+                                                    )}
+                                                    <Pencil className="absolute top-1/2 right-0 h-4 w-4 -translate-y-1/2 text-primary opacity-0 transition-opacity group-hover:opacity-100" />
+                                                </div>
+                                            }
+                                        />
                                     </div>
                                 </div>
                              </div>
@@ -317,7 +484,7 @@ export const EditableDoctorCard = () => {
                             <VitaEditorDialog
                                 initialValue={vita}
                                 onSave={setVita}
-                                trigger={<Pencil className="absolute top-4 right-4 h-5 w-5 text-background cursor-pointer hover:text-background/80 z-10" />}
+                                trigger={<Pencil className="absolute top-4 right-4 h-5 w-5 cursor-pointer text-background hover:text-background/80 z-10" />}
                             />
                             <div className="h-full overflow-y-auto text-[clamp(0.8rem,2.5cqw,1.2rem)] leading-tight">
                                 <VitaRenderer text={vita} />
@@ -328,11 +495,3 @@ export const EditableDoctorCard = () => {
             </Card>
         </div>
     );
-
-    
-
-
-
-
-
-

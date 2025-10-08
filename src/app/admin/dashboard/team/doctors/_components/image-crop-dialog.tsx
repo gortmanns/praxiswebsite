@@ -1,3 +1,4 @@
+
 'use client';
 
 import 'cropperjs/dist/cropper.css';
@@ -17,15 +18,17 @@ interface ImageCropDialogProps {
   imageUrl: string;
   onCropComplete: (croppedImageUrl: string) => void;
   onClose: () => void;
+  aspectRatio?: number;
 }
 
-// Aspect ratio for the doctor's portrait
-const ASPECT_RATIO = 2 / 3;
+// Default aspect ratio for the doctor's portrait
+const DEFAULT_ASPECT_RATIO = 2 / 3;
 
 export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
   imageUrl,
   onCropComplete,
   onClose,
+  aspectRatio = DEFAULT_ASPECT_RATIO,
 }) => {
   const cropperRef = useRef<ReactCropperElement>(null);
 
@@ -51,7 +54,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
             src={imageUrl}
             style={{ height: 400, width: '100%' }}
             // Cropper.js options
-            aspectRatio={ASPECT_RATIO}
+            aspectRatio={aspectRatio}
             guides={false}
             viewMode={1}
             autoCropArea={0.8}
