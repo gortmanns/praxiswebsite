@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { useEditor, EditorContent, Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
-import Heading from '@tiptap/extension-heading';
 import {
   Dialog,
   DialogContent,
@@ -17,7 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
-import { Bold, Italic, Underline as UnderlineIcon, Pilcrow, List, ListOrdered } from 'lucide-react';
+import { Bold, Italic, Underline as UnderlineIcon, List, ListOrdered, Heading2 } from 'lucide-react';
 
 const MenuBar = ({ editor }: { editor: Editor | null }) => {
   if (!editor) {
@@ -47,12 +46,12 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
       >
         <UnderlineIcon className="h-4 w-4" />
       </Toggle>
-       <Toggle
+      <Toggle
         size="sm"
-        pressed={editor.isActive('heading', { level: 4 })}
-        onPressedChange={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
+        pressed={editor.isActive('heading', { level: 3 })}
+        onPressedChange={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
       >
-        <Pilcrow className="h-4 w-4" />
+        <Heading2 className="h-4 w-4" />
       </Toggle>
       <Toggle
         size="sm"
@@ -60,6 +59,13 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
       >
         <List className="h-4 w-4" />
+      </Toggle>
+      <Toggle
+        size="sm"
+        pressed={editor.isActive('orderedList')}
+        onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}
+      >
+        <ListOrdered className="h-4 w-4" />
       </Toggle>
     </div>
   );
@@ -78,12 +84,11 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        heading: false, // We'll configure it separately
+        heading: {
+          levels: [3, 4],
+        },
       }),
       Underline,
-      Heading.configure({
-        levels: [3, 4],
-      }),
     ],
     content: initialValue,
     editorProps: {
