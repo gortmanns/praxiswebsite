@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useEditor, EditorContent, Editor } from '@tiptap/react';
+import { useEditor, EditorContent, Editor, Mark } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import {
@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
-import { Bold, Underline as UnderlineIcon, Italic, List, Minus, Palette, Code2 } from 'lucide-react';
+import { Bold, Underline as UnderlineIcon, Italic, List, Minus, Palette, Code2, Pilcrow, Baseline, ListOrdered } from 'lucide-react';
 import { Color } from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import {
@@ -29,6 +29,42 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    small: {
+      /**
+       * Toggle the small mark
+       */
+      toggleSmall: () => ReturnType,
+    }
+  }
+}
+
+const Small = Mark.create({
+  name: 'small',
+
+  parseHTML() {
+    return [
+      {
+        tag: 'span',
+        getAttrs: node => (node as HTMLElement).classList.contains('is-small') && null,
+      },
+    ]
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ['span', { ...HTMLAttributes, class: 'is-small' }, 0]
+  },
+
+  addCommands() {
+    return {
+      toggleSmall: () => ({ commands }) => {
+        return commands.toggleMark(this.name)
+      },
+    }
+  },
+})
+
 const MenuBar = ({ editor, isHtmlMode, onHtmlModeToggle }: { editor: Editor | null; isHtmlMode: boolean; onHtmlModeToggle: () => void; }) => {
   if (!editor) {
     return null;
@@ -37,6 +73,23 @@ const MenuBar = ({ editor, isHtmlMode, onHtmlModeToggle }: { editor: Editor | nu
   return (
     <div className="flex flex-wrap items-center gap-1 rounded-t-md border border-input border-b-0 bg-transparent p-1">
       {/* Group 1: Style */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-8 px-2" disabled={isHtmlMode} title="Schriftgrösse">
+                <Baseline className="h-4 w-4 mr-1" />
+                Schriftgrösse
+            </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+            <DropdownMenuItem onClick={() => editor.chain().focus().unsetAllMarks().run()}>
+                Normal
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().toggleSmall().run()}>
+                Klein
+            </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-1.5" disabled={isHtmlMode} title="Textfarbe">
@@ -99,6 +152,15 @@ const MenuBar = ({ editor, isHtmlMode, onHtmlModeToggle }: { editor: Editor | nu
       >
         <List className="h-4 w-4" />
       </Toggle>
+       <Toggle
+        size="sm"
+        pressed={editor.isActive('orderedList')}
+        onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}
+        disabled={isHtmlMode}
+        title="Nummerierte Liste"
+      >
+        <ListOrdered className="h-4 w-4" />
+      </Toggle>
       <Button
         size="sm"
         variant="ghost"
@@ -147,6 +209,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
       Color.configure({
         types: ['textStyle'],
       }),
+      Small,
     ],
     content: initialValue,
     editorProps: {
