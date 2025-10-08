@@ -1,82 +1,29 @@
-/**
- * @file Firestore Security Rules
- * @description This ruleset enforces a strict user-ownership model for user profiles
- * and allows public read access to holiday information while restricting modifications to authenticated users.
- *
- * Data Structure:
- * - /users/{userId}: Stores user profile information, accessible only by the user themselves.
- * - /holidays/{holidayId}: Stores public holiday information, write-protected.
- *
- * Key Security Decisions:
- * - User profiles are private and only accessible to the owning user. Listing of users is disallowed.
- * - Holidays are publicly readable but only modifiable by authenticated users.
- *
- * Denormalization for Authorization: N/A. The rules directly enforce ownership based on the `userId` path segment.
- * Structural Segregation: N/A.
- */
+
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    /**
-     * @description Controls access to user profile documents.
-     * @path /users/{userId}
-     * @allow (get) User with uid 'user123' can read their own profile.
-     * @allow (create) User with uid 'user123' can create their own profile.
-     * @allow (update) User with uid 'user123' can update their own profile.
-     * @allow (delete) User with uid 'user123' can delete their own profile.
-     * @deny (get) User with uid 'user456' cannot read user 'user123' profile.
-     * @deny (create) User with uid 'user456' cannot create user 'user123' profile.
-     * @deny (update) User with uid 'user456' cannot update user 'user123' profile.
-     * @deny (delete) User with uid 'user456' cannot delete user 'user123' profile.
-     * @principle Enforces document ownership for all operations.
-     */
-    match /users/{userId} {
-      // Allow anyone to get a user profile.  This is required so the application can tell whether or not the profile exists.
-      allow get: if isSignedIn() && isOwner(userId);
-      allow list: if false; // Listing all users is not permitted
-
-      // Only allow creation if the user is signed in and the userId matches the authenticated user's uid
-      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.uid == request.auth.uid;
-
-      // Only allow updates if the user is signed in and is the owner
-      allow update: if isSignedIn() && isExistingOwner(userId) && request.resource.data.uid == resource.data.uid; // Enforce immutable uid
-
-      // Only allow deletion if the user is signed in and is the owner
-      allow delete: if isSignedIn() && isExistingOwner(userId);
-    }
-
-    /**
-     * @description Controls access to holiday documents.
-     * @path /holidays/{holidayId}
-     * @allow (get) Any user can read holiday information.
-     * @allow (list) Any user can list holiday information.
-     * @allow (create) Only authenticated users can create holiday documents.
-     * @allow (update) Only authenticated users can update holiday documents.
-     * @allow (delete) Only authenticated users can delete holiday documents.
-     * @deny (create) Anonymous users cannot create holiday documents.
-     * @deny (update) Anonymous users cannot update holiday documents.
-     * @deny (delete) Anonymous users cannot delete holiday documents.
-     * @principle Allows public read access but restricts write access to authenticated users.
-     */
-    match /holidays/{holidayId} {
-      allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
-    }
-
-    // --- Helper functions ---
-    function isSignedIn() {
+    // Helper functions
+    function isUserAuthenticated() {
       return request.auth != null;
     }
 
-    function isOwner(userId) {
-      return request.auth.uid == userId;
+    function isUserId(userId) {
+      return isUserAuthenticated() && request.auth.uid == userId;
+    }
+    
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if isUserId(userId);
+    }
+    
+    match /holidays/{holidayId} {
+      allow read, write: if isUserAuthenticated();
     }
 
-    function isExistingOwner(userId) {
-      return isSignedIn() && isOwner(userId) && resource != null;
+    match /doctors/{doctorId} {
+      allow read, write: if isUserAuthenticated();
     }
   }
 }
