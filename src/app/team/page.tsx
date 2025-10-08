@@ -16,8 +16,8 @@ const doctors: Doctor[] = [
     imageHint: 'man portrait',
     specialty: 'Praktischer Arzt',
     qualifications: [
-      'Master of Public Health',
-      'Master of Health Management',
+      'Master of Public Health (UNSW)',
+      'Master of Health Management (UNSW)',
     ],
     additionalInfo: 'Ärztliche und administrative Leitung Praxiszentrum im Ring',
     vita: (
