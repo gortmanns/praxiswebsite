@@ -1,7 +1,9 @@
 'use client';
 
 import 'react-quill/dist/quill.snow.css';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useQuill } from 'react-quilljs';
+
 import {
   Dialog,
   DialogContent,
@@ -12,8 +14,6 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import dynamic from 'next/dynamic';
 
 interface VitaEditorDialogProps {
   trigger: React.ReactNode;
@@ -23,21 +23,7 @@ interface VitaEditorDialogProps {
 
 export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, initialValue, onSave }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [vitaContent, setVitaContent] = useState('');
-
-  // Dynamically import Quill to avoid SSR issues, as it needs the `document` object.
-  const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
-
-  useEffect(() => {
-    if (isOpen) {
-      setVitaContent(initialValue);
-    }
-  }, [isOpen, initialValue]);
-
-  const handleSave = () => {
-    onSave(vitaContent);
-    setIsOpen(false);
-  };
+  const [isClient, setIsClient] = useState(false);
 
   const modules = {
     toolbar: [
@@ -56,6 +42,25 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
     'link'
   ];
 
+  const { quill, quillRef } = useQuill({ modules, formats });
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (quill && isOpen) {
+      quill.clipboard.dangerouslyPasteHTML(initialValue);
+    }
+  }, [quill, isOpen, initialValue]);
+
+  const handleSave = () => {
+    if (quill) {
+      onSave(quill.root.innerHTML);
+      setIsOpen(false);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -64,15 +69,11 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
           <DialogTitle>Text der Kartenrückseite bearbeiten</DialogTitle>
         </DialogHeader>
         <div className="flex-1 overflow-hidden py-4">
-            <ReactQuill
-                theme="snow"
-                value={vitaContent}
-                onChange={setVitaContent}
-                modules={modules}
-                formats={formats}
-                className="h-full w-full"
-                style={{'--ql-snow-bg': 'transparent'} as React.CSSProperties}
-            />
+           {isClient && (
+             <div style={{ width: '100%', height: '95%' }}>
+                <div ref={quillRef} />
+             </div>
+           )}
         </div>
         <DialogFooter className="mt-4">
           <DialogClose asChild>
