@@ -104,9 +104,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        heading: {
-          levels: [3, 4],
-        },
+        heading: false, // Deaktiviert die Überschriften-Funktion
         horizontalRule: {},
       }),
       Underline,

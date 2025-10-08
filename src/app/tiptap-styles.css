@@ -19,7 +19,7 @@
 /* Define custom colors as CSS variables for easy management */
 :root {
     --color-tiptap-white: hsl(var(--background));
-    --color-tiptap-blue: hsl(197 100% 47%);
+    --color-tiptap-blue: hsl(var(--primary));
     --color-tiptap-gray: hsl(209 15% 65%);
 }
 
