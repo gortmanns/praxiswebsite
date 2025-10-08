@@ -16,6 +16,13 @@
     font-weight: normal;
 }
 
+/* Fix for list marker colors inside the editor */
+.tiptap .prose-invert ul > li::marker,
+.tiptap .prose-invert ol > li::marker {
+    color: hsl(var(--background));
+}
+
+
 /* Define custom colors as CSS variables for easy management */
 :root {
     --color-tiptap-white: hsl(var(--background));
