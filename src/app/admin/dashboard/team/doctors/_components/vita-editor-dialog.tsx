@@ -1,8 +1,8 @@
 'use client';
 
-import 'react-quill/dist/quill.snow.css';
+import 'quill/dist/quill.snow.css';
 import React, { useState, useEffect } from 'react';
-import { useQuill } from 'react-quilljs';
+import { useQuill }s from 'react-quilljs';
 
 import {
   Dialog,
