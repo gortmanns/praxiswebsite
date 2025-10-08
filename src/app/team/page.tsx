@@ -6,8 +6,8 @@ import { TeamMemberCard } from './_components/team-member-card';
 import { DoctorCard, Doctor } from './_components/doctor-card';
 import Link from 'next/link';
 
-// Die Daten der Ärzte wurden aufgrund eines vorherigen Fehlers entfernt.
-// Dieser Bereich kann neu aufgebaut werden.
+// HINWEIS: Der ursprüngliche Inhalt wurde durch einen Fehler des Assistenten gelöscht.
+// Dies ist eine leere, aber funktionierende Vorlage, um die Seite wiederherzustellen.
 const doctors: Doctor[] = [];
 
 const garcia = {
@@ -124,7 +124,7 @@ export default function TeamPage() {
                 </div>
             )) : (
               <div className="py-8 text-center text-muted-foreground">
-                <p>Informationen zu den Ärzten werden in Kürze hinzugefügt.</p>
+                <p>Ärzte können hier hinzugefügt werden.</p>
               </div>
             )}
           </div>
