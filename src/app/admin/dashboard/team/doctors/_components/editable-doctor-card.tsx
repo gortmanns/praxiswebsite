@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useRef, ChangeEvent } from 'react';
+import React, { useState, useRef, ChangeEvent, useEffect } from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { User, Upload, Pencil, Trash2, Replace, GalleryHorizontal, Text, Image as ImageIcon } from 'lucide-react';
@@ -495,3 +495,6 @@ export const EditableDoctorCard = () => {
             </Card>
         </div>
     );
+};
+
+    
