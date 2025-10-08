@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
-import { Bold, Underline as UnderlineIcon, Italic, List, Minus, Palette, Code2, Pilcrow, Baseline, ListOrdered } from 'lucide-react';
+import { Bold, Underline as UnderlineIcon, Italic, List, Minus, Palette, Code2, Baseline } from 'lucide-react';
 import { Color } from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import {
@@ -151,15 +151,6 @@ const MenuBar = ({ editor, isHtmlMode, onHtmlModeToggle }: { editor: Editor | nu
         title="Aufzählungsliste"
       >
         <List className="h-4 w-4" />
-      </Toggle>
-       <Toggle
-        size="sm"
-        pressed={editor.isActive('orderedList')}
-        onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}
-        disabled={isHtmlMode}
-        title="Nummerierte Liste"
-      >
-        <ListOrdered className="h-4 w-4" />
       </Toggle>
       <Button
         size="sm"
