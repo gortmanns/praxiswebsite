@@ -9,6 +9,7 @@ import {
   DialogTrigger,
   DialogClose,
   DialogFooter,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -40,19 +41,18 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Text der Kartenrückseite bearbeiten</DialogTitle>
+          <DialogDescription>
+            Sie können hier direkt das HTML für die Kartenrückseite bearbeiten.
+          </DialogDescription>
         </DialogHeader>
         <div className="py-4">
-          <p className="mb-2 text-sm text-muted-foreground">
-            Sie können einfachen HTML-Code verwenden, z.B. `<h3>Titel</h3>`, `<p>Absatz</p>`, `<strong>fett</strong>`, `<em>kursiv</em>` und `<ul><li>Punkt</li></ul>`.
-          </p>
           <Textarea
             value={editorContent}
             onChange={(e) => setEditorContent(e.target.value)}
-            className="h-64 min-h-[200px] font-mono text-sm"
-            placeholder="Geben Sie hier den HTML-Inhalt ein..."
+            className="min-h-[300px] font-mono text-xs"
           />
         </div>
-        <DialogFooter className="mt-4 flex-shrink-0">
+        <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline">Abbrechen</Button>
           </DialogClose>

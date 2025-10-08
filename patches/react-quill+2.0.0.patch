@@ -1,35 +1,30 @@
-diff --git a/node_modules/react-quill/lib/component.js b/node_modules/react-quill/lib/component.js
-index 9e578a3..525f2fc 100644
---- a/node_modules/react-quill/lib/component.js
-+++ b/node_modules/react-quill/lib/component.js
-@@ -216,7 +216,7 @@
+diff --git a/node_modules/react-quill/lib/index.js b/node_modules/react-quill/lib/index.js
+index 4704af4..285e786 100644
+--- a/node_modules/react-quill/lib/index.js
++++ b/node_modules/react-quill/lib/index.js
+@@ -1,6 +1,6 @@
+ 'use strict';
  
-   /*
-    * The component gained or lost focus.
--   * TODO: quill.hasFocus() is not public API, this should be replaced.
-+   * FIXME: quill.hasFocus() is not public API, this should be replaced.
-    */
-   _onFocus(range) {
-     if (this.props.onFocus) {
-@@ -231,7 +231,7 @@
+-var React = require('react');
++var React = require('react');
+ var ReactDOM = require('react-dom');
+ var Quill = require('quill');
+ var PropTypes = require('prop-types');
+@@ -522,7 +522,7 @@
+ 	},
  
-   /*
-    * The component gained or lost focus.
--   * TODO: quill.hasFocus() is not public API, this should be replaced.
-+   * FIXME: quill.hasFocus() is not public API, this should be replaced.
-    */
-   _onBlur(previousRange) {
-     if (this.props.onBlur) {
-@@ -404,7 +404,11 @@
-     }
-     if (this.editor) {
-       this.setEditorSelection(this.editor, range);
--      this.editor.focus();
-+      // Fix for 'findDOMNode is deprecated in StrictMode'
-+      // Check if this.editor and this.editor.root exist before focusing
-+      if (this.editor.root) {
-+        this.editor.focus();
-+      }
-     }
-   }
+ 	getEditingArea: function(){
+-		return ReactDOM.findDOMNode(this.editingArea);
++		return this.editingArea;
+ 	},
  
+ 	getEditor: function(){
+@@ -822,7 +822,7 @@
+ 			classNames.push('ql-container');
+ 			classNames.push('ql-snow');
+ 			return React.createElement('div', {
+-					ref: function(el) { this.editingArea = el; }.bind(this),
++					ref: function(el) { this.editingArea = el; }.bind(this),
+ 					className: classNames.join(' '),
+ 					style: this.props.style
+ 				});

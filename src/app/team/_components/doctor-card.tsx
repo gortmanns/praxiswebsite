@@ -71,7 +71,6 @@ const PartnerLogo: React.FC<{ logo?: Doctor['partnerLogo'] }> = ({ logo }) => {
 
 const ContentRenderer: React.FC<{ content: string }> = ({ content }) => {
   const sanitizedHtml = useMemo(() => {
-    // Ensure DOMPurify only runs on the client
     if (typeof window !== 'undefined') {
       return { __html: DOMPurify.sanitize(content) };
     }
