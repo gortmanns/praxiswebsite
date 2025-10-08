@@ -1,0 +1,26 @@
+diff --git a/node_modules/react-quill/lib/index.js b/node_modules/react-quill/lib/index.js
+index 4758d4a..96f3a67 100644
+--- a/node_modules/react-quill/lib/index.js
++++ b/node_modules/react-quill/lib/index.js
+@@ -743,7 +743,7 @@
+ 	},
+ 
+ 	getEditingArea: function() {
+-		return ReactDOM.findDOMNode(this.editingArea);
++		return this.editingArea;
+ 	},
+ 
+ 	getEditor: function() {
+diff --git a/node_modules/react-quill/lib/mixin.js b/node_modules/react-quill/lib/mixin.js
+index 923146d..a7719f9 100644
+--- a/node_modules/react-quill/lib/mixin.js
++++ b/node_modules/react-quill/lib/mixin.js
+@@ -107,7 +107,7 @@
+ 	},
+ 
+ 	getEditingArea: function() {
+-		return ReactDOM.findDOMNode(this.editingArea);
++		return this.editingArea;
+ 	},
+ 
+ 	getEditor: function() {

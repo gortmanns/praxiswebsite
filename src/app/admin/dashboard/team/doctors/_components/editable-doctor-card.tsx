@@ -11,12 +11,13 @@ import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { VitaEditorDialog } from './vita-editor-dialog';
-import { VitaRenderer } from './vita-renderer';
 import { AlertCircle } from 'lucide-react';
 import { ImageCropDialog } from './image-crop-dialog';
+import DOMPurify from 'dompurify';
 
+
+// Initial content as a simple HTML string
 const initialVita = `<h3>Titel des Abschnitts</h3><p>Dies ist ganz normaler Text. Sie können <strong>fett</strong>, <em>kursiv</em> oder <u>unterstrichenen</u> Text verwenden.</p><ul><li>Listenpunkt 1</li><li>Listenpunkt 2</li></ul>`;
 
 const existingImages = [
@@ -35,6 +36,24 @@ interface EditDialogProps {
     onSave: (value: string) => void;
     inputLabel: string;
 }
+
+const VitaRenderer: React.FC<{ text: string }> = ({ text }) => {
+  const sanitizedHtml = React.useMemo(() => {
+    // Ensure DOMPurify only runs on the client
+    if (typeof window !== 'undefined') {
+      return { __html: DOMPurify.sanitize(text) };
+    }
+    return { __html: '' };
+  }, [text]);
+
+  return (
+    <div
+      className="prose prose-sm dark:prose-invert max-w-none"
+      dangerouslySetInnerHTML={sanitizedHtml}
+    />
+  );
+};
+
 
 const EditDialog: React.FC<EditDialogProps> = ({
     trigger,
@@ -311,3 +330,7 @@ export const EditableDoctorCard = () => {
     );
 
     
+
+
+
+

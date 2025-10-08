@@ -33,6 +33,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
+import { Toaster } from 'sonner';
 
 export default function DashboardLayout({
   children,
@@ -156,6 +157,7 @@ export default function DashboardLayout({
             <h1 className="text-lg font-semibold">{[...navItems, ...teamNavItems].find(item => item.href === pathname)?.label || 'Dashboard'}</h1>
         </header>
         {children}
+        <Toaster />
       </SidebarInset>
     </SidebarProvider>
   );

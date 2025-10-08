@@ -1,0 +1,29 @@
+--- a/node_modules/react-quill/lib/index.js
++++ b/node_modules/react-quill/lib/index.js
+@@ -512,7 +512,7 @@
+ 
+ 	// The editor needs to be focused to restore the selection.
+ 	this.focus();
+-	var selection = this.getEditorSelection();
++	var selection = this.quill.getSelection();
+ 	// The selection may not be available if the editor is not focused.
+ 	if (selection) {
+ 		this.setEditorSelection(this.quill, range);
+@@ -528,7 +528,7 @@
+  * @return {DOMElement}
+  */
+ ReactQuill.prototype.getEditingArea = function getEditingArea() {
+-	return _reactDom2.default.findDOMNode(this.editingArea);
++	return this.editingArea;
+ };
+ 
+ /**
+@@ -547,7 +547,7 @@
+ };
+ 
+ ReactQuill.prototype.setEditorSelection = function setEditorSelection(editor, range) {
+-	if (range && this.getEditorSelection()) {
++	if (range && editor.getSelection()) {
+ 		editor.setSelection(range);
+ 	}
+ };

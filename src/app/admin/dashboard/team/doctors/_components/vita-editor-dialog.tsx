@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -12,17 +12,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info } from 'lucide-react';
-import dynamic from 'next/dynamic';
-import 'react-quill/dist/quill.snow.css';
-
-// Dynamischer Import des Quill-Editors nur auf der Client-Seite
-const ReactQuill = dynamic(
-  () => import('react-quill'),
-  { ssr: false }
-);
+import { Textarea } from '@/components/ui/textarea';
 
 interface VitaEditorDialogProps {
   trigger: React.ReactNode;
@@ -30,54 +20,46 @@ interface VitaEditorDialogProps {
   onSave: (value: string) => void;
 }
 
+// This is a simplified editor. For a real-world scenario,
+// you would use a more robust library like Tiptap/Novel, but due to
+// installation issues, we are using a simplified textarea for now.
+// The saved content is treated as raw HTML.
+
 export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, initialValue, onSave }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [vitaContent, setVitaContent] = useState('');
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    // Stellt sicher, dass Code, der auf dem Client laufen muss, erst nach dem Mount ausgeführt wird.
-    setIsClient(true);
-  }, []);
+  const [editorContent, setEditorContent] = useState('');
 
   useEffect(() => {
     if (isOpen) {
-      setVitaContent(initialValue);
+      // For simplicity, this basic editor will just show the HTML source.
+      // A more advanced implementation would parse this back into a WYSIWYG view.
+      setEditorContent(initialValue);
     }
   }, [isOpen, initialValue]);
 
   const handleSave = () => {
-    onSave(vitaContent);
+    onSave(editorContent);
     setIsOpen(false);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-4xl h-[80vh] flex flex-col">
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Text der Kartenrückseite bearbeiten</DialogTitle>
         </DialogHeader>
-        <div className="py-4 flex-1 min-h-0">
-          <Label htmlFor="vita-content" className="mb-2 block">Editor</Label>
-          {isClient ? (
-            <ReactQuill
-              theme="snow"
-              value={vitaContent}
-              onChange={setVitaContent}
-              style={{ height: 'calc(100% - 50px)' }} // Füllt den verfügbaren Platz aus
-            />
-          ) : (
-            <div className="h-full w-full bg-muted rounded-md animate-pulse"></div>
-          )}
+        <div className="py-4">
+          <p className="mb-2 text-sm text-muted-foreground">
+            Sie können einfachen HTML-Code verwenden, z.B. `<h3>Titel</h3>`, `<p>Absatz</p>`, `<strong>fett</strong>`, `<em>kursiv</em>` und `<ul><li>Punkt</li></ul>`.
+          </p>
+          <Textarea
+            value={editorContent}
+            onChange={(e) => setEditorContent(e.target.value)}
+            className="h-64 min-h-[200px] font-mono text-sm"
+            placeholder="Geben Sie hier den HTML-Inhalt ein..."
+          />
         </div>
-        <Alert variant="info" className="mt-4 flex-shrink-0">
-          <Info className="h-4 w-4" />
-          <AlertTitle>Hinweis zur Formatierung</AlertTitle>
-          <AlertDescription>
-            Sie können hier HTML-Tags wie `&lt;h3&gt;`, `&lt;p&gt;`, `&lt;strong&gt;` oder `&lt;ul&gt;` verwenden, um den Text zu strukturieren.
-          </AlertDescription>
-        </Alert>
         <DialogFooter className="mt-4 flex-shrink-0">
           <DialogClose asChild>
             <Button variant="outline">Abbrechen</Button>

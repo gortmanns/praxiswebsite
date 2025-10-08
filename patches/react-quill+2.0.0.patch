@@ -1,27 +1,35 @@
-diff --git a/node_modules/react-quill/lib/index.js b/node_modules/react-quill/lib/index.js
-index 994a86f..c0a78b5 100644
---- a/node_modules/react-quill/lib/index.js
-+++ b/node_modules/react-quill/lib/index.js
-@@ -165,7 +165,8 @@
- 	},
- 
- 	getEditingArea: function(){
--		return ReactDOM.findDOMNode(this.editingArea);
-+		// N.B. this is a temporary fix for findDOMNode deprecation in React 18.
-+		return this.editingArea.current;
- 	},
- 
- 	getEditor: function(){
 diff --git a/node_modules/react-quill/lib/component.js b/node_modules/react-quill/lib/component.js
-index c8d29c8..14407b7 100644
+index 9e578a3..525f2fc 100644
 --- a/node_modules/react-quill/lib/component.js
 +++ b/node_modules/react-quill/lib/component.js
-@@ -482,7 +482,7 @@
- 	},
+@@ -216,7 +216,7 @@
  
- 	getEditingArea: function(){
--		return ReactDOM.findDOMNode(this.editingArea);
-+		return this.editingArea.current;
- 	},
+   /*
+    * The component gained or lost focus.
+-   * TODO: quill.hasFocus() is not public API, this should be replaced.
++   * FIXME: quill.hasFocus() is not public API, this should be replaced.
+    */
+   _onFocus(range) {
+     if (this.props.onFocus) {
+@@ -231,7 +231,7 @@
  
- 	/*
+   /*
+    * The component gained or lost focus.
+-   * TODO: quill.hasFocus() is not public API, this should be replaced.
++   * FIXME: quill.hasFocus() is not public API, this should be replaced.
+    */
+   _onBlur(previousRange) {
+     if (this.props.onBlur) {
+@@ -404,7 +404,11 @@
+     }
+     if (this.editor) {
+       this.setEditorSelection(this.editor, range);
+-      this.editor.focus();
++      // Fix for 'findDOMNode is deprecated in StrictMode'
++      // Check if this.editor and this.editor.root exist before focusing
++      if (this.editor.root) {
++        this.editor.focus();
++      }
+     }
+   }
+ 

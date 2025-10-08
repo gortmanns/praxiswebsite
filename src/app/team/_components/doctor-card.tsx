@@ -1,11 +1,13 @@
+
 'use client'
 
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
-import DOMPurify from 'dompurify';
 import React, { useMemo } from 'react';
+import DOMPurify from 'dompurify';
+
 
 export interface Doctor {
     id: string;
@@ -67,20 +69,21 @@ const PartnerLogo: React.FC<{ logo?: Doctor['partnerLogo'] }> = ({ logo }) => {
     }
 };
 
-const SafeHtmlRenderer: React.FC<{ html: string }> = ({ html }) => {
-    const sanitizedHtml = useMemo(() => {
-        if (typeof window === 'undefined') {
-            return { __html: '' };
-        }
-        return { __html: DOMPurify.sanitize(html) };
-    }, [html]);
+const ContentRenderer: React.FC<{ content: string }> = ({ content }) => {
+  const sanitizedHtml = useMemo(() => {
+    // Ensure DOMPurify only runs on the client
+    if (typeof window !== 'undefined') {
+      return { __html: DOMPurify.sanitize(content) };
+    }
+    return { __html: '' };
+  }, [content]);
 
-    return (
-        <div
-            className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col prose prose-sm prose-invert max-w-none scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary"
-            dangerouslySetInnerHTML={sanitizedHtml}
-        />
-    );
+  return (
+    <div
+      className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col prose prose-sm prose-invert max-w-none scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary"
+      dangerouslySetInnerHTML={sanitizedHtml}
+    />
+  );
 };
 
 
@@ -137,7 +140,7 @@ export const DoctorCard: React.FC<Doctor> = ({
                 </CardContent>
             </Card>
             <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                 <SafeHtmlRenderer html={backsideContent} />
+                 <ContentRenderer content={backsideContent} />
             </div>
         </div>
     );
