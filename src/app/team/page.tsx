@@ -31,7 +31,7 @@ const doctors: Doctor[] = [
   {
     id: 'schemmer',
     title: 'Prof. Dr. med. Dr. h.c.',
-    name: 'Wilko W. Schemmer',
+    name: 'P. Schemmer',
     imageUrl: '/images/team/Prof.Schemmer.jpg',
     imageHint: 'man portrait',
     specialty: 'Chirurgie FMH, Viszeralchirurgie',
