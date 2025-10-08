@@ -23,12 +23,17 @@
     --color-tiptap-gray: hsl(209 15% 65%);
 }
 
+.tiptap strong {
+    color: inherit; /* Inherit color so it doesn't override span colors */
+    font-weight: bold;
+}
+
 .tiptap span[style*="color: var(--color-tiptap-white)"] {
     color: var(--color-tiptap-white);
 }
 
 .tiptap span[style*="color: var(--color-tiptap-blue)"] {
-    color: var(--color-tiptap-blue);
+    color: var(--color-tiptap-blue) !important; /* Use !important to ensure override */
 }
 
 .tiptap span[style*="color: var(--color-tiptap-gray)"] {
