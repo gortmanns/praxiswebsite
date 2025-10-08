@@ -1,29 +1,20 @@
-
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Helper functions
-    function isUserAuthenticated() {
-      return request.auth != null;
-    }
-
-    function isUserId(userId) {
-      return isUserAuthenticated() && request.auth.uid == userId;
+    // Allow admins to manage doctors
+    match /doctors/{document=**} {
+      allow read, write: if request.auth != null;
     }
     
-    match /users/{userId} {
-      allow read: if true;
-      allow write: if isUserId(userId);
-    }
-    
-    match /holidays/{holidayId} {
-      allow read, write: if isUserAuthenticated();
+    // Allow admins to manage holidays
+    match /holidays/{document=**} {
+      allow read, write: if request.auth != null;
     }
 
-    match /doctors/{doctorId} {
-      allow read, write: if isUserAuthenticated();
+    // Default deny all other collections
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
