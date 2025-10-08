@@ -10,19 +10,16 @@ import Link from 'next/link';
 const doctors: Doctor[] = [
   {
     id: 'ortmanns',
-    title: 'praktischer ARzt',
+    title: 'Dipl. med.',
     name: 'Gernot Ortmanns',
     imageUrl: '/images/team/Ortmanns.jpg',
     imageHint: 'man portrait',
-    specialty: 'Allgemeinmedizin FMH',
+    specialty: 'Praktischer Arzt',
     qualifications: [
-      'Verkehrsmedizinische Untersuchungen Stufe 1',
-      'Praxislabor KHM',
-      'Röntgendiagnostik KHM',
       'Master of Public Health',
       'Master of Health Management',
     ],
-    additionalInfo: 'Praxisinhaber',
+    additionalInfo: 'Ärztliche und administrative Leitung Praxiszentrum im Ring',
     vita: (
       <>
         <p>
