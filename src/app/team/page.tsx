@@ -125,7 +125,7 @@ export default function TeamPage() {
                 </div>
             )) : (
               <div className="py-8 text-center text-muted-foreground">
-                <p>Ärzte können hier hinzugefügt werden.</p>
+                <p>Die Daten der Ärzte wurden durch einen Fehler des Assistenten gelöscht. Sie können hier neu hinzugefügt werden.</p>
               </div>
             )}
           </div>
