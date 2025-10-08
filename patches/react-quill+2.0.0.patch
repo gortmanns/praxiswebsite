@@ -1,185 +1,27 @@
-diff --git a/node_modules/react-quill/lib/component.js b/node_modules/react-quill/lib/component.js
-index 275a59a..f8742f9 100644
---- a/node_modules/react-quill/lib/component.js
-+++ b/node_modules/react-quill/lib/component.js
-@@ -102,11 +102,6 @@
- 		this.state = this.getInitialState();
- 	}
- 
--	/*
--	We're using a `ref` to hold a reference to the editor instance.
--	You can use this to call methods on the editor instance.
--	See https://reactjs.org/docs/refs-and-the-dom.html
--	*/
- 	setEditorRef = (element) => {
- 		this.editor = element;
- 	}
-@@ -291,10 +286,6 @@
- 		return this.editor;
- 	};
- 
--	getEditorNode = () => {
--		return ReactDOM.findDOMNode(this.editor);
--	};
--
- 	/*
- 	Renders the editor element.
- 	*/
 diff --git a/node_modules/react-quill/lib/index.js b/node_modules/react-quill/lib/index.js
-index 28add9a..558a528 100644
+index 994a86f..c0a78b5 100644
 --- a/node_modules/react-quill/lib/index.js
 +++ b/node_modules/react-quill/lib/index.js
-@@ -37,7 +37,7 @@
- 	['image', 'video', 'link'],
- 	['clean']
- ];
--const findDOMNode = ReactDOM.findDOMNode;
-+const findDOMNode = (instance) => instance;
+@@ -165,7 +165,8 @@
+ 	},
  
- /*
- The React-Quill Raw Component
-@@ -406,7 +406,7 @@
- 	 * a component is not mounted yet, so we have to schedule the focus change
- 	 * to a later point.
- 	 */
--	setEditorFocus(focused) {
-+	setEditorFocus(focused, source) {
- 		if (focused) {
- 			this.focus();
- 		} else {
-@@ -467,7 +467,7 @@
- 	 */
- 	focus() {
- 		this.quill.focus();
--		findDOMNode(this).focus();
-+		this.getEditorNode().focus();
- 	}
+ 	getEditingArea: function(){
+-		return ReactDOM.findDOMNode(this.editingArea);
++		// N.B. this is a temporary fix for findDOMNode deprecation in React 18.
++		return this.editingArea.current;
+ 	},
  
- 	/**
-@@ -477,7 +477,7 @@
- 	 * event.
- 	 */
- 	blur() {
--		findDOMNode(this).blur();
-+		this.getEditorNode().blur();
- 		this.quill.blur();
- 	}
+ 	getEditor: function(){
+diff --git a/node_modules/react-quill/lib/component.js b/node_modules/react-quill/lib/component.js
+index c8d29c8..14407b7 100644
+--- a/node_modules/react-quill/lib/component.js
++++ b/node_modules/react-quill/lib/component.js
+@@ -482,7 +482,7 @@
+ 	},
  
-@@ -494,6 +494,10 @@
- 		return this.quill;
- 	}
+ 	getEditingArea: function(){
+-		return ReactDOM.findDOMNode(this.editingArea);
++		return this.editingArea.current;
+ 	},
  
-+	getEditorNode() {
-+		return this.editorRef.current;
-+	}
-+
- 	/**
- 	 * Renders the component, creating a Quill editor-div if needed.
- 	 * @return {ReactElement}
-@@ -522,7 +526,7 @@
- 				onKeyUp={this.onKeyUp}
- 				onKeyPress={this.onKeyPress}
- 				onKeyDown={this.onKeyDown}
--				ref={findDOMNode}
-+				ref={this.editorRef}
- 				style={this.props.style}
- 				role="textbox"
- 				tabIndex={this.props.tabIndex}
-@@ -561,6 +565,7 @@
- 	 */
- 	constructor(props) {
- 		super(props);
-+		this.editorRef = React.createRef();
- 		this.state = {
- 			// These objects are initialized using the result of computeState(),
- 			// but we can't call this method from the constructor, since it calls
-@@ -583,6 +588,10 @@
- 		// This is required to retain focus on the editor when the value changes.
- 		const { selection } = this.state;
- 		if (selection) {
-+			// if the editor is not focused, do not retain selection
-+			if (!this.quill.hasFocus()) {
-+				return;
-+			}
- 			this.quill.setSelection(selection);
- 		}
- 	}
-diff --git a/node_modules/react-quill/react-quill.js b/node_modules/react-quill/react-quill.js
-index b808e08..ac0f49c 100644
---- a/node_modules/react-quill/react-quill.js
-+++ b/node_modules/react-quill/react-quill.js
-@@ -874,7 +874,7 @@
- 	['image', 'video', 'link'],
- 	['clean']
- ];
--var findDOMNode = ReactDOM.findDOMNode;
-+var findDOMNode = function (instance) { return instance; };
- 
- /*
- The React-Quill Raw Component
-@@ -1245,7 +1245,7 @@
- 	 * a component is not mounted yet, so we have to schedule the focus change
- 	 * to a later point.
- 	 */
--	ReactQuill.prototype.setEditorFocus = function setEditorFocus(focused) {
-+	ReactQuill.prototype.setEditorFocus = function setEditorFocus(focused, source) {
- 		if (focused) {
- 			this.focus();
- 		} else {
-@@ -1306,7 +1306,7 @@
- 	 * event.
- 	 */
- 	ReactQuill.prototype.focus = function focus() {
--		findDOMNode(this).focus();
-+		this.getEditorNode().focus();
- 		this.quill.focus();
- 	};
- 
-@@ -1317,7 +1317,7 @@
- 	 * event.
- 	 */
- 	ReactQuill.prototype.blur = function blur() {
--		findDOMNode(this).blur();
-+		this.getEditorNode().blur();
- 		this.quill.blur();
- 	};
- 
-@@ -1334,6 +1334,10 @@
- 		return this.quill;
- 	};
- 
-+	ReactQuill.prototype.getEditorNode = function getEditorNode() {
-+		return this.editorRef.current;
-+	};
-+
- 	/**
- 	 * Renders the component, creating a Quill editor-div if needed.
- 	 * @return {ReactElement}
-@@ -1362,7 +1366,7 @@
- 				onKeyUp: this.onKeyUp,
- 				onKeyPress: this.onKeyPress,
- 				onKeyDown: this.onKeyDown,
--				ref: findDOMNode,
-+				ref: this.editorRef,
- 				style: this.props.style,
- 				role: "textbox",
- 				tabIndex: this.props.tabIndex,
-@@ -1401,6 +1405,7 @@
- 	 */
- 	function ReactQuill(props) {
- 		classCallCheck(this, ReactQuill);
-+		this.editorRef = React.createRef();
- 
- 		var _this = possibleConstructorReturn(this, _React$Component.call(this, props));
- 
-@@ -1425,6 +1430,10 @@
- 		// This is required to retain focus on the editor when the value changes.
- 		var selection = this.state.selection;
- 		if (selection) {
-+			// if the editor is not focused, do not retain selection
-+			if (!this.quill.hasFocus()) {
-+				return;
-+			}
- 			this.quill.setSelection(selection);
- 		}
- 	};
+ 	/*
