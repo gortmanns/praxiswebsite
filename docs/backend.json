@@ -44,25 +44,6 @@
         }
       },
       "required": ["name", "start", "end"]
-    },
-    "Doctor": {
-      "title": "Doctor",
-      "description": "Represents a doctor in the practice.",
-      "type": "object",
-      "properties": {
-        "title": { "type": "string" },
-        "name": { "type": "string" },
-        "specialty": { "type": "string" },
-        "imageUrl": { "type": "string", "format": "uri" },
-        "imageHint": { "type": "string" },
-        "qualifications": { "type": "array", "items": { "type": "string" } },
-        "additionalInfoType": { "enum": ["text", "logo"] },
-        "additionalInfoText": { "type": "string" },
-        "additionalInfoLogo": { "type": "string", "format": "uri" },
-        "vita": { "type": "string" },
-        "displayOrder": { "type": "number" }
-      },
-      "required": ["name", "specialty", "displayOrder"]
     }
   },
   "auth": {
@@ -88,16 +69,6 @@
             "$ref": "#/entities/Holiday"
           },
           "description": "Stores the practice's holiday periods."
-        }
-      },
-      {
-        "path": "/doctors/{doctorId}",
-        "definition": {
-            "entityName": "Doctor",
-            "schema": {
-                "$ref": "#/entities/Doctor"
-            },
-            "description": "Stores information about the doctors."
         }
       }
     ]
