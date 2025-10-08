@@ -1,90 +1,124 @@
-diff --git a/node_modules/react-quill/lib/index.d.ts b/node_modules/react-quill/lib/index.d.ts
-index 0147c20..5f33190 100644
---- a/node_modules/react-quill/lib/index.d.ts
-+++ b/node_modules/react-quill/lib/index.d.ts
-@@ -1,5 +1,5 @@
- import * as React from 'react';
--import * as ReactDOM from 'react-dom';
-+// import * as ReactDOM from 'react-dom';
- import Quill, {
-   Bounds,
-   Delta,
-diff --git a/node_modules/react-quill/lib/mixin.js b/node_modules/react-quill/lib/mixin.js
-index 92c8189..917ec89 100644
---- a/node_modules/react-quill/lib/mixin.js
-+++ b/node_modules/react-quill/lib/mixin.js
-@@ -1,5 +1,5 @@
- 'use strict';
--var ReactDOM = require('react-dom');
-+// var ReactDOM = require('react-dom');
- 
- /*
- A mixin for Components that own a Quill instance.
-@@ -21,7 +21,7 @@
- 	 *
+diff --git a/node_modules/react-quill/lib/index.js b/node_modules/react-quill/lib/index.js
+index 2c49987..d956f4d 100644
+--- a/node_modules/react-quill/lib/index.js
++++ b/node_modules/react-quill/lib/index.js
+@@ -359,7 +359,7 @@ class QuillComponent extends React.Component {
  	 */
- 	getEditor: function() {
+ 	getEditor: function getEditor() {
+ 		if (!this.editor) throw new Error('The editor is not mounted.');
 -		return this.editor;
-+		return this.state.editor;
++		return this.editor.editor;
  	},
  
  	/**
-@@ -31,7 +31,7 @@
+@@ -457,7 +457,7 @@ class QuillComponent extends React.Component {
+ 	setEditorSelection: function setEditorSelection(range, source) {
+ 		var editor = this.getEditor();
+ 		if (range) {
+-			// Validate the input: tell the editor to focus itself to prevent some
++			// Validate the input: tell the editor to focus itself to prevent some'
+ 			// issues when trying to set selection on a non-focused editor.
+ 			this.focus();
+ 			// The selection is stored as a range, not as a Range object.
+@@ -486,13 +486,13 @@ class QuillComponent extends React.Component {
+ 	 * Sets the editor's content. The delta must be in Quill's format.
  	 *
+ 	 * See: https://quilljs.com/docs/api/#setcontents
+-	 *
+-	 * @param {Delta} delta
+-	 * @param {string} source
  	 */
- 	getEditingArea: function() {
--		var editor = ReactDOM.findDOMNode(this.getEditor());
-+		var editor = this.editingArea;
- 		return editor.querySelector('.ql-editor');
+-	setEditorContents: function setEditorContents(delta, source) {
+-		var editor = this.getEditor();
+-		editor.setContents(delta, source);
++	setEditorContents: function(delta, source) {
++		const editor = this.getEditor();
++		// We'll update only if the contents have changed, to avoid needlessly
++		// triggering updates and cursor changes.
++		const newContents = this.isControlled() ? this.props.value : this.state.value;
++		editor.setContents(newContents, source);
  	},
  
-@@ -41,12 +41,12 @@
+ 	/**
+@@ -512,12 +512,12 @@ class QuillComponent extends React.Component {
+ 	 */
+ 	setEditorHtml: function setEditorHtml(html, source) {
+ 		var editor = this.getEditor();
+-		editor.clipboard.dangerouslyPasteHTML(html, source);
++		editor.setContents(editor.clipboard.convert(html), source);
+ 	},
+ 
+ 	setEditorText: function setEditorText(text, source) {
+ 		var editor = this.getEditor();
+-		editor.setText(text, source);
++		this.setEditorContents({ ops: [{ insert: text }] }, source);
+ 	},
+ 
+ 	/*
+@@ -743,7 +743,7 @@ class QuillComponent extends React.Component {
+ 	 * return this.editor.getText(range);
  	 *
+ 	 * See: https://quilljs.com/docs/api/#gettext
+-	 *
++	 * 
+ 	 * @param {number} index
+ 	 * @param {number} length
  	 */
- 	getSelection: function() {
--		return this.editor.getSelection();
-+		return this.state.editor.getSelection();
- 	},
- 
- 	getBounds: function(index, length) {
--		return this.editor.getBounds(index, length);
-+		return this.state.editor.getBounds(index, length);
- 	},
- 
- 	/**
-@@ -62,7 +62,7 @@
+@@ -754,7 +754,7 @@ class QuillComponent extends React.Component {
  	 *
- 	 */
- 	getEditorContents: function() {
--		return this.editor.getContents();
-+		return this.state.editor.getContents();
- 	},
- 
- 	/**
-@@ -74,7 +74,7 @@
+ 	 * See: https://quilljs.com/docs/api/#deleteText
  	 *
+-	 * @param {number} index
++	 * @param {number} index 
+ 	 * @param {number} length
  	 */
- 	getEditorLength: function() {
--		return this.editor.getLength();
-+		return this.state.editor.getLength();
- 	},
- 
- 	/**
-@@ -82,7 +82,7 @@
- 	 * on its editor.
+ 	deleteText: function deleteText(index, length) {
+@@ -765,7 +765,7 @@ class QuillComponent extends React.Component {
+ 	 *
+ 	 * See: https://quilljs.com/docs/api/#getbounds
+ 	 *
+-	 * @param {number} index
++	 * @param {number} index 
+ 	 * @param {number} length
  	 */
- 	focus: function() {
--		this.editor.focus();
-+		this.state.editor.focus();
- 	},
- 
- 	/**
-@@ -90,7 +90,7 @@
- 	 * on its editor.
+ 	getBounds: function getBounds(index, length) {
+@@ -794,7 +794,7 @@ class QuillComponent extends React.Component {
  	 */
- 	blur: function() {
--		this.editor.blur();
-+		this.state.editor.blur();
- 	},
+ 	render: function render() {
+ 		return React.createElement(
+-			'div',
++			this.props.tag,
+ 			_extends({
+ 				key: this.state.generation,
+ 				ref: this.setEditingArea,
+@@ -829,8 +829,12 @@ function UnprivilegedEditor(props) {
  
- };
+ 	return React.createElement(
+ 		'div',
+-		_extends({}, props, {
+-			ref: function ref(element) {
++		_extends({}, props, { 
++			ref: function(element) {
++				// Prevent rendering of the DOM node managed by Quill
++				if (element) {
++					element.innerHTML = '';
++				}
+ 				if (typeof props.forwardedRef === 'function') {
+ 					props.forwardedRef(element);
+ 				} else if (isObject(props.forwardedRef)) {
+@@ -841,13 +845,13 @@ function UnprivilegedEditor(props) {
+ 	);
+ }
+ 
+-var Quill = Object.assign(QuillComponent, {
++var Quill = Object.assign(QuillComponent, {	
+ 	Quill: Quill$1,
+ 	Mixin: Mixin,
+ 	Toolbar: Toolbar
+ });
+ 
+-Quill.displayName = 'React Quill';
++Quill.displayName = 'ReactQuill';
+ 
+ function RQB(props) {
+ 	var ref = React.useRef(null);
