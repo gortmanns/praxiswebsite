@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useEditor, EditorContent, Editor, Mark } from '@tiptap/react';
+import { useEditor, EditorContent, Editor, Mark, Extension } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import {
@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
-import { Bold, Underline as UnderlineIcon, Italic, List, Minus, Palette, Code2, Baseline } from 'lucide-react';
+import { Bold, Italic, List, Minus, Palette, Code2, Underline as UnderlineIcon, Indent, Outdent } from 'lucide-react';
 import { Color } from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import {
@@ -29,41 +29,120 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 
+// Custom Indent Extension
+const IndentExtension = Extension.create({
+  name: 'indent',
+
+  addOptions() {
+    return {
+      types: ['paragraph', 'heading', 'listItem'],
+      minIndent: 0,
+      maxIndent: 10, // 10 * 10px = 100px max indent
+    };
+  },
+
+  addGlobalAttributes() {
+    return [
+      {
+        types: this.options.types,
+        attributes: {
+          indent: {
+            default: 0,
+            parseHTML: element => parseInt(element.style.paddingLeft, 10) / 10 || 0,
+            renderHTML: attributes => {
+              if (!attributes.indent) {
+                return {};
+              }
+              return { style: `padding-left: ${attributes.indent * 10}px` };
+            },
+          },
+        },
+      },
+    ];
+  },
+
+  addCommands() {
+    return {
+      increaseIndent: () => ({ tr, dispatch, state }) => {
+        const { selection } = tr;
+        const { from, to } = selection;
+        let changed = false;
+
+        state.doc.nodesBetween(from, to, (node, pos) => {
+          if (this.options.types.includes(node.type.name)) {
+            const currentIndent = node.attrs.indent || 0;
+            if (currentIndent < this.options.maxIndent) {
+              const newIndent = currentIndent + 1;
+              tr.setNodeMarkup(pos, undefined, { ...node.attrs, indent: newIndent });
+              changed = true;
+            }
+          }
+        });
+
+        if (dispatch && changed) {
+          dispatch(tr);
+          return true;
+        }
+        return false;
+      },
+      decreaseIndent: () => ({ tr, dispatch, state }) => {
+        const { selection } = tr;
+        const { from, to } = selection;
+        let changed = false;
+
+        state.doc.nodesBetween(from, to, (node, pos) => {
+          if (this.options.types.includes(node.type.name)) {
+            const currentIndent = node.attrs.indent || 0;
+            if (currentIndent > this.options.minIndent) {
+              const newIndent = currentIndent - 1;
+              tr.setNodeMarkup(pos, undefined, { ...node.attrs, indent: newIndent });
+              changed = true;
+            }
+          }
+        });
+        
+        if (dispatch && changed) {
+          dispatch(tr);
+          return true;
+        }
+        return false;
+      },
+    };
+  },
+
+   addKeyboardShortcuts() {
+    return {
+      'Tab': () => this.editor.commands.increaseIndent(),
+      'Shift-Tab': () => this.editor.commands.decreaseIndent(),
+    }
+  },
+});
+
+
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     small: {
-      /**
-       * Toggle the small mark
-       */
       toggleSmall: () => ReturnType,
+    },
+    indent: {
+      increaseIndent: () => ReturnType,
+      decreaseIndent: () => ReturnType,
     }
   }
 }
 
 const Small = Mark.create({
   name: 'small',
-
   parseHTML() {
-    return [
-      {
-        tag: 'span',
-        getAttrs: node => (node as HTMLElement).classList.contains('is-small') && null,
-      },
-    ]
+    return [{ tag: 'span', getAttrs: node => (node as HTMLElement).classList.contains('is-small') && null }];
   },
-
   renderHTML({ HTMLAttributes }) {
-    return ['span', { ...HTMLAttributes, class: 'is-small' }, 0]
+    return ['span', { ...HTMLAttributes, class: 'is-small' }, 0];
   },
-
   addCommands() {
-    return {
-      toggleSmall: () => ({ commands }) => {
-        return commands.toggleMark(this.name)
-      },
-    }
+    return { toggleSmall: () => ({ commands }) => commands.toggleMark(this.name) };
   },
-})
+});
 
 const MenuBar = ({ editor, isHtmlMode, onHtmlModeToggle }: { editor: Editor | null; isHtmlMode: boolean; onHtmlModeToggle: () => void; }) => {
   if (!editor) {
@@ -76,7 +155,6 @@ const MenuBar = ({ editor, isHtmlMode, onHtmlModeToggle }: { editor: Editor | nu
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="h-8 px-2" disabled={isHtmlMode} title="Schriftgrösse">
-                <Baseline className="h-4 w-4 mr-1" />
                 Schriftgrösse
             </Button>
         </DropdownMenuTrigger>
@@ -152,6 +230,28 @@ const MenuBar = ({ editor, isHtmlMode, onHtmlModeToggle }: { editor: Editor | nu
       >
         <List className="h-4 w-4" />
       </Toggle>
+
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => editor.commands.increaseIndent()}
+        disabled={isHtmlMode}
+        className="h-8 w-8 p-1.5"
+        title="Einrücken"
+      >
+        <Indent className="h-4 w-4" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => editor.commands.decreaseIndent()}
+        disabled={isHtmlMode}
+        className="h-8 w-8 p-1.5"
+        title="Ausrücken"
+      >
+        <Outdent className="h-4 w-4" />
+      </Button>
+
       <Button
         size="sm"
         variant="ghost"
@@ -197,10 +297,9 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
       }),
       Underline,
       TextStyle,
-      Color.configure({
-        types: ['textStyle'],
-      }),
+      Color.configure({ types: ['textStyle'] }),
       Small,
+      IndentExtension,
     ],
     content: initialValue,
     editorProps: {
@@ -210,7 +309,6 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
     },
   });
 
-  // Sync content to local state when opening or initial value changes
   useEffect(() => {
     if (isOpen) {
         const content = initialValue;
@@ -221,25 +319,19 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
     }
   }, [isOpen, initialValue, editor]);
 
-  // Sync editor with htmlContent state when switching modes
   useEffect(() => {
     if (!editor || editor.isDestroyed) return;
-
     if (isHtmlMode) {
-      // From Visual to HTML: update textarea with latest editor content
       setHtmlContent(editor.getHTML());
     } else {
-      // From HTML to Visual: update editor with textarea content
       if (editor.getHTML() !== htmlContent) {
         editor.commands.setContent(htmlContent);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHtmlMode, editor]);
+  }, [isHtmlMode, editor, htmlContent]);
 
 
   const handleSave = () => {
-    // Save content from the current active mode
     const contentToSave = isHtmlMode ? htmlContent : editor?.getHTML() || '';
     onSave(contentToSave);
     setIsOpen(false);
