@@ -16,9 +16,15 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
-import { Bold, Italic, Underline as UnderlineIcon, List, ListOrdered, Heading2, Minus, Palette, Pilcrow } from 'lucide-react';
+import { Bold, Underline as UnderlineIcon, List, Minus, Palette, Pilcrow } from 'lucide-react';
 import { Color } from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const MenuBar = ({ editor }: { editor: Editor | null }) => {
   if (!editor) {
@@ -48,20 +54,26 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
       >
         <List className="h-4 w-4" />
       </Toggle>
-      <Toggle
-        size="sm"
-        pressed={editor.isActive({ color: 'var(--color-tiptap-blue)' })}
-        onPressedChange={() => editor.chain().focus().toggleColor('var(--color-tiptap-blue)').run()}
-      >
-        <Palette className="h-4 w-4 text-blue-500" />
-      </Toggle>
-      <Toggle
-        size="sm"
-        pressed={editor.isActive({ color: 'var(--color-tiptap-gray)' })}
-        onPressedChange={() => editor.chain().focus().toggleColor('var(--color-tiptap-gray)').run()}
-      >
-        <Palette className="h-4 w-4 text-gray-500" />
-      </Toggle>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="p-2">
+                <Palette className="h-4 w-4" />
+            </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+            <DropdownMenuItem onClick={() => editor.chain().focus().unsetColor().run()}>
+                Normal (Weiss)
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().setColor('var(--color-tiptap-blue)').run()}>
+                Blau
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().setColor('var(--color-tiptap-gray)').run()}>
+                Grau
+            </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
       <Toggle
         size="sm"
         pressed={editor.isActive({ textStyle: { fontSize: 'small' } })}

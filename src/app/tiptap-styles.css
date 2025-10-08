@@ -18,8 +18,13 @@
 
 /* Define custom colors as CSS variables for easy management */
 :root {
+    --color-tiptap-white: hsl(var(--background));
     --color-tiptap-blue: hsl(197 100% 47%);
     --color-tiptap-gray: hsl(209 15% 65%);
+}
+
+.tiptap span[style*="color: var(--color-tiptap-white)"] {
+    color: var(--color-tiptap-white);
 }
 
 .tiptap span[style*="color: var(--color-tiptap-blue)"] {
