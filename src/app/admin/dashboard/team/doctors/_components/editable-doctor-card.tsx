@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useRef, ChangeEvent } from 'react';
+import React, { useState, useRef, ChangeEvent, useEffect } from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { User, Upload, Pencil, Replace } from 'lucide-react';
+import { User, Upload, Pencil, Replace, Check, X, Shield, Users } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,8 +12,7 @@ import { Label } from '@/components/ui/label';
 import { VitaEditorDialog } from './vita-editor-dialog';
 import { ImageCropDialog } from './image-crop-dialog';
 import DOMPurify from 'dompurify';
-import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
-import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const initialVita = `<p>Diesen Text können Sie frei anpassen</p>`;
 
@@ -92,6 +91,98 @@ const EditDialog: React.FC<EditDialogProps> = ({
     );
 };
 
+type AdditionalInfoType = 'text' | 'logo';
+type PartnerLogoType = 'slezak' | 'orthozentrum';
+
+interface AdditionalInfoDialogProps {
+    trigger: React.ReactNode;
+    initialText: string;
+    initialLogo: PartnerLogoType | null;
+    onSave: (text: string, logo: PartnerLogoType | null) => void;
+}
+
+const AdditionalInfoDialog: React.FC<AdditionalInfoDialogProps> = ({ trigger, initialText, initialLogo, onSave }) => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [infoType, setInfoType] = useState<AdditionalInfoType>(initialLogo ? 'logo' : 'text');
+    const [currentText, setCurrentText] = useState(initialText);
+    const [currentLogo, setCurrentLogo] = useState<PartnerLogoType | null>(initialLogo);
+
+    useEffect(() => {
+        if (isDialogOpen) {
+            setCurrentText(initialText);
+            setCurrentLogo(initialLogo);
+            setInfoType(initialLogo ? 'logo' : 'text');
+        }
+    }, [initialText, initialLogo, isDialogOpen]);
+
+    const handleSave = () => {
+        if (infoType === 'text') {
+            onSave(currentText, null);
+        } else {
+            onSave('', currentLogo);
+        }
+        setIsDialogOpen(false);
+    };
+
+    return (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>{trigger}</DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Zusatzinformation bearbeiten</DialogTitle>
+                    <DialogDescription>
+                        Wählen Sie, ob Sie einen Text oder ein Partner-Logo anzeigen möchten.
+                    </DialogDescription>
+                </DialogHeader>
+                
+                <RadioGroup value={infoType} onValueChange={(value) => setInfoType(value as AdditionalInfoType)} className="mt-4">
+                    <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="text" id="r-text" />
+                        <Label htmlFor="r-text">Freitext anzeigen</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="logo" id="r-logo" />
+                        <Label htmlFor="r-logo">Partner-Logo anzeigen</Label>
+                    </div>
+                </RadioGroup>
+
+                {infoType === 'text' && (
+                    <div className="mt-4 space-y-2">
+                        <Label htmlFor="info-text-input">Zusatzinformation (z.B. Ärztliche Leitung)</Label>
+                        <Input
+                            id="info-text-input"
+                            value={currentText}
+                            onChange={(e) => setCurrentText(e.target.value)}
+                        />
+                    </div>
+                )}
+
+                {infoType === 'logo' && (
+                     <RadioGroup value={currentLogo ?? undefined} onValueChange={(value) => setCurrentLogo(value as PartnerLogoType)} className="mt-4">
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="slezak" id="r-slezak" />
+                            <Label htmlFor="r-slezak">Logo Dr. Slezak</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="orthozentrum" id="r-orthozentrum" />
+                            <Label htmlFor="r-orthozentrum">Logo Orthozentrum</Label>
+                        </div>
+                    </RadioGroup>
+                )}
+
+
+                <div className="mt-6 flex justify-end gap-2">
+                    <DialogClose asChild>
+                        <Button variant="outline">Abbrechen</Button>
+                    </DialogClose>
+                    <Button onClick={handleSave}>Speichern</Button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
+
 export const EditableDoctorCard: React.FC = () => {
     const [title, setTitle] = useState('Prof. Dr. med. Dr. h.c.');
     const [name, setName] = useState('Wilko. W. Schemmer');
@@ -99,6 +190,7 @@ export const EditableDoctorCard: React.FC = () => {
     const [qualification1, setQualification1] = useState('Schwerpunkt spezielle Viszeralchirurgie (D)');
     const [qualification2, setQualification2] = useState('Fellow of the American College of Surgeons (FACS)');
     const [additionalInfo, setAdditionalInfo] = useState('');
+    const [partnerLogo, setPartnerLogo] = useState<PartnerLogoType | null>(null);
     const [vita, setVita] = useState(initialVita);
     const [image, setImage] = useState<string | null>('/images/team/Prof.Schemmer.jpg');
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
@@ -132,15 +224,9 @@ export const EditableDoctorCard: React.FC = () => {
         </div>
     );
     
-    const PartnerLogo = ({ name }: { name: string }) => {
-        switch (name) {
-            case 'orthozentrum':
-                return <OrthozentrumLogo className="w-full h-auto text-current" />;
-            case 'slezak':
-                return <AgnieszkaSlezakLogo className="w-full h-auto text-current" />;
-            default:
-                return null;
-        }
+    const handleAdditionalInfoSave = (text: string, logo: PartnerLogoType | null) => {
+        setAdditionalInfo(text);
+        setPartnerLogo(logo);
     };
 
     return (
@@ -231,14 +317,23 @@ export const EditableDoctorCard: React.FC = () => {
                                              trigger={triggerDiv(<p>{qualification2 || '[Zusatzqualifikation 2]'}</p>)}
                                            />
                                        </div>
-                                       <EditDialog 
-                                          dialogTitle="Zusatzinformationen bearbeiten"
-                                          dialogDescription="Geben Sie optionalen Text wie '(Ärztliche Leitung)' ein."
-                                          initialValue={additionalInfo}
-                                          onSave={setAdditionalInfo}
-                                          inputLabel="Zusatzinformationen"
-                                          trigger={triggerDiv(<p className="mt-[2.5cqw] text-[1.6cqw] italic">{additionalInfo || '[Zusatzinfo]'}</p>, "w-fit")}
+                                       
+                                        <AdditionalInfoDialog
+                                            initialText={additionalInfo}
+                                            initialLogo={partnerLogo}
+                                            onSave={handleAdditionalInfoSave}
+                                            trigger={
+                                                triggerDiv(
+                                                    <div className="mt-[2.5cqw] min-h-[1.6cqw] text-[1.6cqw] italic">
+                                                        {partnerLogo === 'slezak' && <span className="font-bold">[Logo: Dr. Slezak]</span>}
+                                                        {partnerLogo === 'orthozentrum' && <span className="font-bold">[Logo: Orthozentrum]</span>}
+                                                        {!partnerLogo && (additionalInfo || '[Zusatzinfo]')}
+                                                    </div>,
+                                                    "w-fit"
+                                                )
+                                            }
                                         />
+
                                     </div>
                                 </div>
                              </div>
