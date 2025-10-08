@@ -14,14 +14,9 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { VitaEditorDialog } from './vita-editor-dialog';
 import { VitaRenderer } from './vita-renderer';
 import { AlertCircle } from 'lucide-react';
+import { ImageCropDialog } from './image-crop-dialog';
 
-const initialVita = `Dies ist ganz normaler Text
-[blau]Dies ist ein blauer Text[/blau]
-[fett]Dieser Text ist fett[/fett]
-[blau][fett]Dieser Text ist sowohl fett als auch blau[/fett][/blau]
-[liste]Dieser Text ist als Teil einer Liste formatiert[/liste]
-[liste][grau][klein]Noch einmal ein Listenpunkt, diesmal aber in grau und klein[/klein][/grau][/liste]
-`;
+const initialVita = `<h3>Titel des Abschnitts</h3><p>Dies ist ganz normaler Text. Sie können <strong>fett</strong>, <em>kursiv</em> oder <u>unterstrichenen</u> Text verwenden.</p><ul><li>Listenpunkt 1</li><li>Listenpunkt 2</li></ul>`;
 
 const existingImages = [
     '/images/team/Dr.Herschel.jpg',
@@ -99,8 +94,8 @@ export const EditableDoctorCard = () => {
     const [vita, setVita] = useState(initialVita);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [imageSourceType, setImageSourceType] = useState<'none' | 'new-upload' | 'existing-gallery'>('none');
-    const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
-    const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+    const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleImageUploadClick = () => {
@@ -112,14 +107,21 @@ export const EditableDoctorCard = () => {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImagePreview(reader.result as string);
-                setImageSourceType('new-upload');
-                setIsImageDialogOpen(false); 
+                setImageToCrop(reader.result as string);
             };
             reader.readAsDataURL(file);
         }
     };
     
+    const handleCroppedImage = (croppedImage: string) => {
+        setImagePreview(croppedImage);
+        setImageSourceType('new-upload');
+        setImageToCrop(null); // Close the crop dialog
+    };
+
+    const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
+    const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+
     const handleDeleteImage = () => {
         setImagePreview(null);
         setImageSourceType('none');
@@ -142,13 +144,20 @@ export const EditableDoctorCard = () => {
 
     return (
         <div className="mx-auto max-w-7xl">
-             <input
+            <input
                 type="file"
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 className="hidden"
                 accept="image/png, image/jpeg, image/webp"
             />
+             {imageToCrop && (
+                <ImageCropDialog
+                    imageUrl={imageToCrop}
+                    onCropComplete={handleCroppedImage}
+                    onClose={() => setImageToCrop(null)}
+                />
+            )}
             <Card className="overflow-hidden">
                 <CardContent className="p-0">
                     <div className="grid grid-cols-1 md:grid-cols-2">
@@ -181,7 +190,7 @@ export const EditableDoctorCard = () => {
                                         <DialogHeader>
                                             <DialogTitle>Bild für Arztprofil</DialogTitle>
                                             <DialogDescription>
-                                                Verwalten Sie das Profilbild. Für eine optimale Darstellung sollte das Bild ein Seitenverhältnis von 2:3 haben.
+                                                Verwalten Sie das Profilbild. Das Bild wird automatisch auf ein Seitenverhältnis von 2:3 zugeschnitten.
                                             </DialogDescription>
                                         </DialogHeader>
                                         
@@ -195,62 +204,57 @@ export const EditableDoctorCard = () => {
                                             </Alert>
                                         )}
 
-                                        {imagePreview ? (
-                                            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                                <Button variant="outline" onClick={handleImageUploadClick}>
-                                                    <Replace className="mr-2 h-4 w-4" />
-                                                    Bild ersetzen
-                                                </Button>
-                                                <Button variant="destructive" onClick={handleDeleteImage}>
+                                        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                            <Dialog open={isGalleryOpen} onOpenChange={setIsGalleryOpen}>
+                                                <DialogTrigger asChild>
+                                                    <Button variant="outline">
+                                                        <GalleryHorizontal className="mr-2 h-4 w-4" />
+                                                        Bestehendes auswählen
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="max-w-4xl">
+                                                    <DialogHeader>
+                                                        <DialogTitle>Bestehendes Bild auswählen</DialogTitle>
+                                                        <DialogDescription>
+                                                            Wählen Sie ein bereits hochgeladenes Bild aus dem Team-Ordner.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[60vh] overflow-y-auto p-1">
+                                                        {existingImages.map(imgSrc => (
+                                                            <div key={imgSrc} className="cursor-pointer group" onClick={() => handleSelectFromGallery(imgSrc)}>
+                                                                <div className="relative aspect-[2/3] w-full overflow-hidden rounded-md border-2 border-transparent group-hover:border-primary">
+                                                                    <Image src={imgSrc} alt={imgSrc} fill className="object-cover" />
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </DialogContent>
+                                            </Dialog>
+
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <div className="inline-block w-full">
+                                                            <Button onClick={handleImageUploadClick} disabled={!name} className="w-full">
+                                                                <Upload className="mr-2 h-4 w-4" />
+                                                                Neu hochladen
+                                                            </Button>
+                                                        </div>
+                                                    </TooltipTrigger>
+                                                    {!name && (
+                                                        <TooltipContent>
+                                                            <p>Bitte geben Sie zuerst einen Namen ein.</p>
+                                                        </TooltipContent>
+                                                    )}
+                                                </Tooltip>
+                                            </TooltipProvider>
+                                        </div>
+                                         {imagePreview && (
+                                            <div className="mt-4">
+                                                <Button variant="destructive" onClick={handleDeleteImage} className="w-full">
                                                     <Trash2 className="mr-2 h-4 w-4" />
                                                     Bild löschen
                                                 </Button>
-                                            </div>
-                                        ) : (
-                                            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                                <Dialog open={isGalleryOpen} onOpenChange={setIsGalleryOpen}>
-                                                    <DialogTrigger asChild>
-                                                        <Button variant="outline">
-                                                            <GalleryHorizontal className="mr-2 h-4 w-4" />
-                                                            Bestehendes auswählen
-                                                        </Button>
-                                                    </DialogTrigger>
-                                                    <DialogContent className="max-w-4xl">
-                                                        <DialogHeader>
-                                                            <DialogTitle>Bestehendes Bild auswählen</DialogTitle>
-                                                            <DialogDescription>
-                                                                Wählen Sie ein bereits hochgeladenes Bild aus dem Team-Ordner.
-                                                            </DialogDescription>
-                                                        </DialogHeader>
-                                                        <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[60vh] overflow-y-auto p-1">
-                                                            {existingImages.map(imgSrc => (
-                                                                <div key={imgSrc} className="cursor-pointer group" onClick={() => handleSelectFromGallery(imgSrc)}>
-                                                                    <div className="relative aspect-[2/3] w-full overflow-hidden rounded-md border-2 border-transparent group-hover:border-primary">
-                                                                        <Image src={imgSrc} alt={imgSrc} fill className="object-cover" />
-                                                                    </div>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </DialogContent>
-                                                </Dialog>
-
-                                                <TooltipProvider>
-                                                    <Tooltip>
-                                                        <TooltipTrigger asChild>
-                                                            <div className="inline-block w-full">
-                                                                <Button onClick={handleImageUploadClick} disabled={!name} className="w-full">
-                                                                    <Upload className="mr-2 h-4 w-4" />
-                                                                    Neu hochladen
-                                                                </Button>
-                                                            </div>
-                                                        </TooltipTrigger>
-                                                        {!name && (
-                                                            <TooltipContent>
-                                                                <p>Bitte geben Sie zuerst einen Namen ein.</p>
-                                                            </TooltipContent>
-                                                        )}
-                                                    </Tooltip>
-                                                </TooltipProvider>
                                             </div>
                                         )}
                                     </DialogContent>
