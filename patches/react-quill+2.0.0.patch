@@ -1,0 +1,90 @@
+diff --git a/node_modules/react-quill/lib/index.d.ts b/node_modules/react-quill/lib/index.d.ts
+index 0147c20..5f33190 100644
+--- a/node_modules/react-quill/lib/index.d.ts
++++ b/node_modules/react-quill/lib/index.d.ts
+@@ -1,5 +1,5 @@
+ import * as React from 'react';
+-import * as ReactDOM from 'react-dom';
++// import * as ReactDOM from 'react-dom';
+ import Quill, {
+   Bounds,
+   Delta,
+diff --git a/node_modules/react-quill/lib/mixin.js b/node_modules/react-quill/lib/mixin.js
+index 92c8189..917ec89 100644
+--- a/node_modules/react-quill/lib/mixin.js
++++ b/node_modules/react-quill/lib/mixin.js
+@@ -1,5 +1,5 @@
+ 'use strict';
+-var ReactDOM = require('react-dom');
++// var ReactDOM = require('react-dom');
+ 
+ /*
+ A mixin for Components that own a Quill instance.
+@@ -21,7 +21,7 @@
+ 	 *
+ 	 */
+ 	getEditor: function() {
+-		return this.editor;
++		return this.state.editor;
+ 	},
+ 
+ 	/**
+@@ -31,7 +31,7 @@
+ 	 *
+ 	 */
+ 	getEditingArea: function() {
+-		var editor = ReactDOM.findDOMNode(this.getEditor());
++		var editor = this.editingArea;
+ 		return editor.querySelector('.ql-editor');
+ 	},
+ 
+@@ -41,12 +41,12 @@
+ 	 *
+ 	 */
+ 	getSelection: function() {
+-		return this.editor.getSelection();
++		return this.state.editor.getSelection();
+ 	},
+ 
+ 	getBounds: function(index, length) {
+-		return this.editor.getBounds(index, length);
++		return this.state.editor.getBounds(index, length);
+ 	},
+ 
+ 	/**
+@@ -62,7 +62,7 @@
+ 	 *
+ 	 */
+ 	getEditorContents: function() {
+-		return this.editor.getContents();
++		return this.state.editor.getContents();
+ 	},
+ 
+ 	/**
+@@ -74,7 +74,7 @@
+ 	 *
+ 	 */
+ 	getEditorLength: function() {
+-		return this.editor.getLength();
++		return this.state.editor.getLength();
+ 	},
+ 
+ 	/**
+@@ -82,7 +82,7 @@
+ 	 * on its editor.
+ 	 */
+ 	focus: function() {
+-		this.editor.focus();
++		this.state.editor.focus();
+ 	},
+ 
+ 	/**
+@@ -90,7 +90,7 @@
+ 	 * on its editor.
+ 	 */
+ 	blur: function() {
+-		this.editor.blur();
++		this.state.editor.blur();
+ 	},
+ 
+ };
