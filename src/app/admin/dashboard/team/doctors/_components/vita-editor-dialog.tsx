@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -16,7 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
-import { Bold, Underline as UnderlineIcon, Italic, List, Minus, Palette, Pilcrow, Code2 } from 'lucide-react';
+import { Bold, Underline as UnderlineIcon, Italic, List, Minus, Palette, Code2 } from 'lucide-react';
 import { Color } from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import {
@@ -35,17 +36,7 @@ const MenuBar = ({ editor, isHtmlMode, onHtmlModeToggle }: { editor: Editor | nu
 
   return (
     <div className="flex flex-wrap items-center gap-1 rounded-t-md border border-input border-b-0 bg-transparent p-1">
-       {/* Group 1: Style */}
-       <Toggle
-        size="sm"
-        pressed={editor.isActive({ textStyle: { fontSize: 'small' } })}
-        onPressedChange={() => editor.chain().focus().toggleTextStyle({ fontSize: 'small' }).run()}
-        disabled={isHtmlMode}
-        title="Kleinere Schrift"
-      >
-        <Pilcrow className="h-4 w-4" />
-      </Toggle>
-
+      {/* Group 1: Style */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-1.5" disabled={isHtmlMode} title="Textfarbe">
@@ -54,7 +45,7 @@ const MenuBar = ({ editor, isHtmlMode, onHtmlModeToggle }: { editor: Editor | nu
         </DropdownMenuTrigger>
         <DropdownMenuContent>
             <DropdownMenuItem onClick={() => editor.chain().focus().unsetColor().run()}>
-                Normal (Weiss)
+                Weiss
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => editor.chain().focus().setColor('var(--color-tiptap-blue)').run()}>
                 Blau
