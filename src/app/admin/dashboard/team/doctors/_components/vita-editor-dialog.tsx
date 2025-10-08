@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -20,19 +19,12 @@ interface VitaEditorDialogProps {
   onSave: (value: string) => void;
 }
 
-// This is a simplified editor. For a real-world scenario,
-// you would use a more robust library like Tiptap/Novel, but due to
-// installation issues, we are using a simplified textarea for now.
-// The saved content is treated as raw HTML.
-
 export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, initialValue, onSave }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [editorContent, setEditorContent] = useState('');
 
   useEffect(() => {
     if (isOpen) {
-      // For simplicity, this basic editor will just show the HTML source.
-      // A more advanced implementation would parse this back into a WYSIWYG view.
       setEditorContent(initialValue);
     }
   }, [isOpen, initialValue]);
