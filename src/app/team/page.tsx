@@ -11,7 +11,7 @@ const doctors: Doctor[] = [
   {
     id: 'ortmanns',
     title: 'Dipl. med.',
-    name: 'Gernot Ortmanns',
+    name: 'G. Ortmanns',
     imageUrl: '/images/team/Ortmanns.jpg',
     imageHint: 'man portrait',
     specialty: 'Praktischer Arzt',
