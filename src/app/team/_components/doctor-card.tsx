@@ -1,26 +1,9 @@
-
 'use client'
 
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import DOMPurify from 'dompurify';
 import React from 'react';
-import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
-import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
-
-export interface Doctor {
-    id: string;
-    title: string;
-    name: string;
-    imageUrl: string;
-    imageHint: string;
-    specialty: string;
-    qualifications: string[];
-    vita: string;
-    additionalInfo?: string;
-    partnerLogoComponent?: 'OrthozentrumLogo' | 'AgnieszkaSlezakLogo' | 'VascAllianceLogo' | 'SchemmerWorniLogo';
-    order: number;
-}
 
 const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
@@ -38,55 +21,29 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     );
 };
 
-const PartnerLogo: React.FC<{ logo?: Doctor['partnerLogoComponent'] }> = ({ logo }) => {
-    if (!logo) return null;
+interface DoctorCardProps {
+    title: string;
+    name: string;
+    imageUrl: string;
+    imageHint: string;
+    specialty: React.ReactNode;
+    qualifications: string[];
+    vita: string;
+    additionalInfo?: string;
+    children?: React.ReactNode;
+}
 
-    switch (logo) {
-        case 'OrthozentrumLogo':
-            return <OrthozentrumLogo className="h-28 w-auto" />;
-        case 'AgnieszkaSlezakLogo':
-            return <AgnieszkaSlezakLogo className="h-28 w-auto" />;
-        case 'VascAllianceLogo':
-             return (
-                <div className="relative h-24 w-[400px]">
-                    <Image
-                        src="/images/VASC-Alliance-Logo.png"
-                        alt="VASC Alliance Logo"
-                        fill
-                        className="object-contain"
-                        data-ai-hint="partner logo"
-                    />
-                </div>
-            );
-        case 'SchemmerWorniLogo':
-            return (
-                <Image
-                    src="/images/schemmer-worni-logo.png"
-                    alt="Schemmer & Worni Logo"
-                    width={390}
-                    height={130}
-                    className="h-auto w-full max-w-[300px] object-contain"
-                    data-ai-hint="partner logo"
-                />
-            );
-        default:
-            return null;
-    }
-};
-
-export const DoctorCard: React.FC<{ doctor: Doctor }> = ({ doctor }) => {
-    const {
-        title,
-        name,
-        imageUrl,
-        imageHint,
-        specialty,
-        qualifications,
-        vita,
-        additionalInfo,
-        partnerLogoComponent,
-    } = doctor;
-
+export const DoctorCard: React.FC<DoctorCardProps> = ({
+    title,
+    name,
+    imageUrl,
+    imageHint,
+    specialty,
+    qualifications,
+    vita,
+    additionalInfo,
+    children,
+}) => {
     return (
         <div className="group relative w-full overflow-hidden rounded-lg shadow-sm">
             <Card className="w-full overflow-hidden">
@@ -122,9 +79,9 @@ export const DoctorCard: React.FC<{ doctor: Doctor }> = ({ doctor }) => {
                                         </p>
                                     )}
                                     
-                                    {partnerLogoComponent && (
+                                    {children && (
                                         <div className="relative mt-[2.5cqw] flex w-fit justify-start">
-                                            <PartnerLogo logo={partnerLogoComponent} />
+                                            {children}
                                         </div>
                                     )}
                                 </div>

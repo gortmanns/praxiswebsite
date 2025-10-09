@@ -2,11 +2,12 @@
 
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
+import { OrtmannsCard } from './_components/doctors/ortmanns-card';
+import { RosenovCard } from './_components/doctors/rosenov-card';
+import { SchemmerCard } from './_components/doctors/schemmer-card';
+import { SlezakCard } from './_components/doctors/slezak-card';
+import { HerschelCard } from './_components/doctors/herschel-card';
 import { TeamMemberCard } from './_components/team-member-card';
-import { DoctorCard, Doctor } from './_components/doctor-card';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
-import { Skeleton } from '@/components/ui/skeleton';
 
 const garcia = {
     name: 'S. Garcia',
@@ -98,61 +99,42 @@ const otherTeamMembers = [
     },
 ];
 
-const DoctorCardSkeleton = () => (
-    <div className="w-full p-2">
-        <Skeleton className="w-full aspect-[2/1] rounded-lg" />
-    </div>
-);
-
 export default function TeamPage() {
-    const firestore = useFirestore();
-
-    const doctorsQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
-        return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
-    }, [firestore]);
-
-    const { data: doctors, isLoading } = useCollection<Doctor>(doctorsQuery);
-
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
         <div className="container py-16 sm:py-24">
-          <div className="mx-auto mt-16 max-w-5xl text-center">
-            <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
-              UNSER TEAM
-            </h2>
+          <div className="mx-auto mt-16 max-w-5xl space-y-16">
+            <div id="aerzte">
+              <h2 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">Ärzte</h2>
+              <div className="mt-2 h-1 w-full bg-primary"></div>
+            </div>
+            <div className="mx-auto w-full p-2">
+                <OrtmannsCard />
+            </div>
+            <div className="mx-auto w-full p-2" id="schemmer">
+                <SchemerCard />
+            </div>
+            <div className="mx-auto w-full p-2" id="rosenov">
+                <RosenovCard />
+            </div>
+            <div className="mx-auto w-full p-2" id="herschel">
+                <HerschelCard />
+            </div>
+            <div className="mx-auto w-full p-2" id="slezak">
+                <SlezakCard />
+            </div>
           </div>
           
-          <div className="mx-auto mt-8 max-w-5xl space-y-16">
-            <div>
-              <h3 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">
-                  Ärzte
-              </h3>
-              <div className="mt-2 h-1 w-full bg-primary"></div>
-            </div>
-            {isLoading ? (
-                Array.from({ length: 5 }).map((_, i) => <DoctorCardSkeleton key={i} />)
-            ) : (
-                doctors?.map((doctor) => (
-                    <div key={doctor.id} id={doctor.name.split('.').pop()?.trim().toLowerCase()} className="mx-auto w-full p-2">
-                        <DoctorCard doctor={doctor} />
-                    </div>
-                ))
-            )}
-          </div>
-
-          <div className="mx-auto mt-16 max-w-5xl space-y-8">
-            <div>
-              <h3 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">
-                  Praxispersonal
-              </h3>
-              <div className="mt-2 h-1 w-full bg-primary"></div>
-              <p className="mt-4 text-center text-lg text-foreground/80">
-                Die guten Geister, ohne die keine Arztpraxis funktioniert
-              </p>
-            </div>
+           <div className="mx-auto mt-16 max-w-5xl space-y-8">
+             <div>
+                <h2 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">Praxispersonal</h2>
+                <div className="mt-2 h-1 w-full bg-primary"></div>
+                <p className="mt-4 text-center text-lg text-foreground/80">
+                    Die guten Geister, ohne die keine Arztpraxis funktioniert
+                </p>
+             </div>
             
             <div className="flex justify-center">
                 <div className="w-full max-w-sm">
