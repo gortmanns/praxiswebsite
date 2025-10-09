@@ -1,3 +1,4 @@
+
 'use client';
 
 import { DoctorCard } from '../doctor-card';
@@ -9,7 +10,7 @@ export function HerschelCard() {
     name: 'R. Herschel',
     imageUrl: '/images/team/Dr.Herschel.jpg',
     imageHint: 'man portrait',
-    specialty: 'Facharzt Orthopädische Chirurgie und Traumatologie des Bewegungsapparates',
+    specialty: 'Facharzt Orthopädische Chirurgie und',
     qualifications: [],
     vita: (
        <>
@@ -22,7 +23,7 @@ export function HerschelCard() {
 
   return (
     <DoctorCard {...doctorData}>
-      <OrthozentrumLogo className="h-24" />
+      <OrthozentrumLogo className="h-24 w-auto" />
     </DoctorCard>
   );
 }

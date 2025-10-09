@@ -111,7 +111,7 @@ export default function TeamPage() {
               UNSER TEAM
             </h2>
           </div>
-          <div className="mx-auto mt-8 max-w-7xl space-y-16">
+          <div className="mx-auto mt-8 max-w-5xl space-y-16">
             <div>
               <h3 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">
                   Ärzte
@@ -119,23 +119,23 @@ export default function TeamPage() {
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
             
-            <div id="ortmanns" className="mx-auto max-w-[1000px] p-2">
+            <div id="ortmanns" className="mx-auto w-full p-2">
                 <OrtmannsCard />
             </div>
             
-            <div id="schemmer" className="mx-auto max-w-[1000px] p-2">
+            <div id="schemmer" className="mx-auto w-full p-2">
                 <SchemmerCard />
             </div>
             
-            <div id="rosenov" className="mx-auto max-w-[1000px] p-2">
+            <div id="rosenov" className="mx-auto w-full p-2">
                 <RosenovCard />
             </div>
 
-            <div id="herschel" className="mx-auto max-w-[1000px] p-2">
+            <div id="herschel" className="mx-auto w-full p-2">
                 <HerschelCard />
             </div>
 
-            <div id="slezak" className="mx-auto max-w-[1000px] p-2">
+            <div id="slezak" className="mx-auto w-full p-2">
                 <SlezakCard />
             </div>
           </div>
