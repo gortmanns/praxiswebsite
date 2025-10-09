@@ -12,8 +12,8 @@ export function OrtmannsCard() {
             imageHint="man portrait"
             specialty="Praktischer Arzt"
             qualifications={[
-                'Fähigkeitsausweis für das Praxislabor (KHM)',
-                'Sachkunde für dosisintensives Röntgen (KHM)',
+                'Master of Public Health (UNSW)',
+                'Master of Health Management (UNSW)',
             ]}
             vita={`
                 <h4>Curriculum Vitae</h4>
