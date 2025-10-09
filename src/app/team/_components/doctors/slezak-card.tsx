@@ -1,4 +1,3 @@
-
 'use client';
 
 import { DoctorCard } from '../doctor-card';
@@ -8,7 +7,7 @@ export function SlezakCard() {
   const doctorData = {
     title: 'Dr. med.',
     name: 'Agnieszka Slezak',
-    imageUrl: '/images/team/A.Slezak.jpg',
+    imageUrl: '/images/team/Dr.Slezak.jpg',
     imageHint: 'woman portrait',
     specialty: 'Neurologie',
     qualifications: [],

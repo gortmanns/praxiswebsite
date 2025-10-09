@@ -7,7 +7,7 @@ export function HerschelCard() {
   const doctorData = {
     title: 'Dr. med.',
     name: 'R. Herschel',
-    imageUrl: '/images/team/R.Herschel.jpg',
+    imageUrl: '/images/team/Dr.Herschel.jpg',
     imageHint: 'man portrait',
     specialty: 'Facharzt Orthopädische Chirurgie und Traumatologie des Bewegungsapparates',
     qualifications: [],
