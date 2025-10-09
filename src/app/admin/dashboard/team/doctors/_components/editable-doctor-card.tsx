@@ -59,7 +59,7 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
 
     if (isBack) {
         return (
-            <Card className="group relative w-full overflow-hidden rounded-lg shadow-sm h-full">
+            <Card className="group relative w-full overflow-hidden rounded-lg shadow-sm h-full aspect-[4/3]">
                 <div className="flex h-full flex-col overflow-auto bg-accent/95 p-6 text-left text-background">
                     <div className="h-full w-full overflow-y-auto text-base leading-tight scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
                         <VitaRenderer html={vita} />
@@ -70,14 +70,14 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
     }
     
     return (
-        <Card className="w-full overflow-hidden rounded-lg shadow-sm">
-            <CardContent className="p-0">
+        <Card className="w-full overflow-hidden rounded-lg shadow-sm aspect-[4/3]">
+            <CardContent className="p-0 h-full">
                 <div 
-                    className="relative w-full bg-card"
+                    className="relative w-full bg-card h-full"
                     style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                 >
                     <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
-                        <div className="relative col-span-1 w-full aspect-[2/3] self-center overflow-hidden rounded-md">
+                        <div className="relative col-span-1 w-full aspect-[2/3] overflow-hidden rounded-md self-center">
                             {imageUrl ? (
                                 <Image
                                     src={imageUrl}
@@ -95,12 +95,12 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
                         <div className="col-span-2">
                             <div className="flex h-full flex-col justify-center text-left text-foreground/80">
                                 <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
-                                <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
+                                <h4 className="font-headline text-[clamp(1rem,3.2cqw,2rem)] font-bold leading-tight text-primary">
                                   {name}
                                 </h4>
                                 <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
                                     <p className="font-bold">{specialty}</p>
-                                    {qualifications.map((q, i) => <p key={i}>{q}</p>)}
+                                    {qualifications && qualifications.map((q, i) => <p key={i}>{q}</p>)}
                                 </div>
                                 
                                 {additionalInfo && !LogoComponent && (
