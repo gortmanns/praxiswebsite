@@ -80,14 +80,14 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
 
     return (
         <div className="group relative w-full overflow-hidden rounded-lg shadow-sm">
-            <Card className="w-full overflow-hidden">
+            <Card className="w-full overflow-hidden border border-red-500">
                 <CardContent className="p-0">
                     <div 
-                        className="relative w-full bg-card aspect-[4/3]"
+                        className="relative w-full bg-card aspect-[4/3] border border-blue-500"
                         style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                     >
-                        <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
-                            <div className="relative col-span-1 w-full aspect-[2/3] overflow-hidden rounded-md">
+                        <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6 border border-green-500">
+                            <div className="relative col-span-1 w-full aspect-[2/3] overflow-hidden rounded-md border border-yellow-500">
                                 {imageUrl ? (
                                     <Image
                                         src={imageUrl}
@@ -102,7 +102,7 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
                                     </div>
                                 )}
                             </div>
-                            <div className="col-span-2">
+                            <div className="col-span-2 border border-yellow-500 h-full">
                                 <div className="flex h-full flex-col justify-center text-left text-foreground/80">
                                     <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
                                     <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
