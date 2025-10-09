@@ -51,7 +51,7 @@ const rosenovData: Doctor = {
     id: 'rosenov',
     title: 'Dr. med.',
     name: 'A. Rosenov',
-    imageUrl: '/images/team/Rosenov.jpg',
+    imageUrl: '/images/team/Rosenov.png',
     imageHint: 'man portrait',
     specialty: 'Facharzt für Angiologie',
     qualifications: [],
