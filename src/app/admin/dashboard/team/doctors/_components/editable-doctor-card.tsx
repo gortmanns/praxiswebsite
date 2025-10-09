@@ -59,7 +59,7 @@ const ScalableCard: React.FC<ScalableCardProps> = ({ doctor, isBackside = false 
 
     if (isBackside) {
         return (
-             <Card className="group relative w-full overflow-hidden rounded-lg shadow-sm h-full">
+             <Card className="group relative w-full overflow-hidden rounded-lg shadow-sm h-full border border-orange-500">
                 <div className="flex h-full flex-col overflow-auto bg-accent/95 p-6 text-left text-background">
                     <div className="h-full w-full overflow-y-auto text-base leading-tight scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
                         <VitaRenderer html={vita} />
@@ -70,7 +70,7 @@ const ScalableCard: React.FC<ScalableCardProps> = ({ doctor, isBackside = false 
     }
 
     return (
-        <Card className="group relative w-full overflow-hidden rounded-lg shadow-sm h-full">
+        <Card className="group relative w-full overflow-hidden rounded-lg shadow-sm h-full border border-orange-500">
             <CardContent className="p-0">
                 <div 
                     className="relative w-full bg-card h-full"
@@ -95,7 +95,7 @@ const ScalableCard: React.FC<ScalableCardProps> = ({ doctor, isBackside = false 
                         <div className="col-span-2">
                             <div className="flex h-full flex-col justify-center text-left text-foreground/80">
                                 <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
-                                <h4 className="font-headline text-[clamp(1rem,3cqw,1.5rem)] font-bold leading-tight text-primary">
+                                <h4 className="font-headline text-[clamp(1rem,2.8cqw,1.5rem)] font-bold leading-tight text-primary">
                                 {name}
                                 </h4>
                                 <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
@@ -133,14 +133,14 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }
     const CARD_ASPECT_RATIO = 550 / 300; 
 
     return (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 border border-orange-500 p-1">
             {/* Left Column: Front of the card */}
             <div 
-                className="relative w-full"
+                className="relative w-full border border-orange-500"
                 style={{ aspectRatio: CARD_ASPECT_RATIO }}
             >
                 <div 
-                    className="absolute top-0 left-0"
+                    className="absolute top-0 left-0 border border-orange-500"
                     style={{
                         width: `${CARD_BASE_WIDTH}px`,
                         height: `${CARD_BASE_WIDTH / CARD_ASPECT_RATIO}px`,
@@ -154,11 +154,11 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }
 
             {/* Right Column: Back of the card */}
             <div 
-                className="relative w-full"
+                className="relative w-full border border-orange-500"
                 style={{ aspectRatio: CARD_ASPECT_RATIO }}
             >
                  <div 
-                    className="absolute top-0 left-0"
+                    className="absolute top-0 left-0 border border-orange-500"
                     style={{
                         width: `${CARD_BASE_WIDTH}px`,
                         height: `${CARD_BASE_WIDTH / CARD_ASPECT_RATIO}px`,
