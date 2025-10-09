@@ -10,7 +10,7 @@ export function HerschelCard() {
     name: 'R. Herschel',
     imageUrl: '/images/team/Dr.Herschel.jpg',
     imageHint: 'man portrait',
-    specialty: 'Facharzt Orthopädische Chirurgie und',
+    specialty: 'Facharzt Orthopädische Chirurgie und Traumatologie des Bewegungsapparates',
     qualifications: [],
     vita: (
        <>
