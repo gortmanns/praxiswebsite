@@ -80,7 +80,7 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
                                     )}
                                     
                                     {children && (
-                                        <div className="relative mt-[2.5cqw] flex w-fit justify-start">
+                                        <div className="relative mt-[2.5cqw] flex justify-start w-fit">
                                             {children}
                                         </div>
                                     )}

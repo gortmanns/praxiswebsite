@@ -110,19 +110,19 @@ export default function TeamPage() {
               <h2 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">Ärzte</h2>
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
-            <div className="mx-auto w-full max-w-5xl p-2">
+            <div className="mx-auto w-full p-2">
               <OrtmannsCard />
             </div>
-            <div className="mx-auto w-full max-w-5xl p-2" id="schemmer">
+            <div className="mx-auto w-full p-2" id="schemmer">
               <SchemmerCard />
             </div>
-            <div className="mx-auto w-full max-w-5xl p-2" id="rosenov">
+            <div className="mx-auto w-full p-2" id="rosenov">
               <RosenovCard />
             </div>
-            <div className="mx-auto w-full max-w-5xl p-2" id="herschel">
+            <div className="mx-auto w-full p-2" id="herschel">
               <HerschelCard />
             </div>
-            <div className="mx-auto w-full max-w-5xl p-2" id="slezak">
+            <div className="mx-auto w-full p-2" id="slezak">
               <SlezakCard />
             </div>
 

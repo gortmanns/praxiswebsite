@@ -34,7 +34,7 @@ export function RosenovCard() {
                 </ul>
             `}
         >
-            <div className="relative h-32 w-[520px]">
+            <div className="relative h-24 w-[30cqw]">
                  <Image
                     src="/images/VASC-Alliance-Logo.png"
                     alt="VASC Alliance Logo"
