@@ -77,7 +77,7 @@ const ScalableCard: React.FC<ScalableCardProps> = ({ doctor, isBackside = false 
                     style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                 >
                     <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
-                        <div className="relative col-span-1 w-full aspect-[2/3] self-center overflow-hidden rounded-md">
+                        <div className="relative col-span-1 w-full aspect-[2/3] overflow-hidden rounded-md">
                             {imageUrl ? (
                                 <Image
                                     src={imageUrl}
