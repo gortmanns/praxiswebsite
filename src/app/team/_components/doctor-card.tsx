@@ -38,7 +38,7 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
 
     return (
         <div
-        className="prose prose-sm dark:prose-invert max-w-none"
+        className="prose prose-sm dark:prose-invert max-w-none border border-green-500"
         dangerouslySetInnerHTML={sanitizedHtml}
         />
     );
@@ -79,11 +79,11 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
     const LogoComponent = partnerLogoComponent ? partnerLogos[partnerLogoComponent] : null;
 
     return (
-        <div className="group relative w-full overflow-hidden rounded-lg shadow-sm">
-            <Card className="w-full overflow-hidden border border-red-500">
-                <CardContent className="p-0">
+        <div className="group relative w-full overflow-hidden rounded-lg shadow-sm border border-red-500">
+            <Card className="w-full overflow-hidden">
+                <CardContent className="p-0 h-full">
                     <div 
-                        className="relative w-full bg-card aspect-[4/3] border border-blue-500"
+                        className="relative w-full bg-card aspect-[1000/495] border border-blue-500"
                         style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                     >
                         <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6 border border-green-500">

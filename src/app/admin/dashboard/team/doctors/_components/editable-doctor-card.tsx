@@ -131,11 +131,11 @@ interface EditableDoctorCardProps {
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }) => {
     return (
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-            <div className="w-full aspect-[4/3]">
+            <div className="w-full aspect-[1000/495]">
                 <DoctorCardPreview doctor={doctor} isBack={false} />
             </div>
 
-            <div className="w-full aspect-[4/3]">
+            <div className="w-full aspect-[1000/495]">
                 <DoctorCardPreview doctor={doctor} isBack={true} />
             </div>
         </div>
