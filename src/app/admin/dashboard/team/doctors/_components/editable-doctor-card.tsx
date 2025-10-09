@@ -66,7 +66,7 @@ const ScalableCard: React.FC<ScalableCardProps> = ({ doctor, isBackside = false 
                     </div>
                 </div>
             </Card>
-        )
+        );
     }
 
     return (
@@ -95,7 +95,7 @@ const ScalableCard: React.FC<ScalableCardProps> = ({ doctor, isBackside = false 
                         <div className="col-span-2">
                             <div className="flex h-full flex-col justify-center text-left text-foreground/80">
                                 <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
-                                <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
+                                <h4 className="font-headline text-[clamp(1.4rem,4.5cqw,2.5rem)] font-bold leading-tight text-primary">
                                 {name}
                                 </h4>
                                 <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
