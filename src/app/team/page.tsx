@@ -35,11 +35,9 @@ const doctors: Doctor[] = [
     imageUrl: '/images/team/Prof.Schemmer.jpg',
     imageHint: 'man portrait',
     specialty: 'Facharzt für Chirurgie',
-    qualifications: [
-      'Schwerpunkt spezielle Viszeralchirurgie (D)',
-      'Fellow of the American College of Surgeons (FACS)',
-    ],
-    additionalInfo: 'Ärztliche Leitung',
+    qualifications: [],
+    additionalInfo: '',
+    partnerLogo: 'schemmer-worni',
     vita: (
       <>
         <p>

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
+import { SchemmerWorniLogo } from '@/components/logos/schemmer-worni-logo';
 
 export interface Doctor {
     id: string;
@@ -15,7 +16,7 @@ export interface Doctor {
     specialty: string;
     qualifications: string[];
     additionalInfo: string;
-    partnerLogo?: 'orthozentrum' | 'slezak';
+    partnerLogo?: 'orthozentrum' | 'slezak' | 'schemmer-worni';
     vita: React.ReactNode;
 }
 
@@ -25,6 +26,8 @@ const PartnerLogo = ({ name }: { name: string }) => {
             return <OrthozentrumLogo className="w-full h-auto text-current" />;
         case 'slezak':
             return <AgnieszkaSlezakLogo className="w-full h-auto text-current" />;
+        case 'schemmer-worni':
+            return <SchemmerWorniLogo className="w-full h-auto text-current" />;
         default:
             return null;
     }
