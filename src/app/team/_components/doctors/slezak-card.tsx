@@ -9,7 +9,7 @@ export function SlezakCard() {
     name: 'Agnieszka Slezak',
     imageUrl: '/images/team/Dr.Slezak.jpg',
     imageHint: 'woman portrait',
-    specialty: 'Neurologie',
+    specialty: 'Fachärztin für Neurologie',
     qualifications: [],
     vita: (
       <>
