@@ -1,4 +1,3 @@
-
 'use client';
 
 import { DoctorCard } from '../doctor-card';
@@ -9,7 +8,7 @@ export function SchemmerCard() {
         <DoctorCard
             title="Prof. Dr. med. Dr. h. c."
             name="P. Schemmer"
-            imageUrl="/images/team/Schemmer.jpg"
+            imageUrl="/images/team/Prof.Schemmer.jpg"
             imageHint="man portrait"
             specialty="Facharzt für Chirurgie"
             qualifications={[]}
