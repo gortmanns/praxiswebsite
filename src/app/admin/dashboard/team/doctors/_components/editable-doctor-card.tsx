@@ -37,12 +37,11 @@ const partnerLogos: { [key: string]: React.FC<any> } = {
   SchemmerWorniLogo,
 };
 
-interface ScalableCardProps {
+interface EditableDoctorCardProps {
     doctor: Doctor;
-    isBackside?: boolean;
 }
 
-const ScalableCard: React.FC<ScalableCardProps> = ({ doctor, isBackside = false }) => {
+export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }) => {
     const { 
         title,
         name,
@@ -57,27 +56,16 @@ const ScalableCard: React.FC<ScalableCardProps> = ({ doctor, isBackside = false 
 
     const LogoComponent = partnerLogoComponent ? partnerLogos[partnerLogoComponent] : null;
 
-    if (isBackside) {
-        return (
-             <Card className="group relative w-full overflow-hidden rounded-lg shadow-sm h-full">
-                <div className="flex h-full flex-col overflow-auto bg-accent/95 p-6 text-left text-background">
-                    <div className="h-full w-full overflow-y-auto text-base leading-tight scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
-                        <VitaRenderer html={vita} />
-                    </div>
-                </div>
-            </Card>
-        );
-    }
-
     return (
-        <Card className="group relative w-full overflow-hidden rounded-lg shadow-sm h-full">
-            <CardContent className="p-0 h-full">
-                <div 
-                    className="relative w-full bg-card h-full"
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            {/* Vorderseite */}
+            <div className="w-full aspect-[550/300] bg-card rounded-lg shadow-sm">
+                 <div 
+                    className="relative w-full h-full"
                     style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                 >
                     <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
-                        <div className="relative col-span-1 w-full aspect-[2/3] overflow-hidden rounded-md">
+                        <div className="relative col-span-1 w-full aspect-[2/3] self-center overflow-hidden rounded-md">
                             {imageUrl ? (
                                 <Image
                                     src={imageUrl}
@@ -118,23 +106,17 @@ const ScalableCard: React.FC<ScalableCardProps> = ({ doctor, isBackside = false 
                         </div>
                     </div>
                 </div>
-            </CardContent>
-        </Card>
-    );
-};
-
-interface EditableDoctorCardProps {
-    doctor: Doctor;
-}
-
-export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }) => {
-    return (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <div className="w-full aspect-[550/300]">
-                <ScalableCard doctor={doctor} />
             </div>
+
+            {/* Rückseite */}
             <div className="w-full aspect-[550/300]">
-                <ScalableCard doctor={doctor} isBackside={true} />
+                <Card className="group relative w-full overflow-hidden rounded-lg shadow-sm h-full">
+                    <div className="flex h-full flex-col overflow-auto bg-accent/95 p-6 text-left text-background">
+                        <div className="h-full w-full overflow-y-auto text-base leading-tight scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
+                            <VitaRenderer html={vita} />
+                        </div>
+                    </div>
+                </Card>
             </div>
         </div>
     );

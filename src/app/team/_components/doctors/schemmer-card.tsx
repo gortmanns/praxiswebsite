@@ -30,8 +30,8 @@ export function SchemmerCard() {
              <Image
                 src="/images/schemmer-worni-logo.png"
                 alt="Schemmer & Worni Logo"
-                width={400}
-                height={134}
+                width={800}
+                height={268}
                 className="h-auto w-full max-w-[400px] object-contain"
                 data-ai-hint="partner logo"
             />
