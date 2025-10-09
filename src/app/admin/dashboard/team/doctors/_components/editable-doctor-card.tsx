@@ -13,6 +13,7 @@ import {
     SchemmerWorniLogo,
     VascAllianceLogo
 } from '@/components/logos';
+import { cn } from '@/lib/utils';
 
 const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
   const sanitizedHtml = React.useMemo(() => {
@@ -59,7 +60,7 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
 
     if (isBack) {
         return (
-            <Card className="group relative w-full overflow-hidden rounded-lg shadow-sm h-full">
+            <Card className="w-full h-full overflow-hidden rounded-lg shadow-sm">
                 <div className="flex h-full flex-col overflow-auto bg-accent/95 p-6 text-left text-background">
                     <div className="h-full w-full overflow-y-auto text-base leading-tight scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
                         <VitaRenderer html={vita} />
@@ -70,14 +71,14 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
     }
     
     return (
-        <Card className="w-full overflow-hidden rounded-lg shadow-sm h-full">
+        <Card className="w-full h-full overflow-hidden rounded-lg shadow-sm">
             <CardContent className="p-0 h-full">
                 <div 
                     className="relative w-full bg-card h-full"
                     style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                 >
                     <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
-                        <div className="relative col-span-1 w-full aspect-[2/3] overflow-hidden rounded-md">
+                        <div className="relative col-span-1 w-full h-full overflow-hidden rounded-md">
                             {imageUrl ? (
                                 <Image
                                     src={imageUrl}
@@ -95,7 +96,7 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
                         <div className="col-span-2">
                             <div className="flex h-full flex-col justify-center text-left text-foreground/80">
                                 <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
-                                <h4 className="font-headline text-[clamp(1rem,3.2cqw,2rem)] font-bold leading-tight text-primary">
+                                <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
                                   {name}
                                 </h4>
                                 <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
@@ -111,7 +112,7 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
                                 
                                 {LogoComponent && (
                                     <div className="relative mt-[2.5cqw] flex w-fit justify-start">
-                                        <LogoComponent className="h-auto w-[80%]" />
+                                        <LogoComponent className="h-28 w-auto" />
                                     </div>
                                 )}
                             </div>
@@ -123,25 +124,29 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
     );
 };
 
-
 interface EditableDoctorCardProps {
     doctor: Doctor;
 }
 
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }) => {
     return (
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-            <div className="aspect-[4/3]">
-                <DoctorCardPreview 
-                  doctor={doctor} 
-                  isBack={false}
-                />
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            {/* Frontend Preview */}
+            <div className="relative aspect-[4/3] w-full">
+                <div className="absolute top-0 left-0 h-full w-full origin-top-left" style={{ transform: 'scale(var(--scale-factor, 0.5))' }}>
+                    <div className="w-[800px]"> {/* Set fixed width for scaling base */}
+                         <DoctorCardPreview doctor={doctor} isBack={false} />
+                    </div>
+                </div>
             </div>
-            <div className="aspect-[4/3]">
-                <DoctorCardPreview
-                  doctor={doctor}
-                  isBack={true}
-                />
+
+            {/* Backend Preview */}
+            <div className="relative aspect-[4/3] w-full">
+                <div className="absolute top-0 left-0 h-full w-full origin-top-left" style={{ transform: 'scale(var(--scale-factor, 0.5))' }}>
+                    <div className="w-[800px]"> {/* Set fixed width for scaling base */}
+                         <DoctorCardPreview doctor={doctor} isBack={true} />
+                    </div>
+                </div>
             </div>
         </div>
     );

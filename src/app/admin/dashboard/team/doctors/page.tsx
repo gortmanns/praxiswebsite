@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { OrtmannsCard } from '@/app/team/_components/doctors/ortmanns-card';
 import { RosenovCard } from '@/app/team/_components/doctors/rosenov-card';
@@ -36,6 +36,25 @@ const sampleDoctor: Doctor = {
 };
 
 export default function DoctorsPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const calculateScale = () => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.offsetWidth;
+        const cardWidth = 800; // The fixed width of the card
+        const scale = containerWidth / cardWidth;
+        containerRef.current.style.setProperty('--scale-factor', scale.toString());
+      }
+    };
+
+    calculateScale();
+    window.addEventListener('resize', calculateScale);
+
+    return () => {
+      window.removeEventListener('resize', calculateScale);
+    };
+  }, []);
 
   return (
     <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -49,7 +68,7 @@ export default function DoctorsPage() {
                 </div>
             </CardHeader>
             <CardContent>
-                 <div className="mx-auto w-full p-2">
+                 <div ref={containerRef} className="mx-auto w-full p-2">
                     <EditableDoctorCard 
                       doctor={sampleDoctor}
                     />
@@ -62,19 +81,19 @@ export default function DoctorsPage() {
                 Aktuelle Vorschau
             </h3>
             <div className="space-y-12">
-                <div className="mx-auto w-full p-2">
+                <div className="mx-auto w-full max-w-[800px] p-2">
                     <OrtmannsCard />
                 </div>
-                <div className="mx-auto w-full p-2" id="schemmer">
+                <div className="mx-auto w-full max-w-[800px] p-2" id="schemmer">
                     <SchemmerCard />
                 </div>
-                <div className="mx-auto w-full p-2" id="rosenov">
+                <div className="mx-auto w-full max-w-[800px] p-2" id="rosenov">
                     <RosenovCard />
                 </div>
-                <div className="mx-auto w-full p-2" id="herschel">
+                <div className="mx-auto w-full max-w-[800px] p-2" id="herschel">
                     <HerschelCard />
                 </div>
-                <div className="mx-auto w-full p-2" id="slezak">
+                <div className="mx-auto w-full max-w-[800px] p-2" id="slezak">
                     <SlezakCard />
                 </div>
             </div>
