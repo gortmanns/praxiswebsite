@@ -20,7 +20,7 @@ export interface Doctor {
     vita: React.ReactNode;
 }
 
-const PartnerLogo = ({ name }: { name: string }) => {
+const PartnerLogo = ({ name }: { name: 'orthozentrum' | 'slezak' | 'schemmer-worni' }) => {
     switch (name) {
         case 'orthozentrum':
             return <OrthozentrumLogo className="w-full h-auto text-current" />;
@@ -96,5 +96,3 @@ export const DoctorCard: React.FC<Doctor> = ({
         </div>
     );
 };
-
-    

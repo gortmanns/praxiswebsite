@@ -7,8 +7,7 @@ import { TeamMemberCard } from './_components/team-member-card';
 import { DoctorCard, Doctor } from './_components/doctor-card';
 import Link from 'next/link';
 
-const doctors: Doctor[] = [
-  {
+const ortmannsData: Doctor = {
     id: 'ortmanns',
     title: 'Dipl. med.',
     name: 'G. Ortmanns',
@@ -27,8 +26,9 @@ const doctors: Doctor[] = [
         </p>
       </>
     ),
-  },
-  {
+};
+
+const schemmerData: Doctor = {
     id: 'schemmer',
     title: 'Prof. Dr. med. Dr. h.c.',
     name: 'P. Schemmer',
@@ -45,8 +45,9 @@ const doctors: Doctor[] = [
         </p>
       </>
     ),
-  },
-  {
+};
+
+const worniData: Doctor = {
     id: 'worni',
     title: 'Prof. Dr. med.',
     name: 'Mathias Worni',
@@ -65,8 +66,9 @@ const doctors: Doctor[] = [
         </p>
       </>
     ),
-  },
-  {
+};
+
+const slezakData: Doctor = {
     id: 'slezak',
     title: 'Dr. med.',
     name: 'Agnieszka Slezak',
@@ -83,8 +85,7 @@ const doctors: Doctor[] = [
         </p>
       </>
     ),
-  },
-];
+};
 
 const garcia = {
     name: 'S. Garcia',
@@ -194,15 +195,19 @@ export default function TeamPage() {
               </h3>
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
-            {doctors.length > 0 ? doctors.map(doctor => (
-                 <div key={doctor.id} id={doctor.id} className="mx-auto max-w-[1000px] p-2">
-                    <DoctorCard {...doctor} />
-                </div>
-            )) : (
-              <div className="py-8 text-center text-muted-foreground">
-                <p>Die Daten der Ärzte wurden durch einen Fehler des Assistenten gelöscht. Sie können hier neu hinzugefügt werden.</p>
-              </div>
-            )}
+            
+            <div id={ortmannsData.id} className="mx-auto max-w-[1000px] p-2">
+                <DoctorCard {...ortmannsData} />
+            </div>
+            <div id={schemmerData.id} className="mx-auto max-w-[1000px] p-2">
+                <DoctorCard {...schemmerData} />
+            </div>
+            <div id={worniData.id} className="mx-auto max-w-[1000px] p-2">
+                <DoctorCard {...worniData} />
+            </div>
+            <div id={slezakData.id} className="mx-auto max-w-[1000px] p-2">
+                <DoctorCard {...slezakData} />
+            </div>
           </div>
 
           <div className="mx-auto mt-16 max-w-5xl space-y-8">
