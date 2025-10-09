@@ -87,7 +87,7 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
                         style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                     >
                         <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
-                            <div className="relative col-span-1 h-full w-full overflow-hidden rounded-md">
+                            <div className="relative col-span-1 w-full aspect-[2/3] overflow-hidden rounded-md">
                                 {imageUrl ? (
                                     <Image
                                         src={imageUrl}
