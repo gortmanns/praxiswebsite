@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import DOMPurify from 'dompurify';
 import React from 'react';
+import { User } from 'lucide-react';
 
 const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
@@ -53,14 +54,20 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
                         style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                     >
                         <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
-                            <div className="relative col-span-1 h-full w-full aspect-[2/3]">
-                                <Image
-                                    src={imageUrl}
-                                    alt={`Portrait von ${name}`}
-                                    data-ai-hint={imageHint}
-                                    fill
-                                    className="object-cover rounded-md"
-                                />
+                            <div className="relative col-span-1 h-full w-full aspect-[2/3] overflow-hidden rounded-md">
+                                {imageUrl ? (
+                                    <Image
+                                        src={imageUrl}
+                                        alt={`Portrait von ${name}`}
+                                        data-ai-hint={imageHint}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                ) : (
+                                    <div className="flex h-full w-full items-center justify-center bg-muted">
+                                        <User className="h-1/2 w-1/2 text-muted-foreground" />
+                                    </div>
+                                )}
                             </div>
                             <div className="col-span-2">
                                 <div className="flex h-full flex-col justify-center text-left text-foreground/80">
