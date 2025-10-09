@@ -27,7 +27,7 @@ export function RosenovCard() {
 
   return (
     <DoctorCard {...doctorData}>
-      <div className="relative h-24 w-full">
+      <div className="relative w-[400px] h-32">
         <Image
           src="/images/VASC-Alliance-Logo.png"
           alt="VASC Alliance Logo"
