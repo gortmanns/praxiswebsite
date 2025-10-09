@@ -41,7 +41,7 @@ interface EditableDoctorCardProps {
     doctor: Doctor;
 }
 
-export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }) => {
+const FixedWidthDoctorCard: React.FC<{ doctor: Doctor, isBack?: boolean }> = ({ doctor, isBack = false }) => {
     const { 
         title,
         name,
@@ -56,12 +56,23 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }
 
     const LogoComponent = partnerLogoComponent ? partnerLogos[partnerLogoComponent] : null;
 
+    if (isBack) {
+        return (
+            <Card className="group relative w-full overflow-hidden rounded-lg shadow-sm h-full">
+                <div className="flex h-full flex-col overflow-auto bg-accent/95 p-6 text-left text-background">
+                    <div className="h-full w-full overflow-y-auto text-base leading-tight scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
+                        <VitaRenderer html={vita} />
+                    </div>
+                </div>
+            </Card>
+        );
+    }
+    
     return (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {/* Vorderseite */}
-            <div className="w-full aspect-[550/300] bg-card rounded-lg shadow-sm">
-                 <div 
-                    className="relative w-full h-full"
+        <Card className="w-full overflow-hidden">
+            <CardContent className="p-0">
+                <div 
+                    className="relative w-full bg-card"
                     style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                 >
                     <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
@@ -83,8 +94,8 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }
                         <div className="col-span-2">
                             <div className="flex h-full flex-col justify-center text-left text-foreground/80">
                                 <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
-                                <h4 className="font-headline text-[clamp(1.4rem,4.5cqw,2.5rem)] font-bold leading-tight text-primary">
-                                {name}
+                                <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
+                                  {name}
                                 </h4>
                                 <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
                                     <p className="font-bold">{specialty}</p>
@@ -106,17 +117,51 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }
                         </div>
                     </div>
                 </div>
+            </CardContent>
+        </Card>
+    );
+};
+
+
+export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }) => {
+    const cardBaseWidth = 1000;
+    const cardAspectRatio = 550 / 300;
+    const cardBaseHeight = cardBaseWidth / (2 * cardAspectRatio);
+
+    return (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            {/* Vorderseite mit Skalierung */}
+            <div 
+                className="relative w-full"
+                style={{ aspectRatio: `${cardAspectRatio}` }}
+            >
+                <div 
+                    className="absolute top-0 left-0 origin-top-left"
+                    style={{
+                        width: `${cardBaseWidth / 2}px`,
+                        height: `${cardBaseHeight}px`,
+                        transform: `scale(calc(1 / ${cardBaseWidth / 2} * 100%))`,
+                    }}
+                >
+                    <FixedWidthDoctorCard doctor={doctor} />
+                </div>
             </div>
 
-            {/* Rückseite */}
-            <div className="w-full aspect-[550/300]">
-                <Card className="group relative w-full overflow-hidden rounded-lg shadow-sm h-full">
-                    <div className="flex h-full flex-col overflow-auto bg-accent/95 p-6 text-left text-background">
-                        <div className="h-full w-full overflow-y-auto text-base leading-tight scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
-                            <VitaRenderer html={vita} />
-                        </div>
-                    </div>
-                </Card>
+            {/* Rückseite mit Skalierung */}
+            <div 
+                className="relative w-full"
+                style={{ aspectRatio: `${cardAspectRatio}` }}
+            >
+                <div
+                    className="absolute top-0 left-0 origin-top-left"
+                    style={{
+                        width: `${cardBaseWidth / 2}px`,
+                        height: `${cardBaseHeight}px`,
+                        transform: `scale(calc(1 / ${cardBaseWidth / 2} * 100%))`,
+                    }}
+                >
+                    <FixedWidthDoctorCard doctor={doctor} isBack={true} />
+                </div>
             </div>
         </div>
     );
