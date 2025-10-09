@@ -113,7 +113,7 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
                                         {qualifications.map((q, i) => <p key={i}>{q}</p>)}
                                     </div>
                                     
-                                    {additionalInfo && (
+                                    {additionalInfo && !LogoComponent && (
                                         <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
                                             {additionalInfo}
                                         </p>
@@ -127,7 +127,7 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
 
                                     {LogoComponent && !children && (
                                         <div className="relative mt-[2.5cqw] flex w-fit justify-start">
-                                            <LogoComponent className="h-28 w-auto" />
+                                            <LogoComponent className="h-auto w-full max-w-[240px]" />
                                         </div>
                                     )}
                                 </div>

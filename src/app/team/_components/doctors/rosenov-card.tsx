@@ -2,7 +2,6 @@
 'use client';
 
 import { DoctorCard } from '../doctor-card';
-import { VascAllianceLogo } from '@/components/logos';
 
 export function RosenovCard() {
     return (
@@ -32,8 +31,7 @@ export function RosenovCard() {
                     <li><span style="color: var(--color-tiptap-blue);">1882-1989</span> Studium der Humanmedizin an der Westfälischen Wilhelms-Universität in Münster</li>
                 </ul>
             `}
-        >
-            <VascAllianceLogo className="h-28 w-auto" />
-        </DoctorCard>
+            partnerLogoComponent="VascAllianceLogo"
+        />
     );
 }
