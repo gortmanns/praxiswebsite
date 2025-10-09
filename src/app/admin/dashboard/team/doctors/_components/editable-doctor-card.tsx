@@ -95,7 +95,7 @@ const ScalableCard: React.FC<ScalableCardProps> = ({ doctor, isBackside = false 
                         <div className="col-span-2">
                             <div className="flex h-full flex-col justify-center text-left text-foreground/80">
                                 <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
-                                <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
+                                <h4 className="font-headline text-[clamp(1rem,3cqw,1.5rem)] font-bold leading-tight text-primary">
                                 {name}
                                 </h4>
                                 <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
@@ -128,37 +128,42 @@ interface EditableDoctorCardProps {
 }
 
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }) => {
+    // Define the base dimensions of the full-size card for aspect ratio calculation
     const CARD_BASE_WIDTH = 550;
     const CARD_ASPECT_RATIO = 550 / 300; 
 
     return (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            {/* Left Column: Front of the card */}
             <div 
                 className="relative w-full"
                 style={{ aspectRatio: CARD_ASPECT_RATIO }}
             >
                 <div 
-                    className="absolute top-0 left-0 origin-top-left"
+                    className="absolute top-0 left-0"
                     style={{
                         width: `${CARD_BASE_WIDTH}px`,
                         height: `${CARD_BASE_WIDTH / CARD_ASPECT_RATIO}px`,
                         transform: `scale(calc(100% / ${CARD_BASE_WIDTH}))`,
+                        transformOrigin: 'top left',
                     }}
                 >
                     <ScalableCard doctor={doctor} />
                 </div>
             </div>
 
+            {/* Right Column: Back of the card */}
             <div 
                 className="relative w-full"
                 style={{ aspectRatio: CARD_ASPECT_RATIO }}
             >
                  <div 
-                    className="absolute top-0 left-0 origin-top-left"
+                    className="absolute top-0 left-0"
                     style={{
                         width: `${CARD_BASE_WIDTH}px`,
                         height: `${CARD_BASE_WIDTH / CARD_ASPECT_RATIO}px`,
                         transform: `scale(calc(100% / ${CARD_BASE_WIDTH}))`,
+                        transformOrigin: 'top left',
                     }}
                 >
                     <ScalableCard doctor={doctor} isBackside={true} />
