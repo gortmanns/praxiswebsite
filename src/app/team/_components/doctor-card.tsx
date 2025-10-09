@@ -55,7 +55,7 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
                                     </div>
                                     
                                     {children && (
-                                        <div className="relative mt-[2.5cqw] w-full">
+                                        <div className="relative mt-[2.5cqw] flex w-full justify-start">
                                             {children}
                                         </div>
                                     )}
