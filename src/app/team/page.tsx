@@ -6,6 +6,7 @@ import { Footer } from '../_components/footer';
 import { TeamMemberCard } from './_components/team-member-card';
 import { DoctorCard, Doctor } from './_components/doctor-card';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const ortmannsData: Doctor = {
     id: 'ortmanns',
@@ -37,12 +38,6 @@ const schemmerData: Doctor = {
     specialty: 'Facharzt für Chirurgie',
     qualifications: [],
     additionalInfo: '',
-    partnerImage: {
-        src: '/images/schemmer-worni-logo.png',
-        alt: 'Schemmer & Worni Logo',
-        width: 300,
-        height: 100,
-    },
     vita: (
       <>
         <p>
@@ -206,7 +201,16 @@ export default function TeamPage() {
                 <DoctorCard {...ortmannsData} />
             </div>
             <div id={schemmerData.id} className="mx-auto max-w-[1000px] p-2">
-                <DoctorCard {...schemmerData} />
+                <DoctorCard {...schemmerData}>
+                    <div className="relative mt-[2.5cqw] w-[30cqw] h-auto aspect-[300/100]">
+                        <Image
+                            src="/images/schemmer-worni-logo.png"
+                            alt="Schemmer & Worni Logo"
+                            fill
+                            className="object-contain"
+                        />
+                    </div>
+                </DoctorCard>
             </div>
             <div id={worniData.id} className="mx-auto max-w-[1000px] p-2">
                 <DoctorCard {...worniData} />

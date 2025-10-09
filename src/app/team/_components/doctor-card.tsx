@@ -16,12 +16,6 @@ export interface Doctor {
     qualifications: string[];
     additionalInfo: string;
     partnerLogo?: 'orthozentrum' | 'slezak';
-    partnerImage?: {
-        src: string;
-        alt: string;
-        width: number;
-        height: number;
-    };
     vita: React.ReactNode;
 }
 
@@ -36,7 +30,7 @@ const PartnerLogo = ({ name }: { name: 'orthozentrum' | 'slezak' }) => {
     }
 };
 
-export const DoctorCard: React.FC<Doctor> = ({
+export const DoctorCard: React.FC<Doctor & { children?: React.ReactNode }> = ({
     title,
     name,
     imageUrl,
@@ -45,8 +39,8 @@ export const DoctorCard: React.FC<Doctor> = ({
     qualifications,
     additionalInfo,
     partnerLogo,
-    partnerImage,
     vita,
+    children,
 }) => {
     return (
         <div className="group relative w-full overflow-hidden rounded-lg shadow-sm">
@@ -77,18 +71,11 @@ export const DoctorCard: React.FC<Doctor> = ({
                                         {qualifications.map((q, i) => <p key={i}>{q}</p>)}
                                     </div>
                                     
-                                    {partnerLogo ? (
+                                    {children ? (
+                                        children
+                                    ) : partnerLogo ? (
                                         <div className="relative mt-[2.5cqw] w-[30cqw]">
                                             <PartnerLogo name={partnerLogo} />
-                                        </div>
-                                    ) : partnerImage ? (
-                                        <div className="relative mt-[2.5cqw] w-[30cqw] h-auto aspect-[300/100]">
-                                             <Image
-                                                src={partnerImage.src}
-                                                alt={partnerImage.alt}
-                                                fill
-                                                className="object-contain"
-                                            />
                                         </div>
                                     ) : additionalInfo ? (
                                         <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
