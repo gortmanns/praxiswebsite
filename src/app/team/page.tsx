@@ -37,7 +37,12 @@ const schemmerData: Doctor = {
     specialty: 'Facharzt für Chirurgie',
     qualifications: [],
     additionalInfo: '',
-    partnerLogo: 'schemmer-worni',
+    partnerImage: {
+        src: '/images/schemmer-worni-logo.png',
+        alt: 'Schemmer & Worni Logo',
+        width: 300,
+        height: 100,
+    },
     vita: (
       <>
         <p>
@@ -58,6 +63,7 @@ const worniData: Doctor = {
       'Schwerpunkt spezielle Viszeralchirurgie (D)',
       'Fellow of the American College of Surgeons (FACS)',
     ],
+    additionalInfo: '',
     partnerLogo: 'orthozentrum',
     vita: (
        <>
