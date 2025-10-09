@@ -1,19 +1,16 @@
-
 'use client';
 
 import { DoctorCard } from '../doctor-card';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 
-export function WorniCard() {
+export function HerschelCard() {
   const doctorData = {
-    title: '[Titel]',
-    name: '[Name des Arztes]',
-    imageUrl: '/images/team/placeholder.jpg',
-    imageHint: 'portrait',
-    specialty: '[Spezialisierung]',
-    qualifications: [
-      '[Qualifikation 1]',
-    ],
+    title: 'Dr. med.',
+    name: 'R. Herschel',
+    imageUrl: '/images/team/R.Herschel.jpg',
+    imageHint: 'man portrait',
+    specialty: 'Facharzt Orthopädische Chirurgie und Traumatologie des Bewegungsapparates',
+    qualifications: [],
     vita: (
        <>
         <p>
