@@ -5,11 +5,11 @@ import { DoctorCard } from '../doctor-card';
 export function OrtmannsCard() {
     return (
         <DoctorCard
-            title="Dr. med."
+            title="Dipl. med."
             name="G. Ortmanns"
             imageUrl="/images/team/Ortmanns.jpg"
             imageHint="man portrait"
-            specialty="Facharzt für Innere Medizin"
+            specialty="Praktischer Arzt"
             qualifications={[
                 'Verkehrsmedizinische Untersuchung Stufe 1',
                 'Ultraschall des Abdomens (SGUM)',

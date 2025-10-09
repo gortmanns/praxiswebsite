@@ -10,7 +10,7 @@ export function RosenovCard() {
             name="J. Rosenov"
             imageUrl="/images/team/Rosenov.jpg"
             imageHint="man portrait"
-            specialty="Facharzt für Herzchirurgie"
+            specialty="Facharzt für Angiologie"
             qualifications={[
                 'speziell für die Varizenchirurgie',
             ]}
@@ -30,15 +30,16 @@ export function RosenovCard() {
                     <li><span style="color: var(--color-tiptap-blue);">1997-2004</span> Oberarzt an der Klinik für Herz-, Thorax- und Gefässchirurgie, Ulm</li>
                     <li><span style="color: var(--color-tiptap-blue);">1991-1996</span> Facharztausbildung in der Herzchirurgie an der Medizinischen Hochschule Hannover</li>
                     <li><span style="color: var(--color-tiptap-blue);">1990</span> Promotion zum Dr. med.</li>
-                    <li><span style="color: var(--color-tiptap-blue);">1982-1989</span> Studium der Humanmedizin an der Westfälischen Wilhelms-Universität in Münster</li>
+                    <li><span style="color: var(--color-tiptap-blue);">1882-1989</span> Studium der Humanmedizin an der Westfälischen Wilhelms-Universität in Münster</li>
                 </ul>
             `}
         >
-            <div className="relative h-24 w-full">
+            <div className="relative w-full h-auto">
                  <Image
                     src="/images/VASC-Alliance-Logo.png"
                     alt="VASC Alliance Logo"
-                    fill
+                    width={495}
+                    height={165}
                     className="h-auto w-full object-contain object-left"
                     data-ai-hint="partner logo"
                 />
