@@ -3,28 +3,90 @@
 
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
+import DOMPurify from 'dompurify';
+import React from 'react';
+import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
+import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
 
-export interface DoctorCardProps {
+export interface Doctor {
+    id: string;
     title: string;
     name: string;
     imageUrl: string;
     imageHint: string;
     specialty: string;
     qualifications: string[];
-    vita: React.ReactNode;
-    children?: React.ReactNode;
+    vita: string;
+    additionalInfo?: string;
+    partnerLogoComponent?: 'OrthozentrumLogo' | 'AgnieszkaSlezakLogo' | 'VascAllianceLogo' | 'SchemmerWorniLogo';
+    order: number;
 }
 
-export const DoctorCard: React.FC<DoctorCardProps> = ({
-    title,
-    name,
-    imageUrl,
-    imageHint,
-    specialty,
-    qualifications,
-    vita,
-    children,
-}) => {
+const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
+    const sanitizedHtml = React.useMemo(() => {
+        if (typeof window !== 'undefined') {
+        return { __html: DOMPurify.sanitize(html) };
+        }
+        return { __html: '' };
+    }, [html]);
+
+    return (
+        <div
+        className="prose prose-sm dark:prose-invert max-w-none"
+        dangerouslySetInnerHTML={sanitizedHtml}
+        />
+    );
+};
+
+const PartnerLogo: React.FC<{ logo?: Doctor['partnerLogoComponent'] }> = ({ logo }) => {
+    if (!logo) return null;
+
+    switch (logo) {
+        case 'OrthozentrumLogo':
+            return <OrthozentrumLogo className="h-28 w-auto" />;
+        case 'AgnieszkaSlezakLogo':
+            return <AgnieszkaSlezakLogo className="h-28 w-auto" />;
+        case 'VascAllianceLogo':
+             return (
+                <div className="relative h-24 w-[400px]">
+                    <Image
+                        src="/images/VASC-Alliance-Logo.png"
+                        alt="VASC Alliance Logo"
+                        fill
+                        className="object-contain"
+                        data-ai-hint="partner logo"
+                    />
+                </div>
+            );
+        case 'SchemmerWorniLogo':
+            return (
+                <Image
+                    src="/images/schemmer-worni-logo.png"
+                    alt="Schemmer & Worni Logo"
+                    width={390}
+                    height={130}
+                    className="h-auto w-full max-w-[300px] object-contain"
+                    data-ai-hint="partner logo"
+                />
+            );
+        default:
+            return null;
+    }
+};
+
+export const DoctorCard: React.FC<{ doctor: Doctor }> = ({ doctor }) => {
+    const {
+        title,
+        name,
+        imageUrl,
+        imageHint,
+        specialty,
+        qualifications,
+        vita,
+        additionalInfo,
+        partnerLogoComponent,
+    } = doctor;
+
     return (
         <div className="group relative w-full overflow-hidden rounded-lg shadow-sm">
             <Card className="w-full overflow-hidden">
@@ -54,9 +116,15 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
                                         {qualifications.map((q, i) => <p key={i}>{q}</p>)}
                                     </div>
                                     
-                                    {children && (
+                                    {additionalInfo && (
+                                        <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
+                                            {additionalInfo}
+                                        </p>
+                                    )}
+                                    
+                                    {partnerLogoComponent && (
                                         <div className="relative mt-[2.5cqw] flex w-fit justify-start">
-                                            {children}
+                                            <PartnerLogo logo={partnerLogoComponent} />
                                         </div>
                                     )}
                                 </div>
@@ -67,7 +135,7 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
             </Card>
             <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
                  <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
-                    {vita}
+                    <VitaRenderer html={vita} />
                  </div>
             </div>
         </div>

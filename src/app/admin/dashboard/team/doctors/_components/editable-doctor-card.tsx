@@ -3,8 +3,7 @@
 import React, { useState, useRef, ChangeEvent, useEffect } from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { User, Upload, Pencil, Replace } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
+import { User, Upload, Pencil, Replace, GripVertical, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -12,8 +11,15 @@ import { Label } from '@/components/ui/label';
 import { VitaEditorDialog } from './vita-editor-dialog';
 import { ImageCropDialog } from './image-crop-dialog';
 import DOMPurify from 'dompurify';
-
-const initialVita = `<p>Diesen Text können Sie frei anpassen</p>`;
+import type { Doctor } from '@/app/team/_components/doctor-card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Textarea } from '@/components/ui/textarea';
 
 const VitaRenderer: React.FC<{ text: string }> = ({ text }) => {
   const sanitizedHtml = React.useMemo(() => {
@@ -31,75 +37,31 @@ const VitaRenderer: React.FC<{ text: string }> = ({ text }) => {
   );
 };
 
-
-interface EditDialogProps {
-    trigger: React.ReactNode;
-    dialogTitle: string;
-    dialogDescription: string;
-    initialValue: string;
-    onSave: (value: string) => void;
-    inputLabel: string;
+interface EditableDoctorCardProps {
+    doctor?: Doctor;
+    onSave: (doctorData: Omit<Doctor, 'id'>) => Promise<void>;
+    onCancel: () => void;
+    onDelete?: (id: string) => void;
+    isSubmitting?: boolean;
 }
 
-const EditDialog: React.FC<EditDialogProps> = ({
-    trigger,
-    dialogTitle,
-    dialogDescription,
-    initialValue,
+export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ 
+    doctor, 
     onSave,
-    inputLabel,
+    onCancel, 
+    onDelete,
+    isSubmitting,
 }) => {
-    const [currentValue, setCurrentValue] = useState(initialValue);
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-    const handleSave = () => {
-        onSave(currentValue);
-        setIsDialogOpen(false);
-    };
-    
-    React.useEffect(() => {
-        if (isDialogOpen) {
-            setCurrentValue(initialValue);
-        }
-    }, [initialValue, isDialogOpen]);
-
-    return (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>{trigger}</DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>{dialogTitle}</DialogTitle>
-                    <DialogDescription>{dialogDescription}</DialogDescription>
-                </DialogHeader>
-                <div className="mt-4 space-y-2">
-                    <Label htmlFor="edit-input">{inputLabel}</Label>
-                    <Input
-                        id="edit-input"
-                        value={currentValue}
-                        onChange={(e) => setCurrentValue(e.target.value)}
-                    />
-                </div>
-                <div className="mt-6 flex justify-end gap-2">
-                    <DialogClose asChild>
-                        <Button variant="outline">Abbrechen</Button>
-                    </DialogClose>
-                    <Button onClick={handleSave}>Speichern</Button>
-                </div>
-            </DialogContent>
-        </Dialog>
-    );
-};
-
-export const EditableDoctorCard: React.FC = () => {
-    const [title, setTitle] = useState('Prof. Dr. med. Dr. h.c.');
-    const [name, setName] = useState('Wilko. W. Schemmer');
-    const [specialty, setSpecialty] = useState('Chirurgie FMH, Viszeralchirurgie');
-    const [qualification1, setQualification1] = useState('Schwerpunkt spezielle Viszeralchirurgie (D)');
-    const [qualification2, setQualification2] = useState('Fellow of the American College of Surgeons (FACS)');
-    const [additionalInfo, setAdditionalInfo] = useState('Ärztliche Leitung');
-    const [vita, setVita] = useState(initialVita);
-    const [image, setImage] = useState<string | null>('/images/team/Prof.Schemmer.jpg');
+    const [name, setName] = useState(doctor?.name || '');
+    const [title, setTitle] = useState(doctor?.title || '');
+    const [specialty, setSpecialty] = useState(doctor?.specialty || '');
+    const [qualifications, setQualifications] = useState(doctor?.qualifications?.join('\n') || '');
+    const [additionalInfo, setAdditionalInfo] = useState(doctor?.additionalInfo || '');
+    const [vita, setVita] = useState(doctor?.vita || '<p>Vita hier einfügen...</p>');
+    const [image, setImage] = useState<string | null>(doctor?.imageUrl || null);
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+    const [partnerLogoComponent, setPartnerLogoComponent] = useState(doctor?.partnerLogoComponent || 'none');
+    const [order, setOrder] = useState(doctor?.order || 0);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -122,13 +84,27 @@ export const EditableDoctorCard: React.FC = () => {
         setImage(croppedImage);
         setImageToCrop(null); // Close the crop dialog
     };
-    
-    const triggerDiv = (children: React.ReactNode, className?: string) => (
-        <div className={cn("group relative cursor-pointer", className)}>
-            {children}
-            <Pencil className="absolute top-1/2 right-0 h-4 w-4 -translate-y-1/2 text-primary opacity-0 transition-opacity group-hover:opacity-100" />
-        </div>
-    );
+
+    const handleSaveClick = () => {
+        if (!name || !title) {
+            // Basic validation
+            alert("Name und Titel sind erforderlich.");
+            return;
+        }
+        const doctorData = {
+            name,
+            title,
+            specialty,
+            qualifications: qualifications.split('\n').filter(q => q.trim() !== ''),
+            additionalInfo,
+            vita,
+            imageUrl: image || '',
+            imageHint: 'doctor portrait',
+            partnerLogoComponent: partnerLogoComponent === 'none' ? undefined : partnerLogoComponent as Doctor['partnerLogoComponent'],
+            order,
+        };
+        onSave(doctorData);
+    };
     
     return (
         <>
@@ -146,16 +122,13 @@ export const EditableDoctorCard: React.FC = () => {
                     onClose={() => setImageToCrop(null)}
                 />
             )}
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden border-2 border-primary shadow-lg">
                 <CardContent className="p-0">
                     <div className="grid grid-cols-1 md:grid-cols-2">
-                        <div 
-                            className="relative w-full bg-card"
-                            style={{ 'containerType': 'inline-size', aspectRatio: '1000 / 495' } as React.CSSProperties}
-                        >
-                             <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
+                        <div className="relative w-full bg-card p-6" style={{ 'containerType': 'inline-size' } as React.CSSProperties}>
+                            <div className="grid grid-cols-3 items-center gap-[4.5%]">
                                 <div
-                                    className="group relative col-span-1 h-full w-full cursor-pointer overflow-hidden rounded-md bg-muted transition-colors hover:bg-muted/80"
+                                    className="group relative col-span-1 aspect-[2/3] w-full cursor-pointer overflow-hidden rounded-md bg-muted transition-colors hover:bg-muted/80"
                                     onClick={handleImageUploadClick}
                                 >
                                     {image ? (
@@ -174,70 +147,46 @@ export const EditableDoctorCard: React.FC = () => {
                                         {image ? <Replace className="h-10 w-10 text-white" /> : <Upload className="h-10 w-10 text-white" />}
                                      </div>
                                 </div>
-                                <div className="col-span-2">
-                                    <div className="flex h-full flex-col justify-center gap-1 text-left text-foreground/80">
-                                       <EditDialog 
-                                         dialogTitle="Titel bearbeiten"
-                                         dialogDescription="Geben Sie den akademischen Titel des Arztes ein."
-                                         initialValue={title}
-                                         onSave={setTitle}
-                                         inputLabel="Titel"
-                                         trigger={triggerDiv(<p className="text-[2.2cqw] text-primary">{title || '[Titel]'}</p>)}
-                                       />
-                                       <EditDialog 
-                                         dialogTitle="Name bearbeiten"
-                                         dialogDescription="Geben Sie den Vor- und Nachnamen des Arztes ein."
-                                         initialValue={name}
-                                         onSave={setName}
-                                         inputLabel="Name"
-                                         trigger={triggerDiv(<h4 className="font-headline text-[4.8cqw] font-bold leading-tight text-primary">{name || '[Name]'}</h4>)}
-                                       />
-                                       <div className="mt-[1.5cqw] space-y-1 text-[2.2cqw] leading-tight">
-                                           <EditDialog 
-                                             dialogTitle="Spezialisierung bearbeiten"
-                                             dialogDescription="Geben Sie die Spezialisierung des Arztes ein."
-                                             initialValue={specialty}
-                                             onSave={setSpecialty}
-                                             inputLabel="Spezialisierung"
-                                             trigger={triggerDiv(<p className="font-bold">{specialty || '[Spezialisierung]'}</p>)}
-                                           />
-                                            <EditDialog 
-                                             dialogTitle="Zusatzqualifikation 1 bearbeiten"
-                                             dialogDescription="Geben Sie eine optionale Zusatzqualifikation ein."
-                                             initialValue={qualification1}
-                                             onSave={setQualification1}
-                                             inputLabel="Zusatzqualifikation 1"
-                                             trigger={triggerDiv(<p>{qualification1 || '[Zusatzqualifikation 1]'}</p>)}
-                                           />
-                                            <EditDialog 
-                                             dialogTitle="Zusatzqualifikation 2 bearbeiten"
-                                             dialogDescription="Geben Sie eine weitere optionale Zusatzqualifikation ein."
-                                             initialValue={qualification2}
-                                             onSave={setQualification2}
-                                             inputLabel="Zusatzqualifikation 2"
-                                             trigger={triggerDiv(<p>{qualification2 || '[Zusatzqualifikation 2]'}</p>)}
-                                           />
-                                       </div>
-                                       
-                                        <EditDialog
-                                            dialogTitle="Zusatzinformation bearbeiten"
-                                            dialogDescription="Geben Sie eine optionale Zusatzinformation ein (z.B. 'Ärztliche Leitung')."
-                                            initialValue={additionalInfo}
-                                            onSave={setAdditionalInfo}
-                                            inputLabel="Zusatzinformation"
-                                            trigger={
-                                                triggerDiv(
-                                                    <p className="mt-[2.5cqw] text-[1.6cqw] italic">
-                                                        {additionalInfo || '[Zusatzinfo]'}
-                                                    </p>,
-                                                    "w-fit"
-                                                )
-                                            }
-                                        />
-
+                                <div className="col-span-2 space-y-2">
+                                     <div>
+                                        <Label htmlFor="title" className="text-xs">Titel</Label>
+                                        <Input id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Prof. Dr. med." />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="name" className="text-xs">Name</Label>
+                                        <Input id="name" value={name} onChange={e => setName(e.target.value)} placeholder="Max Mustermann" />
                                     </div>
                                 </div>
-                             </div>
+                            </div>
+                            <div className="mt-4 space-y-2">
+                                <div>
+                                    <Label htmlFor="specialty" className="text-xs">Spezialisierung</Label>
+                                    <Input id="specialty" value={specialty} onChange={e => setSpecialty(e.target.value)} placeholder="Facharzt für..." />
+                                </div>
+                                <div>
+                                    <Label htmlFor="qualifications" className="text-xs">Zusatzqualifikationen (eine pro Zeile)</Label>
+                                    <Textarea id="qualifications" value={qualifications} onChange={e => setQualifications(e.target.value)} placeholder="Qualifikation 1&#10;Qualifikation 2" />
+                                </div>
+                                <div>
+                                    <Label htmlFor="additionalInfo" className="text-xs">Zusatzinformation (kursiv)</Label>
+                                    <Input id="additionalInfo" value={additionalInfo} onChange={e => setAdditionalInfo(e.target.value)} placeholder="z.B. Ärztliche Leitung" />
+                                </div>
+                                <div>
+                                     <Label htmlFor="partnerLogo" className="text-xs">Partner-Logo</Label>
+                                    <Select value={partnerLogoComponent} onValueChange={setPartnerLogoComponent}>
+                                        <SelectTrigger id="partnerLogo">
+                                            <SelectValue placeholder="Logo auswählen" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="none">Kein Logo</SelectItem>
+                                            <SelectItem value="OrthozentrumLogo">Orthozentrum Bern</SelectItem>
+                                            <SelectItem value="AgnieszkaSlezakLogo">Agnieszka Slezak</SelectItem>
+                                            <SelectItem value="VascAllianceLogo">VASC Alliance</SelectItem>
+                                            <SelectItem value="SchemmerWorniLogo">Schemmer & Worni</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
                         </div>
                         <div className="relative bg-accent/95 p-6 text-left text-background">
                             <VitaEditorDialog
@@ -252,6 +201,22 @@ export const EditableDoctorCard: React.FC = () => {
                     </div>
                 </CardContent>
             </Card>
+            <div className="mt-4 flex justify-between">
+                <div className="flex gap-2">
+                    {doctor && onDelete && (
+                         <Button variant="destructive" onClick={() => onDelete(doctor.id)} disabled={isSubmitting}>
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Löschen
+                        </Button>
+                    )}
+                </div>
+                <div className="flex gap-2">
+                    <Button variant="outline" onClick={onCancel} disabled={isSubmitting}>Abbrechen</Button>
+                    <Button onClick={handleSaveClick} disabled={isSubmitting}>
+                        {isSubmitting ? 'Wird gespeichert...' : 'Speichern'}
+                    </Button>
+                </div>
+            </div>
         </>
     );
 };
