@@ -4,107 +4,12 @@
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { TeamMemberCard } from './_components/team-member-card';
-import { DoctorCard, Doctor } from './_components/doctor-card';
-import Link from 'next/link';
-import Image from 'next/image';
 
-const ortmannsData: Doctor = {
-    id: 'ortmanns',
-    title: 'Dipl. med.',
-    name: 'G. Ortmanns',
-    imageUrl: '/images/team/Ortmanns.jpg',
-    imageHint: 'man portrait',
-    specialty: 'Praktischer Arzt',
-    qualifications: [
-      'Master of Public Health (UNSW)',
-      'Master of Health Management (UNSW)',
-    ],
-    additionalInfo: 'Ärztliche und administrative Leitung Praxiszentrum im Ring',
-    vita: (
-      <>
-        <p>
-          [Platzhalter: Der ursprüngliche Vita-Text wurde durch einen Fehler des Assistenten gelöscht und muss hier neu eingefügt werden.]
-        </p>
-      </>
-    ),
-};
-
-const schemmerData: Doctor = {
-    id: 'schemmer',
-    title: 'Prof. Dr. med. Dr. h.c.',
-    name: 'P. Schemmer',
-    imageUrl: '/images/team/Prof.Schemmer.jpg',
-    imageHint: 'man portrait',
-    specialty: 'Facharzt für Chirurgie',
-    qualifications: [],
-    additionalInfo: '',
-    vita: (
-      <>
-        <p>
-          [Platzhalter: Der ursprüngliche Vita-Text wurde durch einen Fehler des Assistenten gelöscht und muss hier neu eingefügt werden.]
-        </p>
-      </>
-    ),
-};
-
-const rosenovData: Doctor = {
-    id: 'rosenov',
-    title: 'Dr. med.',
-    name: 'A. Rosenov',
-    imageUrl: '/images/team/Dr.Rosenov.jpg',
-    imageHint: 'man portrait',
-    specialty: 'Facharzt für Angiologie',
-    qualifications: [],
-    additionalInfo: '',
-    vita: (
-       <>
-        <p>
-          [Platzhalter: Vita-Text für Dr. Rosenov hier einfügen.]
-        </p>
-      </>
-    ),
-};
-
-const worniData: Doctor = {
-    id: 'worni',
-    title: 'Prof. Dr. med.',
-    name: 'Mathias Worni',
-    imageUrl: '/images/team/Prof.Worni.jpg',
-    imageHint: 'man portrait',
-    specialty: 'Chirurgie FMH, Viszeralchirurgie',
-    qualifications: [
-      'Schwerpunkt spezielle Viszeralchirurgie (D)',
-      'Fellow of the American College of Surgeons (FACS)',
-    ],
-    additionalInfo: '',
-    partnerLogo: 'orthozentrum',
-    vita: (
-       <>
-        <p>
-          [Platzhalter: Der ursprüngliche Vita-Text wurde durch einen Fehler des Assistenten gelöscht und muss hier neu eingefügt werden.]
-        </p>
-      </>
-    ),
-};
-
-const slezakData: Doctor = {
-    id: 'slezak',
-    title: 'Dr. med.',
-    name: 'Agnieszka Slezak',
-    imageUrl: '/images/team/Fr.Dr.Slezak.jpg',
-    imageHint: 'woman portrait',
-    specialty: 'Neurologie',
-    qualifications: [],
-    additionalInfo: 'Konsiliarärztin',
-    partnerLogo: 'slezak',
-    vita: (
-      <>
-        <p>
-          [Platzhalter: Der ursprüngliche Vita-Text wurde durch einen Fehler des Assistenten gelöscht und muss hier neu eingefügt werden.]
-        </p>
-      </>
-    ),
-};
+import { OrtmannsCard } from './_components/doctors/ortmanns-card';
+import { SchemmerCard } from './_components/doctors/schemmer-card';
+import { RosenovCard } from './_components/doctors/rosenov-card';
+import { WorniCard } from './_components/doctors/worni-card';
+import { SlezakCard } from './_components/doctors/slezak-card';
 
 const garcia = {
     name: 'S. Garcia',
@@ -215,46 +120,24 @@ export default function TeamPage() {
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
             
-            <div id={ortmannsData.id} className="mx-auto max-w-[1000px] p-2">
-                <DoctorCard {...ortmannsData} />
+            <div id="ortmanns" className="mx-auto max-w-[1000px] p-2">
+                <OrtmannsCard />
             </div>
             
-            <div id={schemmerData.id} className="mx-auto max-w-[1000px] p-2">
-                <DoctorCard {...schemmerData}>
-                    <div className="relative mt-[2.5cqw] w-[30cqw]">
-                        <Image
-                            src="/images/schemmer-worni-logo.png"
-                            alt="Schemmer & Worni Logo"
-                            width={300}
-                            height={100}
-                            className="h-auto w-full object-contain"
-                            data-ai-hint="partner logo"
-                        />
-                    </div>
-                </DoctorCard>
+            <div id="schemmer" className="mx-auto max-w-[1000px] p-2">
+                <SchemmerCard />
             </div>
             
-            <div id={rosenovData.id} className="mx-auto max-w-[1000px] p-2">
-                <DoctorCard {...rosenovData}>
-                    <div className="relative mt-[2.5cqw] w-[30cqw]">
-                        <Image
-                            src="/images/VASC-Alliance-Logo.png"
-                            alt="VASC Alliance Logo"
-                            width={381}
-                            height={127}
-                            className="h-auto w-full object-contain"
-                            data-ai-hint="partner logo"
-                        />
-                    </div>
-                </DoctorCard>
+            <div id="rosenov" className="mx-auto max-w-[1000px] p-2">
+                <RosenovCard />
             </div>
 
-            <div id={worniData.id} className="mx-auto max-w-[1000px] p-2">
-                <DoctorCard {...worniData} />
+            <div id="worni" className="mx-auto max-w-[1000px] p-2">
+                <WorniCard />
             </div>
 
-            <div id={slezakData.id} className="mx-auto max-w-[1000px] p-2">
-                <DoctorCard {...slezakData} />
+            <div id="slezak" className="mx-auto max-w-[1000px] p-2">
+                <SlezakCard />
             </div>
           </div>
 

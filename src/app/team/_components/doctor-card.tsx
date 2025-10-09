@@ -3,42 +3,25 @@
 
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
-import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
 
-export interface Doctor {
-    id: string;
+export interface DoctorCardProps {
     title: string;
     name: string;
     imageUrl: string;
     imageHint: string;
     specialty: string;
     qualifications: string[];
-    additionalInfo: string;
-    partnerLogo?: 'orthozentrum' | 'slezak';
     vita: React.ReactNode;
+    children?: React.ReactNode;
 }
 
-const PartnerLogo = ({ name }: { name: 'orthozentrum' | 'slezak' }) => {
-    switch (name) {
-        case 'orthozentrum':
-            return <OrthozentrumLogo className="w-full h-auto text-current" />;
-        case 'slezak':
-            return <AgnieszkaSlezakLogo className="w-full h-auto text-current" />;
-        default:
-            return null;
-    }
-};
-
-export const DoctorCard: React.FC<Doctor & { children?: React.ReactNode }> = ({
+export const DoctorCard: React.FC<DoctorCardProps> = ({
     title,
     name,
     imageUrl,
     imageHint,
     specialty,
     qualifications,
-    additionalInfo,
-    partnerLogo,
     vita,
     children,
 }) => {
@@ -71,17 +54,11 @@ export const DoctorCard: React.FC<Doctor & { children?: React.ReactNode }> = ({
                                         {qualifications.map((q, i) => <p key={i}>{q}</p>)}
                                     </div>
                                     
-                                    {children ? (
-                                        children
-                                    ) : partnerLogo ? (
+                                    {children && (
                                         <div className="relative mt-[2.5cqw] w-[30cqw]">
-                                            <PartnerLogo name={partnerLogo} />
+                                            {children}
                                         </div>
-                                    ) : additionalInfo ? (
-                                        <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
-                                            {additionalInfo}
-                                        </p>
-                                    ) : null}
+                                    )}
                                 </div>
                             </div>
                         </div>
