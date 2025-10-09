@@ -123,9 +123,9 @@ export function Header() {
                 src="/images/praxiszentrum-logo.png"
                 alt="Praxiszentrum im Ring Logo"
                 data-ai-hint="practice logo"
-                width={1511}
-                height={306}
-                className="h-auto w-[601px]"
+                width={1964}
+                height={398}
+                className="h-auto w-[781px]"
                 priority
               />
         </Link>
@@ -199,8 +199,8 @@ export function Header() {
                       src="/images/praxiszentrum-logo.png"
                       alt="Praxiszentrum im Ring Logo"
                       data-ai-hint="practice logo"
-                      width={180}
-                      height={37}
+                      width={234}
+                      height={48}
                       className="h-auto"
                     />
                 </Link>

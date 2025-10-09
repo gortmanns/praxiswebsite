@@ -30,8 +30,8 @@ export function RosenovCard() {
       <Image
         src="/images/VASC-Alliance-Logo.png"
         alt="VASC Alliance Logo"
-        width={381}
-        height={127}
+        width={495}
+        height={165}
         className="h-auto w-full object-contain"
         data-ai-hint="partner logo"
       />

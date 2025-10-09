@@ -12,16 +12,16 @@ export function CooperationPartnersSection() {
       logoUrl: '/images/VASC-Alliance-Logo.png',
       websiteUrl: 'https://www.vasc-alliance.ch/',
       hint: 'partner logo',
-      width: 381,
-      height: 127,
+      width: 495,
+      height: 165,
     },
     {
       name: 'Schemmer & Worni',
       logoUrl: '/images/schemmer-worni-logo.png',
       websiteUrl: 'https://schemmer-worni.ch/de/',
       hint: 'partner logo',
-      width: 300,
-      height: 100,
+      width: 390,
+      height: 130,
     },
     {
       name: 'orthozentrum-bern',
@@ -36,24 +36,24 @@ export function CooperationPartnersSection() {
       logoUrl: '/images/go-medical-logo.png',
       websiteUrl: '#',
       hint: 'partner logo',
-      width: 300,
-      height: 100,
+      width: 390,
+      height: 130,
     },
     {
       name: 'MCL',
       logoUrl: '/images/mcl-labor-logo.png',
       websiteUrl: 'https://www.mcl.ch/de-de/',
       hint: 'partner logo',
-      width: 300,
-      height: 100,
+      width: 390,
+      height: 130,
     },
     {
       name: 'doxnet',
       logoUrl: '/images/doxnet-logo.jpg',
       websiteUrl: 'https://www.doxnet.ch/',
       hint: 'partner logo',
-      width: 243,
-      height: 81,
+      width: 316,
+      height: 105,
     },
   ];
 
@@ -87,7 +87,7 @@ export function CooperationPartnersSection() {
                       />
                     </div>
                   ) : partner.name === 'orthozentrum-bern' ? (
-                     <OrthozentrumLogo className="h-20 w-auto" />
+                     <OrthozentrumLogo className="h-24 w-auto" />
                   ) : null}
                 </CardContent>
               </Card>
@@ -103,7 +103,7 @@ export function CooperationPartnersSection() {
             >
               <Card className="flex h-full w-full items-center p-6">
                 <CardContent className="flex w-full items-center justify-center p-0">
-                   <AgnieszkaSlezakLogo className="h-20 w-auto text-special-green" />
+                   <AgnieszkaSlezakLogo className="h-24 w-auto text-special-green" />
                 </CardContent>
               </Card>
               <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>

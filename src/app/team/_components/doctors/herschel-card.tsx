@@ -22,7 +22,7 @@ export function HerschelCard() {
 
   return (
     <DoctorCard {...doctorData}>
-      <OrthozentrumLogo />
+      <OrthozentrumLogo className="h-24" />
     </DoctorCard>
   );
 }

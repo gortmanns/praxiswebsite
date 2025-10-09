@@ -53,8 +53,8 @@ export default function NotfallPage() {
                         src="/images/medphone_logo.png"
                         alt="Medphone Logo"
                         data-ai-hint="medphone logo"
-                        width={600}
-                        height={141}
+                        width={780}
+                        height={183}
                         className="h-auto w-full"
                       />
                     </div>
@@ -82,8 +82,8 @@ export default function NotfallPage() {
                           src="/images/toxinfo-logo.svg"
                           alt="Tox Info Suisse Logo"
                           data-ai-hint="toxinfo logo"
-                          width={357}
-                          height={93}
+                          width={464}
+                          height={121}
                           className="h-auto w-full"
                         />
                       </Link>

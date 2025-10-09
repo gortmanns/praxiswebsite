@@ -26,7 +26,7 @@ export function SlezakCard() {
 
   return (
     <DoctorCard {...doctorData}>
-      <AgnieszkaSlezakLogo />
+      <AgnieszkaSlezakLogo className="h-24" />
     </DoctorCard>
   );
 }

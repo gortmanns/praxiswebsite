@@ -143,8 +143,8 @@ export function Footer() {
                 src="/images/mehrfacharzt-logo.png"
                 alt="Mehrfacharzt Logo"
                 data-ai-hint="quality label"
-                width={200}
-                height={64}
+                width={260}
+                height={83}
                 className="h-auto w-full object-contain"
                 />
             </div>
