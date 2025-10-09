@@ -7,7 +7,7 @@ export function HerschelCard() {
     return (
         <DoctorCard
             title="Dr. med."
-            name="Ralf Herschel"
+            name="R. Herschel"
             imageUrl="/images/team/Dr.Herschel.jpg"
             imageHint="man portrait"
             specialty={

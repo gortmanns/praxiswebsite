@@ -7,7 +7,7 @@ export function SlezakCard() {
     return (
         <DoctorCard
             title="Dr. med."
-            name="Agnieszka Slezak"
+            name="A. Slezak"
             imageUrl="/images/team/Dr.Slezak.jpg"
             imageHint="woman portrait"
             specialty="Fachärztin für Neurologie"

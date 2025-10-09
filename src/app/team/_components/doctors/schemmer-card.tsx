@@ -7,7 +7,7 @@ export function SchemmerCard() {
     return (
         <DoctorCard
             title="Prof. Dr. med. Dr. h. c."
-            name="Patrick Schemmer"
+            name="P. Schemmer"
             imageUrl="/images/team/Schemmer.jpg"
             imageHint="man portrait"
             specialty="Facharzt für Chirurgie"

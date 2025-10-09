@@ -7,7 +7,7 @@ export function RosenovCard() {
     return (
         <DoctorCard
             title="Prof. Dr. med."
-            name="Jens Rosenov"
+            name="J. Rosenov"
             imageUrl="/images/team/Rosenov.jpg"
             imageHint="man portrait"
             specialty="Facharzt für Herzchirurgie"
@@ -34,7 +34,7 @@ export function RosenovCard() {
                 </ul>
             `}
         >
-            <div className="relative h-24 w-[30cqw]">
+            <div className="relative h-24 w-full">
                  <Image
                     src="/images/VASC-Alliance-Logo.png"
                     alt="VASC Alliance Logo"
