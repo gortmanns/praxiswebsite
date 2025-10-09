@@ -1,4 +1,3 @@
-
 'use client';
 
 import { DoctorCard } from '../doctor-card';
@@ -12,8 +11,8 @@ export function OrtmannsCard() {
             imageHint="man portrait"
             specialty="Praktischer Arzt"
             qualifications={[
-                'Master of Science in General Management',
-                'Master of Science in eHealth',
+                'Titel 1 hier einfügen',
+                'Titel 2 hier einfügen',
             ]}
             vita={`
                 <h4>Curriculum Vitae</h4>
