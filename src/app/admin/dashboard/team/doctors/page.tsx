@@ -7,6 +7,8 @@ import { RosenovCard } from '@/app/team/_components/doctors/rosenov-card';
 import { SchemmerCard } from '@/app/team/_components/doctors/schemmer-card';
 import { SlezakCard } from '@/app/team/_components/doctors/slezak-card';
 import { HerschelCard } from '@/app/team/_components/doctors/herschel-card';
+import { DoctorCard } from '@/app/team/_components/doctor-card';
+import { User } from 'lucide-react';
 
 export default function DoctorsPage() {
 
@@ -22,7 +24,27 @@ export default function DoctorsPage() {
                 </div>
             </CardHeader>
             <CardContent>
-                <p>Der Inhalt für die Ärzte-Verwaltung wird hier in Kürze verfügbar sein.</p>
+                 <div className="mx-auto w-full p-2">
+                    <DoctorCard
+                        title="Titel"
+                        name="Name"
+                        imageUrl=""
+                        imageHint="placeholder"
+                        specialty="Fachgebiet"
+                        qualifications={[
+                            'Sonstige Qualifikation 1',
+                            'Sonstige Qualifikation 2',
+                            'Sonstige Qualifikation 3',
+                            'Sonstige Qualifikation 4',
+                        ]}
+                        vita={`<p>Vita hier bearbeiten...</p>`}
+                        additionalInfo="Spezielle Information"
+                    >
+                         <div className="flex h-28 w-auto items-center justify-center text-muted-foreground">
+                            Logo
+                        </div>
+                    </DoctorCard>
+                 </div>
             </CardContent>
         </Card>
 
