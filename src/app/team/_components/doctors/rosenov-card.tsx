@@ -15,7 +15,11 @@ export function RosenovCard() {
     vita: (
        <>
         <p>
-          [Platzhalter: Vita-Text für Dr. Rosenov hier einfügen.]
+          Herr Dr. Rosenov bietet als Spezialist für Gefässerkrankungen eine angiologische Sprechstunde bei uns in der Praxis an.
+        </p>
+        <br/>
+        <p>
+          Dabei führt er auch Duplex-Sonografien der hirnversorgenden Gefässe, der Extremitätenarterien und der tiefen und oberflächlichen Beinvenen durch.
         </p>
       </>
     ),

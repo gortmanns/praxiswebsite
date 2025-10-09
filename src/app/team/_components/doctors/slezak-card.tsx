@@ -15,7 +15,11 @@ export function SlezakCard() {
     vita: (
       <>
         <p>
-          [Platzhalter: Der ursprüngliche Vita-Text wurde durch einen Fehler des Assistenten gelöscht und muss hier neu eingefügt werden.]
+          Frau Dr. Slezak bietet als Spezialistin für Neurologie eine neurologische Sprechstunde bei uns in der Praxis an. 
+        </p>
+        <br/>
+        <p>
+          Sie führt auch Elektroneuromyographien (ENMG) und Messungen der Nervenleitgeschwindigkeit (NLG) durch.
         </p>
       </>
     ),

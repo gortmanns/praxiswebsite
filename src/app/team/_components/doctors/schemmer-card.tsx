@@ -15,7 +15,15 @@ export function SchemmerCard() {
     vita: (
       <>
         <p>
-          [Platzhalter: Der ursprüngliche Vita-Text wurde durch einen Fehler des Assistenten gelöscht und muss hier neu eingefügt werden.]
+          Herr Prof. Schemmer hat in Heidelberg und den USA studiert und sich anschliessend zum Facharzt für Allgemein-, Viszeral- und Transplantationschirurgie weitergebildet.
+        </p>
+        <br/>
+        <p>
+          Nach einer Karriere an den Universitätskliniken in Heidelberg und Innsbruck und mehr als 10 Jahren als Chefarzt der Allgemein- und Viszeralchirurgie am Landeskrankenhaus in Graz hat er sich mit einer eigenen Praxis in Bern niedergelassen.
+        </p>
+        <br/>
+        <p>
+          Er bietet mehrmals pro Monat eine Sprechstunde für viszeralchirurgische Fragestellungen bei uns im Praxiszentrum an.
         </p>
       </>
     ),

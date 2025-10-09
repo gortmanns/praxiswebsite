@@ -17,7 +17,7 @@ export function OrtmannsCard() {
     vita: (
       <>
         <p>
-          [Platzhalter: Der ursprüngliche Vita-Text wurde durch einen Fehler des Assistenten gelöscht und muss hier neu eingefügt werden.]
+          Nach dem Studium in Düsseldorf und Sydney habe ich zunächst in verschiedenen Fächern in Spitälern in Deutschland und der Schweiz gearbeitet. Im Anschluss an diese breite Ausbildung habe ich mich im Bereich der Notfallmedizin weitergebildet und über viele Jahre als Notarzt auf dem Notarztwagen und Rettungshubschrauber gearbeitet. Seit inzwischen mehr als 10 Jahren bin ich als Hausarzt niedergelassen und habe über die Jahre die Zusatzqualifikationen Praxislabor und dosisintensives Röntgen erworben.
         </p>
       </>
     ),

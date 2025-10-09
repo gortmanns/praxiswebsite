@@ -18,7 +18,7 @@ export function WorniCard() {
     vita: (
        <>
         <p>
-          [Platzhalter: Der ursprüngliche Vita-Text wurde durch einen Fehler des Assistenten gelöscht und muss hier neu eingefügt werden.]
+          Prof. Dr. med. Mathias Worni ist ein international anerkannter Spezialist für die chirurgische Behandlung von Leber-, Gallenblasen- und Bauchspeicheldrüsenerkrankungen. Er hat seine Ausbildung in der Schweiz (u.a. Universitätsspital Bern) und an der Duke University (USA) absolviert. Er ist aktuell Chefarzt am Bürgerspital Solothurn, Konsiliararzt für Leber- und Bauchspeicheldrüsenchirurgie am Spitalzentrum Biel und Partner am Orthozentrum Bern.
         </p>
       </>
     ),
