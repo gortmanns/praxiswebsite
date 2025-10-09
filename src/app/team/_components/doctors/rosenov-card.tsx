@@ -11,9 +11,7 @@ export function RosenovCard() {
             imageUrl="/images/team/Dr.Rosenov.jpg"
             imageHint="man portrait"
             specialty="Facharzt für Angiologie"
-            qualifications={[
-                'speziell für die Varizenchirurgie',
-            ]}
+            qualifications={[]}
             vita={`
                 <p>
                     Prof. Rosenov hat sich bereit erklärt, ab Mai 2024 die Patienten mit Krampfaderleiden im Praxiszentrum im Ring zu behandeln.
