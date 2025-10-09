@@ -1,3 +1,4 @@
+
 'use client';
 
 import { DoctorCard } from '../doctor-card';
@@ -29,9 +30,9 @@ export function SchemmerCard() {
              <Image
                 src="/images/schemmer-worni-logo.png"
                 alt="Schemmer & Worni Logo"
-                width={200}
-                height={67}
-                className="h-auto w-full max-w-[200px] object-contain"
+                width={400}
+                height={134}
+                className="h-auto w-full max-w-[400px] object-contain"
                 data-ai-hint="partner logo"
             />
         </DoctorCard>
