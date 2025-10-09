@@ -27,14 +27,15 @@ export function RosenovCard() {
 
   return (
     <DoctorCard {...doctorData}>
-      <Image
-        src="/images/VASC-Alliance-Logo.png"
-        alt="VASC Alliance Logo"
-        width={495}
-        height={165}
-        className="h-auto w-full object-contain"
-        data-ai-hint="partner logo"
-      />
+      <div className="relative h-24 w-full">
+        <Image
+          src="/images/VASC-Alliance-Logo.png"
+          alt="VASC Alliance Logo"
+          fill
+          className="object-contain"
+          data-ai-hint="partner logo"
+        />
+      </div>
     </DoctorCard>
   );
 }
