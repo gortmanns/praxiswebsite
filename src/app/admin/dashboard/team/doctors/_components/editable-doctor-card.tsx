@@ -37,11 +37,12 @@ const partnerLogos: { [key: string]: React.FC<any> } = {
   SchemmerWorniLogo,
 };
 
-interface EditableDoctorCardProps {
+interface FixedWidthDoctorCardProps {
     doctor: Doctor;
+    isBack?: boolean;
 }
 
-const FixedWidthDoctorCard: React.FC<{ doctor: Doctor, isBack?: boolean }> = ({ doctor, isBack = false }) => {
+const FixedWidthDoctorCard: React.FC<FixedWidthDoctorCardProps> = ({ doctor, isBack = false }) => {
     const { 
         title,
         name,
@@ -123,46 +124,60 @@ const FixedWidthDoctorCard: React.FC<{ doctor: Doctor, isBack?: boolean }> = ({ 
 };
 
 
+interface EditableDoctorCardProps {
+    doctor: Doctor;
+}
+
+const ScalableCard: React.FC<{
+    doctor: Doctor;
+    isBack?: boolean;
+    cardBaseWidth: number;
+    cardBaseHeight: number;
+}> = ({ doctor, isBack, cardBaseWidth, cardBaseHeight }) => {
+    return (
+        <div
+            className="relative w-full"
+            style={{ aspectRatio: `${cardBaseWidth / cardBaseHeight}` }}
+        >
+            <div
+                className="absolute top-0 left-0 origin-top-left"
+                style={{
+                    width: `${cardBaseWidth}px`,
+                    height: `${cardBaseHeight}px`,
+                    transform: `scale(calc(1 / ${cardBaseWidth} * 100%))`,
+                }}
+            >
+                <FixedWidthDoctorCard doctor={doctor} isBack={isBack} />
+            </div>
+        </div>
+    );
+};
+
+
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }) => {
-    const cardBaseWidth = 1000;
-    const cardAspectRatio = 550 / 300;
-    const cardBaseHeight = cardBaseWidth / (2 * cardAspectRatio);
+    // These values determine the base size of the card *before* scaling.
+    // They should represent the size of the card at its largest display width.
+    const cardBaseWidth = 1000; 
+    
+    // We derive the height from the aspect ratio of the content.
+    // The original card's content has a rough aspect ratio of 550/300.
+    const cardContentAspectRatio = 550 / 300;
+    const cardBaseHeight = cardBaseWidth / cardContentAspectRatio;
 
     return (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {/* Vorderseite mit Skalierung */}
-            <div 
-                className="relative w-full"
-                style={{ aspectRatio: `${cardAspectRatio}` }}
-            >
-                <div 
-                    className="absolute top-0 left-0 origin-top-left"
-                    style={{
-                        width: `${cardBaseWidth / 2}px`,
-                        height: `${cardBaseHeight}px`,
-                        transform: `scale(calc(1 / ${cardBaseWidth / 2} * 100%))`,
-                    }}
-                >
-                    <FixedWidthDoctorCard doctor={doctor} />
-                </div>
-            </div>
-
-            {/* Rückseite mit Skalierung */}
-            <div 
-                className="relative w-full"
-                style={{ aspectRatio: `${cardAspectRatio}` }}
-            >
-                <div
-                    className="absolute top-0 left-0 origin-top-left"
-                    style={{
-                        width: `${cardBaseWidth / 2}px`,
-                        height: `${cardBaseHeight}px`,
-                        transform: `scale(calc(1 / ${cardBaseWidth / 2} * 100%))`,
-                    }}
-                >
-                    <FixedWidthDoctorCard doctor={doctor} isBack={true} />
-                </div>
-            </div>
+            <ScalableCard 
+                doctor={doctor} 
+                isBack={false}
+                cardBaseWidth={cardBaseWidth / 2} // The original design is a 2-col layout
+                cardBaseHeight={cardBaseHeight} 
+            />
+            <ScalableCard
+                doctor={doctor}
+                isBack={true}
+                cardBaseWidth={cardBaseWidth / 2}
+                cardBaseHeight={cardBaseHeight}
+            />
         </div>
     );
 };
