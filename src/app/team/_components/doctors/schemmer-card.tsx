@@ -3,7 +3,7 @@
 import { DoctorCard } from '../doctor-card';
 import Image from 'next/image';
 
-export function SchemerCard() {
+export function SchemmerCard() {
     return (
         <DoctorCard
             title="Prof. Dr. med. Dr. h. c."
@@ -32,9 +32,9 @@ export function SchemerCard() {
              <Image
                 src="/images/schemmer-worni-logo.png"
                 alt="Schemmer & Worni Logo"
-                width={300}
-                height={100}
-                className="h-auto w-full max-w-[300px] object-contain"
+                width={390}
+                height={130}
+                className="h-auto w-full max-w-[390px] object-contain"
                 data-ai-hint="partner logo"
             />
         </DoctorCard>

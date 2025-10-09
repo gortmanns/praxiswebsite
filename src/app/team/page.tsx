@@ -4,7 +4,7 @@ import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { OrtmannsCard } from './_components/doctors/ortmanns-card';
 import { RosenovCard } from './_components/doctors/rosenov-card';
-import { SchemerCard } from './_components/doctors/schemmer-card';
+import { SchemmerCard } from './_components/doctors/schemmer-card';
 import { SlezakCard } from './_components/doctors/slezak-card';
 import { HerschelCard } from './_components/doctors/herschel-card';
 import { TeamMemberCard } from './_components/team-member-card';
@@ -110,19 +110,19 @@ export default function TeamPage() {
               <h2 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">Ärzte</h2>
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
-            <div className="mx-auto w-full p-2">
+            <div className="mx-auto w-full max-w-5xl p-2">
               <OrtmannsCard />
             </div>
-            <div className="mx-auto w-full p-2" id="schemmer">
-              <SchemerCard />
+            <div className="mx-auto w-full max-w-5xl p-2" id="schemmer">
+              <SchemmerCard />
             </div>
-            <div className="mx-auto w-full p-2" id="rosenov">
+            <div className="mx-auto w-full max-w-5xl p-2" id="rosenov">
               <RosenovCard />
             </div>
-            <div className="mx-auto w-full p-2" id="herschel">
+            <div className="mx-auto w-full max-w-5xl p-2" id="herschel">
               <HerschelCard />
             </div>
-            <div className="mx-auto w-full p-2" id="slezak">
+            <div className="mx-auto w-full max-w-5xl p-2" id="slezak">
               <SlezakCard />
             </div>
 

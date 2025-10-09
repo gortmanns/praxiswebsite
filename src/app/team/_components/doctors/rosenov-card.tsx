@@ -34,13 +34,12 @@ export function RosenovCard() {
                 </ul>
             `}
         >
-            <div className="h-32 w-[400px] relative">
+            <div className="relative h-32 w-[520px]">
                  <Image
                     src="/images/VASC-Alliance-Logo.png"
                     alt="VASC Alliance Logo"
-                    width={495}
-                    height={165}
-                    className="h-auto w-full object-contain"
+                    fill
+                    className="h-auto w-full object-contain object-left"
                     data-ai-hint="partner logo"
                 />
             </div>
