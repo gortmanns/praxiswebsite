@@ -71,13 +71,13 @@ const ScalableCard: React.FC<ScalableCardProps> = ({ doctor, isBackside = false 
 
     return (
         <Card className="group relative w-full overflow-hidden rounded-lg shadow-sm h-full">
-            <CardContent className="p-0">
+            <CardContent className="p-0 h-full">
                 <div 
                     className="relative w-full bg-card h-full"
                     style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                 >
                     <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
-                        <div className="relative col-span-1 h-full w-full aspect-[2/3] overflow-hidden rounded-md">
+                        <div className="relative col-span-1 w-full aspect-[2/3] self-center overflow-hidden rounded-md">
                             {imageUrl ? (
                                 <Image
                                     src={imageUrl}
@@ -103,7 +103,7 @@ const ScalableCard: React.FC<ScalableCardProps> = ({ doctor, isBackside = false 
                                     {qualifications.map((q, i) => <p key={i}>{q}</p>)}
                                 </div>
                                 
-                                {additionalInfo && (
+                                {additionalInfo && !LogoComponent && (
                                     <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
                                         {additionalInfo}
                                     </p>
@@ -130,11 +130,9 @@ interface EditableDoctorCardProps {
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }) => {
     return (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {/* Left Column: Front of the card */}
             <div className="aspect-[550/300]">
                 <ScalableCard doctor={doctor} />
             </div>
-            {/* Right Column: Back of the card */}
             <div className="aspect-[550/300]">
                 <ScalableCard doctor={doctor} isBackside={true} />
             </div>
