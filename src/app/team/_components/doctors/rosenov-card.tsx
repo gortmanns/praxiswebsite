@@ -1,3 +1,4 @@
+
 'use client';
 
 import { DoctorCard } from '../doctor-card';
@@ -7,7 +8,7 @@ export function RosenovCard() {
     return (
         <DoctorCard
             title="Prof. Dr. med."
-            name="J. Rosenov"
+            name="A. Rosenov"
             imageUrl="/images/team/Dr.Rosenov.jpg"
             imageHint="man portrait"
             specialty="Facharzt für Angiologie"
