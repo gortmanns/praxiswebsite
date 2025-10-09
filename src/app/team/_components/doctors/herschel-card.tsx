@@ -21,7 +21,8 @@ export function HerschelCard() {
             vita={`
                 <p>Vita folgt in Kürze.</p>
             `}
-            partnerLogoComponent="OrthozentrumLogo"
-        />
+        >
+            <OrthozentrumLogo className="h-28 w-auto" />
+        </DoctorCard>
     );
 }
