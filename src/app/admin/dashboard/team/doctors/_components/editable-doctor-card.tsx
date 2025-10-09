@@ -59,7 +59,7 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
 
     if (isBack) {
         return (
-            <Card className="group relative w-full overflow-hidden rounded-lg shadow-sm h-full aspect-[4/3]">
+            <Card className="group relative w-full overflow-hidden rounded-lg shadow-sm h-full">
                 <div className="flex h-full flex-col overflow-auto bg-accent/95 p-6 text-left text-background">
                     <div className="h-full w-full overflow-y-auto text-base leading-tight scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
                         <VitaRenderer html={vita} />
@@ -70,14 +70,14 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
     }
     
     return (
-        <Card className="w-full overflow-hidden rounded-lg shadow-sm aspect-[4/3]">
+        <Card className="w-full overflow-hidden rounded-lg shadow-sm h-full">
             <CardContent className="p-0 h-full">
                 <div 
                     className="relative w-full bg-card h-full"
                     style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                 >
                     <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
-                        <div className="relative col-span-1 w-full aspect-[2/3] overflow-hidden rounded-md self-center">
+                        <div className="relative col-span-1 w-full aspect-[2/3] overflow-hidden rounded-md">
                             {imageUrl ? (
                                 <Image
                                     src={imageUrl}
@@ -131,14 +131,18 @@ interface EditableDoctorCardProps {
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }) => {
     return (
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-            <DoctorCardPreview 
-              doctor={doctor} 
-              isBack={false}
-            />
-            <DoctorCardPreview
-              doctor={doctor}
-              isBack={true}
-            />
+            <div className="aspect-[4/3]">
+                <DoctorCardPreview 
+                  doctor={doctor} 
+                  isBack={false}
+                />
+            </div>
+            <div className="aspect-[4/3]">
+                <DoctorCardPreview
+                  doctor={doctor}
+                  isBack={true}
+                />
+            </div>
         </div>
     );
 };
