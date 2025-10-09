@@ -5,7 +5,7 @@ import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { OrtmannsCard } from './_components/doctors/ortmanns-card';
 import { RosenovCard } from './_components/doctors/rosenov-card';
-import { SchemmerCard as SchemerCard } from './_components/doctors/schemmer-card';
+import { SchemerCard } from './_components/doctors/schemmer-card';
 import { SlezakCard } from './_components/doctors/slezak-card';
 import { HerschelCard } from './_components/doctors/herschel-card';
 import { TeamMemberCard } from './_components/team-member-card';
@@ -106,66 +106,63 @@ export default function TeamPage() {
       <Header />
       <main className="flex-1">
         <div className="container py-16 sm:py-24">
-            <div className="mx-auto mt-16 max-w-5xl space-y-16">
-                 <div id="aerzte">
-                    <h2 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">Ärzte</h2>
-                    <div className="mt-2 h-1 w-full bg-primary"></div>
-                </div>
-                <div className="mx-auto w-full p-2">
-                    <OrtmannsCard />
-                </div>
-                <div className="mx-auto w-full p-2" id="schemmer">
-                    <SchemerCard />
-                </div>
-                <div className="mx-auto w-full p-2" id="rosenov">
-                    <RosenovCard />
-                </div>
-                <div className="mx-auto w-full p-2" id="herschel">
-                    <HerschelCard />
-                </div>
-                <div className="mx-auto w-full p-2" id="slezak">
-                    <SlezakCard />
-                </div>
-          </div>
-          
-           <div className="mx-auto mt-16 max-w-5xl space-y-8">
-             <div>
-                <h2 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">Praxispersonal</h2>
-                <div className="mt-2 h-1 w-full bg-primary"></div>
-                <p className="mt-4 text-center text-lg text-foreground/80">
-                    Die guten Geister, ohne die keine Arztpraxis funktioniert
-                </p>
-             </div>
+          <div className="mx-auto max-w-5xl space-y-16">
+            <div id="aerzte">
+              <h2 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">Ärzte</h2>
+              <div className="mt-2 h-1 w-full bg-primary"></div>
+            </div>
+            <div className="mx-auto w-full p-2">
+              <OrtmannsCard />
+            </div>
+            <div className="mx-auto w-full p-2" id="schemmer">
+              <SchemerCard />
+            </div>
+            <div className="mx-auto w-full p-2" id="rosenov">
+              <RosenovCard />
+            </div>
+            <div className="mx-auto w-full p-2" id="herschel">
+              <HerschelCard />
+            </div>
+            <div className="mx-auto w-full p-2" id="slezak">
+              <SlezakCard />
+            </div>
+
+            <div id="praxispersonal">
+              <h2 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">Praxispersonal</h2>
+              <div className="mt-2 h-1 w-full bg-primary"></div>
+              <p className="mt-4 text-center text-lg text-foreground/80">
+                Die guten Geister, ohne die keine Arztpraxis funktioniert
+              </p>
+            </div>
             
             <div className="flex justify-center">
-                <div className="w-full max-w-sm">
-                    <TeamMemberCard 
-                        name={garcia.name}
-                        role={garcia.role}
-                        role2={garcia.role2}
-                        imageUrl={garcia.imageUrl}
-                        imageHint={garcia.imageHint}
-                        backsideContent={garcia.backsideContent}
-                    />
-                </div>
+              <div className="w-full max-w-sm">
+                <TeamMemberCard 
+                  name={garcia.name}
+                  role={garcia.role}
+                  role2={garcia.role2}
+                  imageUrl={garcia.imageUrl}
+                  imageHint={garcia.imageHint}
+                  backsideContent={garcia.backsideContent}
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                {otherTeamMembers.map((member) => (
-                    <div key={member.name} className="mx-auto w-full max-w-sm">
-                        <TeamMemberCard 
-                            name={member.name}
-                            role={member.role}
-                            role2={member.role2}
-                            imageUrl={member.imageUrl}
-                            imageHint={member.imageHint}
-                            backsideContent={member.backsideContent}
-                        />
-                    </div>
-                ))}
+              {otherTeamMembers.map((member) => (
+                <div key={member.name} className="mx-auto w-full max-w-sm">
+                  <TeamMemberCard 
+                    name={member.name}
+                    role={member.role}
+                    role2={member.role2}
+                    imageUrl={member.imageUrl}
+                    imageHint={member.imageHint}
+                    backsideContent={member.backsideContent}
+                  />
+                </div>
+              ))}
             </div>
           </div>
-
         </div>
       </main>
       <Footer />
