@@ -5,6 +5,27 @@ import { Card, CardContent } from '@/components/ui/card';
 import DOMPurify from 'dompurify';
 import React from 'react';
 import { User } from 'lucide-react';
+import {
+    AgnieszkaSlezakLogo,
+    OrthozentrumLogo,
+    SchemmerWorniLogo,
+    VascAllianceLogo
+} from '@/components/logos';
+
+export interface Doctor {
+    id: string;
+    title: string;
+    name: string;
+    imageUrl: string;
+    imageHint: string;
+    specialty: string;
+    qualifications: string[];
+    vita: string;
+    additionalInfo?: string;
+    partnerLogoComponent?: 'OrthozentrumLogo' | 'AgnieszkaSlezakLogo' | 'VascAllianceLogo' | 'SchemmerWorniLogo';
+    order: number;
+}
+
 
 const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
@@ -22,6 +43,13 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     );
 };
 
+const partnerLogos = {
+  OrthozentrumLogo,
+  AgnieszkaSlezakLogo,
+  VascAllianceLogo,
+  SchemmerWorniLogo,
+};
+
 interface DoctorCardProps {
     title: string;
     name: string;
@@ -32,6 +60,7 @@ interface DoctorCardProps {
     vita: string;
     additionalInfo?: string;
     children?: React.ReactNode;
+    partnerLogoComponent?: keyof typeof partnerLogos;
 }
 
 export const DoctorCard: React.FC<DoctorCardProps> = ({
@@ -44,7 +73,10 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
     vita,
     additionalInfo,
     children,
+    partnerLogoComponent,
 }) => {
+    const LogoComponent = partnerLogoComponent ? partnerLogos[partnerLogoComponent] : null;
+
     return (
         <div className="group relative w-full overflow-hidden rounded-lg shadow-sm">
             <Card className="w-full overflow-hidden">
@@ -89,6 +121,12 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
                                     {children && (
                                         <div className="relative mt-[2.5cqw] flex justify-start w-fit">
                                             {children}
+                                        </div>
+                                    )}
+
+                                    {LogoComponent && !children && (
+                                        <div className="relative mt-[2.5cqw] flex w-fit justify-start">
+                                            <LogoComponent className="h-28 w-auto" />
                                         </div>
                                     )}
                                 </div>
