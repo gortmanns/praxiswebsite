@@ -51,7 +51,7 @@ const rosenovData: Doctor = {
     id: 'rosenov',
     title: 'Dr. med.',
     name: 'A. Rosenov',
-    imageUrl: '/images/placeholder_portrait.png',
+    imageUrl: '/images/team/Rosenov.jpg',
     imageHint: 'man portrait',
     specialty: 'Facharzt für Angiologie',
     qualifications: [],
@@ -228,6 +228,7 @@ export default function TeamPage() {
                             width={300}
                             height={100}
                             className="h-auto w-full object-contain"
+                            data-ai-hint="partner logo"
                         />
                     </div>
                 </DoctorCard>
@@ -242,6 +243,7 @@ export default function TeamPage() {
                             width={381}
                             height={127}
                             className="h-auto w-full object-contain"
+                            data-ai-hint="partner logo"
                         />
                     </div>
                 </DoctorCard>
