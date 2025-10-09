@@ -77,26 +77,28 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
                     className="relative w-full bg-card h-full border border-blue-500"
                     style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                 >
-                    <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6 border border-green-500">
-                        <div className="relative col-span-1 w-full aspect-[2/3] overflow-hidden rounded-md border border-yellow-500">
-                            {imageUrl ? (
-                                <Image
-                                    src={imageUrl}
-                                    alt={`Portrait von ${name}`}
-                                    data-ai-hint={imageHint}
-                                    fill
-                                    className="object-cover"
-                                />
-                            ) : (
-                                <div className="flex h-full w-full items-center justify-center bg-muted">
-                                    <User className="h-1/2 w-1/2 text-muted-foreground" />
-                                </div>
-                            )}
+                    <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6 border border-green-500">
+                        <div className="relative col-span-1 w-full overflow-hidden rounded-md border border-yellow-500">
+                             <div className="relative h-full w-full aspect-[2/3]">
+                                {imageUrl ? (
+                                    <Image
+                                        src={imageUrl}
+                                        alt={`Portrait von ${name}`}
+                                        data-ai-hint={imageHint}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                ) : (
+                                    <div className="flex h-full w-full items-center justify-center bg-muted">
+                                        <User className="h-1/2 w-1/2 text-muted-foreground" />
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        <div className="col-span-2 border border-yellow-500 h-full">
+                        <div className="col-span-2 border border-yellow-500">
                             <div className="flex h-full flex-col justify-center text-left text-foreground/80">
                                 <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
-                                <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
+                                <h4 className="font-headline text-[clamp(1.2rem,4cqw,2.2rem)] font-bold leading-tight text-primary">
                                   {name}
                                 </h4>
                                 <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">

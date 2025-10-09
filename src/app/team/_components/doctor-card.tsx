@@ -79,30 +79,32 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
     const LogoComponent = partnerLogoComponent ? partnerLogos[partnerLogoComponent] : null;
 
     return (
-        <div className="group relative w-full overflow-hidden rounded-lg shadow-sm border border-red-500">
+        <div className="group relative w-full max-w-[1000px] overflow-hidden rounded-lg shadow-sm border border-red-500">
             <Card className="w-full overflow-hidden">
                 <CardContent className="p-0 h-full">
                     <div 
                         className="relative w-full bg-card aspect-[1000/495] border border-blue-500"
                         style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                     >
-                        <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6 border border-green-500">
-                            <div className="relative col-span-1 w-full aspect-[2/3] overflow-hidden rounded-md border border-yellow-500">
-                                {imageUrl ? (
-                                    <Image
-                                        src={imageUrl}
-                                        alt={`Portrait von ${name}`}
-                                        data-ai-hint={imageHint}
-                                        fill
-                                        className="object-cover"
-                                    />
-                                ) : (
-                                    <div className="flex h-full w-full items-center justify-center bg-muted">
-                                        <User className="h-1/2 w-1/2 text-muted-foreground" />
-                                    </div>
-                                )}
+                        <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6 border border-green-500">
+                            <div className="relative col-span-1 w-full overflow-hidden rounded-md border border-yellow-500">
+                                <div className="relative h-full w-full aspect-[2/3]">
+                                    {imageUrl ? (
+                                        <Image
+                                            src={imageUrl}
+                                            alt={`Portrait von ${name}`}
+                                            data-ai-hint={imageHint}
+                                            fill
+                                            className="object-cover"
+                                        />
+                                    ) : (
+                                        <div className="flex h-full w-full items-center justify-center bg-muted">
+                                            <User className="h-1/2 w-1/2 text-muted-foreground" />
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                            <div className="col-span-2 border border-yellow-500 h-full">
+                            <div className="col-span-2 border border-yellow-500">
                                 <div className="flex h-full flex-col justify-center text-left text-foreground/80">
                                     <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
                                     <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
