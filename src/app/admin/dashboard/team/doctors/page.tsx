@@ -41,18 +41,24 @@ export default function DoctorsPage() {
   useEffect(() => {
     const calculateScale = () => {
       if (containerRef.current) {
-        const containerWidth = containerRef.current.offsetWidth;
-        const cardWidth = 800; // The fixed width of the card
-        const scale = containerWidth / cardWidth;
+        // We have two cards in the container, so we divide by 2. We also account for gap.
+        const containerWidth = (containerRef.current.offsetWidth - 32) / 2;
+        const cardWidth = 800; // The fixed width of the card base
+        const scale = Math.min(1, containerWidth / cardWidth);
         containerRef.current.style.setProperty('--scale-factor', scale.toString());
       }
     };
 
     calculateScale();
-    window.addEventListener('resize', calculateScale);
+    const resizeObserver = new ResizeObserver(calculateScale);
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
 
     return () => {
-      window.removeEventListener('resize', calculateScale);
+      if (containerRef.current) {
+        resizeObserver.unobserve(containerRef.current);
+      }
     };
   }, []);
 

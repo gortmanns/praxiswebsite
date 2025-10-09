@@ -2,7 +2,7 @@
 'use client';
 
 import { DoctorCard } from '../doctor-card';
-import Image from 'next/image';
+import { VascAllianceLogo } from '@/components/logos';
 
 export function RosenovCard() {
     return (
@@ -33,15 +33,7 @@ export function RosenovCard() {
                 </ul>
             `}
         >
-            <div className="relative h-40 w-96">
-                <Image
-                    src="/images/VASC-Alliance-Logo.png"
-                    alt="VASC Alliance Logo"
-                    fill
-                    className="object-contain object-left"
-                    data-ai-hint="partner logo"
-                />
-            </div>
+            <VascAllianceLogo className="h-28 w-auto" />
         </DoctorCard>
     );
 }

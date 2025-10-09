@@ -17,7 +17,7 @@ export function SlezakCard() {
                 <p>Vita folgt in Kürze.</p>
             `}
         >
-            <AgnieszkaSlezakLogo className="h-[5.76rem] w-auto" />
+            <AgnieszkaSlezakLogo className="h-28 w-auto" />
         </DoctorCard>
     );
 }

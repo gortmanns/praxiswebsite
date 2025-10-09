@@ -1,3 +1,4 @@
+
 'use client'
 
 import Image from 'next/image';
@@ -82,11 +83,11 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
             <Card className="w-full overflow-hidden">
                 <CardContent className="p-0">
                     <div 
-                        className="relative w-full bg-card"
+                        className="relative w-full bg-card aspect-[4/3]"
                         style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                     >
                         <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
-                            <div className="relative col-span-1 h-full w-full aspect-[2/3] overflow-hidden rounded-md">
+                            <div className="relative col-span-1 h-full w-full overflow-hidden rounded-md">
                                 {imageUrl ? (
                                     <Image
                                         src={imageUrl}

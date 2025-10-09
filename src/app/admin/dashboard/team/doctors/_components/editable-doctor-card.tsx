@@ -78,7 +78,7 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
                     style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                 >
                     <div className="grid h-full grid-cols-3 items-center gap-[4.5%] p-6">
-                        <div className="relative col-span-1 w-full h-full overflow-hidden rounded-md">
+                        <div className="relative col-span-1 w-full aspect-[2/3] overflow-hidden rounded-md">
                             {imageUrl ? (
                                 <Image
                                     src={imageUrl}
@@ -131,20 +131,18 @@ interface EditableDoctorCardProps {
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }) => {
     return (
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-            {/* Frontend Preview */}
-            <div className="relative aspect-[4/3] w-full">
-                <div className="absolute top-0 left-0 h-full w-full origin-top-left" style={{ transform: 'scale(var(--scale-factor, 0.5))' }}>
-                    <div className="w-[800px]"> {/* Set fixed width for scaling base */}
-                         <DoctorCardPreview doctor={doctor} isBack={false} />
+            <div className="relative w-full aspect-[4/3]">
+                <div className="absolute top-0 left-0 origin-top-left" style={{ transform: 'scale(var(--scale-factor, 1))' }}>
+                    <div className="w-[800px]">
+                        <DoctorCardPreview doctor={doctor} isBack={false} />
                     </div>
                 </div>
             </div>
 
-            {/* Backend Preview */}
-            <div className="relative aspect-[4/3] w-full">
-                <div className="absolute top-0 left-0 h-full w-full origin-top-left" style={{ transform: 'scale(var(--scale-factor, 0.5))' }}>
-                    <div className="w-[800px]"> {/* Set fixed width for scaling base */}
-                         <DoctorCardPreview doctor={doctor} isBack={true} />
+            <div className="relative w-full aspect-[4/3]">
+                <div className="absolute top-0 left-0 origin-top-left" style={{ transform: 'scale(var(--scale-factor, 1))' }}>
+                    <div className="w-[800px]">
+                        <DoctorCardPreview doctor={doctor} isBack={true} />
                     </div>
                 </div>
             </div>
