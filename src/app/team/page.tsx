@@ -47,6 +47,24 @@ const schemmerData: Doctor = {
     ),
 };
 
+const rosenovData: Doctor = {
+    id: 'rosenov',
+    title: 'Dr. med.',
+    name: 'A. Rosenov',
+    imageUrl: '/images/placeholder_portrait.png',
+    imageHint: 'man portrait',
+    specialty: 'Facharzt für Angiologie',
+    qualifications: [],
+    additionalInfo: '',
+    vita: (
+       <>
+        <p>
+          [Platzhalter: Vita-Text für Dr. Rosenov hier einfügen.]
+        </p>
+      </>
+    ),
+};
+
 const worniData: Doctor = {
     id: 'worni',
     title: 'Prof. Dr. med.',
@@ -209,6 +227,20 @@ export default function TeamPage() {
                             alt="Schemmer & Worni Logo"
                             width={300}
                             height={100}
+                            className="h-auto w-full object-contain"
+                        />
+                    </div>
+                </DoctorCard>
+            </div>
+            
+            <div id={rosenovData.id} className="mx-auto max-w-[1000px] p-2">
+                <DoctorCard {...rosenovData}>
+                    <div className="relative mt-[2.5cqw] w-[30cqw]">
+                        <Image
+                            src="/images/VASC-Alliance-Logo.png"
+                            alt="VASC Alliance Logo"
+                            width={381}
+                            height={127}
                             className="h-auto w-full object-contain"
                         />
                     </div>
