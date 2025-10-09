@@ -200,21 +200,25 @@ export default function TeamPage() {
             <div id={ortmannsData.id} className="mx-auto max-w-[1000px] p-2">
                 <DoctorCard {...ortmannsData} />
             </div>
+            
             <div id={schemmerData.id} className="mx-auto max-w-[1000px] p-2">
                 <DoctorCard {...schemmerData}>
-                    <div className="relative mt-[2.5cqw] w-[30cqw] h-auto aspect-[300/100]">
+                    <div className="relative mt-[2.5cqw] w-[30cqw]">
                         <Image
                             src="/images/schemmer-worni-logo.png"
                             alt="Schemmer & Worni Logo"
-                            fill
-                            className="object-contain"
+                            width={300}
+                            height={100}
+                            className="h-auto w-full object-contain"
                         />
                     </div>
                 </DoctorCard>
             </div>
+
             <div id={worniData.id} className="mx-auto max-w-[1000px] p-2">
                 <DoctorCard {...worniData} />
             </div>
+
             <div id={slezakData.id} className="mx-auto max-w-[1000px] p-2">
                 <DoctorCard {...slezakData} />
             </div>
