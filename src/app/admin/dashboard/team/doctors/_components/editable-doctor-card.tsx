@@ -13,7 +13,6 @@ import {
     SchemmerWorniLogo,
     VascAllianceLogo
 } from '@/components/logos';
-import { cn } from '@/lib/utils';
 
 const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
   const sanitizedHtml = React.useMemo(() => {
@@ -38,11 +37,12 @@ const partnerLogos: { [key: string]: React.FC<any> } = {
   SchemmerWorniLogo,
 };
 
-interface EditableDoctorCardProps {
+interface ScalableCardProps {
     doctor: Doctor;
+    isBackside?: boolean;
 }
 
-const ScalableCard: React.FC<{doctor: Doctor, isBackside?: boolean}> = ({ doctor, isBackside = false }) => {
+const ScalableCard: React.FC<ScalableCardProps> = ({ doctor, isBackside = false }) => {
     const { 
         title,
         name,
@@ -123,6 +123,9 @@ const ScalableCard: React.FC<{doctor: Doctor, isBackside?: boolean}> = ({ doctor
     );
 };
 
+interface EditableDoctorCardProps {
+    doctor: Doctor;
+}
 
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }) => {
     const CARD_BASE_WIDTH = 550;
@@ -132,17 +135,14 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <div 
                 className="relative w-full"
-                style={{
-                    aspectRatio: CARD_ASPECT_RATIO,
-                }}
+                style={{ aspectRatio: CARD_ASPECT_RATIO }}
             >
                 <div 
-                    className="absolute top-0 left-0"
+                    className="absolute top-0 left-0 origin-top-left"
                     style={{
                         width: `${CARD_BASE_WIDTH}px`,
                         height: `${CARD_BASE_WIDTH / CARD_ASPECT_RATIO}px`,
                         transform: `scale(calc(100% / ${CARD_BASE_WIDTH}))`,
-                        transformOrigin: 'top left',
                     }}
                 >
                     <ScalableCard doctor={doctor} />
@@ -151,17 +151,14 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }
 
             <div 
                 className="relative w-full"
-                style={{
-                    aspectRatio: CARD_ASPECT_RATIO,
-                }}
+                style={{ aspectRatio: CARD_ASPECT_RATIO }}
             >
                  <div 
-                    className="absolute top-0 left-0"
+                    className="absolute top-0 left-0 origin-top-left"
                     style={{
                         width: `${CARD_BASE_WIDTH}px`,
                         height: `${CARD_BASE_WIDTH / CARD_ASPECT_RATIO}px`,
                         transform: `scale(calc(100% / ${CARD_BASE_WIDTH}))`,
-                        transformOrigin: 'top left',
                     }}
                 >
                     <ScalableCard doctor={doctor} isBackside={true} />
