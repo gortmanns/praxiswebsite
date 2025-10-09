@@ -8,7 +8,7 @@ export function SlezakCard() {
   const doctorData = {
     title: 'Dr. med.',
     name: 'Agnieszka Slezak',
-    imageUrl: '/images/team/Fr.Dr.Slezak.jpg',
+    imageUrl: '/images/team/A.Slezak.jpg',
     imageHint: 'woman portrait',
     specialty: 'Neurologie',
     qualifications: [],
