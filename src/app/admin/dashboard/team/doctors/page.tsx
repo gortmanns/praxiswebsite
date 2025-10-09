@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -38,12 +39,8 @@ export default function DoctorsPage() {
                             'Sonstige Qualifikation 4',
                         ]}
                         vita={`<p>Vita hier bearbeiten...</p>`}
-                        additionalInfo="Spezielle Information"
-                    >
-                         <div className="flex h-28 w-auto items-center justify-center text-muted-foreground">
-                            Logo
-                        </div>
-                    </DoctorCard>
+                        additionalInfo="Spezielle Information (alternativ zum Logo)"
+                    />
                  </div>
             </CardContent>
         </Card>
