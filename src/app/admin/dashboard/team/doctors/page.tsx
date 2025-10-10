@@ -1,8 +1,9 @@
+
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
+import { collection, query, orderBy, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Doctor as DoctorType } from '@/app/team/_components/doctor-card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
@@ -39,7 +40,7 @@ const staticDoctorsData: Doctor[] = [
     rosenovProps,
     herschelProps,
     slezakProps,
-].map(props => props as Doctor).sort((a, b) => a.order - b.order);
+].sort((a, b) => a.order - b.order);
 
 
 const allProjectImages = [
@@ -83,26 +84,49 @@ const allProjectImages = [
 const uniqueProjectImages = [...new Set(allProjectImages)];
 
 const createDefaultDoctor = (): Omit<Doctor, 'id'> => ({
-    title: 'Titel',
-    name: 'Name',
-    specialty: 'Spezialisierung',
-    qualifications: ['Qualifikation 1', 'Qualifikation 2', 'Qualifikation 3', 'Qualifikation 4'],
-    vita: '<p>Dieser Text kann frei angepasst werden.</p>',
-    imageUrl: '',
-    imageHint: 'placeholder',
-    languages: ['de'],
-    additionalInfo: undefined,
-    partnerLogoComponent: undefined,
+    name: 'Neuer Arzt',
     order: 99,
+    frontSideCode: `
+<div class="relative w-full h-full bg-card" style="container-type: inline-size;">
+    <div class="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6">
+        <div class="relative col-span-1 w-full overflow-hidden rounded-md cursor-pointer hover:bg-muted/50 transition-colors">
+            <div class="relative h-full w-full aspect-[2/3] bg-muted">
+                <div class="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-1/2 w-1/2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span class="px-4 text-center text-lg">Klicken zum Ändern</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-span-2 flex flex-col justify-center">
+            <div class="text-left text-foreground/80">
+                <p class="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1">Titel</p>
+                <h4 class="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1">
+                    Name
+                </h4>
+                <div class="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
+                    <p class="font-bold cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1">Spezialisierung</p>
+                    <p class="cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1">Qualifikation 1</p>
+                </div>
+                <div class="mt-[2.5cqw] cursor-pointer hover:bg-primary/10 rounded-sm p-1 -m-1">
+                    <p class="text-[clamp(0.6rem,1.6cqw,1rem)] italic text-muted-foreground">
+                        Funktion oder Logo
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-6 right-6 flex items-center gap-2">
+        <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 gap-2 px-2">
+           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="m7 2 5 5"/><path d="m8 8 5 5"/><path d="M14 4-2 16"/><path d="M2 22h20"/><path d="m20 15-4-4-3 1-4-4-3 1-2-2"/></svg> Sprachen
+        </button>
+        <div class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"/><rect width="5" height="2" fill="#DD0000"/><rect width="5" height="1" fill="#000"/></svg>
+        </div>
+    </div>
+</div>
+`,
+    backSideCode: '<p>Dieser Text kann frei angepasst werden.</p>'
 });
-
-const logoMap: { [key: string]: React.FC<{ className?: string }> } = {
-    SchemmerWorniLogo,
-    AgnieszkaSlezakLogo,
-    OrthozentrumLogo,
-    VascAllianceLogo,
-};
-
 
 export default function DoctorsPage() {
     const firestore = useFirestore();
@@ -114,133 +138,75 @@ export default function DoctorsPage() {
     }, [firestore]);
     const { data: dbDoctors, isLoading: areDoctorsLoading } = useCollection<Doctor>(doctorsQuery);
     
-    const [doctorsList, setDoctorsList] = useState<Doctor[]>([]);
-    const prevDbDoctorsRef = useRef<Doctor[]>();
+    const [doctorsList, setDoctorsList] = useState<Doctor[]>(staticDoctorsData);
+    const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
+
+    const [isVitaEditorOpen, setVitaEditorOpen] = useState(false);
+    const [hiddenDoctorIds, setHiddenDoctorIds] = useState<Set<string>>(new Set());
+    const [isSaving, setIsSaving] = useState(false);
+    const [status, setStatus] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
 
     useEffect(() => {
-        const initialData = staticDoctorsData;
-        
         if (dbDoctors) {
-            const staticDataMap = new Map(initialData.map(d => [d.id, d]));
-            
-            const mergedList = Array.from(staticDataMap.keys()).map(id => {
-                const dbDoc = dbDoctors.find(d => d.id === id);
-                return dbDoc || staticDataMap.get(id);
-            }) as Doctor[];
+            const staticDataMap = new Map(staticDoctorsData.map(d => [d.id, d]));
+            const dbDataMap = new Map(dbDoctors.map(d => [d.id, d]));
+            const allIds = new Set([...staticDataMap.keys(), ...dbDataMap.keys()]);
 
-            dbDoctors.forEach(dbDoc => {
-                if (!staticDataMap.has(dbDoc.id)) {
-                    mergedList.push(dbDoc);
-                }
-            });
+            const mergedList = Array.from(allIds).map(id => {
+                return dbDataMap.get(id) || staticDataMap.get(id);
+            }).filter(Boolean) as Doctor[];
 
             const sortedList = mergedList.sort((a,b) => a.order - b.order);
-            
-            if (JSON.stringify(sortedList) !== JSON.stringify(prevDbDoctorsRef.current)) {
-                setDoctorsList(sortedList);
-                prevDbDoctorsRef.current = sortedList;
-            }
+            setDoctorsList(sortedList);
         } else {
-             if (JSON.stringify(initialData) !== JSON.stringify(prevDbDoctorsRef.current)) {
-                setDoctorsList(initialData);
-                prevDbDoctorsRef.current = initialData;
-             }
+            setDoctorsList(staticDoctorsData);
         }
     }, [dbDoctors]);
 
 
-    const [doctorInEdit, setDoctorInEdit] = useState<Partial<Doctor> | null>(null);
-    const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
-    const [hiddenDoctorIds, setHiddenDoctorIds] = useState<Set<string>>(new Set());
-    const [isSaving, setIsSaving] = useState(false);
-    const [status, setStatus] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
-    
-    // Dialog states
-    const [isImageSourceDialogOpen, setImageSourceDialogOpen] = useState(false);
-    const [isImageCropDialogOpen, setImageCropDialogOpen] = useState(false);
-    const [isImageLibraryOpen, setImageLibraryOpen] = useState(false);
-    const [imageToCrop, setImageToCrop] = useState<string | null>(null);
-    const [imageEditContext, setImageEditContext] = useState<'portrait' | 'logo' | null>(null);
-    const [isVitaEditorOpen, setVitaEditorOpen] = useState(false);
-    const [isTextEditorOpen, setIsTextEditorOpen] = useState(false);
-    const [editingField, setEditingField] = useState<{ key: keyof Doctor; label: string, index?: number } | null>(null);
-    const [isLogoFunctionSelectOpen, setLogoFunctionSelectOpen] = useState(false);
-    const [isLanguageSelectOpen, setLanguageSelectOpen] = useState(false);
-    
-    const displayedDoctorInEdit: Omit<Doctor, 'id'> = useMemo(() => {
-        return {
-            ...(createDefaultDoctor()),
-            ...(doctorInEdit ?? {}),
-        } as Omit<Doctor, 'id'>;
-    }, [doctorInEdit]);
-    
-    const ensureEditingState = useCallback((isNew: boolean = false) => {
-        if (isNew) {
-            setDoctorInEdit(createDefaultDoctor());
-            setEditingDoctorId(null);
-            setStatus({ type: 'info', message: 'Erstellen Sie eine neue Arztkarte. Klicken Sie auf Elemente, um sie zu bearbeiten.'});
-        } else if (!doctorInEdit) {
-            setDoctorInEdit(createDefaultDoctor());
-        }
-    }, [doctorInEdit]);
-
     const handleEditClick = (doctor: Doctor) => {
-        setEditingDoctorId(doctor.id);
-        setDoctorInEdit(doctor);
+        setEditingDoctor(doctor);
         setStatus({ type: 'info', message: `Sie bearbeiten nun das Profil von ${doctor.name}. Alle Änderungen werden in der Vorschau angezeigt.`});
     };
 
     const handleCancel = () => {
-        setDoctorInEdit(null);
-        setEditingDoctorId(null);
+        setEditingDoctor(null);
         setStatus(null);
     };
     
     const handleSave = async () => {
-        if (!firestore || !doctorInEdit || !user) {
-            setStatus({ type: 'error', message: 'Speichern fehlgeschlagen: Benutzer nicht authentifiziert oder Datenbank nicht bereit.' });
+        if (!firestore || !editingDoctor || !user) {
+            setStatus({ type: 'error', message: 'Speichern fehlgeschlagen: Wichtige Daten fehlen.' });
             return;
         }
 
-        if (!doctorInEdit.name || doctorInEdit.name.trim() === '' || doctorInEdit.name === 'Name') {
+        if (!editingDoctor.name || editingDoctor.name.trim() === '' || editingDoctor.name === 'Name') {
             setStatus({ type: 'error', message: 'Speichern nicht möglich: Bitte geben Sie einen Namen für den Arzt an, bevor Sie speichern.' });
             return;
         }
         
         setIsSaving(true);
         setStatus(null);
-        const isUpdatingExistingDBEntry = !!editingDoctorId;
+        
+        const isExistingInDb = dbDoctors?.some(d => d.id === editingDoctor.id);
 
-        // --- Data Sanitization ---
-        const { ...restOfDoctor } = doctorInEdit;
-
-        const specialtyString = typeof restOfDoctor.specialty === 'string' ? restOfDoctor.specialty : '';
-
-        let partnerLogoString: string | undefined = undefined;
-        if (typeof restOfDoctor.partnerLogoComponent === 'function') {
-            const logoName = Object.keys(logoMap).find(key => logoMap[key] === restOfDoctor.partnerLogoComponent);
-            partnerLogoString = logoName;
-        } else if (typeof restOfDoctor.partnerLogoComponent === 'string') {
-            partnerLogoString = restOfDoctor.partnerLogoComponent;
-        }
-
-        const saveData: DoctorData = {
-            ...createDefaultDoctor(),
-            ...restOfDoctor,
-            specialty: specialtyString,
-            partnerLogoComponent: partnerLogoString,
-            order: doctorInEdit.order || (doctorsList.length > 0 ? Math.max(...doctorsList.map(d => d.order)) + 1 : 1),
+        const dataToSave = {
+            name: editingDoctor.name,
+            order: editingDoctor.order,
+            frontSideCode: editingDoctor.frontSideCode,
+            backSideCode: editingDoctor.backSideCode,
         };
-    
+
         try {
-            if (isUpdatingExistingDBEntry) {
-                await updateDoctor(firestore, editingDoctorId, saveData);
-                setStatus({ type: 'success', message: `Arztprofil für ${saveData.name} erfolgreich aktualisiert.` });
+            if (isExistingInDb) {
+                const docRef = doc(firestore, 'doctors', editingDoctor.id);
+                await updateDoc(docRef, dataToSave);
+                setStatus({ type: 'success', message: `Arztprofil für ${editingDoctor.name} erfolgreich aktualisiert.` });
             } else {
-                 await addDoctor(firestore, saveData, editingDoctorId || undefined);
-                 setStatus({ type: 'success', message: `Arztprofil für ${saveData.name} erfolgreich erstellt.` });
+                const docRef = doc(firestore, 'doctors', editingDoctor.id);
+                await addDoc(collection(firestore, 'doctors'), dataToSave);
+                setStatus({ type: 'success', message: `Arztprofil für ${editingDoctor.name} erfolgreich erstellt.` });
             }
-            
             handleCancel();
 
         } catch (error: any) {
@@ -252,174 +218,23 @@ export default function DoctorsPage() {
     };
 
 
-    // --- Image Handling ---
-    const handleImageClick = useCallback(() => {
-        ensureEditingState();
-        setImageEditContext('portrait');
-        setImageSourceDialogOpen(true);
-    }, [ensureEditingState]);
-
-    const handleUploadNewImage = useCallback(() => {
-        setImageSourceDialogOpen(false);
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.onchange = (e) => {
-            const file = (e.target as HTMLInputElement).files?.[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    setImageToCrop(event.target?.result as string);
-                    setImageCropDialogOpen(true);
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-        input.click();
-    }, []);
-
-    const handleSelectFromLibrary = useCallback(() => {
-        setImageSourceDialogOpen(false);
-        setImageLibraryOpen(true);
-    }, []);
-
-    const handleImageSelectedFromLibrary = (imageUrl: string) => {
-        setImageLibraryOpen(false);
-        setImageToCrop(imageUrl);
-        setImageCropDialogOpen(true);
-    };
-    
-    const handleCropComplete = useCallback((croppedImageUrl: string) => {
-        setDoctorInEdit(prev => {
-             const current = prev ?? createDefaultDoctor();
-            if (imageEditContext === 'logo') {
-                return { ...current, partnerLogoComponent: croppedImageUrl, additionalInfo: undefined };
-            }
-            return { ...current, imageUrl: croppedImageUrl };
-        });
-        setImageCropDialogOpen(false);
-        setImageToCrop(null);
-        setImageEditContext(null);
-    }, [imageEditContext]);
-
-    // --- Vita Handling ---
     const handleVitaClick = useCallback(() => {
-        ensureEditingState();
-        setVitaEditorOpen(true);
-    }, [ensureEditingState]);
+        if (!editingDoctor) {
+            const newDoctor = createDefaultDoctor() as Doctor;
+            setEditingDoctor(newDoctor);
+            setVitaEditorOpen(true);
+        } else {
+            setVitaEditorOpen(true);
+        }
+    }, [editingDoctor]);
 
     const handleVitaSave = useCallback((newVita: string) => {
-        setDoctorInEdit(prev => {
-            const current = prev ?? createDefaultDoctor();
-            return { ...current, vita: newVita };
-        });
+        if (editingDoctor) {
+            setEditingDoctor(prev => prev ? { ...prev, backSideCode: newVita } : null);
+        }
         setVitaEditorOpen(false);
-    }, []);
+    }, [editingDoctor]);
 
-    // --- Text Field Handling ---
-    const handleTextEditClick = useCallback((fieldKey: keyof Doctor, fieldLabel: string, index?: number) => {
-        ensureEditingState();
-        if (fieldKey === 'additionalInfo' || fieldKey === 'partnerLogoComponent') {
-            setLogoFunctionSelectOpen(true);
-        } else {
-            setEditingField({ key: fieldKey, label: fieldLabel, index });
-            setIsTextEditorOpen(true);
-        }
-    }, [ensureEditingState]);
-    
-    const handleTextSave = useCallback((newValue: string) => {
-        if (!editingField) return;
-    
-        setDoctorInEdit(prev => {
-            const currentDoctor = prev ?? createDefaultDoctor();
-            if (editingField.key === 'qualifications' && editingField.index !== undefined) {
-                const updatedQualifications = [...(currentDoctor.qualifications || [])];
-                updatedQualifications[editingField.index] = newValue;
-                return { ...currentDoctor, qualifications: updatedQualifications };
-            } else if (editingField.key === 'additionalInfo') {
-                return { ...currentDoctor, additionalInfo: newValue, partnerLogoComponent: undefined };
-            } else if (editingField.key === 'specialty' && typeof currentDoctor.specialty !== 'string') {
-                return currentDoctor;
-            } else {
-                return { ...currentDoctor, [editingField.key]: newValue };
-            }
-        });
-    
-        setIsTextEditorOpen(false);
-        setEditingField(null);
-    }, [editingField]);
-    
-    const currentValueForDialog = useMemo(() => {
-        const currentDoctor = doctorInEdit ?? createDefaultDoctor();
-        if (!editingField) return '';
-    
-        const key = editingField.key;
-        const defaultPlaceholders = ['Titel', 'Name', 'Spezialisierung', 'Qualifikation 1', 'Qualifikation 2', 'Qualifikation 3', 'Qualifikation 4'];
-        
-        if (key === 'qualifications' && editingField.index !== undefined) {
-            const value = (currentDoctor.qualifications || [])[editingField.index];
-            return defaultPlaceholders.includes(value) ? '' : value || '';
-        }
-        
-        const specialty = currentDoctor.specialty;
-        if (key === 'specialty') {
-            if (typeof specialty === 'string') {
-                return defaultPlaceholders.includes(specialty) ? '' : specialty;
-            }
-            return ''; // Cannot edit ReactNode, return empty
-        }
-        
-        const value = currentDoctor[key as keyof Omit<Doctor, 'specialty'>] as string;
-        if (defaultPlaceholders.includes(value)) {
-            return '';
-        }
-        
-        return value || '';
-    }, [editingField, doctorInEdit]);
-
-    // --- Logo/Function Handling ---
-    const handleSelectFunction = () => {
-        setLogoFunctionSelectOpen(false);
-        setEditingField({ key: 'additionalInfo', label: 'Funktion' });
-        setIsTextEditorOpen(true);
-    };
-    
-    const handleSelectLogoFromLibrary = useCallback(() => {
-        setLogoFunctionSelectOpen(false);
-        ensureEditingState();
-        setImageEditContext('logo');
-        setImageLibraryOpen(true);
-    }, [ensureEditingState]);
-
-    const handleUploadNewLogo = useCallback(() => {
-        setLogoFunctionSelectOpen(false);
-        ensureEditingState();
-        setImageEditContext('logo');
-        handleUploadNewImage();
-    }, [ensureEditingState, handleUploadNewImage]);
-    
-    const imageAspectRatio = useMemo(() => {
-        if (imageEditContext === 'logo') {
-            return 1600 / 268; // Aspect ratio for testing
-        }
-        return 2 / 3; // Default portrait aspect ratio
-    }, [imageEditContext]);
-
-     // --- Language Handling ---
-    const handleLanguagesClick = useCallback(() => {
-        ensureEditingState();
-        setLanguageSelectOpen(true);
-    }, [ensureEditingState]);
-
-    const handleLanguagesSave = (selectedLanguages: string[]) => {
-        setDoctorInEdit(prev => {
-            const current = prev ?? createDefaultDoctor();
-            return { ...current, languages: selectedLanguages };
-        });
-        setLanguageSelectOpen(false);
-    };
-
-    // --- General UI ---
     const toggleHideDoctor = (doctorId: string) => {
         setHiddenDoctorIds(prev => {
             const newSet = new Set(prev);
@@ -432,7 +247,7 @@ export default function DoctorsPage() {
         });
     };
     
-      useEffect(() => {
+    useEffect(() => {
         if (status) {
             const timer = setTimeout(() => {
                 setStatus(null);
@@ -482,6 +297,14 @@ export default function DoctorsPage() {
             </Alert>
         );
     };
+    
+    const handleAddNewClick = () => {
+        const newDoctor = createDefaultDoctor() as Doctor;
+        newDoctor.id = `new_${Date.now()}`;
+        newDoctor.order = doctorsList.length > 0 ? Math.max(...doctorsList.map(d => d.order)) + 1 : 1;
+        setEditingDoctor(newDoctor);
+        setStatus({ type: 'info', message: 'Erstellen Sie eine neue Arztkarte. Klicken Sie auf die Rückseite, um den Inhalt zu bearbeiten.' });
+    };
 
     return (
         <>
@@ -501,11 +324,11 @@ export default function DoctorsPage() {
                         <div className="space-y-4">
                              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                                 <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Live-Vorschau & Bearbeitung</h3>
-                                {doctorInEdit && (
+                                {editingDoctor && (
                                     <div className="flex gap-2">
                                         <Button onClick={handleSave} disabled={isSaving || isUserLoading}>
                                             {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-                                            {editingDoctorId ? 'Änderungen speichern' : 'Als neue Karte anlegen'}
+                                            {dbDoctors?.some(d => d.id === editingDoctor.id) ? 'Änderungen speichern' : 'Als neue Karte anlegen'}
                                         </Button>
                                         <Button variant="outline" onClick={handleCancel} disabled={isSaving}>
                                             Abbrechen
@@ -513,21 +336,18 @@ export default function DoctorsPage() {
                                     </div>
                                 )}
                             </div>
-                            {doctorInEdit ? (
+                            {editingDoctor ? (
                                 <div className="rounded-lg bg-muted p-4 md:p-6">
                                     <EditableDoctorCard 
-                                        doctor={displayedDoctorInEdit as Doctor}
-                                        onImageClick={handleImageClick}
+                                        doctor={editingDoctor}
                                         onVitaClick={handleVitaClick}
-                                        onTextClick={handleTextEditClick}
-                                        onLanguagesClick={handleLanguagesClick}
                                     />
                                 </div>
                             ) : (
                                 <div className="flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted p-12 text-center">
                                     <h4 className="text-lg font-semibold text-muted-foreground">Keine Karte zum Bearbeiten ausgewählt.</h4>
                                     <p className="text-sm text-muted-foreground">Wählen Sie unten eine Karte zur Bearbeitung aus oder fügen Sie eine neue hinzu.</p>
-                                    <Button onClick={() => ensureEditingState(true)}>
+                                    <Button onClick={handleAddNewClick}>
                                         <PlusCircle className="mr-2 h-4 w-4" /> Neue Karte erstellen
                                      </Button>
                                 </div>
@@ -564,14 +384,9 @@ export default function DoctorsPage() {
                                 </div>
                              ) : (
                                 doctorsList.map((doctor) => {
-                                    const isEditing = editingDoctorId === doctor.id;
+                                    const isEditing = editingDoctor?.id === doctor.id;
                                     const isHidden = hiddenDoctorIds.has(doctor.id);
                                     
-                                    let partnerLogo: React.FC<{ className?: string; }> | string | undefined = doctor.partnerLogoComponent;
-                                    if (typeof partnerLogo === 'string' && logoMap[partnerLogo]) {
-                                       partnerLogo = logoMap[partnerLogo];
-                                    }
-
                                     return (
                                         <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
                                             <div className="flex w-36 flex-col gap-2">
@@ -586,7 +401,7 @@ export default function DoctorsPage() {
                                                     {isHidden ? <Eye className="mr-2 h-4 w-4" /> : <EyeOff className="mr-2 h-4 w-4" />}
                                                     {isHidden ? 'Einblenden' : 'Ausblenden'}
                                                 </Button>
-                                                <Button variant="default" size="sm" onClick={() => handleEditClick(doctor)} disabled={isEditing || isSaving || !!editingDoctorId} className="justify-start">
+                                                <Button variant="default" size="sm" onClick={() => handleEditClick(doctor)} disabled={isEditing || isSaving || !!editingDoctor} className="justify-start">
                                                     <Info className="mr-2 h-4 w-4" /> Bearbeiten
                                                 </Button>
                                             </div>
@@ -594,8 +409,6 @@ export default function DoctorsPage() {
                                             <div className={cn("relative flex-1 w-full max-w-[1000px] p-2", isHidden && "grayscale opacity-50")}>
                                                 <DoctorCard
                                                     {...doctor}
-                                                    qualifications={doctor.qualifications || []}
-                                                    partnerLogoComponent={partnerLogo}
                                                 />
                                                 {isEditing && (
                                                     <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/90">
@@ -612,60 +425,12 @@ export default function DoctorsPage() {
                 </Card>
             </div>
 
-            {/* --- Dialogs --- */}
-            <ImageSourceDialog
-                isOpen={isImageSourceDialogOpen}
-                onOpenChange={setImageSourceDialogOpen}
-                onUpload={handleUploadNewImage}
-                onSelect={handleSelectFromLibrary}
-            />
-            {isImageCropDialogOpen && imageToCrop && (
-                <ImageCropDialog
-                    imageUrl={imageToCrop}
-                    onCropComplete={handleCropComplete}
-                    onClose={() => setImageCropDialogOpen(false)}
-                    aspectRatio={imageAspectRatio}
-                />
-            )}
-             <ImageLibraryDialog
-                isOpen={isImageLibraryOpen}
-                onOpenChange={setImageLibraryOpen}
-                images={uniqueProjectImages}
-                onImageSelect={handleImageSelectedFromLibrary}
-            />
-            {isVitaEditorOpen && (
+            {editingDoctor && (
                 <VitaEditorDialog
                     isOpen={isVitaEditorOpen}
                     onOpenChange={setVitaEditorOpen}
-                    initialValue={displayedDoctorInEdit.vita as string}
+                    initialValue={editingDoctor.backSideCode}
                     onSave={handleVitaSave}
                 />
             )}
-            {editingField && (
-                <TextEditDialog
-                    isOpen={isTextEditorOpen}
-                    onOpenChange={setIsTextEditorOpen}
-                    title={`Bearbeiten: ${editingField.label}`}
-                    label={editingField.label}
-                    initialValue={currentValueForDialog}
-                    onSave={handleTextSave}
-                />
-            )}
-            <LogoFunctionSelectDialog
-                isOpen={isLogoFunctionSelectOpen}
-                onOpenChange={setLogoFunctionSelectOpen}
-                onSelectFunction={handleSelectFunction}
-                onSelectFromLibrary={handleSelectLogoFromLibrary}
-                onUploadNew={handleUploadNewLogo}
-            />
-            {isLanguageSelectOpen && (
-                 <LanguageSelectDialog
-                    isOpen={isLanguageSelectOpen}
-                    onOpenChange={setLanguageSelectOpen}
-                    initialLanguages={displayedDoctorInEdit.languages || []}
-                    onSave={handleLanguagesSave}
-                />
-            )}
-        </>
-    );
-}
+        

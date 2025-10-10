@@ -3,26 +3,22 @@
 
 import React from 'react';
 import type { Doctor } from '@/app/team/_components/doctor-card';
-import Image from 'next/image';
-import { User, Languages } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { LanguageFlags } from './language-flags';
 
 interface EditableDoctorCardProps {
     doctor: Doctor;
-    onImageClick: () => void;
     onVitaClick: () => void;
-    onTextClick: (fieldKey: keyof Doctor, fieldLabel: string, index?: number) => void;
-    onLanguagesClick: () => void;
 }
 
-const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
+const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
+    // This is safe because we trust the source of the HTML (our own admin UI)
+    // In a general-purpose app, you MUST sanitize user-provided HTML.
     const sanitizedHtml = React.useMemo(() => {
         if (typeof window !== 'undefined') {
             const config = {
-                ADD_ATTR: ['style'], // Allow style attributes
+                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style"],
+                ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel']
             };
             return { __html: DOMPurify.sanitize(html, config) };
         }
@@ -30,98 +26,24 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     }, [html]);
 
     return (
-        <div
-            className="vita-content"
-            dangerouslySetInnerHTML={sanitizedHtml}
-        />
-    );
-};
-
-const FrontSide: React.FC<Pick<EditableDoctorCardProps, 'doctor' | 'onImageClick' | 'onTextClick' | 'onLanguagesClick'>> = ({ doctor, onImageClick, onTextClick, onLanguagesClick }) => {
-    const { title, name, imageUrl, imageHint, specialty, qualifications, additionalInfo, partnerLogoComponent, languages } = doctor;
-
-    return (
-        <div 
-            className="relative w-full h-full bg-card"
-            style={{ containerType: 'inline-size' } as React.CSSProperties}
-        >
-            <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6">
-                <div 
-                    className="relative col-span-1 w-full overflow-hidden rounded-md cursor-pointer hover:bg-muted/50 transition-colors"
-                    onClick={onImageClick}
-                >
-                    <div className="relative h-full w-full aspect-[2/3] bg-muted">
-                        {imageUrl ? (
-                            <Image
-                                src={imageUrl}
-                                alt={`Portrait von ${name}`}
-                                data-ai-hint={imageHint}
-                                fill
-                                className="object-cover"
-                            />
-                        ) : (
-                            <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
-                                <User className="h-1/2 w-1/2" />
-                                <span className="px-4 text-center text-lg">Klicken zum Ändern</span>
-                            </div>
-                        )}
-                    </div>
-                </div>
-                <div className="col-span-2 flex flex-col justify-center">
-                    <div className="text-left text-foreground/80">
-                        <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('title', 'Titel')}>{title}</p>
-                        <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('name', 'Name')}>
-                            {name}
-                        </h4>
-                        <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
-                            <p className="font-bold cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('specialty', 'Spezialisierung')}>{typeof specialty === 'string' ? specialty : 'Komplexe Spezialisierung'}</p>
-                            {qualifications?.map((q, i) => <p key={i} className="cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('qualifications', `Qualifikation ${i + 1}`, i)}>{q}</p>)}
-                        </div>
-                        
-                        <div className="mt-[2.5cqw] cursor-pointer hover:bg-primary/10 rounded-sm p-1 -m-1" onClick={() => onTextClick('additionalInfo', 'Funktion oder Logo')}>
-                            {typeof partnerLogoComponent === 'string' && (partnerLogoComponent.startsWith('/images') || partnerLogoComponent.startsWith('data:image')) ? (
-                                <div className="relative flex w-fit justify-start max-w-[432px]">
-                                     <Image
-                                        src={partnerLogoComponent}
-                                        alt="Partner Logo"
-                                        width={800}
-                                        height={268}
-                                        className="h-auto w-full object-contain"
-                                        data-ai-hint="partner logo"
-                                    />
-                                </div>
-                            ) : additionalInfo ? (
-                                <p className="text-[clamp(0.6rem,1.6cqw,1rem)] italic">
-                                    {additionalInfo}
-                                </p>
-                            ) : (
-                                <p className="text-[clamp(0.6rem,1.6cqw,1rem)] italic text-muted-foreground">
-                                    Funktion oder Logo
-                                </p>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="absolute bottom-6 right-6 flex items-center gap-2">
-                <Button variant="outline" size="sm" onClick={onLanguagesClick} className="h-8 gap-2">
-                   <Languages className="h-4 w-4" /> Sprachen
-                </Button>
-                <LanguageFlags languages={languages} />
-            </div>
-        </div>
+        <div className="w-full h-full" dangerouslySetInnerHTML={sanitizedHtml} />
     );
 };
 
 
-const BackSide: React.FC<{ vita: string; onVitaClick: () => void; }> = ({ vita, onVitaClick }) => {
+const FrontSide: React.FC<{ code: string; }> = ({ code }) => {
+    return <CodeRenderer html={code} />;
+};
+
+
+const BackSide: React.FC<{ code: string; onVitaClick: () => void; }> = ({ code, onVitaClick }) => {
     return (
         <div
             className="relative w-full h-full bg-accent/95 overflow-hidden p-6 cursor-pointer"
             onClick={onVitaClick}
         >
             <div className="h-full overflow-y-auto flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary pointer-events-none">
-                <VitaRenderer html={vita} />
+                <CodeRenderer html={code} />
             </div>
         </div>
     );
@@ -169,15 +91,15 @@ const ScalingCard: React.FC<{ children: React.ReactNode, className?: string }> =
     );
 };
 
-export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onImageClick, onVitaClick, onTextClick, onLanguagesClick }) => {
+export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onVitaClick }) => {
     
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
             <ScalingCard>
-                <FrontSide doctor={doctor} onImageClick={onImageClick} onTextClick={onTextClick} onLanguagesClick={onLanguagesClick} />
+                <FrontSide code={doctor.frontSideCode} />
             </ScalingCard>
             <ScalingCard>
-                <BackSide vita={doctor.vita || ''} onVitaClick={onVitaClick} />
+                <BackSide code={doctor.backSideCode} onVitaClick={onVitaClick} />
             </ScalingCard>
         </div>
     );
