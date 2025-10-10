@@ -2,7 +2,8 @@
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { useFirestore, useUser } from '@/firebase';
+import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, orderBy } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Doctor as DoctorType } from '@/app/team/_components/doctor-card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
@@ -25,36 +26,22 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { DoctorCard } from '@/app/team/_components/doctor-card';
 import { toast } from 'sonner';
 
-// Import individual doctor cards for static data
-import { OrtmannsCard } from '@/app/team/_components/doctors/ortmanns-card';
-import { SchemmerCard } from '@/app/team/_components/doctors/schemmer-card';
-import { RosenovCard } from '@/app/team/_components/doctors/rosenov-card';
-import { HerschelCard } from '@/app/team/_components/doctors/herschel-card';
-import { SlezakCard } from '@/app/team/_components/doctors/slezak-card';
-
+// Import individual doctor card props
+import { ortmannsProps } from '@/app/team/_components/doctors/ortmanns-card';
+import { schemmerProps } from '@/app/team/_components/doctors/schemmer-card';
+import { rosenovProps } from '@/app/team/_components/doctors/rosenov-card';
+import { herschelProps } from '@/app/team/_components/doctors/herschel-card';
+import { slezakProps } from '@/app/team/_components/doctors/slezak-card';
 
 export type Doctor = DoctorType;
 
-// This function extracts the props from the static card components
-const getStaticDoctorData = (): Doctor[] => {
-    const staticCards = [
-        <OrtmannsCard key="ortmanns" />,
-        <SchemmerCard key="schemmer" />,
-        <RosenovCard key="rosenov" />,
-        <HerschelCard key="herschel" />,
-        <SlezakCard key="slezak" />,
-    ];
-    return staticCards.map(card => {
-        // Manually add the ID from the key prop to the object
-        const props = card.props as Omit<Doctor, 'id'> & { id?: string };
-        return {
-            ...props,
-            id: card.key as string,
-        } as Doctor;
-    });
-};
-
-const staticDoctorsData = getStaticDoctorData();
+const staticDoctorsData: Doctor[] = [
+    ortmannsProps,
+    schemmerProps,
+    rosenovProps,
+    herschelProps,
+    slezakProps,
+].map(props => props as Doctor);
 
 
 const allProjectImages = [
@@ -123,17 +110,11 @@ export default function DoctorsPage() {
     const firestore = useFirestore();
     const { user, isUserLoading } = useUser();
     
-    // For now, we will work with the static data.
-    // The Firestore `useCollection` hook is commented out until we want to switch to live data.
-    /*
     const doctorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
         return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
     }, [firestore]);
     const { data: dbDoctors, isLoading: areDoctorsLoading, error: doctorsError } = useCollection<Doctor>(doctorsQuery);
-    */
-    const areDoctorsLoading = false; // Mock loading state
-    const doctorsError = null; // Mock error state
     
     useEffect(() => {
         if (doctorsError) {
@@ -143,21 +124,36 @@ export default function DoctorsPage() {
         }
     }, [doctorsError]);
     
-    const [doctorsList, setDoctorsList] = useState<Doctor[]>(staticDoctorsData);
+    const [doctorsList, setDoctorsList] = useState<Doctor[]>([]);
     
     useEffect(() => {
-        // This will be used when we switch to dbDoctors
-        // if (dbDoctors) {
-        //     setDoctorsList(dbDoctors as Doctor[]);
-        // }
-    }, [/*dbDoctors*/]);
+        // Start with static data, then merge with db data
+        const staticDataMap = new Map(staticDoctorsData.map(d => [d.id, d]));
+        
+        if (dbDoctors) {
+            const dbDataMap = new Map(dbDoctors.map(d => [d.id, d]));
+            const mergedList = Array.from(staticDataMap.keys()).map(id => {
+                return dbDataMap.get(id) || staticDataMap.get(id);
+            }) as Doctor[];
+
+            // Add any doctors that are in DB but not in static data
+            dbDoctors.forEach(dbDoc => {
+                if (!staticDataMap.has(dbDoc.id)) {
+                    mergedList.push(dbDoc);
+                }
+            });
+            
+            setDoctorsList(mergedList.sort((a,b) => a.order - b.order));
+        } else if (!areDoctorsLoading) {
+            setDoctorsList(staticDoctorsData.sort((a,b) => a.order - b.order));
+        }
+    }, [dbDoctors, areDoctorsLoading]);
 
 
     const [doctorInEdit, setDoctorInEdit] = useState<Partial<Doctor> | null>(null);
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
     const [hiddenDoctorIds, setHiddenDoctorIds] = useState<Set<string>>(new Set());
     const [isSaving, setIsSaving] = useState(false);
-    const [status, setStatus] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
     
     // Dialog states
     const [isImageSourceDialogOpen, setImageSourceDialogOpen] = useState(false);
@@ -170,15 +166,6 @@ export default function DoctorsPage() {
     const [editingField, setEditingField] = useState<{ key: keyof Doctor; label: string, index?: number } | null>(null);
     const [isLogoFunctionSelectOpen, setLogoFunctionSelectOpen] = useState(false);
     const [isLanguageSelectOpen, setLanguageSelectOpen] = useState(false);
-
-    useEffect(() => {
-        if (status && status.type !== 'info') {
-          const timer = setTimeout(() => {
-            setStatus(null);
-          }, 60000);
-          return () => clearTimeout(timer);
-        }
-    }, [status]);
     
     const displayedDoctorInEdit: Omit<Doctor, 'id'> = useMemo(() => {
         return {
@@ -191,7 +178,9 @@ export default function DoctorsPage() {
         if (isNew) {
             setDoctorInEdit(createDefaultDoctor());
             setEditingDoctorId(null);
-            setStatus({ type: 'info', message: 'Erstellen Sie eine neue Arztkarte. Klicken Sie auf Elemente, um sie zu bearbeiten.' });
+            toast.info('Erstellen Sie eine neue Arztkarte.', {
+                description: 'Klicken Sie auf Elemente, um sie zu bearbeiten.'
+            });
         } else if (!doctorInEdit) {
             setDoctorInEdit(createDefaultDoctor());
         }
@@ -200,13 +189,14 @@ export default function DoctorsPage() {
     const handleEditClick = (doctor: Doctor) => {
         setEditingDoctorId(doctor.id);
         setDoctorInEdit(doctor);
-        setStatus({ type: 'info', message: 'Klicken Sie auf ein Element in der Vorschau, um es zu bearbeiten. Mit "Abbrechen" werden alle Änderungen verworfen.' });
+        toast.info('Bearbeitungsmodus aktiv.', {
+            description: 'Alle Änderungen werden in der Vorschau angezeigt.'
+        });
     };
 
     const handleCancel = () => {
         setDoctorInEdit(null);
         setEditingDoctorId(null);
-        setStatus(null);
     };
     
     const handleSave = async () => {
@@ -217,7 +207,7 @@ export default function DoctorsPage() {
             return;
         };
 
-        if (!doctorInEdit.name || doctorInEdit.name.trim() === '' || doctorInEdit.name === 'Name') {
+        if (!doctorInEdit.name || doctorInedit.name.trim() === '' || doctorInEdit.name === 'Name') {
             toast.error('Speichern nicht möglich', {
                 description: 'Bitte geben Sie einen Namen für den Arzt an, bevor Sie speichern.'
             });
@@ -241,7 +231,6 @@ export default function DoctorsPage() {
         };
     
         setIsSaving(true);
-        setStatus(null);
     
         try {
             if (isUpdatingExistingDBEntry) {
@@ -250,16 +239,6 @@ export default function DoctorsPage() {
             } else {
                  await addDoctor(firestore, saveData, editingDoctorId);
                  toast.success(`Arztprofil für ${saveData.name} erfolgreich erstellt.`);
-            }
-            
-            // The useCollection hook will automatically update the list if we use it.
-            // For now, we'll manually update our static list for visual feedback.
-            if (isUpdatingExistingDBEntry) {
-                setDoctorsList(prev => prev.map(d => d.id === editingDoctorId ? { ...d, ...doctorInEdit } : d));
-            } else {
-                 // In a real DB scenario, we'd get a new ID. For static, we fake it.
-                 const newDoctor = { ...doctorInEdit, id: `new-${Date.now()}` } as Doctor;
-                 setDoctorsList(prev => [...prev, newDoctor]);
             }
             
             handleCancel();
@@ -456,48 +435,6 @@ export default function DoctorsPage() {
         });
     };
     
-    const getStatusAlert = () => {
-        const defaultInfo = { type: 'info', message: 'Klicken Sie auf ein Element in der Vorschau, um es zu bearbeiten. Mit "Abbrechen" werden alle Änderungen verworfen.' };
-        const currentStatus = status || (doctorInEdit ? defaultInfo : null);
-    
-        if (!currentStatus) return <div className="min-h-[76px] mt-4"></div>;
-    
-        const commonClasses = "border-2";
-        let variant: 'default' | 'destructive' | 'info' = 'default';
-        let icon = <CheckCircle className="h-4 w-4" />;
-        let title = "Erfolg";
-        let alertClasses = "border-green-500 text-green-800 bg-green-50";
-    
-        switch(currentStatus.type) {
-            case 'error':
-                variant = 'destructive';
-                icon = <AlertCircle className="h-4 w-4" />;
-                title = "Fehler";
-                alertClasses = "border-red-500 text-red-800 bg-red-50";
-                break;
-            case 'info':
-                variant = 'info';
-                icon = <Info className="h-4 w-4" />;
-                title = "Information";
-                alertClasses = "border-blue-500 text-blue-800 bg-blue-50";
-                break;
-            case 'success':
-                break;
-        }
-        
-        return (
-            <div className="min-h-[76px] mt-4">
-                <Alert variant={variant} className={cn(commonClasses, alertClasses)}>
-                    {icon}
-                    <AlertTitle>{title}</AlertTitle>
-                    <AlertDescription>
-                        {currentStatus.message}
-                    </AlertDescription>
-                </Alert>
-            </div>
-        );
-    };
-    
     return (
         <>
             <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -537,7 +474,6 @@ export default function DoctorsPage() {
                                         onTextClick={handleTextEditClick}
                                         onLanguagesClick={handleLanguagesClick}
                                     />
-                                    {getStatusAlert()}
                                 </div>
                             ) : (
                                 <div className="flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted p-12 text-center">
