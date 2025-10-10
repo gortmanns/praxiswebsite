@@ -38,17 +38,17 @@ async function uploadImage(storage: any, imageUrl: string, path: string): Promis
 }
 
 
-// Create a new doctor document in Firestore
+// Create or OVERWRITE a doctor document in Firestore
 export async function addDoctor(firestore: Firestore, doctorData: DoctorData, docId?: string | null) {
     const app = getFirebaseApp();
     const storage = getStorage(app);
     
-    // Use the provided docId or create a new one
+    // Use the provided docId or create a new one if not provided
     const docRef = docId ? doc(collection(firestore, 'doctors'), docId) : doc(collection(firestore, 'doctors'));
     const newDocId = docRef.id;
 
     let finalImageUrl = doctorData.imageUrl;
-    if (doctorData.imageUrl) {
+    if (doctorData.imageUrl && doctorData.imageUrl.startsWith('data:image')) {
         finalImageUrl = await uploadImage(storage, doctorData.imageUrl, `doctors/${newDocId}/portrait.jpg`);
     }
 
@@ -65,8 +65,8 @@ export async function addDoctor(firestore: Firestore, doctorData: DoctorData, do
         updatedAt: serverTimestamp(),
     };
     
-    // Use setDoc to create or overwrite the document with the specific ID
-    await setDoc(docRef, finalDoctorData, { merge: true });
+    // Use setDoc to create or completely overwrite the document with the specific ID
+    await setDoc(docRef, finalDoctorData);
 }
 
 // Update an existing doctor document
@@ -74,10 +74,12 @@ export async function updateDoctor(firestore: Firestore, id: string, data: Parti
     const app = getFirebaseApp();
     const storage = getStorage(app);
     const doctorRef = doc(firestore, 'doctors', id);
+
     const oldDocSnap = await getDoc(doctorRef);
 
     if (!oldDocSnap.exists()) {
         // If the document doesn't exist, we must treat this as an 'add' operation.
+        // This handles the case of saving a fallback-card for the first time.
         const addData = {
             title: data.title || '',
             name: data.name || '',
