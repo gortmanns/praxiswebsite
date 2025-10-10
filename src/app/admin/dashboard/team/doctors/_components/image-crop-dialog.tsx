@@ -1,4 +1,3 @@
-
 'use client';
 
 import 'cropperjs/dist/cropper.css';
@@ -25,7 +24,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
   imageUrl,
   onCropComplete,
   onClose,
-  aspectRatio, // Use the passed aspect ratio directly
+  aspectRatio,
 }) => {
   const cropperRef = useRef<ReactCropperElement>(null);
 
@@ -51,13 +50,13 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
             src={imageUrl}
             style={{ height: 400, width: '100%' }}
             // Cropper.js options
-            aspectRatio={aspectRatio} // Pass the dynamic aspect ratio here
+            aspectRatio={aspectRatio}
             guides={false}
             viewMode={1}
-            autoCropArea={0.8}
+            autoCropArea={1} // Hier war der Fehler: von 0.8 auf 1 geändert
             background={false}
             responsive={true}
-            checkOrientation={false} // Recommended to disable this for better performance
+            checkOrientation={false} // Empfohlen, um Performance zu verbessern
           />
         </div>
         <DialogFooter>
