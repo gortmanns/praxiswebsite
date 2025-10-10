@@ -46,6 +46,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
         </DialogHeader>
         <div className="my-4 flex justify-center bg-muted">
           <Cropper
+            key={aspectRatio} // Force re-initialization when aspectRatio changes
             ref={cropperRef}
             src={imageUrl}
             style={{ height: 'auto', maxHeight: '70vh', width: '100%' }}
