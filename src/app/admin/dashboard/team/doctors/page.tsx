@@ -80,6 +80,73 @@ const allProjectImages = [
 ];
 const uniqueProjectImages = [...new Set(allProjectImages)];
 
+// Fallback data from original components
+const staticDoctorsData: Doctor[] = [
+    {
+        id: "ortmanns",
+        order: 1,
+        title: "Dipl. med.",
+        name: "G. Ortmanns",
+        imageUrl: "/images/team/Ortmanns.jpg",
+        imageHint: "man portrait",
+        specialty: "Praktischer Arzt",
+        qualifications: [
+            'Master of Public Health (UNSW)',
+            'Master of Health Management (UNSW)',
+        ],
+        vita: `<h4>Curriculum Vitae</h4><ul><li><span style="color: var(--color-tiptap-blue);">2022</span> Niederlassung als Hausarzt im Praxiszentrum im Ring</li><li><span style="color: var(--color-tiptap-blue);">2021-22</span> Tätigkeit in der Hausarztpraxis Dr. G. Gyger, Thun</li><li><span style="color: var(--color-tiptap-blue);">2019-21</span> Oberarzt Innere Medizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2018</span> Oberarzt Innere Medizin, Spital Interlaken</li><li><span style="color: var(--color-tiptap-blue);">2017</span> Assistenzarzt Kardiologie, Inselspital Bern</li><li><span style="color: var(--color-tiptap-blue);">2016-17</span> Assistenzarzt Pneumologie, Inselspital Bern</li><li><span style="color: var(--color-tiptap-blue);">2015-16</span> Assistenzarzt Innere Medizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2015</span> Erlangung des Facharzttitels für Innere Medizin</li><li><span style="color: var(--color-tiptap-blue);">2014-15</span> Assistenzarzt Intensivmedizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2013-14</span> Assistenzarzt Innere Medizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2011-13</span> Assistenzarzt Innere Medizin, Spital Interlaken</li><li><span style="color: var(--color-tiptap-blue);">2011</span> Promotion zum Dr. med.</li><li><span style="color: var(--color-tiptap-blue);">2010-11</span> Assistenzarzt Chirurgie, Klinik für Viszerale Chirurgie und Medizin, Inselspital Bern</li><li><span style="color: var(--color-tiptap-blue);">2009</span> Staatsexamen</li><li><span style="color: var(--color-tiptap-blue);">2003-09</span> Studium der Humanmedizin an der Universität zu Köln</li></ul><br><p class="is-small">Mitgliedschaften:<br>Verbindung der Schweizer Ärztinnen und Ärzte (FMH)<br>Ärztegesellschaft des Kantons Bern (BEKAG)<br>Schweizerische Gesellschaft für Ultraschall in der Medizin (SGUM)</p>`,
+        additionalInfo: "Ärztliche und administrative Leitung Praxiszentrum im Ring",
+    },
+    {
+        id: "schemmer",
+        order: 2,
+        title: "Prof. Dr. med. Dr. h. c.",
+        name: "P. Schemmer",
+        imageUrl: "/images/team/Prof.Schemmer.jpg",
+        imageHint: "man portrait",
+        specialty: "Facharzt für Chirurgie",
+        qualifications: [],
+        vita: `<p>Prof. Schemmer war von 2013 bis 2022 Direktor der Universitätsklinik für Viszerale Transplantationschirurgie am Inselspital in Bern.</p><br><p>Seit 2022 ist er Chefarzt für Chirurgie an der Universitätsklinik für Allgemein-, Viszeral- und Transplantationschirurgie in Graz.</p><br><p>Seine Patienten in der Schweiz behandelt er weiterhin, neu aber wohnortnah und unkompliziert auch hier im Praxiszentrum im Ring, wo er eine regelmässige Sprechstunde abhält.</p>`,
+        partnerLogoComponent: 'SchemmerWorniLogo',
+    },
+    {
+        id: "rosenov",
+        order: 3,
+        title: "Prof. Dr. med.",
+        name: "A. Rosenov",
+        imageUrl: "/images/team/Dr.Rosenov.jpg",
+        imageHint: "man portrait",
+        specialty: "Facharzt für Angiologie",
+        qualifications: [],
+        vita: `<p>Prof. Rosenov hat sich bereit erklärt, ab Mai 2024 die Patienten mit Krampfaderleiden im Praxiszentrum im Ring zu behandeln.</p><br><p>Er wird regelmässig, i.d.R. am Montagnachmittag, eine Sprechstunde im Praxiszentrum anbieten.</p><br><h4>Curriculum Vitae</h4><ul><li><span style="color: var(--color-tiptap-blue);">Seit 2004</span> Chefarzt Herzchirurgie, Spital Triemli, Zürich</li><li><span style="color: var(--color-tiptap-blue);">2002</span> Habilitation und Ernennung zum Privatdozenten an der Universität Ulm</li><li><span style="color: var(--color-tiptap-blue);">1997-2004</span> Oberarzt an der Klinik für Herz-, Thorax- und Gefässchirurgie, Ulm</li><li><span style="color: var(--color-tiptap-blue);">1991-1996</span> Facharztausbildung in der Herzchirurgie an der Medizinischen Hochschule Hannover</li><li><span style="color: var(--color-tiptap-blue);">1990</span> Promotion zum Dr. med.</li><li><span style="color: var(--color-tiptap-blue);">1882-1989</span> Studium der Humanmedizin an der Westfälischen Wilhelms-Universität in Münster</li></ul>`,
+        partnerLogoComponent: 'VascAllianceLogo',
+    },
+    {
+        id: "herschel",
+        order: 4,
+        title: "Dr. med.",
+        name: "R. Herschel",
+        imageUrl: "/images/team/Dr.Herschel.jpg",
+        imageHint: "man portrait",
+        specialty: "Facharzt Orthopädische Chirurgie und Traumatologie des Bewegungsapparates",
+        qualifications: [],
+        vita: `<p>Vita folgt in Kürze.</p>`,
+        partnerLogoComponent: 'OrthozentrumLogo',
+    },
+    {
+        id: "slezak",
+        order: 5,
+        title: "Dr. med.",
+        name: "A. Slezak",
+        imageUrl: "/images/team/Dr.Slezak.jpg",
+        imageHint: "woman portrait",
+        specialty: "Fachärztin für Neurologie",
+        qualifications: [],
+        vita: `<p>Vita folgt in Kürze.</p>`,
+        partnerLogoComponent: 'AgnieszkaSlezakLogo',
+    }
+];
+
 const createDefaultDoctor = (): Omit<Doctor, 'id'> => ({
     title: 'Titel',
     name: 'Name',
@@ -125,10 +192,15 @@ export default function DoctorsPage() {
     const [doctorToDelete, setDoctorToDelete] = useState<Doctor | null>(null);
     
     useEffect(() => {
-        if (doctorsFromDb) {
-            setDoctorsList(doctorsFromDb);
+        if (!isLoadingDoctors) {
+            // If DB is empty, use static data as fallback.
+            if (doctorsFromDb && doctorsFromDb.length > 0) {
+                setDoctorsList(doctorsFromDb);
+            } else {
+                setDoctorsList(staticDoctorsData);
+            }
         }
-    }, [doctorsFromDb]);
+    }, [doctorsFromDb, isLoadingDoctors]);
     
     const displayedDoctorInEdit: Omit<Doctor, 'id'> = useMemo(() => {
         return {
@@ -207,6 +279,14 @@ export default function DoctorsPage() {
 
     const handleDeleteDoctor = async () => {
         if (!firestore || !doctorToDelete) return;
+
+        // Check if the doctor to delete exists in the fallback data.
+        // If it does, we can't truly delete it from the "database" as it's static.
+        if (staticDoctorsData.some(d => d.id === doctorToDelete.id)) {
+            toast.warning("Statische Fallback-Karten können nicht gelöscht werden. Bitte erstellen Sie eine neue Karte und speichern Sie sie, um sie in der Datenbank zu verwalten.");
+            setDoctorToDelete(null);
+            return;
+        }
 
         setIsSaving(true);
         try {
@@ -310,7 +390,10 @@ export default function DoctorsPage() {
                     return { ...currentDoctor, additionalInfo: newValue, partnerLogoComponent: undefined };
                 }
                 const currentSpecialty = currentDoctor.specialty;
-                const newSpecialty = editingField.key === 'specialty' && typeof currentSpecialty === 'object' ? newValue : currentDoctor.specialty;
+                let newSpecialty = currentDoctor.specialty;
+                if (editingField.key === 'specialty') {
+                   newSpecialty = (typeof currentSpecialty === 'string' || !currentSpecialty) ? newValue : currentSpecialty;
+                }
                 
                 return { 
                     ...currentDoctor, 
@@ -330,12 +413,16 @@ export default function DoctorsPage() {
         if (editingField.key === 'qualifications' && editingField.index !== undefined) {
             return (currentDoctor.qualifications || [])[editingField.index] || '';
         }
-        const value = currentDoctor[editingField.key as keyof Omit<Doctor, 'specialty'>] as string;
+        
+        const specialty = currentDoctor.specialty;
         if (editingField.key === 'specialty') {
-            const specialty = currentDoctor.specialty;
             if (typeof specialty === 'string') return specialty;
-            return 'Komplexe Spezialisierung';
+            // If specialty is a ReactNode, we cannot easily edit it as a string.
+            // We return a placeholder or an empty string. The save logic handles this.
+            return '';
         }
+        
+        const value = currentDoctor[editingField.key as keyof Omit<Doctor, 'specialty'>] as string;
         return value || '';
     }, [editingField, doctorInEdit]);
 
@@ -379,6 +466,8 @@ export default function DoctorsPage() {
             return newSet;
         });
     };
+    
+    const isDoctorFromDB = (id: string) => doctorsFromDb?.some(d => d.id === id) ?? false;
     
     return (
         <>
@@ -425,7 +514,7 @@ export default function DoctorsPage() {
                                     <Info className="h-4 w-4" />
                                     <AlertTitle>Hinweis</AlertTitle>
                                     <AlertDescription>
-                                        Klicken Sie auf ein Element in der Vorschau, um es zu bearbeiten. Mit "Abbrechen" werden alle Änderungen verworfen.
+                                        Klicken Sie auf ein Element in der Vorschau, um es zu bearbeiten. Mit "Abbrechen" werden alle Änderungen verworfen. Jede gespeicherte Karte wird in der Datenbank erfasst.
                                     </AlertDescription>
                                 </Alert>
                             </div>
@@ -436,7 +525,7 @@ export default function DoctorsPage() {
                         <div className="space-y-4">
                             <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Vorhandene Ärzteprofile</h3>
                             <p className="text-sm text-muted-foreground mt-1">
-                                Verwalten Sie die hier angezeigten Karten.
+                                Verwalten Sie die hier angezeigten Karten. Die Daten werden aus Firestore geladen, falls vorhanden, andernfalls werden die statischen Daten der Website angezeigt.
                             </p>
                         </div>
 
@@ -465,6 +554,7 @@ export default function DoctorsPage() {
                                     const isEditing = editingDoctorId === doctor.id;
                                     const isHidden = hiddenDoctorIds.has(doctor.id);
                                     const LogoComponent = typeof doctor.partnerLogoComponent === 'string' ? logoMap[doctor.partnerLogoComponent] : undefined;
+                                    const canBeDeleted = isDoctorFromDB(doctor.id);
 
                                     return (
                                         <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
@@ -482,7 +572,7 @@ export default function DoctorsPage() {
                                                 </Button>
                                                 <AlertDialog>
                                                     <AlertDialogTrigger asChild>
-                                                        <Button variant="destructive" size="sm" disabled={isEditing || isSaving} className="justify-start" onClick={() => setDoctorToDelete(doctor)}>
+                                                        <Button variant="destructive" size="sm" disabled={isEditing || isSaving || !canBeDeleted} className="justify-start" onClick={() => setDoctorToDelete(doctor)}>
                                                             <Trash2 className="mr-2 h-4 w-4" /> Löschen
                                                         </Button>
                                                     </AlertDialogTrigger>
@@ -511,6 +601,7 @@ export default function DoctorsPage() {
                                             <div className={cn("relative flex-1 w-full max-w-[1000px] p-2", isHidden && "grayscale opacity-50")}>
                                                 <DoctorCard
                                                 {...doctor}
+                                                specialty={typeof doctor.specialty === 'string' ? doctor.specialty : "Facharzt für Orthopädische Chirurgie und Traumatologie des Bewegungsapparates"}
                                                 partnerLogoComponent={LogoComponent as React.FC<{ className?: string; }> | string | undefined}
                                                 />
                                                 {isEditing && (
@@ -577,3 +668,5 @@ export default function DoctorsPage() {
         </>
     );
 }
+
+    
