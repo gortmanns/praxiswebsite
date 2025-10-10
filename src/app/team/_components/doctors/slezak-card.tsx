@@ -25,15 +25,15 @@ export function SlezakCard() {
                                 <h3 class="text-5xl font-bold text-primary my-2">A. Slezak</h3>
                                 <p class="text-xl font-bold">Fachärztin für Neurologie</p>
                                 <div class="mt-6 border-2 border-purple-500">
-                                    <div class="flex border-2 border-purple-500">
+                                    <div class="flex">
                                         <svg
-                                            viewBox="0 0 145 35"
+                                            viewBox="0 0 170 35"
                                             xmlns="http://www.w3.org/2000/svg"
                                             class="h-[6.9rem] w-auto"
                                             aria-label="Dr. med. Agnieszka Slezak - Fachärztin für Neurologie"
                                             >
                                             <text
-                                                x="72.5"
+                                                x="50%"
                                                 y="45%"
                                                 dominant-baseline="middle"
                                                 font-family="Open Sans, sans-serif"
@@ -45,7 +45,7 @@ export function SlezakCard() {
                                                 Dr. med. Agnieszka Slezak
                                             </text>
                                             <text
-                                                x="72.5"
+                                                x="50%"
                                                 y="80%"
                                                 dominant-baseline="middle"
                                                 font-family="Open Sans, sans-serif"
