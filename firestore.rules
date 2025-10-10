@@ -2,20 +2,17 @@
  * @fileoverview Firestore Security Rules for Praxis Online.
  *
  * Core Philosophy:
- * This ruleset provides a baseline security configuration, focusing on segregation of data.
- * It grants public read access to doctor profiles while restricting write access to contact form submissions.
- * The symptom_checks collection has open access for all operations.
+ * This ruleset enforces role-based access control for contact form submissions and allows public read access for doctor profiles and symptom checks.
  *
  * Data Structure:
- * - /doctor_profiles/{doctorProfileId}: Stores publicly readable doctor profile data.
- * - /contact_form_submissions/{contactFormSubmissionId}: Stores contact form submissions with restricted write access.
- * - /symptom_checks/{symptomCheckId}: Stores symptom check records with open access for all operations.
+ * - /doctor_profiles/{doctorProfileId}: Stores doctor profile information.
+ * - /contact_form_submissions/{contactFormSubmissionId}: Stores contact form submissions.
+ * - /symptom_checks/{symptomCheckId}: Stores symptom check records.
  *
  * Key Security Decisions:
- * - Doctor profiles are publicly readable to allow open access to doctor information.
- * - Contact form submissions are locked down to prevent unauthorized data modification.
- * - Symptom checks are openly accessible for simplicity in this initial setup.
- * - Data shape validation is not implemented in this prototype, focusing on access control.
+ * - Doctor profiles are publicly readable.
+ * - Contact form submissions are write-protected, intended for admin use only.
+ * - Symptom checks are publicly readable.
  */
 rules_version = '2';
 service cloud.firestore {
@@ -24,10 +21,9 @@ service cloud.firestore {
     /**
      * @description Grants public read access to doctor profiles and restricts write access.
      * @path /doctor_profiles/{doctorProfileId}
-     * @allow (get, list) Public access to read doctor profiles.
-     * @allow (create, update, delete) No one, writes are disallowed.
-     * @deny (create) Anyone, since writes are disallowed.
-     * @principle Allows public read access for doctor profiles while restricting write access.
+     * @allow (get, list): Any user can read doctor profiles.
+     * @deny (create, update, delete): No user can create, update, or delete doctor profiles through client-side requests.
+     * @principle Allows open read access while restricting writes.
      */
     match /doctor_profiles/{doctorProfileId} {
       allow get, list: if true;
@@ -35,27 +31,26 @@ service cloud.firestore {
     }
 
     /**
-     * @description Restricts read and write access to contact form submissions.
+     * @description Restricts all client-side access to contact form submissions, implying admin-only management.
      * @path /contact_form_submissions/{contactFormSubmissionId}
-     * @allow (get, list) No one, reads are disallowed.
-     * @allow (create, update, delete) No one, writes are disallowed.
-     * @deny (create) Anyone, since writes are disallowed.
-     * @principle Denies all read and write access to contact form submissions.
+     * @allow None: No client-side operations allowed.
+     * @deny (create, get, list, update, delete): All client-side operations are denied.
+     * @principle Enforces maximum security by denying all client-side access.
      */
     match /contact_form_submissions/{contactFormSubmissionId} {
-      allow get, list: if false;
-      allow create, update, delete: if false;
+      allow create, get, list, update, delete: if false;
     }
 
     /**
-     * @description Grants open access to symptom check records for all operations.
+     * @description Grants public read access to symptom checks and restricts write access.
      * @path /symptom_checks/{symptomCheckId}
-     * @allow (get, list, create, update, delete) Everyone can read, write, update, and delete.
-     * @deny None, all operations are allowed.
-     * @principle Allows open access to symptom check records.
+     * @allow (get, list): Any user can read symptom checks.
+     * @deny (create, update, delete): No user can create, update, or delete symptom checks through client-side requests.
+     * @principle Allows open read access while restricting writes.
      */
     match /symptom_checks/{symptomCheckId} {
-      allow get, list, create, update, delete: if true;
+      allow get, list: if true;
+      allow create, update, delete: if false;
     }
   }
 }
