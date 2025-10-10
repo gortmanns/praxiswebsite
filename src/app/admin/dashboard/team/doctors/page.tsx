@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
@@ -28,9 +29,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { SchemmerWorniLogo } from '@/components/logos/schemmer-worni-logo';
-import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
-import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
+import { SchemmerWorniLogo, AgnieszkaSlezakLogo, OrthozentrumLogo, VascAllianceLogo } from '@/components/logos';
 import Image from 'next/image';
 import { addDoctor, updateDoctor, deleteDoctor } from '@/firebase/firestore/doctors';
 import { toast } from 'sonner';
@@ -93,18 +92,6 @@ const createDefaultDoctor = (): Omit<Doctor, 'id'> => ({
     partnerLogoComponent: undefined,
     order: 99,
 });
-
-
-const VascAllianceLogo = (props: {className?: string}) => (
-    <Image
-        src="/images/VASC-Alliance-Logo.png"
-        alt="VASC Alliance Logo"
-        width={800}
-        height={268}
-        className={props.className}
-        data-ai-hint="partner logo"
-    />
-);
 
 const logoMap: { [key: string]: React.FC<{ className?: string }> } = {
     SchemmerWorniLogo,
