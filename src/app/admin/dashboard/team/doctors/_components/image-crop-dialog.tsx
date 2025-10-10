@@ -17,7 +17,7 @@ interface ImageCropDialogProps {
   imageUrl: string;
   onCropComplete: (croppedImageUrl: string) => void;
   onClose: () => void;
-  aspectRatio?: number;
+  aspectRatio: number; // Aspect ratio is now mandatory
 }
 
 export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
@@ -53,11 +53,11 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
             // Cropper.js options
             aspectRatio={aspectRatio}
             guides={false}
-            viewMode={1}
-            autoCropArea={1}
+            viewMode={1} // Restrict crop box to be within the canvas
+            autoCropArea={1} // Initialize crop box to 100% of the image
             background={false}
             responsive={true}
-            checkOrientation={false} // Recommended to improve performance
+            checkOrientation={false}
           />
         </div>
         <DialogFooter>
