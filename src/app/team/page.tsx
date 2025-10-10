@@ -124,8 +124,8 @@ export default function TeamPage() {
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
             
-            {doctorCards.map((card, index) => (
-              <div key={index} id={card.key as string} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+            {doctorCards.map((card) => (
+              <div key={card.key} id={card.key as string} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
                 {card}
               </div>
             ))}

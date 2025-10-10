@@ -35,22 +35,23 @@ import { SlezakCard } from '@/app/team/_components/doctors/slezak-card';
 
 export type Doctor = DoctorType;
 
-// Wrapper to get props from static card components
-const DoctorDataExtractor: React.FC<{ children: React.ReactElement }> = ({ children }) => {
-    // This component will not render anything, it's just to extract props.
-    return null;
-};
-
 // This function extracts the props from the static card components
 const getStaticDoctorData = (): Doctor[] => {
     const staticCards = [
-        <OrtmannsCard />,
-        <SchemmerCard />,
-        <RosenovCard />,
-        <HerschelCard />,
-        <SlezakCard />,
+        <OrtmannsCard key="ortmanns" />,
+        <SchemmerCard key="schemmer" />,
+        <RosenovCard key="rosenov" />,
+        <HerschelCard key="herschel" />,
+        <SlezakCard key="slezak" />,
     ];
-    return staticCards.map(card => card.props as Doctor);
+    return staticCards.map(card => {
+        // Manually add the ID from the key prop to the object
+        const props = card.props as Omit<Doctor, 'id'> & { id?: string };
+        return {
+            ...props,
+            id: card.key as string,
+        } as Doctor;
+    });
 };
 
 const staticDoctorsData = getStaticDoctorData();
