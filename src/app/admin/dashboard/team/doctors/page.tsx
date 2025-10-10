@@ -17,6 +17,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Info, Eye, EyeOff, Pencil, ArrowUp, ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { TextEditDialog } from './_components/text-edit-dialog';
 
 // Statische Daten für die Kartenkomponenten
 const staticDoctorsData: Doctor[] = [
@@ -108,9 +109,18 @@ export default function DoctorsPage() {
     const [doctorInEdit, setDoctorInEdit] = useState<Doctor | null>(null);
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
     const [hiddenDoctorIds, setHiddenDoctorIds] = useState<Set<string>>(new Set());
+    
+    // State for image editor
     const [isImageEditorOpen, setImageEditorOpen] = useState(false);
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+    
+    // State for vita editor
     const [isVitaEditorOpen, setVitaEditorOpen] = useState(false);
+
+    // State for text editor
+    const [isTextEditorOpen, setIsTextEditorOpen] = useState(false);
+    const [editingField, setEditingField] = useState<{ key: keyof Doctor; label: string, index?: number } | null>(null);
+    const [currentValue, setCurrentValue] = useState('');
     
     const doctorsList = useMemo(() => staticDoctorsData.sort((a, b) => a.order - b.order), []);
 
@@ -147,6 +157,28 @@ export default function DoctorsPage() {
     const handleVitaSave = (newVita: string) => {
         setDoctorInEdit(prev => prev ? { ...prev, vita: newVita } : null);
         setVitaEditorOpen(false);
+    };
+
+    const handleTextEditClick = (fieldKey: keyof Doctor, fieldLabel: string, value: string, index?: number) => {
+        if (!editingDoctorId) return;
+        setEditingField({ key: fieldKey, label: fieldLabel, index });
+        setCurrentValue(value);
+        setIsTextEditorOpen(true);
+    };
+
+    const handleTextSave = (newValue: string) => {
+        if (!editingField || !doctorInEdit) return;
+    
+        if (editingField.key === 'qualifications' && editingField.index !== undefined) {
+            const updatedQualifications = [...doctorInEdit.qualifications];
+            updatedQualifications[editingField.index] = newValue;
+            setDoctorInEdit({ ...doctorInEdit, qualifications: updatedQualifications });
+        } else {
+            setDoctorInEdit({ ...doctorInEdit, [editingField.key]: newValue });
+        }
+    
+        setIsTextEditorOpen(false);
+        setEditingField(null);
     };
 
     const handleEditClick = (doctor: Doctor) => {
@@ -188,6 +220,7 @@ export default function DoctorsPage() {
                                     doctor={displayedDoctorInEdit}
                                     onImageClick={handleImageClick}
                                     onVitaClick={handleVitaClick}
+                                    onTextClick={(key, label, value, index) => handleTextEditClick(key, label, value, index)}
                                 />
                                 <Alert variant="info" className="mt-4 border-2 border-blue-500 text-blue-800 bg-blue-50">
                                     <Info className="h-4 w-4" />
@@ -253,6 +286,7 @@ export default function DoctorsPage() {
                     imageUrl={imageToCrop}
                     onCropComplete={handleCropComplete}
                     onClose={() => setImageEditorOpen(false)}
+                    aspectRatio={2/3}
                 />
             )}
             {doctorInEdit && isVitaEditorOpen && (
@@ -262,6 +296,16 @@ export default function DoctorsPage() {
                 initialValue={doctorInEdit.vita}
                 onSave={handleVitaSave}
               />
+            )}
+            {editingField && (
+                <TextEditDialog
+                    isOpen={isTextEditorOpen}
+                    onOpenChange={setIsTextEditorOpen}
+                    title={`Bearbeiten: ${editingField.label}`}
+                    label={editingField.label}
+                    initialValue={currentValue}
+                    onSave={handleTextSave}
+                />
             )}
         </>
     );

@@ -4,7 +4,7 @@
 import React from 'react';
 import type { Doctor } from '@/app/team/_components/doctor-card';
 import Image from 'next/image';
-import { User, Image as ImageIcon } from 'lucide-react';
+import { User } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
 import {
@@ -15,9 +15,10 @@ import {
 } from '@/components/logos';
 
 interface EditableDoctorCardProps {
-    doctor: Doctor | null;
+    doctor: Doctor;
     onImageClick: () => void;
     onVitaClick: () => void;
+    onTextClick: (fieldKey: keyof Doctor, fieldLabel: string, value: string) => void;
 }
 
 const partnerLogos: { [key: string]: React.FC<{ className?: string }> } = {
@@ -43,10 +44,15 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     );
 };
 
-const FrontSide: React.FC<{ doctor: Doctor; onImageClick: () => void; }> = ({ doctor, onImageClick }) => {
+const FrontSide: React.FC<{ doctor: Doctor; onImageClick: () => void; onTextClick: EditableDoctorCardProps['onTextClick']; }> = ({ doctor, onImageClick, onTextClick }) => {
     const { title, name, imageUrl, imageHint, specialty, qualifications, additionalInfo, partnerLogoComponent } = doctor;
     const LogoComponent = partnerLogoComponent ? partnerLogos[partnerLogoComponent] : null;
     
+    const handleTextClick = (fieldKey: keyof Doctor, fieldLabel: string) => {
+        const value = doctor[fieldKey] as string;
+        onTextClick(fieldKey, fieldLabel, value);
+    };
+
     return (
         <div 
             className="relative w-full h-full bg-card p-6"
@@ -76,29 +82,34 @@ const FrontSide: React.FC<{ doctor: Doctor; onImageClick: () => void; }> = ({ do
                 </div>
                 <div className="col-span-2 flex flex-col justify-center">
                     <div className="text-left text-foreground/80">
-                        <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
-                        <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
+                        <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => handleTextClick('title', 'Titel')}>{title}</p>
+                        <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => handleTextClick('name', 'Name')}>
                             {name}
                         </h4>
                         <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
-                            <p className="font-bold">{specialty}</p>
-                            {qualifications?.map((q, i) => <p key={i}>{q}</p>)}
+                            <p className="font-bold cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => handleTextClick('specialty', 'Spezialisierung')}>{specialty}</p>
+                            {qualifications?.map((q, i) => <p key={i} className="cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('qualifications', `Qualifikation ${i + 1}`, q)}>{q}</p>)}
                         </div>
                         
                         {additionalInfo && !LogoComponent && (
-                            <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
+                            <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => handleTextClick('additionalInfo', 'Zusatzinfo')}>
                                 {additionalInfo}
                             </p>
                         )}
                         
                         {LogoComponent && (
-                            <div className="relative mt-[2.5cqw] flex w-fit justify-start">
+                             <div className="relative mt-[2.5cqw] flex w-fit justify-start cursor-pointer hover:bg-primary/10 rounded-sm p-1 -m-1" onClick={() => handleTextClick('partnerLogoComponent', 'Partner-Logo')}>
                                 <LogoComponent className={cn(
                                     "h-auto w-full",
                                     name === "A. Slezak" ? "max-w-[200px]" : "max-w-[240px]"
                                 )} />
                             </div>
                         )}
+                         {!additionalInfo && !LogoComponent && (
+                             <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1 text-muted-foreground" onClick={() => handleTextClick('additionalInfo', 'Funktion oder Logo')}>
+                                Funktion oder Logo
+                            </p>
+                         )}
                     </div>
                 </div>
             </div>
@@ -161,15 +172,12 @@ const ScalingCard: React.FC<{ children: React.ReactNode, className?: string }> =
     );
 };
 
-export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onImageClick, onVitaClick }) => {
-    if (!doctor) {
-        return null;
-    }
+export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onImageClick, onVitaClick, onTextClick }) => {
     
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
             <ScalingCard>
-                <FrontSide doctor={doctor} onImageClick={onImageClick} />
+                <FrontSide doctor={doctor} onImageClick={onImageClick} onTextClick={onTextClick} />
             </ScalingCard>
             <ScalingCard>
                 <BackSide vita={doctor.vita || ''} onVitaClick={onVitaClick} />
