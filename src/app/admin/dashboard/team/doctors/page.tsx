@@ -8,19 +8,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import type { Doctor as DoctorType } from '@/app/team/_components/doctor-card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { Separator } from '@/components/ui/separator';
-import { ImageCropDialog } from './_components/image-crop-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Info, Eye, EyeOff, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle, TriangleAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { TextEditDialog } from './_components/text-edit-dialog';
-import { ImageSourceDialog } from './_components/image-source-dialog';
-import { LogoFunctionSelectDialog } from './_components/logo-function-select-dialog';
-import { ImageLibraryDialog } from './_components/image-library-dialog';
-import { LanguageSelectDialog } from './_components/language-select-dialog';
-import { SchemmerWorniLogo, AgnieszkaSlezakLogo, OrthozentrumLogo, VascAllianceLogo } from '@/components/logos';
-import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DoctorCard } from '@/app/team/_components/doctor-card';
 
@@ -41,46 +33,6 @@ const staticDoctorsData: Doctor[] = [
     slezakProps,
 ].sort((a, b) => a.order - b.order);
 
-
-const allProjectImages = [
-  // Team
-  "/images/team/Ortmanns.jpg",
-  "/images/team/Prof.Schemmer.jpg",
-  "/images/team/Dr.Rosenov.jpg",
-  "/images/team/Dr.Herschel.jpg",
-  "/images/team/Dr.Slezak.jpg",
-  "/images/team/Garcia.jpg",
-  "/images/team/Aeschlimann.jpg",
-  "/images/team/Huber.jpg",
-  "/images/team/Oetztuerk.jpg",
-  "/images/team/Sommer.jpg",
-  // Logos
-  "/images/VASC-Alliance-Logo.png",
-  "/images/schemmer-worni-logo.png",
-  "/images/go-medical-logo.png",
-  "/images/mcl-labor-logo.png",
-  "/images/doxnet-logo.jpg",
-  "/images/mehrfacharzt-logo.png",
-  "/images/praxiszentrum-logo.png",
-  "/images/praxiszentrum-logo-icon.png",
-  "/images/medphone_logo.png",
-  "/images/toxinfo-logo.svg",
-  // Leistungen
-  "/images/leistungen/audiometrie.jpg",
-  "/images/leistungen/ekg.jpg",
-  "/images/leistungen/labor.jpg",
-  "/images/leistungen/praxisapotheke.jpg",
-  "/images/leistungen/roentgen.jpg",
-  "/images/leistungen/spirometrie.jpg",
-  "/images/leistungen/wundversorgung.jpg",
-  "/images/leistungen/twint_logo.png",
-  "/images/leistungen/VMU.png",
-  // Sonstige
-  "/images/luftbild.jpg",
-  "/images/foto-medis.jpg",
-  "/images/rtw-bern.jpg",
-];
-const uniqueProjectImages = [...new Set(allProjectImages)];
 
 const createDefaultDoctor = (): Omit<Doctor, 'id'> => ({
     name: 'Neuer Arzt',
@@ -135,6 +87,7 @@ export default function DoctorsPage() {
         if (!firestore) return null;
         return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
     }, [firestore]);
+
     const { data: dbDoctors, isLoading: areDoctorsLoading } = useCollection<Doctor>(doctorsQuery);
     
     const [doctorsList, setDoctorsList] = useState<Doctor[]>(staticDoctorsData);
@@ -144,7 +97,7 @@ export default function DoctorsPage() {
     const [hiddenDoctorIds, setHiddenDoctorIds] = useState<Set<string>>(new Set());
     const [isSaving, setIsSaving] = useState(false);
     const [status, setStatus] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
-
+    
     useEffect(() => {
         if (dbDoctors) {
             const staticDataMap = new Map(staticDoctorsData.map(d => [d.id, d]));
@@ -156,12 +109,16 @@ export default function DoctorsPage() {
             }).filter(Boolean) as Doctor[];
 
             const sortedList = mergedList.sort((a,b) => a.order - b.order);
-            setDoctorsList(sortedList);
-        } else {
+            
+            // Prevent infinite loops by comparing the stringified versions of the lists.
+            if (JSON.stringify(sortedList) !== JSON.stringify(doctorsList)) {
+                setDoctorsList(sortedList);
+            }
+        } else if (!areDoctorsLoading) {
+            // If dbDoctors is null (after loading) and we have static data, use it.
             setDoctorsList(staticDoctorsData);
         }
-    }, [dbDoctors]);
-
+    }, [dbDoctors, areDoctorsLoading, doctorsList]);
 
     const handleEditClick = (doctor: Doctor) => {
         setEditingDoctor(doctor);
@@ -189,7 +146,7 @@ export default function DoctorsPage() {
         
         const isExistingInDb = dbDoctors?.some(d => d.id === editingDoctor.id);
 
-        const dataToSave: Omit<Doctor, 'id'> = {
+        const dataToSave = {
             name: editingDoctor.name,
             order: editingDoctor.order,
             frontSideCode: editingDoctor.frontSideCode,
@@ -217,11 +174,7 @@ export default function DoctorsPage() {
 
 
     const handleVitaClick = useCallback(() => {
-        if (!editingDoctor) {
-            const newDoctor = createDefaultDoctor() as Doctor;
-            setEditingDoctor(newDoctor);
-            setVitaEditorOpen(true);
-        } else {
+        if (editingDoctor) {
             setVitaEditorOpen(true);
         }
     }, [editingDoctor]);
@@ -434,3 +387,5 @@ export default function DoctorsPage() {
         </>
     );
 }
+
+    
