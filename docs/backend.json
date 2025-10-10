@@ -1,173 +1,109 @@
 {
   "entities": {
-    "DoctorProfile": {
+    "UserProfile": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "DoctorProfile",
+      "title": "User Profile",
       "type": "object",
-      "description": "Represents a doctor's profile within the Praxis Online application.",
+      "description": "Represents a user's profile information.",
       "properties": {
-        "id": {
+        "uid": {
           "type": "string",
-          "description": "Unique identifier for the DoctorProfile entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "The doctor's full name."
-        },
-        "specialty": {
-          "type": "string",
-          "description": "The doctor's area of specialization."
-        },
-        "biography": {
-          "type": "string",
-          "description": "A short biography of the doctor."
-        },
-        "imageUrl": {
-          "type": "string",
-          "description": "URL of the doctor's profile image.",
-          "format": "uri"
-        },
-        "contactEmail": {
-          "type": "string",
-          "description": "The doctor's contact email address.",
-          "format": "email"
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "specialty",
-        "biography",
-        "imageUrl",
-        "contactEmail"
-      ]
-    },
-    "ContactFormSubmission": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "ContactFormSubmission",
-      "type": "object",
-      "description": "Represents a submission from the contact form.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the ContactFormSubmission entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the person submitting the form."
+          "description": "The user's unique ID from Firebase Auth."
         },
         "email": {
           "type": "string",
-          "description": "The email address of the person submitting the form.",
-          "format": "email"
+          "format": "email",
+          "description": "The user's email address."
         },
-        "message": {
+        "displayName": {
           "type": "string",
-          "description": "The message content of the form submission."
-        },
-        "submissionDate": {
-          "type": "string",
-          "description": "The date and time the form was submitted.",
-          "format": "date-time"
+          "description": "The user's display name."
         }
       },
-      "required": [
-        "id",
-        "name",
-        "email",
-        "message",
-        "submissionDate"
-      ]
+      "required": ["uid", "email"]
     },
-    "SymptomCheck": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "SymptomCheck",
+    "Holiday": {
+      "title": "Holiday",
+      "description": "Defines a holiday period for the practice.",
       "type": "object",
-      "description": "Represents a symptom check performed by a patient.",
       "properties": {
-        "id": {
+        "name": {
           "type": "string",
-          "description": "Unique identifier for the SymptomCheck entity."
+          "description": "The name of the holiday period (e.g., 'Christmas Break')."
         },
-        "symptoms": {
+        "start": {
           "type": "string",
-          "description": "The symptoms entered by the patient."
+          "format": "date",
+          "description": "The start date of the holiday period."
         },
-        "possibleDiagnosis": {
+        "end": {
           "type": "string",
-          "description": "The AI-powered possible diagnosis based on the symptoms."
-        },
-        "checkDate": {
-          "type": "string",
-          "description": "The date and time the symptom check was performed.",
-          "format": "date-time"
+          "format": "date",
+          "description": "The end date of the holiday period."
         }
       },
-      "required": [
-        "id",
-        "symptoms",
-        "possibleDiagnosis",
-        "checkDate"
-      ]
+      "required": ["name", "start", "end"]
+    },
+    "Doctor": {
+      "title": "Doctor",
+      "description": "Represents a doctor's profile for the team page, storing the card's source code.",
+      "type": "object",
+      "properties": {
+        "name": { 
+          "type": "string", 
+          "description": "Full name of the doctor, used for identification in the admin UI." 
+        },
+        "order": { 
+          "type": "number", 
+          "description": "Sort order for displaying on the page." 
+        },
+        "frontSideCode": {
+          "type": "string",
+          "description": "The raw TSX/HTML code for the front side of the doctor card."
+        },
+        "backSideCode": {
+          "type": "string",
+          "description": "The raw TSX/HTML code for the back side of the doctor card."
+        }
+      },
+      "required": ["name", "order", "frontSideCode", "backSideCode"]
     }
   },
   "auth": {
-    "providers": [
-      "password",
-      "anonymous"
-    ]
+    "providers": ["password", "anonymous"]
   },
   "firestore": {
     "structure": [
       {
-        "path": "/doctor_profiles/{doctorProfileId}",
+        "path": "/users/{userId}",
         "definition": {
-          "entityName": "DoctorProfile",
+          "entityName": "UserProfile",
           "schema": {
-            "$ref": "#/backend/entities/DoctorProfile"
+            "$ref": "#/entities/UserProfile"
           },
-          "description": "Stores doctor profile information.",
-          "params": [
-            {
-              "name": "doctorProfileId",
-              "description": "The unique identifier for the doctor profile."
-            }
-          ]
+          "description": "Stores public-facing user profile information."
         }
       },
       {
-        "path": "/contact_form_submissions/{contactFormSubmissionId}",
+        "path": "/holidays/{holidayId}",
         "definition": {
-          "entityName": "ContactFormSubmission",
+          "entityName": "Holiday",
           "schema": {
-            "$ref": "#/backend/entities/ContactFormSubmission"
+            "$ref": "#/entities/Holiday"
           },
-          "description": "Stores contact form submissions from users.",
-          "params": [
-            {
-              "name": "contactFormSubmissionId",
-              "description": "The unique identifier for the contact form submission."
-            }
-          ]
+          "description": "Stores the practice's holiday periods."
         }
       },
       {
-        "path": "/symptom_checks/{symptomCheckId}",
+        "path": "/doctors/{doctorId}",
         "definition": {
-          "entityName": "SymptomCheck",
+          "entityName": "Doctor",
           "schema": {
-            "$ref": "#/backend/entities/SymptomCheck"
+            "$ref": "#/entities/Doctor"
           },
-          "description": "Stores records of symptom checks performed by patients.",
-          "params": [
-            {
-              "name": "symptomCheckId",
-              "description": "The unique identifier for the symptom check record."
-            }
-          ]
+          "description": "Stores profile information for doctors, including the card source code."
         }
       }
-    ],
-    "reasoning": "The Firestore structure is designed to organize data for the Praxis Online application, focusing on doctor profiles, contact form submissions, and symptom checks. Each entity is stored in its own top-level collection for clarity and scalability. This structure facilitates straightforward security rules and queries.\n\n*   `doctor_profiles`: Stores doctor profiles. No specific authorization requirements are mentioned, implying open access or managed via backend.\n*   `contact_form_submissions`: Stores contact form submissions. Admin access is implied, so security rules should restrict write access.\n*   `symptom_checks`: Stores symptom check records. User-specific or open access, depending on requirements.\n\nThis design achieves authorization independence because there are no subcollections that inherit authorization context from their parent. Each collection is treated independently.\n\nQAPs are supported using segregation; each entity type has its own collection. The security rules will determine list access."
+    ]
   }
 }
