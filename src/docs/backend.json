@@ -63,7 +63,12 @@
         "imageHint": { "type": "string", "description": "AI hint for the image (e.g., 'man portrait')." },
         "additionalInfo": { "type": "string", "description": "Optional info like 'Ärztliche Leitung'." },
         "partnerLogoComponent": { "type": "string", "description": "Identifier for a partner logo component (e.g., 'OrthozentrumLogo')." },
-        "order": { "type": "number", "description": "Sort order for displaying on the page." }
+        "order": { "type": "number", "description": "Sort order for displaying on the page." },
+        "languages": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of language codes (e.g., 'de', 'en')."
+        }
       },
       "required": ["name", "title", "specialty", "vita", "order"]
     }

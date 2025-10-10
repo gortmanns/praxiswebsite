@@ -19,6 +19,7 @@ export function SlezakCard() {
                 <p>Vita folgt in Kürze.</p>
             `}
             partnerLogoComponent={AgnieszkaSlezakLogo}
+            languages={['de']}
         />
     );
 }

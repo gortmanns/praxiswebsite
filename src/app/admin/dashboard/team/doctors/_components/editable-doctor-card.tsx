@@ -4,16 +4,18 @@
 import React from 'react';
 import type { Doctor } from '@/app/team/_components/doctor-card';
 import Image from 'next/image';
-import { User, Pencil } from 'lucide-react';
+import { User, Pencil, Languages } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { LanguageFlags } from './language-flags';
 
 interface EditableDoctorCardProps {
     doctor: Doctor;
     onImageClick: () => void;
     onVitaClick: () => void;
     onTextClick: (fieldKey: keyof Doctor, fieldLabel: string, index?: number) => void;
+    onLanguagesClick: () => void;
 }
 
 const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
@@ -35,8 +37,8 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     );
 };
 
-const FrontSide: React.FC<Pick<EditableDoctorCardProps, 'doctor' | 'onImageClick' | 'onTextClick'>> = ({ doctor, onImageClick, onTextClick }) => {
-    const { title, name, imageUrl, imageHint, specialty, qualifications, additionalInfo, partnerLogoComponent } = doctor;
+const FrontSide: React.FC<Pick<EditableDoctorCardProps, 'doctor' | 'onImageClick' | 'onTextClick' | 'onLanguagesClick'>> = ({ doctor, onImageClick, onTextClick, onLanguagesClick }) => {
+    const { title, name, imageUrl, imageHint, specialty, qualifications, additionalInfo, partnerLogoComponent, languages } = doctor;
 
     return (
         <div 
@@ -100,6 +102,12 @@ const FrontSide: React.FC<Pick<EditableDoctorCardProps, 'doctor' | 'onImageClick
                         </div>
                     </div>
                 </div>
+            </div>
+            <div className="absolute bottom-4 right-4 flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={onLanguagesClick} className="h-8 gap-2">
+                   <Languages className="h-4 w-4" /> Sprachen
+                </Button>
+                <LanguageFlags languages={languages} />
             </div>
         </div>
     );
@@ -168,12 +176,12 @@ const ScalingCard: React.FC<{ children: React.ReactNode, className?: string }> =
     );
 };
 
-export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onImageClick, onVitaClick, onTextClick }) => {
+export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onImageClick, onVitaClick, onTextClick, onLanguagesClick }) => {
     
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
             <ScalingCard>
-                <FrontSide doctor={doctor} onImageClick={onImageClick} onTextClick={onTextClick} />
+                <FrontSide doctor={doctor} onImageClick={onImageClick} onTextClick={onTextClick} onLanguagesClick={onLanguagesClick} />
             </ScalingCard>
             <ScalingCard>
                 <BackSide vita={doctor.vita || ''} onVitaClick={onVitaClick} />
@@ -181,5 +189,3 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
         </div>
     );
 };
-
-    

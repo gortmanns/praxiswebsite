@@ -40,6 +40,7 @@ export function OrtmannsCard() {
                 <p class="is-small">Mitgliedschaften:<br>Verbindung der Schweizer Ärztinnen und Ärzte (FMH)<br>Ärztegesellschaft des Kantons Bern (BEKAG)<br>Schweizerische Gesellschaft für Ultraschall in der Medizin (SGUM)</p>
             `}
             additionalInfo="Ärztliche und administrative Leitung Praxiszentrum im Ring"
+            languages={['de', 'en']}
         />
     );
 }

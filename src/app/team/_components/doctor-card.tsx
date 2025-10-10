@@ -1,3 +1,4 @@
+
 'use client'
 
 import Image from 'next/image';
@@ -5,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import DOMPurify from 'dompurify';
 import React from 'react';
 import { User } from 'lucide-react';
+import { LanguageFlags } from '@/app/admin/dashboard/team/doctors/_components/language-flags';
 
 export interface Doctor {
     id: string;
@@ -18,6 +20,7 @@ export interface Doctor {
     vita: string;
     additionalInfo?: string;
     partnerLogoComponent?: React.FC<{className?: string}> | string;
+    languages?: string[];
 }
 
 
@@ -51,7 +54,8 @@ export const DoctorCard: React.FC<Doctor> = ({
     qualifications,
     vita,
     additionalInfo,
-    partnerLogoComponent: LogoComponent
+    partnerLogoComponent: LogoComponent,
+    languages,
 }) => {
 
     return (
@@ -109,6 +113,9 @@ export const DoctorCard: React.FC<Doctor> = ({
                                 </div>
                             </div>
                         </div>
+                        <div className="absolute bottom-4 right-4">
+                            <LanguageFlags languages={languages} />
+                        </div>
                     </div>
                 </CardContent>
             </Card>
@@ -120,5 +127,3 @@ export const DoctorCard: React.FC<Doctor> = ({
         </div>
     );
 };
-
-    

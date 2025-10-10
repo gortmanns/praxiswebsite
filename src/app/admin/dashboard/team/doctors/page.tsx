@@ -18,6 +18,7 @@ import { TextEditDialog } from './_components/text-edit-dialog';
 import { ImageSourceDialog } from './_components/image-source-dialog';
 import { LogoFunctionSelectDialog } from './_components/logo-function-select-dialog';
 import { ImageLibraryDialog } from './_components/image-library-dialog';
+import { LanguageSelectDialog } from './_components/language-select-dialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -90,6 +91,7 @@ const staticDoctorsData: Doctor[] = [
         imageUrl: "/images/team/Ortmanns.jpg",
         imageHint: "man portrait",
         specialty: "Praktischer Arzt",
+        languages: ['de', 'en'],
         qualifications: [
             'Master of Public Health (UNSW)',
             'Master of Health Management (UNSW)',
@@ -105,6 +107,7 @@ const staticDoctorsData: Doctor[] = [
         imageUrl: "/images/team/Prof.Schemmer.jpg",
         imageHint: "man portrait",
         specialty: "Facharzt für Chirurgie",
+        languages: ['de', 'en'],
         qualifications: [],
         vita: `<p>Prof. Schemmer war von 2013 bis 2022 Direktor der Universitätsklinik für Viszerale Transplantationschirurgie am Inselspital in Bern.</p><br><p>Seit 2022 ist er Chefarzt für Chirurgie an der Universitätsklinik für Allgemein-, Viszeral- und Transplantationschirurgie in Graz.</p><br><p>Seine Patienten in der Schweiz behandelt er weiterhin, neu aber wohnortnah und unkompliziert auch hier im Praxiszentrum im Ring, wo er eine regelmässige Sprechstunde abhält.</p>`,
         partnerLogoComponent: 'SchemmerWorniLogo',
@@ -117,6 +120,7 @@ const staticDoctorsData: Doctor[] = [
         imageUrl: "/images/team/Dr.Rosenov.jpg",
         imageHint: "man portrait",
         specialty: "Facharzt für Angiologie",
+        languages: ['de', 'en'],
         qualifications: [],
         vita: `<p>Prof. Rosenov hat sich bereit erklärt, ab Mai 2024 die Patienten mit Krampfaderleiden im Praxiszentrum im Ring zu behandeln.</p><br><p>Er wird regelmässig, i.d.R. am Montagnachmittag, eine Sprechstunde im Praxiszentrum anbieten.</p><br><h4>Curriculum Vitae</h4><ul><li><span style="color: var(--color-tiptap-blue);">Seit 2004</span> Chefarzt Herzchirurgie, Spital Triemli, Zürich</li><li><span style="color: var(--color-tiptap-blue);">2002</span> Habilitation und Ernennung zum Privatdozenten an der Universität Ulm</li><li><span style="color: var(--color-tiptap-blue);">1997-2004</span> Oberarzt an der Klinik für Herz-, Thorax- und Gefässchirurgie, Ulm</li><li><span style="color: var(--color-tiptap-blue);">1991-1996</span> Facharztausbildung in der Herzchirurgie an der Medizinischen Hochschule Hannover</li><li><span style="color: var(--color-tiptap-blue);">1990</span> Promotion zum Dr. med.</li><li><span style="color: var(--color-tiptap-blue);">1882-1989</span> Studium der Humanmedizin an der Westfälischen Wilhelms-Universität in Münster</li></ul>`,
         partnerLogoComponent: 'VascAllianceLogo',
@@ -135,6 +139,7 @@ const staticDoctorsData: Doctor[] = [
               <span>Traumatologie des Bewegungsapparates</span>
             </div>
           ),
+        languages: ['de', 'fr', 'it', 'en', 'es'],
         qualifications: [],
         vita: `<p>Vita folgt in Kürze.</p>`,
         partnerLogoComponent: 'OrthozentrumLogo',
@@ -147,6 +152,7 @@ const staticDoctorsData: Doctor[] = [
         imageUrl: "/images/team/Dr.Slezak.jpg",
         imageHint: "woman portrait",
         specialty: "Fachärztin für Neurologie",
+        languages: ['de'],
         qualifications: [],
         vita: `<p>Vita folgt in Kürze.</p>`,
         partnerLogoComponent: 'AgnieszkaSlezakLogo',
@@ -161,6 +167,7 @@ const createDefaultDoctor = (): Omit<Doctor, 'id'> => ({
     vita: '<p>Dieser Text kann frei angepasst werden.</p>',
     imageUrl: '',
     imageHint: 'placeholder',
+    languages: ['de'],
     additionalInfo: undefined,
     partnerLogoComponent: undefined,
     order: 99,
@@ -195,11 +202,11 @@ export default function DoctorsPage() {
     const [isTextEditorOpen, setIsTextEditorOpen] = useState(false);
     const [editingField, setEditingField] = useState<{ key: keyof Doctor; label: string, index?: number } | null>(null);
     const [isLogoFunctionSelectOpen, setLogoFunctionSelectOpen] = useState(false);
+    const [isLanguageSelectOpen, setLanguageSelectOpen] = useState(false);
     const [doctorToDelete, setDoctorToDelete] = useState<Doctor | null>(null);
     
     useEffect(() => {
         if (!isLoadingDoctors) {
-            // If DB is empty, use static data as a fallback.
             if (doctorsFromDb && doctorsFromDb.length > 0) {
                  setDoctorsList(doctorsFromDb);
             } else {
@@ -242,6 +249,7 @@ export default function DoctorsPage() {
             vita: doctorInEdit.vita || '<p></p>',
             imageUrl: doctorInEdit.imageUrl || '',
             imageHint: doctorInEdit.imageHint || 'placeholder',
+            languages: doctorInEdit.languages || [],
             additionalInfo: doctorInEdit.additionalInfo,
             partnerLogoComponent: doctorInEdit.partnerLogoComponent as string | undefined,
             order: (doctorsList[doctorsList.length - 1]?.order || 0) + 1,
@@ -460,6 +468,20 @@ export default function DoctorsPage() {
         return 2 / 3; // Default portrait aspect ratio
     }, [imageEditContext]);
 
+     // --- Language Handling ---
+    const handleLanguagesClick = useCallback(() => {
+        ensureEditingState();
+        setLanguageSelectOpen(true);
+    }, [ensureEditingState]);
+
+    const handleLanguagesSave = (selectedLanguages: string[]) => {
+        setDoctorInEdit(prev => {
+            const current = prev ?? createDefaultDoctor();
+            return { ...current, languages: selectedLanguages };
+        });
+        setLanguageSelectOpen(false);
+    };
+
     // --- General UI ---
     const toggleHideDoctor = (doctorId: string) => {
         setHiddenDoctorIds(prev => {
@@ -515,6 +537,7 @@ export default function DoctorsPage() {
                                     onImageClick={handleImageClick}
                                     onVitaClick={handleVitaClick}
                                     onTextClick={handleTextEditClick}
+                                    onLanguagesClick={handleLanguagesClick}
                                 />
                                 <Alert variant="info" className="mt-4 border-2 border-blue-500 text-blue-800 bg-blue-50">
                                     <Info className="h-4 w-4" />
@@ -674,6 +697,14 @@ export default function DoctorsPage() {
                 onSelectFromLibrary={handleSelectLogoFromLibrary}
                 onUploadNew={handleUploadNewLogo}
             />
+            {isLanguageSelectOpen && (
+                 <LanguageSelectDialog
+                    isOpen={isLanguageSelectOpen}
+                    onOpenChange={setLanguageSelectOpen}
+                    initialLanguages={displayedDoctorInEdit.languages || []}
+                    onSave={handleLanguagesSave}
+                />
+            )}
         </>
     );
 }

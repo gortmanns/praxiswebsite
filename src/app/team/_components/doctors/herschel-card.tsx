@@ -16,6 +16,7 @@ export function HerschelCard() {
             specialty={
              <div>
                 <span>Facharzt Orthopädische Chirurgie und</span>
+                <br/>
                 <span>Traumatologie des Bewegungsapparates</span>
              </div>
             }
@@ -24,6 +25,7 @@ export function HerschelCard() {
                 <p>Vita folgt in Kürze.</p>
             `}
             partnerLogoComponent={OrthozentrumLogo}
+            languages={['de', 'fr', 'it', 'en', 'es']}
         />
     );
 }

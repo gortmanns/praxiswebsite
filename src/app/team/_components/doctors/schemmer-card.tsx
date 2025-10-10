@@ -29,6 +29,7 @@ export function SchemmerCard() {
                 </p>
             `}
             partnerLogoComponent={SchemmerWorniLogo}
+            languages={['de', 'en']}
         />
     );
 }

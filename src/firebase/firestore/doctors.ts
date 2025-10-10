@@ -63,7 +63,7 @@ export async function updateDoctor(firestore: Firestore, id: string, data: Parti
     const storage = getStorage(firestore.app);
     const doctorRef = doc(firestore, 'doctors', id);
 
-    let updateData = { ...data, updatedAt: serverTimestamp() };
+    const updateData: { [key: string]: any } = { ...data, updatedAt: serverTimestamp() };
     const oldDocSnap = await getDoc(doctorRef);
     const oldData = oldDocSnap.data() as Doctor;
 
@@ -133,5 +133,3 @@ export async function deleteDoctor(firestore: Firestore, id: string) {
 
     return await deleteDoc(doctorRef);
 }
-
-    

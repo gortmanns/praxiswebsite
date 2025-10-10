@@ -47,6 +47,7 @@ export function RosenovCard() {
                 </ul>
             `}
             partnerLogoComponent={VascAllianceLogo}
+            languages={['de', 'en']}
         />
     );
 }
