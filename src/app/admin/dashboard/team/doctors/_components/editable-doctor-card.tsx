@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -29,76 +28,20 @@ const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
 };
 
 
-const FrontSide: React.FC<{ code: string; }> = ({ code }) => {
-    return <CodeRenderer html={code} />;
-};
-
-
-const BackSide: React.FC<{ code: string; onVitaClick: () => void; }> = ({ code, onVitaClick }) => {
-    return (
-        <div
-            className="relative w-full h-full bg-accent/95 overflow-hidden p-6 cursor-pointer"
-            onClick={onVitaClick}
-        >
-            <div className="h-full overflow-y-auto flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary pointer-events-none">
-                <CodeRenderer html={code} />
-            </div>
-        </div>
-    );
-};
-
-const ScalingCard: React.FC<{ children: React.ReactNode, className?: string }> = ({ children, className }) => {
-    const wrapperRef = React.useRef<HTMLDivElement>(null);
-    const [scale, setScale] = React.useState(1);
-
-    React.useEffect(() => {
-        const calculateScale = () => {
-            if (wrapperRef.current) {
-                const cardDesignWidth = 1000;
-                const wrapperWidth = wrapperRef.current.offsetWidth;
-                setScale(wrapperWidth / cardDesignWidth);
-            }
-        };
-
-        calculateScale();
-
-        const resizeObserver = new ResizeObserver(calculateScale);
-        if (wrapperRef.current) {
-            resizeObserver.observe(wrapperRef.current);
-        }
-
-        return () => {
-            if (wrapperRef.current) {
-                // eslint-disable-next-line react-hooks/exhaustive-deps
-                resizeObserver.unobserve(wrapperRef.current);
-            }
-        };
-    }, []);
-
-    return (
-        <div ref={wrapperRef} className={cn("w-full aspect-[1000/495] overflow-hidden rounded-lg shadow-sm", className)}>
-            <div style={{
-                width: '1000px',
-                height: '495px',
-                transform: `scale(${scale})`,
-                transformOrigin: 'top left',
-            }}>
-                {children}
-            </div>
-        </div>
-    );
-};
-
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onVitaClick }) => {
     
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-            <ScalingCard>
-                <FrontSide code={doctor.frontSideCode} />
-            </ScalingCard>
-            <ScalingCard>
-                <BackSide code={doctor.backSideCode} onVitaClick={onVitaClick} />
-            </ScalingCard>
+        <div 
+            className="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm"
+        >
+             {doctor.frontSideCode && <CodeRenderer html={doctor.frontSideCode} />}
+            
+            <div 
+                className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 text-left text-background transition-all duration-1000 group-hover:translate-y-0"
+                onClick={onVitaClick}
+            >
+                {doctor.backSideCode && <CodeRenderer html={doctor.backSideCode} />}
+            </div>
         </div>
     );
 };
