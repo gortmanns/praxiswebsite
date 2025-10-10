@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
@@ -6,7 +5,6 @@ import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Doctor as DoctorType } from '@/app/team/_components/doctor-card';
-import { DoctorCard } from '@/app/team/_components/doctor-card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { Separator } from '@/components/ui/separator';
 import { ImageCropDialog } from './_components/image-crop-dialog';
@@ -37,6 +35,7 @@ import Image from 'next/image';
 import { addDoctor, updateDoctor, deleteDoctor } from '@/firebase/firestore/doctors';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
+import { DoctorCard } from '@/app/team/_components/doctor-card';
 
 // Re-exporting Doctor type to avoid confusion with Doctor component
 export type Doctor = DoctorType;
@@ -170,7 +169,7 @@ export default function DoctorsPage() {
     const handleAddNewDoctor = async () => {
         if (!firestore || !doctorInEdit) return;
 
-        const newDoctorData: Omit<Doctor, 'id'> = {
+        const newDoctorData: Omit<Doctor, 'id' | 'specialty'> & {specialty: string} = {
             title: doctorInEdit.title || 'Titel',
             name: doctorInEdit.name || 'Name',
             specialty: (doctorInEdit.specialty as string) || 'Spezialisierung',
@@ -591,6 +590,3 @@ export default function DoctorsPage() {
         </>
     );
 }
-
-
-    

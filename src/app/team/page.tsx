@@ -1,18 +1,16 @@
-
 'use client';
 
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
-import { DoctorCard, type Doctor } from './_components/doctor-card';
 import { TeamMemberCard } from './_components/team-member-card';
-import { SchemmerWorniLogo } from '@/components/logos/schemmer-worni-logo';
-import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
-import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
-import Image from 'next/image';
-import { useMemo } from 'react';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
-import { Skeleton } from '@/components/ui/skeleton';
+
+// Import individual doctor cards
+import { OrtmannsCard } from './_components/doctors/ortmanns-card';
+import { SchemmerCard } from './_components/doctors/schemmer-card';
+import { RosenovCard } from './_components/doctors/rosenov-card';
+import { HerschelCard } from './_components/doctors/herschel-card';
+import { SlezakCard } from './_components/doctors/slezak-card';
+
 
 const garcia = {
     name: 'S. Garcia',
@@ -104,34 +102,15 @@ const otherTeamMembers = [
     },
 ];
 
-const VascAllianceLogo = (props: {className?: string}) => (
-    <Image
-        src="/images/VASC-Alliance-Logo.png"
-        alt="VASC Alliance Logo"
-        width={800}
-        height={268}
-        className={props.className}
-        data-ai-hint="partner logo"
-    />
-);
-
-const logoMap: { [key: string]: React.FC<{ className?: string }> } = {
-    SchemmerWorniLogo,
-    AgnieszkaSlezakLogo,
-    OrthozentrumLogo,
-    VascAllianceLogo,
-};
-
-
 export default function TeamPage() {
-  const firestore = useFirestore();
-  const doctorsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'doctors'), orderBy('order', 'asc')) : null, [firestore]);
-  const { data: doctors, isLoading: isLoadingDoctors } = useCollection<Doctor>(doctorsQuery);
 
-  const sortedDoctors = useMemo(() => {
-    if (!doctors) return [];
-    return [...doctors].sort((a, b) => a.order - b.order);
-  }, [doctors]);
+  const doctorCards = [
+    <OrtmannsCard key="ortmanns" />,
+    <SchemmerCard key="schemmer" />,
+    <RosenovCard key="rosenov" />,
+    <HerschelCard key="herschel" />,
+    <SlezakCard key="slezak" />,
+  ];
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -144,26 +123,11 @@ export default function TeamPage() {
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
             
-            {isLoadingDoctors ? (
-               [...Array(5)].map((_, i) => (
-                  <div key={i} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
-                    <Skeleton className="w-full aspect-[1000/495] rounded-lg" />
-                  </div>
-                ))
-            ) : (
-              sortedDoctors.map((doctor) => {
-                const LogoComponent = typeof doctor.partnerLogoComponent === 'string' ? logoMap[doctor.partnerLogoComponent] : undefined;
-                
-                return (
-                  <div key={doctor.id} id={doctor.id} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
-                    <DoctorCard 
-                      {...doctor}
-                      partnerLogoComponent={LogoComponent as React.FC<{ className?: string; }> | string | undefined}
-                    />
-                  </div>
-                )
-              })
-            )}
+            {doctorCards.map((card, index) => (
+              <div key={index} id={card.key as string} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                {card}
+              </div>
+            ))}
 
             <div id="praxispersonal">
               <h2 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">Praxispersonal</h2>
@@ -207,5 +171,3 @@ export default function TeamPage() {
     </div>
   );
 }
-
-    
