@@ -4,6 +4,10 @@
     margin: 0;
 }
 
+.vita-content {
+    color: hsl(var(--background));
+}
+
 .vita-content ul {
     list-style-type: disc;
     padding-left: 2rem;
@@ -71,3 +75,5 @@
 .vita-content span[style*="color: var(--color-tiptap-gray)"] {
     --custom-color: var(--color-tiptap-gray);
 }
+
+    

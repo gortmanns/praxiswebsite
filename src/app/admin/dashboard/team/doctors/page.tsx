@@ -250,8 +250,7 @@ export default function DoctorsPage() {
     const handleSave = async () => {
         if (!firestore || !doctorInEdit) return;
     
-        // Determine if we are updating an existing DB document or creating a new one.
-        const isUpdate = editingDoctorId && isDoctorFromDB(editingDoctorId);
+        const isUpdatingExistingDBEntry = editingDoctorId && isDoctorFromDB(editingDoctorId);
     
         const saveData: Omit<Doctor, 'id' | 'specialty'> & {specialty: string} = {
             title: doctorInEdit.title || 'Titel',
@@ -270,11 +269,12 @@ export default function DoctorsPage() {
         setIsSaving(true);
         setStatus(null);
         try {
-            if (isUpdate) {
+            if (isUpdatingExistingDBEntry) {
                 await updateDoctor(firestore, editingDoctorId, saveData);
                 setStatus({ type: 'success', message: 'Die Änderungen wurden erfolgreich gespeichert.' });
             } else {
-                await addDoctor(firestore, saveData, editingDoctorId);
+                // This covers both creating a new card and saving a fallback card for the first time
+                await addDoctor(firestore, saveData, editingDoctorId); // Pass ID for fallback cards
                 setStatus({ type: 'success', message: 'Die neue Arztkarte wurde erfolgreich angelegt.' });
             }
             handleCancel();
@@ -390,26 +390,23 @@ export default function DoctorsPage() {
         if (!editingField) return '';
     
         const key = editingField.key;
+        const defaultPlaceholders = ['Titel', 'Name', 'Spezialisierung', 'Qualifikation 1', 'Qualifikation 2', 'Qualifikation 3', 'Qualifikation 4'];
         
         if (key === 'qualifications' && editingField.index !== undefined) {
             const value = (currentDoctor.qualifications || [])[editingField.index];
-            const defaultValue = (defaultDoctor.qualifications || [])[editingField.index];
-            return value === defaultValue ? '' : value || '';
+            return defaultPlaceholders.includes(value) ? '' : value || '';
         }
         
         const specialty = currentDoctor.specialty;
         if (key === 'specialty') {
             if (typeof specialty === 'string') {
-                return specialty === (defaultDoctor.specialty as string) ? '' : specialty;
+                return defaultPlaceholders.includes(specialty) ? '' : specialty;
             }
             return ''; // Cannot edit ReactNode, return empty
         }
         
-        // Compare with default placeholder values
         const value = currentDoctor[key as keyof Omit<Doctor, 'specialty'>] as string;
-        const defaultValue = defaultDoctor[key as keyof Omit<Doctor, 'specialty'>] as string;
-
-        if (value === defaultValue) {
+        if (defaultPlaceholders.includes(value)) {
             return '';
         }
         
@@ -699,3 +696,5 @@ export default function DoctorsPage() {
         </>
     );
 }
+
+    
