@@ -7,14 +7,6 @@ import { Footer } from '../_components/footer';
 import { TeamMemberCard } from './_components/team-member-card';
 import { DoctorCard, type Doctor } from './_components/doctor-card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { SchemmerWorniLogo, AgnieszkaSlezakLogo, OrthozentrumLogo, VascAllianceLogo } from '@/components/logos';
-
-const logoMap: { [key: string]: React.FC<{ className?: string }> } = {
-    SchemmerWorniLogo,
-    AgnieszkaSlezakLogo,
-    OrthozentrumLogo,
-    VascAllianceLogo,
-};
 
 const garcia = {
     name: 'S. Garcia',
@@ -135,19 +127,11 @@ export default function TeamPage() {
                     </div>
                 ))
             ) : doctors && doctors.length > 0 ? (
-                doctors.map((doctor) => {
-                    let partnerLogo: React.FC<{ className?: string; }> | string | undefined = doctor.partnerLogoComponent;
-                    // When loading from Firestore, partnerLogoComponent is a string key.
-                    // We need to map it back to the actual component.
-                    if (typeof partnerLogo === 'string' && logoMap[partnerLogo]) {
-                       partnerLogo = logoMap[partnerLogo];
-                    }
-                    return (
-                        <div key={doctor.id} id={doctor.id} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
-                            <DoctorCard {...doctor} partnerLogoComponent={partnerLogo} />
-                        </div>
-                    );
-                })
+                doctors.map((doctor) => (
+                    <div key={doctor.id} id={doctor.id.toLowerCase()} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                        <DoctorCard {...doctor} />
+                    </div>
+                ))
             ) : (
                 <p className="text-center text-lg text-muted-foreground">Ärzteprofile werden geladen...</p>
             )}

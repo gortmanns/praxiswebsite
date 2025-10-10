@@ -47,30 +47,27 @@
     },
     "Doctor": {
       "title": "Doctor",
-      "description": "Represents a doctor's profile for the team page.",
+      "description": "Represents a doctor's profile for the team page, storing the card's source code.",
       "type": "object",
       "properties": {
-        "name": { "type": "string", "description": "Full name of the doctor." },
-        "title": { "type": "string", "description": "Academic title (e.g., 'Dr. med.')." },
-        "specialty": { "type": "string", "description": "Medical specialty." },
-        "qualifications": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "List of additional qualifications."
+        "name": { 
+          "type": "string", 
+          "description": "Full name of the doctor, used for identification in the admin UI." 
         },
-        "vita": { "type": "string", "description": "Biography or professional summary in HTML format." },
-        "imageUrl": { "type": "string", "description": "URL to the doctor's portrait image." },
-        "imageHint": { "type": "string", "description": "AI hint for the image (e.g., 'man portrait')." },
-        "additionalInfo": { "type": "string", "description": "Optional info like 'Ärztliche Leitung'." },
-        "partnerLogoComponent": { "type": "string", "description": "Identifier for a partner logo component (e.g., 'OrthozentrumLogo')." },
-        "order": { "type": "number", "description": "Sort order for displaying on the page." },
-        "languages": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "List of language codes (e.g., 'de', 'en')."
+        "order": { 
+          "type": "number", 
+          "description": "Sort order for displaying on the page." 
+        },
+        "frontSideCode": {
+          "type": "string",
+          "description": "The raw TSX/HTML code for the front side of the doctor card."
+        },
+        "backSideCode": {
+          "type": "string",
+          "description": "The raw TSX/HTML code for the back side of the doctor card."
         }
       },
-      "required": ["name", "title", "specialty", "vita", "order"]
+      "required": ["name", "order", "frontSideCode", "backSideCode"]
     }
   },
   "auth": {
@@ -105,7 +102,7 @@
           "schema": {
             "$ref": "#/entities/Doctor"
           },
-          "description": "Stores profile information for doctors."
+          "description": "Stores profile information for doctors, including the card source code."
         }
       }
     ]

@@ -112,32 +112,39 @@ export default function DoctorsPage() {
         if (!firestore) return null;
         return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
     }, [firestore]);
-    const { data: dbDoctors, isLoading: areDoctorsLoading, error: doctorsError } = useCollection<Doctor>(doctorsQuery);
+    const { data: dbDoctors, isLoading: areDoctorsLoading } = useCollection<Doctor>(doctorsQuery);
     
-    const [doctorsList, setDoctorsList] = useState<Doctor[]>(staticDoctorsData);
+    const [doctorsList, setDoctorsList] = useState<Doctor[]>([]);
     const prevDbDoctorsRef = useRef<Doctor[]>();
 
     useEffect(() => {
+        const initialData = staticDoctorsData;
+        
         if (dbDoctors) {
-            // Only update if dbDoctors has actually changed to prevent loops
-            if (JSON.stringify(dbDoctors) !== JSON.stringify(prevDbDoctorsRef.current)) {
-                const staticDataMap = new Map(staticDoctorsData.map(d => [d.id, d]));
-                
-                const mergedList = Array.from(staticDataMap.keys()).map(id => {
-                    const dbDoc = dbDoctors.find(d => d.id === id);
-                    return dbDoc || staticDataMap.get(id);
-                }) as Doctor[];
+            const staticDataMap = new Map(initialData.map(d => [d.id, d]));
+            
+            const mergedList = Array.from(staticDataMap.keys()).map(id => {
+                const dbDoc = dbDoctors.find(d => d.id === id);
+                return dbDoc || staticDataMap.get(id);
+            }) as Doctor[];
 
-                dbDoctors.forEach(dbDoc => {
-                    if (!staticDataMap.has(dbDoc.id)) {
-                        mergedList.push(dbDoc);
-                    }
-                });
+            dbDoctors.forEach(dbDoc => {
+                if (!staticDataMap.has(dbDoc.id)) {
+                    mergedList.push(dbDoc);
+                }
+            });
 
-                const sortedList = mergedList.sort((a,b) => a.order - b.order);
+            const sortedList = mergedList.sort((a,b) => a.order - b.order);
+            
+            if (JSON.stringify(sortedList) !== JSON.stringify(prevDbDoctorsRef.current)) {
                 setDoctorsList(sortedList);
-                prevDbDoctorsRef.current = dbDoctors; // Update the ref
+                prevDbDoctorsRef.current = sortedList;
             }
+        } else {
+             if (JSON.stringify(initialData) !== JSON.stringify(prevDbDoctorsRef.current)) {
+                setDoctorsList(initialData);
+                prevDbDoctorsRef.current = initialData;
+             }
         }
     }, [dbDoctors]);
 
@@ -193,7 +200,7 @@ export default function DoctorsPage() {
         if (!firestore || !doctorInEdit || !user) {
             setStatus({ type: 'error', message: 'Speichern fehlgeschlagen: Benutzer nicht authentifiziert oder Datenbank nicht bereit.' });
             return;
-        };
+        }
 
         if (!doctorInEdit.name || doctorInEdit.name.trim() === '' || doctorInEdit.name === 'Name') {
             setStatus({ type: 'error', message: 'Speichern nicht möglich: Bitte geben Sie einen Namen für den Arzt an, bevor Sie speichern.' });
@@ -205,18 +212,16 @@ export default function DoctorsPage() {
         const isUpdatingExistingDBEntry = !!editingDoctorId;
 
         // --- Data Sanitization ---
-        const { specialty, partnerLogoComponent, ...restOfDoctor } = doctorInEdit;
+        const { ...restOfDoctor } = doctorInEdit;
 
-        // Convert specialty ReactNode to string if it's not a string already
-        const specialtyString = typeof specialty === 'string' ? specialty : '';
+        const specialtyString = typeof restOfDoctor.specialty === 'string' ? restOfDoctor.specialty : '';
 
-        // Convert partnerLogoComponent to a string identifier if it's a function
         let partnerLogoString: string | undefined = undefined;
-        if (typeof partnerLogoComponent === 'function') {
-            const logoName = Object.keys(logoMap).find(key => logoMap[key] === partnerLogoComponent);
+        if (typeof restOfDoctor.partnerLogoComponent === 'function') {
+            const logoName = Object.keys(logoMap).find(key => logoMap[key] === restOfDoctor.partnerLogoComponent);
             partnerLogoString = logoName;
-        } else if (typeof partnerLogoComponent === 'string') {
-            partnerLogoString = partnerLogoComponent;
+        } else if (typeof restOfDoctor.partnerLogoComponent === 'string') {
+            partnerLogoString = restOfDoctor.partnerLogoComponent;
         }
 
         const saveData: DoctorData = {
@@ -431,7 +436,7 @@ export default function DoctorsPage() {
         if (status) {
             const timer = setTimeout(() => {
                 setStatus(null);
-            }, 5000);
+            }, 10000);
             return () => clearTimeout(timer);
         }
     }, [status]);
