@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -45,6 +46,7 @@ export function Header() {
     { href: '/team', label: 'Team' },
     { href: '/leistungen', label: 'Leistungen' },
     { href: '/medikamente', label: 'Medikamente' },
+    { href: '/termine', label: 'Termine' },
     { href: '/oeffnungszeiten', label: 'Zeiten' },
     { href: '/jobs', label: 'Jobs'},
     { href: '/notfall', label: 'NOTFALL' },
@@ -58,7 +60,7 @@ export function Header() {
     { href: '/praxisferien', label: 'Praxisferien' }
   ];
 
-  const pagesWithQuickNav = ['/team', '/leistungen', '/medikamente', '/notfall'];
+  const pagesWithQuickNav = ['/team', '/leistungen', '/medikamente', '/notfall', '/termine'];
   const activePath = pagesWithQuickNav.includes(pathname) ? pathname : '/';
 
   const zeitenActive = pathname === '/oeffnungszeiten' || pathname === '/praxisferien';
@@ -264,7 +266,7 @@ export function Header() {
                         </Link>
                       );
                     }
-                    if (['/', '/team', '/leistungen', '/medikamente', '/jobs'].includes(link.href)) {
+                    if (['/', '/team', '/leistungen', '/medikamente', '/termine', '/jobs'].includes(link.href)) {
                       return (
                         <Link
                             key={link.href}
@@ -292,3 +294,5 @@ export function Header() {
     </header>
   );
 }
+
+    
