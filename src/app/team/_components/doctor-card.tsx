@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import DOMPurify from 'dompurify';
 import React from 'react';
 import { User } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export interface Doctor {
     id: string;
@@ -17,7 +18,7 @@ export interface Doctor {
     qualifications: string[];
     vita: string;
     additionalInfo?: string;
-    children?: React.ReactNode; // Accept children for logos etc.
+    partnerLogoComponent?: React.FC<{className?: string}> | string;
 }
 
 
@@ -47,7 +48,7 @@ export const DoctorCard: React.FC<Doctor> = ({
     qualifications,
     vita,
     additionalInfo,
-    children
+    partnerLogoComponent: LogoComponent
 }) => {
 
     return (
@@ -87,15 +88,15 @@ export const DoctorCard: React.FC<Doctor> = ({
                                         {qualifications.map((q, i) => <p key={i}>{q}</p>)}
                                     </div>
                                     
-                                    {additionalInfo && !children && (
+                                    {additionalInfo && !LogoComponent && (
                                         <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
                                             {additionalInfo}
                                         </p>
                                     )}
                                     
-                                    {children && (
+                                    {LogoComponent && typeof LogoComponent !== 'string' && (
                                         <div className="relative mt-[2.5cqw] flex h-28 w-full max-w-[400px] items-center justify-start">
-                                            {children}
+                                            <LogoComponent className="h-full w-full object-contain object-left" />
                                         </div>
                                     )}
                                 </div>
