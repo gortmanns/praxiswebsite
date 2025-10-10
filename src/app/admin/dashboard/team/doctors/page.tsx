@@ -18,6 +18,7 @@ import { Info, Eye, EyeOff, Pencil, ArrowUp, ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TextEditDialog } from './_components/text-edit-dialog';
+import { ImageSourceDialog } from './_components/image-source-dialog';
 
 // Statische Daten für die Kartenkomponenten
 const staticDoctorsData: Doctor[] = [
@@ -111,7 +112,8 @@ export default function DoctorsPage() {
     const [hiddenDoctorIds, setHiddenDoctorIds] = useState<Set<string>>(new Set());
     
     // State for image editor
-    const [isImageEditorOpen, setImageEditorOpen] = useState(false);
+    const [isImageSourceDialogOpen, setImageSourceDialogOpen] = useState(false);
+    const [isImageCropDialogOpen, setImageCropDialogOpen] = useState(false);
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
     
     // State for vita editor
@@ -125,19 +127,35 @@ export default function DoctorsPage() {
     
     const displayedDoctorInEdit = doctorInEdit ?? createDefaultDoctor();
     const currentValueForDialog = useMemo(() => {
-        if (!editingField || !doctorInEdit) return '';
+        // Use a temporary doctor object for the dialog to avoid showing stale data
+        const currentDoctor = doctorInEdit ?? createDefaultDoctor();
+        if (!editingField) return '';
         if (editingField.key === 'qualifications' && editingField.index !== undefined) {
-            return doctorInEdit.qualifications[editingField.index] || '';
+            return currentDoctor.qualifications[editingField.index] || '';
         }
-        const value = doctorInEdit[editingField.key as keyof Doctor] as string;
+        const value = currentDoctor[editingField.key as keyof Doctor] as string;
         return value || '';
     }, [editingField, doctorInEdit]);
 
 
-    const handleImageClick = () => {
-        if (doctorInEdit === null) {
+    const handleEditClick = (doctor: Doctor) => {
+        setEditingDoctorId(doctor.id);
+        setDoctorInEdit(doctor);
+    };
+
+    const ensureEditingState = () => {
+        if (!doctorInEdit) {
             setDoctorInEdit(createDefaultDoctor());
         }
+    };
+
+    const handleImageClick = () => {
+        ensureEditingState();
+        setImageSourceDialogOpen(true);
+    };
+
+    const handleUploadNewImage = () => {
+        setImageSourceDialogOpen(false);
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
@@ -147,7 +165,7 @@ export default function DoctorsPage() {
                 const reader = new FileReader();
                 reader.onload = (event) => {
                     setImageToCrop(event.target?.result as string);
-                    setImageEditorOpen(true);
+                    setImageCropDialogOpen(true);
                 };
                 reader.readAsDataURL(file);
             }
@@ -156,52 +174,43 @@ export default function DoctorsPage() {
     };
 
     const handleCropComplete = (croppedImageUrl: string) => {
-        setDoctorInEdit(prev => prev ? { ...prev, imageUrl: croppedImageUrl } : null);
-        setImageEditorOpen(false);
+        setDoctorInEdit(prev => prev ? { ...prev, imageUrl: croppedImageUrl } : createDefaultDoctor());
+        setImageCropDialogOpen(false);
         setImageToCrop(null);
     };
 
     const handleVitaClick = () => {
-        if (doctorInEdit === null) {
-            setDoctorInEdit(createDefaultDoctor());
-        }
+        ensureEditingState();
         setVitaEditorOpen(true);
     };
 
     const handleVitaSave = (newVita: string) => {
-        setDoctorInEdit(prev => prev ? { ...prev, vita: newVita } : null);
+        setDoctorInEdit(prev => prev ? { ...prev, vita: newVita } : createDefaultDoctor());
         setVitaEditorOpen(false);
     };
 
-    const handleTextEditClick = (fieldKey: keyof Doctor, fieldLabel: string, value: string, index?: number) => {
-        if (doctorInEdit === null) {
-            setDoctorInEdit(createDefaultDoctor());
-        }
+    const handleTextEditClick = (fieldKey: keyof Doctor, fieldLabel: string, index?: number) => {
+        ensureEditingState();
         setEditingField({ key: fieldKey, label: fieldLabel, index });
         setIsTextEditorOpen(true);
     };
 
     const handleTextSave = (newValue: string) => {
-        if (!editingField || doctorInEdit === null) return;
+        if (!editingField) return;
     
         setDoctorInEdit(prev => {
-            if (!prev) return null; // Should not happen given the check above, but for type safety
+            const currentDoctor = prev ?? createDefaultDoctor();
             if (editingField.key === 'qualifications' && editingField.index !== undefined) {
-                const updatedQualifications = [...prev.qualifications];
+                const updatedQualifications = [...currentDoctor.qualifications];
                 updatedQualifications[editingField.index] = newValue;
-                return { ...prev, qualifications: updatedQualifications };
+                return { ...currentDoctor, qualifications: updatedQualifications };
             } else {
-                return { ...prev, [editingField.key]: newValue };
+                return { ...currentDoctor, [editingField.key]: newValue };
             }
         });
     
         setIsTextEditorOpen(false);
         setEditingField(null);
-    };
-
-    const handleEditClick = (doctor: Doctor) => {
-        setEditingDoctorId(doctor.id);
-        setDoctorInEdit(doctor);
     };
 
     const toggleHideDoctor = (doctorId: string) => {
@@ -297,19 +306,27 @@ export default function DoctorsPage() {
                     </CardContent>
                 </Card>
             </div>
-            {isImageEditorOpen && imageToCrop && (
+            {isImageSourceDialogOpen && (
+                <ImageSourceDialog
+                    isOpen={isImageSourceDialogOpen}
+                    onOpenChange={setImageSourceDialogOpen}
+                    onUpload={handleUploadNewImage}
+                    onSelect={() => { /* TODO: Implement select from library */ alert("Funktion noch nicht implementiert."); }}
+                />
+            )}
+            {isImageCropDialogOpen && imageToCrop && (
                 <ImageCropDialog
                     imageUrl={imageToCrop}
                     onCropComplete={handleCropComplete}
-                    onClose={() => setImageEditorOpen(false)}
+                    onClose={() => setImageCropDialogOpen(false)}
                     aspectRatio={2/3}
                 />
             )}
-            {doctorInEdit && isVitaEditorOpen && (
+            {isVitaEditorOpen && (
               <VitaEditorDialog
                 isOpen={isVitaEditorOpen}
                 onOpenChange={setVitaEditorOpen}
-                initialValue={doctorInEdit.vita}
+                initialValue={displayedDoctorInEdit.vita}
                 onSave={handleVitaSave}
               />
             )}
@@ -326,5 +343,3 @@ export default function DoctorsPage() {
         </>
     );
 }
-
-    

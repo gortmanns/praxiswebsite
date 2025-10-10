@@ -19,7 +19,7 @@ interface EditableDoctorCardProps {
     doctor: Doctor;
     onImageClick: () => void;
     onVitaClick: () => void;
-    onTextClick: (fieldKey: keyof Doctor, fieldLabel: string, value: string, index?: number) => void;
+    onTextClick: (fieldKey: keyof Doctor, fieldLabel: string, index?: number) => void;
 }
 
 const partnerLogos: { [key: string]: React.FC<{ className?: string }> } = {
@@ -45,7 +45,7 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     );
 };
 
-const FrontSide: React.FC<{ doctor: Doctor; onImageClick: () => void; onTextClick: EditableDoctorCardProps['onTextClick']; }> = ({ doctor, onImageClick, onTextClick }) => {
+const FrontSide: React.FC<Pick<EditableDoctorCardProps, 'doctor' | 'onImageClick' | 'onTextClick'>> = ({ doctor, onImageClick, onTextClick }) => {
     const { title, name, imageUrl, imageHint, specialty, qualifications, additionalInfo, partnerLogoComponent } = doctor;
     const LogoComponent = partnerLogoComponent ? partnerLogos[partnerLogoComponent] : null;
 
@@ -71,30 +71,30 @@ const FrontSide: React.FC<{ doctor: Doctor; onImageClick: () => void; onTextClic
                         ) : (
                             <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
                                 <User className="h-1/2 w-1/2" />
-                                <span className="px-4 text-center text-xs">Klicken zum Hochladen</span>
+                                <span className="px-4 text-center text-xs">Klicken zum Ändern</span>
                             </div>
                         )}
                     </div>
                 </div>
                 <div className="col-span-2 flex flex-col justify-center">
                     <div className="text-left text-foreground/80">
-                        <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('title', 'Titel', title)}>{title}</p>
-                        <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('name', 'Name', name)}>
+                        <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('title', 'Titel')}>{title}</p>
+                        <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('name', 'Name')}>
                             {name}
                         </h4>
                         <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
-                            <p className="font-bold cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('specialty', 'Spezialisierung', specialty)}>{specialty}</p>
-                            {qualifications?.map((q, i) => <p key={i} className="cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('qualifications', `Qualifikation ${i + 1}`, q, i)}>{q}</p>)}
+                            <p className="font-bold cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('specialty', 'Spezialisierung')}>{specialty}</p>
+                            {qualifications?.map((q, i) => <p key={i} className="cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('qualifications', `Qualifikation ${i + 1}`, i)}>{q}</p>)}
                         </div>
                         
                         {additionalInfo && !LogoComponent && (
-                            <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('additionalInfo', 'Zusatzinfo', additionalInfo)}>
+                            <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('additionalInfo', 'Zusatzinfo')}>
                                 {additionalInfo}
                             </p>
                         )}
                         
                         {LogoComponent && (
-                             <div className="relative mt-[2.5cqw] flex w-fit justify-start cursor-pointer hover:bg-primary/10 rounded-sm p-1 -m-1" onClick={() => onTextClick('partnerLogoComponent', 'Partner-Logo', partnerLogoComponent || '')}>
+                             <div className="relative mt-[2.5cqw] flex w-fit justify-start cursor-pointer hover:bg-primary/10 rounded-sm p-1 -m-1" onClick={() => onTextClick('partnerLogoComponent', 'Partner-Logo')}>
                                 <LogoComponent className={cn(
                                     "h-auto w-full",
                                     name === "A. Slezak" ? "max-w-[200px]" : "max-w-[240px]"
@@ -102,7 +102,7 @@ const FrontSide: React.FC<{ doctor: Doctor; onImageClick: () => void; onTextClic
                             </div>
                         )}
                          {!additionalInfo && !LogoComponent && (
-                             <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1 text-muted-foreground" onClick={() => onTextClick('additionalInfo', 'Funktion oder Logo', additionalInfo || '')}>
+                             <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1 text-muted-foreground" onClick={() => onTextClick('additionalInfo', 'Funktion oder Logo')}>
                                 Funktion oder Logo
                             </p>
                          )}
@@ -189,5 +189,3 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
         </div>
     );
 };
-
-    
