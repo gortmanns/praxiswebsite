@@ -1,16 +1,21 @@
 
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { OrtmannsCard } from '@/app/team/_components/doctors/ortmanns-card';
-import { SchemmerCard } from '@/app/team/_components/doctors/schemmer-card';
 import { RosenovCard } from '@/app/team/_components/doctors/rosenov-card';
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff, ArrowUp, ArrowDown, Info } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
+// Statische Definition der Ärzte für die Anzeige
+const doctors = [
+    { id: 'ortmanns', name: 'G. Ortmanns', Component: OrtmannsCard },
+    { id: 'rosenov', name: 'A. Rosenov', Component: RosenovCard },
+];
 
 export default function DoctorsPage() {
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
@@ -25,11 +30,6 @@ export default function DoctorsPage() {
         setEditingDoctorId(null);
         setStatus(null);
     };
-
-    const doctors = [
-        { id: 'ortmanns', name: 'G. Ortmanns', Component: OrtmannsCard },
-        { id: 'rosenov', name: 'A. Rosenov', Component: RosenovCard },
-    ];
 
     const editingDoctor = doctors.find(d => d.id === editingDoctorId);
 
