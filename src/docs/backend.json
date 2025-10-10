@@ -44,6 +44,28 @@
         }
       },
       "required": ["name", "start", "end"]
+    },
+    "Doctor": {
+      "title": "Doctor",
+      "description": "Represents a doctor's profile for the team page.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Full name of the doctor." },
+        "title": { "type": "string", "description": "Academic title (e.g., 'Dr. med.')." },
+        "specialty": { "type": "string", "description": "Medical specialty." },
+        "qualifications": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of additional qualifications."
+        },
+        "vita": { "type": "string", "description": "Biography or professional summary in HTML format." },
+        "imageUrl": { "type": "string", "description": "URL to the doctor's portrait image." },
+        "imageHint": { "type": "string", "description": "AI hint for the image (e.g., 'man portrait')." },
+        "additionalInfo": { "type": "string", "description": "Optional info like 'Ärztliche Leitung'." },
+        "partnerLogoComponent": { "type": "string", "description": "Identifier for a partner logo component (e.g., 'OrthozentrumLogo')." },
+        "order": { "type": "number", "description": "Sort order for displaying on the page." }
+      },
+      "required": ["name", "title", "specialty", "vita", "order"]
     }
   },
   "auth": {
@@ -69,6 +91,16 @@
             "$ref": "#/entities/Holiday"
           },
           "description": "Stores the practice's holiday periods."
+        }
+      },
+      {
+        "path": "/doctors/{doctorId}",
+        "definition": {
+          "entityName": "Doctor",
+          "schema": {
+            "$ref": "#/entities/Doctor"
+          },
+          "description": "Stores profile information for doctors."
         }
       }
     ]

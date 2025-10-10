@@ -38,7 +38,7 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
 
     return (
         <div
-        className="prose prose-sm dark:prose-invert max-w-none border border-green-500"
+        className="prose prose-sm dark:prose-invert max-w-none"
         dangerouslySetInnerHTML={sanitizedHtml}
         />
     );
@@ -79,15 +79,15 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
     const LogoComponent = partnerLogoComponent ? partnerLogos[partnerLogoComponent] : null;
 
     return (
-        <div className="group relative w-full max-w-[1000px] overflow-hidden rounded-lg shadow-sm border border-red-500">
+        <div className="group relative w-full max-w-[1000px] overflow-hidden rounded-lg shadow-sm">
             <Card className="w-full overflow-hidden">
                 <CardContent className="p-0 h-full">
                     <div 
-                        className="relative w-full bg-card aspect-[1000/495] border border-blue-500"
+                        className="relative w-full bg-card aspect-[1000/495]"
                         style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                     >
-                        <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6 border border-green-500">
-                            <div className="relative col-span-1 w-full overflow-hidden rounded-md border border-yellow-500">
+                        <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6">
+                            <div className="relative col-span-1 w-full overflow-hidden rounded-md">
                                 <div className="relative h-full w-full aspect-[2/3]">
                                     {imageUrl ? (
                                         <Image
@@ -104,8 +104,8 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
                                     )}
                                 </div>
                             </div>
-                            <div className="col-span-2 border border-yellow-500">
-                                <div className="flex h-full flex-col justify-center text-left text-foreground/80">
+                            <div className="col-span-2">
+                                <div className="flex flex-col justify-center text-left text-foreground/80 h-full">
                                     <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
                                     <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
                                       {name}

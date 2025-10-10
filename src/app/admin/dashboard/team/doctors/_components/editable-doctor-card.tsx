@@ -25,7 +25,7 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
 
   return (
     <div
-      className="prose prose-sm dark:prose-invert max-w-none border border-green-500"
+      className="prose prose-sm dark:prose-invert max-w-none"
       dangerouslySetInnerHTML={sanitizedHtml}
     />
   );
@@ -60,9 +60,9 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
 
     if (isBack) {
         return (
-            <Card className="w-full h-full overflow-hidden rounded-lg shadow-sm border border-red-500">
-                <div className="flex h-full flex-col overflow-auto bg-accent/95 p-6 text-left text-background border border-blue-500">
-                    <div className="h-full w-full overflow-y-auto text-base leading-tight scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary border border-green-500">
+            <Card className="w-full h-full overflow-hidden rounded-lg shadow-sm">
+                <div className="flex h-full flex-col overflow-auto bg-accent/95 p-6 text-left text-background">
+                    <div className="h-full w-full overflow-y-auto text-base leading-tight scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
                         <VitaRenderer html={vita} />
                     </div>
                 </div>
@@ -71,14 +71,14 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
     }
     
     return (
-        <Card className="w-full h-full overflow-hidden rounded-lg shadow-sm border border-red-500">
+        <Card className="w-full h-full overflow-hidden rounded-lg shadow-sm">
             <CardContent className="p-0 h-full">
                 <div 
-                    className="relative w-full bg-card h-full border border-blue-500"
+                    className="relative w-full bg-card h-full"
                     style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                 >
-                    <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6 border border-green-500">
-                        <div className="relative col-span-1 w-full overflow-hidden rounded-md border border-yellow-500">
+                    <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6">
+                        <div className="relative col-span-1 w-full overflow-hidden rounded-md">
                              <div className="relative h-full w-full aspect-[2/3]">
                                 {imageUrl ? (
                                     <Image
@@ -95,7 +95,7 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
                                 )}
                             </div>
                         </div>
-                        <div className="col-span-2 border border-yellow-500">
+                        <div className="col-span-2">
                             <div className="flex h-full flex-col justify-center text-left text-foreground/80">
                                 <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
                                 <h4 className="font-headline text-[clamp(1.2rem,4cqw,2.2rem)] font-bold leading-tight text-primary">
