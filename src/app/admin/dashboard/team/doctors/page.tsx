@@ -197,10 +197,10 @@ export default function DoctorsPage() {
         if (status && status.type !== 'info') {
           const timer = setTimeout(() => {
             setStatus(null);
-          }, 10000);
+          }, 60000); // Changed to 60 seconds
           return () => clearTimeout(timer);
         }
-      }, [status]);
+    }, [status]);
     
     useEffect(() => {
         if (!isLoadingDoctors) {
@@ -273,14 +273,14 @@ export default function DoctorsPage() {
                 await updateDoctor(firestore, editingDoctorId, saveData);
                 setStatus({ type: 'success', message: 'Die Änderungen wurden erfolgreich gespeichert.' });
             } else {
-                // This covers both creating a new card and saving a fallback card for the first time
-                await addDoctor(firestore, saveData, editingDoctorId); // Pass ID for fallback cards
+                await addDoctor(firestore, saveData, editingDoctorId);
                 setStatus({ type: 'success', message: 'Die neue Arztkarte wurde erfolgreich angelegt.' });
             }
             handleCancel();
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error saving doctor: ", error);
-            setStatus({ type: 'error', message: 'Die Daten konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.' });
+            const errorMessage = `Die Daten konnten nicht gespeichert werden. Fehler: ${error.message || String(error)}`;
+            setStatus({ type: 'error', message: errorMessage });
         } finally {
             setIsSaving(false);
         }
@@ -386,7 +386,6 @@ export default function DoctorsPage() {
     
     const currentValueForDialog = useMemo(() => {
         const currentDoctor = doctorInEdit ?? createDefaultDoctor();
-        const defaultDoctor = createDefaultDoctor();
         if (!editingField) return '';
     
         const key = editingField.key;
@@ -696,5 +695,3 @@ export default function DoctorsPage() {
         </>
     );
 }
-
-    
