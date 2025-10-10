@@ -78,20 +78,20 @@ export async function updateDoctor(firestore: Firestore, id: string, data: Parti
     const oldDocSnap = await getDoc(doctorRef);
 
     if (!oldDocSnap.exists()) {
-        // If the document doesn't exist, we must treat this as an 'add' operation.
-        // This handles the case of saving a fallback-card for the first time.
-        const addData = {
-            title: data.title || '',
-            name: data.name || '',
-            specialty: data.specialty || '',
-            qualifications: data.qualifications || [],
-            vita: data.vita || '',
-            imageUrl: data.imageUrl || '',
-            imageHint: data.imageHint || '',
-            languages: data.languages || [],
-            order: data.order || 99,
+        // This should not happen in the new flow, but as a safeguard.
+        // Convert Partial<DoctorData> to full DoctorData for addDoctor
+        const addData: DoctorData = {
+            title: data.title ?? '',
+            name: data.name ?? '',
+            specialty: data.specialty ?? '',
+            qualifications: data.qualifications ?? [],
+            vita: data.vita ?? '',
+            imageUrl: data.imageUrl ?? '',
+            imageHint: data.imageHint ?? '',
+            languages: data.languages ?? [],
+            order: data.order ?? 99,
             ...data
-        } as DoctorData;
+        };
         await addDoctor(firestore, addData, id);
         return;
     }

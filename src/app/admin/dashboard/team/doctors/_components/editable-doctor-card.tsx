@@ -4,7 +4,7 @@
 import React from 'react';
 import type { Doctor } from '@/app/team/_components/doctor-card';
 import Image from 'next/image';
-import { User, Pencil, Languages } from 'lucide-react';
+import { User, Languages } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -117,17 +117,10 @@ const FrontSide: React.FC<Pick<EditableDoctorCardProps, 'doctor' | 'onImageClick
 const BackSide: React.FC<{ vita: string; onVitaClick: () => void; }> = ({ vita, onVitaClick }) => {
     return (
         <div
-            className="relative w-full h-full bg-accent/95 overflow-hidden p-6"
+            className="relative w-full h-full bg-accent/95 overflow-hidden p-6 cursor-pointer"
+            onClick={onVitaClick}
         >
-            <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-2 right-2 z-10 h-14 w-14 text-background hover:bg-background/20 hover:text-background"
-                onClick={onVitaClick}
-            >
-                <Pencil className="h-8 w-8" />
-            </Button>
-            <div className="h-full overflow-y-auto flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
+            <div className="h-full overflow-y-auto flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary pointer-events-none">
                 <VitaRenderer html={vita} />
             </div>
         </div>
