@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
@@ -11,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info, Eye, EyeOff, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Info, Eye, EyeOff, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle, TriangleAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TextEditDialog } from './_components/text-edit-dialog';
@@ -24,7 +23,6 @@ import Image from 'next/image';
 import { addDoctor, updateDoctor } from '@/firebase/firestore/doctors';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DoctorCard } from '@/app/team/_components/doctor-card';
-import { toast } from 'sonner';
 
 // Import individual doctor card props
 import { ortmannsProps } from '@/app/team/_components/doctors/ortmanns-card';
@@ -116,14 +114,6 @@ export default function DoctorsPage() {
     }, [firestore]);
     const { data: dbDoctors, isLoading: areDoctorsLoading, error: doctorsError } = useCollection<Doctor>(doctorsQuery);
     
-    useEffect(() => {
-        if (doctorsError) {
-            toast.error("Fehler beim Laden der Ärzteprofile.", {
-                description: doctorsError.message
-            });
-        }
-    }, [doctorsError]);
-    
     const [doctorsList, setDoctorsList] = useState<Doctor[]>([]);
     
     useEffect(() => {
@@ -154,6 +144,7 @@ export default function DoctorsPage() {
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
     const [hiddenDoctorIds, setHiddenDoctorIds] = useState<Set<string>>(new Set());
     const [isSaving, setIsSaving] = useState(false);
+    const [status, setStatus] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
     
     // Dialog states
     const [isImageSourceDialogOpen, setImageSourceDialogOpen] = useState(false);
@@ -178,9 +169,7 @@ export default function DoctorsPage() {
         if (isNew) {
             setDoctorInEdit(createDefaultDoctor());
             setEditingDoctorId(null);
-            toast.info('Erstellen Sie eine neue Arztkarte.', {
-                description: 'Klicken Sie auf Elemente, um sie zu bearbeiten.'
-            });
+            setStatus({ type: 'info', message: 'Erstellen Sie eine neue Arztkarte. Klicken Sie auf Elemente, um sie zu bearbeiten.'});
         } else if (!doctorInEdit) {
             setDoctorInEdit(createDefaultDoctor());
         }
@@ -189,31 +178,28 @@ export default function DoctorsPage() {
     const handleEditClick = (doctor: Doctor) => {
         setEditingDoctorId(doctor.id);
         setDoctorInEdit(doctor);
-        toast.info('Bearbeitungsmodus aktiv.', {
-            description: 'Alle Änderungen werden in der Vorschau angezeigt.'
-        });
+        setStatus({ type: 'info', message: `Sie bearbeiten nun das Profil von ${doctor.name}. Alle Änderungen werden in der Vorschau angezeigt.`});
     };
 
     const handleCancel = () => {
         setDoctorInEdit(null);
         setEditingDoctorId(null);
+        setStatus(null);
     };
     
     const handleSave = async () => {
         if (!firestore || !doctorInEdit || !user) {
-            toast.error('Speichern fehlgeschlagen', {
-                description: 'Benutzer nicht authentifiziert oder Datenbank nicht bereit.'
-            });
+            setStatus({ type: 'error', message: 'Speichern fehlgeschlagen: Benutzer nicht authentifiziert oder Datenbank nicht bereit.' });
             return;
         };
 
         if (!doctorInEdit.name || doctorInEdit.name.trim() === '' || doctorInEdit.name === 'Name') {
-            toast.error('Speichern nicht möglich', {
-                description: 'Bitte geben Sie einen Namen für den Arzt an, bevor Sie speichern.'
-            });
+            setStatus({ type: 'error', message: 'Speichern nicht möglich: Bitte geben Sie einen Namen für den Arzt an, bevor Sie speichern.' });
             return;
         }
         
+        setIsSaving(true);
+        setStatus(null);
         const isUpdatingExistingDBEntry = !!editingDoctorId;
     
         const saveData = {
@@ -230,25 +216,20 @@ export default function DoctorsPage() {
             order: doctorInEdit.order || (doctorsList.length > 0 ? Math.max(...doctorsList.map(d => d.order)) + 1 : 1),
         };
     
-        setIsSaving(true);
-    
         try {
             if (isUpdatingExistingDBEntry) {
                 await updateDoctor(firestore, editingDoctorId, saveData);
-                toast.success(`Arztprofil für ${saveData.name} erfolgreich aktualisiert.`);
+                setStatus({ type: 'success', message: `Arztprofil für ${saveData.name} erfolgreich aktualisiert.` });
             } else {
                  await addDoctor(firestore, saveData, editingDoctorId);
-                 toast.success(`Arztprofil für ${saveData.name} erfolgreich erstellt.`);
+                 setStatus({ type: 'success', message: `Arztprofil für ${saveData.name} erfolgreich erstellt.` });
             }
             
             handleCancel();
 
         } catch (error: any) {
             console.error("Error saving doctor: ", error);
-            const errorMessage = `Die Daten konnten nicht gespeichert werden.`;
-            toast.error(errorMessage, {
-                description: error.message || String(error)
-            });
+            setStatus({ type: 'error', message: `Die Daten konnten nicht gespeichert werden: ${error.message || String(error)}` });
         } finally {
             setIsSaving(false);
         }
@@ -435,6 +416,58 @@ export default function DoctorsPage() {
         });
     };
     
+      useEffect(() => {
+        // Automatically dismiss non-error/warning messages after a delay
+        if (status && (status.type === 'success' || status.type === 'info')) {
+        const timer = setTimeout(() => {
+            setStatus(null);
+        }, 5000);
+        return () => clearTimeout(timer);
+        }
+    }, [status]);
+
+
+    const getStatusAlert = () => {
+        if (!status) return null;
+
+        const commonClasses = "border-2";
+        let variant: 'default' | 'destructive' | 'warning' | 'info' = 'default';
+        let icon = <CheckCircle className="h-4 w-4" />;
+        let title = "Erfolg";
+        let alertClasses = "border-green-500 text-green-800 bg-green-50";
+
+        switch(status.type) {
+            case 'error':
+                variant = 'destructive';
+                icon = <AlertCircle className="h-4 w-4" />;
+                title = "Fehler";
+                alertClasses = "border-red-500 text-red-800 bg-red-50";
+                break;
+            case 'warning':
+                variant = 'warning';
+                icon = <TriangleAlert className="h-4 w-4" />;
+                title = "Warnung";
+                alertClasses = "border-yellow-500 text-yellow-800 bg-yellow-50";
+                break;
+            case 'info':
+                variant = 'info';
+                icon = <Info className="h-4 w-4" />;
+                title = "Information";
+                alertClasses = "border-blue-500 text-blue-800 bg-blue-50";
+                break;
+        }
+        
+        return (
+            <Alert variant={variant} className={cn(commonClasses, alertClasses)}>
+                {icon}
+                <AlertTitle>{title}</AlertTitle>
+                <AlertDescription>
+                    {status.message}
+                </AlertDescription>
+            </Alert>
+        );
+    };
+
     return (
         <>
             <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -484,6 +517,9 @@ export default function DoctorsPage() {
                                      </Button>
                                 </div>
                             )}
+                             <div className="mt-4 min-h-[76px]">
+                                {getStatusAlert()}
+                             </div>
                         </div>
 
                         <Separator className="my-12" />
