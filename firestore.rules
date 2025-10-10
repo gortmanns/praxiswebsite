@@ -1,43 +1,40 @@
 /**
- * @fileoverview Firestore Security Rules for Praxis Online.
+ * @fileoverview Firestore Security Rules for Praxis Online application.
  *
  * Core Philosophy:
- * This ruleset provides a baseline security configuration that prioritizes secure access to sensitive data while allowing for prototyping.
- * It assumes the application requires different levels of access for doctor profiles, contact form submissions, and symptom checks.
- * In the prototyping phase, the rules will err on the side of strictness regarding authorization, while relaxing schema validation to accelerate development.
+ * This ruleset provides public read access to all collections while restricting write access.
+ * It's designed for rapid prototyping and assumes that all data validation will be handled
+ * in the application code. The rules primarily focus on preventing unauthorized data modification.
  *
  * Data Structure:
  * The Firestore database consists of three top-level collections:
  * - /doctor_profiles/{doctorProfileId}: Stores doctor profile information.
- * - /contact_form_submissions/{contactFormSubmissionId}: Stores contact form submissions from users.
- * - /symptom_checks/{symptomCheckId}: Stores records of symptom checks performed by patients.
+ * - /contact_form_submissions/{contactFormSubmissionId}: Stores contact form submissions.
+ * - /symptom_checks/{symptomCheckId}: Stores symptom check records.
  *
  * Key Security Decisions:
- * - Doctor Profiles: Read access is public (for displaying doctor information). Writes are only allowed via backend.
- * - Contact Form Submissions: Only backend can create and manage these entries. This prevents unauthorized submissions.
- * - Symptom Checks: Public read and create allowed to enable users to use the application without signing up.
- * - No user listing is allowed on any collection.
- * - Schema validation is relaxed in this prototype phase, focusing only on authorization-critical fields.
- *
- * Denormalization for Authorization:
- *  - No denormalization is needed at this stage.
- *
- * Structural Segregation:
- *  - Each entity type is stored in its own collection for clear separation of concerns and independent security rules.
+ * - Public read access is granted to all collections to simplify initial development.
+ * - Write access (create, update, delete) is denied by default and must be explicitly
+ *   enabled through additional rules or backend logic. This prevents unauthorized
+ *   modification of data during the prototyping phase.
+ * - No data shape validation is performed in the rules. The application is responsible
+ *   for ensuring data integrity.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows public read access to doctor profiles, with write access restricted to backend.
+     * @description Grants public read access to doctor profiles and restricts write access.
      * @path /doctor_profiles/{doctorProfileId}
-     * @allow get, list: if true;
-     * @allow create, update, delete: if false;
+     * @allow get, list: All users can read doctor profiles.
+     * @allow create: Unauthorized users cannot create doctor profiles.
+     * @allow update: Unauthorized users cannot update doctor profiles.
+     * @allow delete: Unauthorized users cannot delete doctor profiles.
      * @deny create: if true;
      * @deny update: if true;
      * @deny delete: if true;
-     * @principle Allows the retrieval of any doctor profile, but denies modification by any user.
+     * @principle Allows public read access for doctor profiles.
      */
     match /doctor_profiles/{doctorProfileId} {
       allow get, list: if true;
@@ -47,38 +44,39 @@ service cloud.firestore {
     }
 
     /**
-     * @description Restricts all access to contact form submissions, allowing only backend operations.
+     * @description Grants public read access to contact form submissions and restricts write access.
      * @path /contact_form_submissions/{contactFormSubmissionId}
-     * @allow get, list: if false;
-     * @allow create, update, delete: if false;
-     * @deny get: if true;
-     * @deny list: if true;
+     * @allow get, list: All users can read contact form submissions.
+     * @allow create: Unauthorized users cannot create contact form submissions.
+     * @allow update: Unauthorized users cannot update contact form submissions.
+     * @allow delete: Unauthorized users cannot delete contact form submissions.
      * @deny create: if true;
      * @deny update: if true;
      * @deny delete: if true;
-     * @principle Secure contact form submissions by preventing unauthorized access.
+     * @principle Allows public read access for contact form submissions.
      */
     match /contact_form_submissions/{contactFormSubmissionId} {
-      allow get, list: if false;
+      allow get, list: if true;
       allow create: if false;
       allow update: if false;
       allow delete: if false;
     }
 
     /**
-     * @description Allows public read and create access to symptom checks, with no write access.
+     * @description Grants public read access to symptom checks and restricts write access.
      * @path /symptom_checks/{symptomCheckId}
-     * @allow get, list: if true;
-     * @allow create: if true;
-     * @allow update: if false;
-     * @allow delete: if false;
+     * @allow get, list: All users can read symptom checks.
+     * @allow create: Unauthorized users cannot create symptom checks.
+     * @allow update: Unauthorized users cannot update symptom checks.
+     * @allow delete: Unauthorized users cannot delete symptom checks.
+     * @deny create: if true;
      * @deny update: if true;
      * @deny delete: if true;
-     * @principle Allows public users to create and read symptom checks but prevents unauthorized modification.
+     * @principle Allows public read access for symptom checks.
      */
     match /symptom_checks/{symptomCheckId} {
       allow get, list: if true;
-      allow create: if true;
+      allow create: if false;
       allow update: if false;
       allow delete: if false;
     }

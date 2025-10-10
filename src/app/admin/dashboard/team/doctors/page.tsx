@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirestore, useCollection, useMemoFirebase, useUser } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Doctor as DoctorType } from '@/app/team/_components/doctor-card';
@@ -170,7 +170,13 @@ const logoMap: { [key: string]: React.FC<{ className?: string }> } = {
 
 export default function DoctorsPage() {
     const firestore = useFirestore();
-    const doctorsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'doctors'), orderBy('order', 'asc')) : null, [firestore]);
+    const { user, isUserLoading } = useUser();
+
+    const doctorsQuery = useMemoFirebase(() => {
+        if (!firestore || isUserLoading || !user) return null;
+        return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
+    }, [firestore, user, isUserLoading]);
+
     const { data: doctorsFromDb, isLoading: isLoadingDoctors } = useCollection<Doctor>(doctorsQuery);
 
     const [doctorsList, setDoctorsList] = useState<Doctor[]>([]);
@@ -206,7 +212,10 @@ export default function DoctorsPage() {
             if (doctorsFromDb && doctorsFromDb.length > 0) {
                  setDoctorsList(doctorsFromDb);
             } else {
-                setDoctorsList(staticDoctorsData);
+                // Nur Fallback laden, wenn DB leer ist und die Abfrage abgeschlossen wurde (nicht mehr lädt)
+                if (!isLoadingDoctors) {
+                    setDoctorsList(staticDoctorsData);
+                }
             }
         }
     }, [doctorsFromDb, isLoadingDoctors]);
@@ -269,13 +278,9 @@ export default function DoctorsPage() {
     
         try {
             if (isUpdatingExistingDBEntry) {
-                // This is a real update to an existing document in Firestore
                 await updateDoctor(firestore, editingDoctorId, saveData);
                 setStatus({ type: 'success', message: 'Die Änderungen wurden erfolgreich gespeichert.' });
             } else {
-                // This covers two cases:
-                // 1. A completely new card (editingDoctorId is null)
-                // 2. Saving a fallback card for the first time (editingDoctorId is set, but isDoctorFromDB is false)
                 await addDoctor(firestore, saveData, editingDoctorId);
                 setStatus({ type: 'success', message: 'Die Arztkarte wurde erfolgreich erstellt/initial gespeichert.' });
             }
@@ -572,7 +577,7 @@ export default function DoctorsPage() {
                         </div>
 
                         <div className="mt-8 space-y-12">
-                             {isLoadingDoctors ? (
+                             {(isLoadingDoctors || isUserLoading) ? (
                                 <div className="space-y-12">
                                     {[...Array(3)].map((_, i) => (
                                         <div key={i} className="flex w-full items-center justify-center gap-4">
