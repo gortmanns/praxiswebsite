@@ -10,10 +10,10 @@ import {
     updateDoc,
     serverTimestamp
 } from 'firebase/firestore';
-import { getStorage, ref, uploadString, getDownloadURL, deleteObject, getApp } from "firebase/storage";
+import { getStorage, ref, uploadString, getDownloadURL, deleteObject } from "firebase/storage";
 import type { Doctor } from '@/app/team/_components/doctor-card';
 import { firebaseConfig } from '../config';
-import { initializeApp, getApps } from 'firebase/app';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 
 // Use Omit to create a type for new doctor data, excluding the 'id' and making specialty a string
 export type DoctorData = Omit<Doctor, 'id' | 'specialty'> & { specialty: string };

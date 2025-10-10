@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 
 // Custom Indent Extension
 const IndentExtension = Extension.create({
@@ -303,7 +304,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ isOpen, onOp
     content: initialValue,
     editorProps: {
       attributes: {
-        class: 'prose prose-sm dark:prose-invert max-w-none focus:outline-none rounded-b-md border border-input border-t-0 p-4 min-h-[250px] bg-accent/95 text-background',
+        class: cn('prose prose-sm dark:prose-invert max-w-none focus:outline-none rounded-b-md border border-input border-t-0 p-4 min-h-[250px] bg-accent/95 text-background'),
       },
     },
   });
