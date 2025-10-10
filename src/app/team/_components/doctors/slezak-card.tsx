@@ -30,8 +30,8 @@ export function SlezakCard() {
                                             .slezak-text-special { fill: #358392; font-family: 'Montserrat', sans-serif; font-weight: bold; }
                                             .slezak-text-normal { fill: #358392; font-family: 'Montserrat', sans-serif; font-weight: normal; }
                                         </style>
-                                        <text x="50%" y="20" text-anchor="middle" class="slezak-text-special" font-size="14">Dr. med. A. Slezak</text>
-                                        <text x="50%" y="40" text-anchor="middle" class="slezak-text-normal" font-size="7" font-weight="bold">Fachärztin für Neurologie</text>
+                                        <text x="50%" y="20" text-anchor="middle" class="slezak-text-special" font-size="14">Dr. med. Agnieszka Slezak</text>
+                                        <text x="50%" y="38" text-anchor="middle" class="slezak-text-normal" font-size="7.7" font-weight="bold">Fachärztin für Neurologie</text>
                                     </svg>
                                 </div>
                             </div>
