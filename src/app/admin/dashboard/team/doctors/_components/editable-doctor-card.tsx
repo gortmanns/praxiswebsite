@@ -43,18 +43,20 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     );
 };
 
-const FrontSide: React.FC<{ doctor: Doctor; onClick: () => void }> = ({ doctor, onClick }) => {
+const FrontSide: React.FC<{ doctor: Doctor; onImageClick: () => void; }> = ({ doctor, onImageClick }) => {
     const { title, name, imageUrl, imageHint, specialty, qualifications, additionalInfo, partnerLogoComponent } = doctor;
     const LogoComponent = partnerLogoComponent ? partnerLogos[partnerLogoComponent] : null;
     
     return (
         <div 
-            className="relative w-full cursor-pointer bg-card"
+            className="relative w-full bg-card"
             style={{ containerType: 'inline-size' } as React.CSSProperties}
-            onClick={onClick}
         >
             <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6">
-                <div className="relative col-span-1 w-full overflow-hidden rounded-md">
+                <div 
+                    className="relative col-span-1 w-full overflow-hidden rounded-md cursor-pointer"
+                    onClick={onImageClick}
+                >
                     <div className="relative h-full w-full aspect-[2/3] bg-muted">
                         {imageUrl ? (
                             <Image
@@ -105,11 +107,11 @@ const FrontSide: React.FC<{ doctor: Doctor; onClick: () => void }> = ({ doctor, 
 };
 
 
-const BackSide: React.FC<{ vita: string, onClick: () => void }> = ({ vita, onClick }) => {
+const BackSide: React.FC<{ vita: string, onVitaClick: () => void }> = ({ vita, onVitaClick }) => {
     return (
         <div
-            className="relative w-full cursor-pointer bg-accent/95 overflow-hidden p-6"
-            onClick={onClick}
+            className="relative w-full h-full bg-accent/95 overflow-hidden p-6 cursor-pointer"
+            onClick={onVitaClick}
         >
             <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary text-background">
                 <VitaRenderer html={vita} />
@@ -167,10 +169,10 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
             <ScalingCard>
-                <FrontSide doctor={doctor} onClick={onImageClick} />
+                <FrontSide doctor={doctor} onImageClick={onImageClick} />
             </ScalingCard>
             <ScalingCard>
-                <BackSide vita={doctor.vita || ''} onClick={onVitaClick} />
+                <BackSide vita={doctor.vita || ''} onVitaClick={onVitaClick} />
             </ScalingCard>
         </div>
     );
