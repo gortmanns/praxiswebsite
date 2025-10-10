@@ -199,18 +199,9 @@ export default function DoctorsPage() {
     
     useEffect(() => {
         if (!isLoadingDoctors) {
-            // If DB is empty or has fewer items, merge with static data.
+            // If DB is empty, use static data as a fallback.
             if (doctorsFromDb && doctorsFromDb.length > 0) {
-                 const combined = [...staticDoctorsData];
-                 doctorsFromDb.forEach(dbDoc => {
-                     const index = combined.findIndex(staticDoc => staticDoc.id === dbDoc.id);
-                     if (index !== -1) {
-                         combined[index] = dbDoc; // Replace static with DB version
-                     } else {
-                         combined.push(dbDoc); // Add new doc from DB
-                     }
-                 });
-                 setDoctorsList(combined.sort((a,b) => a.order - b.order));
+                 setDoctorsList(doctorsFromDb);
             } else {
                 setDoctorsList(staticDoctorsData);
             }
@@ -538,10 +529,7 @@ export default function DoctorsPage() {
                         <Separator className="my-12" />
 
                         <div className="space-y-4">
-                            <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Vorhandene Ärzteprofile</h3>
-                            <p className="text-sm text-muted-foreground mt-1">
-                                Verwalten Sie die hier angezeigten Karten. Die Daten werden aus Firestore geladen, falls vorhanden, andernfalls werden die statischen Daten der Website angezeigt.
-                            </p>
+                            <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Vorhandene Ärztekarten</h3>
                         </div>
 
                         <div className="mt-8 space-y-12">
