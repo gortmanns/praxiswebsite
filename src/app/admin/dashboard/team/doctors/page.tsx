@@ -3,7 +3,7 @@
 
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { collection, query, orderBy, addDoc, updateDoc, doc, setDoc } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Doctor as DoctorType } from '@/app/team/_components/doctor-card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
@@ -21,7 +21,6 @@ import { ImageLibraryDialog } from './_components/image-library-dialog';
 import { LanguageSelectDialog } from './_components/language-select-dialog';
 import { SchemmerWorniLogo, AgnieszkaSlezakLogo, OrthozentrumLogo, VascAllianceLogo } from '@/components/logos';
 import Image from 'next/image';
-import { addDoctor, updateDoctor, type DoctorData } from '@/firebase/firestore/doctors';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DoctorCard } from '@/app/team/_components/doctor-card';
 
@@ -120,7 +119,7 @@ const createDefaultDoctor = (): Omit<Doctor, 'id'> => ({
            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="m7 2 5 5"/><path d="m8 8 5 5"/><path d="M14 4-2 16"/><path d="M2 22h20"/><path d="m20 15-4-4-3 1-4-4-3 1-2-2"/></svg> Sprachen
         </button>
         <div class="flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"/><rect width="5" height="2" fill="#DD0000"/><rect width="5" height="1" fill="#000"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>
         </div>
     </div>
 </div>
@@ -190,7 +189,7 @@ export default function DoctorsPage() {
         
         const isExistingInDb = dbDoctors?.some(d => d.id === editingDoctor.id);
 
-        const dataToSave = {
+        const dataToSave: Omit<Doctor, 'id'> = {
             name: editingDoctor.name,
             order: editingDoctor.order,
             frontSideCode: editingDoctor.frontSideCode,
@@ -198,13 +197,12 @@ export default function DoctorsPage() {
         };
 
         try {
+            const docRef = doc(firestore, 'doctors', editingDoctor.id);
+            await setDoc(docRef, dataToSave, { merge: true });
+
             if (isExistingInDb) {
-                const docRef = doc(firestore, 'doctors', editingDoctor.id);
-                await updateDoc(docRef, dataToSave);
                 setStatus({ type: 'success', message: `Arztprofil für ${editingDoctor.name} erfolgreich aktualisiert.` });
             } else {
-                const docRef = doc(firestore, 'doctors', editingDoctor.id);
-                await addDoc(collection(firestore, 'doctors'), dataToSave);
                 setStatus({ type: 'success', message: `Arztprofil für ${editingDoctor.name} erfolgreich erstellt.` });
             }
             handleCancel();
@@ -433,4 +431,6 @@ export default function DoctorsPage() {
                     onSave={handleVitaSave}
                 />
             )}
-        
+        </>
+    );
+}
