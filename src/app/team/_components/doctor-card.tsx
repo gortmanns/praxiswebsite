@@ -110,12 +110,8 @@ export const DoctorCard: React.FC<Doctor> = ({
                                     )}
                                     
                                     {LogoComponent && (
-                                        <div className="relative mt-[2.5cqw] flex w-fit justify-start">
-                                            <LogoComponent className={cn(
-                                              "h-auto w-full",
-                                              name === "A. Slezak" ? "max-w-[200px]" : 
-                                              name === "P. Schemmer" ? "max-w-[400px]" : "max-w-[240px]"
-                                            )} />
+                                        <div className="relative mt-[2.5cqw] flex w-fit justify-start max-w-[400px]">
+                                            <LogoComponent className="h-auto w-full object-contain object-left" />
                                         </div>
                                     )}
                                 </div>
