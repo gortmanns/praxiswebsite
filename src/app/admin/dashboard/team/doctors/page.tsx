@@ -11,7 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info, Eye, EyeOff, Pencil, ArrowUp, ArrowDown, PlusCircle, Save, Loader2 } from 'lucide-react';
+import { Info, Eye, EyeOff, Pencil, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle, TriangleAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TextEditDialog } from './_components/text-edit-dialog';
@@ -19,21 +19,9 @@ import { ImageSourceDialog } from './_components/image-source-dialog';
 import { LogoFunctionSelectDialog } from './_components/logo-function-select-dialog';
 import { ImageLibraryDialog } from './_components/image-library-dialog';
 import { LanguageSelectDialog } from './_components/language-select-dialog';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { SchemmerWorniLogo, AgnieszkaSlezakLogo, OrthozentrumLogo, VascAllianceLogo } from '@/components/logos';
 import Image from 'next/image';
-import { addDoctor, updateDoctor, deleteDoctor } from '@/firebase/firestore/doctors';
-import { toast } from 'sonner';
+import { addDoctor, updateDoctor } from '@/firebase/firestore/doctors';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DoctorCard } from '@/app/team/_components/doctor-card';
 
@@ -191,6 +179,7 @@ export default function DoctorsPage() {
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
     const [hiddenDoctorIds, setHiddenDoctorIds] = useState<Set<string>>(new Set());
     const [isSaving, setIsSaving] = useState(false);
+    const [status, setStatus] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
     
     // Dialog states
     const [isImageSourceDialogOpen, setImageSourceDialogOpen] = useState(false);
@@ -203,6 +192,15 @@ export default function DoctorsPage() {
     const [editingField, setEditingField] = useState<{ key: keyof Doctor; label: string, index?: number } | null>(null);
     const [isLogoFunctionSelectOpen, setLogoFunctionSelectOpen] = useState(false);
     const [isLanguageSelectOpen, setLanguageSelectOpen] = useState(false);
+
+    useEffect(() => {
+        if (status && status.type !== 'info') {
+          const timer = setTimeout(() => {
+            setStatus(null);
+          }, 10000);
+          return () => clearTimeout(timer);
+        }
+      }, [status]);
     
     useEffect(() => {
         if (!isLoadingDoctors) {
@@ -230,11 +228,13 @@ export default function DoctorsPage() {
     const handleEditClick = (doctor: Doctor) => {
         setEditingDoctorId(doctor.id);
         setDoctorInEdit(doctor);
+        setStatus({ type: 'info', message: 'Klicken Sie auf ein Element in der Vorschau, um es zu bearbeiten. Mit "Abbrechen" werden alle Änderungen verworfen.' });
     };
 
     const handleCancel = () => {
         setDoctorInEdit(null);
         setEditingDoctorId(null);
+        setStatus(null);
     };
 
     const isDoctorFromDB = (id: string | null): boolean => {
@@ -244,11 +244,10 @@ export default function DoctorsPage() {
     
     const handleSave = async () => {
         if (!firestore || !doctorInEdit) return;
-
-        // Use a consistent ID, either from the editing doctor or create a new one for a new card
+    
         const docId = editingDoctorId || doctorInEdit.id || Date.now().toString();
         const isExistingInDB = isDoctorFromDB(editingDoctorId);
-
+    
         const saveData: Omit<Doctor, 'id' | 'specialty'> & {specialty: string} = {
             title: doctorInEdit.title || 'Titel',
             name: doctorInEdit.name || 'Name',
@@ -262,21 +261,21 @@ export default function DoctorsPage() {
             partnerLogoComponent: doctorInEdit.partnerLogoComponent as string | undefined,
             order: doctorInEdit.order || (doctorsList[doctorsList.length - 1]?.order || 0) + 1,
         };
-
+    
         setIsSaving(true);
+        setStatus(null);
         try {
             if (isExistingInDB && editingDoctorId) {
                 await updateDoctor(firestore, editingDoctorId, saveData);
-                toast.success("Die Änderungen wurden erfolgreich gespeichert.");
+                setStatus({ type: 'success', message: 'Die Änderungen wurden erfolgreich gespeichert.' });
             } else {
-                // For new cards or cards from static data, we create a new document
-                await addDoctor(firestore, saveData, editingDoctorId);
-                toast.success("Neue Arztkarte wurde erfolgreich angelegt.");
+                await addDoctor(firestore, saveData, editingDoctorId ?? undefined);
+                setStatus({ type: 'success', message: 'Die neue Arztkarte wurde erfolgreich angelegt.' });
             }
             handleCancel();
         } catch (error) {
             console.error("Error saving doctor: ", error);
-            toast.error("Die Daten konnten nicht gespeichert werden.");
+            setStatus({ type: 'error', message: 'Die Daten konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.' });
         } finally {
             setIsSaving(false);
         }
@@ -462,6 +461,49 @@ export default function DoctorsPage() {
         });
     };
     
+    const getStatusAlert = () => {
+        const defaultInfo = { type: 'info', message: 'Klicken Sie auf ein Element in der Vorschau, um es zu bearbeiten. Mit "Abbrechen" werden alle Änderungen verworfen.' };
+        const currentStatus = status || (doctorInEdit ? defaultInfo : null);
+    
+        if (!currentStatus) return <div className="min-h-[76px] mt-4"></div>;
+    
+        const commonClasses = "border-2";
+        let variant: 'default' | 'destructive' | 'info' = 'default';
+        let icon = <CheckCircle className="h-4 w-4" />;
+        let title = "Erfolg";
+        let alertClasses = "border-green-500 text-green-800 bg-green-50";
+    
+        switch(currentStatus.type) {
+            case 'error':
+                variant = 'destructive';
+                icon = <AlertCircle className="h-4 w-4" />;
+                title = "Fehler";
+                alertClasses = "border-red-500 text-red-800 bg-red-50";
+                break;
+            case 'info':
+                variant = 'info';
+                icon = <Info className="h-4 w-4" />;
+                title = "Information";
+                alertClasses = "border-blue-500 text-blue-800 bg-blue-50";
+                break;
+            case 'success':
+                 // Already default
+                break;
+        }
+        
+        return (
+            <div className="min-h-[76px] mt-4">
+                <Alert variant={variant} className={cn(commonClasses, alertClasses)}>
+                    {icon}
+                    <AlertTitle>{title}</AlertTitle>
+                    <AlertDescription>
+                        {currentStatus.message}
+                    </AlertDescription>
+                </Alert>
+            </div>
+        );
+    };
+    
     
     return (
         <>
@@ -479,33 +521,38 @@ export default function DoctorsPage() {
                         <div className="space-y-4">
                              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                                 <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Live-Vorschau & Bearbeitung</h3>
-                                <div className="flex gap-2">
-                                    <Button onClick={handleSave} disabled={!doctorInEdit || isSaving}>
-                                        {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-                                        {isDoctorFromDB(editingDoctorId) ? 'Änderungen speichern' : 'Als neue Karte anlegen'}
-                                    </Button>
-                                    
-                                    <Button variant="outline" onClick={handleCancel} disabled={!doctorInEdit || isSaving}>
-                                        Abbrechen
-                                    </Button>
+                                {doctorInEdit && (
+                                    <div className="flex gap-2">
+                                        <Button onClick={handleSave} disabled={isSaving}>
+                                            {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                                            {isDoctorFromDB(editingDoctorId) ? 'Änderungen speichern' : 'Als neue Karte anlegen'}
+                                        </Button>
+                                        <Button variant="outline" onClick={handleCancel} disabled={isSaving}>
+                                            Abbrechen
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+                            {doctorInEdit ? (
+                                <div className="rounded-lg bg-muted p-4 md:p-6">
+                                    <EditableDoctorCard 
+                                        doctor={displayedDoctorInEdit as Doctor}
+                                        onImageClick={handleImageClick}
+                                        onVitaClick={handleVitaClick}
+                                        onTextClick={handleTextEditClick}
+                                        onLanguagesClick={handleLanguagesClick}
+                                    />
+                                    {getStatusAlert()}
                                 </div>
-                            </div>
-                            <div className="rounded-lg bg-muted p-4 md:p-6">
-                                <EditableDoctorCard 
-                                    doctor={displayedDoctorInEdit as Doctor}
-                                    onImageClick={handleImageClick}
-                                    onVitaClick={handleVitaClick}
-                                    onTextClick={handleTextEditClick}
-                                    onLanguagesClick={handleLanguagesClick}
-                                />
-                                <Alert variant="info" className="mt-4 border-2 border-blue-500 text-blue-800 bg-blue-50">
-                                    <Info className="h-4 w-4" />
-                                    <AlertTitle>Hinweis</AlertTitle>
-                                    <AlertDescription>
-                                        Klicken Sie auf ein Element in der Vorschau, um es zu bearbeiten. Mit "Abbrechen" werden alle Änderungen verworfen.
-                                    </AlertDescription>
-                                </Alert>
-                            </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted p-12 text-center">
+                                    <h4 className="text-lg font-semibold text-muted-foreground">Keine Karte zum Bearbeiten ausgewählt.</h4>
+                                    <p className="text-sm text-muted-foreground">Wählen Sie unten eine Karte zur Bearbeitung aus oder fügen Sie eine neue hinzu.</p>
+                                    <Button onClick={() => ensureEditingState()}>
+                                        <PlusCircle className="mr-2 h-4 w-4" /> Neue Karte erstellen
+                                     </Button>
+                                </div>
+                            )}
                         </div>
 
                         <Separator className="my-12" />
@@ -554,7 +601,7 @@ export default function DoctorsPage() {
                                                     {isHidden ? <Eye className="mr-2 h-4 w-4" /> : <EyeOff className="mr-2 h-4 w-4" />}
                                                     {isHidden ? 'Einblenden' : 'Ausblenden'}
                                                 </Button>
-                                                <Button variant="default" size="sm" onClick={() => handleEditClick(doctor)} disabled={isEditing || isSaving} className="justify-start">
+                                                <Button variant="default" size="sm" onClick={() => handleEditClick(doctor)} disabled={isEditing || isSaving || !!editingDoctorId} className="justify-start">
                                                     <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
                                                 </Button>
                                             </div>
