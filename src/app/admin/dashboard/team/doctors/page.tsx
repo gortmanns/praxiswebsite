@@ -112,7 +112,6 @@ export default function DoctorsPage() {
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
     const [isVitaEditorOpen, setVitaEditorOpen] = useState(false);
     
-    // Wir verwenden einen Memo-Hook, um sicherzustellen, dass die Kartendaten stabil sind, solange sie nicht explizit geändert werden
     const doctorsList = useMemo(() => staticDoctorsData.sort((a, b) => a.order - b.order), []);
 
     const handleImageClick = () => {
@@ -139,8 +138,6 @@ export default function DoctorsPage() {
         setImageEditorOpen(false);
         setImageToCrop(null);
     };
-
-
 
     const handleVitaClick = () => {
         if (!editingDoctorId) return;
@@ -217,30 +214,31 @@ export default function DoctorsPage() {
                                 const isHidden = hiddenDoctorIds.has(doctor.id);
 
                                 return (
-                                    <div key={doctor.id} className="flex flex-col items-center justify-center gap-4">
-                                        <div className={cn("relative flex w-full max-w-[1000px] justify-center p-2", isHidden && "grayscale opacity-50")}>
+                                    <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
+                                        <div className="flex w-36 flex-col gap-2">
+                                            <Button variant="outline" size="sm" onClick={() => {}} disabled={isEditing} className="justify-start">
+                                                <ArrowUp className="mr-2 h-4 w-4" /> Nach oben
+                                            </Button>
+                                            <Button variant="outline" size="sm" onClick={() => {}} disabled={isEditing} className="justify-start">
+                                                <ArrowDown className="mr-2 h-4 w-4" /> Nach unten
+                                            </Button>
+                                             <Separator className="my-2" />
+                                            <Button variant="outline" size="sm" onClick={() => toggleHideDoctor(doctor.id)} disabled={isEditing} className="justify-start">
+                                                {isHidden ? <Eye className="mr-2 h-4 w-4" /> : <EyeOff className="mr-2 h-4 w-4" />}
+                                                {isHidden ? 'Einblenden' : 'Ausblenden'}
+                                            </Button>
+                                            <Button variant="default" size="sm" onClick={() => handleEditClick(doctor)} disabled={isEditing} className="justify-start">
+                                                <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                                            </Button>
+                                        </div>
+
+                                        <div className={cn("relative flex-1 w-full max-w-[1000px] p-2", isHidden && "grayscale opacity-50")}>
                                             <CardComponent />
                                             {isEditing && (
                                                 <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/90">
                                                     <span className="text-2xl font-bold text-primary-foreground">In Bearbeitung</span>
                                                 </div>
                                             )}
-                                        </div>
-                                        <div className="flex h-10 w-full max-w-[1000px] items-center justify-start gap-2 rounded-b-lg border border-t-0 bg-muted px-4">
-                                            <Button variant="ghost" size="sm" onClick={() => {}} disabled={isEditing}>
-                                                <ArrowUp className="mr-2 h-4 w-4" /> Nach oben
-                                            </Button>
-                                            <Button variant="ghost" size="sm" onClick={() => {}} disabled={isEditing}>
-                                                <ArrowDown className="mr-2 h-4 w-4" /> Nach unten
-                                            </Button>
-                                            <div className="flex-grow" />
-                                            <Button variant="ghost" size="sm" onClick={() => toggleHideDoctor(doctor.id)} disabled={isEditing}>
-                                                {isHidden ? <Eye className="mr-2 h-4 w-4" /> : <EyeOff className="mr-2 h-4 w-4" />}
-                                                {isHidden ? 'Einblenden' : 'Ausblenden'}
-                                            </Button>
-                                            <Button variant="outline" size="sm" onClick={() => handleEditClick(doctor)} disabled={isEditing}>
-                                                <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                                            </Button>
                                         </div>
                                     </div>
                                 );
