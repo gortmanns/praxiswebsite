@@ -14,13 +14,13 @@ export function SchemmerCard() {
                     .vita-content { color: hsl(var(--background)); }
                     .vita-content p { margin: 0; }
                 </style>
-                <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
+                <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline border-2 border-green-500">
                     <div class="flex h-full w-full items-start">
-                        <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
+                        <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md border-2 border-red-500">
                             <img src="/images/team/Prof.Schemmer.jpg" alt="Portrait von P. Schemmer" data-ai-hint="man portrait" class="w-full h-full object-contain" />
                         </div>
-                        <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
-                            <div>
+                        <div class="flex-grow flex flex-col justify-center ml-6 h-full relative border-2 border-yellow-400">
+                             <div class="border-2 border-blue-500">
                                 <p class="text-2xl font-bold text-primary">Prof. Dr. med. Dr. h. c.</p>
                                 <h3 class="text-5xl font-bold text-primary my-2">P. Schemmer</h3>
                                 <p class="text-xl font-bold">Facharzt für Chirurgie</p>

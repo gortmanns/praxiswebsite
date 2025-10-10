@@ -19,13 +19,13 @@ export function OrtmannsCard() {
                     .vita-content .is-small { font-size: 0.8em; font-weight: normal; }
                     .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }
                 </style>
-                <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
+                <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline border-2 border-green-500">
                     <div class="flex h-full w-full items-start">
-                        <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
+                        <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md border-2 border-red-500">
                             <img src="/images/team/Ortmanns.jpg" alt="Portrait von G. Ortmanns" data-ai-hint="man portrait" class="h-full w-full object-contain" />
                         </div>
-                        <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
-                            <div>
+                        <div class="flex-grow flex flex-col justify-center ml-6 h-full relative border-2 border-yellow-400">
+                            <div class="border-2 border-blue-500">
                                 <p class="text-2xl font-bold text-primary">Dipl. med.</p>
                                 <h3 class="text-5xl font-bold text-primary my-2">G. Ortmanns</h3>
                                 <p class="text-xl font-bold">Praktischer Arzt</p>

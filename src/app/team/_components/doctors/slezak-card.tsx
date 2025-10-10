@@ -14,18 +14,18 @@ export function SlezakCard() {
                     .vita-content { color: hsl(var(--background)); }
                     .vita-content p { margin: 0; }
                 </style>
-                <div class="group relative max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
+                <div class="group relative max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline border-2 border-green-500">
                     <div class="flex h-full w-full items-start">
-                        <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
+                        <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md border-2 border-red-500">
                             <img src="/images/team/Dr.Slezak.jpg" alt="Portrait von A. Slezak" data-ai-hint="woman portrait" class="h-full w-full object-contain" />
                         </div>
-                        <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
-                            <div>
+                        <div class="flex-grow flex flex-col justify-center ml-6 h-full relative border-2 border-yellow-400">
+                            <div class="border-2 border-blue-500">
                                 <p class="text-2xl font-bold text-primary">Dr. med.</p>
                                 <h3 class="text-5xl font-bold text-primary my-2">A. Slezak</h3>
                                 <p class="text-xl font-bold">Fachärztin für Neurologie</p>
                                 <div class="mt-6">
-                                  <div>
+                                  <div class="flex">
                                     <svg
                                         viewBox="0 0 170 35"
                                         xmlns="http://www.w3.org/2000/svg"
