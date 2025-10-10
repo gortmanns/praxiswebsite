@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useCallback } from 'react';
@@ -453,7 +454,7 @@ export default function DoctorsPage() {
                                     <Info className="h-4 w-4" />
                                     <AlertTitle>Hinweis</AlertTitle>
                                     <AlertDescription>
-                                        Klicken Sie auf ein Element in der Vorschau, um es zu verändern. Mit "Abbrechen" werden alle Änderungen verworfen.
+                                        Klicken Sie auf ein Element in der Vorschau, um es zu bearbeiten. Mit "Abbrechen" werden alle Änderungen verworfen.
                                     </AlertDescription>
                                 </Alert>
                             </div>
