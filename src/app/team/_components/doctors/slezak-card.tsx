@@ -10,10 +10,10 @@ export function SlezakCard() {
             order={5}
             name="A. Slezak"
             frontSideCode={`
-                <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm">
+                <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border-2 border-red-500">
                     <div class="absolute inset-0 flex items-center justify-start bg-card text-card-foreground p-6">
-                        <div class="relative w-[330px] h-full overflow-hidden rounded-md aspect-[2/3]">
-                            <img src="/images/team/Dr.Slezak.jpg" alt="Portrait von A. Slezak" data-ai-hint="woman portrait" class="w-full h-full object-cover" />
+                        <div class="relative w-[330px] h-full overflow-hidden rounded-md aspect-[2/3] border-2 border-green-500">
+                            <img src="/images/team/Dr.Slezak.jpg" alt="Portrait von A. Slezak" data-ai-hint="woman portrait" class="w-full h-full object-contain border-2 border-blue-500" />
                         </div>
                         <div class="ml-6 flex flex-col justify-between text-left h-full flex-grow">
                             <div>
@@ -21,7 +21,7 @@ export function SlezakCard() {
                                 <h3 class="text-6xl font-bold text-primary my-2">A. Slezak</h3>
                                 <p class="text-3xl font-bold">Fachärztin für Neurologie</p>
                             </div>
-                            <div class="mt-4">
+                            <div class="flex-grow flex items-center">
                                 <svg
                                     viewBox="0 0 170 35"
                                     xmlns="http://www.w3.org/2000/svg"
