@@ -1,32 +1,47 @@
+
 'use client';
 
 import { DoctorCard } from '../doctor-card';
-import { SchemmerWorniLogo } from '@/components/logos/schemmer-worni-logo';
+import Image from 'next/image';
 
 export function RosenovTempCard() {
     return (
         <DoctorCard
-            id="schemmer"
-            title="Prof. Dr. med. Dr. h. c."
-            name="P. Schemmer"
-            imageUrl="/images/team/Prof.Schemmer.jpg"
+            id="rosenov"
+            title="Prof. Dr. med."
+            name="A. Rosenov"
+            imageUrl="/images/team/Dr.Rosenov.jpg"
             imageHint="man portrait"
-            specialty="Facharzt für Chirurgie"
+            specialty="Facharzt für Angiologie"
             qualifications={[]}
             vita={`
                 <p>
-                    Prof. Schemmer war von 2013 bis 2022 Direktor der Universitätsklinik für Viszerale Transplantationschirurgie am Inselspital in Bern.
+                    Prof. Rosenov hat sich bereit erklärt, ab Mai 2024 die Patienten mit Krampfaderleiden im Praxiszentrum im Ring zu behandeln.
                 </p>
                 <br>
                 <p>
-                    Seit 2022 ist er Chefarzt für Chirurgie an der Universitätsklinik für Allgemein-, Viszeral- und Transplantationschirurgie in Graz.
+                    Er wird regelmässig, i.d.R. am Montagnachmittag, eine Sprechstunde im Praxiszentrum anbieten.
                 </p>
                 <br>
-                <p>
-                    Seine Patienten in der Schweiz behandelt er weiterhin, neu aber wohnortnah und unkompliziert auch hier im Praxiszentrum im Ring, wo er eine regelmässige Sprechstunde abhält.
-                </p>
+                <h4>Curriculum Vitae</h4>
+                <ul>
+                    <li><span style="color: var(--color-tiptap-blue);">Seit 2004</span> Chefarzt Herzchirurgie, Spital Triemli, Zürich</li>
+                    <li><span style="color: var(--color-tiptap-blue);">2002</span> Habilitation und Ernennung zum Privatdozenten an der Universität Ulm</li>
+                    <li><span style="color: var(--color-tiptap-blue);">1997-2004</span> Oberarzt an der Klinik für Herz-, Thorax- und Gefässchirurgie, Ulm</li>
+                    <li><span style="color: var(--color-tiptap-blue);">1991-1996</span> Facharztausbildung in der Herzchirurgie an der Medizinischen Hochschule Hannover</li>
+                    <li><span style="color: var(--color-tiptap-blue);">1990</span> Promotion zum Dr. med.</li>
+                    <li><span style="color: var(--color-tiptap-blue);">1882-1989</span> Studium der Humanmedizin an der Westfälischen Wilhelms-Universität in Münster</li>
+                </ul>
             `}
-            partnerLogoComponent={SchemmerWorniLogo}
-        />
+        >
+            <Image
+                src="/images/VASC-Alliance-Logo.png"
+                alt="VASC Alliance Logo"
+                width={800}
+                height={268}
+                className="h-auto w-full max-w-[400px] object-contain"
+                data-ai-hint="partner logo"
+            />
+        </DoctorCard>
     );
 }
