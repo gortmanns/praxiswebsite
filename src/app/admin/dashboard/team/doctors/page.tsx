@@ -207,7 +207,7 @@ export default function DoctorsPage() {
             return;
         };
 
-        if (!doctorInEdit.name || doctorInedit.name.trim() === '' || doctorInEdit.name === 'Name') {
+        if (!doctorInEdit.name || doctorInEdit.name.trim() === '' || doctorInEdit.name === 'Name') {
             toast.error('Speichern nicht möglich', {
                 description: 'Bitte geben Sie einen Namen für den Arzt an, bevor Sie speichern.'
             });
@@ -544,6 +544,7 @@ export default function DoctorsPage() {
                                             <div className={cn("relative flex-1 w-full max-w-[1000px] p-2", isHidden && "grayscale opacity-50")}>
                                                 <DoctorCard
                                                     {...doctor}
+                                                    qualifications={doctor.qualifications || []}
                                                     partnerLogoComponent={partnerLogo}
                                                 />
                                                 {isEditing && (
