@@ -74,13 +74,10 @@ export async function updateDoctor(firestore: Firestore, id: string, data: Parti
     const app = getFirebaseApp();
     const storage = getStorage(app);
     const doctorRef = doc(firestore, 'doctors', id);
-
-    const updateData: { [key: string]: any } = { ...data, updatedAt: serverTimestamp() };
     const oldDocSnap = await getDoc(doctorRef);
 
     if (!oldDocSnap.exists()) {
-        // If the document doesn't exist, we can treat this as an 'add' operation.
-        // This makes the function more robust.
+        // If the document doesn't exist, we must treat this as an 'add' operation.
         const addData = {
             title: data.title || '',
             name: data.name || '',
@@ -96,6 +93,8 @@ export async function updateDoctor(firestore: Firestore, id: string, data: Parti
         await addDoctor(firestore, addData, id);
         return;
     }
+    
+    const updateData: { [key: string]: any } = { ...data, updatedAt: serverTimestamp() };
     const oldData = oldDocSnap.data() as Doctor;
 
     // Handle portrait image upload
