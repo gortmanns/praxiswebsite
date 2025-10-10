@@ -32,8 +32,8 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
 
     return (
         <div
-        className="prose prose-sm dark:prose-invert max-w-none prose-vita-colors"
-        dangerouslySetInnerHTML={sanitizedHtml}
+            className="vita-content text-sm"
+            dangerouslySetInnerHTML={sanitizedHtml}
         />
     );
 };

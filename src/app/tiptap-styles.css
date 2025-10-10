@@ -1,6 +1,24 @@
 
-.tiptap p {
+.tiptap p,
+.vita-content p {
     margin: 0;
+}
+
+.vita-content ul {
+    list-style-type: disc;
+    padding-left: 2rem;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.vita-content li {
+    margin-bottom: 0.5em;
+}
+
+.vita-content h4 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1em;
 }
 
 .tiptap p.is-editor-empty:first-child::before {
@@ -11,14 +29,15 @@
   pointer-events: none;
 }
 
-.tiptap .is-small {
+.tiptap .is-small,
+.vita-content .is-small {
     font-size: 0.8em;
     font-weight: normal;
 }
 
 /* Fix for list marker colors inside the editor */
-.tiptap .prose-invert ul > li::marker,
-.tiptap .prose-invert ol > li::marker {
+.tiptap ul > li::marker,
+.tiptap ol > li::marker {
     color: hsl(var(--background));
 }
 
@@ -30,19 +49,23 @@
     --color-tiptap-gray: hsl(209 15% 65%);
 }
 
-.tiptap strong {
+.tiptap strong,
+.vita-content strong {
     color: inherit; /* Inherit color so it doesn't override span colors */
     font-weight: bold;
 }
 
-.tiptap span[style*="color: var(--color-tiptap-white)"] {
+.tiptap span[style*="color: var(--color-tiptap-white)"],
+.vita-content span[style*="color: var(--color-tiptap-white)"] {
     color: var(--color-tiptap-white);
 }
 
-.tiptap span[style*="color: var(--color-tiptap-blue)"] {
+.tiptap span[style*="color: var(--color-tiptap-blue)"],
+.vita-content span[style*="color: var(--color-tiptap-blue)"] {
     color: var(--color-tiptap-blue) !important; /* Use !important to ensure override */
 }
 
-.tiptap span[style*="color: var(--color-tiptap-gray)"] {
+.tiptap span[style*="color: var(--color-tiptap-gray)"],
+.vita-content span[style*="color: var(--color-tiptap-gray)"] {
     color: var(--color-tiptap-gray);
 }
