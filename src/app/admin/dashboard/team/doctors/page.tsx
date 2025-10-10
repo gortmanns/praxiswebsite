@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { useFirestore, useUser } from '@/firebase';
+import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Doctor as DoctorType } from '@/app/team/_components/doctor-card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info, Eye, EyeOff, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle, TestTube } from 'lucide-react';
+import { Info, Eye, EyeOff, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TextEditDialog } from './_components/text-edit-dialog';
@@ -23,7 +23,7 @@ import Image from 'next/image';
 import { addDoctor, updateDoctor } from '@/firebase/firestore/doctors';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DoctorCard } from '@/app/team/_components/doctor-card';
-import { addDoc, collection, serverTimestamp, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy } from 'firebase/firestore';
 import { toast } from 'sonner';
 
 // Re-exporting Doctor type to avoid confusion with Doctor component
@@ -70,84 +70,6 @@ const allProjectImages = [
 ];
 const uniqueProjectImages = [...new Set(allProjectImages)];
 
-// Fallback data from original components
-const staticDoctorsData: Doctor[] = [
-    {
-        id: "ortmanns",
-        order: 1,
-        title: "Dipl. med.",
-        name: "G. Ortmanns",
-        imageUrl: "/images/team/Ortmanns.jpg",
-        imageHint: "man portrait",
-        specialty: "Praktischer Arzt",
-        languages: ['de', 'en'],
-        qualifications: [
-            'Master of Public Health (UNSW)',
-            'Master of Health Management (UNSW)',
-        ],
-        vita: `<h4>Curriculum Vitae</h4><ul><li><span style="color: var(--color-tiptap-blue);">2022</span> Niederlassung als Hausarzt im Praxiszentrum im Ring</li><li><span style="color: var(--color-tiptap-blue);">2021-22</span> Tätigkeit in der Hausarztpraxis Dr. G. Gyger, Thun</li><li><span style="color: var(--color-tiptap-blue);">2019-21</span> Oberarzt Innere Medizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2018</span> Oberarzt Innere Medizin, Spital Interlaken</li><li><span style="color: var(--color-tiptap-blue);">2017</span> Assistenzarzt Kardiologie, Inselspital Bern</li><li><span style="color: var(--color-tiptap-blue);">2016-17</span> Assistenzarzt Pneumologie, Inselspital Bern</li><li><span style="color: var(--color-tiptap-blue);">2015-16</span> Assistenzarzt Innere Medizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2015</span> Erlangung des Facharzttitels für Innere Medizin</li><li><span style="color: var(--color-tiptap-blue);">2014-15</span> Assistenzarzt Intensivmedizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2013-14</span> Assistenzarzt Innere Medizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2011-13</span> Assistenzarzt Innere Medizin, Spital Interlaken</li><li><span style="color: var(--color-tiptap-blue);">2011</span> Promotion zum Dr. med.</li><li><span style="color: var(--color-tiptap-blue);">2010-11</span> Assistenzarzt Chirurgie, Klinik für Viszerale Chirurgie und Medizin, Inselspital Bern</li><li><span style="color: var(--color-tiptap-blue);">2009</span> Staatsexamen</li><li><span style="color: var(--color-tiptap-blue);">2003-09</span> Studium der Humanmedizin an der Universität zu Köln</li></ul><br><p class="is-small">Mitgliedschaften:<br>Verbindung der Schweizer Ärztinnen und Ärzte (FMH)<br>Ärztegesellschaft des Kantons Bern (BEKAG)<br>Schweizerische Gesellschaft für Ultraschall in der Medizin (SGUM)</p>`,
-        additionalInfo: "Ärztliche und administrative Leitung Praxiszentrum im Ring",
-    },
-    {
-        id: "schemmer",
-        order: 2,
-        title: "Prof. Dr. med. Dr. h. c.",
-        name: "P. Schemmer",
-        imageUrl: "/images/team/Prof.Schemmer.jpg",
-        imageHint: "man portrait",
-        specialty: "Facharzt für Chirurgie",
-        languages: ['de', 'en'],
-        qualifications: [],
-        vita: `<p>Prof. Schemmer war von 2013 bis 2022 Direktor der Universitätsklinik für Viszerale Transplantationschirurgie am Inselspital in Bern.</p><br><p>Seit 2022 ist er Chefarzt für Chirurgie an der Universitätsklinik für Allgemein-, Viszeral- und Transplantationschirurgie in Graz.</p><br><p>Seine Patienten in der Schweiz behandelt er weiterhin, neu aber wohnortnah und unkompliziert auch hier im Praxiszentrum im Ring, wo er eine regelmässige Sprechstunde abhält.</p>`,
-        partnerLogoComponent: 'SchemmerWorniLogo',
-    },
-    {
-        id: "rosenov",
-        order: 3,
-        title: "Prof. Dr. med.",
-        name: "A. Rosenov",
-        imageUrl: "/images/team/Dr.Rosenov.jpg",
-        imageHint: "man portrait",
-        specialty: "Facharzt für Angiologie",
-        languages: ['de', 'en'],
-        qualifications: [],
-        vita: `<p>Prof. Rosenov hat sich bereit erklärt, ab Mai 2024 die Patienten mit Krampfaderleiden im Praxiszentrum im Ring zu behandeln.</p><br><p>Er wird regelmässig, i.d.R. am Montagnachmittag, eine Sprechstunde im Praxiszentrum anbieten.</p><br><h4>Curriculum Vitae</h4><ul><li><span style="color: var(--color-tiptap-blue);">Seit 2004</span> Chefarzt Herzchirurgie, Spital Triemli, Zürich</li><li><span style="color: var(--color-tiptap-blue);">2002</span> Habilitation und Ernennung zum Privatdozenten an der Universität Ulm</li><li><span style="color: var(--color-tiptap-blue);">1997-2004</span> Oberarzt an der Klinik für Herz-, Thorax- und Gefässchirurgie, Ulm</li><li><span style="color: var(--color-tiptap-blue);">1991-1996</span> Facharztausbildung in der Herzchirurgie an der Medizinischen Hochschule Hannover</li><li><span style="color: var(--color-tiptap-blue);">1990</span> Promotion zum Dr. med.</li><li><span style="color: var(--color-tiptap-blue);">1882-1989</span> Studium der Humanmedizin an der Westfälischen Wilhelms-Universität in Münster</li></ul>`,
-        partnerLogoComponent: 'VascAllianceLogo',
-    },
-    {
-        id: "herschel",
-        order: 4,
-        title: "Dr. med.",
-        name: "R. Herschel",
-        imageUrl: "/images/team/Dr.Herschel.jpg",
-        imageHint: "man portrait",
-        specialty: (
-            <div>
-              <span>Facharzt Orthopädische Chirurgie und</span>
-              <br />
-              <span>Traumatologie des Bewegungsapparates</span>
-            </div>
-          ),
-        languages: ['de', 'fr', 'it', 'en', 'es'],
-        qualifications: [],
-        vita: `<p>Vita folgt in Kürze.</p>`,
-        partnerLogoComponent: 'OrthozentrumLogo',
-    },
-    {
-        id: "slezak",
-        order: 5,
-        title: "Dr. med.",
-        name: "A. Slezak",
-        imageUrl: "/images/team/Dr.Slezak.jpg",
-        imageHint: "woman portrait",
-        specialty: "Fachärztin für Neurologie",
-        languages: ['de'],
-        qualifications: [],
-        vita: `<p>Vita folgt in Kürze.</p>`,
-        partnerLogoComponent: 'AgnieszkaSlezakLogo',
-    }
-];
-
 const createDefaultDoctor = (): Omit<Doctor, 'id'> => ({
     title: 'Titel',
     name: 'Name',
@@ -174,8 +96,30 @@ export default function DoctorsPage() {
     const firestore = useFirestore();
     const { user, isUserLoading } = useUser();
 
-    // The component now exclusively uses the static data for the initial render.
-    const [doctorsList, setDoctorsList] = useState<Doctor[]>(staticDoctorsData);
+    const doctorsQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
+    }, [firestore]);
+    
+    const { data: dbDoctors, isLoading: areDoctorsLoading, error: doctorsError } = useCollection<Doctor>(doctorsQuery);
+    
+    useEffect(() => {
+        if (doctorsError) {
+            toast.error("Fehler beim Laden der Ärzteprofile.", {
+                description: doctorsError.message
+            });
+        }
+    }, [doctorsError]);
+    
+    const [doctorsList, setDoctorsList] = useState<Doctor[]>([]);
+    
+    useEffect(() => {
+        if (dbDoctors) {
+            setDoctorsList(dbDoctors as Doctor[]);
+        }
+    }, [dbDoctors]);
+
+
     const [doctorInEdit, setDoctorInEdit] = useState<Partial<Doctor> | null>(null);
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
     const [hiddenDoctorIds, setHiddenDoctorIds] = useState<Set<string>>(new Set());
@@ -266,11 +210,8 @@ export default function DoctorsPage() {
                  toast.success(`Arztprofil für ${saveData.name} erfolgreich erstellt.`);
             }
             
-            if (isUpdatingExistingDBEntry) {
-                setDoctorsList(currentList => currentList.map(d => d.id === editingDoctorId ? { ...saveData, id: editingDoctorId } : d));
-            } else {
-                 setDoctorsList(currentList => [...currentList, { ...saveData, id: editingDoctorId || new Date().toISOString() }]);
-            }
+            // The useCollection hook will automatically update the list.
+            // No manual state update needed here.
             
             handleCancel();
 
@@ -509,29 +450,6 @@ export default function DoctorsPage() {
             </div>
         );
     };
-
-    const handleTestFetch = async () => {
-        if (!firestore) {
-            toast.error("Firestore ist nicht initialisiert.");
-            return;
-        }
-        toast.info("Versuche, Test-Daten abzurufen...");
-        try {
-            const testCollectionRef = collection(firestore, 'test');
-            const querySnapshot = await getDocs(testCollectionRef);
-            if (querySnapshot.empty) {
-                toast.warning("Test-Kollektion ist leer, aber Abruf war erfolgreich.");
-            } else {
-                const firstDoc = querySnapshot.docs[0];
-                const docData = firstDoc.data();
-                toast.success(`Abruf erfolgreich! Inhalt: ${JSON.stringify(docData)}`);
-            }
-        } catch (error: any) {
-            console.error("Fehler beim Test-Abrufen: ", error);
-            toast.error(`Test-Abruf fehlgeschlagen: ${error.message}`);
-        }
-    };
-    
     
     return (
         <>
@@ -545,10 +463,6 @@ export default function DoctorsPage() {
                                     Hier können Sie die Profile der Ärzte bearbeiten.
                                 </CardDescription>
                             </div>
-                             <Button onClick={handleTestFetch} variant="outline">
-                                <TestTube className="mr-2 h-4 w-4" />
-                                Test-Abrufen
-                            </Button>
                         </div>
                     </CardHeader>
                     <CardContent>
@@ -596,7 +510,7 @@ export default function DoctorsPage() {
                         </div>
 
                         <div className="mt-8 space-y-12">
-                             { isUserLoading ? (
+                             { areDoctorsLoading || isUserLoading ? (
                                 <div className="space-y-12">
                                     {[...Array(3)].map((_, i) => (
                                         <div key={i} className="flex w-full items-center justify-center gap-4">
@@ -723,4 +637,3 @@ export default function DoctorsPage() {
         </>
     );
 }
-

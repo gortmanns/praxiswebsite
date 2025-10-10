@@ -2,60 +2,71 @@
  * @fileoverview Firestore Security Rules for Praxis Online.
  *
  * Core Philosophy:
- * This ruleset prioritizes a secure-by-default posture, focusing on explicit authorization for all write operations.
- * Read access is generally open unless specifically restricted.
+ * This ruleset prioritizes security by enforcing strict separation of concerns and explicit access controls.
+ * Doctor profiles are publicly readable, while contact form submissions and symptom checks are restricted to prevent unauthorized modification.
  *
  * Data Structure:
- * The Firestore database consists of three top-level collections:
- * - /doctor_profiles/{doctorProfileId}: Stores public information about doctors.
+ * The database consists of three top-level collections:
+ * - /doctor_profiles/{doctorProfileId}: Stores information about doctors.
  * - /contact_form_submissions/{contactFormSubmissionId}: Stores contact form submissions.
  * - /symptom_checks/{symptomCheckId}: Stores symptom check records.
  *
  * Key Security Decisions:
- * - Doctor profiles are publicly readable to facilitate discovery. Write access is restricted.
- * - Contact form submissions are publicly writable but should ideally be restricted to prevent spamming. In this prototyping phase, write access is open.
- * - Symptom checks are publicly readable and writable. In a production environment, you should restrict write access based on user authentication.
- * - No user listing is allowed to protect user privacy.
- * - Data shape validation is relaxed in this prototyping phase to allow for rapid iteration.
+ * - Doctor profiles are publicly readable to allow easy access to doctor information. Write access is restricted.
+ * - Contact form submissions are restricted to read access to prevent unauthorized data manipulation.
+ * - Symptom checks have open access.
+ * - No user listing is permitted on any collection.
+ *
+ * Denormalization for Authorization:
+ *  N/A. All collections are top-level and do not require complex authorization logic based on parent documents.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows anyone to read doctor profiles, but restricts writes.
+     * @description Allows anyone to read doctor profiles, but restricts creation, updates, and deletion.
      * @path /doctor_profiles/{doctorProfileId}
-     * @allow (get, list) - Any user can read doctor profiles.
-     * @deny (create, update, delete) - No one can create, update, or delete doctor profiles through the client.
+     * @allow get, list: Anyone can read doctor profiles.
+     * @deny create, update, delete: No one can create, update, or delete doctor profiles through client-side rules.
      * @principle Public read, restricted write.
      */
     match /doctor_profiles/{doctorProfileId} {
-      allow get, list: if true;
-      allow create, update, delete: if false;
+      allow get: if true;
+      allow list: if true;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
-     * @description Allows anyone to submit the contact form.
+     * @description Restricts all access to contact form submissions to prevent unauthorized data handling.
      * @path /contact_form_submissions/{contactFormSubmissionId}
-     * @allow (create) - Any user can submit the contact form.
-     * @allow (get, list, update, delete) - No one can get, list, update, or delete contact form submissions through the client.
-     * @principle Public write, restricted read.
+     * @allow get, list: if false;
+     * @deny create, update, delete: No one can create, update, or delete contact form submissions through client-side rules.
+     * @principle No client access to submissions.
      */
     match /contact_form_submissions/{contactFormSubmissionId} {
-      allow get, list, update, delete: if false;
-      allow create: if true;
+      allow get: if false;
+      allow list: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
-     * @description Allows anyone to perform a symptom check.
+     * @description Allows anyone to read doctor profiles, but restricts creation, updates, and deletion.
      * @path /symptom_checks/{symptomCheckId}
-     * @allow (get, list, create) - Any user can get, list, and create symptom checks.
-     * @deny (update, delete) - No one can update, or delete symptom checks through the client.
-     * @principle Public read and write.
+     * @allow get, list: Anyone can read symptom checks.
+     * @deny create, update, delete: No one can create, update, or delete symptom checks through client-side rules.
+     * @principle Public read, restricted write.
      */
     match /symptom_checks/{symptomCheckId} {
-      allow get, list, create: if true;
-      allow update, delete: if false;
+      allow get: if true;
+      allow list: if true;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
   }
 }
