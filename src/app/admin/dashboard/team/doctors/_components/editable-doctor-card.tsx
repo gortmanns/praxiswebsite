@@ -148,6 +148,7 @@ const ScalingCard: React.FC<{ children: React.ReactNode, className?: string }> =
 
         return () => {
             if (wrapperRef.current) {
+                // eslint-disable-next-line react-hooks/exhaustive-deps
                 resizeObserver.unobserve(wrapperRef.current);
             }
         };
