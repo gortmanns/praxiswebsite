@@ -43,86 +43,86 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     );
 };
 
-
-export const DoctorCard: React.FC<Doctor> = ({
-    title,
-    name,
-    imageUrl,
-    imageHint,
-    specialty,
-    qualifications,
-    vita,
-    additionalInfo,
-    partnerLogoComponent: LogoComponent,
-    languages,
-}) => {
-
+const FrontSide: React.FC<Doctor> = ({ title, name, imageUrl, imageHint, specialty, qualifications, additionalInfo, partnerLogoComponent: LogoComponent, languages }) => {
     return (
-        <div className="group relative w-full max-w-[1000px] overflow-hidden rounded-lg shadow-sm">
-            <Card className="w-full overflow-hidden">
-                <CardContent className="p-0">
-                    <div 
-                        className="relative w-full bg-card aspect-[1000/495]"
-                        style={{ 'containerType': 'inline-size' } as React.CSSProperties}
-                    >
-                        <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6">
-                            <div className="relative col-span-1 w-full overflow-hidden rounded-md">
-                                <div className="relative h-full w-full aspect-[2/3]">
-                                    {imageUrl ? (
-                                        <Image
-                                            src={imageUrl}
-                                            alt={`Portrait von ${name}`}
-                                            data-ai-hint={imageHint}
-                                            fill
-                                            className="object-cover"
-                                        />
-                                    ) : (
-                                        <div className="flex h-full w-full items-center justify-center bg-muted">
-                                            <User className="h-1/2 w-1/2 text-muted-foreground" />
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="col-span-2 flex flex-col justify-center">
-                                <div className="text-left text-foreground/80">
-                                    <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
-                                    <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
-                                      {name}
-                                    </h4>
-                                    <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
-                                        <div className="font-bold">{specialty}</div>
-                                        {(qualifications || []).map((q, i) => <p key={i}>{q}</p>)}
+        <Card className="w-full overflow-hidden h-full">
+            <CardContent className="p-0 h-full">
+                <div 
+                    className="relative w-full bg-card h-full"
+                    style={{ 'containerType': 'inline-size' } as React.CSSProperties}
+                >
+                    <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6">
+                        <div className="relative col-span-1 w-full overflow-hidden rounded-md">
+                            <div className="relative h-full w-full aspect-[2/3]">
+                                {imageUrl ? (
+                                    <Image
+                                        src={imageUrl}
+                                        alt={`Portrait von ${name}`}
+                                        data-ai-hint={imageHint}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                ) : (
+                                    <div className="flex h-full w-full items-center justify-center bg-muted">
+                                        <User className="h-1/2 w-1/2 text-muted-foreground" />
                                     </div>
-                                    
-                                     <div className="mt-[2.5cqw]">
-                                        {LogoComponent ? (
-                                             <div className="relative flex h-auto max-h-28 w-full max-w-[400px] items-center justify-start">
-                                                {typeof LogoComponent === 'function' ? (
-                                                    <LogoComponent className="h-full w-full object-contain object-left" />
-                                                ) : typeof LogoComponent === 'string' && (LogoComponent.startsWith('/images') || LogoComponent.startsWith('data:image')) ? (
-                                                    <Image src={LogoComponent} alt="Partner Logo" width={400} height={100} className="h-auto w-full object-contain object-left" />
-                                                ) : null}
-                                             </div>
-                                        ) : additionalInfo ? (
-                                            <p className="text-[clamp(0.6rem,1.6cqw,1rem)] italic">
-                                                {additionalInfo}
-                                            </p>
-                                        ) : null}
-                                    </div>
-                                </div>
+                                )}
                             </div>
                         </div>
-                        <div className="absolute bottom-6 right-6">
-                            <LanguageFlags languages={languages} />
+                        <div className="col-span-2 flex flex-col justify-center">
+                            <div className="text-left text-foreground/80">
+                                <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
+                                <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
+                                    {name}
+                                </h4>
+                                <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
+                                    <div className="font-bold">{specialty}</div>
+                                    {(qualifications || []).map((q, i) => <p key={i}>{q}</p>)}
+                                </div>
+                                
+                                <div className="mt-[2.5cqw]">
+                                    {LogoComponent ? (
+                                        <div className="relative flex h-auto max-h-28 w-full max-w-[400px] items-center justify-start">
+                                            {typeof LogoComponent === 'function' ? (
+                                                <LogoComponent className="h-full w-full object-contain object-left" />
+                                            ) : typeof LogoComponent === 'string' && (LogoComponent.startsWith('/images') || LogoComponent.startsWith('data:image')) ? (
+                                                <Image src={LogoComponent} alt="Partner Logo" width={400} height={100} className="h-auto w-full object-contain object-left" />
+                                            ) : null}
+                                        </div>
+                                    ) : additionalInfo ? (
+                                        <p className="text-[clamp(0.6rem,1.6cqw,1rem)] italic">
+                                            {additionalInfo}
+                                        </p>
+                                    ) : null}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </CardContent>
-            </Card>
-            <div className="flip-card-back absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                 <div className="h-full overflow-y-auto flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
-                    <VitaRenderer html={vita} />
-                 </div>
+                    <div className="absolute bottom-6 right-6">
+                        <LanguageFlags languages={languages} />
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+};
+
+const BackSide: React.FC<{ vita: string }> = ({ vita }) => {
+    return (
+        <div className="flip-card-back absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
+            <div className="h-full overflow-y-auto flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
+                <VitaRenderer html={vita} />
             </div>
+        </div>
+    );
+};
+
+
+export const DoctorCard: React.FC<Doctor> = (props) => {
+    return (
+        <div className="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm">
+            <FrontSide {...props} />
+            <BackSide vita={props.vita} />
         </div>
     );
 };
