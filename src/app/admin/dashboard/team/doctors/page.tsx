@@ -292,7 +292,7 @@ export default function DoctorsPage() {
                             </div>
                             {editingDoctor ? (
                                 <div className="rounded-lg bg-muted p-4 md:p-6">
-                                    <div className="mx-auto w-full max-w-[1000px] p-2">
+                                     <div className="mx-auto w-full max-w-[1000px] p-2">
                                         <EditableDoctorCard 
                                             doctor={editingDoctor}
                                             onVitaClick={handleVitaClick}
@@ -397,3 +397,5 @@ export default function DoctorsPage() {
         </>
     );
 }
+
+    
