@@ -9,7 +9,7 @@ export function VascAllianceLogo({ className }: { className?: string }) {
         alt="VASC Alliance Logo"
         width={495}
         height={165}
-        className={cn("object-contain object-left", className)}
+        className={cn("h-auto w-full object-contain object-left", className)}
         data-ai-hint="partner logo"
     />
   );
