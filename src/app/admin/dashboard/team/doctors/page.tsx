@@ -26,13 +26,21 @@ import { slezakProps } from '@/app/team/_components/doctors/slezak-card';
 export type Doctor = DoctorType;
 
 // This is the stable, static list of all doctors.
-const staticDoctorsData: Doctor[] = [
+const staticDoctorsData: Omit<Doctor, 'frontSideCode' | 'backSideCode'>[] = [
     ortmannsProps,
     schemmerProps,
     rosenovProps,
     herschelProps,
     slezakProps,
 ].sort((a, b) => a.order - b.order);
+
+const initialDoctorCodes: Record<string, { frontSideCode: string; backSideCode: string; }> = {
+    ortmanns: { frontSideCode: ortmannsProps.frontSideCode, backSideCode: ortmannsProps.backSideCode },
+    schemmer: { frontSideCode: '', backSideCode: '' }, // placeholder
+    rosenov: { frontSideCode: '', backSideCode: '' }, // placeholder
+    herschel: { frontSideCode: '', backSideCode: '' }, // placeholder
+    slezak: { frontSideCode: '', backSideCode: '' }, // placeholder
+};
 
 
 const createDefaultDoctor = (): Omit<Doctor, 'id'> => ({
@@ -94,20 +102,16 @@ export default function DoctorsPage() {
     const doctorsList = useMemo(() => {
         const dbDataMap = new Map(dbDoctors?.map(d => [d.id, d]));
         
-        const mergedList = staticDoctorsData.map(staticDoctor => {
+        return staticDoctorsData.map(staticDoctor => {
             const dbData = dbDataMap.get(staticDoctor.id);
-            // If data exists in the DB, use it, otherwise use the static data.
-            return dbData ? { ...staticDoctor, ...dbData } : staticDoctor;
-        });
-
-        // Add doctors that are in DB but not in static list (newly created ones)
-        dbDoctors?.forEach(dbDoctor => {
-            if (!mergedList.some(d => d.id === dbDoctor.id)) {
-                mergedList.push(dbDoctor);
+            if (dbData) {
+                return { ...staticDoctor, ...dbData };
             }
-        });
-        
-        return mergedList.sort((a, b) => a.order - b.order);
+            // If no DB data, pull from the original props for initial state
+            const originalProps = [ortmannsProps, schemmerProps, rosenovProps, herschelProps, slezakProps].find(p => p.id === staticDoctor.id);
+            return originalProps || (staticDoctor as Doctor);
+        }).sort((a, b) => a.order - b.order);
+
     }, [dbDoctors]);
     
     const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
@@ -381,5 +385,3 @@ export default function DoctorsPage() {
         </>
     );
 }
-
-    
