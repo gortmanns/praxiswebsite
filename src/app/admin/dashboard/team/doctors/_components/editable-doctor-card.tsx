@@ -3,7 +3,6 @@
 
 import React from 'react';
 import type { Doctor } from '@/app/team/_components/doctor-card';
-import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import { User } from 'lucide-react';
 import DOMPurify from 'dompurify';
