@@ -2,7 +2,8 @@
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Phone, UserPlus, Clock } from 'lucide-react';
+import { Phone, UserPlus, Clock, Download } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function TerminePage() {
   return (
@@ -40,8 +41,30 @@ export default function TerminePage() {
                   Informationen für Neupatienten
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 text-lg text-foreground/80">
+              <CardContent className="space-y-6 text-lg text-foreground/80">
                 <p>Wenn Sie zum ersten Mal zu uns kommen, bringen Sie bitte zu Ihrem Termin Ihre Krankenkassenkarte sowie allfällig vorhandene Unterlagen wie Impfausweis, Blutgruppennachweis oder eine Liste Ihrer aktuellen Medikamente mit.</p>
+                <p>Zusätzlich bitten wir Neupatienten, die folgenden Formulare herunterzuladen und ausgefüllt zum ersten Termin mitzubringen oder uns vorab per E-Mail oder Fax zukommen zu lassen. Dies hilft uns, den administrativen Aufwand zu reduzieren und uns mehr Zeit für Ihr Anliegen zu nehmen.</p>
+
+                <div className="space-y-4 rounded-md border border-border bg-card p-6">
+                    <h4 className="flex items-center gap-3 font-headline text-xl font-bold text-primary">
+                        <Download />
+                        Formulare für Neupatienten
+                    </h4>
+                    <p className="text-base">
+                        Die Links zum Herunterladen der Formulare werden hier in Kürze verfügbar sein.
+                    </p>
+                    {/* 
+                    <div className="flex flex-col items-start gap-4 sm:flex-row">
+                        <Button asChild>
+                            <a href="/path/to/formular1.pdf" download>Patientenstammblatt</a>
+                        </Button>
+                        <Button asChild>
+                            <a href="/path/to/formular2.pdf" download>Einverständniserklärung</a>
+                        </Button>
+                    </div>
+                    */}
+                </div>
+                
                 <p>Dies hilft uns, Sie von Anfang an optimal zu betreuen.</p>
               </CardContent>
             </Card>
@@ -66,5 +89,3 @@ export default function TerminePage() {
     </div>
   );
 }
-
-    
