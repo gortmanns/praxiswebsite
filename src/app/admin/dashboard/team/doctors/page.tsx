@@ -14,13 +14,24 @@ import { Separator } from '@/components/ui/separator';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info, Eye, EyeOff, Pencil, ArrowUp, ArrowDown } from 'lucide-react';
+import { Info, Eye, EyeOff, Pencil, ArrowUp, ArrowDown, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TextEditDialog } from './_components/text-edit-dialog';
 import { ImageSourceDialog } from './_components/image-source-dialog';
 import { LogoFunctionSelectDialog } from './_components/logo-function-select-dialog';
 import { ImageLibraryDialog } from './_components/image-library-dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 // Statische Daten für die Kartenkomponenten
 const staticDoctorsData: Doctor[] = [
@@ -66,7 +77,7 @@ const staticDoctorsData: Doctor[] = [
         name: "R. Herschel",
         imageUrl: "/images/team/Dr.Herschel.jpg",
         imageHint: "man portrait",
-        specialty: "Facharzt Orthopädische Chirurgie und Traumatologie des Bewegungsapparates",
+        specialty: "Facharzt für Orthopädische Chirurgie und Traumatologie des Bewegungsapparates",
         qualifications: [],
         vita: `<p>Vita folgt in Kürze.</p>`,
         partnerLogoComponent: "OrthozentrumLogo",
@@ -143,12 +154,14 @@ const createDefaultDoctor = (): Doctor => ({
     vita: '<p>Dieser Text kann frei angepasst werden.</p>',
     imageUrl: '',
     imageHint: 'placeholder',
-    additionalInfo: 'Funktion oder Logo',
+    additionalInfo: undefined,
+    partnerLogoComponent: undefined,
     order: 99,
 });
 
 
 export default function DoctorsPage() {
+    const [doctorsList, setDoctorsList] = useState<Doctor[]>(() => staticDoctorsData.sort((a, b) => a.order - b.order));
     const [doctorInEdit, setDoctorInEdit] = useState<Doctor | null>(null);
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
     const [hiddenDoctorIds, setHiddenDoctorIds] = useState<Set<string>>(new Set());
@@ -164,7 +177,6 @@ export default function DoctorsPage() {
     const [editingField, setEditingField] = useState<{ key: keyof Doctor; label: string, index?: number } | null>(null);
     const [isLogoFunctionSelectOpen, setLogoFunctionSelectOpen] = useState(false);
     
-    const doctorsList = useMemo(() => staticDoctorsData.sort((a, b) => a.order - b.order), []);
     const displayedDoctorInEdit = doctorInEdit ?? createDefaultDoctor();
     
     const ensureEditingState = useCallback(() => {
@@ -176,6 +188,34 @@ export default function DoctorsPage() {
     const handleEditClick = (doctor: Doctor) => {
         setEditingDoctorId(doctor.id);
         setDoctorInEdit(doctor);
+    };
+
+    const handleCancel = () => {
+        setDoctorInEdit(null);
+        setEditingDoctorId(null);
+    };
+
+    const handleAddNewDoctor = () => {
+        if (!doctorInEdit) return;
+
+        const newDoctor: Doctor = {
+            ...doctorInEdit,
+            id: `new-${Date.now()}`,
+            order: (doctorsList[doctorsList.length - 1]?.order || 0) + 1,
+        };
+        
+        // This is a temporary custom component for the new card.
+        // In a real scenario, this would be handled by a dynamic component system.
+        const NewDoctorCard = () => (
+             <div className="border-2 border-dashed border-primary p-4 text-center">
+                <p>Dynamisch erstellte Karte für {newDoctor.name}</p>
+                <p>Diese Vorschau ist vereinfacht. Die echte Karte wird auf der Hauptseite korrekt angezeigt.</p>
+             </div>
+        );
+        doctorCardComponents[newDoctor.id] = NewDoctorCard;
+
+        setDoctorsList(prev => [...prev, newDoctor]);
+        handleCancel();
     };
 
     // --- Image Handling ---
@@ -339,7 +379,35 @@ export default function DoctorsPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Live-Vorschau & Bearbeitung</h3>
+                             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                                <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Live-Vorschau & Bearbeitung</h3>
+                                <div className="flex gap-2">
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button variant="default" disabled={!doctorInEdit}>
+                                                <PlusCircle className="mr-2 h-4 w-4" />
+                                                Als neue Karte übernehmen
+                                            </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Neue Arztkarte anlegen?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                   Möchten Sie die aktuellen Eingaben als neue Arztkarte am Ende der Liste hinzufügen?
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Nein, abbrechen</AlertDialogCancel>
+                                                <AlertDialogAction onClick={handleAddNewDoctor}>Ja, hinzufügen</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                    
+                                    <Button variant="outline" onClick={handleCancel} disabled={!doctorInEdit && !editingDoctorId}>
+                                        Abbrechen
+                                    </Button>
+                                </div>
+                            </div>
                             <div className="rounded-lg bg-muted p-4 md:p-6">
                                 <EditableDoctorCard 
                                     doctor={displayedDoctorInEdit}
@@ -351,7 +419,7 @@ export default function DoctorsPage() {
                                     <Info className="h-4 w-4" />
                                     <AlertTitle>Hinweis</AlertTitle>
                                     <AlertDescription>
-                                        Klicken Sie auf ein Element in der Vorschau, um es zu verändern.
+                                        Klicken Sie auf ein Element in der Vorschau, um es zu verändern. Mit "Abbrechen" werden alle Änderungen verworfen.
                                     </AlertDescription>
                                 </Alert>
                             </div>
@@ -369,6 +437,7 @@ export default function DoctorsPage() {
                         <div className="mt-8 space-y-12">
                             {doctorsList.map((doctor) => {
                                 const CardComponent = doctorCardComponents[doctor.id];
+                                if (!CardComponent) return null; // Sicherstellen, dass die Komponente existiert
                                 const isEditing = editingDoctorId === doctor.id;
                                 const isHidden = hiddenDoctorIds.has(doctor.id);
 
@@ -454,3 +523,5 @@ export default function DoctorsPage() {
         </>
     );
 }
+
+    
