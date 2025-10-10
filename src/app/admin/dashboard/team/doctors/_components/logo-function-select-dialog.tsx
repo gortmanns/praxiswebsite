@@ -32,7 +32,7 @@ export const LogoFunctionSelectDialog: React.FC<LogoFunctionSelectDialogProps> =
         <DialogHeader>
           <DialogTitle>Typ auswählen</DialogTitle>
           <DialogDescription>
-            Möchten Sie eine Funktion (Text) eingeben oder ein Partner-Logo auswählen?
+            Möchten Sie eine Funktion (Text) eingeben oder ein Logo auswählen?
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -42,7 +42,7 @@ export const LogoFunctionSelectDialog: React.FC<LogoFunctionSelectDialogProps> =
           </Button>
           <Button onClick={onSelectLogo} size="lg" variant="secondary" className="justify-start">
             <Image className="mr-2 h-4 w-4" />
-            Partner-Logo auswählen
+            Logo auswählen
           </Button>
         </div>
         <DialogFooter>
