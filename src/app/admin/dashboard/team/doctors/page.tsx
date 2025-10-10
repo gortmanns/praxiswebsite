@@ -11,7 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info, Eye, EyeOff, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Info, Eye, EyeOff, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TextEditDialog } from './_components/text-edit-dialog';
@@ -274,8 +274,6 @@ export default function DoctorsPage() {
                 await updateDoctor(firestore, editingDoctorId, saveData);
                 setStatus({ type: 'success', message: 'Die Änderungen wurden erfolgreich gespeichert.' });
             } else {
-                // This handles both new cards and fallback cards being saved for the first time.
-                // The docId (editingDoctorId) is passed, which can be null for a completely new card.
                 await addDoctor(firestore, saveData, editingDoctorId);
                 setStatus({ type: 'success', message: 'Die neue Arztkarte wurde erfolgreich angelegt.' });
             }
@@ -372,21 +370,13 @@ export default function DoctorsPage() {
                 const updatedQualifications = [...(currentDoctor.qualifications || [])];
                 updatedQualifications[editingField.index] = newValue;
                 return { ...currentDoctor, qualifications: updatedQualifications };
+            } else if (editingField.key === 'additionalInfo') {
+                return { ...currentDoctor, additionalInfo: newValue, partnerLogoComponent: undefined };
+            } else if (editingField.key === 'specialty' && typeof currentDoctor.specialty !== 'string') {
+                // Cannot update complex specialty node, do nothing or handle as needed
+                return currentDoctor;
             } else {
-                 if (editingField.key === 'additionalInfo') {
-                    return { ...currentDoctor, additionalInfo: newValue, partnerLogoComponent: undefined };
-                }
-                const currentSpecialty = currentDoctor.specialty;
-                let newSpecialty = currentDoctor.specialty;
-                if (editingField.key === 'specialty') {
-                   newSpecialty = (typeof currentSpecialty === 'string' || !currentSpecialty) ? newValue : currentSpecialty;
-                }
-                
-                return { 
-                    ...currentDoctor, 
-                    [editingField.key]: newValue,
-                    ...(editingField.key === 'specialty' && { specialty: newSpecialty })
-                };
+                return { ...currentDoctor, [editingField.key]: newValue };
             }
         });
     
@@ -402,15 +392,15 @@ export default function DoctorsPage() {
         const key = editingField.key;
         
         if (key === 'qualifications' && editingField.index !== undefined) {
-            const value = (currentDoctor.qualifications || [])[editingField.index] || '';
-            const defaultValue = (defaultDoctor.qualifications || [])[editingField.index] || '';
-            return value === defaultValue ? '' : value;
+            const value = (currentDoctor.qualifications || [])[editingField.index];
+            const defaultValue = (defaultDoctor.qualifications || [])[editingField.index];
+            return value === defaultValue ? '' : value || '';
         }
         
         const specialty = currentDoctor.specialty;
         if (key === 'specialty') {
             if (typeof specialty === 'string') {
-                return specialty === defaultDoctor.specialty ? '' : specialty;
+                return specialty === (defaultDoctor.specialty as string) ? '' : specialty;
             }
             return ''; // Cannot edit ReactNode, return empty
         }
@@ -545,7 +535,7 @@ export default function DoctorsPage() {
                                     <div className="flex gap-2">
                                         <Button onClick={handleSave} disabled={isSaving}>
                                             {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-                                            {isDoctorFromDB(editingDoctorId) ? 'Änderungen speichern' : 'Als neue Karte anlegen'}
+                                            {editingDoctorId ? 'Änderungen speichern' : 'Als neue Karte anlegen'}
                                         </Button>
                                         <Button variant="outline" onClick={handleCancel} disabled={isSaving}>
                                             Abbrechen
@@ -709,5 +699,3 @@ export default function DoctorsPage() {
         </>
     );
 }
-
-    
