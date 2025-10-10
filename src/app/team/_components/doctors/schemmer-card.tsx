@@ -27,8 +27,7 @@ export function SchemmerCard() {
                     Seine Patienten in der Schweiz behandelt er weiterhin, neu aber wohnortnah und unkompliziert auch hier im Praxiszentrum im Ring, wo er eine regelmässige Sprechstunde abhält.
                 </p>
             `}
-        >
-            <SchemmerWorniLogo className="h-full w-full object-contain object-left" />
-        </DoctorCard>
+            partnerLogoComponent={SchemmerWorniLogo}
+        />
     );
 }

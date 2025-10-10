@@ -19,6 +19,7 @@ export interface Doctor {
     vita: string;
     additionalInfo?: string;
     partnerLogoComponent?: React.FC<{className?: string}> | string;
+    children?: React.ReactNode;
 }
 
 
@@ -48,7 +49,8 @@ export const DoctorCard: React.FC<Doctor> = ({
     qualifications,
     vita,
     additionalInfo,
-    partnerLogoComponent: LogoComponent
+    partnerLogoComponent: LogoComponent,
+    children
 }) => {
 
     return (
@@ -88,16 +90,18 @@ export const DoctorCard: React.FC<Doctor> = ({
                                         {qualifications.map((q, i) => <p key={i}>{q}</p>)}
                                     </div>
                                     
-                                    {additionalInfo && !LogoComponent && (
+                                    <div className="relative mt-[2.5cqw] flex h-28 w-full max-w-[400px] items-center justify-start">
+                                        {children ? (
+                                            children
+                                        ) : LogoComponent && typeof LogoComponent !== 'string' ? (
+                                            <LogoComponent className="h-full w-full object-contain object-left" />
+                                        ) : null}
+                                    </div>
+
+                                    {additionalInfo && !LogoComponent && !children && (
                                         <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
                                             {additionalInfo}
                                         </p>
-                                    )}
-                                    
-                                    {LogoComponent && typeof LogoComponent !== 'string' && (
-                                        <div className="relative mt-[2.5cqw] flex h-28 w-full max-w-[400px] items-center justify-start">
-                                            <LogoComponent className="h-full w-full object-contain object-left" />
-                                        </div>
                                     )}
                                 </div>
                             </div>
