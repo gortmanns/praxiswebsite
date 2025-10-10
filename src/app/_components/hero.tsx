@@ -1,4 +1,7 @@
 import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { Calendar } from 'lucide-react';
 
 export function Hero() {
   return (
@@ -11,6 +14,14 @@ export function Hero() {
         className="h-auto w-full object-cover"
         priority
       />
+      <div className="absolute bottom-8 left-8">
+        <Button asChild size="lg" className="h-14 gap-3 rounded-full px-8 text-xl shadow-lg">
+          <Link href="#">
+            <Calendar />
+            Termin vereinbaren
+          </Link>
+        </Button>
+      </div>
     </section>
   );
 }
