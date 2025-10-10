@@ -110,8 +110,8 @@ export const DoctorCard: React.FC<Doctor> = ({
                                     )}
                                     
                                     {LogoComponent && (
-                                        <div className="relative mt-[2.5cqw] flex w-fit justify-start max-w-[400px]">
-                                            <LogoComponent className="h-auto w-full object-contain object-left" />
+                                        <div className="relative mt-[2.5cqw] flex h-28 max-w-[400px] items-center justify-start">
+                                            <LogoComponent className="h-full w-full object-contain object-left" />
                                         </div>
                                     )}
                                 </div>
