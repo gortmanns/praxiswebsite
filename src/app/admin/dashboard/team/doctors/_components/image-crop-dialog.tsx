@@ -40,7 +40,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-w-5xl">
         <DialogHeader>
           <DialogTitle>Bild zuschneiden</DialogTitle>
         </DialogHeader>
@@ -48,15 +48,15 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
           <Cropper
             ref={cropperRef}
             src={imageUrl}
-            style={{ height: 400, width: '100%' }}
+            style={{ height: 'auto', maxHeight: '70vh', width: '100%' }}
             // Cropper.js options
             aspectRatio={aspectRatio}
             guides={false}
             viewMode={1}
-            autoCropArea={1} // Hier war der Fehler: von 0.8 auf 1 geändert
+            autoCropArea={1}
             background={false}
             responsive={true}
-            checkOrientation={false} // Empfohlen, um Performance zu verbessern
+            checkOrientation={false} // Recommended to improve performance
           />
         </div>
         <DialogFooter>
