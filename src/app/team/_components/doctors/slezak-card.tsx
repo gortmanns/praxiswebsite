@@ -24,7 +24,7 @@ export function SlezakCard() {
                                 <p class="text-2xl font-bold text-primary">Dr. med.</p>
                                 <h3 class="text-5xl font-bold text-primary my-2">A. Slezak</h3>
                                 <p class="text-xl font-bold">Fachärztin für Neurologie</p>
-                                <div class="mt-6">
+                                <div class="mt-6 border-2 border-purple-500">
                                   <div class="flex">
                                     <svg
                                         viewBox="0 0 170 35"
