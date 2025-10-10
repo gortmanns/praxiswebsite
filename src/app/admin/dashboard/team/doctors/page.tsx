@@ -13,6 +13,8 @@ import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { Separator } from '@/components/ui/separator';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Info } from 'lucide-react';
 
 
 // Daten von Dr. Ortmanns als initialer Zustand
@@ -108,15 +110,19 @@ export default function DoctorsPage() {
             <CardContent>
                  <div className="space-y-4">
                   <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Live-Vorschau & Bearbeitung</h3>
-                  <div className="relative rounded-lg border-2 border-dashed border-primary/50 bg-muted p-4 md:p-6">
-                      <div className="absolute -top-3 left-4 bg-muted px-2 text-sm font-bold text-primary">
-                          Klicken Sie auf ein Element um dieses zu verändern
-                      </div>
+                  <div className="rounded-lg bg-muted p-4 md:p-6">
                       <EditableDoctorCard 
                           doctor={doctorToEdit}
                           onImageClick={handleImageClick}
                           onVitaClick={handleVitaClick}
                       />
+                       <Alert variant="info" className="mt-4 border-2 border-blue-500 text-blue-800 bg-blue-50">
+                          <Info className="h-4 w-4" />
+                          <AlertTitle>Hinweis</AlertTitle>
+                          <AlertDescription>
+                              Klicken Sie auf ein Element, um dieses zu verändern.
+                          </AlertDescription>
+                      </Alert>
                   </div>
                 </div>
 
