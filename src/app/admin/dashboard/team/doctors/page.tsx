@@ -307,7 +307,7 @@ export default function DoctorsPage() {
     
     const imageAspectRatio = useMemo(() => {
         if (imageEditContext === 'logo') {
-            return 800 / 268; // Aspect ratio of Schemmer & Worni logo
+            return 1600 / 268; // Aspect ratio for testing
         }
         return 2 / 3; // Default portrait aspect ratio
     }, [imageEditContext]);
