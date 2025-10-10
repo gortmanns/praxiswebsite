@@ -4,7 +4,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { type Doctor } from '@/app/team/_components/doctor-card';
-import { Info, ArrowUp, ArrowDown, Eye, EyeOff, Pencil } from 'lucide-react';
+import { Info, ArrowUp, ArrowDown, Eye, EyeOff, Pencil, CheckCircle } from 'lucide-react';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { ImageCropDialog } from './_components/image-crop-dialog';
@@ -12,8 +12,10 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
+import { collection, query, orderBy, doc, updateDoc, writeBatch } from 'firebase/firestore';
+import { getStorage, ref, uploadString, getDownloadURL, deleteObject } from "firebase/storage";
 import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
 
 const sampleDoctor: Doctor = {
   id: 'sample',
@@ -44,6 +46,9 @@ export default function DoctorsPage() {
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [isSaving, setIsSaving] = useState(false);
+  const { toast } = useToast();
+
   const firestore = useFirestore();
 
   const doctorsQuery = useMemoFirebase(() => {
@@ -55,13 +60,6 @@ export default function DoctorsPage() {
 
   const [doctorsOrder, setDoctorsOrder] = useState<string[]>([]);
   const [hiddenCards, setHiddenCards] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (doctorsData) {
-      setDoctorsOrder(doctorsData.map(d => d.id));
-      // Hier könnten ausgeblendete Karten aus der DB geladen werden, z.B. wenn es ein 'visible' Feld gäbe
-    }
-  }, [doctorsData]);
   
   useEffect(() => {
     const calculateScale = () => {
@@ -86,6 +84,12 @@ export default function DoctorsPage() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (doctorsData) {
+      setDoctorsOrder(doctorsData.map(d => d.id));
+    }
+  }, [doctorsData]);
   
   const handleEditClick = (cardId: string) => {
     if (!doctorsData) return;
@@ -103,6 +107,7 @@ export default function DoctorsPage() {
   };
   
   const handleImageClick = () => {
+      if (isSaving) return;
       fileInputRef.current?.click();
   };
 
@@ -115,7 +120,6 @@ export default function DoctorsPage() {
           };
           reader.readAsDataURL(file);
       }
-      // Reset file input to allow re-selection of the same file
       event.target.value = '';
   };
   
@@ -125,14 +129,14 @@ export default function DoctorsPage() {
   };
 
 
-  const ActionButtons = ({ cardId }: { cardId: string }) => {
+  const ActionButtons = ({ cardId, index, total }: { cardId: string; index: number; total: number }) => {
     const isHidden = hiddenCards.includes(cardId);
     return (
         <div className="flex flex-col gap-2">
-            <Button variant="outline" size="icon" aria-label="Nach oben verschieben">
+            <Button variant="outline" size="icon" aria-label="Nach oben verschieben" disabled={index === 0}>
                 <ArrowUp className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon" aria-label="Nach unten verschieben">
+            <Button variant="outline" size="icon" aria-label="Nach unten verschieben" disabled={index === total - 1}>
                 <ArrowDown className="h-4 w-4" />
             </Button>
             <Button 
@@ -218,17 +222,19 @@ export default function DoctorsPage() {
                     </div>
                   ))
                 ) : (
-                  visibleCards.map((doctor) => (
+                  visibleCards.map((doctor, index) => (
                       <div 
                         key={doctor.id} 
                         className="flex w-full items-center justify-center gap-8"
                       >
-                        <ActionButtons cardId={doctor.id} />
-                        <div className={cn(
-                          "w-full max-w-[1000px] flex-1 rounded-lg",
-                          editingCardId === doctor.id && "ring-4 ring-primary ring-offset-4"
-                        )}>
+                        <ActionButtons cardId={doctor.id} index={index} total={visibleCards.length} />
+                        <div className="relative w-full max-w-[1000px] flex-1">
                           <EditableDoctorCard doctor={doctor} onImageClick={() => {}} onVitaClick={() => {}} />
+                          {editingCardId === doctor.id && (
+                             <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-primary/40">
+                                <span className="rounded-md bg-background px-4 py-2 text-lg font-bold text-primary shadow-lg">In Bearbeitung</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                   ))
@@ -241,17 +247,21 @@ export default function DoctorsPage() {
                         Ausgeblendete Ärzte
                     </h3>
                     <div className="mt-8 space-y-12">
-                        {deactivatedCards.map((doctor) => (
+                        {deactivatedCards.map((doctor, index) => (
                            <div 
                                 key={doctor.id} 
                                 className="flex w-full items-center justify-center gap-8"
                             >
-                                <ActionButtons cardId={doctor.id} />
-                                <div className={cn(
-                                  "w-full max-w-[1000px] flex-1 rounded-lg grayscale opacity-60",
-                                  editingCardId === doctor.id && "ring-4 ring-primary ring-offset-4"
-                                )}>
-                                  <EditableDoctorCard doctor={doctor} onImageClick={() => {}} onVitaClick={() => {}} />
+                                <ActionButtons cardId={doctor.id} index={index} total={deactivatedCards.length} />
+                                <div className="relative w-full max-w-[1000px] flex-1">
+                                  <div className="grayscale opacity-60">
+                                    <EditableDoctorCard doctor={doctor} onImageClick={() => {}} onVitaClick={() => {}} />
+                                  </div>
+                                  {editingCardId === doctor.id && (
+                                    <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-primary/40">
+                                        <span className="rounded-md bg-background px-4 py-2 text-lg font-bold text-primary shadow-lg">In Bearbeitung</span>
+                                    </div>
+                                  )}
                                 </div>
                             </div>
                         ))}
@@ -261,16 +271,15 @@ export default function DoctorsPage() {
         </div>
     </div>
     
-    {/* Hidden file input for image selection */}
     <input
         type="file"
         ref={fileInputRef}
         onChange={handleFileChange}
         accept="image/png, image/jpeg, image/webp"
         className="hidden"
+        disabled={isSaving}
     />
 
-    {/* Dialogs */}
     <VitaEditorDialog
       isOpen={isVitaEditorOpen}
       onOpenChange={setIsVitaEditorOpen}
@@ -288,3 +297,5 @@ export default function DoctorsPage() {
   </>
   );
 }
+
+    
