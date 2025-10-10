@@ -86,6 +86,46 @@ const staticDoctorsData: Doctor[] = [
     }
 ];
 
+const allProjectImages = [
+  // Team
+  "/images/team/Ortmanns.jpg",
+  "/images/team/Prof.Schemmer.jpg",
+  "/images/team/Dr.Rosenov.jpg",
+  "/images/team/Dr.Herschel.jpg",
+  "/images/team/Dr.Slezak.jpg",
+  "/images/team/Garcia.jpg",
+  "/images/team/Aeschlimann.jpg",
+  "/images/team/Huber.jpg",
+  "/images/team/Oetztuerk.jpg",
+  "/images/team/Sommer.jpg",
+  // Logos
+  "/images/VASC-Alliance-Logo.png",
+  "/images/schemmer-worni-logo.png",
+  "/images/go-medical-logo.png",
+  "/images/mcl-labor-logo.png",
+  "/images/doxnet-logo.jpg",
+  "/images/mehrfacharzt-logo.png",
+  "/images/praxiszentrum-logo.png",
+  "/images/praxiszentrum-logo-icon.png",
+  "/images/medphone_logo.png",
+  "/images/toxinfo-logo.svg",
+  // Leistungen
+  "/images/leistungen/audiometrie.jpg",
+  "/images/leistungen/ekg.jpg",
+  "/images/leistungen/labor.jpg",
+  "/images/leistungen/praxisapotheke.jpg",
+  "/images/leistungen/roentgen.jpg",
+  "/images/leistungen/spirometrie.jpg",
+  "/images/leistungen/twint_logo.png",
+  "/images/leistungen/VMU.png",
+  "/images/leistungen/wundversorgung.jpg",
+  // Sonstige
+  "/images/luftbild.jpg",
+  "/images/foto-medis.jpg",
+  "/images/rtw-bern.jpg",
+];
+const uniqueProjectImages = [...new Set(allProjectImages)];
+
 const doctorCardComponents: { [key: string]: React.FC } = {
     ortmanns: OrtmannsCard,
     schemmer: SchemmerCard,
@@ -170,6 +210,7 @@ export default function DoctorsPage() {
     }, []);
 
     const handleImageSelectedFromLibrary = (imageUrl: string) => {
+        ensureEditingState();
         const fieldToUpdate = imageEditContext === 'logo' ? 'partnerLogoComponent' : 'imageUrl';
         setDoctorInEdit(prev => {
             const current = prev ?? createDefaultDoctor();
@@ -183,6 +224,7 @@ export default function DoctorsPage() {
     };
     
     const handleCropComplete = useCallback((croppedImageUrl: string) => {
+        ensureEditingState();
         const fieldToUpdate = imageEditContext === 'logo' ? 'partnerLogoComponent' : 'imageUrl';
         setDoctorInEdit(prev => {
              const current = prev ?? createDefaultDoctor();
@@ -194,7 +236,7 @@ export default function DoctorsPage() {
         setImageCropDialogOpen(false);
         setImageToCrop(null);
         setImageEditContext(null);
-    }, [imageEditContext]);
+    }, [imageEditContext, ensureEditingState]);
 
     // --- Vita Handling ---
     const handleVitaClick = useCallback(() => {
@@ -382,7 +424,7 @@ export default function DoctorsPage() {
              <ImageLibraryDialog
                 isOpen={isImageLibraryOpen}
                 onOpenChange={setImageLibraryOpen}
-                images={doctorsList.map(d => d.imageUrl).filter(Boolean)}
+                images={uniqueProjectImages}
                 onImageSelect={handleImageSelectedFromLibrary}
             />
             <VitaEditorDialog
