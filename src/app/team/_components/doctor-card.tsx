@@ -1,4 +1,3 @@
-
 'use client'
 
 import Image from 'next/image';
@@ -6,10 +5,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import DOMPurify from 'dompurify';
 import React from 'react';
 import { User } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 export interface Doctor {
     id: string;
+    order: number;
     title: string;
     name: string;
     imageUrl: string;
@@ -49,8 +48,7 @@ export const DoctorCard: React.FC<Doctor> = ({
     qualifications,
     vita,
     additionalInfo,
-    partnerLogoComponent: LogoComponent,
-    children
+    partnerLogoComponent: LogoComponent
 }) => {
 
     return (
@@ -90,17 +88,17 @@ export const DoctorCard: React.FC<Doctor> = ({
                                         {qualifications.map((q, i) => <p key={i}>{q}</p>)}
                                     </div>
                                     
-                                    {(LogoComponent || children) && (
-                                        <div className="relative mt-[2.5cqw] flex h-28 w-full max-w-[400px] items-center justify-start">
-                                            {children ? (
-                                                children
-                                            ) : LogoComponent && typeof LogoComponent !== 'string' ? (
+                                    {LogoComponent && (
+                                        <div className="relative mt-[2.5cqw] flex h-auto max-h-28 w-full max-w-[400px] items-center justify-start">
+                                            {typeof LogoComponent === 'function' ? (
                                                 <LogoComponent className="h-full w-full object-contain object-left" />
-                                            ) : null}
+                                            ) : typeof LogoComponent === 'string' && LogoComponent.startsWith('/images') ? (
+                                                <Image src={LogoComponent} alt="Partner Logo" width={400} height={100} className="h-auto w-full object-contain object-left" />
+                                            ) : null }
                                         </div>
                                     )}
 
-                                    {additionalInfo && !LogoComponent && !children && (
+                                    {additionalInfo && !LogoComponent && (
                                         <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
                                             {additionalInfo}
                                         </p>

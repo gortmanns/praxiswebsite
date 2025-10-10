@@ -1,14 +1,9 @@
-
 'use client';
 
 import React, { useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { OrtmannsCard } from '@/app/team/_components/doctors/ortmanns-card';
-import { RosenovCard } from '@/app/team/_components/doctors/rosenov-card';
-import { SchemmerCard } from '@/app/team/_components/doctors/schemmer-card';
-import { SlezakCard } from '@/app/team/_components/doctors/slezak-card';
-import { HerschelCard } from '@/app/team/_components/doctors/herschel-card';
 import type { Doctor } from '@/app/team/_components/doctor-card';
+import { DoctorCard } from '@/app/team/_components/doctor-card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { Separator } from '@/components/ui/separator';
 import { ImageCropDialog } from './_components/image-crop-dialog';
@@ -31,12 +26,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
+import { SchemmerWorniLogo } from '@/components/logos/schemmer-worni-logo';
+import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
+import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
+import Image from 'next/image';
 
-// Statische Daten für die Kartenkomponenten
 const staticDoctorsData: Doctor[] = [
     {
         id: 'ortmanns',
+        order: 1,
         title: "Dipl. med.",
         name: "G. Ortmanns",
         imageUrl: "/images/team/Ortmanns.jpg",
@@ -45,10 +44,10 @@ const staticDoctorsData: Doctor[] = [
         qualifications: ['Master of Public Health (UNSW)', 'Master of Health Management (UNSW)'],
         vita: `<h4>Curriculum Vitae</h4><ul><li><span style="color: var(--color-tiptap-blue);">2022</span> Niederlassung als Hausarzt im Praxiszentrum im Ring</li><li><span style="color: var(--color-tiptap-blue);">2021-22</span> Tätigkeit in der Hausarztpraxis Dr. G. Gyger, Thun</li><li><span style="color: var(--color-tiptap-blue);">2019-21</span> Oberarzt Innere Medizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2018</span> Oberarzt Innere Medizin, Spital Interlaken</li><li><span style="color: var(--color-tiptap-blue);">2017</span> Assistenzarzt Kardiologie, Inselspital Bern</li><li><span style="color: var(--color-tiptap-blue);">2016-17</span> Assistenzarzt Pneumologie, Inselspital Bern</li><li><span style="color: var(--color-tiptap-blue);">2015-16</span> Assistenzarzt Innere Medizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2015</span> Erlangung des Facharzttitels für Innere Medizin</li><li><span style="color: var(--color-tiptap-blue);">2014-15</span> Assistenzarzt Intensivmedizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2013-14</span> Assistenzarzt Innere Medizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2011-13</span> Assistenzarzt Innere Medizin, Spital Interlaken</li><li><span style="color: var(--color-tiptap-blue);">2011</span> Promotion zum Dr. med.</li><li><span style="color: var(--color-tiptap-blue);">2010-11</span> Assistenzarzt Chirurgie, Klinik für Viszerale Chirurgie und Medizin, Inselspital Bern</li><li><span style="color: var(--color-tiptap-blue);">2009</span> Staatsexamen</li><li><span style="color: var(--color-tiptap-blue);">2003-09</span> Studium der Humanmedizin an der Universität zu Köln</li></ul><br><p class="is-small">Mitgliedschaften:<br>Verbindung der Schweizer Ärztinnen und Ärzte (FMH)<br>Ärztegesellschaft des Kantons Bern (BEKAG)<br>Schweizerische Gesellschaft für Ultraschall in der Medizin (SGUM)</p>`,
         additionalInfo: "Ärztliche und administrative Leitung Praxiszentrum im Ring",
-        order: 1,
     },
     {
         id: 'schemmer',
+        order: 2,
         title: "Prof. Dr. med. Dr. h. c.",
         name: "P. Schemmer",
         imageUrl: "/images/team/Prof.Schemmer.jpg",
@@ -56,11 +55,11 @@ const staticDoctorsData: Doctor[] = [
         specialty: "Facharzt für Chirurgie",
         qualifications: [],
         vita: `<p>Prof. Schemmer war von 2013 bis 2022 Direktor der Universitätsklinik für Viszerale Transplantationschirurgie am Inselspital in Bern.</p><br><p>Seit 2022 ist er Chefarzt für Chirurgie an der Universitätsklinik für Allgemein-, Viszeral- und Transplantationschirurgie in Graz.</p><br><p>Seine Patienten in der Schweiz behandelt er weiterhin, neu aber wohnortnah und unkompliziert auch hier im Praxiszentrum im Ring, wo er eine regelmässige Sprechstunde abhält.</p>`,
-        partnerLogoComponent: "/images/schemmer-worni-logo.png",
-        order: 2,
+        partnerLogoComponent: "SchemmerWorniLogo",
     },
     {
         id: 'rosenov',
+        order: 3,
         title: "Prof. Dr. med.",
         name: "A. Rosenov",
         imageUrl: "/images/team/Dr.Rosenov.jpg",
@@ -68,23 +67,23 @@ const staticDoctorsData: Doctor[] = [
         specialty: "Facharzt für Angiologie",
         qualifications: [],
         vita: `<p>Prof. Rosenov hat sich bereit erklärt, ab Mai 2024 die Patienten mit Krampfaderleiden im Praxiszentrum im Ring zu behandeln.</p><br><p>Er wird regelmässig, i.d.R. am Montagnachmittag, eine Sprechstunde im Praxiszentrum anbieten.</p><br><h4>Curriculum Vitae</h4><ul><li><span style="color: var(--color-tiptap-blue);">Seit 2004</span> Chefarzt Herzchirurgie, Spital Triemli, Zürich</li><li><span style="color: var(--color-tiptap-blue);">2002</span> Habilitation und Ernennung zum Privatdozenten an der Universität Ulm</li><li><span style="color: var(--color-tiptap-blue);">1997-2004</span> Oberarzt an der Klinik für Herz-, Thorax- und Gefässchirurgie, Ulm</li><li><span style="color: var(--color-tiptap-blue);">1991-1996</span> Facharztausbildung in der Herzchirurgie an der Medizinischen Hochschule Hannover</li><li><span style="color: var(--color-tiptap-blue);">1990</span> Promotion zum Dr. med.</li><li><span style="color: var(--color-tiptap-blue);">1882-1989</span> Studium der Humanmedizin an der Westfälischen Wilhelms-Universität in Münster</li></ul>`,
-        partnerLogoComponent: "/images/VASC-Alliance-Logo.png",
-        order: 3,
+        partnerLogoComponent: "VascAllianceLogo",
     },
     {
         id: 'herschel',
+        order: 4,
         title: "Dr. med.",
         name: "R. Herschel",
         imageUrl: "/images/team/Dr.Herschel.jpg",
         imageHint: "man portrait",
-        specialty: "Facharzt für Orthopädische Chirurgie und Traumatologie des Bewegungsapparates",
+        specialty: <span>Facharzt für <span className="whitespace-nowrap">Orthopädische Chirurgie</span> und <span className="whitespace-nowrap">Traumatologie des Bewegungsapparates</span></span>,
         qualifications: [],
         vita: `<p>Vita folgt in Kürze.</p>`,
         partnerLogoComponent: "OrthozentrumLogo",
-        order: 4,
     },
     {
         id: 'slezak',
+        order: 5,
         title: "Dr. med.",
         name: "A. Slezak",
         imageUrl: "/images/team/Dr.Slezak.jpg",
@@ -93,7 +92,6 @@ const staticDoctorsData: Doctor[] = [
         qualifications: [],
         vita: `<p>Vita folgt in Kürze.</p>`,
         partnerLogoComponent: "AgnieszkaSlezakLogo",
-        order: 5,
     }
 ];
 
@@ -137,14 +135,6 @@ const allProjectImages = [
 ];
 const uniqueProjectImages = [...new Set(allProjectImages)];
 
-const doctorCardComponents: { [key: string]: React.FC } = {
-    ortmanns: OrtmannsCard,
-    schemmer: SchemmerCard,
-    rosenov: RosenovCard,
-    herschel: HerschelCard,
-    slezak: SlezakCard,
-};
-
 const createDefaultDoctor = (): Doctor => ({
     id: 'placeholder',
     title: 'Titel',
@@ -158,6 +148,25 @@ const createDefaultDoctor = (): Doctor => ({
     partnerLogoComponent: undefined,
     order: 99,
 });
+
+
+const VascAllianceLogo = (props: {className?: string}) => (
+    <Image
+        src="/images/VASC-Alliance-Logo.png"
+        alt="VASC Alliance Logo"
+        width={800}
+        height={268}
+        className={props.className}
+        data-ai-hint="partner logo"
+    />
+);
+
+const logoMap: { [key: string]: React.FC<{ className?: string }> } = {
+    SchemmerWorniLogo,
+    AgnieszkaSlezakLogo,
+    OrthozentrumLogo,
+    VascAllianceLogo,
+};
 
 
 export default function DoctorsPage() {
@@ -205,14 +214,6 @@ export default function DoctorsPage() {
             imageUrl: doctorInEdit.imageUrl || '', // Ensure imageUrl is at least an empty string
         };
         
-        const NewDoctorCard = () => (
-             <div className="border-2 border-dashed border-primary p-4 text-center">
-                <p>Dynamisch erstellte Karte für {newDoctor.name}</p>
-                <p>Diese Vorschau ist vereinfacht. Die echte Karte wird auf der Hauptseite korrekt angezeigt.</p>
-             </div>
-        );
-        doctorCardComponents[newDoctor.id] = NewDoctorCard;
-
         setDoctorsList(prev => [...prev, newDoctor]);
         handleCancel();
     };
@@ -469,10 +470,9 @@ export default function DoctorsPage() {
 
                         <div className="mt-8 space-y-12">
                             {doctorsList.map((doctor) => {
-                                const CardComponent = doctorCardComponents[doctor.id];
-                                if (!CardComponent) return null;
                                 const isEditing = editingDoctorId === doctor.id;
                                 const isHidden = hiddenDoctorIds.has(doctor.id);
+                                const LogoComponent = typeof doctor.partnerLogoComponent === 'string' ? logoMap[doctor.partnerLogoComponent] : doctor.partnerLogoComponent;
 
                                 return (
                                     <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
@@ -494,7 +494,10 @@ export default function DoctorsPage() {
                                         </div>
 
                                         <div className={cn("relative flex-1 w-full max-w-[1000px] p-2", isHidden && "grayscale opacity-50")}>
-                                            <CardComponent />
+                                            <DoctorCard
+                                              {...doctor}
+                                              partnerLogoComponent={LogoComponent as React.FC<{ className?: string; }> | undefined}
+                                            />
                                             {isEditing && (
                                                 <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/90">
                                                     <span className="text-2xl font-bold text-primary-foreground">In Bearbeitung</span>
