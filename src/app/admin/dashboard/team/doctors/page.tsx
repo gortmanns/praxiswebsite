@@ -4,7 +4,6 @@ import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, addDoc, updateDoc, doc, setDoc } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import type { Doctor as DoctorType } from '@/app/team/_components/doctor-card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { Separator } from '@/components/ui/separator';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
@@ -14,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DoctorCard } from '@/app/team/_components/doctor-card';
+import type { Doctor as DoctorType } from '@/app/team/_components/doctor-card';
 
 // Import individual doctor card props
 import { ortmannsProps } from '@/app/team/_components/doctors/ortmanns-card';
@@ -24,7 +24,7 @@ import { slezakProps } from '@/app/team/_components/doctors/slezak-card';
 
 export type Doctor = DoctorType;
 
-const staticDoctorsData: Doctor[] = [
+const staticDoctorsData: Omit<Doctor, 'frontSideCode' | 'backSideCode'>[] = [
     ortmannsProps,
     schemmerProps,
     rosenovProps,
@@ -88,39 +88,38 @@ export default function DoctorsPage() {
 
     const { data: dbDoctors, isLoading: areDoctorsLoading } = useCollection<Doctor>(doctorsQuery);
     
-    const [doctorsList, setDoctorsList] = useState<Doctor[]>([]);
-    const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
+    const doctorsList = useMemo(() => {
+        const dbDataMap = new Map(dbDoctors?.map(d => [d.id, d]));
+        
+        const mergedList = staticDoctorsData.map(staticDoctor => {
+            const dbData = dbDataMap.get(staticDoctor.id);
+            const staticProps = [ortmannsProps, schemmerProps, rosenovProps, herschelProps, slezakProps].find(p => p.id === staticDoctor.id);
 
+            if (dbData) {
+                return { ...staticDoctor, ...dbData };
+            }
+            return {
+                ...staticDoctor,
+                frontSideCode: staticProps?.frontSideCode || '',
+                backSideCode: staticProps?.backSideCode || '',
+            };
+        });
+
+        dbDoctors?.forEach(dbDoctor => {
+            if (!mergedList.some(d => d.id === dbDoctor.id)) {
+                mergedList.push(dbDoctor);
+            }
+        });
+        
+        return mergedList.sort((a, b) => a.order - b.order);
+    }, [dbDoctors]);
+    
+    const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
     const [isVitaEditorOpen, setVitaEditorOpen] = useState(false);
     const [hiddenDoctorIds, setHiddenDoctorIds] = useState<Set<string>>(new Set());
     const [isSaving, setIsSaving] = useState(false);
     const [status, setStatus] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
     
-    useEffect(() => {
-        // This effect runs when dbDoctors or areDoctorsLoading changes.
-        // It merges the static data with the data from Firestore.
-        const dbDataMap = new Map(dbDoctors?.map(d => [d.id, d]));
-        
-        const mergedList = staticDoctorsData.map(staticDoctor => {
-            const dbData = dbDataMap.get(staticDoctor.id);
-            // If data exists in the DB, it overrides the static data's code.
-            if (dbData) {
-                return { ...staticDoctor, ...dbData };
-            }
-            return staticDoctor;
-        });
-
-        // Add any doctors that are in the DB but not in the static list
-        dbDoctors?.forEach(dbDoctor => {
-            if (!staticDoctorsData.some(sd => sd.id === dbDoctor.id)) {
-                mergedList.push(dbDoctor);
-            }
-        });
-        
-        const sortedList = mergedList.sort((a, b) => a.order - b.order);
-        setDoctorsList(sortedList);
-
-    }, [dbDoctors, areDoctorsLoading]);
 
     const handleEditClick = (doctor: Doctor) => {
         setEditingDoctor(doctor);
@@ -146,7 +145,6 @@ export default function DoctorsPage() {
         setIsSaving(true);
         setStatus(null);
         
-        // Create a clean object with only the fields to be saved to Firestore.
         const dataToSave = {
             name: editingDoctor.name,
             order: editingDoctor.order,
@@ -156,7 +154,6 @@ export default function DoctorsPage() {
 
         try {
             const docRef = doc(firestore, 'doctors', editingDoctor.id);
-            // Use setDoc with merge to create or update the document.
             await setDoc(docRef, dataToSave, { merge: true });
 
             const isNew = !dbDoctors?.some(d => d.id === editingDoctor.id);
@@ -386,4 +383,3 @@ export default function DoctorsPage() {
         </>
     );
 }
-    
