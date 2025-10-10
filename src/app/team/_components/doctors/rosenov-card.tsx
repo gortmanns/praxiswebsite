@@ -1,4 +1,3 @@
-
 'use client';
 
 import { DoctorCard } from '../doctor-card';
@@ -34,12 +33,12 @@ export function RosenovCard() {
                 </ul>
             `}
         >
-            <Image
+             <Image
                 src="/images/VASC-Alliance-Logo.png"
                 alt="VASC Alliance Logo"
-                width={495}
-                height={165}
-                className="h-full w-full object-contain object-left"
+                width={800}
+                height={268}
+                className="h-auto w-full max-w-[400px] object-contain"
                 data-ai-hint="partner logo"
             />
         </DoctorCard>
