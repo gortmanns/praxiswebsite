@@ -19,20 +19,25 @@ export interface Doctor {
     vita: string;
     additionalInfo?: string;
     partnerLogoComponent?: React.FC<{className?: string}> | string;
+    children?: React.ReactNode;
 }
 
 
 const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
         if (typeof window !== 'undefined') {
-            return { __html: DOMPurify.sanitize(html) };
+            const config = {
+                ADD_ATTR: ['style'], // Allow style attributes
+            };
+            return { __html: DOMPurify.sanitize(html, config) };
         }
         return { __html: '' };
     }, [html]);
 
+
     return (
         <div
-            className="vita-content text-sm"
+            className="vita-content"
             dangerouslySetInnerHTML={sanitizedHtml}
         />
     );
@@ -48,7 +53,8 @@ export const DoctorCard: React.FC<Doctor> = ({
     qualifications,
     vita,
     additionalInfo,
-    partnerLogoComponent: LogoComponent
+    partnerLogoComponent: LogoComponent,
+    children
 }) => {
 
     return (
@@ -88,21 +94,25 @@ export const DoctorCard: React.FC<Doctor> = ({
                                         {qualifications.map((q, i) => <p key={i}>{q}</p>)}
                                     </div>
                                     
-                                    {(LogoComponent || additionalInfo) && (
-                                        <div className="relative mt-[2.5cqw] flex h-auto max-h-28 w-full max-w-[400px] items-center justify-start">
-                                            {LogoComponent ? (
-                                                typeof LogoComponent === 'function' ? (
+                                     <div className="mt-[2.5cqw]">
+                                        {children ? (
+                                            <div className="relative flex h-auto max-h-28 w-full max-w-[400px] items-center justify-start">
+                                                {children}
+                                            </div>
+                                        ) : LogoComponent ? (
+                                             <div className="relative flex h-auto max-h-28 w-full max-w-[400px] items-center justify-start">
+                                                {typeof LogoComponent === 'function' ? (
                                                     <LogoComponent className="h-full w-full object-contain object-left" />
                                                 ) : typeof LogoComponent === 'string' && (LogoComponent.startsWith('/images') || LogoComponent.startsWith('data:image')) ? (
                                                     <Image src={LogoComponent} alt="Partner Logo" width={400} height={100} className="h-auto w-full object-contain object-left" />
-                                                ) : null
-                                            ) : additionalInfo ? (
-                                                <p className="text-[clamp(0.6rem,1.6cqw,1rem)] italic">
-                                                    {additionalInfo}
-                                                </p>
-                                            ) : null}
-                                        </div>
-                                    )}
+                                                ) : null}
+                                             </div>
+                                        ) : additionalInfo ? (
+                                            <p className="text-[clamp(0.6rem,1.6cqw,1rem)] italic">
+                                                {additionalInfo}
+                                            </p>
+                                        ) : null}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -110,7 +120,7 @@ export const DoctorCard: React.FC<Doctor> = ({
                 </CardContent>
             </Card>
             <div className="flip-card-back absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                 <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
+                 <div className="h-full overflow-y-auto flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
                     <VitaRenderer html={vita} />
                  </div>
             </div>
