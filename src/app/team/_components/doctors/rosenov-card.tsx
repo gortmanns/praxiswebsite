@@ -18,18 +18,18 @@ export function RosenovCard() {
                     .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
                     .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }
                 </style>
-                <div class="relative w-full aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground border-2 border-dashed border-red-500">
-                    <div class="absolute inset-0 flex items-center p-6">
-                        <div class="relative h-full overflow-hidden rounded-md aspect-[2/3] border-2 border-dashed border-green-500">
+                <div class="group relative font-headline w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground border-2 border-dashed border-red-500 p-6">
+                    <div class="flex h-full w-full items-start">
+                        <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md border-2 border-dashed border-green-500">
                             <img src="/images/team/Dr.Rosenov.jpg" alt="Portrait von A. Rosenov" data-ai-hint="man portrait" class="w-full h-full object-contain border-2 border-dashed border-blue-500" />
                         </div>
-                        <div class="ml-6 flex-grow flex flex-col justify-between h-full border-2 border-dashed border-yellow-500">
+                        <div class="flex-grow flex flex-col h-full ml-6 border-2 border-dashed border-yellow-500 justify-center">
                              <div>
-                                <p class="text-3xl font-bold text-primary">Dr. med.</p>
-                                <h3 class="text-6xl font-bold text-primary my-2">A. Rosenov</h3>
-                                <p class="text-3xl font-bold">Facharzt für Angiologie</p>
+                                <p class="text-2xl font-bold text-primary">Dr. med.</p>
+                                <h3 class="text-5xl font-bold text-primary my-2">A. Rosenov</h3>
+                                <p class="text-xl font-bold">Facharzt für Angiologie</p>
                             </div>
-                            <div class="flex-grow flex items-center">
+                            <div class="mt-6 flex-grow flex items-center">
                                 <img src="/images/VASC-Alliance-Logo.png" alt="VASC Alliance Logo" class="h-auto w-full max-w-[400px] object-contain" data-ai-hint="partner logo" />
                             </div>
                         </div>
