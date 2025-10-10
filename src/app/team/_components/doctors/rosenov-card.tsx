@@ -23,14 +23,16 @@ export function RosenovCard() {
                         <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md border-2 border-dashed border-green-500">
                             <img src="/images/team/Dr.Rosenov.jpg" alt="Portrait von A. Rosenov" data-ai-hint="man portrait" class="w-full h-full object-contain border-2 border-dashed border-blue-500" />
                         </div>
-                        <div class="flex-grow flex flex-col h-full ml-6 border-2 border-dashed border-yellow-500 justify-center">
-                             <div>
-                                <p class="text-2xl font-bold text-primary">Dr. med.</p>
-                                <h3 class="text-5xl font-bold text-primary my-2">A. Rosenov</h3>
-                                <p class="text-xl font-bold">Facharzt für Angiologie</p>
-                            </div>
-                            <div class="mt-6 flex-grow flex items-center">
-                                <img src="/images/VASC-Alliance-Logo.png" alt="VASC Alliance Logo" class="h-auto w-full max-w-[400px] object-contain" data-ai-hint="partner logo" />
+                        <div class="flex-grow flex flex-col ml-6 justify-center font-headline border-2 border-dashed border-yellow-500 h-full">
+                           <div>
+                                <div>
+                                    <p class="text-2xl font-bold text-primary">Dr. med.</p>
+                                    <h3 class="text-5xl font-bold text-primary my-2">A. Rosenov</h3>
+                                    <p class="text-xl font-bold">Facharzt für Angiologie</p>
+                                </div>
+                                <div class="mt-6">
+                                    <img src="/images/VASC-Alliance-Logo.png" alt="VASC Alliance Logo" class="h-auto w-full max-w-[400px] object-contain" data-ai-hint="partner logo" />
+                                </div>
                             </div>
                         </div>
                     </div>

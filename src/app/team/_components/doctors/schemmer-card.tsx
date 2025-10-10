@@ -19,14 +19,16 @@ export function SchemmerCard() {
                         <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md border-2 border-dashed border-green-500">
                             <img src="/images/team/Prof.Schemmer.jpg" alt="Portrait von P. Schemmer" data-ai-hint="man portrait" class="w-full h-full object-contain border-2 border-dashed border-blue-500" />
                         </div>
-                        <div class="flex-grow flex flex-col h-full ml-6 border-2 border-dashed border-yellow-500 justify-center">
+                        <div class="flex-grow flex flex-col ml-6 justify-center font-headline border-2 border-dashed border-yellow-500 h-full">
                             <div>
-                                <p class="text-2xl font-bold text-primary">Prof. Dr. med. Dr. h. c.</p>
-                                <h3 class="text-5xl font-bold text-primary my-2">P. Schemmer</h3>
-                                <p class="text-xl font-bold">Facharzt für Chirurgie</p>
-                            </div>
-                            <div class="mt-6 flex-grow flex items-center">
-                                <img src="/images/schemmer-worni-logo.png" alt="Schemmer & Worni Logo" class="h-auto w-full max-w-[400px] object-contain" data-ai-hint="partner logo" />
+                                <div>
+                                    <p class="text-2xl font-bold text-primary">Prof. Dr. med. Dr. h. c.</p>
+                                    <h3 class="text-5xl font-bold text-primary my-2">P. Schemmer</h3>
+                                    <p class="text-xl font-bold">Facharzt für Chirurgie</p>
+                                </div>
+                                <div class="mt-6">
+                                    <img src="/images/schemmer-worni-logo.png" alt="Schemmer & Worni Logo" class="h-auto w-full max-w-[400px] object-contain" data-ai-hint="partner logo" />
+                                </div>
                             </div>
                         </div>
                     </div>
