@@ -49,10 +49,10 @@ const FrontSide: React.FC<{ doctor: Doctor; onImageClick: () => void; }> = ({ do
     
     return (
         <div 
-            className="relative w-full bg-card"
+            className="relative w-full h-full bg-card p-6"
             style={{ containerType: 'inline-size' } as React.CSSProperties}
         >
-            <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6">
+            <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%]">
                 <div 
                     className="relative col-span-1 w-full overflow-hidden rounded-md cursor-pointer"
                     onClick={onImageClick}
