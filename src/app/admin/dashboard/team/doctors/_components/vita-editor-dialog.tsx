@@ -10,7 +10,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogClose,
   DialogFooter,
   DialogDescription,
@@ -279,13 +278,13 @@ const MenuBar = ({ editor, isHtmlMode, onHtmlModeToggle }: { editor: Editor | nu
 };
 
 interface VitaEditorDialogProps {
-  trigger: React.ReactNode;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
   initialValue: string;
   onSave: (value: string) => void;
 }
 
-export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, initialValue, onSave }) => {
-  const [isOpen, setIsOpen] = useState(false);
+export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ isOpen, onOpenChange, initialValue, onSave }) => {
   const [isHtmlMode, setIsHtmlMode] = useState(false);
   const [htmlContent, setHtmlContent] = useState(initialValue);
   
@@ -314,7 +313,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
         const content = initialValue;
         setHtmlContent(content);
         if (editor && !editor.isDestroyed) {
-            editor.commands.setContent(content);
+            editor.commands.setContent(content, false);
         }
     }
   }, [isOpen, initialValue, editor]);
@@ -325,7 +324,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
       setHtmlContent(editor.getHTML());
     } else {
       if (editor.getHTML() !== htmlContent) {
-        editor.commands.setContent(htmlContent);
+        editor.commands.setContent(htmlContent, false);
       }
     }
   }, [isHtmlMode, editor, htmlContent]);
@@ -334,7 +333,6 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
   const handleSave = () => {
     const contentToSave = isHtmlMode ? htmlContent : editor?.getHTML() || '';
     onSave(contentToSave);
-    setIsOpen(false);
   };
 
   const handleHtmlModeToggle = () => {
@@ -342,8 +340,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>Text der Kartenrückseite bearbeiten</DialogTitle>
@@ -365,9 +362,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ trigger, ini
           )}
         </div>
         <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Abbrechen</Button>
-          </DialogClose>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Abbrechen</Button>
           <Button onClick={handleSave}>Speichern</Button>
         </DialogFooter>
       </DialogContent>

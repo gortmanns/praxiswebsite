@@ -4,7 +4,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { User } from 'lucide-react';
+import { User, Pencil, Upload } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import type { Doctor } from '@/app/team/_components/doctor-card';
 import {
@@ -41,9 +41,11 @@ const partnerLogos: { [key: string]: React.FC<any> } = {
 interface DoctorCardPreviewProps {
     doctor: Doctor;
     isBack?: boolean;
+    onImageClick?: () => void;
+    onVitaClick?: () => void;
 }
 
-const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = false }) => {
+const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = false, onImageClick, onVitaClick }) => {
     const { 
         title,
         name,
@@ -60,10 +62,19 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
 
     if (isBack) {
         return (
-            <Card className="w-full h-full overflow-hidden rounded-lg shadow-sm">
-                <div className="flex h-full flex-col overflow-auto bg-accent/95 p-6 text-left text-background">
+            <Card 
+              className="w-full h-full overflow-hidden rounded-lg shadow-sm group cursor-pointer"
+              onClick={onVitaClick}
+            >
+                <div className="relative flex h-full flex-col overflow-auto bg-accent/95 p-6 text-left text-background">
                     <div className="h-full w-full overflow-y-auto text-base leading-tight scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
                         <VitaRenderer html={vita} />
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity group-hover:opacity-100">
+                        <div className="flex flex-col items-center gap-2 text-white">
+                            <Pencil className="h-8 w-8" />
+                            <span className="font-bold">Text bearbeiten</span>
+                        </div>
                     </div>
                 </div>
             </Card>
@@ -78,7 +89,7 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
                     style={{ 'containerType': 'inline-size' } as React.CSSProperties}
                 >
                     <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6">
-                        <div className="relative col-span-1 w-full overflow-hidden rounded-md">
+                        <div className="relative col-span-1 w-full overflow-hidden rounded-md group cursor-pointer" onClick={onImageClick}>
                              <div className="relative h-full w-full aspect-[2/3]">
                                 {imageUrl ? (
                                     <Image
@@ -94,9 +105,15 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
                                     </div>
                                 )}
                             </div>
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity group-hover:opacity-100">
+                                <div className="flex flex-col items-center gap-2 text-white">
+                                    <Upload className="h-8 w-8" />
+                                    <span className="font-bold text-center">Bild ändern</span>
+                                </div>
+                            </div>
                         </div>
-                        <div className="col-span-2">
-                            <div className="flex h-full flex-col justify-center text-left text-foreground/80">
+                        <div className="col-span-2 flex flex-col justify-center">
+                            <div className="text-left text-foreground/80">
                                 <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
                                 <h4 className="font-headline text-[clamp(1.2rem,4cqw,2.2rem)] font-bold leading-tight text-primary">
                                   {name}
@@ -114,7 +131,7 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
                                 
                                 {LogoComponent && (
                                     <div className="relative mt-[2.5cqw] flex w-fit justify-start">
-                                        <LogoComponent className="h-28 w-auto" />
+                                        <LogoComponent className="h-auto w-full max-w-[240px]" />
                                     </div>
                                 )}
                             </div>
@@ -128,17 +145,19 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
 
 interface EditableDoctorCardProps {
     doctor: Doctor;
+    onImageClick: () => void;
+    onVitaClick: () => void;
 }
 
-export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor }) => {
+export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onImageClick, onVitaClick }) => {
     return (
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <div className="w-full aspect-[1000/495]">
-                <DoctorCardPreview doctor={doctor} isBack={false} />
+                <DoctorCardPreview doctor={doctor} onImageClick={onImageClick} isBack={false} />
             </div>
 
             <div className="w-full aspect-[1000/495]">
-                <DoctorCardPreview doctor={doctor} isBack={true} />
+                <DoctorCardPreview doctor={doctor} onVitaClick={onVitaClick} isBack={true} />
             </div>
         </div>
     );

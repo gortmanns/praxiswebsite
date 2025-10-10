@@ -110,6 +110,10 @@ export default function DoctorsPage() {
   const [hiddenCards, setHiddenCards] = useState<string[]>(['slezak']);
   const [doctorToEdit, setDoctorToEdit] = useState<Doctor>(sampleDoctor);
 
+  const [isVitaEditorOpen, setIsVitaEditorOpen] = useState(false);
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     const calculateScale = () => {
       if (containerRef.current) {
@@ -141,6 +145,34 @@ export default function DoctorsPage() {
         setEditingCardId(cardId);
     }
   }
+
+  const handleVitaSave = (newVita: string) => {
+    setDoctorToEdit(prev => ({ ...prev, vita: newVita }));
+    setIsVitaEditorOpen(false);
+  };
+  
+  const handleImageClick = () => {
+      fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+              setImageToCrop(e.target?.result as string);
+          };
+          reader.readAsDataURL(file);
+      }
+      // Reset file input to allow re-selection of the same file
+      event.target.value = '';
+  };
+  
+  const handleCropComplete = (croppedImageUrl: string) => {
+    setDoctorToEdit(prev => ({ ...prev, imageUrl: croppedImageUrl }));
+    setImageToCrop(null);
+  };
+
 
   const ActionButtons = ({ cardId }: { cardId: string }) => {
     const isHidden = hiddenCards.includes(cardId);
@@ -194,7 +226,8 @@ export default function DoctorsPage() {
   const deactivatedCards = doctorCards.filter(card => hiddenCards.includes(card.id));
 
   return (
-    <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
+    <>
+      <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
         <Card className="w-full">
             <CardHeader>
                 <div>
@@ -208,7 +241,11 @@ export default function DoctorsPage() {
                  <div ref={containerRef} className="mx-auto w-full max-w-[1000px] p-2">
                     <div style={{ transform: `scale(${scale})`, transformOrigin: 'top left' }}>
                         <div className="w-[1000px]">
-                           <EditableDoctorCard doctor={doctorToEdit} />
+                           <EditableDoctorCard 
+                              doctor={doctorToEdit}
+                              onImageClick={handleImageClick}
+                              onVitaClick={() => setIsVitaEditorOpen(true)}
+                           />
                         </div>
                     </div>
                  </div>
@@ -269,7 +306,31 @@ export default function DoctorsPage() {
             )}
         </div>
     </div>
+    
+    {/* Hidden file input for image selection */}
+    <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/png, image/jpeg, image/webp"
+        className="hidden"
+    />
+
+    {/* Dialogs */}
+    <VitaEditorDialog
+      isOpen={isVitaEditorOpen}
+      onOpenChange={setIsVitaEditorOpen}
+      initialValue={doctorToEdit.vita}
+      onSave={handleVitaSave}
+    />
+
+    {imageToCrop && (
+        <ImageCropDialog
+            imageUrl={imageToCrop}
+            onCropComplete={handleCropComplete}
+            onClose={() => setImageToCrop(null)}
+        />
+    )}
+  </>
   );
 }
-
-    

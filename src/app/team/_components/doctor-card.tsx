@@ -104,8 +104,8 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
                                     )}
                                 </div>
                             </div>
-                            <div className="col-span-2">
-                                <div className="flex flex-col justify-center text-left text-foreground/80 h-full">
+                            <div className="col-span-2 flex flex-col justify-center">
+                                <div className="text-left text-foreground/80">
                                     <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
                                     <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
                                       {name}
@@ -146,5 +146,3 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
         </div>
     );
 };
-
-    
