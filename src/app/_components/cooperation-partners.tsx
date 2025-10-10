@@ -3,7 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
-import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
 
 export function CooperationPartnersSection() {
   const topPartners = [
@@ -103,7 +102,7 @@ export function CooperationPartnersSection() {
             >
               <Card className="flex h-full w-full items-center p-6">
                 <CardContent className="flex w-full items-center justify-center p-0">
-                   <AgnieszkaSlezakLogo className="h-24 w-auto text-special-green" />
+                   <img src="/images/logos/slezak-logo.png" alt="Agnieszka Slezak Logo" className="h-24 w-auto text-special-green" />
                 </CardContent>
               </Card>
               <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
