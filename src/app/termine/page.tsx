@@ -42,7 +42,7 @@ export default function TerminePage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6 text-lg text-foreground/80">
-                <p>Wenn Sie zum ersten Mal zu uns kommen, bringen Sie bitte zu Ihrem Termin Ihre Krankenkassenkarte sowie allfällig vorhandene Unterlagen wie Impfausweis, Blutgruppennachweis oder eine Liste Ihrer aktuellen Medikamente mit.</p>
+                <p>Wenn Sie zum ersten Mal zu uns kommen, bringen Sie bitte Ihre Krankenkassenkarte und den Impfausweis mit. Falls vorhanden, ist auch eine aktuelle Medikamentenliste hilfreich. Sollte Ihr Besuch aufgrund eines Unfalls erfolgen, benötigen wir zusätzlich die Informationen Ihrer Unfallversicherung inklusive der Schadennummer.</p>
                 <p>Zusätzlich bitten wir Neupatienten, die folgenden Formulare herunterzuladen und ausgefüllt zum ersten Termin mitzubringen oder uns vorab per E-Mail oder Fax zukommen zu lassen. Dies hilft uns, den administrativen Aufwand zu reduzieren und uns mehr Zeit für Ihr Anliegen zu nehmen.</p>
 
                 <div className="space-y-4 rounded-md border border-border bg-card p-6">
