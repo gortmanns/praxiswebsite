@@ -11,18 +11,14 @@ export function HerschelCard() {
             name="R. Herschel"
             imageUrl="/images/team/Dr.Herschel.jpg"
             imageHint="man portrait"
-            specialty={
-             <div>
-                <span>Facharzt Orthopädische Chirurgie und</span>
-                <span>Traumatologie des Bewegungsapparates</span>
-             </div>
-            }
+            specialty="Facharzt Orthopädische Chirurgie und Traumatologie des Bewegungsapparates"
             qualifications={[]}
             vita={`
                 <p>Vita folgt in Kürze.</p>
             `}
-        >
-            <OrthozentrumLogo className="h-28 w-auto" />
-        </DoctorCard>
+            partnerLogoComponent="OrthozentrumLogo"
+        />
     );
 }
+
+    

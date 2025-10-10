@@ -81,7 +81,7 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
     return (
         <div className="group relative w-full max-w-[1000px] overflow-hidden rounded-lg shadow-sm">
             <Card className="w-full overflow-hidden">
-                <CardContent className="p-0 h-full">
+                <CardContent className="p-0">
                     <div 
                         className="relative w-full bg-card aspect-[1000/495]"
                         style={{ 'containerType': 'inline-size' } as React.CSSProperties}
@@ -146,3 +146,5 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
         </div>
     );
 };
+
+    
