@@ -237,13 +237,22 @@ export default function DoctorsPage() {
         setEditingDoctorId(null);
     };
 
-    const handleAddNewDoctor = async () => {
+    const isDoctorFromDB = (id: string | null): boolean => {
+        if (!id) return false;
+        return doctorsFromDb?.some(d => d.id === id) ?? false;
+    };
+    
+    const handleSave = async () => {
         if (!firestore || !doctorInEdit) return;
 
-        const newDoctorData: Omit<Doctor, 'id' | 'specialty'> & {specialty: string} = {
+        // Use a consistent ID, either from the editing doctor or create a new one for a new card
+        const docId = editingDoctorId || doctorInEdit.id || Date.now().toString();
+        const isExistingInDB = isDoctorFromDB(editingDoctorId);
+
+        const saveData: Omit<Doctor, 'id' | 'specialty'> & {specialty: string} = {
             title: doctorInEdit.title || 'Titel',
             name: doctorInEdit.name || 'Name',
-            specialty: (doctorInEdit.specialty as string) || 'Spezialisierung',
+            specialty: typeof doctorInEdit.specialty === 'object' ? 'Spezialisierung' : doctorInEdit.specialty || 'Spezialisierung',
             qualifications: doctorInEdit.qualifications || [],
             vita: doctorInEdit.vita || '<p></p>',
             imageUrl: doctorInEdit.imageUrl || '',
@@ -251,40 +260,23 @@ export default function DoctorsPage() {
             languages: doctorInEdit.languages || [],
             additionalInfo: doctorInEdit.additionalInfo,
             partnerLogoComponent: doctorInEdit.partnerLogoComponent as string | undefined,
-            order: (doctorsList[doctorsList.length - 1]?.order || 0) + 1,
+            order: doctorInEdit.order || (doctorsList[doctorsList.length - 1]?.order || 0) + 1,
         };
 
         setIsSaving(true);
         try {
-            await addDoctor(firestore, newDoctorData);
-            toast.success("Neue Arztkarte wurde erfolgreich angelegt.");
+            if (isExistingInDB && editingDoctorId) {
+                await updateDoctor(firestore, editingDoctorId, saveData);
+                toast.success("Die Änderungen wurden erfolgreich gespeichert.");
+            } else {
+                // For new cards or cards from static data, we create a new document
+                await addDoctor(firestore, saveData, editingDoctorId);
+                toast.success("Neue Arztkarte wurde erfolgreich angelegt.");
+            }
             handleCancel();
         } catch (error) {
-            console.error("Error adding doctor: ", error);
-            toast.error("Die Arztkarte konnte nicht angelegt werden.");
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
-    const handleUpdateDoctor = async () => {
-        if (!firestore || !editingDoctorId || !doctorInEdit) return;
-        
-        const { id, ...updateData } = doctorInEdit;
-        
-        const finalUpdateData = {
-            ...updateData,
-            specialty: typeof updateData.specialty === 'object' ? 'Spezialisierung' : updateData.specialty,
-        };
-
-        setIsSaving(true);
-        try {
-            await updateDoctor(firestore, editingDoctorId, finalUpdateData);
-            toast.success("Die Änderungen wurden erfolgreich gespeichert.");
-            handleCancel();
-        } catch (error) {
-            console.error("Error updating doctor: ", error);
-            toast.error("Die Änderungen konnten nicht gespeichert werden.");
+            console.error("Error saving doctor: ", error);
+            toast.error("Die Daten konnten nicht gespeichert werden.");
         } finally {
             setIsSaving(false);
         }
@@ -470,7 +462,6 @@ export default function DoctorsPage() {
         });
     };
     
-    const isDoctorFromDB = (id: string) => doctorsFromDb?.some(d => d.id === id) ?? false;
     
     return (
         <>
@@ -489,19 +480,12 @@ export default function DoctorsPage() {
                              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                                 <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Live-Vorschau & Bearbeitung</h3>
                                 <div className="flex gap-2">
-                                    {editingDoctorId ? (
-                                        <Button onClick={handleUpdateDoctor} disabled={isSaving}>
-                                            {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-                                            Änderungen speichern
-                                        </Button>
-                                    ) : (
-                                        <Button onClick={handleAddNewDoctor} disabled={!doctorInEdit || isSaving}>
-                                            {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <PlusCircle className="mr-2 h-4 w-4" />}
-                                            Als neue Karte anlegen
-                                        </Button>
-                                    )}
+                                    <Button onClick={handleSave} disabled={!doctorInEdit || isSaving}>
+                                        {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                                        {isDoctorFromDB(editingDoctorId) ? 'Änderungen speichern' : 'Als neue Karte anlegen'}
+                                    </Button>
                                     
-                                    <Button variant="outline" onClick={handleCancel} disabled={(!doctorInEdit && !editingDoctorId) || isSaving}>
+                                    <Button variant="outline" onClick={handleCancel} disabled={!doctorInEdit || isSaving}>
                                         Abbrechen
                                     </Button>
                                 </div>
