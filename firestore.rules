@@ -1,94 +1,82 @@
 /**
- * @file Firestore Security Rules
- * @description This ruleset enforces a public-read, admin-write model for doctors and holidays,
- * and a user-ownership model for user profiles.
+ * @fileoverview Firestore Security Rules for Praxis Online.
+ *
+ * Core Philosophy:
+ * This ruleset prioritizes a secure-by-default posture, restricting write access to specific roles or conditions while allowing public read access where appropriate.
  *
  * Data Structure:
- * - /users/{userId}: Stores public user profile information, accessible only to the user themselves.
- * - /holidays/{holidayId}: Stores practice holiday periods, publicly readable but writeable by admins only.
- * - /doctors/{doctorId}: Stores doctor profiles for the team page, publicly readable but writeable by admins only.
+ * The database consists of three top-level collections: `doctor_profiles`, `contact_form_submissions`, and `symptom_checks`. Each collection stores a specific entity type.
  *
  * Key Security Decisions:
- * - Listing of users is disallowed.
- * - Public read access is granted for doctors and holidays, suitable for content intended for general consumption.
- * - Doctor and Holiday writes are not restricted to any particular role.
+ * - Doctor profiles are publicly readable, but write access is restricted.
+ * - Contact form submissions have restricted write access, presumably for admin use only.
+ * - Symptom checks are publicly readable, but write access is restricted.
+ * - No user listing is allowed unless explicitly stated otherwise.
  *
- * Denormalization for Authorization: N/A. This ruleset does not currently require denormalization.
- * Structural Segregation: Public and private data is segregated into separate collections (users vs. doctors/holidays).
+ * Denormalization for Authorization:
+ *  This ruleset does not currently implement denormalization, but it could be used for more complex authorization logic in the future (e.g., storing a list of authorized admin UIDs directly in the `contact_form_submissions` collection).
+ *
+ * Structural Segregation:
+ * The use of separate top-level collections for each entity type (doctor profiles, contact form submissions, symptom checks) provides structural segregation.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Controls access to user profile information.
-     * @path /users/{userId}
-     * @allow (create) - User 'oMXGLJllD8YTmYg9OMSR7KVD8Ll2' can create their profile if request.auth.uid matches userId
-     * @allow (get) - User 'oMXGLJllD8YTmYg9OMSR7KVD8Ll2' can read their profile if request.auth.uid matches userId
-     * @allow (update) - User 'oMXGLJllD8YTmYg9OMSR7KVD8Ll2' can update their profile if request.auth.uid matches userId and document exists
-     * @allow (delete) - User 'oMXGLJllD8YTmYg9OMSR7KVD8Ll2' can delete their profile if request.auth.uid matches userId and document exists
-     * @deny (create) - User 'someoneElse' cannot create a profile under 'oMXGLJllD8YTmYg9OMSR7KVD8Ll2'
-     * @deny (get) - User 'someoneElse' cannot read user profile 'oMXGLJllD8YTmYg9OMSR7KVD8Ll2'
-     * @deny (update) - User 'someoneElse' cannot update user profile 'oMXGLJllD8YTmYg9OMSR7KVD8Ll2'
-     * @deny (delete) - User 'someoneElse' cannot delete user profile 'oMXGLJllD8YTmYg9OMSR7KVD8Ll2'
-     * @principle Enforces document ownership for all operations.
+     * @description Allows public read access to doctor profiles, but restricts write access.
+     * @path /doctor_profiles/{doctorProfileId}
+     * @allow get, list: if true;
+     * @allow create: if false;
+     * @allow update: if false;
+     * @allow delete: if false;
+     * @deny create: if true; // Example of how to deny an operation
+     * @principle Public read, restricted write.
      */
-    match /users/{userId} {
-      allow get: if isOwner(userId);
-      allow list: if false; // Listing users is not permitted.
-      allow create: if isOwner(userId) && request.resource.data.uid == userId;
-      allow update: if isExistingOwner(userId) && request.resource.data.uid == resource.data.uid;
-      allow delete: if isExistingOwner(userId);
+    match /doctor_profiles/{doctorProfileId} {
+      allow get, list: if true;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
-     * @description Controls access to holiday periods. Public read, admin write.
-     * @path /holidays/{holidayId}
-     * @allow (get) - Any user can read holiday 'holiday123'
-     * @allow (list) - Any user can list all holidays
-     * @allow (create) - Any authenticated user can create a holiday.
-     * @allow (update) - Any authenticated user can update holiday 'holiday123' if it exists
-     * @allow (delete) - Any authenticated user can delete holiday 'holiday123' if it exists
-     * @deny (create) - Unauthenticated user cannot create holiday 'holiday123'.
-     * @principle Public read, owner-only writes.
+     * @description Restricts write access to contact form submissions, allowing only authenticated users.
+     * @path /contact_form_submissions/{contactFormSubmissionId}
+     * @allow get: if false;
+     * @allow list: if false;
+     * @allow create: if isSignedIn();
+     * @allow update: if false;
+     * @allow delete: if false;
+     * @deny create: if true; // Example of how to deny an operation
+     * @principle Restricts write access to authenticated users.
      */
-    match /holidays/{holidayId} {
-      allow get, list: if true;
+    match /contact_form_submissions/{contactFormSubmissionId} {
+      allow get, list: if false;
       allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
-     * @description Controls access to doctor profiles. Public read, admin write.
-     * @path /doctors/{doctorId}
-     * @allow (get) - Any user can read doctor 'drSmith'
-     * @allow (list) - Any user can list all doctors
-     * @allow (create) - Any authenticated user can create a doctor profile.
-     * @allow (update) - Any authenticated user can update doctor profile 'drSmith' if it exists
-     * @allow (delete) - Any authenticated user can delete doctor profile 'drSmith' if it exists
-     * @deny (create) - Unauthenticated user cannot create doctor 'drSmith'.
-     * @principle Public read, owner-only writes.
+     * @description Allows public read access to symptom checks, but restricts write access.
+     * @path /symptom_checks/{symptomCheckId}
+     * @allow get, list: if true;
+     * @allow create: if false;
+     * @allow update: if false;
+     * @allow delete: if false;
+     * @deny create: if true; // Example of how to deny an operation
+     * @principle Public read, restricted write.
      */
-    match /doctors/{doctorId} {
+    match /symptom_checks/{symptomCheckId} {
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
-
-    // --- Helper Functions ---
 
     function isSignedIn() {
       return request.auth != null;
-    }
-
-    function isOwner(userId) {
-      return request.auth.uid == userId;
-    }
-
-    function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
     }
   }
 }
