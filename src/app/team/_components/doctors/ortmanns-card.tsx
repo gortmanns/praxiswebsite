@@ -19,7 +19,7 @@ export function OrtmannsCard() {
                     .vita-content .is-small { font-size: 0.8em; font-weight: normal; }
                     .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }
                 </style>
-                <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground border-2 border-dashed border-red-500 p-6">
+                <div class="group relative font-headline w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground border-2 border-dashed border-red-500 p-6">
                     <div class="flex h-full w-full items-start">
                         <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md border-2 border-dashed border-green-500">
                             <img src="/images/team/Ortmanns.jpg" alt="Portrait von G. Ortmanns" data-ai-hint="man portrait" class="h-full w-full object-contain border-2 border-dashed border-blue-500" />
@@ -29,12 +29,12 @@ export function OrtmannsCard() {
                                 <p class="text-2xl font-bold text-primary">Dipl. med.</p>
                                 <h3 class="text-5xl font-bold text-primary my-2">G. Ortmanns</h3>
                                 <p class="text-xl font-bold">Praktischer Arzt</p>
-                                <div class="mt-6 text-xl text-muted-foreground">
+                                <div class="mt-6 text-xl">
                                     <p>Master of Public Health (UNSW)</p>
                                     <p>Master of Health Management (UNSW)</p>
                                 </div>
                             </div>
-                            <div class="mt-6 text-base text-muted-foreground">
+                            <div class="mt-6 text-base">
                                 <p>Ärztliche und administrative Leitung Praxiszentrum im Ring</p>
                             </div>
                         </div>
