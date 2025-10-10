@@ -57,7 +57,7 @@ const FrontSide: React.FC<Pick<EditableDoctorCardProps, 'doctor' | 'onImageClick
                         ) : (
                             <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
                                 <User className="h-1/2 w-1/2" />
-                                <span className="px-4 text-center text-xs">Klicken zum Ändern</span>
+                                <span className="px-4 text-center text-lg">Klicken zum Ändern</span>
                             </div>
                         )}
                     </div>
