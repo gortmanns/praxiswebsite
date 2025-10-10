@@ -1,9 +1,13 @@
+
 'use client';
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { OrtmannsCard } from '@/app/team/_components/doctors/ortmanns-card';
+import { SchemmerCard } from '@/app/team/_components/doctors/schemmer-card';
 import { RosenovCard } from '@/app/team/_components/doctors/rosenov-card';
+import { HerschelCard } from '@/app/team/_components/doctors/herschel-card';
+import { SlezakCard } from '@/app/team/_components/doctors/slezak-card';
 import { Button } from '@/components/ui/button';
 import { EyeOff, ArrowUp, ArrowDown, Info } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
@@ -13,7 +17,10 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 // Statische Definition der Ärzte für die Anzeige
 const doctors = [
     { id: 'ortmanns', name: 'G. Ortmanns', Component: OrtmannsCard },
+    { id: 'schemmer', name: 'P. Schemmer', Component: SchemmerCard },
     { id: 'rosenov', name: 'A. Rosenov', Component: RosenovCard },
+    { id: 'herschel', name: 'R. Herschel', Component: HerschelCard },
+    { id: 'slezak', name: 'A. Slezak', Component: SlezakCard },
 ];
 
 export default function DoctorsPage() {

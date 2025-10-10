@@ -1,3 +1,4 @@
+
 'use client'
 
 import React from 'react';
@@ -17,7 +18,11 @@ const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     // In a general-purpose app, you MUST sanitize user-provided HTML.
     const sanitizedHtml = React.useMemo(() => {
         if (typeof window !== 'undefined') {
-            return { __html: DOMPurify.sanitize(html, { ADD_TAGS: ["svg", "path", "g", "text"], ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label'] }) };
+            const config = {
+                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img"],
+                ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src']
+            };
+            return { __html: DOMPurify.sanitize(html, config) };
         }
         return { __html: '' };
     }, [html]);
