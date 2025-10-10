@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import type { Doctor } from '@/app/team/_components/doctor-card';
+import type { Doctor } from '@/app/admin/dashboard/team/doctors/page';
 import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
 
@@ -12,13 +12,11 @@ interface EditableDoctorCardProps {
 }
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
-    // This is safe because we trust the source of the HTML (our own admin UI)
-    // In a general-purpose app, you MUST sanitize user-provided HTML.
     const sanitizedHtml = React.useMemo(() => {
         if (typeof window !== 'undefined') {
             const config = {
-                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style"],
-                ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel']
+                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img"],
+                ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src']
             };
             return { __html: DOMPurify.sanitize(html, config) };
         }

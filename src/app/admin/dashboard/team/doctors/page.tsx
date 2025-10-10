@@ -13,7 +13,6 @@ import { Info, Eye, EyeOff, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, Check
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
-import { DoctorCard } from '@/app/team/_components/doctor-card';
 import type { Doctor as DoctorType } from '@/app/team/_components/doctor-card';
 
 // Import individual doctor card props
@@ -26,21 +25,13 @@ import { slezakProps } from '@/app/team/_components/doctors/slezak-card';
 export type Doctor = DoctorType;
 
 // This is the stable, static list of all doctors.
-const staticDoctorsData: Omit<Doctor, 'frontSideCode' | 'backSideCode'>[] = [
+const staticDoctorsData: Doctor[] = [
     ortmannsProps,
     schemmerProps,
     rosenovProps,
     herschelProps,
     slezakProps,
-].sort((a, b) => a.order - b.order);
-
-const initialDoctorCodes: Record<string, { frontSideCode: string; backSideCode: string; }> = {
-    ortmanns: { frontSideCode: ortmannsProps.frontSideCode, backSideCode: ortmannsProps.backSideCode },
-    schemmer: { frontSideCode: '', backSideCode: '' }, // placeholder
-    rosenov: { frontSideCode: '', backSideCode: '' }, // placeholder
-    herschel: { frontSideCode: '', backSideCode: '' }, // placeholder
-    slezak: { frontSideCode: '', backSideCode: '' }, // placeholder
-};
+].map(p => ({...p, partnerLogoComponent: undefined})).sort((a, b) => a.order - b.order);
 
 
 const createDefaultDoctor = (): Omit<Doctor, 'id'> => ({
@@ -105,11 +96,11 @@ export default function DoctorsPage() {
         return staticDoctorsData.map(staticDoctor => {
             const dbData = dbDataMap.get(staticDoctor.id);
             if (dbData) {
+                // If data exists in DB, use it, but keep static metadata
                 return { ...staticDoctor, ...dbData };
             }
-            // If no DB data, pull from the original props for initial state
-            const originalProps = [ortmannsProps, schemmerProps, rosenovProps, herschelProps, slezakProps].find(p => p.id === staticDoctor.id);
-            return originalProps || (staticDoctor as Doctor);
+            // Otherwise, use the full static data
+            return staticDoctor;
         }).sort((a, b) => a.order - b.order);
 
     }, [dbDoctors]);
@@ -146,7 +137,7 @@ export default function DoctorsPage() {
         setStatus(null);
         
         // Create a clean object with only serializable data for Firestore
-        const dataToSave = {
+        const dataToSave: Omit<Doctor, 'id'> = {
             name: editingDoctor.name,
             order: editingDoctor.order,
             frontSideCode: editingDoctor.frontSideCode,
@@ -357,8 +348,14 @@ export default function DoctorsPage() {
                                             </div>
 
                                             <div className={cn("relative flex-1 w-full max-w-[1000px] p-2", isHidden && "grayscale opacity-50")}>
-                                                <DoctorCard
-                                                    {...doctor}
+                                                <EditableDoctorCard 
+                                                    doctor={doctor} 
+                                                    onVitaClick={() => {
+                                                        if (!editingDoctor || editingDoctor.id !== doctor.id) {
+                                                          handleEditClick(doctor);
+                                                        }
+                                                        setTimeout(() => handleVitaClick(), 50);
+                                                    }} 
                                                 />
                                                 {isEditing && (
                                                     <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/90">
