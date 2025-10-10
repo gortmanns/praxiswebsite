@@ -1,37 +1,39 @@
 /**
- * @fileoverview Firestore Security Rules for Praxis Online.
+ * @fileoverview Firestore Security Rules for Praxis Online application.
  *
  * Core Philosophy:
- * This ruleset prioritizes a secure-by-default posture, restricting write access to specific roles or conditions while allowing public read access where appropriate.
+ * This ruleset provides different levels of authorization for the application's core entities: doctor profiles, contact form submissions, and symptom checks.
+ * Doctor profiles are publicly accessible. Contact form submissions are restricted to create operations, while symptom checks are open for all operations.
  *
  * Data Structure:
- * The database consists of three top-level collections: `doctor_profiles`, `contact_form_submissions`, and `symptom_checks`. Each collection stores a specific entity type.
+ * The Firestore database consists of three top-level collections:
+ * - /doctor_profiles/{doctorProfileId}: Stores publicly available doctor profiles.
+ * - /contact_form_submissions/{contactFormSubmissionId}: Stores contact form submissions.
+ * - /symptom_checks/{symptomCheckId}: Stores records of symptom checks.
  *
  * Key Security Decisions:
- * - Doctor profiles are publicly readable, but write access is restricted.
- * - Contact form submissions have restricted write access, presumably for admin use only.
- * - Symptom checks are publicly readable, but write access is restricted.
- * - No user listing is allowed unless explicitly stated otherwise.
+ * - Doctor profiles are publicly readable.
+ * - Contact form submissions are restricted to create operations, no modification allowed.
+ * - Symptom checks are open to all operations, implying that no auth-based restrictions are applied.
+ * - Listing the doctor_profiles collection is allowed publicly.
  *
- * Denormalization for Authorization:
- *  This ruleset does not currently implement denormalization, but it could be used for more complex authorization logic in the future (e.g., storing a list of authorized admin UIDs directly in the `contact_form_submissions` collection).
- *
- * Structural Segregation:
- * The use of separate top-level collections for each entity type (doctor profiles, contact form submissions, symptom checks) provides structural segregation.
+ * Denormalization for Authorization: N/A (no denormalization needed in this ruleset).
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows public read access to doctor profiles, but restricts write access.
+     * @description Allows anyone to read doctor profiles, but restricts writes.
      * @path /doctor_profiles/{doctorProfileId}
-     * @allow get, list: if true;
-     * @allow create: if false;
-     * @allow update: if false;
-     * @allow delete: if false;
-     * @deny create: if true; // Example of how to deny an operation
-     * @principle Public read, restricted write.
+     * @allow (get, list): Any user can read doctor profiles.
+     * @allow (create): No one can create doctor profiles through the client.
+     * @deny (create): Any user attempting to create a doctor profile.
+     * @allow (update): No one can update doctor profiles through the client.
+     * @deny (update): Any user attempting to update a doctor profile.
+     * @allow (delete): No one can delete doctor profiles through the client.
+     * @deny (delete): Any user attempting to delete a doctor profile.
+     * @principle Allows public reads, restricts writes to backend only.
      */
     match /doctor_profiles/{doctorProfileId} {
       allow get, list: if true;
@@ -41,42 +43,35 @@ service cloud.firestore {
     }
 
     /**
-     * @description Restricts write access to contact form submissions, allowing only authenticated users.
+     * @description Allows anyone to create contact form submissions, but restricts reads, updates, and deletes.
      * @path /contact_form_submissions/{contactFormSubmissionId}
-     * @allow get: if false;
-     * @allow list: if false;
-     * @allow create: if isSignedIn();
-     * @allow update: if false;
-     * @allow delete: if false;
-     * @deny create: if true; // Example of how to deny an operation
-     * @principle Restricts write access to authenticated users.
+     * @allow (create): Any user can submit a contact form.
+     * @deny (get): Any user attempting to read a contact form submission.
+     * @allow (get): if false;
+     * @deny (list): Any user attempting to list contact form submissions.
+     * @allow (list): if false;
+     * @allow (update): No one can update contact form submissions through the client.
+     * @deny (update): Any user attempting to update a contact form submission.
+     * @allow (delete): No one can delete contact form submissions through the client.
+     * @deny (delete): Any user attempting to delete a contact form submission.
+     * @principle Allows public creates, restricts other operations to backend only.
      */
     match /contact_form_submissions/{contactFormSubmissionId} {
-      allow get, list: if false;
-      allow create: if isSignedIn();
+      allow create: if true;
+      allow get: if false;
+      allow list: if false;
       allow update: if false;
       allow delete: if false;
     }
 
     /**
-     * @description Allows public read access to symptom checks, but restricts write access.
+     * @description Allows anyone to perform symptom checks.
      * @path /symptom_checks/{symptomCheckId}
-     * @allow get, list: if true;
-     * @allow create: if false;
-     * @allow update: if false;
-     * @allow delete: if false;
-     * @deny create: if true; // Example of how to deny an operation
-     * @principle Public read, restricted write.
+     * @allow (get, list, create, update, delete): Any user can perform any operation on symptom checks.
+     * @principle Allows any operation on symptom checks.
      */
     match /symptom_checks/{symptomCheckId} {
-      allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
-    }
-
-    function isSignedIn() {
-      return request.auth != null;
+      allow get, list, create, update, delete: if true;
     }
   }
 }
