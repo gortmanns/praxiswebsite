@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
         destination: '/admin/login',
         permanent: true,
       },
+      {
+        source: '/login',
+        destination: '/admin/login',
+        permanent: true,
+      }
     ]
   },
   /* config options here */
