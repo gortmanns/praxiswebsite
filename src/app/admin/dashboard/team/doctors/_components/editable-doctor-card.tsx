@@ -3,11 +3,9 @@
 
 import React from 'react';
 import type { Doctor } from '@/app/team/_components/doctor-card';
-import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import { User } from 'lucide-react';
 import DOMPurify from 'dompurify';
-import { OrtmannsCard } from '@/app/team/_components/doctors/ortmanns-card';
 
 const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
@@ -33,11 +31,11 @@ interface EditableDoctorCardProps {
 
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onImageClick, onVitaClick }) => {
     
-    // Front side component
+    // Front side component that replicates the original DoctorCard structure and styling
     const FrontSide = () => (
         <div 
             className="relative h-full w-full bg-card"
-            style={{ 'containerType': 'inline-size' } as React.CSSProperties}
+            style={{ containerType: 'inline-size' } as React.CSSProperties}
         >
             <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6">
                 <div className="relative col-span-1 w-full overflow-hidden rounded-md">
