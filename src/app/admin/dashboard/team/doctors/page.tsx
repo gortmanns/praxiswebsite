@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
@@ -11,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info, Eye, EyeOff, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle, Pencil } from 'lucide-react';
+import { Info, Eye, EyeOff, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TextEditDialog } from './_components/text-edit-dialog';
@@ -248,9 +247,9 @@ export default function DoctorsPage() {
     
     const handleSave = async () => {
         if (!firestore || !doctorInEdit) return;
-
-        const isUpdating = editingDoctorId && isDoctorFromDB(editingDoctorId);
-
+    
+        const isUpdatingExistingDBEntry = editingDoctorId && isDoctorFromDB(editingDoctorId);
+    
         const saveData = {
             title: doctorInEdit.title || 'Titel',
             name: doctorInEdit.name || 'Name',
@@ -262,20 +261,23 @@ export default function DoctorsPage() {
             languages: doctorInEdit.languages || [],
             additionalInfo: doctorInEdit.additionalInfo,
             partnerLogoComponent: doctorInEdit.partnerLogoComponent as string | undefined,
-            order: doctorInEdit.order || (doctorsList[doctorsList.length - 1]?.order || 0) + 1,
+            order: doctorInEdit.order || (doctorsList.length > 0 ? Math.max(...doctorsList.map(d => d.order)) + 1 : 1),
         };
-
+    
         setIsSaving(true);
         setStatus(null);
+    
         try {
-            if (isUpdating) {
+            if (isUpdatingExistingDBEntry) {
+                // This is a real update to an existing document in Firestore
                 await updateDoctor(firestore, editingDoctorId, saveData);
                 setStatus({ type: 'success', message: 'Die Änderungen wurden erfolgreich gespeichert.' });
             } else {
-                // This covers both new cards (editingDoctorId is null)
-                // and saving a fallback card for the first time (editingDoctorId is set, but not in DB)
+                // This covers two cases:
+                // 1. A completely new card (editingDoctorId is null)
+                // 2. Saving a fallback card for the first time (editingDoctorId is set, but isDoctorFromDB is false)
                 await addDoctor(firestore, saveData, editingDoctorId);
-                setStatus({ type: 'success', message: 'Die neue Arztkarte wurde erfolgreich angelegt.' });
+                setStatus({ type: 'success', message: 'Die Arztkarte wurde erfolgreich erstellt/initial gespeichert.' });
             }
             handleCancel();
         } catch (error: any) {
@@ -609,7 +611,7 @@ export default function DoctorsPage() {
                                                     {isHidden ? 'Einblenden' : 'Ausblenden'}
                                                 </Button>
                                                 <Button variant="default" size="sm" onClick={() => handleEditClick(doctor)} disabled={isEditing || isSaving || !!editingDoctorId} className="justify-start">
-                                                    <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                                                    <Info className="mr-2 h-4 w-4" /> Bearbeiten
                                                 </Button>
                                             </div>
 

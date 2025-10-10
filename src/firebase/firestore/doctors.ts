@@ -1,4 +1,3 @@
-
 'use server';
 
 import { 
@@ -78,8 +77,6 @@ export async function updateDoctor(firestore: Firestore, id: string, data: Parti
     const oldDocSnap = await getDoc(doctorRef);
 
     if (!oldDocSnap.exists()) {
-        // If the document doesn't exist, we should not proceed with an update.
-        // The calling function should handle this logic. Throw an error or return.
         throw new Error(`Dokument mit ID ${id} existiert nicht und kann nicht aktualisiert werden.`);
     }
     
@@ -87,7 +84,7 @@ export async function updateDoctor(firestore: Firestore, id: string, data: Parti
     const oldData = oldDocSnap.data() as Doctor;
 
     // Handle portrait image upload
-    if (data.imageUrl && data.imageUrl.startsWith('data:image')) {
+    if (data.imageUrl && data.imageUrl !== oldData.imageUrl && data.imageUrl.startsWith('data:image')) {
         if (oldData?.imageUrl && oldData.imageUrl.includes('firebasestorage')) {
             try {
                 const oldImageRef = ref(storage, oldData.imageUrl);
@@ -101,7 +98,7 @@ export async function updateDoctor(firestore: Firestore, id: string, data: Parti
 
     // Handle logo image upload
     const logoComp = data.partnerLogoComponent;
-    if (typeof logoComp === 'string' && logoComp.startsWith('data:image')) {
+    if (typeof logoComp === 'string' && logoComp !== oldData.partnerLogoComponent && logoComp.startsWith('data:image')) {
         const oldLogo = oldData?.partnerLogoComponent;
         if (typeof oldLogo === 'string' && oldLogo.includes('firebasestorage')) {
              try {
