@@ -25,14 +25,14 @@ export interface Doctor {
 const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
         if (typeof window !== 'undefined') {
-            return { __html: DOMPurify.sanitize(html, { ADD_ATTR: ['style'] }) };
+            return { __html: DOMPurify.sanitize(html) };
         }
         return { __html: '' };
     }, [html]);
 
     return (
         <div
-        className="prose prose-sm dark:prose-invert max-w-none"
+        className="prose prose-sm dark:prose-invert max-w-none prose-vita-colors"
         dangerouslySetInnerHTML={sanitizedHtml}
         />
     );
@@ -93,7 +93,7 @@ export const DoctorCard: React.FC<Doctor> = ({
                                             {LogoComponent ? (
                                                 typeof LogoComponent === 'function' ? (
                                                     <LogoComponent className="h-full w-full object-contain object-left" />
-                                                ) : typeof LogoComponent === 'string' && LogoComponent.startsWith('/images') ? (
+                                                ) : typeof LogoComponent === 'string' && (LogoComponent.startsWith('/images') || LogoComponent.startsWith('data:image')) ? (
                                                     <Image src={LogoComponent} alt="Partner Logo" width={400} height={100} className="h-auto w-full object-contain object-left" />
                                                 ) : null
                                             ) : additionalInfo ? (

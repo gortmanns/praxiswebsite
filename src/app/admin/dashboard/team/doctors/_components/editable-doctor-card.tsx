@@ -19,14 +19,14 @@ interface EditableDoctorCardProps {
 const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
         if (typeof window !== 'undefined') {
-            return { __html: DOMPurify.sanitize(html, { ADD_ATTR: ['style'] }) };
+            return { __html: DOMPurify.sanitize(html) };
         }
         return { __html: '' };
     }, [html]);
 
     return (
         <div
-        className="prose prose-sm dark:prose-invert max-w-none text-background text-base"
+        className="prose prose-sm dark:prose-invert max-w-none text-background text-base prose-vita-colors"
         dangerouslySetInnerHTML={sanitizedHtml}
         />
     );
