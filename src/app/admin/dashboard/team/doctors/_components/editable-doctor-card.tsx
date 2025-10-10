@@ -63,7 +63,7 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
     if (isBack) {
         return (
             <Card 
-              className="w-full h-full overflow-hidden rounded-lg shadow-sm group cursor-pointer aspect-[1000/495]"
+              className="w-full h-full overflow-hidden rounded-lg shadow-sm group cursor-pointer"
               onClick={onVitaClick}
             >
                 <div className="relative flex h-full flex-col overflow-auto bg-accent/95 p-6 text-left text-background">
@@ -82,7 +82,7 @@ const DoctorCardPreview: React.FC<DoctorCardPreviewProps> = ({ doctor, isBack = 
     }
     
     return (
-        <Card className="w-full h-full overflow-hidden rounded-lg shadow-sm aspect-[1000/495]">
+        <Card className="w-full h-full overflow-hidden rounded-lg shadow-sm">
             <CardContent className="p-0 h-full">
                 <div 
                     className="relative w-full bg-card h-full"
@@ -152,8 +152,12 @@ interface EditableDoctorCardProps {
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onImageClick, onVitaClick }) => {
     return (
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-            <DoctorCardPreview doctor={doctor} onImageClick={onImageClick} isBack={false} />
-            <DoctorCardPreview doctor={doctor} onVitaClick={onVitaClick} isBack={true} />
+           <div className="w-full">
+              <DoctorCardPreview doctor={doctor} onImageClick={onImageClick} isBack={false} />
+           </div>
+           <div className="w-full">
+             <DoctorCardPreview doctor={doctor} onVitaClick={onVitaClick} isBack={true} />
+           </div>
         </div>
     );
 };
