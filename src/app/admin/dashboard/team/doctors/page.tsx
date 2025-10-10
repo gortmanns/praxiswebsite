@@ -9,10 +9,11 @@ import { SchemmerCard } from '@/app/team/_components/doctors/schemmer-card';
 import { SlezakCard } from '@/app/team/_components/doctors/slezak-card';
 import { HerschelCard } from '@/app/team/_components/doctors/herschel-card';
 import { DoctorCard, type Doctor } from '@/app/team/_components/doctor-card';
-import { User } from 'lucide-react';
+import { User, Info } from 'lucide-react';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { ImageCropDialog } from './_components/image-crop-dialog';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const sampleDoctor: Doctor = {
   id: 'sample',
@@ -81,6 +82,14 @@ export default function DoctorsPage() {
                         </div>
                     </div>
                  </div>
+
+                 <Alert variant="info" className="mx-auto mt-8 max-w-[1000px] border-2 border-blue-500 text-blue-800 bg-blue-50">
+                    <Info className="h-4 w-4" />
+                    <AlertTitle>Hinweis zur Bearbeitung</AlertTitle>
+                    <AlertDescription>
+                        Klicken Sie auf die verschiedenen Bereiche der Vorschaukarte, um die Inhalte direkt zu bearbeiten. Textfelder wie Name und Titel werden im untenstehenden Formular angepasst. Das Bild und der Text auf der Kartenrückseite öffnen separate Dialogfenster.
+                    </AlertDescription>
+                </Alert>
             </CardContent>
         </Card>
 
