@@ -9,12 +9,13 @@ import { SchemmerCard } from '@/app/team/_components/doctors/schemmer-card';
 import { SlezakCard } from '@/app/team/_components/doctors/slezak-card';
 import { HerschelCard } from '@/app/team/_components/doctors/herschel-card';
 import { DoctorCard, type Doctor } from '@/app/team/_components/doctor-card';
-import { User, Info, ArrowUp, ArrowDown, EyeOff, Pencil } from 'lucide-react';
+import { User, Info, ArrowUp, ArrowDown, Eye, EyeOff, Pencil } from 'lucide-react';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 const sampleDoctor: Doctor = {
   id: 'sample',
@@ -37,9 +38,20 @@ const sampleDoctor: Doctor = {
   order: 0,
 };
 
+const initialCards = [
+    { id: 'ortmanns', component: OrtmannsCard },
+    { id: 'schemmer', component: SchemmerCard },
+    { id: 'rosenov', component: RosenovCard },
+    { id: 'herschel', component: HerschelCard },
+    { id: 'slezak', component: SlezakCard },
+];
+
+
 export default function DoctorsPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
+  const [editingCardId, setEditingCardId] = useState<string | null>(null);
+  const [hiddenCards, setHiddenCards] = useState<string[]>(['slezak']); // Example: 'slezak' is hidden
 
   useEffect(() => {
     const calculateScale = () => {
@@ -64,23 +76,38 @@ export default function DoctorsPage() {
     };
   }, []);
   
-  const ActionButtons = () => (
-    <div className="flex flex-col gap-2">
-        <Button variant="outline" size="icon" aria-label="Nach oben verschieben">
-            <ArrowUp className="h-4 w-4" />
-        </Button>
-        <Button variant="outline" size="icon" aria-label="Nach unten verschieben">
-            <ArrowDown className="h-4 w-4" />
-        </Button>
-        <Button variant="outline" size="icon" aria-label="Ausblenden">
-            <EyeOff className="h-4 w-4" />
-        </Button>
-        <Button variant="outline" size="icon" aria-label="Bearbeiten">
-            <Pencil className="h-4 w-4" />
-        </Button>
-    </div>
-  );
+  const ActionButtons = ({ cardId }: { cardId: string }) => {
+    const isHidden = hiddenCards.includes(cardId);
+    return (
+        <div className="flex flex-col gap-2">
+            <Button variant="outline" size="icon" aria-label="Nach oben verschieben">
+                <ArrowUp className="h-4 w-4" />
+            </Button>
+            <Button variant="outline" size="icon" aria-label="Nach unten verschieben">
+                <ArrowDown className="h-4 w-4" />
+            </Button>
+            <Button 
+                variant="outline" 
+                size="icon" 
+                aria-label={isHidden ? "Einblenden" : "Ausblenden"}
+                onClick={() => setHiddenCards(prev => isHidden ? prev.filter(id => id !== cardId) : [...prev, cardId])}
+            >
+                {isHidden ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+            </Button>
+            <Button 
+                variant="outline" 
+                size="icon" 
+                aria-label="Bearbeiten"
+                onClick={() => setEditingCardId(cardId)}
+            >
+                <Pencil className="h-4 w-4" />
+            </Button>
+        </div>
+    );
+  };
 
+  const visibleCards = initialCards.filter(card => !hiddenCards.includes(card.id));
+  const deactivatedCards = initialCards.filter(card => hiddenCards.includes(card.id));
 
   return (
     <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -117,37 +144,45 @@ export default function DoctorsPage() {
                 Aktuelle Vorschau
             </h3>
             <div className="space-y-12">
-                <div className="flex w-full items-center justify-center gap-8">
-                    <ActionButtons />
-                    <div className="w-full max-w-[1000px] flex-1">
-                        <OrtmannsCard />
+                {visibleCards.map(({ id, component: CardComponent }) => (
+                     <div 
+                        key={id} 
+                        className={cn(
+                            "flex w-full items-center justify-center gap-8 rounded-lg p-2 transition-all",
+                            editingCardId === id && "ring-4 ring-primary ring-offset-4 ring-offset-background"
+                        )}
+                    >
+                        <ActionButtons cardId={id} />
+                        <div className="w-full max-w-[1000px] flex-1">
+                            <CardComponent />
+                        </div>
                     </div>
-                </div>
-                <div className="flex w-full items-center justify-center gap-8" id="schemmer">
-                    <ActionButtons />
-                    <div className="w-full max-w-[1000px] flex-1">
-                        <SchemmerCard />
-                    </div>
-                </div>
-                <div className="flex w-full items-center justify-center gap-8" id="rosenov">
-                    <ActionButtons />
-                    <div className="w-full max-w-[1000px] flex-1">
-                        <RosenovCard />
-                    </div>
-                </div>
-                <div className="flex w-full items-center justify-center gap-8" id="herschel">
-                    <ActionButtons />
-                    <div className="w-full max-w-[1000px] flex-1">
-                        <HerschelCard />
-                    </div>
-                </div>
-                 <div className="flex w-full items-center justify-center gap-8" id="slezak">
-                    <ActionButtons />
-                    <div className="w-full max-w-[1000px] flex-1">
-                        <SlezakCard />
-                    </div>
-                </div>
+                ))}
             </div>
+
+            {deactivatedCards.length > 0 && (
+                <div className="mt-16">
+                    <h3 className="font-headline text-2xl font-bold tracking-tight text-muted-foreground sm:text-3xl">
+                        Ausgeblendete Ärzte
+                    </h3>
+                    <div className="mt-8 space-y-12">
+                        {deactivatedCards.map(({ id, component: CardComponent }) => (
+                           <div 
+                                key={id} 
+                                className={cn(
+                                    "flex w-full items-center justify-center gap-8 rounded-lg p-2 transition-all grayscale opacity-60",
+                                    editingCardId === id && "ring-4 ring-primary ring-offset-4 ring-offset-background"
+                                )}
+                            >
+                                <ActionButtons cardId={id} />
+                                <div className="w-full max-w-[1000px] flex-1">
+                                    <CardComponent />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     </div>
   );
