@@ -18,7 +18,7 @@ interface EditableDoctorCardProps {
     doctor: Doctor;
     onImageClick: () => void;
     onVitaClick: () => void;
-    onTextClick: (fieldKey: keyof Doctor, fieldLabel: string, value: string) => void;
+    onTextClick: (fieldKey: keyof Doctor, fieldLabel: string, value: string, index?: number) => void;
 }
 
 const partnerLogos: { [key: string]: React.FC<{ className?: string }> } = {
@@ -48,9 +48,14 @@ const FrontSide: React.FC<{ doctor: Doctor; onImageClick: () => void; onTextClic
     const { title, name, imageUrl, imageHint, specialty, qualifications, additionalInfo, partnerLogoComponent } = doctor;
     const LogoComponent = partnerLogoComponent ? partnerLogos[partnerLogoComponent] : null;
     
-    const handleTextClick = (fieldKey: keyof Doctor, fieldLabel: string) => {
-        const value = doctor[fieldKey] as string;
-        onTextClick(fieldKey, fieldLabel, value);
+    const handleTextClick = (fieldKey: keyof Doctor, fieldLabel: string, index?: number) => {
+        let value: string;
+        if (fieldKey === 'qualifications' && index !== undefined && qualifications) {
+            value = qualifications[index] as string;
+        } else {
+            value = doctor[fieldKey] as string;
+        }
+        onTextClick(fieldKey, fieldLabel, value, index);
     };
 
     return (
@@ -88,7 +93,7 @@ const FrontSide: React.FC<{ doctor: Doctor; onImageClick: () => void; onTextClic
                         </h4>
                         <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
                             <p className="font-bold cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => handleTextClick('specialty', 'Spezialisierung')}>{specialty}</p>
-                            {qualifications?.map((q, i) => <p key={i} className="cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('qualifications', `Qualifikation ${i + 1}`, q)}>{q}</p>)}
+                            {qualifications?.map((q, i) => <p key={i} className="cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => handleTextClick('qualifications', `Qualifikation ${i + 1}`, i)}>{q}</p>)}
                         </div>
                         
                         {additionalInfo && !LogoComponent && (

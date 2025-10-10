@@ -220,7 +220,7 @@ export default function DoctorsPage() {
                                     doctor={displayedDoctorInEdit}
                                     onImageClick={handleImageClick}
                                     onVitaClick={handleVitaClick}
-                                    onTextClick={(key, label, value, index) => handleTextEditClick(key, label, value, index)}
+                                    onTextClick={handleTextEditClick}
                                 />
                                 <Alert variant="info" className="mt-4 border-2 border-blue-500 text-blue-800 bg-blue-50">
                                     <Info className="h-4 w-4" />
