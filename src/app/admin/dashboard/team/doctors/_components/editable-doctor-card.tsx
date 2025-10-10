@@ -75,7 +75,7 @@ const FrontSide: React.FC<Pick<EditableDoctorCardProps, 'doctor' | 'onImageClick
                         
                         <div className="mt-[2.5cqw] cursor-pointer hover:bg-primary/10 rounded-sm p-1 -m-1" onClick={() => onTextClick('additionalInfo', 'Funktion oder Logo')}>
                             {partnerLogoComponent ? (
-                                <div className="relative flex w-fit justify-start max-w-[240px]">
+                                <div className="relative flex w-fit justify-start max-w-[360px]">
                                      <Image
                                         src={partnerLogoComponent}
                                         alt="Partner Logo"
