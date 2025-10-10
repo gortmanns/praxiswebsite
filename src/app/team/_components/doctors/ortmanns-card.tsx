@@ -6,6 +6,7 @@ import { DoctorCard } from '../doctor-card';
 export function OrtmannsCard() {
     return (
         <DoctorCard
+            id="ortmanns"
             title="Dipl. med."
             name="G. Ortmanns"
             imageUrl="/images/team/Ortmanns.jpg"
@@ -38,6 +39,7 @@ export function OrtmannsCard() {
                 <p class="is-small">Mitgliedschaften:<br>Verbindung der Schweizer Ärztinnen und Ärzte (FMH)<br>Ärztegesellschaft des Kantons Bern (BEKAG)<br>Schweizerische Gesellschaft für Ultraschall in der Medizin (SGUM)</p>
             `}
             additionalInfo="Ärztliche und administrative Leitung Praxiszentrum im Ring"
+            order={1}
         />
     );
 }

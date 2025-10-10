@@ -12,6 +12,7 @@ import {
     SchemmerWorniLogo,
     VascAllianceLogo
 } from '@/components/logos';
+import { cn } from '@/lib/utils';
 
 export interface Doctor {
     id: string;
@@ -51,20 +52,8 @@ const partnerLogos = {
   SchemmerWorniLogo,
 };
 
-interface DoctorCardProps {
-    title: string;
-    name: string;
-    imageUrl: string;
-    imageHint: string;
-    specialty: React.ReactNode;
-    qualifications: string[];
-    vita: string;
-    additionalInfo?: string;
-    children?: React.ReactNode;
-    partnerLogoComponent?: keyof typeof partnerLogos;
-}
 
-export const DoctorCard: React.FC<DoctorCardProps> = ({
+export const DoctorCard: React.FC<Doctor> = ({
     title,
     name,
     imageUrl,
@@ -73,7 +62,6 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
     qualifications,
     vita,
     additionalInfo,
-    children,
     partnerLogoComponent,
 }) => {
     const LogoComponent = partnerLogoComponent ? partnerLogos[partnerLogoComponent] : null;
@@ -121,15 +109,12 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
                                         </p>
                                     )}
                                     
-                                    {children && (
-                                        <div className="relative mt-[2.5cqw] flex justify-start w-fit">
-                                            {children}
-                                        </div>
-                                    )}
-
-                                    {LogoComponent && !children && (
+                                    {LogoComponent && (
                                         <div className="relative mt-[2.5cqw] flex w-fit justify-start">
-                                            <LogoComponent className="h-auto w-full max-w-[240px]" />
+                                            <LogoComponent className={cn(
+                                              "h-auto w-full",
+                                              name === "A. Slezak" ? "max-w-[200px]" : "max-w-[240px]"
+                                            )} />
                                         </div>
                                     )}
                                 </div>
@@ -138,7 +123,7 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
                     </div>
                 </CardContent>
             </Card>
-            <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
+            <div className="flip-card-back absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
                  <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
                     <VitaRenderer html={vita} />
                  </div>

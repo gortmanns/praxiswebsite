@@ -6,6 +6,7 @@ import { DoctorCard } from '../doctor-card';
 export function SlezakCard() {
     return (
         <DoctorCard
+            id="slezak"
             title="Dr. med."
             name="A. Slezak"
             imageUrl="/images/team/Dr.Slezak.jpg"
@@ -16,8 +17,7 @@ export function SlezakCard() {
                 <p>Vita folgt in Kürze.</p>
             `}
             partnerLogoComponent="AgnieszkaSlezakLogo"
+            order={5}
         />
     );
 }
-
-    

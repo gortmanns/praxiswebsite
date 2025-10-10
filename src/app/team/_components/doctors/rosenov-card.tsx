@@ -6,6 +6,7 @@ import { DoctorCard } from '../doctor-card';
 export function RosenovCard() {
     return (
         <DoctorCard
+            id="rosenov"
             title="Prof. Dr. med."
             name="A. Rosenov"
             imageUrl="/images/team/Dr.Rosenov.jpg"
@@ -32,8 +33,7 @@ export function RosenovCard() {
                 </ul>
             `}
             partnerLogoComponent="VascAllianceLogo"
+            order={3}
         />
     );
 }
-
-    

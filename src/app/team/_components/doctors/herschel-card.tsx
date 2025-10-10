@@ -2,11 +2,11 @@
 'use client';
 
 import { DoctorCard } from '../doctor-card';
-import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 
 export function HerschelCard() {
     return (
         <DoctorCard
+            id="herschel"
             title="Dr. med."
             name="R. Herschel"
             imageUrl="/images/team/Dr.Herschel.jpg"
@@ -17,8 +17,7 @@ export function HerschelCard() {
                 <p>Vita folgt in Kürze.</p>
             `}
             partnerLogoComponent="OrthozentrumLogo"
+            order={4}
         />
     );
 }
-
-    

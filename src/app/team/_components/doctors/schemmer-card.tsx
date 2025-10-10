@@ -6,6 +6,7 @@ import { DoctorCard } from '../doctor-card';
 export function SchemmerCard() {
     return (
         <DoctorCard
+            id="schemmer"
             title="Prof. Dr. med. Dr. h. c."
             name="P. Schemmer"
             imageUrl="/images/team/Prof.Schemmer.jpg"
@@ -26,8 +27,7 @@ export function SchemmerCard() {
                 </p>
             `}
             partnerLogoComponent="SchemmerWorniLogo"
+            order={2}
         />
     );
 }
-
-    

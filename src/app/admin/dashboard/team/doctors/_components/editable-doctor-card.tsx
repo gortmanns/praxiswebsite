@@ -3,25 +3,7 @@
 
 import React from 'react';
 import type { Doctor } from '@/app/team/_components/doctor-card';
-import Image from 'next/image';
-import { User } from 'lucide-react';
-import DOMPurify from 'dompurify';
-
-const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
-    const sanitizedHtml = React.useMemo(() => {
-        if (typeof window !== 'undefined') {
-        return { __html: DOMPurify.sanitize(html) };
-        }
-        return { __html: '' };
-    }, [html]);
-
-    return (
-        <div
-        className="prose prose-sm dark:prose-invert max-w-none"
-        dangerouslySetInnerHTML={sanitizedHtml}
-        />
-    );
-};
+import { DoctorCard } from '@/app/team/_components/doctor-card';
 
 interface EditableDoctorCardProps {
     doctor: Doctor;
@@ -29,70 +11,58 @@ interface EditableDoctorCardProps {
     onVitaClick: () => void;
 }
 
-export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onImageClick, onVitaClick }) => {
-    
-    // Front side component that replicates the original DoctorCard structure and styling
-    const FrontSide = () => (
-        <div 
-            className="relative h-full w-full bg-card"
-            style={{ containerType: 'inline-size' } as React.CSSProperties}
-        >
-            <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6">
-                <div className="relative col-span-1 w-full overflow-hidden rounded-md">
-                    <div className="relative h-full w-full aspect-[2/3] cursor-pointer" onClick={onImageClick}>
-                        {doctor.imageUrl ? (
-                            <Image
-                                src={doctor.imageUrl}
-                                alt={`Portrait von ${doctor.name}`}
-                                data-ai-hint={doctor.imageHint}
-                                fill
-                                className="object-cover"
-                            />
-                        ) : (
-                            <div className="flex h-full w-full items-center justify-center bg-muted">
-                                <User className="h-1/2 w-1/2 text-muted-foreground" />
-                            </div>
-                        )}
-                    </div>
-                </div>
-                <div className="col-span-2 flex flex-col justify-center">
-                    <div className="text-left text-foreground/80">
-                        <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{doctor.title}</p>
-                        <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
-                          {doctor.name}
-                        </h4>
-                        <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
-                            <p className="font-bold">{doctor.specialty}</p>
-                            {doctor.qualifications.map((q, i) => <p key={i}>{q}</p>)}
-                        </div>
-                        
-                        {doctor.additionalInfo && (
-                            <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
-                                {doctor.additionalInfo}
-                            </p>
-                        )}
-                    </div>
-                </div>
-            </div>
+// This component uses the original DoctorCard but forces the "back" view for the Vita.
+// It wraps the card in a div that fakes the hover state.
+const BackSide: React.FC<EditableDoctorCardProps> = ({ doctor, onVitaClick }) => {
+    return (
+        <div className="group/back" onClick={onVitaClick}>
+            <DoctorCard
+                id={doctor.id}
+                title={doctor.title}
+                name={doctor.name}
+                imageUrl={doctor.imageUrl}
+                imageHint={doctor.imageHint}
+                specialty={doctor.specialty}
+                qualifications={doctor.qualifications}
+                vita={doctor.vita}
+                additionalInfo={doctor.additionalInfo}
+                partnerLogoComponent={doctor.partnerLogoComponent}
+                order={doctor.order}
+            />
         </div>
     );
-    
-    // Back side component
-    const BackSide = () => (
-        <div className="h-full w-full cursor-pointer overflow-hidden bg-accent/95 p-6 text-left text-background" onClick={onVitaClick}>
-            <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
-                <VitaRenderer html={doctor.vita} />
-            </div>
-        </div>
-    );
+};
 
+
+export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onImageClick, onVitaClick }) => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-           <div className="w-full aspect-[1000/495] rounded-lg border overflow-hidden">
-                <FrontSide />
+           <div className="w-full aspect-[1000/495] cursor-pointer" onClick={onImageClick}>
+                <DoctorCard
+                    id={doctor.id}
+                    title={doctor.title}
+                    name={doctor.name}
+                    imageUrl={doctor.imageUrl}
+                    imageHint={doctor.imageHint}
+                    specialty={doctor.specialty}
+                    qualifications={doctor.qualifications}
+                    vita={doctor.vita}
+                    additionalInfo={doctor.additionalInfo}
+                    partnerLogoComponent={doctor.partnerLogoComponent}
+                    order={doctor.order}
+                />
            </div>
-           <div className="w-full aspect-[1000/495] rounded-lg border overflow-hidden">
-                <BackSide />
+            <style jsx>{`
+                .group\\/back:hover .group,
+                .group\\/back .group {
+                    cursor: pointer;
+                }
+                .group\\/back :global(.flip-card-back) {
+                    transform: translateY(0%);
+                }
+            `}</style>
+           <div className="w-full aspect-[1000/495] cursor-pointer">
+                <BackSide doctor={doctor} onVitaClick={onVitaClick} onImageClick={onImageClick} />
            </div>
         </div>
     );
