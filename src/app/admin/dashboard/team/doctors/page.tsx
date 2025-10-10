@@ -226,7 +226,7 @@ export default function DoctorsPage() {
                                     <Info className="h-4 w-4" />
                                     <AlertTitle>Hinweis</AlertTitle>
                                     <AlertDescription>
-                                        Klicken Sie auf ein Element in der Vorschau, um es zu verändern. Die Bearbeitung ist nur aktiv, wenn Sie unten eine Karte zum Bearbeiten ausgewählt haben.
+                                        Klicken Sie auf ein Element in der Vorschau, um es zu verändern.
                                     </AlertDescription>
                                 </Alert>
                             </div>
