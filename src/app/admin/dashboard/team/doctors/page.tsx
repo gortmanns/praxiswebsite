@@ -529,7 +529,7 @@ export default function DoctorsPage() {
                                     <Info className="h-4 w-4" />
                                     <AlertTitle>Hinweis</AlertTitle>
                                     <AlertDescription>
-                                        Klicken Sie auf ein Element in der Vorschau, um es zu bearbeiten. Mit "Abbrechen" werden alle Änderungen verworfen. Jede gespeicherte Karte wird in der Datenbank erfasst.
+                                        Klicken Sie auf ein Element in der Vorschau, um es zu bearbeiten. Mit "Abbrechen" werden alle Änderungen verworfen.
                                     </AlertDescription>
                                 </Alert>
                             </div>
@@ -689,6 +689,3 @@ export default function DoctorsPage() {
         </>
     );
 }
-
-
-    
