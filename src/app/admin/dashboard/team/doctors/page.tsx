@@ -216,7 +216,6 @@ export default function DoctorsPage() {
     };
     
     const handleCropComplete = useCallback((croppedImageUrl: string) => {
-        ensureEditingState();
         setDoctorInEdit(prev => {
              const current = prev ?? createDefaultDoctor();
             if (imageEditContext === 'logo') {
@@ -227,7 +226,7 @@ export default function DoctorsPage() {
         setImageCropDialogOpen(false);
         setImageToCrop(null);
         setImageEditContext(null);
-    }, [imageEditContext, ensureEditingState]);
+    }, [imageEditContext]);
 
     // --- Vita Handling ---
     const handleVitaClick = useCallback(() => {
@@ -236,7 +235,10 @@ export default function DoctorsPage() {
     }, [ensureEditingState]);
 
     const handleVitaSave = useCallback((newVita: string) => {
-        setDoctorInEdit(prev => (prev ?? createDefaultDoctor()) ? { ...(prev ?? createDefaultDoctor()), vita: newVita } : prev);
+        setDoctorInEdit(prev => {
+            const current = prev ?? createDefaultDoctor();
+            return { ...current, vita: newVita };
+        });
         setVitaEditorOpen(false);
     }, []);
 
