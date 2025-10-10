@@ -24,10 +24,10 @@ export function HerschelCard() {
                                 <p class="text-2xl font-bold text-primary">Dr. med.</p>
                                 <h3 class="text-5xl font-bold text-primary my-2">R. Herschel</h3>
                                 <div class="text-xl font-bold flex flex-col">
-                                    <span>Facharzt Orthopädische Chirurgie und</span>
+                                    <span>Facharzt für Orthopädische Chirurgie und</span>
                                     <span>Traumatologie des Bewegungsapparates</span>
                                 </div>
-                                <div class="mt-6">
+                                <div class="mt-6 border-2 border-purple-500">
                                     <svg
                                         viewBox="0 0 240 55.5"
                                         xmlns="http://www.w3.org/2000/svg"
