@@ -31,6 +31,15 @@ export function OrtmannsCard() {
                 </div>
             `}
             backSideCode={`
+                <style>
+                    .vita-content { color: hsl(var(--background)); }
+                    .vita-content p { margin: 0; }
+                    .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; }
+                    .vita-content li { margin-bottom: 0.5em; }
+                    .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
+                    .vita-content .is-small { font-size: 0.8em; font-weight: normal; }
+                    .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }
+                </style>
                 <div class="vita-content p-8 w-full max-w-[1000px]">
                     <h4>Curriculum Vitae</h4>
                     <ul>

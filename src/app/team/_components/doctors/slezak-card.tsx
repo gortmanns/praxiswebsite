@@ -56,6 +56,10 @@ export function SlezakCard() {
                 </div>
             `}
             backSideCode={`
+                <style>
+                    .vita-content { color: hsl(var(--background)); }
+                    .vita-content p { margin: 0; }
+                </style>
                 <div class="vita-content p-8 w-full max-w-[1000px]">
                     <p>Vita folgt in Kürze.</p>
                 </div>

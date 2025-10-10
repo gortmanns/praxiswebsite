@@ -27,6 +27,10 @@ export function SchemmerCard() {
                 </div>
             `}
             backSideCode={`
+                <style>
+                    .vita-content { color: hsl(var(--background)); }
+                    .vita-content p { margin: 0; }
+                </style>
                 <div class="vita-content p-8 w-full max-w-[1000px]">
                     <p>
                         Prof. Schemmer war von 2013 bis 2022 Direktor der Universitätsklinik für Viszerale Transplantationschirurgie am Inselspital in Bern.
