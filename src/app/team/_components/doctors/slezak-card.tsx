@@ -14,12 +14,12 @@ export function SlezakCard() {
                     .vita-content { color: hsl(var(--background)); }
                     .vita-content p { margin: 0; }
                 </style>
-                <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
+                <div class="group relative max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
                     <div class="flex h-full w-full items-start">
                         <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
-                            <img src="/images/team/Dr.Slezak.jpg" alt="Portrait von A. Slezak" data-ai-hint="woman portrait" class="w-full h-full object-contain" />
+                            <img src="/images/team/Dr.Slezak.jpg" alt="Portrait von A. Slezak" data-ai-hint="woman portrait" class="h-full w-full object-contain" />
                         </div>
-                        <div class="flex-grow flex flex-col ml-6 h-full relative justify-center">
+                        <div class="flex-grow flex flex-col justify-center font-headline ml-6 h-full relative">
                             <div>
                                 <p class="text-2xl font-bold text-primary">Dr. med.</p>
                                 <h3 class="text-5xl font-bold text-primary my-2">A. Slezak</h3>
@@ -32,25 +32,25 @@ export function SlezakCard() {
                                         aria-label="Dr. med. Agnieszka Slezak - Fachärztin für Neurologie"
                                         >
                                         <text
-                                            x="0"
+                                            x="50%"
                                             y="45%"
                                             dominant-baseline="middle"
                                             font-family="Open Sans, sans-serif"
                                             font-size="12"
                                             font-weight="bold"
                                             fill="#358392"
-                                            text-anchor="start"
+                                            text-anchor="middle"
                                         >
                                             Dr. med. Agnieszka Slezak
                                         </text>
                                         <text
-                                            x="0"
+                                            x="50%"
                                             y="80%"
                                             dominant-baseline="middle"
                                             font-family="Open Sans, sans-serif"
                                             font-size="8"
                                             fill="hsl(var(--muted-foreground))"
-                                            text-anchor="start"
+                                            text-anchor="middle"
                                         >
                                             Fachärztin für Neurologie
                                         </text>
