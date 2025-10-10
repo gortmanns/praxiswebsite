@@ -2,38 +2,30 @@
  * @fileoverview Firestore Security Rules for Praxis Online application.
  *
  * Core Philosophy:
- * This ruleset provides different levels of authorization for the application's core entities: doctor profiles, contact form submissions, and symptom checks.
- * Doctor profiles are publicly accessible. Contact form submissions are restricted to create operations, while symptom checks are open for all operations.
+ * This ruleset provides basic security for the Praxis Online application.
+ * Doctor profiles are publicly readable, while contact form submissions and symptom checks are restricted to prevent unauthorized access.
  *
  * Data Structure:
- * The Firestore database consists of three top-level collections:
- * - /doctor_profiles/{doctorProfileId}: Stores publicly available doctor profiles.
- * - /contact_form_submissions/{contactFormSubmissionId}: Stores contact form submissions.
- * - /symptom_checks/{symptomCheckId}: Stores records of symptom checks.
+ * The data is organized into three top-level collections:
+ *   - /doctor_profiles/{doctorProfileId}
+ *   - /contact_form_submissions/{contactFormSubmissionId}
+ *   - /symptom_checks/{symptomCheckId}
  *
  * Key Security Decisions:
- * - Doctor profiles are publicly readable.
- * - Contact form submissions are restricted to create operations, no modification allowed.
- * - Symptom checks are open to all operations, implying that no auth-based restrictions are applied.
- * - Listing the doctor_profiles collection is allowed publicly.
- *
- * Denormalization for Authorization: N/A (no denormalization needed in this ruleset).
+ * - Doctor profiles are publicly readable (get, list).
+ * - Contact form submissions and symptom checks are not readable or writeable by default (admin access implied).
+ * - No data validation is performed in this prototyping phase.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows anyone to read doctor profiles, but restricts writes.
+     * @description Allows anyone to read doctor profiles, but restricts all write operations.
      * @path /doctor_profiles/{doctorProfileId}
-     * @allow (get, list): Any user can read doctor profiles.
-     * @allow (create): No one can create doctor profiles through the client.
-     * @deny (create): Any user attempting to create a doctor profile.
-     * @allow (update): No one can update doctor profiles through the client.
-     * @deny (update): Any user attempting to update a doctor profile.
-     * @allow (delete): No one can delete doctor profiles through the client.
-     * @deny (delete): Any user attempting to delete a doctor profile.
-     * @principle Allows public reads, restricts writes to backend only.
+     * @allow (get, list) Allows any user to read doctor profiles.
+     * @deny (create, update, delete) Denies any user to create, update, or delete doctor profiles.
+     * @principle Public read access with no write access.
      */
     match /doctor_profiles/{doctorProfileId} {
       allow get, list: if true;
@@ -43,35 +35,33 @@ service cloud.firestore {
     }
 
     /**
-     * @description Allows anyone to create contact form submissions, but restricts reads, updates, and deletes.
+     * @description Restricts access to contact form submissions. No read or write operations are allowed.
      * @path /contact_form_submissions/{contactFormSubmissionId}
-     * @allow (create): Any user can submit a contact form.
-     * @deny (get): Any user attempting to read a contact form submission.
-     * @allow (get): if false;
-     * @deny (list): Any user attempting to list contact form submissions.
-     * @allow (list): if false;
-     * @allow (update): No one can update contact form submissions through the client.
-     * @deny (update): Any user attempting to update a contact form submission.
-     * @allow (delete): No one can delete contact form submissions through the client.
-     * @deny (delete): Any user attempting to delete a contact form submission.
-     * @principle Allows public creates, restricts other operations to backend only.
+     * @allow None. No operations are allowed.
+     * @deny (get, list, create, update, delete) Denies any operation on contact form submissions.
+     * @principle No public access to contact form submissions.
      */
     match /contact_form_submissions/{contactFormSubmissionId} {
-      allow create: if true;
       allow get: if false;
       allow list: if false;
+      allow create: if false;
       allow update: if false;
       allow delete: if false;
     }
 
     /**
-     * @description Allows anyone to perform symptom checks.
+     * @description Restricts access to symptom checks. No read or write operations are allowed.
      * @path /symptom_checks/{symptomCheckId}
-     * @allow (get, list, create, update, delete): Any user can perform any operation on symptom checks.
-     * @principle Allows any operation on symptom checks.
+     * @allow None. No operations are allowed.
+     * @deny (get, list, create, update, delete) Denies any operation on symptom checks.
+     * @principle No public access to symptom checks.
      */
     match /symptom_checks/{symptomCheckId} {
-      allow get, list, create, update, delete: if true;
+      allow get: if false;
+      allow list: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
   }
 }
