@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -6,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { OrtmannsCard } from '@/app/team/_components/doctors/ortmanns-card';
 import { RosenovCard } from '@/app/team/_components/doctors/rosenov-card';
 import { Button } from '@/components/ui/button';
-import { Eye, EyeOff, ArrowUp, ArrowDown, Info } from 'lucide-react';
+import { EyeOff, ArrowUp, ArrowDown, Info } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -72,7 +71,7 @@ export default function DoctorsPage() {
                             )}
                         </div>
                         {editingDoctor ? (
-                            <div className="rounded-lg bg-muted p-4 md:p-6">
+                            <div className="rounded-lg bg-muted p-4 md:p-6 border-2 border-dashed border-red-500">
                                 <div className="mx-auto w-full max-w-[1000px] p-2">
                                    <editingDoctor.Component />
                                 </div>
@@ -114,7 +113,7 @@ export default function DoctorsPage() {
                                         </Button>
                                     </div>
 
-                                    <div className={cn("relative flex-1 w-full max-w-[1000px] p-2")}>
+                                    <div className={cn("relative flex-1 w-full max-w-[1000px] p-2 border-2 border-dashed border-red-500")}>
                                         <doctor.Component />
                                         {isEditing && (
                                             <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/90">
