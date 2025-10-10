@@ -120,12 +120,24 @@ export default function DoctorsPage() {
     // State for text editor
     const [isTextEditorOpen, setIsTextEditorOpen] = useState(false);
     const [editingField, setEditingField] = useState<{ key: keyof Doctor; label: string, index?: number } | null>(null);
-    const [currentValue, setCurrentValue] = useState('');
     
     const doctorsList = useMemo(() => staticDoctorsData.sort((a, b) => a.order - b.order), []);
+    
+    const displayedDoctorInEdit = doctorInEdit ?? createDefaultDoctor();
+    const currentValueForDialog = useMemo(() => {
+        if (!editingField || !doctorInEdit) return '';
+        if (editingField.key === 'qualifications' && editingField.index !== undefined) {
+            return doctorInEdit.qualifications[editingField.index] || '';
+        }
+        const value = doctorInEdit[editingField.key as keyof Doctor] as string;
+        return value || '';
+    }, [editingField, doctorInEdit]);
+
 
     const handleImageClick = () => {
-        if (!editingDoctorId) return;
+        if (doctorInEdit === null) {
+            setDoctorInEdit(createDefaultDoctor());
+        }
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
@@ -150,7 +162,9 @@ export default function DoctorsPage() {
     };
 
     const handleVitaClick = () => {
-        if (!editingDoctorId) return;
+        if (doctorInEdit === null) {
+            setDoctorInEdit(createDefaultDoctor());
+        }
         setVitaEditorOpen(true);
     };
 
@@ -160,22 +174,26 @@ export default function DoctorsPage() {
     };
 
     const handleTextEditClick = (fieldKey: keyof Doctor, fieldLabel: string, value: string, index?: number) => {
-        if (!editingDoctorId) return;
+        if (doctorInEdit === null) {
+            setDoctorInEdit(createDefaultDoctor());
+        }
         setEditingField({ key: fieldKey, label: fieldLabel, index });
-        setCurrentValue(value);
         setIsTextEditorOpen(true);
     };
 
     const handleTextSave = (newValue: string) => {
-        if (!editingField || !doctorInEdit) return;
+        if (!editingField || doctorInEdit === null) return;
     
-        if (editingField.key === 'qualifications' && editingField.index !== undefined) {
-            const updatedQualifications = [...doctorInEdit.qualifications];
-            updatedQualifications[editingField.index] = newValue;
-            setDoctorInEdit({ ...doctorInEdit, qualifications: updatedQualifications });
-        } else {
-            setDoctorInEdit({ ...doctorInEdit, [editingField.key]: newValue });
-        }
+        setDoctorInEdit(prev => {
+            if (!prev) return null; // Should not happen given the check above, but for type safety
+            if (editingField.key === 'qualifications' && editingField.index !== undefined) {
+                const updatedQualifications = [...prev.qualifications];
+                updatedQualifications[editingField.index] = newValue;
+                return { ...prev, qualifications: updatedQualifications };
+            } else {
+                return { ...prev, [editingField.key]: newValue };
+            }
+        });
     
         setIsTextEditorOpen(false);
         setEditingField(null);
@@ -198,8 +216,6 @@ export default function DoctorsPage() {
         });
     };
     
-    const displayedDoctorInEdit = doctorInEdit ?? createDefaultDoctor();
-
     return (
         <>
             <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -303,10 +319,12 @@ export default function DoctorsPage() {
                     onOpenChange={setIsTextEditorOpen}
                     title={`Bearbeiten: ${editingField.label}`}
                     label={editingField.label}
-                    initialValue={currentValue}
+                    initialValue={currentValueForDialog}
                     onSave={handleTextSave}
                 />
             )}
         </>
     );
 }
+
+    

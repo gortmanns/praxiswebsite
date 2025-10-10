@@ -114,20 +114,20 @@ const FrontSide: React.FC<{ doctor: Doctor; onImageClick: () => void; onTextClic
 };
 
 
-const BackSide: React.FC<{ vita: string, onVitaClick: () => void }> = ({ vita, onVitaClick }) => {
+const BackSide: React.FC<{ vita: string; onVitaClick: () => void; }> = ({ vita, onVitaClick }) => {
     return (
         <div
             className="relative w-full h-full bg-accent/95 overflow-hidden p-6"
         >
-             <Button 
-                variant="ghost" 
-                size="icon" 
+            <Button
+                variant="ghost"
+                size="icon"
                 className="absolute top-2 right-2 z-10 h-14 w-14 text-background hover:bg-background/20 hover:text-background"
                 onClick={onVitaClick}
             >
                 <Pencil className="h-10 w-10" />
             </Button>
-            <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
+            <div className="h-full overflow-y-auto flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
                 <VitaRenderer html={vita} />
             </div>
         </div>
@@ -189,3 +189,5 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
         </div>
     );
 };
+
+    
