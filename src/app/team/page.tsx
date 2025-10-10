@@ -137,6 +137,8 @@ export default function TeamPage() {
             ) : doctors && doctors.length > 0 ? (
                 doctors.map((doctor) => {
                     let partnerLogo: React.FC<{ className?: string; }> | string | undefined = doctor.partnerLogoComponent;
+                    // When loading from Firestore, partnerLogoComponent is a string key.
+                    // We need to map it back to the actual component.
                     if (typeof partnerLogo === 'string' && logoMap[partnerLogo]) {
                        partnerLogo = logoMap[partnerLogo];
                     }

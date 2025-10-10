@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,7 +20,7 @@ import { ImageLibraryDialog } from './_components/image-library-dialog';
 import { LanguageSelectDialog } from './_components/language-select-dialog';
 import { SchemmerWorniLogo, AgnieszkaSlezakLogo, OrthozentrumLogo, VascAllianceLogo } from '@/components/logos';
 import Image from 'next/image';
-import { addDoctor, updateDoctor } from '@/firebase/firestore/doctors';
+import { addDoctor, updateDoctor, type DoctorData } from '@/firebase/firestore/doctors';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DoctorCard } from '@/app/team/_components/doctor-card';
 
@@ -114,31 +114,32 @@ export default function DoctorsPage() {
     }, [firestore]);
     const { data: dbDoctors, isLoading: areDoctorsLoading, error: doctorsError } = useCollection<Doctor>(doctorsQuery);
     
-    const [doctorsList, setDoctorsList] = useState<Doctor[]>(() => staticDoctorsData);
-    
+    const [doctorsList, setDoctorsList] = useState<Doctor[]>(staticDoctorsData);
+    const prevDbDoctorsRef = useRef<Doctor[]>();
+
     useEffect(() => {
         if (dbDoctors) {
-            const staticDataMap = new Map(staticDoctorsData.map(d => [d.id, d]));
-            const dbDataMap = new Map(dbDoctors.map(d => [d.id, d]));
-            
-            const mergedList = Array.from(staticDataMap.keys()).map(id => {
-                return dbDataMap.get(id) || staticDataMap.get(id);
-            }) as Doctor[];
+            // Only update if dbDoctors has actually changed to prevent loops
+            if (JSON.stringify(dbDoctors) !== JSON.stringify(prevDbDoctorsRef.current)) {
+                const staticDataMap = new Map(staticDoctorsData.map(d => [d.id, d]));
+                
+                const mergedList = Array.from(staticDataMap.keys()).map(id => {
+                    const dbDoc = dbDoctors.find(d => d.id === id);
+                    return dbDoc || staticDataMap.get(id);
+                }) as Doctor[];
 
-            dbDoctors.forEach(dbDoc => {
-                if (!staticDataMap.has(dbDoc.id)) {
-                    mergedList.push(dbDoc);
-                }
-            });
+                dbDoctors.forEach(dbDoc => {
+                    if (!staticDataMap.has(dbDoc.id)) {
+                        mergedList.push(dbDoc);
+                    }
+                });
 
-            const sortedList = mergedList.sort((a,b) => a.order - b.order);
-            
-            // Prevent infinite loop by only setting state if the data has actually changed.
-            if (JSON.stringify(sortedList) !== JSON.stringify(doctorsList)) {
-                 setDoctorsList(sortedList);
+                const sortedList = mergedList.sort((a,b) => a.order - b.order);
+                setDoctorsList(sortedList);
+                prevDbDoctorsRef.current = dbDoctors; // Update the ref
             }
         }
-    }, [dbDoctors, doctorsList]);
+    }, [dbDoctors]);
 
 
     const [doctorInEdit, setDoctorInEdit] = useState<Partial<Doctor> | null>(null);
@@ -202,18 +203,27 @@ export default function DoctorsPage() {
         setIsSaving(true);
         setStatus(null);
         const isUpdatingExistingDBEntry = !!editingDoctorId;
-    
-        const saveData = {
-            title: doctorInEdit.title || 'Titel',
-            name: doctorInEdit.name,
-            specialty: typeof doctorInEdit.specialty === 'object' ? 'Spezialisierung' : doctorInEdit.specialty || 'Spezialisierung',
-            qualifications: doctorInEdit.qualifications || [],
-            vita: doctorInEdit.vita || '<p></p>',
-            imageUrl: doctorInEdit.imageUrl || '',
-            imageHint: doctorInEdit.imageHint || 'placeholder',
-            languages: doctorInEdit.languages || [],
-            additionalInfo: doctorInEdit.additionalInfo,
-            partnerLogoComponent: doctorInEdit.partnerLogoComponent as string | undefined,
+
+        // --- Data Sanitization ---
+        const { specialty, partnerLogoComponent, ...restOfDoctor } = doctorInEdit;
+
+        // Convert specialty ReactNode to string if it's not a string already
+        const specialtyString = typeof specialty === 'string' ? specialty : '';
+
+        // Convert partnerLogoComponent to a string identifier if it's a function
+        let partnerLogoString: string | undefined = undefined;
+        if (typeof partnerLogoComponent === 'function') {
+            const logoName = Object.keys(logoMap).find(key => logoMap[key] === partnerLogoComponent);
+            partnerLogoString = logoName;
+        } else if (typeof partnerLogoComponent === 'string') {
+            partnerLogoString = partnerLogoComponent;
+        }
+
+        const saveData: DoctorData = {
+            ...createDefaultDoctor(),
+            ...restOfDoctor,
+            specialty: specialtyString,
+            partnerLogoComponent: partnerLogoString,
             order: doctorInEdit.order || (doctorsList.length > 0 ? Math.max(...doctorsList.map(d => d.order)) + 1 : 1),
         };
     
@@ -222,7 +232,7 @@ export default function DoctorsPage() {
                 await updateDoctor(firestore, editingDoctorId, saveData);
                 setStatus({ type: 'success', message: `Arztprofil für ${saveData.name} erfolgreich aktualisiert.` });
             } else {
-                 await addDoctor(firestore, saveData, editingDoctorId);
+                 await addDoctor(firestore, saveData, editingDoctorId || undefined);
                  setStatus({ type: 'success', message: `Arztprofil für ${saveData.name} erfolgreich erstellt.` });
             }
             
@@ -418,12 +428,11 @@ export default function DoctorsPage() {
     };
     
       useEffect(() => {
-        // Automatically dismiss non-error/warning messages after a delay
-        if (status && (status.type === 'success' || status.type === 'info')) {
-        const timer = setTimeout(() => {
-            setStatus(null);
-        }, 5000);
-        return () => clearTimeout(timer);
+        if (status) {
+            const timer = setTimeout(() => {
+                setStatus(null);
+            }, 5000);
+            return () => clearTimeout(timer);
         }
     }, [status]);
 
@@ -553,7 +562,6 @@ export default function DoctorsPage() {
                                     const isEditing = editingDoctorId === doctor.id;
                                     const isHidden = hiddenDoctorIds.has(doctor.id);
                                     
-                                    // The existing cards have React components, not strings. We handle this.
                                     let partnerLogo: React.FC<{ className?: string; }> | string | undefined = doctor.partnerLogoComponent;
                                     if (typeof partnerLogo === 'string' && logoMap[partnerLogo]) {
                                        partnerLogo = logoMap[partnerLogo];
@@ -656,5 +664,3 @@ export default function DoctorsPage() {
         </>
     );
 }
-
-    
