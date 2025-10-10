@@ -19,12 +19,13 @@ export function SlezakCard() {
                         <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
                             <img src="/images/team/Dr.Slezak.jpg" alt="Portrait von A. Slezak" data-ai-hint="woman portrait" class="h-full w-full object-contain" />
                         </div>
-                        <div class="flex-grow flex flex-col justify-center font-headline ml-6 h-full relative">
+                        <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
                             <div>
                                 <p class="text-2xl font-bold text-primary">Dr. med.</p>
                                 <h3 class="text-5xl font-bold text-primary my-2">A. Slezak</h3>
                                 <p class="text-xl font-bold">Fachärztin für Neurologie</p>
                                 <div class="mt-6">
+                                  <div>
                                     <svg
                                         viewBox="0 0 170 35"
                                         xmlns="http://www.w3.org/2000/svg"
@@ -55,6 +56,7 @@ export function SlezakCard() {
                                             Fachärztin für Neurologie
                                         </text>
                                     </svg>
+                                   </div>
                                 </div>
                             </div>
                             <div class="absolute bottom-0 right-0 flex items-center gap-2">
