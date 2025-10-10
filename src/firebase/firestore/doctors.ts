@@ -62,10 +62,11 @@ export async function addDoctor(firestore: Firestore, doctorData: DoctorData, do
         imageUrl: finalImageUrl,
         partnerLogoComponent: finalPartnerLogoUrl,
         createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
     };
     
-    // Use setDoc to create the document with the specific ID
-    await setDoc(docRef, finalDoctorData);
+    // Use setDoc to create or overwrite the document with the specific ID
+    await setDoc(docRef, finalDoctorData, { merge: true });
 }
 
 // Update an existing doctor document
@@ -78,7 +79,22 @@ export async function updateDoctor(firestore: Firestore, id: string, data: Parti
     const oldDocSnap = await getDoc(doctorRef);
 
     if (!oldDocSnap.exists()) {
-        throw new Error("Document does not exist, cannot update.");
+        // If the document doesn't exist, we can treat this as an 'add' operation.
+        // This makes the function more robust.
+        const addData = {
+            title: data.title || '',
+            name: data.name || '',
+            specialty: data.specialty || '',
+            qualifications: data.qualifications || [],
+            vita: data.vita || '',
+            imageUrl: data.imageUrl || '',
+            imageHint: data.imageHint || '',
+            languages: data.languages || [],
+            order: data.order || 99,
+            ...data
+        } as DoctorData;
+        await addDoctor(firestore, addData, id);
+        return;
     }
     const oldData = oldDocSnap.data() as Doctor;
 
