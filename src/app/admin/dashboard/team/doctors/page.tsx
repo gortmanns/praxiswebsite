@@ -11,6 +11,9 @@ import { useState } from 'react';
 import type { Doctor } from '@/app/team/_components/doctor-card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { Separator } from '@/components/ui/separator';
+import { ImageCropDialog } from './_components/image-crop-dialog';
+import { VitaEditorDialog } from './_components/vita-editor-dialog';
+
 
 // Platzhalter-Daten für die initiale Anzeige des Editors
 const sampleDoctor: Doctor = {
@@ -28,6 +31,42 @@ const sampleDoctor: Doctor = {
 
 export default function DoctorsPage() {
   const [doctorToEdit, setDoctorToEdit] = useState<Doctor>(sampleDoctor);
+  const [isImageEditorOpen, setImageEditorOpen] = useState(false);
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+  const [isVitaEditorOpen, setVitaEditorOpen] = useState(false);
+
+  const handleImageClick = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setImageToCrop(event.target?.result as string);
+                setImageEditorOpen(true);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    input.click();
+  };
+
+  const handleCropComplete = (croppedImageUrl: string) => {
+    setDoctorToEdit(prev => ({ ...prev, imageUrl: croppedImageUrl }));
+    setImageEditorOpen(false);
+    setImageToCrop(null);
+  };
+
+  const handleVitaClick = () => {
+    setVitaEditorOpen(true);
+  };
+
+  const handleVitaSave = (newVita: string) => {
+    setDoctorToEdit(prev => ({ ...prev, vita: newVita }));
+    setVitaEditorOpen(false);
+  };
 
   return (
     <>
@@ -47,12 +86,8 @@ export default function DoctorsPage() {
                    <div className="rounded-lg border bg-muted p-4 md:p-6">
                       <EditableDoctorCard 
                           doctor={doctorToEdit}
-                          onImageClick={() => {
-                              // Logik zum Öffnen des Bild-Dialogs kommt hier
-                          }}
-                          onVitaClick={() => {
-                              // Logik zum Öffnen des Vita-Editors kommt hier
-                          }}
+                          onImageClick={handleImageClick}
+                          onVitaClick={handleVitaClick}
                       />
                   </div>
                 </div>
@@ -85,6 +120,21 @@ export default function DoctorsPage() {
             </CardContent>
         </Card>
       </div>
+      {isImageEditorOpen && imageToCrop && (
+          <ImageCropDialog
+              imageUrl={imageToCrop}
+              onCropComplete={handleCropComplete}
+              onClose={() => setImageEditorOpen(false)}
+          />
+      )}
+      {isVitaEditorOpen && (
+        <VitaEditorDialog
+          isOpen={isVitaEditorOpen}
+          onOpenChange={setVitaEditorOpen}
+          initialValue={doctorToEdit.vita}
+          onSave={handleVitaSave}
+        />
+      )}
   </>
   );
 }
