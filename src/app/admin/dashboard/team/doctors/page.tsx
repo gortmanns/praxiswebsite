@@ -45,7 +45,7 @@ const staticDoctorsData: Doctor[] = [
         specialty: "Facharzt für Chirurgie",
         qualifications: [],
         vita: `<p>Prof. Schemmer war von 2013 bis 2022 Direktor der Universitätsklinik für Viszerale Transplantationschirurgie am Inselspital in Bern.</p><br><p>Seit 2022 ist er Chefarzt für Chirurgie an der Universitätsklinik für Allgemein-, Viszeral- und Transplantationschirurgie in Graz.</p><br><p>Seine Patienten in der Schweiz behandelt er weiterhin, neu aber wohnortnah und unkompliziert auch hier im Praxiszentrum im Ring, wo er eine regelmässige Sprechstunde abhält.</p>`,
-        partnerLogoComponent: "SchemmerWorniLogo",
+        partnerLogoComponent: "/images/schemmer-worni-logo.png",
         order: 2,
     },
     {
@@ -57,7 +57,7 @@ const staticDoctorsData: Doctor[] = [
         specialty: "Facharzt für Angiologie",
         qualifications: [],
         vita: `<p>Prof. Rosenov hat sich bereit erklärt, ab Mai 2024 die Patienten mit Krampfaderleiden im Praxiszentrum im Ring zu behandeln.</p><br><p>Er wird regelmässig, i.d.R. am Montagnachmittag, eine Sprechstunde im Praxiszentrum anbieten.</p><br><h4>Curriculum Vitae</h4><ul><li><span style="color: var(--color-tiptap-blue);">Seit 2004</span> Chefarzt Herzchirurgie, Spital Triemli, Zürich</li><li><span style="color: var(--color-tiptap-blue);">2002</span> Habilitation und Ernennung zum Privatdozenten an der Universität Ulm</li><li><span style="color: var(--color-tiptap-blue);">1997-2004</span> Oberarzt an der Klinik für Herz-, Thorax- und Gefässchirurgie, Ulm</li><li><span style="color: var(--color-tiptap-blue);">1991-1996</span> Facharztausbildung in der Herzchirurgie an der Medizinischen Hochschule Hannover</li><li><span style="color: var(--color-tiptap-blue);">1990</span> Promotion zum Dr. med.</li><li><span style="color: var(--color-tiptap-blue);">1882-1989</span> Studium der Humanmedizin an der Westfälischen Wilhelms-Universität in Münster</li></ul>`,
-        partnerLogoComponent: "VascAllianceLogo",
+        partnerLogoComponent: "/images/VASC-Alliance-Logo.png",
         order: 3,
     },
     {
@@ -210,25 +210,16 @@ export default function DoctorsPage() {
     }, []);
 
     const handleImageSelectedFromLibrary = (imageUrl: string) => {
-        ensureEditingState();
-        const fieldToUpdate = imageEditContext === 'logo' ? 'partnerLogoComponent' : 'imageUrl';
-        setDoctorInEdit(prev => {
-            const current = prev ?? createDefaultDoctor();
-            if (fieldToUpdate === 'partnerLogoComponent') {
-                return { ...current, partnerLogoComponent: imageUrl, additionalInfo: undefined };
-            }
-            return { ...current, imageUrl };
-        });
         setImageLibraryOpen(false);
-        setImageEditContext(null);
+        setImageToCrop(imageUrl);
+        setImageCropDialogOpen(true);
     };
     
     const handleCropComplete = useCallback((croppedImageUrl: string) => {
         ensureEditingState();
-        const fieldToUpdate = imageEditContext === 'logo' ? 'partnerLogoComponent' : 'imageUrl';
         setDoctorInEdit(prev => {
              const current = prev ?? createDefaultDoctor();
-            if (fieldToUpdate === 'partnerLogoComponent') {
+            if (imageEditContext === 'logo') {
                 return { ...current, partnerLogoComponent: croppedImageUrl, additionalInfo: undefined };
             }
             return { ...current, imageUrl: croppedImageUrl };

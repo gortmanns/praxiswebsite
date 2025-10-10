@@ -8,12 +8,6 @@ import { User, Pencil } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import {
-    AgnieszkaSlezakLogo,
-    OrthozentrumLogo,
-    SchemmerWorniLogo,
-    VascAllianceLogo
-} from '@/components/logos';
 
 interface EditableDoctorCardProps {
     doctor: Doctor;
@@ -21,13 +15,6 @@ interface EditableDoctorCardProps {
     onVitaClick: () => void;
     onTextClick: (fieldKey: keyof Doctor, fieldLabel: string, index?: number) => void;
 }
-
-const partnerLogos: { [key: string]: React.FC<{ className?: string }> } = {
-  OrthozentrumLogo,
-  AgnieszkaSlezakLogo,
-  VascAllianceLogo,
-  SchemmerWorniLogo,
-};
 
 const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
@@ -47,7 +34,6 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
 
 const FrontSide: React.FC<Pick<EditableDoctorCardProps, 'doctor' | 'onImageClick' | 'onTextClick'>> = ({ doctor, onImageClick, onTextClick }) => {
     const { title, name, imageUrl, imageHint, specialty, qualifications, additionalInfo, partnerLogoComponent } = doctor;
-    const LogoComponent = partnerLogoComponent ? partnerLogos[partnerLogoComponent] : null;
 
     return (
         <div 
@@ -88,21 +74,22 @@ const FrontSide: React.FC<Pick<EditableDoctorCardProps, 'doctor' | 'onImageClick
                         </div>
                         
                         <div className="mt-[2.5cqw] cursor-pointer hover:bg-primary/10 rounded-sm p-1 -m-1" onClick={() => onTextClick('additionalInfo', 'Funktion oder Logo')}>
-                            {additionalInfo && !LogoComponent && (
+                            {partnerLogoComponent ? (
+                                <div className="relative flex w-fit justify-start max-w-[240px]">
+                                     <Image
+                                        src={partnerLogoComponent}
+                                        alt="Partner Logo"
+                                        width={800}
+                                        height={268}
+                                        className="h-auto w-full object-contain"
+                                        data-ai-hint="partner logo"
+                                    />
+                                </div>
+                            ) : additionalInfo ? (
                                 <p className="text-[clamp(0.6rem,1.6cqw,1rem)] italic">
                                     {additionalInfo}
                                 </p>
-                            )}
-                            
-                            {LogoComponent && (
-                                <div className="relative flex w-fit justify-start">
-                                    <LogoComponent className={cn(
-                                        "h-auto w-full",
-                                        name === "A. Slezak" ? "max-w-[200px]" : "max-w-[240px]"
-                                    )} />
-                                </div>
-                            )}
-                            {!additionalInfo && !LogoComponent && (
+                            ) : (
                                 <p className="text-[clamp(0.6rem,1.6cqw,1rem)] italic text-muted-foreground">
                                     Funktion oder Logo
                                 </p>
