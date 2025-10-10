@@ -298,11 +298,19 @@ export default function DoctorsPage() {
         setIsTextEditorOpen(true);
     };
     
-    const handleSelectLogo = () => {
+    const handleSelectLogoFromLibrary = useCallback(() => {
         setLogoFunctionSelectOpen(false);
+        ensureEditingState();
         setImageEditContext('logo');
-        setImageSourceDialogOpen(true);
-    };
+        setImageLibraryOpen(true);
+    }, [ensureEditingState]);
+
+    const handleUploadNewLogo = useCallback(() => {
+        setLogoFunctionSelectOpen(false);
+        ensureEditingState();
+        setImageEditContext('logo');
+        handleUploadNewImage();
+    }, [ensureEditingState, handleUploadNewImage]);
     
     const imageAspectRatio = useMemo(() => {
         if (imageEditContext === 'logo') {
@@ -447,10 +455,9 @@ export default function DoctorsPage() {
                 isOpen={isLogoFunctionSelectOpen}
                 onOpenChange={setLogoFunctionSelectOpen}
                 onSelectFunction={handleSelectFunction}
-                onSelectLogo={handleSelectLogo}
+                onSelectFromLibrary={handleSelectLogoFromLibrary}
+                onUploadNew={handleUploadNewLogo}
             />
         </>
     );
 }
-
-    
