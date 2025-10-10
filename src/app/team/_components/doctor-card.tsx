@@ -1,4 +1,3 @@
-
 'use client'
 
 import Image from 'next/image';
@@ -92,7 +91,7 @@ export const DoctorCard: React.FC<Doctor> = ({
                                     </h4>
                                     <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
                                         <div className="font-bold">{specialty}</div>
-                                        {qualifications.map((q, i) => <p key={i}>{q}</p>)}
+                                        {(qualifications || []).map((q, i) => <p key={i}>{q}</p>)}
                                     </div>
                                     
                                      <div className="mt-[2.5cqw]">
