@@ -11,7 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info, Eye, EyeOff, Pencil, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Info, Eye, EyeOff, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TextEditDialog } from './_components/text-edit-dialog';
@@ -219,8 +219,13 @@ export default function DoctorsPage() {
         } as Omit<Doctor, 'id'>;
     }, [doctorInEdit]);
     
-    const ensureEditingState = useCallback(() => {
-        if (!doctorInEdit) {
+    const ensureEditingState = useCallback((isNew: boolean = false) => {
+        if (isNew) {
+            setDoctorInEdit(createDefaultDoctor());
+            setEditingDoctorId(null);
+            setStatus({ type: 'info', message: 'Erstellen Sie eine neue Arztkarte. Klicken Sie auf Elemente, um sie zu bearbeiten.' });
+        } else if (!doctorInEdit) {
+            // This case should ideally not happen if a doctor is being edited, but as a safeguard:
             setDoctorInEdit(createDefaultDoctor());
         }
     }, [doctorInEdit]);
@@ -245,7 +250,8 @@ export default function DoctorsPage() {
     const handleSave = async () => {
         if (!firestore || !doctorInEdit) return;
     
-        const isExistingInDB = isDoctorFromDB(editingDoctorId);
+        // Determine if we are updating an existing DB document or creating a new one.
+        const isUpdate = editingDoctorId && isDoctorFromDB(editingDoctorId);
     
         const saveData: Omit<Doctor, 'id' | 'specialty'> & {specialty: string} = {
             title: doctorInEdit.title || 'Titel',
@@ -264,10 +270,12 @@ export default function DoctorsPage() {
         setIsSaving(true);
         setStatus(null);
         try {
-            if (isExistingInDB && editingDoctorId) {
+            if (isUpdate) {
                 await updateDoctor(firestore, editingDoctorId, saveData);
                 setStatus({ type: 'success', message: 'Die Änderungen wurden erfolgreich gespeichert.' });
             } else {
+                // This handles both new cards and fallback cards being saved for the first time.
+                // The docId (editingDoctorId) is passed, which can be null for a completely new card.
                 await addDoctor(firestore, saveData, editingDoctorId);
                 setStatus({ type: 'success', message: 'Die neue Arztkarte wurde erfolgreich angelegt.' });
             }
@@ -388,20 +396,33 @@ export default function DoctorsPage() {
     
     const currentValueForDialog = useMemo(() => {
         const currentDoctor = doctorInEdit ?? createDefaultDoctor();
+        const defaultDoctor = createDefaultDoctor();
         if (!editingField) return '';
-        if (editingField.key === 'qualifications' && editingField.index !== undefined) {
-            return (currentDoctor.qualifications || [])[editingField.index] || '';
+    
+        const key = editingField.key;
+        
+        if (key === 'qualifications' && editingField.index !== undefined) {
+            const value = (currentDoctor.qualifications || [])[editingField.index] || '';
+            const defaultValue = (defaultDoctor.qualifications || [])[editingField.index] || '';
+            return value === defaultValue ? '' : value;
         }
         
         const specialty = currentDoctor.specialty;
-        if (editingField.key === 'specialty') {
-            if (typeof specialty === 'string') return specialty;
-            // If specialty is a ReactNode, we cannot easily edit it as a string.
-            // We return a placeholder or an empty string. The save logic handles this.
+        if (key === 'specialty') {
+            if (typeof specialty === 'string') {
+                return specialty === defaultDoctor.specialty ? '' : specialty;
+            }
+            return ''; // Cannot edit ReactNode, return empty
+        }
+        
+        // Compare with default placeholder values
+        const value = currentDoctor[key as keyof Omit<Doctor, 'specialty'>] as string;
+        const defaultValue = defaultDoctor[key as keyof Omit<Doctor, 'specialty'>] as string;
+
+        if (value === defaultValue) {
             return '';
         }
         
-        const value = currentDoctor[editingField.key as keyof Omit<Doctor, 'specialty'>] as string;
         return value || '';
     }, [editingField, doctorInEdit]);
 
@@ -547,7 +568,7 @@ export default function DoctorsPage() {
                                 <div className="flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted p-12 text-center">
                                     <h4 className="text-lg font-semibold text-muted-foreground">Keine Karte zum Bearbeiten ausgewählt.</h4>
                                     <p className="text-sm text-muted-foreground">Wählen Sie unten eine Karte zur Bearbeitung aus oder fügen Sie eine neue hinzu.</p>
-                                    <Button onClick={() => ensureEditingState()}>
+                                    <Button onClick={() => ensureEditingState(true)}>
                                         <PlusCircle className="mr-2 h-4 w-4" /> Neue Karte erstellen
                                      </Button>
                                 </div>
@@ -569,7 +590,6 @@ export default function DoctorsPage() {
                                                 <Skeleton className="h-9 w-full" />
                                                 <Skeleton className="h-9 w-full" />
                                                 <Separator className="my-2" />
-                                                <Skeleton className="h-9 w-full" />
                                                 <Skeleton className="h-9 w-full" />
                                             </div>
                                             <div className="relative flex-1 w-full max-w-[1000px] p-2">
