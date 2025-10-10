@@ -1,3 +1,4 @@
+
 'use client'
 
 import Image from 'next/image';
@@ -18,14 +19,13 @@ export interface Doctor {
     vita: string;
     additionalInfo?: string;
     partnerLogoComponent?: React.FC<{className?: string}> | string;
-    children?: React.ReactNode;
 }
 
 
 const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
         if (typeof window !== 'undefined') {
-        return { __html: DOMPurify.sanitize(html) };
+            return { __html: DOMPurify.sanitize(html, { ADD_ATTR: ['style'] }) };
         }
         return { __html: '' };
     }, [html]);
@@ -88,20 +88,20 @@ export const DoctorCard: React.FC<Doctor> = ({
                                         {qualifications.map((q, i) => <p key={i}>{q}</p>)}
                                     </div>
                                     
-                                    {LogoComponent && (
+                                    {(LogoComponent || additionalInfo) && (
                                         <div className="relative mt-[2.5cqw] flex h-auto max-h-28 w-full max-w-[400px] items-center justify-start">
-                                            {typeof LogoComponent === 'function' ? (
-                                                <LogoComponent className="h-full w-full object-contain object-left" />
-                                            ) : typeof LogoComponent === 'string' && LogoComponent.startsWith('/images') ? (
-                                                <Image src={LogoComponent} alt="Partner Logo" width={400} height={100} className="h-auto w-full object-contain object-left" />
-                                            ) : null }
+                                            {LogoComponent ? (
+                                                typeof LogoComponent === 'function' ? (
+                                                    <LogoComponent className="h-full w-full object-contain object-left" />
+                                                ) : typeof LogoComponent === 'string' && LogoComponent.startsWith('/images') ? (
+                                                    <Image src={LogoComponent} alt="Partner Logo" width={400} height={100} className="h-auto w-full object-contain object-left" />
+                                                ) : null
+                                            ) : additionalInfo ? (
+                                                <p className="text-[clamp(0.6rem,1.6cqw,1rem)] italic">
+                                                    {additionalInfo}
+                                                </p>
+                                            ) : null}
                                         </div>
-                                    )}
-
-                                    {additionalInfo && !LogoComponent && (
-                                        <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
-                                            {additionalInfo}
-                                        </p>
                                     )}
                                 </div>
                             </div>
