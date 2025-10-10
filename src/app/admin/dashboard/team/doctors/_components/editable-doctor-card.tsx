@@ -122,10 +122,10 @@ const BackSide: React.FC<{ vita: string, onVitaClick: () => void }> = ({ vita, o
              <Button 
                 variant="ghost" 
                 size="icon" 
-                className="absolute top-2 right-2 z-10 h-8 w-8 text-background hover:bg-background/20 hover:text-background"
+                className="absolute top-2 right-2 z-10 h-14 w-14 text-background hover:bg-background/20 hover:text-background"
                 onClick={onVitaClick}
             >
-                <Pencil className="h-5 w-5" />
+                <Pencil className="h-10 w-10" />
             </Button>
             <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary">
                 <VitaRenderer html={vita} />
