@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
@@ -31,8 +30,7 @@ const staticDoctorsData: Doctor[] = [
     rosenovProps,
     herschelProps,
     slezakProps,
-].sort((a, b) => a.order - b.order);
-
+];
 
 const createDefaultDoctor = (): Omit<Doctor, 'id'> => ({
     name: 'Neuer Arzt',
@@ -90,7 +88,7 @@ export default function DoctorsPage() {
 
     const { data: dbDoctors, isLoading: areDoctorsLoading } = useCollection<Doctor>(doctorsQuery);
     
-    const [doctorsList, setDoctorsList] = useState<Doctor[]>(staticDoctorsData);
+    const [doctorsList, setDoctorsList] = useState<Doctor[]>([]);
     const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
 
     const [isVitaEditorOpen, setVitaEditorOpen] = useState(false);
@@ -99,26 +97,30 @@ export default function DoctorsPage() {
     const [status, setStatus] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
     
     useEffect(() => {
-        if (dbDoctors) {
-            const staticDataMap = new Map(staticDoctorsData.map(d => [d.id, d]));
-            const dbDataMap = new Map(dbDoctors.map(d => [d.id, d]));
-            const allIds = new Set([...staticDataMap.keys(), ...dbDataMap.keys()]);
-
-            const mergedList = Array.from(allIds).map(id => {
-                return dbDataMap.get(id) || staticDataMap.get(id);
-            }).filter(Boolean) as Doctor[];
-
-            const sortedList = mergedList.sort((a,b) => a.order - b.order);
-            
-            // Prevent infinite loops by comparing the stringified versions of the lists.
-            if (JSON.stringify(sortedList) !== JSON.stringify(doctorsList)) {
-                setDoctorsList(sortedList);
+        // This effect runs when dbDoctors or areDoctorsLoading changes.
+        // It merges the static data with the data from Firestore.
+        const dbDataMap = new Map(dbDoctors?.map(d => [d.id, d]));
+        
+        const mergedList = staticDoctorsData.map(staticDoctor => {
+            const dbData = dbDataMap.get(staticDoctor.id);
+            // If data exists in the DB, it overrides the static data's code.
+            if (dbData) {
+                return { ...staticDoctor, ...dbData };
             }
-        } else if (!areDoctorsLoading) {
-            // If dbDoctors is null (after loading) and we have static data, use it.
-            setDoctorsList(staticDoctorsData);
-        }
-    }, [dbDoctors, areDoctorsLoading, doctorsList]);
+            return staticDoctor;
+        });
+
+        // Add any doctors that are in the DB but not in the static list
+        dbDoctors?.forEach(dbDoctor => {
+            if (!staticDoctorsData.some(sd => sd.id === dbDoctor.id)) {
+                mergedList.push(dbDoctor);
+            }
+        });
+        
+        const sortedList = mergedList.sort((a, b) => a.order - b.order);
+        setDoctorsList(sortedList);
+
+    }, [dbDoctors, areDoctorsLoading]);
 
     const handleEditClick = (doctor: Doctor) => {
         setEditingDoctor(doctor);
@@ -144,8 +146,7 @@ export default function DoctorsPage() {
         setIsSaving(true);
         setStatus(null);
         
-        const isExistingInDb = dbDoctors?.some(d => d.id === editingDoctor.id);
-
+        // Create a clean object with only the fields to be saved to Firestore.
         const dataToSave = {
             name: editingDoctor.name,
             order: editingDoctor.order,
@@ -155,13 +156,14 @@ export default function DoctorsPage() {
 
         try {
             const docRef = doc(firestore, 'doctors', editingDoctor.id);
+            // Use setDoc with merge to create or update the document.
             await setDoc(docRef, dataToSave, { merge: true });
 
-            if (isExistingInDb) {
-                setStatus({ type: 'success', message: `Arztprofil für ${editingDoctor.name} erfolgreich aktualisiert.` });
-            } else {
-                setStatus({ type: 'success', message: `Arztprofil für ${editingDoctor.name} erfolgreich erstellt.` });
-            }
+            const isNew = !dbDoctors?.some(d => d.id === editingDoctor.id);
+            setStatus({ 
+                type: 'success', 
+                message: `Arztprofil für ${editingDoctor.name} erfolgreich ${isNew ? 'erstellt' : 'aktualisiert'}.` 
+            });
             handleCancel();
 
         } catch (error: any) {
@@ -171,7 +173,6 @@ export default function DoctorsPage() {
             setIsSaving(false);
         }
     };
-
 
     const handleVitaClick = useCallback(() => {
         if (editingDoctor) {
@@ -206,7 +207,6 @@ export default function DoctorsPage() {
             return () => clearTimeout(timer);
         }
     }, [status]);
-
 
     const getStatusAlert = () => {
         if (!status) return null;
@@ -375,7 +375,6 @@ export default function DoctorsPage() {
                     </CardContent>
                 </Card>
             </div>
-
             {editingDoctor && (
                 <VitaEditorDialog
                     isOpen={isVitaEditorOpen}
@@ -387,5 +386,4 @@ export default function DoctorsPage() {
         </>
     );
 }
-
     
