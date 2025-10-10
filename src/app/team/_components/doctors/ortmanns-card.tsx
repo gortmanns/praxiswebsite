@@ -24,7 +24,7 @@ export function OrtmannsCard() {
                         <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md border-2 border-dashed border-green-500">
                             <img src="/images/team/Ortmanns.jpg" alt="Portrait von G. Ortmanns" data-ai-hint="man portrait" class="h-full w-full object-contain border-2 border-dashed border-blue-500" />
                         </div>
-                        <div class="flex-grow flex flex-col h-full ml-6 border-2 border-dashed border-yellow-500">
+                        <div class="flex-grow flex flex-col h-full ml-6 border-2 border-dashed border-yellow-500 justify-center">
                              <div>
                                 <p class="text-2xl font-bold text-primary">Dipl. med.</p>
                                 <h3 class="text-5xl font-bold text-primary my-2">G. Ortmanns</h3>
