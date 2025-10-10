@@ -14,12 +14,12 @@ export function HerschelCard() {
                     .vita-content { color: hsl(var(--background)); }
                     .vita-content p { margin: 0; }
                 </style>
-                <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border-2 border-red-500">
+                <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm">
                     <div class="absolute inset-0 flex items-center justify-start bg-card text-card-foreground p-6">
-                        <div class="relative h-full overflow-hidden rounded-md aspect-[2/3] border-2 border-green-500">
-                            <img src="/images/team/Dr.Herschel.jpg" alt="Portrait von R. Herschel" data-ai-hint="man portrait" class="w-full h-full object-contain border-2 border-blue-500" />
+                        <div class="relative h-full overflow-hidden rounded-md aspect-[2/3]">
+                            <img src="/images/team/Dr.Herschel.jpg" alt="Portrait von R. Herschel" data-ai-hint="man portrait" class="w-full h-full object-contain" />
                         </div>
-                        <div class="ml-6 flex flex-col justify-between text-left h-full flex-grow">
+                        <div class="ml-6 flex h-full flex-grow flex-col justify-between text-left">
                              <div>
                                 <p class="text-3xl font-bold text-primary">Dr. med.</p>
                                 <h3 class="text-6xl font-bold text-primary my-2">R. Herschel</h3>
