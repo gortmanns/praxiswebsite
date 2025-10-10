@@ -11,7 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info, Eye, EyeOff, Pencil, ArrowUp, ArrowDown, PlusCircle, Save, Trash2, Loader2 } from 'lucide-react';
+import { Info, Eye, EyeOff, Pencil, ArrowUp, ArrowDown, PlusCircle, Save, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TextEditDialog } from './_components/text-edit-dialog';
@@ -203,7 +203,6 @@ export default function DoctorsPage() {
     const [editingField, setEditingField] = useState<{ key: keyof Doctor; label: string, index?: number } | null>(null);
     const [isLogoFunctionSelectOpen, setLogoFunctionSelectOpen] = useState(false);
     const [isLanguageSelectOpen, setLanguageSelectOpen] = useState(false);
-    const [doctorToDelete, setDoctorToDelete] = useState<Doctor | null>(null);
     
     useEffect(() => {
         if (!isLoadingDoctors) {
@@ -290,30 +289,6 @@ export default function DoctorsPage() {
             setIsSaving(false);
         }
     };
-
-    const handleDeleteDoctor = async () => {
-        if (!firestore || !doctorToDelete) return;
-
-        // Check if the doctor to delete exists in the fallback data.
-        // If it does, we can't truly delete it from the "database" as it's static.
-        if (staticDoctorsData.some(d => d.id === doctorToDelete.id)) {
-            toast.warning("Statische Fallback-Karten können nicht gelöscht werden. Bitte erstellen Sie eine neue Karte und speichern Sie sie, um sie in der Datenbank zu verwalten.");
-            setDoctorToDelete(null);
-            return;
-        }
-
-        setIsSaving(true);
-        try {
-            await deleteDoctor(firestore, doctorToDelete.id);
-            toast.success(`Die Karte für ${doctorToDelete.name} wurde gelöscht.`);
-            setDoctorToDelete(null);
-        } catch (error) {
-            console.error("Error deleting doctor:", error);
-            toast.error("Fehler beim Löschen der Arztkarte.");
-        } finally {
-            setIsSaving(false);
-        }
-    }
 
     // --- Image Handling ---
     const handleImageClick = useCallback(() => {
@@ -522,7 +497,7 @@ export default function DoctorsPage() {
                                     ) : (
                                         <Button onClick={handleAddNewDoctor} disabled={!doctorInEdit || isSaving}>
                                             {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <PlusCircle className="mr-2 h-4 w-4" />}
-                                            Als neue Karte übernehmen
+                                            Als neue Karte anlegen
                                         </Button>
                                     )}
                                     
@@ -580,7 +555,6 @@ export default function DoctorsPage() {
                                     const isEditing = editingDoctorId === doctor.id;
                                     const isHidden = hiddenDoctorIds.has(doctor.id);
                                     const LogoComponent = typeof doctor.partnerLogoComponent === 'string' ? logoMap[doctor.partnerLogoComponent] : undefined;
-                                    const canBeDeleted = isDoctorFromDB(doctor.id);
 
                                     return (
                                         <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
@@ -596,29 +570,6 @@ export default function DoctorsPage() {
                                                     {isHidden ? <Eye className="mr-2 h-4 w-4" /> : <EyeOff className="mr-2 h-4 w-4" />}
                                                     {isHidden ? 'Einblenden' : 'Ausblenden'}
                                                 </Button>
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        <Button variant="destructive" size="sm" disabled={isEditing || isSaving || !canBeDeleted} className="justify-start" onClick={() => setDoctorToDelete(doctor)}>
-                                                            <Trash2 className="mr-2 h-4 w-4" /> Löschen
-                                                        </Button>
-                                                    </AlertDialogTrigger>
-                                                    {doctorToDelete === doctor && (
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader>
-                                                                <AlertDialogTitle>Arztkarte löschen?</AlertDialogTitle>
-                                                                <AlertDialogDescription>
-                                                                    Möchten Sie die Karte für ${doctor.name} wirklich endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-                                                                </AlertDialogDescription>
-                                                            </AlertDialogHeader>
-                                                            <AlertDialogFooter>
-                                                                <AlertDialogCancel onClick={() => setDoctorToDelete(null)} disabled={isSaving}>Abbrechen</AlertDialogCancel>
-                                                                <AlertDialogAction onClick={handleDeleteDoctor} disabled={isSaving}>
-                                                                    {isSaving ? "Wird gelöscht..." : "Ja, löschen"}
-                                                                </AlertDialogAction>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    )}
-                                                </AlertDialog>
                                                 <Button variant="default" size="sm" onClick={() => handleEditClick(doctor)} disabled={isEditing || isSaving} className="justify-start">
                                                     <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
                                                 </Button>
