@@ -89,7 +89,7 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
     );
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-[10px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
            <div className="w-full aspect-[1000/495] rounded-lg border overflow-hidden">
                 <FrontSide />
            </div>
