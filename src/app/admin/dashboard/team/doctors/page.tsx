@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info, Eye, EyeOff, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Info, Eye, EyeOff, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle, TestTube } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TextEditDialog } from './_components/text-edit-dialog';
@@ -23,6 +23,8 @@ import Image from 'next/image';
 import { addDoctor, updateDoctor } from '@/firebase/firestore/doctors';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DoctorCard } from '@/app/team/_components/doctor-card';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { toast } from 'sonner';
 
 // Re-exporting Doctor type to avoid confusion with Doctor component
 export type Doctor = DoctorType;
@@ -231,7 +233,10 @@ export default function DoctorsPage() {
     };
     
     const handleSave = async () => {
-        if (!firestore || !doctorInEdit) return;
+        if (!firestore || !doctorInEdit || !user) {
+            setStatus({ type: 'error', message: 'Benutzer nicht authentifiziert oder Datenbank nicht bereit.' });
+            return;
+        };
         
         // This is a simplified check. A robust implementation would check against a list of IDs from the DB if it were loaded.
         // For now, we assume if an ID exists, it's an update.
@@ -263,9 +268,18 @@ export default function DoctorsPage() {
                 await addDoctor(firestore, saveData, editingDoctorId);
                 setStatus({ type: 'success', message: 'Die Arztkarte wurde erfolgreich erstellt/initial gespeichert.' });
             }
+            
+            // Optimistically update the local state to reflect the change immediately
+            if (isUpdatingExistingDBEntry) {
+                setDoctorsList(currentList => currentList.map(d => d.id === editingDoctorId ? { ...saveData, id: editingDoctorId } : d));
+            } else {
+                 // For new doctors, we don't have the final ID, so this is a simplification.
+                 // A real implementation would re-fetch or get the ID from the addDoctor response.
+                 // For now, we just clear edit state.
+            }
+            
             handleCancel();
-            // Here you might want to re-fetch from the database in a real-world scenario
-            // to show the most up-to-date list, but for now, we just cancel the edit mode.
+
         } catch (error: any) {
             console.error("Error saving doctor: ", error);
             const errorMessage = `Die Daten konnten nicht gespeichert werden. Fehler: ${error.message || String(error)}`;
@@ -499,6 +513,25 @@ export default function DoctorsPage() {
             </div>
         );
     };
+
+    const handleTestSave = async () => {
+        if (!firestore) {
+            toast.error("Firestore ist nicht initialisiert.");
+            return;
+        }
+        toast.info("Versuche, Test-Daten zu speichern...");
+        try {
+            const testCollectionRef = collection(firestore, 'test');
+            await addDoc(testCollectionRef, {
+                text: "Test",
+                timestamp: serverTimestamp(),
+            });
+            toast.success("Test-Daten erfolgreich in die 'test'-Kollektion geschrieben!");
+        } catch (error: any) {
+            console.error("Fehler beim Test-Speichern: ", error);
+            toast.error(`Test-Speichern fehlgeschlagen: ${error.message}`);
+        }
+    };
     
     
     return (
@@ -506,11 +539,17 @@ export default function DoctorsPage() {
             <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
                 <Card className="w-full">
                     <CardHeader>
-                        <div>
-                            <CardTitle className="text-primary">Ärzte verwalten</CardTitle>
-                            <CardDescription>
-                                Hier können Sie die Profile der Ärzte bearbeiten.
-                            </CardDescription>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <CardTitle className="text-primary">Ärzte verwalten</CardTitle>
+                                <CardDescription>
+                                    Hier können Sie die Profile der Ärzte bearbeiten.
+                                </CardDescription>
+                            </div>
+                             <Button onClick={handleTestSave} variant="outline">
+                                <TestTube className="mr-2 h-4 w-4" />
+                                Test-Speichern
+                            </Button>
                         </div>
                     </CardHeader>
                     <CardContent>

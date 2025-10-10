@@ -2,39 +2,31 @@
  * @fileoverview Firestore Security Rules for Praxis Online application.
  *
  * Core Philosophy:
- * This ruleset provides public read access to all collections while restricting write access.
- * It's designed for rapid prototyping and assumes that all data validation will be handled
- * in the application code. The rules primarily focus on preventing unauthorized data modification.
+ * This ruleset provides basic security for doctor profiles, contact form submissions, and symptom checks.
+ * All write operations are restricted.
  *
  * Data Structure:
- * The Firestore database consists of three top-level collections:
- * - /doctor_profiles/{doctorProfileId}: Stores doctor profile information.
- * - /contact_form_submissions/{contactFormSubmissionId}: Stores contact form submissions.
- * - /symptom_checks/{symptomCheckId}: Stores symptom check records.
+ * The database consists of three top-level collections:
+ * - /doctor_profiles/{doctorProfileId}
+ * - /contact_form_submissions/{contactFormSubmissionId}
+ * - /symptom_checks/{symptomCheckId}
  *
  * Key Security Decisions:
- * - Public read access is granted to all collections to simplify initial development.
- * - Write access (create, update, delete) is denied by default and must be explicitly
- *   enabled through additional rules or backend logic. This prevents unauthorized
- *   modification of data during the prototyping phase.
- * - No data shape validation is performed in the rules. The application is responsible
- *   for ensuring data integrity.
+ * - Doctor profiles are publicly readable, but write access is restricted.
+ * - Contact form submissions are only writable.
+ * - Symptom checks are publicly readable, but write access is restricted.
+ * - No user listing is allowed on any collections.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Grants public read access to doctor profiles and restricts write access.
+     * @description Manages access to doctor profiles. Doctors' profiles are publicly available for reading. Writing is not allowed.
      * @path /doctor_profiles/{doctorProfileId}
-     * @allow get, list: All users can read doctor profiles.
-     * @allow create: Unauthorized users cannot create doctor profiles.
-     * @allow update: Unauthorized users cannot update doctor profiles.
-     * @allow delete: Unauthorized users cannot delete doctor profiles.
-     * @deny create: if true;
-     * @deny update: if true;
-     * @deny delete: if true;
-     * @principle Allows public read access for doctor profiles.
+     * @allow (get, list) Any user can read doctor profiles.
+     * @deny (create, update, delete) No user can create, update, or delete doctor profiles.
+     * @principle Allows public read access while restricting write access.
      */
     match /doctor_profiles/{doctorProfileId} {
       allow get, list: if true;
@@ -44,39 +36,42 @@ service cloud.firestore {
     }
 
     /**
-     * @description Grants public read access to contact form submissions and restricts write access.
+     * @description Manages access to contact form submissions. All users can submit.
      * @path /contact_form_submissions/{contactFormSubmissionId}
-     * @allow get, list: All users can read contact form submissions.
-     * @allow create: Unauthorized users cannot create contact form submissions.
-     * @allow update: Unauthorized users cannot update contact form submissions.
-     * @allow delete: Unauthorized users cannot delete contact form submissions.
-     * @deny create: if true;
-     * @deny update: if true;
-     * @deny delete: if true;
-     * @principle Allows public read access for contact form submissions.
+     * @allow (create) Any user can create contact form submissions.
+     * @deny (get, list, update, delete) No user can get, list, update, or delete contact form submissions.
+     * @principle Allows public submissions while restricting read, update, and delete access.
      */
     match /contact_form_submissions/{contactFormSubmissionId} {
-      allow get, list: if true;
-      allow create: if false;
+      allow get, list: if false;
+      allow create: if true;
       allow update: if false;
       allow delete: if false;
     }
 
     /**
-     * @description Grants public read access to symptom checks and restricts write access.
+     * @description Manages access to symptom checks. Symptom checks are publicly readable. Writing is not allowed.
      * @path /symptom_checks/{symptomCheckId}
-     * @allow get, list: All users can read symptom checks.
-     * @allow create: Unauthorized users cannot create symptom checks.
-     * @allow update: Unauthorized users cannot update symptom checks.
-     * @allow delete: Unauthorized users cannot delete symptom checks.
-     * @deny create: if true;
-     * @deny update: if true;
-     * @deny delete: if true;
-     * @principle Allows public read access for symptom checks.
+     * @allow (get, list) Any user can read symptom checks.
+     * @deny (create, update, delete) No user can create, update, or delete symptom checks.
+     * @principle Allows public read access while restricting write access.
      */
     match /symptom_checks/{symptomCheckId} {
       allow get, list: if true;
       allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+    /**
+     * @description Allows creating/writing to a test collection.
+     * @path /tests/{testId}
+     * @allow (create) Any user can create test documents.
+     * @deny (get, list, update, delete) No user can get, list, update, or delete test documents.
+     * @principle Allows temporary write access to test the database connection.
+     */
+    match /tests/{testId} {
+      allow get, list: if false;
+      allow create: if true;
       allow update: if false;
       allow delete: if false;
     }
