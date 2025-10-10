@@ -20,7 +20,6 @@ import { cn } from '@/lib/utils';
 import { TextEditDialog } from './_components/text-edit-dialog';
 import { ImageSourceDialog } from './_components/image-source-dialog';
 import { LogoFunctionSelectDialog } from './_components/logo-function-select-dialog';
-import { PartnerLogoSelectDialog } from './_components/partner-logo-select-dialog';
 import { ImageLibraryDialog } from './_components/image-library-dialog';
 
 // Statische Daten für die Kartenkomponenten
@@ -119,12 +118,11 @@ export default function DoctorsPage() {
     const [isImageCropDialogOpen, setImageCropDialogOpen] = useState(false);
     const [isImageLibraryOpen, setImageLibraryOpen] = useState(false);
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+    const [imageEditContext, setImageEditContext] = useState<'portrait' | 'logo' | null>(null);
     const [isVitaEditorOpen, setVitaEditorOpen] = useState(false);
     const [isTextEditorOpen, setIsTextEditorOpen] = useState(false);
     const [editingField, setEditingField] = useState<{ key: keyof Doctor; label: string, index?: number } | null>(null);
     const [isLogoFunctionSelectOpen, setLogoFunctionSelectOpen] = useState(false);
-    const [isPartnerLogoSelectOpen, setPartnerLogoSelectOpen] = useState(false);
-
     
     const doctorsList = useMemo(() => staticDoctorsData.sort((a, b) => a.order - b.order), []);
     const displayedDoctorInEdit = doctorInEdit ?? createDefaultDoctor();
@@ -143,6 +141,7 @@ export default function DoctorsPage() {
     // --- Image Handling ---
     const handleImageClick = useCallback(() => {
         ensureEditingState();
+        setImageEditContext('portrait');
         setImageSourceDialogOpen(true);
     }, [ensureEditingState]);
 
@@ -171,15 +170,31 @@ export default function DoctorsPage() {
     }, []);
 
     const handleImageSelectedFromLibrary = (imageUrl: string) => {
-        setDoctorInEdit(prev => (prev ?? createDefaultDoctor()) ? { ...(prev ?? createDefaultDoctor()), imageUrl } : prev);
+        const fieldToUpdate = imageEditContext === 'logo' ? 'partnerLogoComponent' : 'imageUrl';
+        setDoctorInEdit(prev => {
+            const current = prev ?? createDefaultDoctor();
+            if (fieldToUpdate === 'partnerLogoComponent') {
+                return { ...current, partnerLogoComponent: imageUrl, additionalInfo: undefined };
+            }
+            return { ...current, imageUrl };
+        });
         setImageLibraryOpen(false);
+        setImageEditContext(null);
     };
     
     const handleCropComplete = useCallback((croppedImageUrl: string) => {
-        setDoctorInEdit(prev => (prev ?? createDefaultDoctor()) ? { ...(prev ?? createDefaultDoctor()), imageUrl: croppedImageUrl } : prev);
+        const fieldToUpdate = imageEditContext === 'logo' ? 'partnerLogoComponent' : 'imageUrl';
+        setDoctorInEdit(prev => {
+             const current = prev ?? createDefaultDoctor();
+            if (fieldToUpdate === 'partnerLogoComponent') {
+                return { ...current, partnerLogoComponent: croppedImageUrl, additionalInfo: undefined };
+            }
+            return { ...current, imageUrl: croppedImageUrl };
+        });
         setImageCropDialogOpen(false);
         setImageToCrop(null);
-    }, []);
+        setImageEditContext(null);
+    }, [imageEditContext]);
 
     // --- Vita Handling ---
     const handleVitaClick = useCallback(() => {
@@ -195,7 +210,7 @@ export default function DoctorsPage() {
     // --- Text Field Handling ---
     const handleTextEditClick = useCallback((fieldKey: keyof Doctor, fieldLabel: string, index?: number) => {
         ensureEditingState();
-        if (fieldKey === 'additionalInfo') {
+        if (fieldKey === 'additionalInfo' || fieldKey === 'partnerLogoComponent') {
             setLogoFunctionSelectOpen(true);
         } else {
             setEditingField({ key: fieldKey, label: fieldLabel, index });
@@ -213,6 +228,9 @@ export default function DoctorsPage() {
                 updatedQualifications[editingField.index] = newValue;
                 return { ...currentDoctor, qualifications: updatedQualifications };
             } else {
+                 if (editingField.key === 'additionalInfo') {
+                    return { ...currentDoctor, additionalInfo: newValue, partnerLogoComponent: undefined };
+                }
                 return { ...currentDoctor, [editingField.key]: newValue };
             }
         });
@@ -236,18 +254,20 @@ export default function DoctorsPage() {
         setLogoFunctionSelectOpen(false);
         setEditingField({ key: 'additionalInfo', label: 'Funktion' });
         setIsTextEditorOpen(true);
-        setDoctorInEdit(prev => prev ? { ...prev, partnerLogoComponent: undefined } : prev);
     };
     
-    const handleSelectPartnerLogo = () => {
+    const handleSelectLogo = () => {
         setLogoFunctionSelectOpen(false);
-        setPartnerLogoSelectOpen(true);
+        setImageEditContext('logo');
+        setImageSourceDialogOpen(true);
     };
-
-    const handlePartnerLogoSave = (logoComponent: Doctor['partnerLogoComponent']) => {
-        setPartnerLogoSelectOpen(false);
-        setDoctorInEdit(prev => prev ? { ...prev, partnerLogoComponent: logoComponent, additionalInfo: undefined } : prev);
-    };
+    
+    const imageAspectRatio = useMemo(() => {
+        if (imageEditContext === 'logo') {
+            return 800 / 268; // Aspect ratio of Schemmer & Worni logo
+        }
+        return 2 / 3; // Default portrait aspect ratio
+    }, [imageEditContext]);
 
     // --- General UI ---
     const toggleHideDoctor = (doctorId: string) => {
@@ -356,7 +376,7 @@ export default function DoctorsPage() {
                     imageUrl={imageToCrop}
                     onCropComplete={handleCropComplete}
                     onClose={() => setImageCropDialogOpen(false)}
-                    aspectRatio={2/3}
+                    aspectRatio={imageAspectRatio}
                 />
             )}
              <ImageLibraryDialog
@@ -385,13 +405,10 @@ export default function DoctorsPage() {
                 isOpen={isLogoFunctionSelectOpen}
                 onOpenChange={setLogoFunctionSelectOpen}
                 onSelectFunction={handleSelectFunction}
-                onSelectLogo={handleSelectPartnerLogo}
-            />
-            <PartnerLogoSelectDialog
-                isOpen={isPartnerLogoSelectOpen}
-                onOpenChange={setPartnerLogoSelectOpen}
-                onSave={handlePartnerLogoSave}
+                onSelectLogo={handleSelectLogo}
             />
         </>
     );
 }
+
+    
