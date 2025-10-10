@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Header } from '../_components/header';
@@ -9,6 +8,7 @@ import { SchemmerCard } from './_components/doctors/schemmer-card';
 import { SlezakCard } from './_components/doctors/slezak-card';
 import { HerschelCard } from './_components/doctors/herschel-card';
 import { TeamMemberCard } from './_components/team-member-card';
+import { RosenovTempCard } from './_components/doctors/rosenov-temp-card';
 
 const garcia = {
     name: 'S. Garcia',
@@ -119,6 +119,9 @@ export default function TeamPage() {
             </div>
             <div className="mx-auto flex w-full max-w-[1000px] justify-center p-2" id="rosenov">
               <RosenovCard />
+            </div>
+            <div className="mx-auto flex w-full max-w-[1000px] justify-center p-2" id="rosenov-temp">
+              <RosenovTempCard />
             </div>
             <div className="mx-auto flex w-full max-w-[1000px] justify-center p-2" id="herschel">
               <HerschelCard />
