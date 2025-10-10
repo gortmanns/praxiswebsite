@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import DOMPurify from 'dompurify';
 import React from 'react';
-import { User } from 'lucide-react';
 
 const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
@@ -80,7 +79,7 @@ export function RosenovCard() {
                                             alt="VASC Alliance Logo"
                                             width={495}
                                             height={165}
-                                            className="h-auto w-full object-contain object-left"
+                                            className="h-full w-full object-contain object-left"
                                             data-ai-hint="partner logo"
                                         />
                                     </div>
