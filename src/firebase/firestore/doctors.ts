@@ -102,3 +102,5 @@ export async function updateDoctor(firestore: Firestore, id: string, data: Parti
 
     return await updateDoc(doctorRef, updateData);
 }
+
+    

@@ -11,7 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info, Eye, EyeOff, Pencil, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle, TriangleAlert } from 'lucide-react';
+import { Info, Eye, EyeOff, Pencil, ArrowUp, ArrowDown, PlusCircle, Save, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TextEditDialog } from './_components/text-edit-dialog';
@@ -245,7 +245,6 @@ export default function DoctorsPage() {
     const handleSave = async () => {
         if (!firestore || !doctorInEdit) return;
     
-        const docId = editingDoctorId || doctorInEdit.id || Date.now().toString();
         const isExistingInDB = isDoctorFromDB(editingDoctorId);
     
         const saveData: Omit<Doctor, 'id' | 'specialty'> & {specialty: string} = {
@@ -269,7 +268,7 @@ export default function DoctorsPage() {
                 await updateDoctor(firestore, editingDoctorId, saveData);
                 setStatus({ type: 'success', message: 'Die Änderungen wurden erfolgreich gespeichert.' });
             } else {
-                await addDoctor(firestore, saveData, editingDoctorId ?? undefined);
+                await addDoctor(firestore, saveData, editingDoctorId);
                 setStatus({ type: 'success', message: 'Die neue Arztkarte wurde erfolgreich angelegt.' });
             }
             handleCancel();
@@ -690,3 +689,5 @@ export default function DoctorsPage() {
         </>
     );
 }
+
+    
