@@ -15,22 +15,47 @@ import { ImageCropDialog } from './_components/image-crop-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 
 
-// Platzhalter-Daten für die initiale Anzeige des Editors
-const sampleDoctor: Doctor = {
-    id: 'sample',
-    name: 'Max Mustermann',
-    title: 'Dr. med.',
-    specialty: 'Facharzt für Allgemeine Innere Medizin',
-    qualifications: ['Fähigkeitsausweis Praxislabor (KHM)'],
-    vita: '<h4>Curriculum Vitae</h4><p>Hier steht der Lebenslauf des Arztes. Sie können diesen Text bearbeiten, indem Sie auf die Kartenrückseite klicken.</p>',
-    imageUrl: '', // Leeres Bild initial
-    imageHint: 'portrait placeholder',
-    order: 99,
+// Daten von Dr. Ortmanns als initialer Zustand
+const ortmannsData: Doctor = {
+    id: 'ortmanns',
+    title: "Dipl. med.",
+    name: "G. Ortmanns",
+    imageUrl: "/images/team/Ortmanns.jpg",
+    imageHint: "man portrait",
+    specialty: "Praktischer Arzt",
+    qualifications: [
+        'Master of Public Health (UNSW)',
+        'Master of Health Management (UNSW)',
+    ],
+    vita: `
+        <h4>Curriculum Vitae</h4>
+        <ul>
+            <li><span style="color: var(--color-tiptap-blue);">2022</span> Niederlassung als Hausarzt im Praxiszentrum im Ring</li>
+            <li><span style="color: var(--color-tiptap-blue);">2021-22</span> Tätigkeit in der Hausarztpraxis Dr. G. Gyger, Thun</li>
+            <li><span style="color: var(--color-tiptap-blue);">2019-21</span> Oberarzt Innere Medizin, Spital STS AG Thun</li>
+            <li><span style="color: var(--color-tiptap-blue);">2018</span> Oberarzt Innere Medizin, Spital Interlaken</li>
+            <li><span style="color: var(--color-tiptap-blue);">2017</span> Assistenzarzt Kardiologie, Inselspital Bern</li>
+            <li><span style="color: var(--color-tiptap-blue);">2016-17</span> Assistenzarzt Pneumologie, Inselspital Bern</li>
+            <li><span style="color: var(--color-tiptap-blue);">2015-16</span> Assistenzarzt Innere Medizin, Spital STS AG Thun</li>
+            <li><span style="color: var(--color-tiptap-blue);">2015</span> Erlangung des Facharzttitels für Innere Medizin</li>
+            <li><span style="color: var(--color-tiptap-blue);">2014-15</span> Assistenzarzt Intensivmedizin, Spital STS AG Thun</li>
+            <li><span style="color: var(--color-tiptap-blue);">2013-14</span> Assistenzarzt Innere Medizin, Spital STS AG Thun</li>
+            <li><span style="color: var(--color-tiptap-blue);">2011-13</span> Assistenzarzt Innere Medizin, Spital Interlaken</li>
+            <li><span style="color: var(--color-tiptap-blue);">2011</span> Promotion zum Dr. med.</li>
+            <li><span style="color: var(--color-tiptap-blue);">2010-11</span> Assistenzarzt Chirurgie, Klinik für Viszerale Chirurgie und Medizin, Inselspital Bern</li>
+            <li><span style="color: var(--color-tiptap-blue);">2009</span> Staatsexamen</li>
+            <li><span style="color: var(--color-tiptap-blue);">2003-09</span> Studium der Humanmedizin an der Universität zu Köln</li>
+        </ul>
+        <br>
+        <p class="is-small">Mitgliedschaften:<br>Verbindung der Schweizer Ärztinnen und Ärzte (FMH)<br>Ärztegesellschaft des Kantons Bern (BEKAG)<br>Schweizerische Gesellschaft für Ultraschall in der Medizin (SGUM)</p>
+    `,
+    additionalInfo: "Ärztliche und administrative Leitung Praxiszentrum im Ring",
+    order: 1,
 };
 
 
 export default function DoctorsPage() {
-  const [doctorToEdit, setDoctorToEdit] = useState<Doctor>(sampleDoctor);
+  const [doctorToEdit, setDoctorToEdit] = useState<Doctor>(ortmannsData);
   const [isImageEditorOpen, setImageEditorOpen] = useState(false);
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
   const [isVitaEditorOpen, setVitaEditorOpen] = useState(false);
@@ -81,7 +106,7 @@ export default function DoctorsPage() {
                 </div>
             </CardHeader>
             <CardContent>
-                <div className="space-y-4">
+                 <div className="space-y-4">
                   <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Live-Vorschau & Bearbeitung</h3>
                    <div className="rounded-lg border bg-muted p-4 md:p-6">
                       <EditableDoctorCard 
@@ -138,3 +163,5 @@ export default function DoctorsPage() {
   </>
   );
 }
+
+    
