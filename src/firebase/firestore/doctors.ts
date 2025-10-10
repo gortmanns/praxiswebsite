@@ -4,19 +4,27 @@
 import { 
     Firestore, 
     collection, 
-    addDoc, 
     doc, 
-    updateDoc, 
-    deleteDoc,
     getDoc,
     setDoc,
+    updateDoc,
     serverTimestamp
 } from 'firebase/firestore';
-import { getStorage, ref, uploadString, getDownloadURL, deleteObject } from "firebase/storage";
+import { getStorage, ref, uploadString, getDownloadURL, deleteObject, getApp } from "firebase/storage";
 import type { Doctor } from '@/app/team/_components/doctor-card';
+import { firebaseConfig } from '../config';
+import { initializeApp, getApps } from 'firebase/app';
 
 // Use Omit to create a type for new doctor data, excluding the 'id' and making specialty a string
 export type DoctorData = Omit<Doctor, 'id' | 'specialty'> & { specialty: string };
+
+// Helper function to ensure Firebase app is initialized
+function getFirebaseApp() {
+    if (!getApps().length) {
+        return initializeApp(firebaseConfig);
+    }
+    return getApp();
+}
 
 // Function to upload an image if it's a data URL and return the storage URL
 async function uploadImage(storage: any, imageUrl: string, path: string): Promise<string> {
@@ -32,7 +40,8 @@ async function uploadImage(storage: any, imageUrl: string, path: string): Promis
 
 // Create a new doctor document in Firestore
 export async function addDoctor(firestore: Firestore, doctorData: DoctorData, docId?: string | null) {
-    const storage = getStorage(firestore.app);
+    const app = getFirebaseApp();
+    const storage = getStorage(app);
     
     // Use the provided docId or create a new one
     const docRef = docId ? doc(collection(firestore, 'doctors'), docId) : doc(collection(firestore, 'doctors'));
@@ -61,7 +70,8 @@ export async function addDoctor(firestore: Firestore, doctorData: DoctorData, do
 
 // Update an existing doctor document
 export async function updateDoctor(firestore: Firestore, id: string, data: Partial<DoctorData>) {
-    const storage = getStorage(firestore.app);
+    const app = getFirebaseApp();
+    const storage = getStorage(app);
     const doctorRef = doc(firestore, 'doctors', id);
 
     const updateData: { [key: string]: any } = { ...data, updatedAt: serverTimestamp() };
@@ -102,5 +112,3 @@ export async function updateDoctor(firestore: Firestore, id: string, data: Parti
 
     return await updateDoc(doctorRef, updateData);
 }
-
-    
