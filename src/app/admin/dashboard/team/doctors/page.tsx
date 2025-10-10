@@ -14,7 +14,7 @@ import { Separator } from '@/components/ui/separator';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info, Eye, EyeOff, Pencil, ArrowUp, ArrowDown, PlusCircle } from 'lucide-react';
+import { Info, Eye, EyeOff, Pencil, ArrowUp, ArrowDown, PlusCircle, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TextEditDialog } from './_components/text-edit-dialog';
@@ -202,10 +202,9 @@ export default function DoctorsPage() {
             ...doctorInEdit,
             id: `new-${Date.now()}`,
             order: (doctorsList[doctorsList.length - 1]?.order || 0) + 1,
+            imageUrl: doctorInEdit.imageUrl || '', // Ensure imageUrl is at least an empty string
         };
         
-        // This is a temporary custom component for the new card.
-        // In a real scenario, this would be handled by a dynamic component system.
         const NewDoctorCard = () => (
              <div className="border-2 border-dashed border-primary p-4 text-center">
                 <p>Dynamisch erstellte Karte für {newDoctor.name}</p>
@@ -215,6 +214,17 @@ export default function DoctorsPage() {
         doctorCardComponents[newDoctor.id] = NewDoctorCard;
 
         setDoctorsList(prev => [...prev, newDoctor]);
+        handleCancel();
+    };
+
+    const handleUpdateDoctor = () => {
+        if (!editingDoctorId || !doctorInEdit) return;
+
+        setDoctorsList(prevList => 
+            prevList.map(doc => 
+                doc.id === editingDoctorId ? doctorInEdit : doc
+            )
+        );
         handleCancel();
     };
 
@@ -382,26 +392,49 @@ export default function DoctorsPage() {
                              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                                 <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Live-Vorschau & Bearbeitung</h3>
                                 <div className="flex gap-2">
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
-                                            <Button variant="default" disabled={!doctorInEdit}>
-                                                <PlusCircle className="mr-2 h-4 w-4" />
-                                                Als neue Karte übernehmen
-                                            </Button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle>Neue Arztkarte anlegen?</AlertDialogTitle>
-                                                <AlertDialogDescription>
-                                                   Möchten Sie die aktuellen Eingaben als neue Arztkarte am Ende der Liste hinzufügen?
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                                <AlertDialogCancel>Nein, abbrechen</AlertDialogCancel>
-                                                <AlertDialogAction onClick={handleAddNewDoctor}>Ja, hinzufügen</AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
+                                    {editingDoctorId ? (
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button variant="default">
+                                                    <Save className="mr-2 h-4 w-4" />
+                                                    Änderungen speichern
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>Änderungen speichern?</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                       Möchten Sie die Änderungen an dieser Arztkarte speichern? Die bisherigen Werte werden überschrieben.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>Nein, abbrechen</AlertDialogCancel>
+                                                    <AlertDialogAction onClick={handleUpdateDoctor}>Ja, speichern</AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    ) : (
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button variant="default" disabled={!doctorInEdit}>
+                                                    <PlusCircle className="mr-2 h-4 w-4" />
+                                                    Als neue Karte übernehmen
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>Neue Arztkarte anlegen?</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                       Möchten Sie die aktuellen Eingaben als neue Arztkarte am Ende der Liste hinzufügen?
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>Nein, abbrechen</AlertDialogCancel>
+                                                    <AlertDialogAction onClick={handleAddNewDoctor}>Ja, hinzufügen</AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    )}
                                     
                                     <Button variant="outline" onClick={handleCancel} disabled={!doctorInEdit && !editingDoctorId}>
                                         Abbrechen
@@ -437,7 +470,7 @@ export default function DoctorsPage() {
                         <div className="mt-8 space-y-12">
                             {doctorsList.map((doctor) => {
                                 const CardComponent = doctorCardComponents[doctor.id];
-                                if (!CardComponent) return null; // Sicherstellen, dass die Komponente existiert
+                                if (!CardComponent) return null;
                                 const isEditing = editingDoctorId === doctor.id;
                                 const isHidden = hiddenDoctorIds.has(doctor.id);
 
@@ -523,5 +556,3 @@ export default function DoctorsPage() {
         </>
     );
 }
-
-    
