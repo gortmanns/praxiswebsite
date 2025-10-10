@@ -13,6 +13,8 @@ export function SlezakCard() {
                 <style>
                     .vita-content { color: hsl(var(--background)); }
                     .vita-content p { margin: 0; }
+                    .slezak-text-special { fill: #358392; font-family: 'Montserrat', sans-serif; font-weight: bold; }
+                    .slezak-text-normal { fill: #358392; font-family: 'Montserrat', sans-serif; font-weight: bold; }
                 </style>
                 <div class="font-headline group relative max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 border-2 border-green-500">
                     <div class="flex h-full w-full items-start">
@@ -28,10 +30,10 @@ export function SlezakCard() {
                                     <svg viewBox="0 0 170 55.5" xmlns="http://www.w3.org/2000/svg" class="h-auto w-full" style="height: 6.9rem;" aria-label="Dr. med. Agnieszka Slezak - Fachärztin für Neurologie Logo">
                                         <style>
                                             .slezak-text-special { fill: #358392; font-family: 'Montserrat', sans-serif; font-weight: bold; }
-                                            .slezak-text-normal { fill: #358392; font-family: 'Montserrat', sans-serif; font-weight: normal; }
+                                            .slezak-text-normal { fill: #358392; font-family: 'Montserrat', sans-serif; font-weight: bold; }
                                         </style>
                                         <text x="50%" y="20" text-anchor="middle" class="slezak-text-special" font-size="14">Dr. med. Agnieszka Slezak</text>
-                                        <text x="50%" y="38" text-anchor="middle" class="slezak-text-normal" font-size="7.7" font-weight="bold">Fachärztin für Neurologie</text>
+                                        <text x="50%" y="36" text-anchor="middle" class="slezak-text-normal" font-size="8.5">Fachärztin für Neurologie</text>
                                     </svg>
                                 </div>
                             </div>
