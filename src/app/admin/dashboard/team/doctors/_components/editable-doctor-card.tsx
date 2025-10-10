@@ -49,7 +49,7 @@ const FrontSide: React.FC<{ doctor: Doctor; onClick: () => void }> = ({ doctor, 
     
     return (
         <div 
-            className="relative w-full cursor-pointer bg-card aspect-[1000/495] rounded-lg shadow-sm"
+            className="relative w-full cursor-pointer bg-card"
             style={{ containerType: 'inline-size' } as React.CSSProperties}
             onClick={onClick}
         >
@@ -108,7 +108,7 @@ const FrontSide: React.FC<{ doctor: Doctor; onClick: () => void }> = ({ doctor, 
 const BackSide: React.FC<{ vita: string, onClick: () => void }> = ({ vita, onClick }) => {
     return (
         <div
-            className="relative w-full cursor-pointer aspect-[1000/495] bg-accent/95 rounded-lg shadow-sm overflow-hidden p-6"
+            className="relative w-full cursor-pointer bg-accent/95 overflow-hidden p-6"
             onClick={onClick}
         >
             <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary text-background">
@@ -118,7 +118,7 @@ const BackSide: React.FC<{ vita: string, onClick: () => void }> = ({ vita, onCli
     );
 };
 
-const ScalingCard: React.FC<{ children: React.ReactNode, onClick: () => void, className?: string }> = ({ children, onClick, className }) => {
+const ScalingCard: React.FC<{ children: React.ReactNode, className?: string }> = ({ children, className }) => {
     const wrapperRef = React.useRef<HTMLDivElement>(null);
     const [scale, setScale] = React.useState(1);
 
@@ -146,7 +146,7 @@ const ScalingCard: React.FC<{ children: React.ReactNode, onClick: () => void, cl
     }, []);
 
     return (
-        <div ref={wrapperRef} className={cn("w-full aspect-[1000/495] overflow-hidden", className)} onClick={onClick}>
+        <div ref={wrapperRef} className={cn("w-full aspect-[1000/495] overflow-hidden rounded-lg shadow-sm", className)}>
             <div style={{
                 width: '1000px',
                 height: '495px',
@@ -166,10 +166,10 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
     
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-            <ScalingCard onClick={onImageClick}>
+            <ScalingCard>
                 <FrontSide doctor={doctor} onClick={onImageClick} />
             </ScalingCard>
-            <ScalingCard onClick={onVitaClick}>
+            <ScalingCard>
                 <BackSide vita={doctor.vita || ''} onClick={onVitaClick} />
             </ScalingCard>
         </div>
