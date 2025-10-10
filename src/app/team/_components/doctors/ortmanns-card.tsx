@@ -11,19 +11,21 @@ export function OrtmannsCard() {
             name="G. Ortmanns"
             frontSideCode={`
                 <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm">
-                    <div class="absolute inset-0 flex items-center justify-start bg-card text-card-foreground p-12">
+                    <div class="absolute inset-0 flex items-center justify-start bg-card text-card-foreground p-6">
                         <div class="relative w-[330px] h-full overflow-hidden rounded-md aspect-[2/3]">
                             <img src="/images/team/Ortmanns.jpg" alt="Portrait von G. Ortmanns" data-ai-hint="man portrait" class="w-full h-full object-cover" />
                         </div>
-                        <div class="ml-12 flex flex-col justify-center text-left">
-                            <p class="text-3xl font-bold">Dipl. med.</p>
-                            <h3 class="text-6xl font-bold text-primary my-2">G. Ortmanns</h3>
-                            <p class="text-3xl font-bold">Praktischer Arzt</p>
-                            <div class="mt-6 text-xl text-muted-foreground">
-                                <p>Master of Public Health (UNSW)</p>
-                                <p>Master of Health Management (UNSW)</p>
+                        <div class="ml-6 flex flex-col justify-between text-left h-full flex-grow">
+                            <div>
+                                <p class="text-3xl font-bold text-primary">Dipl. med.</p>
+                                <h3 class="text-6xl font-bold text-primary my-2">G. Ortmanns</h3>
+                                <p class="text-3xl font-bold">Praktischer Arzt</p>
+                                <div class="mt-6 text-xl text-muted-foreground">
+                                    <p>Master of Public Health (UNSW)</p>
+                                    <p>Master of Health Management (UNSW)</p>
+                                </div>
                             </div>
-                            <div class="mt-auto pt-8 text-base text-muted-foreground">
+                            <div class="mt-4 text-base text-muted-foreground">
                                 <p>Ärztliche und administrative Leitung Praxiszentrum im Ring</p>
                             </div>
                         </div>
