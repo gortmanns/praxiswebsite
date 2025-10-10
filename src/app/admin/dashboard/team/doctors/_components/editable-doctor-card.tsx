@@ -4,7 +4,7 @@
 import React from 'react';
 import type { Doctor } from '@/app/team/_components/doctor-card';
 import Image from 'next/image';
-import { User } from 'lucide-react';
+import { User, Image as ImageIcon } from 'lucide-react';
 import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
 import {
@@ -15,7 +15,7 @@ import {
 } from '@/components/logos';
 
 interface EditableDoctorCardProps {
-    doctor: Doctor;
+    doctor: Doctor | null;
     onImageClick: () => void;
     onVitaClick: () => void;
 }
@@ -43,75 +43,76 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     );
 };
 
-const FrontSide: React.FC<{ doctor: Doctor, onClick: () => void }> = ({ doctor, onClick }) => {
-    const { title, name, imageUrl, imageHint, specialty, qualifications, additionalInfo, partnerLogoComponent } = doctor;
+const FrontSide: React.FC<{ doctor: Doctor | null; onClick: () => void }> = ({ doctor, onClick }) => {
+    const { title, name, imageUrl, imageHint, specialty, qualifications, additionalInfo, partnerLogoComponent } = doctor || {};
     const LogoComponent = partnerLogoComponent ? partnerLogos[partnerLogoComponent] : null;
     
     return (
-      <div 
-        className="w-full bg-card aspect-[1000/495] rounded-lg shadow-sm"
-        style={{ containerType: 'inline-size' } as React.CSSProperties}
-        onClick={onClick}
-      >
-        <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6">
-          <div className="relative col-span-1 w-full overflow-hidden rounded-md">
-            <div className="relative h-full w-full aspect-[2/3]">
-              {imageUrl ? (
-                <Image
-                  src={imageUrl}
-                  alt={`Portrait von ${name}`}
-                  data-ai-hint={imageHint}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center bg-muted">
-                  <User className="h-1/2 w-1/2 text-muted-foreground" />
+        <div 
+            className="relative w-full cursor-pointer bg-card aspect-[1000/495] rounded-lg shadow-sm"
+            style={{ containerType: 'inline-size' } as React.CSSProperties}
+            onClick={onClick}
+        >
+            <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6">
+                <div className="relative col-span-1 w-full overflow-hidden rounded-md">
+                    <div className="relative h-full w-full aspect-[2/3] bg-muted">
+                        {imageUrl ? (
+                            <Image
+                                src={imageUrl}
+                                alt={`Portrait von ${name}`}
+                                data-ai-hint={imageHint}
+                                fill
+                                className="object-cover"
+                            />
+                        ) : (
+                            <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
+                                <ImageIcon className="h-1/4 w-1/4" />
+                                <span className="px-4 text-center text-xs">Klicken zum Hochladen</span>
+                            </div>
+                        )}
+                    </div>
                 </div>
-              )}
-            </div>
-          </div>
-          <div className="col-span-2 flex flex-col justify-center">
-            <div className="text-left text-foreground/80">
-              <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
-              <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
-                {name}
-              </h4>
-              <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
-                <p className="font-bold">{specialty}</p>
-                {qualifications.map((q, i) => <p key={i}>{q}</p>)}
-              </div>
-              
-              {additionalInfo && !LogoComponent && (
-                <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
-                  {additionalInfo}
-                </p>
-              )}
-              
-              {LogoComponent && (
-                <div className="relative mt-[2.5cqw] flex w-fit justify-start">
-                  <LogoComponent className={cn(
-                    "h-auto w-full",
-                    name === "A. Slezak" ? "max-w-[200px]" : "max-w-[240px]"
-                  )} />
+                <div className="col-span-2 flex flex-col justify-center">
+                    <div className="text-left text-foreground/80">
+                        <p className="text-[clamp(0.8rem,2.2cqw,1.2rem)] text-primary">{title}</p>
+                        <h4 className="font-headline text-[clamp(1.5rem,4.8cqw,2.5rem)] font-bold leading-tight text-primary">
+                            {name}
+                        </h4>
+                        <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
+                            <p className="font-bold">{specialty}</p>
+                            {qualifications?.map((q, i) => <p key={i}>{q}</p>)}
+                        </div>
+                        
+                        {additionalInfo && !LogoComponent && (
+                            <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
+                                {additionalInfo}
+                            </p>
+                        )}
+                        
+                        {LogoComponent && (
+                            <div className="relative mt-[2.5cqw] flex w-fit justify-start">
+                                <LogoComponent className={cn(
+                                    "h-auto w-full",
+                                    name === "A. Slezak" ? "max-w-[200px]" : "max-w-[240px]"
+                                )} />
+                            </div>
+                        )}
+                    </div>
                 </div>
-              )}
             </div>
-          </div>
         </div>
-      </div>
     );
 };
 
 
-const BackSide: React.FC<{ doctor: Doctor, onClick: () => void }> = ({ doctor, onClick }) => {
+const BackSide: React.FC<{ vita: string, onClick: () => void }> = ({ vita, onClick }) => {
     return (
         <div
-         className="w-full aspect-[1000/495] bg-accent/95 rounded-lg shadow-sm overflow-hidden p-6"
-         onClick={onClick}
+            className="relative w-full cursor-pointer aspect-[1000/495] bg-accent/95 rounded-lg shadow-sm overflow-hidden p-6"
+            onClick={onClick}
         >
             <div className="h-full overflow-y-auto text-base leading-tight flex w-full flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/50 hover:scrollbar-thumb-primary text-background">
-                <VitaRenderer html={doctor.vita} />
+                <VitaRenderer html={vita} />
             </div>
         </div>
     );
@@ -124,7 +125,6 @@ const ScalingCard: React.FC<{ children: React.ReactNode, onClick: () => void, cl
     React.useEffect(() => {
         const calculateScale = () => {
             if (wrapperRef.current) {
-                // The card's design width is 1000px
                 const cardDesignWidth = 1000;
                 const wrapperWidth = wrapperRef.current.offsetWidth;
                 setScale(wrapperWidth / cardDesignWidth);
@@ -138,11 +138,15 @@ const ScalingCard: React.FC<{ children: React.ReactNode, onClick: () => void, cl
             resizeObserver.observe(wrapperRef.current);
         }
 
-        return () => resizeObserver.disconnect();
+        return () => {
+            if (wrapperRef.current) {
+                resizeObserver.unobserve(wrapperRef.current);
+            }
+        };
     }, []);
 
     return (
-        <div ref={wrapperRef} className={cn("w-full aspect-[1000/495] overflow-hidden cursor-pointer", className)} onClick={onClick}>
+        <div ref={wrapperRef} className={cn("w-full aspect-[1000/495] overflow-hidden", className)} onClick={onClick}>
             <div style={{
                 width: '1000px',
                 height: '495px',
@@ -153,17 +157,17 @@ const ScalingCard: React.FC<{ children: React.ReactNode, onClick: () => void, cl
             </div>
         </div>
     );
-}
+};
 
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onImageClick, onVitaClick }) => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-           <ScalingCard onClick={onImageClick}>
-              <FrontSide doctor={doctor} onClick={onImageClick} />
-           </ScalingCard>
-           <ScalingCard onClick={onVitaClick}>
-              <BackSide doctor={doctor} onClick={onVitaClick} />
-           </ScalingCard>
+            <ScalingCard onClick={onImageClick}>
+                <FrontSide doctor={doctor} onClick={onImageClick} />
+            </ScalingCard>
+            <ScalingCard onClick={onVitaClick}>
+                <BackSide vita={doctor?.vita || ''} onClick={onVitaClick} />
+            </ScalingCard>
         </div>
     );
 };
