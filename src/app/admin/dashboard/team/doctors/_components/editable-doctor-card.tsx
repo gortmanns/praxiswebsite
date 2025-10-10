@@ -42,10 +42,10 @@ const FrontSide: React.FC<Pick<EditableDoctorCardProps, 'doctor' | 'onImageClick
 
     return (
         <div 
-            className="relative w-full h-full bg-card p-6"
+            className="relative w-full h-full bg-card"
             style={{ containerType: 'inline-size' } as React.CSSProperties}
         >
-            <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%]">
+            <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%] p-6">
                 <div 
                     className="relative col-span-1 w-full overflow-hidden rounded-md cursor-pointer hover:bg-muted/50 transition-colors"
                     onClick={onImageClick}
@@ -103,7 +103,7 @@ const FrontSide: React.FC<Pick<EditableDoctorCardProps, 'doctor' | 'onImageClick
                     </div>
                 </div>
             </div>
-            <div className="absolute bottom-4 right-4 flex items-center gap-2">
+            <div className="absolute bottom-6 right-6 flex items-center gap-2">
                 <Button variant="outline" size="sm" onClick={onLanguagesClick} className="h-8 gap-2">
                    <Languages className="h-4 w-4" /> Sprachen
                 </Button>

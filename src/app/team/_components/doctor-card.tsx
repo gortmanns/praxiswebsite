@@ -113,7 +113,7 @@ export const DoctorCard: React.FC<Doctor> = ({
                                 </div>
                             </div>
                         </div>
-                        <div className="absolute bottom-4 right-4">
+                        <div className="absolute bottom-6 right-6">
                             <LanguageFlags languages={languages} />
                         </div>
                     </div>
