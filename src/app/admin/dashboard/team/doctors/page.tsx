@@ -9,11 +9,12 @@ import { SchemmerCard } from '@/app/team/_components/doctors/schemmer-card';
 import { SlezakCard } from '@/app/team/_components/doctors/slezak-card';
 import { HerschelCard } from '@/app/team/_components/doctors/herschel-card';
 import { DoctorCard, type Doctor } from '@/app/team/_components/doctor-card';
-import { User, Info } from 'lucide-react';
+import { User, Info, ArrowUp, ArrowDown, EyeOff, Pencil } from 'lucide-react';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 
 const sampleDoctor: Doctor = {
   id: 'sample',
@@ -62,6 +63,24 @@ export default function DoctorsPage() {
       }
     };
   }, []);
+  
+  const ActionButtons = () => (
+    <div className="flex flex-col gap-2">
+        <Button variant="outline" size="icon" aria-label="Nach oben verschieben">
+            <ArrowUp className="h-4 w-4" />
+        </Button>
+        <Button variant="outline" size="icon" aria-label="Nach unten verschieben">
+            <ArrowDown className="h-4 w-4" />
+        </Button>
+        <Button variant="outline" size="icon" aria-label="Ausblenden">
+            <EyeOff className="h-4 w-4" />
+        </Button>
+        <Button variant="outline" size="icon" aria-label="Bearbeiten">
+            <Pencil className="h-4 w-4" />
+        </Button>
+    </div>
+  );
+
 
   return (
     <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -98,20 +117,35 @@ export default function DoctorsPage() {
                 Aktuelle Vorschau
             </h3>
             <div className="space-y-12">
-                <div className="mx-auto w-full max-w-[1000px] p-2">
-                    <OrtmannsCard />
+                <div className="flex w-full items-center justify-center gap-8">
+                    <ActionButtons />
+                    <div className="w-full max-w-[1000px] flex-1">
+                        <OrtmannsCard />
+                    </div>
                 </div>
-                <div className="mx-auto w-full max-w-[1000px] p-2" id="schemmer">
-                    <SchemmerCard />
+                <div className="flex w-full items-center justify-center gap-8" id="schemmer">
+                    <ActionButtons />
+                    <div className="w-full max-w-[1000px] flex-1">
+                        <SchemmerCard />
+                    </div>
                 </div>
-                <div className="mx-auto w-full max-w-[1000px] p-2" id="rosenov">
-                    <RosenovCard />
+                <div className="flex w-full items-center justify-center gap-8" id="rosenov">
+                    <ActionButtons />
+                    <div className="w-full max-w-[1000px] flex-1">
+                        <RosenovCard />
+                    </div>
                 </div>
-                <div className="mx-auto w-full max-w-[1000px] p-2" id="herschel">
-                    <HerschelCard />
+                <div className="flex w-full items-center justify-center gap-8" id="herschel">
+                    <ActionButtons />
+                    <div className="w-full max-w-[1000px] flex-1">
+                        <HerschelCard />
+                    </div>
                 </div>
-                <div className="mx-auto w-full max-w-[1000px] p-2" id="slezak">
-                    <SlezakCard />
+                 <div className="flex w-full items-center justify-center gap-8" id="slezak">
+                    <ActionButtons />
+                    <div className="w-full max-w-[1000px] flex-1">
+                        <SlezakCard />
+                    </div>
                 </div>
             </div>
         </div>
