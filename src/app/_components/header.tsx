@@ -52,7 +52,7 @@ export function Header() {
     { href: '/notfall', label: 'NOTFALL' },
   ];
   
-  const mainNavLinks = navLinks.filter(l => !['/oeffnungszeiten', '/notfall', '/jobs'].includes(l.href));
+  const mainNavLinks = navLinks.filter(l => !['/oeffnungszeiten', '/notfall', '/jobs', '/termine'].includes(l.href));
   const notfallLink = navLinks.find(l => l.href === '/notfall');
 
   const zeitenLinks = [
@@ -60,7 +60,7 @@ export function Header() {
     { href: '/praxisferien', label: 'Praxisferien' }
   ];
 
-  const pagesWithQuickNav = ['/team', '/leistungen', '/medikamente', '/notfall', '/termine'];
+  const pagesWithQuickNav = ['/team', '/leistungen', '/medikamente', '/notfall'];
   const activePath = pagesWithQuickNav.includes(pathname) ? pathname : '/';
 
   const zeitenActive = pathname === '/oeffnungszeiten' || pathname === '/praxisferien';
@@ -266,7 +266,7 @@ export function Header() {
                         </Link>
                       );
                     }
-                    if (['/', '/team', '/leistungen', '/medikamente', '/termine', '/jobs'].includes(link.href)) {
+                    if (['/', '/team', '/leistungen', '/medikamente', '/jobs'].includes(link.href)) {
                       return (
                         <Link
                             key={link.href}
