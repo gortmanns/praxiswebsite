@@ -23,7 +23,7 @@ import Image from 'next/image';
 import { addDoctor, updateDoctor } from '@/firebase/firestore/doctors';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DoctorCard } from '@/app/team/_components/doctor-card';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp, getDocs } from 'firebase/firestore';
 import { toast } from 'sonner';
 
 // Re-exporting Doctor type to avoid confusion with Doctor component
@@ -238,8 +238,6 @@ export default function DoctorsPage() {
             return;
         };
         
-        // This is a simplified check. A robust implementation would check against a list of IDs from the DB if it were loaded.
-        // For now, we assume if an ID exists, it's an update.
         const isUpdatingExistingDBEntry = !!editingDoctorId;
     
         const saveData = {
@@ -262,28 +260,26 @@ export default function DoctorsPage() {
         try {
             if (isUpdatingExistingDBEntry) {
                 await updateDoctor(firestore, editingDoctorId, saveData);
-                setStatus({ type: 'success', message: 'Die Änderungen wurden erfolgreich gespeichert.' });
+                toast.success(`Arztprofil für ${saveData.name} erfolgreich aktualisiert.`);
             } else {
-                // If it's a new card or a static card being saved for the first time
-                await addDoctor(firestore, saveData, editingDoctorId);
-                setStatus({ type: 'success', message: 'Die Arztkarte wurde erfolgreich erstellt/initial gespeichert.' });
+                 await addDoctor(firestore, saveData, editingDoctorId);
+                 toast.success(`Arztprofil für ${saveData.name} erfolgreich erstellt.`);
             }
             
-            // Optimistically update the local state to reflect the change immediately
             if (isUpdatingExistingDBEntry) {
                 setDoctorsList(currentList => currentList.map(d => d.id === editingDoctorId ? { ...saveData, id: editingDoctorId } : d));
             } else {
-                 // For new doctors, we don't have the final ID, so this is a simplification.
-                 // A real implementation would re-fetch or get the ID from the addDoctor response.
-                 // For now, we just clear edit state.
+                 setDoctorsList(currentList => [...currentList, { ...saveData, id: editingDoctorId || new Date().toISOString() }]);
             }
             
             handleCancel();
 
         } catch (error: any) {
             console.error("Error saving doctor: ", error);
-            const errorMessage = `Die Daten konnten nicht gespeichert werden. Fehler: ${error.message || String(error)}`;
-            setStatus({ type: 'error', message: errorMessage });
+            const errorMessage = `Die Daten konnten nicht gespeichert werden.`;
+            toast.error(errorMessage, {
+                description: error.message || String(error)
+            });
         } finally {
             setIsSaving(false);
         }
@@ -514,22 +510,25 @@ export default function DoctorsPage() {
         );
     };
 
-    const handleTestSave = async () => {
+    const handleTestFetch = async () => {
         if (!firestore) {
             toast.error("Firestore ist nicht initialisiert.");
             return;
         }
-        toast.info("Versuche, Test-Daten zu speichern...");
+        toast.info("Versuche, Test-Daten abzurufen...");
         try {
             const testCollectionRef = collection(firestore, 'test');
-            await addDoc(testCollectionRef, {
-                text: "Test",
-                timestamp: serverTimestamp(),
-            });
-            toast.success("Test-Daten erfolgreich in die 'test'-Kollektion geschrieben!");
+            const querySnapshot = await getDocs(testCollectionRef);
+            if (querySnapshot.empty) {
+                toast.warning("Test-Kollektion ist leer, aber Abruf war erfolgreich.");
+            } else {
+                const firstDoc = querySnapshot.docs[0];
+                const docData = firstDoc.data();
+                toast.success(`Abruf erfolgreich! Inhalt: ${JSON.stringify(docData)}`);
+            }
         } catch (error: any) {
-            console.error("Fehler beim Test-Speichern: ", error);
-            toast.error(`Test-Speichern fehlgeschlagen: ${error.message}`);
+            console.error("Fehler beim Test-Abrufen: ", error);
+            toast.error(`Test-Abruf fehlgeschlagen: ${error.message}`);
         }
     };
     
@@ -546,9 +545,9 @@ export default function DoctorsPage() {
                                     Hier können Sie die Profile der Ärzte bearbeiten.
                                 </CardDescription>
                             </div>
-                             <Button onClick={handleTestSave} variant="outline">
+                             <Button onClick={handleTestFetch} variant="outline">
                                 <TestTube className="mr-2 h-4 w-4" />
-                                Test-Speichern
+                                Test-Abrufen
                             </Button>
                         </div>
                     </CardHeader>
@@ -724,3 +723,4 @@ export default function DoctorsPage() {
         </>
     );
 }
+
