@@ -68,3 +68,7 @@
         animation: marquee 60s linear infinite;
     }
 }
+
+* {
+  border: 1px solid orange !important;
+}
