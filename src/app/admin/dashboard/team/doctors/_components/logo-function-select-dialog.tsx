@@ -11,38 +11,38 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Upload, Images } from 'lucide-react';
+import { Type, Image } from 'lucide-react';
 
-interface ImageSourceDialogProps {
+interface LogoFunctionSelectDialogProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onUpload: () => void;
-  onSelect: () => void;
+  onSelectFunction: () => void;
+  onSelectLogo: () => void;
 }
 
-export const ImageSourceDialog: React.FC<ImageSourceDialogProps> = ({
+export const LogoFunctionSelectDialog: React.FC<LogoFunctionSelectDialogProps> = ({
   isOpen,
   onOpenChange,
-  onUpload,
-  onSelect,
+  onSelectFunction,
+  onSelectLogo,
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Bildquelle auswählen</DialogTitle>
+          <DialogTitle>Typ auswählen</DialogTitle>
           <DialogDescription>
-            Wählen Sie, ob Sie ein neues Bild hochladen oder ein vorhandenes aus der Bibliothek auswählen möchten.
+            Möchten Sie eine Funktion (Text) eingeben oder ein Partner-Logo auswählen?
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <Button onClick={onUpload} size="lg" className="justify-start">
-            <Upload className="mr-2 h-4 w-4" />
-            Neues Bild hochladen
+          <Button onClick={onSelectFunction} size="lg" className="justify-start">
+            <Type className="mr-2 h-4 w-4" />
+            Funktion eingeben
           </Button>
-          <Button onClick={onSelect} size="lg" variant="secondary" className="justify-start">
-            <Images className="mr-2 h-4 w-4" />
-            Aus Bibliothek wählen
+          <Button onClick={onSelectLogo} size="lg" variant="secondary" className="justify-start">
+            <Image className="mr-2 h-4 w-4" />
+            Partner-Logo auswählen
           </Button>
         </div>
         <DialogFooter>

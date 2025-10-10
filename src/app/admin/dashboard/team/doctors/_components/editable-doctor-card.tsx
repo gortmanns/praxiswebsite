@@ -56,7 +56,7 @@ const FrontSide: React.FC<Pick<EditableDoctorCardProps, 'doctor' | 'onImageClick
         >
             <div className="grid h-full grid-cols-3 items-stretch gap-[4.5%]">
                 <div 
-                    className="relative col-span-1 w-full overflow-hidden rounded-md cursor-pointer"
+                    className="relative col-span-1 w-full overflow-hidden rounded-md cursor-pointer hover:bg-muted/50 transition-colors"
                     onClick={onImageClick}
                 >
                     <div className="relative h-full w-full aspect-[2/3] bg-muted">
@@ -87,25 +87,27 @@ const FrontSide: React.FC<Pick<EditableDoctorCardProps, 'doctor' | 'onImageClick
                             {qualifications?.map((q, i) => <p key={i} className="cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('qualifications', `Qualifikation ${i + 1}`, i)}>{q}</p>)}
                         </div>
                         
-                        {additionalInfo && !LogoComponent && (
-                            <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('additionalInfo', 'Zusatzinfo')}>
-                                {additionalInfo}
-                            </p>
-                        )}
-                        
-                        {LogoComponent && (
-                             <div className="relative mt-[2.5cqw] flex w-fit justify-start cursor-pointer hover:bg-primary/10 rounded-sm p-1 -m-1" onClick={() => onTextClick('partnerLogoComponent', 'Partner-Logo')}>
-                                <LogoComponent className={cn(
-                                    "h-auto w-full",
-                                    name === "A. Slezak" ? "max-w-[200px]" : "max-w-[240px]"
-                                )} />
-                            </div>
-                        )}
-                         {!additionalInfo && !LogoComponent && (
-                             <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1 text-muted-foreground" onClick={() => onTextClick('additionalInfo', 'Funktion oder Logo')}>
-                                Funktion oder Logo
-                            </p>
-                         )}
+                        <div className="mt-[2.5cqw] cursor-pointer hover:bg-primary/10 rounded-sm p-1 -m-1" onClick={() => onTextClick('additionalInfo', 'Funktion oder Logo')}>
+                            {additionalInfo && !LogoComponent && (
+                                <p className="text-[clamp(0.6rem,1.6cqw,1rem)] italic">
+                                    {additionalInfo}
+                                </p>
+                            )}
+                            
+                            {LogoComponent && (
+                                <div className="relative flex w-fit justify-start">
+                                    <LogoComponent className={cn(
+                                        "h-auto w-full",
+                                        name === "A. Slezak" ? "max-w-[200px]" : "max-w-[240px]"
+                                    )} />
+                                </div>
+                            )}
+                            {!additionalInfo && !LogoComponent && (
+                                <p className="text-[clamp(0.6rem,1.6cqw,1rem)] italic text-muted-foreground">
+                                    Funktion oder Logo
+                                </p>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

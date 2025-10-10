@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { OrtmannsCard } from '@/app/team/_components/doctors/ortmanns-card';
 import { RosenovCard } from '@/app/team/_components/doctors/rosenov-card';
@@ -19,6 +19,9 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TextEditDialog } from './_components/text-edit-dialog';
 import { ImageSourceDialog } from './_components/image-source-dialog';
+import { LogoFunctionSelectDialog } from './_components/logo-function-select-dialog';
+import { PartnerLogoSelectDialog } from './_components/partner-logo-select-dialog';
+import { ImageLibraryDialog } from './_components/image-library-dialog';
 
 // Statische Daten für die Kartenkomponenten
 const staticDoctorsData: Doctor[] = [
@@ -111,50 +114,39 @@ export default function DoctorsPage() {
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
     const [hiddenDoctorIds, setHiddenDoctorIds] = useState<Set<string>>(new Set());
     
-    // State for image editor
+    // Dialog states
     const [isImageSourceDialogOpen, setImageSourceDialogOpen] = useState(false);
     const [isImageCropDialogOpen, setImageCropDialogOpen] = useState(false);
+    const [isImageLibraryOpen, setImageLibraryOpen] = useState(false);
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
-    
-    // State for vita editor
     const [isVitaEditorOpen, setVitaEditorOpen] = useState(false);
-
-    // State for text editor
     const [isTextEditorOpen, setIsTextEditorOpen] = useState(false);
     const [editingField, setEditingField] = useState<{ key: keyof Doctor; label: string, index?: number } | null>(null);
+    const [isLogoFunctionSelectOpen, setLogoFunctionSelectOpen] = useState(false);
+    const [isPartnerLogoSelectOpen, setPartnerLogoSelectOpen] = useState(false);
+
     
     const doctorsList = useMemo(() => staticDoctorsData.sort((a, b) => a.order - b.order), []);
-    
     const displayedDoctorInEdit = doctorInEdit ?? createDefaultDoctor();
-    const currentValueForDialog = useMemo(() => {
-        // Use a temporary doctor object for the dialog to avoid showing stale data
-        const currentDoctor = doctorInEdit ?? createDefaultDoctor();
-        if (!editingField) return '';
-        if (editingField.key === 'qualifications' && editingField.index !== undefined) {
-            return currentDoctor.qualifications[editingField.index] || '';
+    
+    const ensureEditingState = useCallback(() => {
+        if (!doctorInEdit) {
+            setDoctorInEdit(createDefaultDoctor());
         }
-        const value = currentDoctor[editingField.key as keyof Doctor] as string;
-        return value || '';
-    }, [editingField, doctorInEdit]);
-
+    }, [doctorInEdit]);
 
     const handleEditClick = (doctor: Doctor) => {
         setEditingDoctorId(doctor.id);
         setDoctorInEdit(doctor);
     };
 
-    const ensureEditingState = () => {
-        if (!doctorInEdit) {
-            setDoctorInEdit(createDefaultDoctor());
-        }
-    };
-
-    const handleImageClick = () => {
+    // --- Image Handling ---
+    const handleImageClick = useCallback(() => {
         ensureEditingState();
         setImageSourceDialogOpen(true);
-    };
+    }, [ensureEditingState]);
 
-    const handleUploadNewImage = () => {
+    const handleUploadNewImage = useCallback(() => {
         setImageSourceDialogOpen(false);
         const input = document.createElement('input');
         input.type = 'file';
@@ -171,37 +163,53 @@ export default function DoctorsPage() {
             }
         };
         input.click();
-    };
+    }, []);
 
-    const handleCropComplete = (croppedImageUrl: string) => {
-        setDoctorInEdit(prev => prev ? { ...prev, imageUrl: croppedImageUrl } : createDefaultDoctor());
+    const handleSelectFromLibrary = useCallback(() => {
+        setImageSourceDialogOpen(false);
+        setImageLibraryOpen(true);
+    }, []);
+
+    const handleImageSelectedFromLibrary = (imageUrl: string) => {
+        setDoctorInEdit(prev => (prev ?? createDefaultDoctor()) ? { ...(prev ?? createDefaultDoctor()), imageUrl } : prev);
+        setImageLibraryOpen(false);
+    };
+    
+    const handleCropComplete = useCallback((croppedImageUrl: string) => {
+        setDoctorInEdit(prev => (prev ?? createDefaultDoctor()) ? { ...(prev ?? createDefaultDoctor()), imageUrl: croppedImageUrl } : prev);
         setImageCropDialogOpen(false);
         setImageToCrop(null);
-    };
+    }, []);
 
-    const handleVitaClick = () => {
+    // --- Vita Handling ---
+    const handleVitaClick = useCallback(() => {
         ensureEditingState();
         setVitaEditorOpen(true);
-    };
+    }, [ensureEditingState]);
 
-    const handleVitaSave = (newVita: string) => {
-        setDoctorInEdit(prev => prev ? { ...prev, vita: newVita } : createDefaultDoctor());
+    const handleVitaSave = useCallback((newVita: string) => {
+        setDoctorInEdit(prev => (prev ?? createDefaultDoctor()) ? { ...(prev ?? createDefaultDoctor()), vita: newVita } : prev);
         setVitaEditorOpen(false);
-    };
+    }, []);
 
-    const handleTextEditClick = (fieldKey: keyof Doctor, fieldLabel: string, index?: number) => {
+    // --- Text Field Handling ---
+    const handleTextEditClick = useCallback((fieldKey: keyof Doctor, fieldLabel: string, index?: number) => {
         ensureEditingState();
-        setEditingField({ key: fieldKey, label: fieldLabel, index });
-        setIsTextEditorOpen(true);
-    };
-
-    const handleTextSave = (newValue: string) => {
+        if (fieldKey === 'additionalInfo') {
+            setLogoFunctionSelectOpen(true);
+        } else {
+            setEditingField({ key: fieldKey, label: fieldLabel, index });
+            setIsTextEditorOpen(true);
+        }
+    }, [ensureEditingState]);
+    
+    const handleTextSave = useCallback((newValue: string) => {
         if (!editingField) return;
     
         setDoctorInEdit(prev => {
             const currentDoctor = prev ?? createDefaultDoctor();
             if (editingField.key === 'qualifications' && editingField.index !== undefined) {
-                const updatedQualifications = [...currentDoctor.qualifications];
+                const updatedQualifications = [...(currentDoctor.qualifications || [])];
                 updatedQualifications[editingField.index] = newValue;
                 return { ...currentDoctor, qualifications: updatedQualifications };
             } else {
@@ -211,8 +219,37 @@ export default function DoctorsPage() {
     
         setIsTextEditorOpen(false);
         setEditingField(null);
+    }, [editingField]);
+    
+    const currentValueForDialog = useMemo(() => {
+        const currentDoctor = doctorInEdit ?? createDefaultDoctor();
+        if (!editingField) return '';
+        if (editingField.key === 'qualifications' && editingField.index !== undefined) {
+            return (currentDoctor.qualifications || [])[editingField.index] || '';
+        }
+        const value = currentDoctor[editingField.key as keyof Doctor] as string;
+        return value || '';
+    }, [editingField, doctorInEdit]);
+
+    // --- Logo/Function Handling ---
+    const handleSelectFunction = () => {
+        setLogoFunctionSelectOpen(false);
+        setEditingField({ key: 'additionalInfo', label: 'Funktion' });
+        setIsTextEditorOpen(true);
+        setDoctorInEdit(prev => prev ? { ...prev, partnerLogoComponent: undefined } : prev);
+    };
+    
+    const handleSelectPartnerLogo = () => {
+        setLogoFunctionSelectOpen(false);
+        setPartnerLogoSelectOpen(true);
     };
 
+    const handlePartnerLogoSave = (logoComponent: Doctor['partnerLogoComponent']) => {
+        setPartnerLogoSelectOpen(false);
+        setDoctorInEdit(prev => prev ? { ...prev, partnerLogoComponent: logoComponent, additionalInfo: undefined } : prev);
+    };
+
+    // --- General UI ---
     const toggleHideDoctor = (doctorId: string) => {
         setHiddenDoctorIds(prev => {
             const newSet = new Set(prev);
@@ -306,14 +343,14 @@ export default function DoctorsPage() {
                     </CardContent>
                 </Card>
             </div>
-            {isImageSourceDialogOpen && (
-                <ImageSourceDialog
-                    isOpen={isImageSourceDialogOpen}
-                    onOpenChange={setImageSourceDialogOpen}
-                    onUpload={handleUploadNewImage}
-                    onSelect={() => { /* TODO: Implement select from library */ alert("Funktion noch nicht implementiert."); }}
-                />
-            )}
+
+            {/* --- Dialogs --- */}
+            <ImageSourceDialog
+                isOpen={isImageSourceDialogOpen}
+                onOpenChange={setImageSourceDialogOpen}
+                onUpload={handleUploadNewImage}
+                onSelect={handleSelectFromLibrary}
+            />
             {isImageCropDialogOpen && imageToCrop && (
                 <ImageCropDialog
                     imageUrl={imageToCrop}
@@ -322,14 +359,18 @@ export default function DoctorsPage() {
                     aspectRatio={2/3}
                 />
             )}
-            {isVitaEditorOpen && (
-              <VitaEditorDialog
+             <ImageLibraryDialog
+                isOpen={isImageLibraryOpen}
+                onOpenChange={setImageLibraryOpen}
+                images={doctorsList.map(d => d.imageUrl).filter(Boolean)}
+                onImageSelect={handleImageSelectedFromLibrary}
+            />
+            <VitaEditorDialog
                 isOpen={isVitaEditorOpen}
                 onOpenChange={setVitaEditorOpen}
                 initialValue={displayedDoctorInEdit.vita}
                 onSave={handleVitaSave}
-              />
-            )}
+            />
             {editingField && (
                 <TextEditDialog
                     isOpen={isTextEditorOpen}
@@ -340,6 +381,17 @@ export default function DoctorsPage() {
                     onSave={handleTextSave}
                 />
             )}
+            <LogoFunctionSelectDialog
+                isOpen={isLogoFunctionSelectOpen}
+                onOpenChange={setLogoFunctionSelectOpen}
+                onSelectFunction={handleSelectFunction}
+                onSelectLogo={handleSelectPartnerLogo}
+            />
+            <PartnerLogoSelectDialog
+                isOpen={isPartnerLogoSelectOpen}
+                onOpenChange={setPartnerLogoSelectOpen}
+                onSave={handlePartnerLogoSave}
+            />
         </>
     );
 }
