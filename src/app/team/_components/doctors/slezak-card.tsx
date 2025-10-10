@@ -14,18 +14,16 @@ export function SlezakCard() {
                     .vita-content { color: hsl(var(--background)); }
                     .vita-content p { margin: 0; }
                 </style>
-                <div class="group relative font-headline w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground border-2 border-dashed border-red-500 p-6">
+                <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6">
                     <div class="flex h-full w-full items-start">
-                        <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md border-2 border-dashed border-green-500">
-                            <img src="/images/team/Dr.Slezak.jpg" alt="Portrait von A. Slezak" data-ai-hint="woman portrait" class="w-full h-full object-contain border-2 border-dashed border-blue-500" />
+                        <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
+                            <img src="/images/team/Dr.Slezak.jpg" alt="Portrait von A. Slezak" data-ai-hint="woman portrait" class="w-full h-full object-contain" />
                         </div>
-                        <div class="flex-grow flex flex-col h-full ml-6 justify-center font-headline border-2 border-dashed border-yellow-500">
+                        <div class="flex-grow flex flex-col font-headline justify-center ml-6 h-full relative">
                             <div>
-                                <div>
-                                    <p class="text-2xl font-bold text-primary">Dr. med.</p>
-                                    <h3 class="text-5xl font-bold text-primary my-2">A. Slezak</h3>
-                                    <p class="text-xl font-bold">Fachärztin für Neurologie</p>
-                                </div>
+                                <p class="text-2xl font-bold text-primary">Dr. med.</p>
+                                <h3 class="text-5xl font-bold text-primary my-2">A. Slezak</h3>
+                                <p class="text-xl font-bold">Fachärztin für Neurologie</p>
                                 <div class="mt-6">
                                     <svg
                                         viewBox="0 0 170 35"
@@ -58,6 +56,9 @@ export function SlezakCard() {
                                         </text>
                                     </svg>
                                 </div>
+                            </div>
+                            <div class="absolute bottom-0 right-0 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>
                             </div>
                         </div>
                     </div>
