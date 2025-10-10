@@ -108,7 +108,10 @@ export default function DoctorsPage() {
             <CardContent>
                  <div className="space-y-4">
                   <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Live-Vorschau & Bearbeitung</h3>
-                   <div className="rounded-lg border bg-muted p-4 md:p-6">
+                  <div className="relative rounded-lg border-2 border-dashed border-primary/50 bg-muted p-4 md:p-6">
+                      <div className="absolute -top-3 left-4 bg-muted px-2 text-sm font-bold text-primary">
+                          Klicken Sie auf ein Element um dieses zu verändern
+                      </div>
                       <EditableDoctorCard 
                           doctor={doctorToEdit}
                           onImageClick={handleImageClick}
@@ -163,5 +166,3 @@ export default function DoctorsPage() {
   </>
   );
 }
-
-    
