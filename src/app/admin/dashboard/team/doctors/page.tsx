@@ -128,7 +128,13 @@ const staticDoctorsData: Doctor[] = [
         name: "R. Herschel",
         imageUrl: "/images/team/Dr.Herschel.jpg",
         imageHint: "man portrait",
-        specialty: "Facharzt Orthopädische Chirurgie und Traumatologie des Bewegungsapparates",
+        specialty: (
+            <div>
+              <span>Facharzt Orthopädische Chirurgie und</span>
+              <br />
+              <span>Traumatologie des Bewegungsapparates</span>
+            </div>
+          ),
         qualifications: [],
         vita: `<p>Vita folgt in Kürze.</p>`,
         partnerLogoComponent: 'OrthozentrumLogo',
@@ -193,9 +199,18 @@ export default function DoctorsPage() {
     
     useEffect(() => {
         if (!isLoadingDoctors) {
-            // If DB is empty, use static data as fallback.
+            // If DB is empty or has fewer items, merge with static data.
             if (doctorsFromDb && doctorsFromDb.length > 0) {
-                setDoctorsList(doctorsFromDb);
+                 const combined = [...staticDoctorsData];
+                 doctorsFromDb.forEach(dbDoc => {
+                     const index = combined.findIndex(staticDoc => staticDoc.id === dbDoc.id);
+                     if (index !== -1) {
+                         combined[index] = dbDoc; // Replace static with DB version
+                     } else {
+                         combined.push(dbDoc); // Add new doc from DB
+                     }
+                 });
+                 setDoctorsList(combined.sort((a,b) => a.order - b.order));
             } else {
                 setDoctorsList(staticDoctorsData);
             }
@@ -581,7 +596,7 @@ export default function DoctorsPage() {
                                                             <AlertDialogHeader>
                                                                 <AlertDialogTitle>Arztkarte löschen?</AlertDialogTitle>
                                                                 <AlertDialogDescription>
-                                                                    Möchten Sie die Karte für {doctor.name} wirklich endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+                                                                    Möchten Sie die Karte für ${doctor.name} wirklich endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.
                                                                 </AlertDialogDescription>
                                                             </AlertDialogHeader>
                                                             <AlertDialogFooter>
@@ -601,7 +616,13 @@ export default function DoctorsPage() {
                                             <div className={cn("relative flex-1 w-full max-w-[1000px] p-2", isHidden && "grayscale opacity-50")}>
                                                 <DoctorCard
                                                 {...doctor}
-                                                specialty={typeof doctor.specialty === 'string' ? doctor.specialty : "Facharzt für Orthopädische Chirurgie und Traumatologie des Bewegungsapparates"}
+                                                specialty={typeof doctor.specialty === 'string' ? doctor.specialty : (
+                                                    <div>
+                                                      <span>Facharzt Orthopädische Chirurgie und</span>
+                                                      <br />
+                                                      <span>Traumatologie des Bewegungsapparates</span>
+                                                    </div>
+                                                  )}
                                                 partnerLogoComponent={LogoComponent as React.FC<{ className?: string; }> | string | undefined}
                                                 />
                                                 {isEditing && (
@@ -668,5 +689,6 @@ export default function DoctorsPage() {
         </>
     );
 }
+
 
     
