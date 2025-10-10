@@ -91,21 +91,21 @@ const doctorCardComponents: { [key: string]: React.FC } = {
 };
 
 const createDefaultDoctor = (): Doctor => ({
-    id: 'mustermann',
-    title: 'Dr. med.',
-    name: 'Max Mustermann',
-    specialty: 'Facharzt für Allgemeinmedizin',
-    qualifications: ['Zusatzbezeichnung Sportmedizin', 'Fähigkeitsausweis Praxislabor (KHM)'],
+    id: 'placeholder',
+    title: 'Titel',
+    name: 'Name',
+    specialty: 'Spezialisierung',
+    qualifications: ['Qualifikation 1', 'Qualifikation 2', 'Qualifikation 3', 'Qualifikation 4'],
     vita: '<p>Dieser Text kann frei angepasst werden.</p>',
-    imageUrl: `https://picsum.photos/seed/mustermann/400/600`,
-    imageHint: 'portrait placeholder',
-    additionalInfo: 'Belegarzt',
+    imageUrl: '',
+    imageHint: 'placeholder',
+    additionalInfo: 'Funktion oder Logo',
     order: 99,
 });
 
 
 export default function DoctorsPage() {
-    const [doctorInEdit, setDoctorInEdit] = useState<Doctor>(createDefaultDoctor());
+    const [doctorInEdit, setDoctorInEdit] = useState<Doctor | null>(null);
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
     const [hiddenDoctorIds, setHiddenDoctorIds] = useState<Set<string>>(new Set());
     const [isImageEditorOpen, setImageEditorOpen] = useState(false);
@@ -166,6 +166,7 @@ export default function DoctorsPage() {
         });
     };
     
+    const displayedDoctorInEdit = doctorInEdit ?? createDefaultDoctor();
 
     return (
         <>
@@ -184,7 +185,7 @@ export default function DoctorsPage() {
                             <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Live-Vorschau & Bearbeitung</h3>
                             <div className="rounded-lg bg-muted p-4 md:p-6">
                                 <EditableDoctorCard 
-                                    doctor={doctorInEdit}
+                                    doctor={displayedDoctorInEdit}
                                     onImageClick={handleImageClick}
                                     onVitaClick={handleVitaClick}
                                 />
@@ -254,7 +255,7 @@ export default function DoctorsPage() {
                     onClose={() => setImageEditorOpen(false)}
                 />
             )}
-            {isVitaEditorOpen && doctorInEdit && (
+            {doctorInEdit && isVitaEditorOpen && (
               <VitaEditorDialog
                 isOpen={isVitaEditorOpen}
                 onOpenChange={setVitaEditorOpen}

@@ -20,7 +20,7 @@ interface EditableDoctorCardProps {
     onVitaClick: () => void;
 }
 
-const partnerLogos = {
+const partnerLogos: { [key: string]: React.FC<{ className?: string }> } = {
   OrthozentrumLogo,
   AgnieszkaSlezakLogo,
   VascAllianceLogo,
@@ -43,8 +43,8 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     );
 };
 
-const FrontSide: React.FC<{ doctor: Doctor | null; onClick: () => void }> = ({ doctor, onClick }) => {
-    const { title, name, imageUrl, imageHint, specialty, qualifications, additionalInfo, partnerLogoComponent } = doctor || {};
+const FrontSide: React.FC<{ doctor: Doctor; onClick: () => void }> = ({ doctor, onClick }) => {
+    const { title, name, imageUrl, imageHint, specialty, qualifications, additionalInfo, partnerLogoComponent } = doctor;
     const LogoComponent = partnerLogoComponent ? partnerLogos[partnerLogoComponent] : null;
     
     return (
@@ -66,7 +66,7 @@ const FrontSide: React.FC<{ doctor: Doctor | null; onClick: () => void }> = ({ d
                             />
                         ) : (
                             <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
-                                <ImageIcon className="h-1/4 w-1/4" />
+                                <User className="h-1/2 w-1/2" />
                                 <span className="px-4 text-center text-xs">Klicken zum Hochladen</span>
                             </div>
                         )}
@@ -160,13 +160,17 @@ const ScalingCard: React.FC<{ children: React.ReactNode, onClick: () => void, cl
 };
 
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onImageClick, onVitaClick }) => {
+    if (!doctor) {
+        return null;
+    }
+    
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
             <ScalingCard onClick={onImageClick}>
                 <FrontSide doctor={doctor} onClick={onImageClick} />
             </ScalingCard>
             <ScalingCard onClick={onVitaClick}>
-                <BackSide vita={doctor?.vita || ''} onClick={onVitaClick} />
+                <BackSide vita={doctor.vita || ''} onClick={onVitaClick} />
             </ScalingCard>
         </div>
     );
