@@ -1,8 +1,9 @@
+
 'use client';
 
-import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, addDoc, updateDoc, doc, setDoc } from 'firebase/firestore';
+import { collection, query, orderBy, setDoc, doc } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { Separator } from '@/components/ui/separator';
@@ -24,13 +25,15 @@ import { slezakProps } from '@/app/team/_components/doctors/slezak-card';
 
 export type Doctor = DoctorType;
 
-const staticDoctorsData: Omit<Doctor, 'frontSideCode' | 'backSideCode'>[] = [
+// This is the stable, static list of all doctors.
+const staticDoctorsData: Doctor[] = [
     ortmannsProps,
     schemmerProps,
     rosenovProps,
     herschelProps,
     slezakProps,
-];
+].sort((a, b) => a.order - b.order);
+
 
 const createDefaultDoctor = (): Omit<Doctor, 'id'> => ({
     name: 'Neuer Arzt',
@@ -93,18 +96,11 @@ export default function DoctorsPage() {
         
         const mergedList = staticDoctorsData.map(staticDoctor => {
             const dbData = dbDataMap.get(staticDoctor.id);
-            const staticProps = [ortmannsProps, schemmerProps, rosenovProps, herschelProps, slezakProps].find(p => p.id === staticDoctor.id);
-
-            if (dbData) {
-                return { ...staticDoctor, ...dbData };
-            }
-            return {
-                ...staticDoctor,
-                frontSideCode: staticProps?.frontSideCode || '',
-                backSideCode: staticProps?.backSideCode || '',
-            };
+            // If data exists in the DB, use it, otherwise use the static data.
+            return dbData ? { ...staticDoctor, ...dbData } : staticDoctor;
         });
 
+        // Add doctors that are in DB but not in static list (newly created ones)
         dbDoctors?.forEach(dbDoctor => {
             if (!mergedList.some(d => d.id === dbDoctor.id)) {
                 mergedList.push(dbDoctor);
@@ -145,6 +141,7 @@ export default function DoctorsPage() {
         setIsSaving(true);
         setStatus(null);
         
+        // Create a clean object with only serializable data for Firestore
         const dataToSave = {
             name: editingDoctor.name,
             order: editingDoctor.order,
@@ -154,6 +151,7 @@ export default function DoctorsPage() {
 
         try {
             const docRef = doc(firestore, 'doctors', editingDoctor.id);
+            // Use setDoc with merge:true to create or update
             await setDoc(docRef, dataToSave, { merge: true });
 
             const isNew = !dbDoctors?.some(d => d.id === editingDoctor.id);
@@ -383,3 +381,5 @@ export default function DoctorsPage() {
         </>
     );
 }
+
+    
