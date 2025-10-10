@@ -90,13 +90,15 @@ export const DoctorCard: React.FC<Doctor> = ({
                                         {qualifications.map((q, i) => <p key={i}>{q}</p>)}
                                     </div>
                                     
-                                    <div className="relative mt-[2.5cqw] flex h-28 w-full max-w-[400px] items-center justify-start">
-                                        {children ? (
-                                            children
-                                        ) : LogoComponent && typeof LogoComponent !== 'string' ? (
-                                            <LogoComponent className="h-full w-full object-contain object-left" />
-                                        ) : null}
-                                    </div>
+                                    {(LogoComponent || children) && (
+                                        <div className="relative mt-[2.5cqw] flex h-28 w-full max-w-[400px] items-center justify-start">
+                                            {children ? (
+                                                children
+                                            ) : LogoComponent && typeof LogoComponent !== 'string' ? (
+                                                <LogoComponent className="h-full w-full object-contain object-left" />
+                                            ) : null}
+                                        </div>
+                                    )}
 
                                     {additionalInfo && !LogoComponent && !children && (
                                         <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
