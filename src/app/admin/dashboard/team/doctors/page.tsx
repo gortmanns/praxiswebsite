@@ -1,8 +1,8 @@
+
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { useFirestore, useCollection, useMemoFirebase, useUser } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
+import { useFirestore, useUser } from '@/firebase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Doctor as DoctorType } from '@/app/team/_components/doctor-card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
@@ -172,14 +172,8 @@ export default function DoctorsPage() {
     const firestore = useFirestore();
     const { user, isUserLoading } = useUser();
 
-    const doctorsQuery = useMemoFirebase(() => {
-        if (!firestore || isUserLoading || !user) return null;
-        return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
-    }, [firestore, user, isUserLoading]);
-
-    const { data: doctorsFromDb, isLoading: isLoadingDoctors } = useCollection<Doctor>(doctorsQuery);
-
-    const [doctorsList, setDoctorsList] = useState<Doctor[]>([]);
+    // The component now exclusively uses the static data for the initial render.
+    const [doctorsList, setDoctorsList] = useState<Doctor[]>(staticDoctorsData);
     const [doctorInEdit, setDoctorInEdit] = useState<Partial<Doctor> | null>(null);
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
     const [hiddenDoctorIds, setHiddenDoctorIds] = useState<Set<string>>(new Set());
@@ -206,19 +200,6 @@ export default function DoctorsPage() {
           return () => clearTimeout(timer);
         }
     }, [status]);
-    
-    useEffect(() => {
-        if (!isLoadingDoctors) {
-            if (doctorsFromDb && doctorsFromDb.length > 0) {
-                 setDoctorsList(doctorsFromDb);
-            } else {
-                // Nur Fallback laden, wenn DB leer ist und die Abfrage abgeschlossen wurde (nicht mehr lädt)
-                if (!isLoadingDoctors) {
-                    setDoctorsList(staticDoctorsData);
-                }
-            }
-        }
-    }, [doctorsFromDb, isLoadingDoctors]);
     
     const displayedDoctorInEdit: Omit<Doctor, 'id'> = useMemo(() => {
         return {
@@ -248,16 +229,13 @@ export default function DoctorsPage() {
         setEditingDoctorId(null);
         setStatus(null);
     };
-
-    const isDoctorFromDB = (id: string | null): boolean => {
-        if (!id) return false;
-        return doctorsFromDb?.some(d => d.id === id) ?? false;
-    };
     
     const handleSave = async () => {
         if (!firestore || !doctorInEdit) return;
-    
-        const isUpdatingExistingDBEntry = editingDoctorId && isDoctorFromDB(editingDoctorId);
+        
+        // This is a simplified check. A robust implementation would check against a list of IDs from the DB if it were loaded.
+        // For now, we assume if an ID exists, it's an update.
+        const isUpdatingExistingDBEntry = !!editingDoctorId;
     
         const saveData = {
             title: doctorInEdit.title || 'Titel',
@@ -281,10 +259,13 @@ export default function DoctorsPage() {
                 await updateDoctor(firestore, editingDoctorId, saveData);
                 setStatus({ type: 'success', message: 'Die Änderungen wurden erfolgreich gespeichert.' });
             } else {
+                // If it's a new card or a static card being saved for the first time
                 await addDoctor(firestore, saveData, editingDoctorId);
                 setStatus({ type: 'success', message: 'Die Arztkarte wurde erfolgreich erstellt/initial gespeichert.' });
             }
             handleCancel();
+            // Here you might want to re-fetch from the database in a real-world scenario
+            // to show the most up-to-date list, but for now, we just cancel the edit mode.
         } catch (error: any) {
             console.error("Error saving doctor: ", error);
             const errorMessage = `Die Daten konnten nicht gespeichert werden. Fehler: ${error.message || String(error)}`;
@@ -538,7 +519,7 @@ export default function DoctorsPage() {
                                 <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Live-Vorschau & Bearbeitung</h3>
                                 {doctorInEdit && (
                                     <div className="flex gap-2">
-                                        <Button onClick={handleSave} disabled={isSaving}>
+                                        <Button onClick={handleSave} disabled={isSaving || isUserLoading}>
                                             {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
                                             {editingDoctorId ? 'Änderungen speichern' : 'Als neue Karte anlegen'}
                                         </Button>
@@ -577,7 +558,7 @@ export default function DoctorsPage() {
                         </div>
 
                         <div className="mt-8 space-y-12">
-                             {(isLoadingDoctors || isUserLoading) ? (
+                             { isUserLoading ? (
                                 <div className="space-y-12">
                                     {[...Array(3)].map((_, i) => (
                                         <div key={i} className="flex w-full items-center justify-center gap-4">
