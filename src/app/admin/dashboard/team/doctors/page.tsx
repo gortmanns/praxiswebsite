@@ -197,7 +197,7 @@ export default function DoctorsPage() {
         if (status && status.type !== 'info') {
           const timer = setTimeout(() => {
             setStatus(null);
-          }, 60000); // Changed to 60 seconds
+          }, 60000);
           return () => clearTimeout(timer);
         }
     }, [status]);
@@ -225,7 +225,6 @@ export default function DoctorsPage() {
             setEditingDoctorId(null);
             setStatus({ type: 'info', message: 'Erstellen Sie eine neue Arztkarte. Klicken Sie auf Elemente, um sie zu bearbeiten.' });
         } else if (!doctorInEdit) {
-            // This case should ideally not happen if a doctor is being edited, but as a safeguard:
             setDoctorInEdit(createDefaultDoctor());
         }
     }, [doctorInEdit]);
@@ -249,10 +248,10 @@ export default function DoctorsPage() {
     
     const handleSave = async () => {
         if (!firestore || !doctorInEdit) return;
-    
-        const isUpdatingExistingDBEntry = editingDoctorId && isDoctorFromDB(editingDoctorId);
-    
-        const saveData: Omit<Doctor, 'id' | 'specialty'> & {specialty: string} = {
+
+        const isUpdating = editingDoctorId && isDoctorFromDB(editingDoctorId);
+
+        const saveData = {
             title: doctorInEdit.title || 'Titel',
             name: doctorInEdit.name || 'Name',
             specialty: typeof doctorInEdit.specialty === 'object' ? 'Spezialisierung' : doctorInEdit.specialty || 'Spezialisierung',
@@ -265,14 +264,16 @@ export default function DoctorsPage() {
             partnerLogoComponent: doctorInEdit.partnerLogoComponent as string | undefined,
             order: doctorInEdit.order || (doctorsList[doctorsList.length - 1]?.order || 0) + 1,
         };
-    
+
         setIsSaving(true);
         setStatus(null);
         try {
-            if (isUpdatingExistingDBEntry) {
+            if (isUpdating) {
                 await updateDoctor(firestore, editingDoctorId, saveData);
                 setStatus({ type: 'success', message: 'Die Änderungen wurden erfolgreich gespeichert.' });
             } else {
+                // This covers both new cards (editingDoctorId is null)
+                // and saving a fallback card for the first time (editingDoctorId is set, but not in DB)
                 await addDoctor(firestore, saveData, editingDoctorId);
                 setStatus({ type: 'success', message: 'Die neue Arztkarte wurde erfolgreich angelegt.' });
             }
@@ -285,6 +286,7 @@ export default function DoctorsPage() {
             setIsSaving(false);
         }
     };
+
 
     // --- Image Handling ---
     const handleImageClick = useCallback(() => {

@@ -78,22 +78,9 @@ export async function updateDoctor(firestore: Firestore, id: string, data: Parti
     const oldDocSnap = await getDoc(doctorRef);
 
     if (!oldDocSnap.exists()) {
-        // This should not happen in the new flow, but as a safeguard.
-        // Convert Partial<DoctorData> to full DoctorData for addDoctor
-        const addData: DoctorData = {
-            title: data.title ?? '',
-            name: data.name ?? '',
-            specialty: data.specialty ?? '',
-            qualifications: data.qualifications ?? [],
-            vita: data.vita ?? '',
-            imageUrl: data.imageUrl ?? '',
-            imageHint: data.imageHint ?? '',
-            languages: data.languages ?? [],
-            order: data.order ?? 99,
-            ...data
-        };
-        await addDoctor(firestore, addData, id);
-        return;
+        // If the document doesn't exist, we should not proceed with an update.
+        // The calling function should handle this logic. Throw an error or return.
+        throw new Error(`Dokument mit ID ${id} existiert nicht und kann nicht aktualisiert werden.`);
     }
     
     const updateData: { [key: string]: any } = { ...data, updatedAt: serverTimestamp() };
