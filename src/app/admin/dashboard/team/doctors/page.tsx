@@ -496,24 +496,26 @@ export default function DoctorsPage() {
                                                 </Button>
                                                 <AlertDialog>
                                                     <AlertDialogTrigger asChild>
-                                                        <Button variant="destructive" size="sm" disabled={isEditing || isSaving} className="justify-start">
+                                                        <Button variant="destructive" size="sm" disabled={isEditing || isSaving} className="justify-start" onClick={() => setDoctorToDelete(doctor)}>
                                                             <Trash2 className="mr-2 h-4 w-4" /> Löschen
                                                         </Button>
                                                     </AlertDialogTrigger>
-                                                    <AlertDialogContent>
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>Arztkarte löschen?</AlertDialogTitle>
-                                                            <AlertDialogDescription>
-                                                                Möchten Sie die Karte für {doctor.name} wirklich endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                                                            <AlertDialogAction onClick={() => handleDeleteDoctor()} disabled={isSaving}>
-                                                                {isSaving ? "Wird gelöscht..." : "Ja, löschen"}
-                                                            </AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
+                                                    {doctorToDelete === doctor && (
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader>
+                                                                <AlertDialogTitle>Arztkarte löschen?</AlertDialogTitle>
+                                                                <AlertDialogDescription>
+                                                                    Möchten Sie die Karte für {doctor.name} wirklich endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+                                                                </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+                                                            <AlertDialogFooter>
+                                                                <AlertDialogCancel onClick={() => setDoctorToDelete(null)} disabled={isSaving}>Abbrechen</AlertDialogCancel>
+                                                                <AlertDialogAction onClick={handleDeleteDoctor} disabled={isSaving}>
+                                                                    {isSaving ? "Wird gelöscht..." : "Ja, löschen"}
+                                                                </AlertDialogAction>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    )}
                                                 </AlertDialog>
                                                 <Button variant="default" size="sm" onClick={() => handleEditClick(doctor)} disabled={isEditing || isSaving} className="justify-start">
                                                     <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
@@ -586,26 +588,9 @@ export default function DoctorsPage() {
                 onSelectFromLibrary={handleSelectLogoFromLibrary}
                 onUploadNew={handleUploadNewLogo}
             />
-             {doctorToDelete && (
-                <AlertDialog open={!!doctorToDelete} onOpenChange={(open) => !open && setDoctorToDelete(null)}>
-                     <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Arztkarte löschen?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                Möchten Sie die Karte für {doctorToDelete.name} wirklich endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel onClick={() => setDoctorToDelete(null)} disabled={isSaving}>Abbrechen</AlertDialogCancel>
-                            <AlertDialogAction onClick={handleDeleteDoctor} disabled={isSaving}>
-                                {isSaving ? "Wird gelöscht..." : "Ja, löschen"}
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-            )}
         </>
     );
 }
+
 
     

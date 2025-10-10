@@ -133,3 +133,5 @@ export async function deleteDoctor(firestore: Firestore, id: string) {
 
     return await deleteDoc(doctorRef);
 }
+
+    

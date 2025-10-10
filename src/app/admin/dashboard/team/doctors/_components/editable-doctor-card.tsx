@@ -19,7 +19,10 @@ interface EditableDoctorCardProps {
 const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
         if (typeof window !== 'undefined') {
-            return { __html: DOMPurify.sanitize(html) };
+            const config = {
+                ADD_ATTR: ['style'], // Allow style attributes
+            };
+            return { __html: DOMPurify.sanitize(html, config) };
         }
         return { __html: '' };
     }, [html]);
@@ -178,3 +181,5 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
         </div>
     );
 };
+
+    
