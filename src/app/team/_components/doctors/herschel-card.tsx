@@ -2,6 +2,7 @@
 'use client';
 
 import { DoctorCard } from '../doctor-card';
+import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 
 export function HerschelCard() {
     return (
@@ -16,8 +17,8 @@ export function HerschelCard() {
             vita={`
                 <p>Vita folgt in Kürze.</p>
             `}
-            partnerLogoComponent="OrthozentrumLogo"
-            order={4}
-        />
+        >
+            <OrthozentrumLogo className="h-full w-full object-contain object-left" />
+        </DoctorCard>
     );
 }

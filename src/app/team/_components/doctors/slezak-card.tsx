@@ -2,6 +2,7 @@
 'use client';
 
 import { DoctorCard } from '../doctor-card';
+import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
 
 export function SlezakCard() {
     return (
@@ -16,8 +17,8 @@ export function SlezakCard() {
             vita={`
                 <p>Vita folgt in Kürze.</p>
             `}
-            partnerLogoComponent="AgnieszkaSlezakLogo"
-            order={5}
-        />
+        >
+            <AgnieszkaSlezakLogo className="h-full w-full object-contain object-left" />
+        </DoctorCard>
     );
 }

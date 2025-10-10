@@ -6,13 +6,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import DOMPurify from 'dompurify';
 import React from 'react';
 import { User } from 'lucide-react';
-import {
-    AgnieszkaSlezakLogo,
-    OrthozentrumLogo,
-    SchemmerWorniLogo,
-    VascAllianceLogo
-} from '@/components/logos';
-import { cn } from '@/lib/utils';
 
 export interface Doctor {
     id: string;
@@ -20,12 +13,11 @@ export interface Doctor {
     name: string;
     imageUrl: string;
     imageHint: string;
-    specialty: string;
+    specialty: string | React.ReactNode;
     qualifications: string[];
     vita: string;
     additionalInfo?: string;
-    partnerLogoComponent?: 'OrthozentrumLogo' | 'AgnieszkaSlezakLogo' | 'VascAllianceLogo' | 'SchemmerWorniLogo';
-    order: number;
+    children?: React.ReactNode; // Accept children for logos etc.
 }
 
 
@@ -45,13 +37,6 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
     );
 };
 
-const partnerLogos = {
-  OrthozentrumLogo,
-  AgnieszkaSlezakLogo,
-  VascAllianceLogo,
-  SchemmerWorniLogo,
-};
-
 
 export const DoctorCard: React.FC<Doctor> = ({
     title,
@@ -62,9 +47,8 @@ export const DoctorCard: React.FC<Doctor> = ({
     qualifications,
     vita,
     additionalInfo,
-    partnerLogoComponent,
+    children
 }) => {
-    const LogoComponent = partnerLogoComponent ? partnerLogos[partnerLogoComponent] : null;
 
     return (
         <div className="group relative w-full max-w-[1000px] overflow-hidden rounded-lg shadow-sm">
@@ -99,19 +83,19 @@ export const DoctorCard: React.FC<Doctor> = ({
                                       {name}
                                     </h4>
                                     <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
-                                        <p className="font-bold">{specialty}</p>
+                                        <div className="font-bold">{specialty}</div>
                                         {qualifications.map((q, i) => <p key={i}>{q}</p>)}
                                     </div>
                                     
-                                    {additionalInfo && !LogoComponent && (
+                                    {additionalInfo && !children && (
                                         <p className="mt-[2.5cqw] text-[clamp(0.6rem,1.6cqw,1rem)] italic">
                                             {additionalInfo}
                                         </p>
                                     )}
                                     
-                                    {LogoComponent && (
-                                        <div className="relative mt-[2.5cqw] flex h-28 max-w-[400px] items-center justify-start">
-                                            <LogoComponent className="h-full w-full object-contain object-left" />
+                                    {children && (
+                                        <div className="relative mt-[2.5cqw] flex h-28 w-full max-w-[400px] items-center justify-start">
+                                            {children}
                                         </div>
                                     )}
                                 </div>

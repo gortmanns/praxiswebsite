@@ -2,6 +2,7 @@
 'use client';
 
 import { DoctorCard } from '../doctor-card';
+import { SchemmerWorniLogo } from '@/components/logos/schemmer-worni-logo';
 
 export function SchemmerCard() {
     return (
@@ -26,8 +27,8 @@ export function SchemmerCard() {
                     Seine Patienten in der Schweiz behandelt er weiterhin, neu aber wohnortnah und unkompliziert auch hier im Praxiszentrum im Ring, wo er eine regelmässige Sprechstunde abhält.
                 </p>
             `}
-            partnerLogoComponent="SchemmerWorniLogo"
-            order={2}
-        />
+        >
+            <SchemmerWorniLogo className="h-full w-full object-contain object-left" />
+        </DoctorCard>
     );
 }
