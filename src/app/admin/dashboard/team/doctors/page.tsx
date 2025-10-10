@@ -4,7 +4,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { type Doctor } from '@/app/team/_components/doctor-card';
-import { Info, ArrowUp, ArrowDown, Eye, EyeOff, Pencil, ShieldCheck } from 'lucide-react';
+import { Info, ArrowUp, ArrowDown, Eye, EyeOff, Pencil } from 'lucide-react';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { ImageCropDialog } from './_components/image-crop-dialog';
@@ -224,15 +224,11 @@ export default function DoctorsPage() {
                         className="flex w-full items-center justify-center gap-8"
                       >
                         <ActionButtons cardId={doctor.id} />
-                        <div className="relative w-full max-w-[1000px] flex-1">
+                        <div className={cn(
+                          "w-full max-w-[1000px] flex-1 rounded-lg",
+                          editingCardId === doctor.id && "ring-4 ring-primary ring-offset-4"
+                        )}>
                           <EditableDoctorCard doctor={doctor} onImageClick={() => {}} onVitaClick={() => {}} />
-                           {editingCardId === doctor.id && (
-                                <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/30">
-                                    <div className="rounded-md bg-background/80 px-4 py-2 text-lg font-bold text-primary shadow-lg backdrop-blur-sm">
-                                        In Bearbeitung
-                                    </div>
-                                </div>
-                            )}
                         </div>
                       </div>
                   ))
@@ -251,17 +247,11 @@ export default function DoctorsPage() {
                                 className="flex w-full items-center justify-center gap-8"
                             >
                                 <ActionButtons cardId={doctor.id} />
-                                <div className="relative w-full max-w-[1000px] flex-1">
-                                    <div className="grayscale opacity-60">
-                                      <EditableDoctorCard doctor={doctor} onImageClick={() => {}} onVitaClick={() => {}} />
-                                    </div>
-                                    {editingCardId === doctor.id && (
-                                        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/30">
-                                           <div className="rounded-md bg-background/80 px-4 py-2 text-lg font-bold text-primary shadow-lg backdrop-blur-sm">
-                                                In Bearbeitung
-                                            </div>
-                                        </div>
-                                    )}
+                                <div className={cn(
+                                  "w-full max-w-[1000px] flex-1 rounded-lg grayscale opacity-60",
+                                  editingCardId === doctor.id && "ring-4 ring-primary ring-offset-4"
+                                )}>
+                                  <EditableDoctorCard doctor={doctor} onImageClick={() => {}} onVitaClick={() => {}} />
                                 </div>
                             </div>
                         ))}
