@@ -26,7 +26,7 @@ const VitaRenderer: React.FC<{ html: string }> = ({ html }) => {
 
     return (
         <div
-            className="vita-content text-background"
+            className="vita-content"
             dangerouslySetInnerHTML={sanitizedHtml}
         />
     );
@@ -69,12 +69,12 @@ const FrontSide: React.FC<Pick<EditableDoctorCardProps, 'doctor' | 'onImageClick
                             {name}
                         </h4>
                         <div className="mt-[1.5cqw] text-[clamp(0.8rem,2.2cqw,1.2rem)] leading-tight space-y-1">
-                            <p className="font-bold cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('specialty', 'Spezialisierung')}>{specialty}</p>
+                            <p className="font-bold cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('specialty', 'Spezialisierung')}>{typeof specialty === 'string' ? specialty : 'Komplexe Spezialisierung'}</p>
                             {qualifications?.map((q, i) => <p key={i} className="cursor-pointer hover:bg-primary/10 rounded-sm px-1 -mx-1" onClick={() => onTextClick('qualifications', `Qualifikation ${i + 1}`, i)}>{q}</p>)}
                         </div>
                         
                         <div className="mt-[2.5cqw] cursor-pointer hover:bg-primary/10 rounded-sm p-1 -m-1" onClick={() => onTextClick('additionalInfo', 'Funktion oder Logo')}>
-                            {partnerLogoComponent ? (
+                            {typeof partnerLogoComponent === 'string' && (partnerLogoComponent.startsWith('/images') || partnerLogoComponent.startsWith('data:image')) ? (
                                 <div className="relative flex w-fit justify-start max-w-[432px]">
                                      <Image
                                         src={partnerLogoComponent}

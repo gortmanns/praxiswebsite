@@ -1,16 +1,18 @@
 
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, orderBy } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import type { Doctor } from '@/app/team/_components/doctor-card';
+import type { Doctor as DoctorType } from '@/app/team/_components/doctor-card';
 import { DoctorCard } from '@/app/team/_components/doctor-card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { Separator } from '@/components/ui/separator';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Info, Eye, EyeOff, Pencil, ArrowUp, ArrowDown, PlusCircle, Save } from 'lucide-react';
+import { Info, Eye, EyeOff, Pencil, ArrowUp, ArrowDown, PlusCircle, Save, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TextEditDialog } from './_components/text-edit-dialog';
@@ -32,69 +34,13 @@ import { SchemmerWorniLogo } from '@/components/logos/schemmer-worni-logo';
 import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 import Image from 'next/image';
+import { addDoctor, updateDoctor, deleteDoctor } from '@/firebase/firestore/doctors';
+import { toast } from 'sonner';
+import { Skeleton } from '@/components/ui/skeleton';
 
-const staticDoctorsData: Doctor[] = [
-    {
-        id: 'ortmanns',
-        order: 1,
-        title: "Dipl. med.",
-        name: "G. Ortmanns",
-        imageUrl: "/images/team/Ortmanns.jpg",
-        imageHint: "man portrait",
-        specialty: "Praktischer Arzt",
-        qualifications: ['Master of Public Health (UNSW)', 'Master of Health Management (UNSW)'],
-        vita: `<h4>Curriculum Vitae</h4><ul><li><span style="color: var(--color-tiptap-blue);">2022</span> Niederlassung als Hausarzt im Praxiszentrum im Ring</li><li><span style="color: var(--color-tiptap-blue);">2021-22</span> Tätigkeit in der Hausarztpraxis Dr. G. Gyger, Thun</li><li><span style="color: var(--color-tiptap-blue);">2019-21</span> Oberarzt Innere Medizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2018</span> Oberarzt Innere Medizin, Spital Interlaken</li><li><span style="color: var(--color-tiptap-blue);">2017</span> Assistenzarzt Kardiologie, Inselspital Bern</li><li><span style="color: var(--color-tiptap-blue);">2016-17</span> Assistenzarzt Pneumologie, Inselspital Bern</li><li><span style="color: var(--color-tiptap-blue);">2015-16</span> Assistenzarzt Innere Medizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2015</span> Erlangung des Facharzttitels für Innere Medizin</li><li><span style="color: var(--color-tiptap-blue);">2014-15</span> Assistenzarzt Intensivmedizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2013-14</span> Assistenzarzt Innere Medizin, Spital STS AG Thun</li><li><span style="color: var(--color-tiptap-blue);">2011-13</span> Assistenzarzt Innere Medizin, Spital Interlaken</li><li><span style="color: var(--color-tiptap-blue);">2011</span> Promotion zum Dr. med.</li><li><span style="color: var(--color-tiptap-blue);">2010-11</span> Assistenzarzt Chirurgie, Klinik für Viszerale Chirurgie und Medizin, Inselspital Bern</li><li><span style="color: var(--color-tiptap-blue);">2009</span> Staatsexamen</li><li><span style="color: var(--color-tiptap-blue);">2003-09</span> Studium der Humanmedizin an der Universität zu Köln</li></ul><br><p class="is-small">Mitgliedschaften:<br>Verbindung der Schweizer Ärztinnen und Ärzte (FMH)<br>Ärztegesellschaft des Kantons Bern (BEKAG)<br>Schweizerische Gesellschaft für Ultraschall in der Medizin (SGUM)</p>`,
-        additionalInfo: "Ärztliche und administrative Leitung Praxiszentrum im Ring",
-    },
-    {
-        id: 'schemmer',
-        order: 2,
-        title: "Prof. Dr. med. Dr. h. c.",
-        name: "P. Schemmer",
-        imageUrl: "/images/team/Prof.Schemmer.jpg",
-        imageHint: "man portrait",
-        specialty: "Facharzt für Chirurgie",
-        qualifications: [],
-        vita: `<p>Prof. Schemmer war von 2013 bis 2022 Direktor der Universitätsklinik für Viszerale Transplantationschirurgie am Inselspital in Bern.</p><br><p>Seit 2022 ist er Chefarzt für Chirurgie an der Universitätsklinik für Allgemein-, Viszeral- und Transplantationschirurgie in Graz.</p><br><p>Seine Patienten in der Schweiz behandelt er weiterhin, neu aber wohnortnah und unkompliziert auch hier im Praxiszentrum im Ring, wo er eine regelmässige Sprechstunde abhält.</p>`,
-        partnerLogoComponent: "SchemmerWorniLogo",
-    },
-    {
-        id: 'rosenov',
-        order: 3,
-        title: "Prof. Dr. med.",
-        name: "A. Rosenov",
-        imageUrl: "/images/team/Dr.Rosenov.jpg",
-        imageHint: "man portrait",
-        specialty: "Facharzt für Angiologie",
-        qualifications: [],
-        vita: `<p>Prof. Rosenov hat sich bereit erklärt, ab Mai 2024 die Patienten mit Krampfaderleiden im Praxiszentrum im Ring zu behandeln.</p><br><p>Er wird regelmässig, i.d.R. am Montagnachmittag, eine Sprechstunde im Praxiszentrum anbieten.</p><br><h4>Curriculum Vitae</h4><ul><li><span style="color: var(--color-tiptap-blue);">Seit 2004</span> Chefarzt Herzchirurgie, Spital Triemli, Zürich</li><li><span style="color: var(--color-tiptap-blue);">2002</span> Habilitation und Ernennung zum Privatdozenten an der Universität Ulm</li><li><span style="color: var(--color-tiptap-blue);">1997-2004</span> Oberarzt an der Klinik für Herz-, Thorax- und Gefässchirurgie, Ulm</li><li><span style="color: var(--color-tiptap-blue);">1991-1996</span> Facharztausbildung in der Herzchirurgie an der Medizinischen Hochschule Hannover</li><li><span style="color: var(--color-tiptap-blue);">1990</span> Promotion zum Dr. med.</li><li><span style="color: var(--color-tiptap-blue);">1882-1989</span> Studium der Humanmedizin an der Westfälischen Wilhelms-Universität in Münster</li></ul>`,
-        partnerLogoComponent: "VascAllianceLogo",
-    },
-    {
-        id: 'herschel',
-        order: 4,
-        title: "Dr. med.",
-        name: "R. Herschel",
-        imageUrl: "/images/team/Dr.Herschel.jpg",
-        imageHint: "man portrait",
-        specialty: <span>Facharzt für <span className="whitespace-nowrap">Orthopädische Chirurgie</span> und <span className="whitespace-nowrap">Traumatologie des Bewegungsapparates</span></span>,
-        qualifications: [],
-        vita: `<p>Vita folgt in Kürze.</p>`,
-        partnerLogoComponent: "OrthozentrumLogo",
-    },
-    {
-        id: 'slezak',
-        order: 5,
-        title: "Dr. med.",
-        name: "A. Slezak",
-        imageUrl: "/images/team/Dr.Slezak.jpg",
-        imageHint: "woman portrait",
-        specialty: "Fachärztin für Neurologie",
-        qualifications: [],
-        vita: `<p>Vita folgt in Kürze.</p>`,
-        partnerLogoComponent: "AgnieszkaSlezakLogo",
-    }
-];
+// Re-exporting Doctor type to avoid confusion with Doctor component
+export type Doctor = DoctorType;
+
 
 const allProjectImages = [
   // Team
@@ -136,8 +82,7 @@ const allProjectImages = [
 ];
 const uniqueProjectImages = [...new Set(allProjectImages)];
 
-const createDefaultDoctor = (): Doctor => ({
-    id: 'placeholder',
+const createDefaultDoctor = (): Omit<Doctor, 'id'> => ({
     title: 'Titel',
     name: 'Name',
     specialty: 'Spezialisierung',
@@ -171,10 +116,15 @@ const logoMap: { [key: string]: React.FC<{ className?: string }> } = {
 
 
 export default function DoctorsPage() {
-    const [doctorsList, setDoctorsList] = useState<Doctor[]>(() => staticDoctorsData.sort((a, b) => a.order - b.order));
-    const [doctorInEdit, setDoctorInEdit] = useState<Doctor | null>(null);
+    const firestore = useFirestore();
+    const doctorsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'doctors'), orderBy('order', 'asc')) : null, [firestore]);
+    const { data: doctorsFromDb, isLoading: isLoadingDoctors } = useCollection<Doctor>(doctorsQuery);
+
+    const [doctorsList, setDoctorsList] = useState<Doctor[]>([]);
+    const [doctorInEdit, setDoctorInEdit] = useState<Partial<Doctor> | null>(null);
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
     const [hiddenDoctorIds, setHiddenDoctorIds] = useState<Set<string>>(new Set());
+    const [isSaving, setIsSaving] = useState(false);
     
     // Dialog states
     const [isImageSourceDialogOpen, setImageSourceDialogOpen] = useState(false);
@@ -186,8 +136,20 @@ export default function DoctorsPage() {
     const [isTextEditorOpen, setIsTextEditorOpen] = useState(false);
     const [editingField, setEditingField] = useState<{ key: keyof Doctor; label: string, index?: number } | null>(null);
     const [isLogoFunctionSelectOpen, setLogoFunctionSelectOpen] = useState(false);
+    const [doctorToDelete, setDoctorToDelete] = useState<Doctor | null>(null);
     
-    const displayedDoctorInEdit = doctorInEdit ?? createDefaultDoctor();
+    useEffect(() => {
+        if (doctorsFromDb) {
+            setDoctorsList(doctorsFromDb);
+        }
+    }, [doctorsFromDb]);
+    
+    const displayedDoctorInEdit: Omit<Doctor, 'id'> = useMemo(() => {
+        return {
+            ...(createDefaultDoctor()),
+            ...(doctorInEdit ?? {}),
+        } as Omit<Doctor, 'id'>;
+    }, [doctorInEdit]);
     
     const ensureEditingState = useCallback(() => {
         if (!doctorInEdit) {
@@ -205,30 +167,73 @@ export default function DoctorsPage() {
         setEditingDoctorId(null);
     };
 
-    const handleAddNewDoctor = () => {
-        if (!doctorInEdit) return;
+    const handleAddNewDoctor = async () => {
+        if (!firestore || !doctorInEdit) return;
 
-        const newDoctor: Doctor = {
-            ...doctorInEdit,
-            id: `new-${Date.now()}`,
+        const newDoctorData: Omit<Doctor, 'id'> = {
+            title: doctorInEdit.title || 'Titel',
+            name: doctorInEdit.name || 'Name',
+            specialty: (doctorInEdit.specialty as string) || 'Spezialisierung',
+            qualifications: doctorInEdit.qualifications || [],
+            vita: doctorInEdit.vita || '<p></p>',
+            imageUrl: doctorInEdit.imageUrl || '',
+            imageHint: doctorInEdit.imageHint || 'placeholder',
+            additionalInfo: doctorInEdit.additionalInfo,
+            partnerLogoComponent: doctorInEdit.partnerLogoComponent as string | undefined,
             order: (doctorsList[doctorsList.length - 1]?.order || 0) + 1,
-            imageUrl: doctorInEdit.imageUrl || '', // Ensure imageUrl is at least an empty string
         };
+
+        setIsSaving(true);
+        try {
+            await addDoctor(firestore, newDoctorData);
+            toast.success("Neue Arztkarte wurde erfolgreich angelegt.");
+            handleCancel();
+        } catch (error) {
+            console.error("Error adding doctor: ", error);
+            toast.error("Die Arztkarte konnte nicht angelegt werden.");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleUpdateDoctor = async () => {
+        if (!firestore || !editingDoctorId || !doctorInEdit) return;
         
-        setDoctorsList(prev => [...prev, newDoctor]);
-        handleCancel();
+        const { id, ...updateData } = doctorInEdit;
+        
+        const finalUpdateData = {
+            ...updateData,
+            specialty: typeof updateData.specialty === 'object' ? 'Spezialisierung' : updateData.specialty,
+        };
+
+        setIsSaving(true);
+        try {
+            await updateDoctor(firestore, editingDoctorId, finalUpdateData);
+            toast.success("Die Änderungen wurden erfolgreich gespeichert.");
+            handleCancel();
+        } catch (error) {
+            console.error("Error updating doctor: ", error);
+            toast.error("Die Änderungen konnten nicht gespeichert werden.");
+        } finally {
+            setIsSaving(false);
+        }
     };
 
-    const handleUpdateDoctor = () => {
-        if (!editingDoctorId || !doctorInEdit) return;
+    const handleDeleteDoctor = async () => {
+        if (!firestore || !doctorToDelete) return;
 
-        setDoctorsList(prevList => 
-            prevList.map(doc => 
-                doc.id === editingDoctorId ? doctorInEdit : doc
-            )
-        );
-        handleCancel();
-    };
+        setIsSaving(true);
+        try {
+            await deleteDoctor(firestore, doctorToDelete.id);
+            toast.success(`Die Karte für ${doctorToDelete.name} wurde gelöscht.`);
+            setDoctorToDelete(null);
+        } catch (error) {
+            console.error("Error deleting doctor:", error);
+            toast.error("Fehler beim Löschen der Arztkarte.");
+        } finally {
+            setIsSaving(false);
+        }
+    }
 
     // --- Image Handling ---
     const handleImageClick = useCallback(() => {
@@ -318,7 +323,14 @@ export default function DoctorsPage() {
                  if (editingField.key === 'additionalInfo') {
                     return { ...currentDoctor, additionalInfo: newValue, partnerLogoComponent: undefined };
                 }
-                return { ...currentDoctor, [editingField.key]: newValue };
+                const currentSpecialty = currentDoctor.specialty;
+                const newSpecialty = editingField.key === 'specialty' && typeof currentSpecialty === 'object' ? newValue : currentDoctor.specialty;
+                
+                return { 
+                    ...currentDoctor, 
+                    [editingField.key]: newValue,
+                    ...(editingField.key === 'specialty' && { specialty: newSpecialty })
+                };
             }
         });
     
@@ -332,7 +344,12 @@ export default function DoctorsPage() {
         if (editingField.key === 'qualifications' && editingField.index !== undefined) {
             return (currentDoctor.qualifications || [])[editingField.index] || '';
         }
-        const value = currentDoctor[editingField.key as keyof Doctor] as string;
+        const value = currentDoctor[editingField.key as keyof Omit<Doctor, 'specialty'>] as string;
+        if (editingField.key === 'specialty') {
+            const specialty = currentDoctor.specialty;
+            if (typeof specialty === 'string') return specialty;
+            return 'Komplexe Spezialisierung';
+        }
         return value || '';
     }, [editingField, doctorInEdit]);
 
@@ -395,57 +412,25 @@ export default function DoctorsPage() {
                                 <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Live-Vorschau & Bearbeitung</h3>
                                 <div className="flex gap-2">
                                     {editingDoctorId ? (
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <Button variant="default">
-                                                    <Save className="mr-2 h-4 w-4" />
-                                                    Änderungen speichern
-                                                </Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>Änderungen speichern?</AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                       Möchten Sie die Änderungen an dieser Arztkarte speichern? Die bisherigen Werte werden überschrieben.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>Nein, abbrechen</AlertDialogCancel>
-                                                    <AlertDialogAction onClick={handleUpdateDoctor}>Ja, speichern</AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
+                                        <Button onClick={handleUpdateDoctor} disabled={isSaving}>
+                                            {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                                            Änderungen speichern
+                                        </Button>
                                     ) : (
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <Button variant="default" disabled={!doctorInEdit}>
-                                                    <PlusCircle className="mr-2 h-4 w-4" />
-                                                    Als neue Karte übernehmen
-                                                </Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>Neue Arztkarte anlegen?</AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                       Möchten Sie die aktuellen Eingaben als neue Arztkarte am Ende der Liste hinzufügen?
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>Nein, abbrechen</AlertDialogCancel>
-                                                    <AlertDialogAction onClick={handleAddNewDoctor}>Ja, hinzufügen</AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
+                                        <Button onClick={handleAddNewDoctor} disabled={!doctorInEdit || isSaving}>
+                                            {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <PlusCircle className="mr-2 h-4 w-4" />}
+                                            Als neue Karte übernehmen
+                                        </Button>
                                     )}
                                     
-                                    <Button variant="outline" onClick={handleCancel} disabled={!doctorInEdit && !editingDoctorId}>
+                                    <Button variant="outline" onClick={handleCancel} disabled={(!doctorInEdit && !editingDoctorId) || isSaving}>
                                         Abbrechen
                                     </Button>
                                 </div>
                             </div>
                             <div className="rounded-lg bg-muted p-4 md:p-6">
                                 <EditableDoctorCard 
-                                    doctor={displayedDoctorInEdit}
+                                    doctor={displayedDoctorInEdit as Doctor}
                                     onImageClick={handleImageClick}
                                     onVitaClick={handleVitaClick}
                                     onTextClick={handleTextEditClick}
@@ -470,44 +455,86 @@ export default function DoctorsPage() {
                         </div>
 
                         <div className="mt-8 space-y-12">
-                            {doctorsList.map((doctor) => {
-                                const isEditing = editingDoctorId === doctor.id;
-                                const isHidden = hiddenDoctorIds.has(doctor.id);
-                                const LogoComponent = typeof doctor.partnerLogoComponent === 'string' ? logoMap[doctor.partnerLogoComponent] : doctor.partnerLogoComponent;
-
-                                return (
-                                    <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
-                                        <div className="flex w-36 flex-col gap-2">
-                                            <Button variant="outline" size="sm" onClick={() => {}} disabled={isEditing} className="justify-start">
-                                                <ArrowUp className="mr-2 h-4 w-4" /> Nach oben
-                                            </Button>
-                                            <Button variant="outline" size="sm" onClick={() => {}} disabled={isEditing} className="justify-start">
-                                                <ArrowDown className="mr-2 h-4 w-4" /> Nach unten
-                                            </Button>
-                                             <Separator className="my-2" />
-                                            <Button variant="outline" size="sm" onClick={() => toggleHideDoctor(doctor.id)} disabled={isEditing} className="justify-start">
-                                                {isHidden ? <Eye className="mr-2 h-4 w-4" /> : <EyeOff className="mr-2 h-4 w-4" />}
-                                                {isHidden ? 'Einblenden' : 'Ausblenden'}
-                                            </Button>
-                                            <Button variant="default" size="sm" onClick={() => handleEditClick(doctor)} disabled={isEditing} className="justify-start">
-                                                <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                                            </Button>
-                                        </div>
-
-                                        <div className={cn("relative flex-1 w-full max-w-[1000px] p-2", isHidden && "grayscale opacity-50")}>
-                                            <DoctorCard
-                                              {...doctor}
-                                              partnerLogoComponent={LogoComponent as React.FC<{ className?: string; }> | undefined}
-                                            />
-                                            {isEditing && (
-                                                <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/90">
-                                                    <span className="text-2xl font-bold text-primary-foreground">In Bearbeitung</span>
+                             {isLoadingDoctors ? (
+                                <div className="space-y-12">
+                                    {[...Array(3)].map((_, i) => (
+                                        <div key={i} className="flex w-full items-center justify-center gap-4">
+                                            <div className="flex w-36 flex-col gap-2">
+                                                <Skeleton className="h-9 w-full" />
+                                                <Skeleton className="h-9 w-full" />
+                                                <Separator className="my-2" />
+                                                <Skeleton className="h-9 w-full" />
+                                                <Skeleton className="h-9 w-full" />
+                                            </div>
+                                            <div className="relative flex-1 w-full max-w-[1000px] p-2">
+                                                <div className="w-full aspect-[1000/495] overflow-hidden rounded-lg shadow-sm">
+                                                    <Skeleton className="h-full w-full" />
                                                 </div>
-                                            )}
+                                            </div>
                                         </div>
-                                    </div>
-                                );
-                            })}
+                                    ))}
+                                </div>
+                             ) : (
+                                doctorsList.map((doctor) => {
+                                    const isEditing = editingDoctorId === doctor.id;
+                                    const isHidden = hiddenDoctorIds.has(doctor.id);
+                                    const LogoComponent = typeof doctor.partnerLogoComponent === 'string' ? logoMap[doctor.partnerLogoComponent] : undefined;
+
+                                    return (
+                                        <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
+                                            <div className="flex w-36 flex-col gap-2">
+                                                <Button variant="outline" size="sm" onClick={() => {}} disabled={isEditing || isSaving} className="justify-start">
+                                                    <ArrowUp className="mr-2 h-4 w-4" /> Nach oben
+                                                </Button>
+                                                <Button variant="outline" size="sm" onClick={() => {}} disabled={isEditing || isSaving} className="justify-start">
+                                                    <ArrowDown className="mr-2 h-4 w-4" /> Nach unten
+                                                </Button>
+                                                <Separator className="my-2" />
+                                                <Button variant="outline" size="sm" onClick={() => toggleHideDoctor(doctor.id)} disabled={isEditing || isSaving} className="justify-start">
+                                                    {isHidden ? <Eye className="mr-2 h-4 w-4" /> : <EyeOff className="mr-2 h-4 w-4" />}
+                                                    {isHidden ? 'Einblenden' : 'Ausblenden'}
+                                                </Button>
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <Button variant="destructive" size="sm" disabled={isEditing || isSaving} className="justify-start">
+                                                            <Trash2 className="mr-2 h-4 w-4" /> Löschen
+                                                        </Button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>Arztkarte löschen?</AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                Möchten Sie die Karte für {doctor.name} wirklich endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                                                            <AlertDialogAction onClick={() => handleDeleteDoctor()} disabled={isSaving}>
+                                                                {isSaving ? "Wird gelöscht..." : "Ja, löschen"}
+                                                            </AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+                                                <Button variant="default" size="sm" onClick={() => handleEditClick(doctor)} disabled={isEditing || isSaving} className="justify-start">
+                                                    <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                                                </Button>
+                                            </div>
+
+                                            <div className={cn("relative flex-1 w-full max-w-[1000px] p-2", isHidden && "grayscale opacity-50")}>
+                                                <DoctorCard
+                                                {...doctor}
+                                                partnerLogoComponent={LogoComponent as React.FC<{ className?: string; }> | string | undefined}
+                                                />
+                                                {isEditing && (
+                                                    <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/90">
+                                                        <span className="text-2xl font-bold text-primary-foreground">Wird bearbeitet</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            )}
                         </div>
                     </CardContent>
                 </Card>
@@ -534,12 +561,14 @@ export default function DoctorsPage() {
                 images={uniqueProjectImages}
                 onImageSelect={handleImageSelectedFromLibrary}
             />
-            <VitaEditorDialog
-                isOpen={isVitaEditorOpen}
-                onOpenChange={setVitaEditorOpen}
-                initialValue={displayedDoctorInEdit.vita}
-                onSave={handleVitaSave}
-            />
+            {isVitaEditorOpen && (
+                <VitaEditorDialog
+                    isOpen={isVitaEditorOpen}
+                    onOpenChange={setVitaEditorOpen}
+                    initialValue={displayedDoctorInEdit.vita as string}
+                    onSave={handleVitaSave}
+                />
+            )}
             {editingField && (
                 <TextEditDialog
                     isOpen={isTextEditorOpen}
@@ -557,6 +586,26 @@ export default function DoctorsPage() {
                 onSelectFromLibrary={handleSelectLogoFromLibrary}
                 onUploadNew={handleUploadNewLogo}
             />
+             {doctorToDelete && (
+                <AlertDialog open={!!doctorToDelete} onOpenChange={(open) => !open && setDoctorToDelete(null)}>
+                     <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Arztkarte löschen?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Möchten Sie die Karte für {doctorToDelete.name} wirklich endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel onClick={() => setDoctorToDelete(null)} disabled={isSaving}>Abbrechen</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleDeleteDoctor} disabled={isSaving}>
+                                {isSaving ? "Wird gelöscht..." : "Ja, löschen"}
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            )}
         </>
     );
 }
+
+    

@@ -1,5 +1,5 @@
 
-.tiptap p,
+
 .vita-content p {
     margin: 0;
 }
@@ -35,14 +35,11 @@
     font-weight: normal;
 }
 
-/* Fix for list marker colors inside the editor */
 .tiptap ul > li::marker,
 .tiptap ol > li::marker {
     color: hsl(var(--background));
 }
 
-
-/* Define custom colors as CSS variables for easy management */
 :root {
     --color-tiptap-white: hsl(var(--background));
     --color-tiptap-blue: hsl(var(--primary));
@@ -51,21 +48,26 @@
 
 .tiptap strong,
 .vita-content strong {
-    color: inherit; /* Inherit color so it doesn't override span colors */
+    color: inherit;
     font-weight: bold;
+}
+
+.tiptap span[style*="color"],
+.vita-content span[style*="color"] {
+  color: var(--custom-color, inherit);
 }
 
 .tiptap span[style*="color: var(--color-tiptap-white)"],
 .vita-content span[style*="color: var(--color-tiptap-white)"] {
-    color: var(--color-tiptap-white);
+    --custom-color: var(--color-tiptap-white);
 }
 
 .tiptap span[style*="color: var(--color-tiptap-blue)"],
 .vita-content span[style*="color: var(--color-tiptap-blue)"] {
-    color: var(--color-tiptap-blue) !important; /* Use !important to ensure override */
+    --custom-color: var(--color-tiptap-blue);
 }
 
 .tiptap span[style*="color: var(--color-tiptap-gray)"],
 .vita-content span[style*="color: var(--color-tiptap-gray)"] {
-    color: var(--color-tiptap-gray);
+    --custom-color: var(--color-tiptap-gray);
 }

@@ -1,4 +1,3 @@
-
 'use client'
 
 import Image from 'next/image';
@@ -19,7 +18,6 @@ export interface Doctor {
     vita: string;
     additionalInfo?: string;
     partnerLogoComponent?: React.FC<{className?: string}> | string;
-    children?: React.ReactNode;
 }
 
 
@@ -53,8 +51,7 @@ export const DoctorCard: React.FC<Doctor> = ({
     qualifications,
     vita,
     additionalInfo,
-    partnerLogoComponent: LogoComponent,
-    children
+    partnerLogoComponent: LogoComponent
 }) => {
 
     return (
@@ -95,11 +92,7 @@ export const DoctorCard: React.FC<Doctor> = ({
                                     </div>
                                     
                                      <div className="mt-[2.5cqw]">
-                                        {children ? (
-                                            <div className="relative flex h-auto max-h-28 w-full max-w-[400px] items-center justify-start">
-                                                {children}
-                                            </div>
-                                        ) : LogoComponent ? (
+                                        {LogoComponent ? (
                                              <div className="relative flex h-auto max-h-28 w-full max-w-[400px] items-center justify-start">
                                                 {typeof LogoComponent === 'function' ? (
                                                     <LogoComponent className="h-full w-full object-contain object-left" />
@@ -127,3 +120,5 @@ export const DoctorCard: React.FC<Doctor> = ({
         </div>
     );
 };
+
+    

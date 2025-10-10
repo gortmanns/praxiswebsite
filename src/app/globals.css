@@ -50,6 +50,7 @@
   body {
     @apply text-foreground;
   }
+  
 }
 
 .nav-link-indicator {

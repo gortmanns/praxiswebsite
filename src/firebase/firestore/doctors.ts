@@ -14,8 +14,8 @@ import {
 import { getStorage, ref, uploadString, getDownloadURL, deleteObject } from "firebase/storage";
 import type { Doctor } from '@/app/team/_components/doctor-card';
 
-// Use Omit to create a type for new doctor data, excluding the 'id'
-export type DoctorData = Omit<Doctor, 'id'>;
+// Use Omit to create a type for new doctor data, excluding the 'id' and making specialty a string
+export type DoctorData = Omit<Doctor, 'id' | 'specialty'> & { specialty: string };
 
 // Function to upload an image if it's a data URL and return the storage URL
 async function uploadImage(storage: any, imageUrl: string, doctorId: string): Promise<string> {
@@ -34,19 +34,27 @@ export async function addDoctor(firestore: Firestore, doctorData: DoctorData) {
     const storage = getStorage(firestore.app);
     
     // Temporarily add a document to get an ID
-    const newDoctorRef = doc(collection(firestore, 'doctors'));
-    const doctorId = newDoctorRef.id;
+    const tempDocRef = doc(collection(firestore, 'doctors'));
+    const doctorId = tempDocRef.id;
 
     let finalImageUrl = doctorData.imageUrl;
     if (doctorData.imageUrl) {
         finalImageUrl = await uploadImage(storage, doctorData.imageUrl, doctorId);
     }
 
+    let finalPartnerLogoUrl = doctorData.partnerLogoComponent;
+    if (typeof finalPartnerLogoUrl === 'string' && finalPartnerLogoUrl.startsWith('data:image')) {
+        finalPartnerLogoUrl = await uploadImage(storage, finalPartnerLogoUrl, `${doctorId}-logo`);
+    }
+
     const finalDoctorData = {
         ...doctorData,
         imageUrl: finalImageUrl,
+        partnerLogoComponent: finalPartnerLogoUrl,
+        createdAt: serverTimestamp(),
     };
     
+    // Use the ID to set the document, ensuring we know the ID from the start
     await addDoc(collection(firestore, 'doctors'), finalDoctorData);
 }
 
@@ -55,30 +63,41 @@ export async function updateDoctor(firestore: Firestore, id: string, data: Parti
     const storage = getStorage(firestore.app);
     const doctorRef = doc(firestore, 'doctors', id);
 
-    let updateData = { ...data };
+    let updateData = { ...data, updatedAt: serverTimestamp() };
+    const oldDocSnap = await getDoc(doctorRef);
+    const oldData = oldDocSnap.data() as Doctor;
 
-    // Handle image upload if a new image data URL is provided
+    // Handle portrait image upload
     if (data.imageUrl && data.imageUrl.startsWith('data:image')) {
-        const oldDoc = await getDoc(doctorRef);
-        const oldData = oldDoc.data() as Doctor;
-        
-        // Delete old image if it exists
-        if (oldData?.imageUrl) {
+        if (oldData?.imageUrl && oldData.imageUrl.includes('firebasestorage')) {
             try {
                 const oldImageRef = ref(storage, oldData.imageUrl);
                 await deleteObject(oldImageRef);
             } catch (error: any) {
-                if (error.code !== 'storage/object-not-found') {
-                    console.warn("Could not delete old image, may not exist:", error);
-                }
+                if (error.code !== 'storage/object-not-found') console.warn("Old portrait not found:", error);
             }
         }
-
         updateData.imageUrl = await uploadImage(storage, data.imageUrl, id);
     }
-    
+
+    // Handle logo image upload
+    const logoComp = data.partnerLogoComponent;
+    if (typeof logoComp === 'string' && logoComp.startsWith('data:image')) {
+        const oldLogo = oldData?.partnerLogoComponent;
+        if (typeof oldLogo === 'string' && oldLogo.includes('firebasestorage')) {
+             try {
+                const oldLogoRef = ref(storage, oldLogo);
+                await deleteObject(oldLogoRef);
+            } catch (error: any) {
+                if (error.code !== 'storage/object-not-found') console.warn("Old logo not found:", error);
+            }
+        }
+        updateData.partnerLogoComponent = await uploadImage(storage, logoComp, `${id}-logo`);
+    }
+
     return await updateDoc(doctorRef, updateData);
 }
+
 
 // Delete a doctor document and their image from storage
 export async function deleteDoctor(firestore: Firestore, id: string) {
@@ -89,14 +108,24 @@ export async function deleteDoctor(firestore: Firestore, id: string) {
     const docSnap = await getDoc(doctorRef);
     if (docSnap.exists()) {
         const doctorData = docSnap.data() as Doctor;
-        if (doctorData.imageUrl) {
+        if (doctorData.imageUrl && doctorData.imageUrl.includes('firebasestorage')) {
             try {
                 const imageRef = ref(storage, doctorData.imageUrl);
                 await deleteObject(imageRef);
             } catch (error: any) {
                  if (error.code !== 'storage/object-not-found') {
                     console.error("Error deleting doctor image:", error);
-                    // Decide if you want to proceed with deleting the document even if image deletion fails
+                 }
+            }
+        }
+        const logo = doctorData.partnerLogoComponent;
+        if (typeof logo === 'string' && logo.includes('firebasestorage')) {
+            try {
+                const logoRef = ref(storage, logo);
+                await deleteObject(logoRef);
+            } catch (error: any) {
+                 if (error.code !== 'storage/object-not-found') {
+                    console.error("Error deleting logo image:", error);
                  }
             }
         }
