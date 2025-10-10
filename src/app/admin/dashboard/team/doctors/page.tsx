@@ -39,7 +39,7 @@ const staticDoctorsData: Doctor[] = [
     rosenovProps,
     herschelProps,
     slezakProps,
-].map(props => props as Doctor);
+].map(props => props as Doctor).sort((a, b) => a.order - b.order);
 
 
 const allProjectImages = [
@@ -72,9 +72,9 @@ const allProjectImages = [
   "/images/leistungen/praxisapotheke.jpg",
   "/images/leistungen/roentgen.jpg",
   "/images/leistungen/spirometrie.jpg",
+  "/images/leistungen/wundversorgung.jpg",
   "/images/leistungen/twint_logo.png",
   "/images/leistungen/VMU.png",
-  "/images/leistungen/wundversorgung.jpg",
   // Sonstige
   "/images/luftbild.jpg",
   "/images/foto-medis.jpg",
@@ -114,30 +114,31 @@ export default function DoctorsPage() {
     }, [firestore]);
     const { data: dbDoctors, isLoading: areDoctorsLoading, error: doctorsError } = useCollection<Doctor>(doctorsQuery);
     
-    const [doctorsList, setDoctorsList] = useState<Doctor[]>([]);
+    const [doctorsList, setDoctorsList] = useState<Doctor[]>(() => staticDoctorsData);
     
     useEffect(() => {
-        // Start with static data, then merge with db data
-        const staticDataMap = new Map(staticDoctorsData.map(d => [d.id, d]));
-        
         if (dbDoctors) {
+            const staticDataMap = new Map(staticDoctorsData.map(d => [d.id, d]));
             const dbDataMap = new Map(dbDoctors.map(d => [d.id, d]));
+            
             const mergedList = Array.from(staticDataMap.keys()).map(id => {
                 return dbDataMap.get(id) || staticDataMap.get(id);
             }) as Doctor[];
 
-            // Add any doctors that are in DB but not in static data
             dbDoctors.forEach(dbDoc => {
                 if (!staticDataMap.has(dbDoc.id)) {
                     mergedList.push(dbDoc);
                 }
             });
+
+            const sortedList = mergedList.sort((a,b) => a.order - b.order);
             
-            setDoctorsList(mergedList.sort((a,b) => a.order - b.order));
-        } else if (!areDoctorsLoading) {
-            setDoctorsList(staticDoctorsData.sort((a,b) => a.order - b.order));
+            // Prevent infinite loop by only setting state if the data has actually changed.
+            if (JSON.stringify(sortedList) !== JSON.stringify(doctorsList)) {
+                 setDoctorsList(sortedList);
+            }
         }
-    }, [dbDoctors, areDoctorsLoading]);
+    }, [dbDoctors, doctorsList]);
 
 
     const [doctorInEdit, setDoctorInEdit] = useState<Partial<Doctor> | null>(null);
@@ -655,3 +656,5 @@ export default function DoctorsPage() {
         </>
     );
 }
+
+    
