@@ -1,67 +1,61 @@
 /**
- * @fileoverview Firestore Security Rules for Praxis Online application.
+ * @fileoverview Firestore Security Rules for Praxis Online.
  *
  * Core Philosophy:
- * This ruleset provides basic security for the Praxis Online application.
- * Doctor profiles are publicly readable, while contact form submissions and symptom checks are restricted to prevent unauthorized access.
+ * This ruleset provides a baseline security configuration, focusing on segregation of data.
+ * It grants public read access to doctor profiles while restricting write access to contact form submissions.
+ * The symptom_checks collection has open access for all operations.
  *
  * Data Structure:
- * The data is organized into three top-level collections:
- *   - /doctor_profiles/{doctorProfileId}
- *   - /contact_form_submissions/{contactFormSubmissionId}
- *   - /symptom_checks/{symptomCheckId}
+ * - /doctor_profiles/{doctorProfileId}: Stores publicly readable doctor profile data.
+ * - /contact_form_submissions/{contactFormSubmissionId}: Stores contact form submissions with restricted write access.
+ * - /symptom_checks/{symptomCheckId}: Stores symptom check records with open access for all operations.
  *
  * Key Security Decisions:
- * - Doctor profiles are publicly readable (get, list).
- * - Contact form submissions and symptom checks are not readable or writeable by default (admin access implied).
- * - No data validation is performed in this prototyping phase.
+ * - Doctor profiles are publicly readable to allow open access to doctor information.
+ * - Contact form submissions are locked down to prevent unauthorized data modification.
+ * - Symptom checks are openly accessible for simplicity in this initial setup.
+ * - Data shape validation is not implemented in this prototype, focusing on access control.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows anyone to read doctor profiles, but restricts all write operations.
+     * @description Grants public read access to doctor profiles and restricts write access.
      * @path /doctor_profiles/{doctorProfileId}
-     * @allow (get, list) Allows any user to read doctor profiles.
-     * @deny (create, update, delete) Denies any user to create, update, or delete doctor profiles.
-     * @principle Public read access with no write access.
+     * @allow (get, list) Public access to read doctor profiles.
+     * @allow (create, update, delete) No one, writes are disallowed.
+     * @deny (create) Anyone, since writes are disallowed.
+     * @principle Allows public read access for doctor profiles while restricting write access.
      */
     match /doctor_profiles/{doctorProfileId} {
       allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Restricts access to contact form submissions. No read or write operations are allowed.
+     * @description Restricts read and write access to contact form submissions.
      * @path /contact_form_submissions/{contactFormSubmissionId}
-     * @allow None. No operations are allowed.
-     * @deny (get, list, create, update, delete) Denies any operation on contact form submissions.
-     * @principle No public access to contact form submissions.
+     * @allow (get, list) No one, reads are disallowed.
+     * @allow (create, update, delete) No one, writes are disallowed.
+     * @deny (create) Anyone, since writes are disallowed.
+     * @principle Denies all read and write access to contact form submissions.
      */
     match /contact_form_submissions/{contactFormSubmissionId} {
-      allow get: if false;
-      allow list: if false;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+      allow get, list: if false;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Restricts access to symptom checks. No read or write operations are allowed.
+     * @description Grants open access to symptom check records for all operations.
      * @path /symptom_checks/{symptomCheckId}
-     * @allow None. No operations are allowed.
-     * @deny (get, list, create, update, delete) Denies any operation on symptom checks.
-     * @principle No public access to symptom checks.
+     * @allow (get, list, create, update, delete) Everyone can read, write, update, and delete.
+     * @deny None, all operations are allowed.
+     * @principle Allows open access to symptom check records.
      */
     match /symptom_checks/{symptomCheckId} {
-      allow get: if false;
-      allow list: if false;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+      allow get, list, create, update, delete: if true;
     }
   }
 }
