@@ -91,17 +91,30 @@ export default function DoctorsPage() {
     const { data: dbDoctors, isLoading: areDoctorsLoading } = useCollection<Doctor>(doctorsQuery);
     
     const doctorsList = useMemo(() => {
-        const dbDataMap = new Map(dbDoctors?.map(d => [d.id, d]));
+        if (!dbDoctors) {
+            return staticDoctorsData;
+        }
         
-        return staticDoctorsData.map(staticDoctor => {
+        const dbDataMap = new Map(dbDoctors.map(d => [d.id, d]));
+        
+        const combinedList = staticDoctorsData.map(staticDoctor => {
             const dbData = dbDataMap.get(staticDoctor.id);
             if (dbData) {
-                // If data exists in DB, use it, but keep static metadata
+                // If data exists in DB, merge it with static data, prioritizing DB data
                 return { ...staticDoctor, ...dbData };
             }
             // Otherwise, use the full static data
             return staticDoctor;
-        }).sort((a, b) => a.order - b.order);
+        });
+
+        // Add any doctors that are in the DB but not in the static list
+        dbDoctors.forEach(dbDoctor => {
+            if (!staticDoctorsData.some(sd => sd.id === dbDoctor.id)) {
+                combinedList.push(dbDoctor);
+            }
+        });
+
+        return combinedList.sort((a, b) => a.order - b.order);
 
     }, [dbDoctors]);
     
@@ -279,10 +292,12 @@ export default function DoctorsPage() {
                             </div>
                             {editingDoctor ? (
                                 <div className="rounded-lg bg-muted p-4 md:p-6">
-                                    <EditableDoctorCard 
-                                        doctor={editingDoctor}
-                                        onVitaClick={handleVitaClick}
-                                    />
+                                    <div className="mx-auto w-full max-w-[1000px] p-2">
+                                        <EditableDoctorCard 
+                                            doctor={editingDoctor}
+                                            onVitaClick={handleVitaClick}
+                                        />
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted p-12 text-center">
