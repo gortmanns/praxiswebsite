@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirestore, useUser } from '@/firebase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Doctor as DoctorType } from '@/app/team/_components/doctor-card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
@@ -23,11 +23,37 @@ import Image from 'next/image';
 import { addDoctor, updateDoctor } from '@/firebase/firestore/doctors';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DoctorCard } from '@/app/team/_components/doctor-card';
-import { collection, query, orderBy } from 'firebase/firestore';
 import { toast } from 'sonner';
 
-// Re-exporting Doctor type to avoid confusion with Doctor component
+// Import individual doctor cards for static data
+import { OrtmannsCard } from '@/app/team/_components/doctors/ortmanns-card';
+import { SchemmerCard } from '@/app/team/_components/doctors/schemmer-card';
+import { RosenovCard } from '@/app/team/_components/doctors/rosenov-card';
+import { HerschelCard } from '@/app/team/_components/doctors/herschel-card';
+import { SlezakCard } from '@/app/team/_components/doctors/slezak-card';
+
+
 export type Doctor = DoctorType;
+
+// Wrapper to get props from static card components
+const DoctorDataExtractor: React.FC<{ children: React.ReactElement }> = ({ children }) => {
+    // This component will not render anything, it's just to extract props.
+    return null;
+};
+
+// This function extracts the props from the static card components
+const getStaticDoctorData = (): Doctor[] => {
+    const staticCards = [
+        <OrtmannsCard />,
+        <SchemmerCard />,
+        <RosenovCard />,
+        <HerschelCard />,
+        <SlezakCard />,
+    ];
+    return staticCards.map(card => card.props as Doctor);
+};
+
+const staticDoctorsData = getStaticDoctorData();
 
 
 const allProjectImages = [
@@ -95,13 +121,18 @@ const logoMap: { [key: string]: React.FC<{ className?: string }> } = {
 export default function DoctorsPage() {
     const firestore = useFirestore();
     const { user, isUserLoading } = useUser();
-
+    
+    // For now, we will work with the static data.
+    // The Firestore `useCollection` hook is commented out until we want to switch to live data.
+    /*
     const doctorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
         return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
     }, [firestore]);
-    
     const { data: dbDoctors, isLoading: areDoctorsLoading, error: doctorsError } = useCollection<Doctor>(doctorsQuery);
+    */
+    const areDoctorsLoading = false; // Mock loading state
+    const doctorsError = null; // Mock error state
     
     useEffect(() => {
         if (doctorsError) {
@@ -111,13 +142,14 @@ export default function DoctorsPage() {
         }
     }, [doctorsError]);
     
-    const [doctorsList, setDoctorsList] = useState<Doctor[]>([]);
+    const [doctorsList, setDoctorsList] = useState<Doctor[]>(staticDoctorsData);
     
     useEffect(() => {
-        if (dbDoctors) {
-            setDoctorsList(dbDoctors as Doctor[]);
-        }
-    }, [dbDoctors]);
+        // This will be used when we switch to dbDoctors
+        // if (dbDoctors) {
+        //     setDoctorsList(dbDoctors as Doctor[]);
+        // }
+    }, [/*dbDoctors*/]);
 
 
     const [doctorInEdit, setDoctorInEdit] = useState<Partial<Doctor> | null>(null);
@@ -178,15 +210,24 @@ export default function DoctorsPage() {
     
     const handleSave = async () => {
         if (!firestore || !doctorInEdit || !user) {
-            setStatus({ type: 'error', message: 'Benutzer nicht authentifiziert oder Datenbank nicht bereit.' });
+            toast.error('Speichern fehlgeschlagen', {
+                description: 'Benutzer nicht authentifiziert oder Datenbank nicht bereit.'
+            });
             return;
         };
+
+        if (!doctorInEdit.name || doctorInEdit.name.trim() === '' || doctorInEdit.name === 'Name') {
+            toast.error('Speichern nicht möglich', {
+                description: 'Bitte geben Sie einen Namen für den Arzt an, bevor Sie speichern.'
+            });
+            return;
+        }
         
         const isUpdatingExistingDBEntry = !!editingDoctorId;
     
         const saveData = {
             title: doctorInEdit.title || 'Titel',
-            name: doctorInEdit.name || 'Name',
+            name: doctorInEdit.name,
             specialty: typeof doctorInEdit.specialty === 'object' ? 'Spezialisierung' : doctorInEdit.specialty || 'Spezialisierung',
             qualifications: doctorInEdit.qualifications || [],
             vita: doctorInEdit.vita || '<p></p>',
@@ -210,8 +251,15 @@ export default function DoctorsPage() {
                  toast.success(`Arztprofil für ${saveData.name} erfolgreich erstellt.`);
             }
             
-            // The useCollection hook will automatically update the list.
-            // No manual state update needed here.
+            // The useCollection hook will automatically update the list if we use it.
+            // For now, we'll manually update our static list for visual feedback.
+            if (isUpdatingExistingDBEntry) {
+                setDoctorsList(prev => prev.map(d => d.id === editingDoctorId ? { ...d, ...doctorInEdit } : d));
+            } else {
+                 // In a real DB scenario, we'd get a new ID. For static, we fake it.
+                 const newDoctor = { ...doctorInEdit, id: `new-${Date.now()}` } as Doctor;
+                 setDoctorsList(prev => [...prev, newDoctor]);
+            }
             
             handleCancel();
 
@@ -314,7 +362,6 @@ export default function DoctorsPage() {
             } else if (editingField.key === 'additionalInfo') {
                 return { ...currentDoctor, additionalInfo: newValue, partnerLogoComponent: undefined };
             } else if (editingField.key === 'specialty' && typeof currentDoctor.specialty !== 'string') {
-                // Cannot update complex specialty node, do nothing or handle as needed
                 return currentDoctor;
             } else {
                 return { ...currentDoctor, [editingField.key]: newValue };
@@ -434,7 +481,6 @@ export default function DoctorsPage() {
                 alertClasses = "border-blue-500 text-blue-800 bg-blue-50";
                 break;
             case 'success':
-                 // Already default
                 break;
         }
         
@@ -532,7 +578,12 @@ export default function DoctorsPage() {
                                 doctorsList.map((doctor) => {
                                     const isEditing = editingDoctorId === doctor.id;
                                     const isHidden = hiddenDoctorIds.has(doctor.id);
-                                    const LogoComponent = typeof doctor.partnerLogoComponent === 'string' ? logoMap[doctor.partnerLogoComponent] : undefined;
+                                    
+                                    // The existing cards have React components, not strings. We handle this.
+                                    let partnerLogo: React.FC<{ className?: string; }> | string | undefined = doctor.partnerLogoComponent;
+                                    if (typeof partnerLogo === 'string' && logoMap[partnerLogo]) {
+                                       partnerLogo = logoMap[partnerLogo];
+                                    }
 
                                     return (
                                         <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
@@ -555,15 +606,8 @@ export default function DoctorsPage() {
 
                                             <div className={cn("relative flex-1 w-full max-w-[1000px] p-2", isHidden && "grayscale opacity-50")}>
                                                 <DoctorCard
-                                                {...doctor}
-                                                specialty={typeof doctor.specialty === 'string' ? doctor.specialty : (
-                                                    <div>
-                                                      <span>Facharzt Orthopädische Chirurgie und</span>
-                                                      <br />
-                                                      <span>Traumatologie des Bewegungsapparates</span>
-                                                    </div>
-                                                  )}
-                                                partnerLogoComponent={LogoComponent as React.FC<{ className?: string; }> | string | undefined}
+                                                    {...doctor}
+                                                    partnerLogoComponent={partnerLogo}
                                                 />
                                                 {isEditing && (
                                                     <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/90">
