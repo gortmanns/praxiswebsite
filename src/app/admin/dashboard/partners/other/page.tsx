@@ -11,9 +11,7 @@ const initialPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     name: "Neuer Partner",
     websiteUrl: "https://example.com",
     logoUrl: "https://picsum.photos/seed/otherpartner/400/130",
-    width: 400,
-    height: 130,
-    hint: "partner logo",
+    openInNewTab: true,
     hidden: false,
 };
 

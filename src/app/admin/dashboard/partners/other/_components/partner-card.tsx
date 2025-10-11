@@ -12,18 +12,19 @@ export interface Partner {
     name: string;
     websiteUrl: string;
     logoUrl: string;
-    hint?: string;
-    width?: number;
-    height?: number;
+    openInNewTab?: boolean;
     hidden?: boolean;
 }
 
 export const PartnerCard: React.FC<Partner> = (props) => {
+    const target = props.openInNewTab ? '_blank' : '_self';
+    const rel = props.openInNewTab ? 'noopener noreferrer' : undefined;
+
     return (
         <Link
           href={props.websiteUrl || '#'}
-          target={props.websiteUrl === '#' ? '_self' : '_blank'}
-          rel="noopener noreferrer"
+          target={target}
+          rel={rel}
           className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           <Card className="flex h-full w-full items-center bg-card p-6">
@@ -33,10 +34,9 @@ export const PartnerCard: React.FC<Partner> = (props) => {
                         <Image
                             src={props.logoUrl}
                             alt={`${props.name} Logo`}
-                            width={props.width || 200}
-                            height={props.height || 60}
+                            width={400}
+                            height={225}
                             className="object-contain"
-                            data-ai-hint={props.hint}
                             style={props.name === 'Go-Medical' ? { position: 'relative', top: '10px' } : {}}
                         />
                     </div>
