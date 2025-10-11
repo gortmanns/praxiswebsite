@@ -71,13 +71,13 @@ export function CooperationPartnersSection() {
         <div className="mt-12 flex flex-wrap justify-center gap-8">
           {isLoadingMedical ? (
             Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="w-full basis-full sm:basis-[45%] lg:basis-[22%]">
+              <div key={index} className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
                 <Skeleton className="h-32 w-full rounded-lg" />
               </div>
             ))
           ) : (
             visibleMedicalPartners.map(partner => (
-                <div key={partner.id} className="w-full basis-full sm:basis-[45%] lg:basis-[22%]">
+                <div key={partner.id} className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
                   <Link
                     href={partner.websiteUrl || '#'}
                     target={partner.websiteUrl === '#' ? '_self' : '_blank'}
