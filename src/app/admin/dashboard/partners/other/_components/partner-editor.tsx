@@ -71,8 +71,8 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                         </h2>
                         
                         <div className="mt-12 flex flex-col items-center justify-center gap-8">
-                            {/* Scale Slider */}
-                            <div className="w-full max-w-lg space-y-2">
+                             {/* Scale Slider */}
+                            <div className="w-full max-w-md space-y-2 text-center">
                                 <Label htmlFor="logoScale" className="text-primary-foreground">Grösse des Logos ({cardData.logoScale || 100}%)</Label>
                                 <Slider
                                     id="logoScale"
@@ -84,51 +84,14 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                                 />
                             </div>
 
-                            {/* Partner Card Preview */}
-                             <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
-                                <Link
-                                    href={cardData.websiteUrl || '#'}
-                                    target={cardData.openInNewTab ? '_blank' : '_self'}
-                                    rel="noopener noreferrer"
-                                    className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                                    onClick={(e) => e.preventDefault()}
-                                >
-                                    <Card className="flex h-full w-full items-center justify-center p-2">
-                                        <CardContent className="relative flex w-full h-full items-center justify-center p-0 overflow-hidden">
-                                           {cardData.logoUrl ? (
-                                                <Image
-                                                    src={cardData.logoUrl}
-                                                    alt={`${cardData.name} Logo`}
-                                                    fill
-                                                    className="object-contain"
-                                                    style={{
-                                                        transform: `scale(${ (cardData.logoScale || 100) / 100}) translate(${cardData.logoX || 0}px, ${cardData.logoY || 0}px)`,
-                                                        transformOrigin: 'center center',
-                                                    }}
-                                                />
-                                           ) : (
-                                            <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground">Kein Logo</div>
-                                           )}
-                                        </CardContent>
-                                    </Card>
-                                </Link>
-                            </div>
-                            
-                            {/* Position Sliders */}
-                            <div className="flex w-full max-w-lg items-center justify-center gap-4">
-                                <div className="w-full space-y-2">
-                                    <Label htmlFor="logoX" className="text-primary-foreground">Horizontale Position ({cardData.logoX || 0}px)</Label>
-                                    <Slider
-                                        id="logoX"
-                                        min={-100}
-                                        max={100}
-                                        step={1}
-                                        value={[cardData.logoX || 0]}
-                                        onValueChange={(value) => handleInputChange('logoX', value[0])}
-                                    />
+                            <div className="grid grid-cols-[1fr_auto] items-center gap-x-4 w-full justify-center">
+                                {/* Horizontal Position Slider (below card) */}
+                                <div className="space-y-2 text-center col-start-1">
+                                    {/* Empty div for spacing, will be filled by card */}
                                 </div>
-                                <div className="flex h-full flex-col items-center space-y-2">
-                                    <Label htmlFor="logoY" className="text-primary-foreground [writing-mode:vertical-rl] transform rotate-180">Vertikal ({cardData.logoY || 0}px)</Label>
+
+                                {/* Vertical Position Slider (right of card) */}
+                                <div className="flex flex-row items-center justify-start gap-4 col-start-2 row-start-1">
                                     <Slider
                                         id="logoY"
                                         orientation="vertical"
@@ -140,7 +103,55 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                                         onValueChange={(value) => handleInputChange('logoY', value[0])}
                                         className="h-32"
                                     />
+                                    <div className="w-24 text-left">
+                                        <Label htmlFor="logoY" className="text-primary-foreground text-sm">
+                                            Vertikale Position ({cardData.logoY || 0}px)
+                                        </Label>
+                                    </div>
                                 </div>
+                                
+                                {/* Partner Card Preview */}
+                                <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%] min-w-48 justify-self-center col-start-1 row-start-1">
+                                    <Link
+                                        href={cardData.websiteUrl || '#'}
+                                        target={cardData.openInNewTab ? '_blank' : '_self'}
+                                        rel="noopener noreferrer"
+                                        className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                        onClick={(e) => e.preventDefault()}
+                                    >
+                                        <Card className="flex h-full w-full items-center justify-center p-2">
+                                            <CardContent className="relative flex w-full h-full items-center justify-center p-0 overflow-hidden">
+                                            {cardData.logoUrl ? (
+                                                    <Image
+                                                        src={cardData.logoUrl}
+                                                        alt={`${cardData.name} Logo`}
+                                                        fill
+                                                        className="object-contain"
+                                                        style={{
+                                                            transform: `scale(${ (cardData.logoScale || 100) / 100}) translate(${cardData.logoX || 0}px, ${cardData.logoY || 0}px)`,
+                                                            transformOrigin: 'center center',
+                                                        }}
+                                                    />
+                                            ) : (
+                                                <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground">Kein Logo</div>
+                                            )}
+                                            </CardContent>
+                                        </Card>
+                                    </Link>
+                                </div>
+                            </div>
+                             
+                            {/* Horizontal Slider below everything */}
+                            <div className="w-full max-w-xs space-y-2 text-center">
+                                <Slider
+                                    id="logoX"
+                                    min={-100}
+                                    max={100}
+                                    step={1}
+                                    value={[cardData.logoX || 0]}
+                                    onValueChange={(value) => handleInputChange('logoX', value[0])}
+                                />
+                                <Label htmlFor="logoX" className="text-primary-foreground pt-2 inline-block">Horizontale Position ({cardData.logoX || 0}px)</Label>
                             </div>
                         </div>
                     </div>
