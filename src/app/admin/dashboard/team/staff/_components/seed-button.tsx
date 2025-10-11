@@ -3,11 +3,58 @@
 
 import React from 'react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { collection, writeBatch, doc } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2, Info } from 'lucide-react';
-import { seedStaffData } from '../actions';
+
+const staffData = [
+    {
+      order: 1,
+      name: 'S. Garcia',
+      role: 'Leitende Medizinische Praxisassistentin',
+      role2: 'Berufsbildnerin',
+      imageUrl: '/images/team/Garcia.jpg',
+      backsideContent: "<p>Früher habe ich schon einmal für rund 10 Jahre in dieser Praxis gearbeitet, damals noch bei Dr. Segginger.</p><br /><p>Inzwischen bin ich – jetzt in der Funktion der Leitenden MPA – zurückgekehrt an meine alte Wirkungsstätte.</p>",
+      hidden: false,
+    },
+    {
+      order: 2,
+      name: 'B. Aeschlimann',
+      role: 'Medizinische Praxisassistentin',
+      role2: 'Berufsbildnerin',
+      imageUrl: '/images/team/Aeschlimann.jpg',
+      backsideContent: "<p>Ich blicke zurück auf eine lange Erfahrung im Beruf als MPA, bin aber neu im Praxiszentrum im Ring.</p><br /><p>Als Berufsbildnerin bin ich für die Ausbildung der Lernenden zur MPA verantwortlich.</p>",
+      hidden: false,
+    },
+    {
+      order: 3,
+      name: 'K. Huber',
+      role: 'Medizinische Praxisassistentin',
+      role2: '',
+      imageUrl: '/images/team/Huber.jpg',
+      backsideContent: "<p>Viele Jahre war ich in einer kleinen chirurgischen Praxis tätig. Inzwischen jetzt zusätzlich an meist einem Tag in der Woche auch hier im Praxiszentrum im Ring.</p>",
+      hidden: false,
+    },
+    {
+      order: 4,
+      name: 'G. Öztürk',
+      role: 'Praxishilfe',
+      role2: '',
+      imageUrl: '/images/team/Oetztuerk.jpg',
+      backsideContent: "<p>Eigentlich bin ich Arzt und stamme aus der Türkei, aber noch läuft das Anerkennungsverfahren für die Qualifikation als Hausarzt hier in der Schweiz.</p><br /><p>Dass ich aktuell „nur“ als Praxishilfe tätig bin, ist eine Auflage der Schweizer Behörden für die Anerkennung meiner Qualifikation. Hoffentlich bin ich bald als weiterer Hausarzt hier im Praxiszentrum tätig.</p>",
+      hidden: false,
+    },
+    {
+      order: 5,
+      name: 'E. Sommer',
+      role: 'Medizinische Praxisassistentin',
+      role2: 'in Ausbildung',
+      imageUrl: '/images/team/Sommer.jpg',
+      backsideContent: "<p>Ganz neu im Berufsleben und auch im Praxiszentrum im Ring, werde ich hier in den nächsten Jahren den Beruf der MPA erlernen.</p><br /><p>Aller Anfang ist bekanntlich schwer und ich bitte um Geduld, wenn noch nicht jeder Handgriff so schnell und sicher sitzt oder mir Fehler unterlaufen.</p>",
+      hidden: false,
+    },
+];
 
 interface SeedButtonProps {
     collectionName: string;
@@ -27,18 +74,32 @@ export function SeedButton({ collectionName }: SeedButtonProps) {
     const { data, isLoading, error: collectionError } = useCollection(collectionQuery);
 
     const handleSeed = async () => {
+        if (!firestore) {
+            setError('Firestore ist nicht verfügbar.');
+            return;
+        }
+
         setIsSeeding(true);
         setError(null);
         setSuccess(null);
+        
         try {
-            const result = await seedStaffData();
-            if (result.success) {
-                setSuccess(`${result.count} Mitarbeiter-Einträge wurden in die Datenbank geschrieben.`);
-            } else {
-                throw new Error(result.error);
-            }
+            const staffCollectionRef = collection(firestore, 'staff');
+            const batch = writeBatch(firestore);
+
+            staffData.forEach(member => {
+                const docRef = doc(staffCollectionRef); // Create a new document reference with a unique ID
+                batch.set(docRef, {
+                    ...member,
+                    id: docRef.id, // Set the id field explicitly
+                    createdAt: new Date(),
+                });
+            });
+
+            await batch.commit();
+            setSuccess(`${staffData.length} Mitarbeiter-Einträge wurden erfolgreich in die Datenbank geschrieben.`);
         } catch (err: any) {
-            console.error('Seeding failed:', err);
+            console.error('Client-side Seeding failed:', err);
             setError(err.message || 'Die Daten konnten nicht geschrieben werden.');
         } finally {
             setIsSeeding(false);
