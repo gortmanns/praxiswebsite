@@ -14,20 +14,20 @@ export function HerschelCard() {
                     .vita-content { color: hsl(var(--background)); }
                     .vita-content p { margin: 0; }
                 </style>
-                <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline border-2 border-green-500">
+                <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
                     <div class="flex h-full w-full items-start">
-                        <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md border-2 border-red-500">
+                        <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
                             <img src="/images/team/Dr.Herschel.jpg" alt="Portrait von R. Herschel" data-ai-hint="man portrait" class="h-full w-full object-contain" />
                         </div>
-                        <div class="flex-grow flex flex-col justify-center ml-6 h-full relative border-2 border-yellow-400">
-                             <div class="border-2 border-blue-500">
+                        <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
+                             <div>
                                 <p class="text-2xl font-bold text-primary">Dr. med.</p>
                                 <h3 class="text-5xl font-bold text-primary my-2">R. Herschel</h3>
                                 <div class="text-xl font-bold flex flex-col">
                                     <span>Facharzt für Orthopädische Chirurgie und</span>
                                     <span>Traumatologie des Bewegungsapparates</span>
                                 </div>
-                                <div class="mt-6 border-2 border-purple-500">
+                                <div class="mt-6">
                                     <svg
                                         viewBox="0 0 240 55.5"
                                         xmlns="http://www.w3.org/2000/svg"

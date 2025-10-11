@@ -1,30 +1,5 @@
 
 
-.vita-content p {
-    margin: 0;
-}
-
-.vita-content {
-    color: hsl(var(--background));
-}
-
-.vita-content ul {
-    list-style-type: disc;
-    padding-left: 2rem;
-    margin-top: 1em;
-    margin-bottom: 1em;
-}
-
-.vita-content li {
-    margin-bottom: 0.5em;
-}
-
-.vita-content h4 {
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-bottom: 1em;
-}
-
 .tiptap p.is-editor-empty:first-child::before {
   color: hsl(var(--muted-foreground));
   content: attr(data-placeholder);
@@ -33,8 +8,7 @@
   pointer-events: none;
 }
 
-.tiptap .is-small,
-.vita-content .is-small {
+.tiptap .is-small {
     font-size: 0.8em;
     font-weight: normal;
 }
@@ -50,30 +24,23 @@
     --color-tiptap-gray: hsl(209 15% 65%);
 }
 
-.tiptap strong,
-.vita-content strong {
+.tiptap strong {
     color: inherit;
     font-weight: bold;
 }
 
-.tiptap span[style*="color"],
-.vita-content span[style*="color"] {
+.tiptap span[style*="color"] {
   color: var(--custom-color, inherit);
 }
 
-.tiptap span[style*="color: var(--color-tiptap-white)"],
-.vita-content span[style*="color: var(--color-tiptap-white)"] {
+.tiptap span[style*="color: var(--color-tiptap-white)"] {
     --custom-color: var(--color-tiptap-white);
 }
 
-.tiptap span[style*="color: var(--color-tiptap-blue)"],
-.vita-content span[style*="color: var(--color-tiptap-blue)"] {
+.tiptap span[style*="color: var(--color-tiptap-blue)"] {
     --custom-color: var(--color-tiptap-blue);
 }
 
-.tiptap span[style*="color: var(--color-tiptap-gray)"],
-.vita-content span[style*="color: var(--color-tiptap-gray)"] {
+.tiptap span[style*="color: var(--color-tiptap-gray)"] {
     --custom-color: var(--color-tiptap-gray);
 }
-
-    

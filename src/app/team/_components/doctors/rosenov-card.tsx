@@ -18,13 +18,13 @@ export function RosenovCard() {
                     .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
                     .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }
                 </style>
-                <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline border-2 border-green-500">
+                <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
                     <div class="flex h-full w-full items-start">
-                        <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md border-2 border-red-500">
+                        <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
                             <img src="/images/team/Dr.Rosenov.jpg" alt="Portrait von A. Rosenov" data-ai-hint="man portrait" class="w-full h-full object-contain" />
                         </div>
-                        <div class="flex-grow flex flex-col justify-center ml-6 h-full relative border-2 border-yellow-400">
-                           <div class="border-2 border-blue-500">
+                        <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
+                           <div>
                                 <p class="text-2xl font-bold text-primary">Dr. med.</p>
                                 <h3 class="text-5xl font-bold text-primary my-2">A. Rosenov</h3>
                                 <p class="text-xl font-bold">Facharzt für Angiologie</p>
