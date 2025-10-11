@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, Upload, CheckCircle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { useToast } from '@/hooks/use-toast';
+import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 
 export interface BaseCardData {
     id: string;
@@ -49,7 +49,8 @@ export function ReusableCardManager<T extends BaseCardData>({
     seedData,
 }: ReusableCardManagerProps<T>) {
     const firestore = useFirestore();
-    const { toast } = useToast();
+    
+    const [notification, setNotification] = useState<TimedAlertProps | null>(null);
 
     const dataQuery = useMemoFirebase(() => {
         if (!firestore) return null;
@@ -86,36 +87,35 @@ export function ReusableCardManager<T extends BaseCardData>({
     
     const handleSeedData = async () => {
         if (!firestore || !seedData || seedData.length === 0) {
-            toast({ variant: 'destructive', title: 'Fehler', description: 'Keine Seed-Daten verfügbar oder Datenbankverbindung fehlgeschlagen.' });
+            setNotification({ variant: 'destructive', title: 'Fehler', description: 'Keine Seed-Daten verfügbar oder Datenbankverbindung fehlgeschlagen.' });
             return;
         }
         setIsSeeding(true);
+        setNotification(null);
         try {
             const batch = writeBatch(firestore);
             const collectionRef = collection(firestore, collectionName);
             
-            // Delete all existing documents in the collection first
             const existingDocsSnapshot = await getDocs(collectionRef);
             existingDocsSnapshot.forEach(doc => {
                 batch.delete(doc.ref);
             });
             
-            // Now add the new seed data
             seedData.forEach((item, index) => {
-                const newDocRef = doc(collectionRef); // Create a reference with a new ID
+                const newDocRef = doc(collectionRef);
                 const dataWithTimestampAndId = {
                     ...item,
-                    id: newDocRef.id, // Explicitly set the new ID
+                    id: newDocRef.id,
                     order: index + 1,
                     createdAt: serverTimestamp(),
                 };
                 batch.set(newDocRef, dataWithTimestampAndId);
             });
             await batch.commit();
-            toast({ title: 'Erfolgreich', description: `${seedData.length} ${entityName}-Einträge erfolgreich geschrieben.` });
+            setNotification({ variant: 'success', title: 'Erfolgreich', description: `${seedData.length} ${entityName}-Einträge erfolgreich geschrieben.` });
         } catch (error: any) {
             console.error('Seeding failed:', error);
-            toast({ variant: 'destructive', title: 'Fehler', description: `Fehler beim Schreiben der Daten: ${error.message}` });
+            setNotification({ variant: 'destructive', title: 'Fehler', description: `Fehler beim Schreiben der Daten: ${error.message}` });
         } finally {
             setIsSeeding(false);
         }
@@ -156,7 +156,7 @@ export function ReusableCardManager<T extends BaseCardData>({
             await setDoc(docRef, { hidden: !card.hidden }, { merge: true });
         } catch (error: any) {
             console.error('Error toggling hidden state:', error);
-            toast({ variant: 'destructive', title: 'Fehler', description: `Sichtbarkeit konnte nicht geändert werden: ${error.message}` });
+            setNotification({ variant: 'destructive', title: 'Fehler', description: `Sichtbarkeit konnte nicht geändert werden: ${error.message}` });
         }
     };
 
@@ -166,22 +166,24 @@ export function ReusableCardManager<T extends BaseCardData>({
 
     const handleDelete = async () => {
         if (!firestore || !deleteConfirmState.cardId) return;
+        setNotification(null);
         try {
             const docRef = doc(firestore, collectionName, deleteConfirmState.cardId);
             await deleteDoc(docRef);
-            toast({ title: 'Erfolgreich', description: 'Karte wurde erfolgreich gelöscht.' });
+            setNotification({ title: 'Erfolgreich', description: 'Karte wurde erfolgreich gelöscht.', variant: 'success' });
             setDeleteConfirmState({ isOpen: false });
         } catch (error) {
             console.error("Error deleting document: ", error);
-            toast({ variant: 'destructive', title: 'Fehler', description: 'Karte konnte nicht gelöscht werden.' });
+            setNotification({ variant: 'destructive', title: 'Fehler', description: 'Karte konnte nicht gelöscht werden.' });
         }
     };
 
     const handleSaveChanges = async () => {
         if (!firestore || !dbData) {
-            toast({ variant: 'destructive', title: 'Fehler', description: 'Datenbankverbindung nicht verfügbar.' });
+            setNotification({ variant: 'destructive', title: 'Fehler', description: 'Datenbankverbindung nicht verfügbar.' });
             return;
         }
+        setNotification(null);
 
         try {
             const finalCardData: Partial<T> = { ...editorCardState };
@@ -191,26 +193,26 @@ export function ReusableCardManager<T extends BaseCardData>({
             if (editingCardId && !isCreatingNew) {
                 const docRef = doc(firestore, collectionName, editingCardId);
                 await setDoc(docRef, finalCardData, { merge: true });
-                toast({ title: 'Erfolgreich', description: 'Änderungen erfolgreich gespeichert.' });
+                setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Änderungen erfolgreich gespeichert.' });
             } else {
                 const highestOrder = dbData.reduce((max, item) => item.order > max ? item.order : max, 0);
                 const collectionRef = collection(firestore, collectionName);
-                const newDocRef = doc(collectionRef); // Create ref with new ID first
+                const newDocRef = doc(collectionRef); 
                 const newCardData = {
                     ...finalCardData,
-                    id: newDocRef.id, // Assign the new ID to the data
+                    id: newDocRef.id, 
                     order: highestOrder + 1,
                     createdAt: serverTimestamp(),
                     hidden: false,
                 };
-                await setDoc(newDocRef, newCardData); // Set the document with its ID
+                await setDoc(newDocRef, newCardData);
 
-                toast({ title: 'Erfolgreich', description: `Neue ${entityName}-Karte erfolgreich erstellt.` });
+                setNotification({ variant: 'success', title: 'Erfolgreich', description: `Neue ${entityName}-Karte erfolgreich erstellt.` });
             }
             handleCancelEdit();
         } catch (error: any) {
             console.error("Error saving changes: ", error);
-            toast({ variant: 'destructive', title: 'Fehler', description: `Die Änderungen konnten nicht gespeichert werden: ${error.message}` });
+            setNotification({ variant: 'destructive', title: 'Fehler', description: `Die Änderungen konnten nicht gespeichert werden: ${error.message}` });
         }
     };
 
@@ -340,6 +342,16 @@ export function ReusableCardManager<T extends BaseCardData>({
                     </div>
                 </CardHeader>
                 <CardContent>
+                    {notification && (
+                       <TimedAlert
+                           variant={notification.variant}
+                           title={notification.title}
+                           description={notification.description}
+                           onClose={() => setNotification(null)}
+                           className="mb-6"
+                        />
+                    )}
+
                     {isEditing && (
                         <div className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12">
                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
@@ -444,4 +456,4 @@ export function ReusableCardManager<T extends BaseCardData>({
     );
 }
 
-  
+    
