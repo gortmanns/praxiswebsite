@@ -1,8 +1,7 @@
-'use server';
+'use client';
 
 import { 
     Firestore, 
-    collection, 
     doc, 
     setDoc,
     updateDoc,
@@ -19,7 +18,7 @@ export type DoctorData = {
 };
 
 // Create or OVERWRITE a doctor document in Firestore
-export async function addDoctor(firestore: Firestore, doctorData: DoctorData, docId: string) {
+export function addDoctor(firestore: Firestore, doctorData: DoctorData, docId: string) {
     const docRef = doc(firestore, 'doctors', docId);
 
     const finalDoctorData = {
@@ -28,9 +27,7 @@ export async function addDoctor(firestore: Firestore, doctorData: DoctorData, do
         updatedAt: serverTimestamp(),
     };
     
-    try {
-        await setDoc(docRef, finalDoctorData);
-    } catch (error) {
+    setDoc(docRef, finalDoctorData).catch(error => {
         const contextualError = new FirestorePermissionError({
             path: docRef.path,
             operation: 'write',
@@ -38,19 +35,16 @@ export async function addDoctor(firestore: Firestore, doctorData: DoctorData, do
         });
         console.error("Firestore Error in addDoctor:", error, contextualError.message);
         errorEmitter.emit('permission-error', contextualError);
-        throw contextualError; 
-    }
+    });
 }
 
 // Update an existing doctor document
-export async function updateDoctor(firestore: Firestore, id: string, data: Partial<DoctorData>) {
+export function updateDoctor(firestore: Firestore, id: string, data: Partial<DoctorData>) {
     const doctorRef = doc(firestore, 'doctors', id);
     
     const updateData: { [key: string]: any } = { ...data, updatedAt: serverTimestamp() };
 
-    try {
-        await updateDoc(doctorRef, updateData);
-    } catch (error) {
+    updateDoc(doctorRef, updateData).catch(error => {
         const contextualError = new FirestorePermissionError({
             path: doctorRef.path,
             operation: 'update',
@@ -58,6 +52,5 @@ export async function updateDoctor(firestore: Firestore, id: string, data: Parti
         });
         console.error("Firestore Error in updateDoctor:", error, contextualError.message);
         errorEmitter.emit('permission-error', contextualError);
-        throw contextualError;
-    }
+    });
 }
