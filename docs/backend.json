@@ -9,9 +9,27 @@
         "order": { "type": "number", "description": "Display order of the doctor." },
         "name": { "type": "string", "description": "The full name of the doctor." },
         "frontSideCode": { "type": "string", "description": "HTML code for the front side of the doctor card." },
-        "backSideCode": { "type": "string", "description": "HTML code for the back side of the doctor card." }
+        "backSideCode": { "type": "string", "description": "HTML code for the back side of the doctor card." },
+        "languages": { "type": "array", "items": { "type": "string" }, "description": "Languages spoken by the doctor." },
+        "hidden": { "type": "boolean", "description": "Whether the doctor card is hidden." }
       },
       "required": ["id", "name", "order", "frontSideCode", "backSideCode"]
+    },
+    "StaffMember": {
+      "title": "Staff Member",
+      "description": "Represents a practice staff member's profile.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the staff member." },
+        "order": { "type": "number", "description": "Display order of the staff member." },
+        "name": { "type": "string", "description": "The full name of the staff member." },
+        "role": { "type": "string", "description": "The primary role of the staff member." },
+        "role2": { "type": "string", "description": "An optional secondary role." },
+        "imageUrl": { "type": "string", "description": "URL of the staff member's portrait image." },
+        "backsideContent": { "type": "string", "description": "HTML or text content for the card's flip side." },
+        "hidden": { "type": "boolean", "description": "Whether the staff member card is hidden." }
+      },
+      "required": ["id", "order", "name", "role", "imageUrl"]
     }
   },
   "auth": {
@@ -21,6 +39,10 @@
     "doctors": {
       "schema": { "$ref": "#/entities/Doctor" },
       "description": "Stores doctor profile information."
+    },
+    "staff": {
+      "schema": { "$ref": "#/entities/StaffMember" },
+      "description": "Stores practice staff member profiles."
     }
   }
 }

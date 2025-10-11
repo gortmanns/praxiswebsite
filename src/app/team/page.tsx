@@ -7,107 +7,31 @@ import { DoctorCard, type Doctor } from './_components/doctor-card';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import type { StaffMember } from '../admin/dashboard/team/staff/_components/staff-editor';
 
-const garcia = {
-    name: 'S. Garcia',
-    role: 'Leitende Medizinische Praxisassistentin',
-    role2: 'Berufsbildnerin',
-    imageUrl: '/images/team/Garcia.jpg',
-    imageHint: 'woman portrait',
-    backsideContent: (
-    <>
-        <p>
-        Früher habe ich schon einmal für rund 10 Jahre in dieser Praxis gearbeitet,
-        damals noch bei Dr. Segginger.
-        </p>
-        <br />
-        <p>
-        Inzwischen bin ich – jetzt in der Funktion der Leitenden MPA –
-        zurückgekehrt an meine alte Wirkungsstätte.
-        </p>
-    </>
-    ),
-};
-
-const otherTeamMembers = [
-    {
-      name: 'B. Aeschlimann',
-      role: 'Medizinische Praxisassistentin',
-      role2: 'Berufsbildnerin',
-      imageUrl: '/images/team/Aeschlimann.jpg',
-      imageHint: 'woman portrait',
-      backsideContent: (
-        <>
-          <p>
-          Ich blicke zurück auf eine lange Erfahrung im Beruf als MPA, bin aber neu im Praxiszentrum im Ring.
-          </p>
-          <br />
-          <p>
-          Als Berufsbildnerin bin ich für die Ausbildung der Lernenden zur MPA verantwortlich.
-          </p>
-        </>
-      ),
-    },
-    {
-        name: 'K. Huber',
-        role: 'Medizinische Praxisassistentin',
-        imageUrl: '/images/team/Huber.jpg',
-        imageHint: 'woman portrait',
-        backsideContent: (
-          <>
-            <p>
-            Viele Jahre war ich in einer kleinen chirurgischen Praxis tätig. Inzwischen jetzt zusätzlich an meist einem Tag in der Woche auch hier im Praxiszentrum im Ring.
-            </p>
-          </>
-        ),
-      },
-    {
-      name: 'G. Öztürk',
-      role: 'Praxishilfe',
-      imageUrl: '/images/team/Oetztuerk.jpg',
-      imageHint: 'man portrait',
-      backsideContent: (
-        <>
-          <p>
-            Eigentlich bin ich Arzt und stamme aus der Türkei, aber noch läuft das Anerkennungsverfahren für die Qualifikation als Hausarzt hier in der Schweiz.
-          </p>
-          <br />
-          <p>
-            Dass ich aktuell „nur“ als Praxishilfe tätig bin, ist eine Auflage der Schweizer Behörden für die Anerkennung meiner Qualifikation. Hoffentlich bin ich bald als weiterer Hausarzt hier im Praxiszentrum tätig.
-          </p>
-        </>
-      ),
-    },
-    {
-      name: 'E. Sommer',
-      role: 'Medizinische Praxisassistentin',
-      role2: 'in Ausbildung',
-      imageUrl: '/images/team/Sommer.jpg',
-      imageHint: 'woman portrait',
-      backsideContent: (
-        <>
-          <p>
-            Ganz neu im Berufsleben und auch im Praxiszentrum im Ring, werde ich hier in den nächsten Jahren den Beruf der MPA erlernen.
-          </p>
-          <br />
-          <p>
-            Aller Anfang ist bekanntlich schwer und ich bitte um Geduld, wenn noch nicht jeder Handgriff so schnell und sicher sitzt oder mir Fehler unterlaufen.
-          </p>
-        </>
-      ),
-    },
-];
 
 export default function TeamPage() {
   const firestore = useFirestore();
+  
   const doctorsQuery = useMemoFirebase(() => {
       if (!firestore) return null;
       return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
   }, [firestore]);
 
-  const { data: doctors, isLoading } = useCollection<Doctor>(doctorsQuery);
+  const staffQuery = useMemoFirebase(() => {
+      if (!firestore) return null;
+      return query(collection(firestore, 'staff'), orderBy('order', 'asc'));
+  }, [firestore]);
+
+  const { data: doctors, isLoading: isLoadingDoctors } = useCollection<Doctor>(doctorsQuery);
+  const { data: staff, isLoading: isLoadingStaff } = useCollection<StaffMember>(staffQuery);
 
   const visibleDoctors = doctors?.filter(doc => !doc.hidden) || [];
+  const visibleStaff = staff?.filter(member => !member.hidden) || [];
+
+  const leitendeMPA = visibleStaff.find(s => s.role.toLowerCase().includes('leitende'));
+  const otherTeamMembers = visibleStaff.filter(s => !s.role.toLowerCase().includes('leitende'));
+
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -120,7 +44,7 @@ export default function TeamPage() {
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
             
-            {isLoading ? (
+            {isLoadingDoctors ? (
                 Array.from({ length: 3 }).map((_, index) => (
                     <div key={index} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
                         <Skeleton className="w-full aspect-[1000/495] rounded-lg" />
@@ -142,33 +66,49 @@ export default function TeamPage() {
               </p>
             </div>
             
-            <div className="flex justify-center">
-              <div className="w-full max-w-sm">
-                <TeamMemberCard 
-                  name={garcia.name}
-                  role={garcia.role}
-                  role2={garcia.role2}
-                  imageUrl={garcia.imageUrl}
-                  imageHint={garcia.imageHint}
-                  backsideContent={garcia.backsideContent}
-                />
+            {isLoadingStaff ? (
+              <div className="flex justify-center">
+                <Skeleton className="h-[500px] w-full max-w-sm" />
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-              {otherTeamMembers.map((member) => (
-                <div key={member.name} className="mx-auto w-full max-w-sm">
+            ) : leitendeMPA && (
+              <div className="flex justify-center">
+                <div className="w-full max-w-sm">
                   <TeamMemberCard 
-                    name={member.name}
-                    role={member.role}
-                    role2={member.role2}
-                    imageUrl={member.imageUrl}
-                    imageHint={member.imageHint}
-                    backsideContent={member.backsideContent}
+                    key={leitendeMPA.id}
+                    name={leitendeMPA.name}
+                    role={leitendeMPA.role}
+                    role2={leitendeMPA.role2}
+                    imageUrl={leitendeMPA.imageUrl}
+                    imageHint="staff portrait"
+                    backsideContent={leitendeMPA.backsideContent ? <div dangerouslySetInnerHTML={{ __html: leitendeMPA.backsideContent }} /> : undefined}
                   />
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
+
+
+            {isLoadingStaff ? (
+               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                  {Array.from({ length: 4 }).map((_, index) => (
+                      <Skeleton key={index} className="h-[500px] w-full max-w-sm mx-auto" />
+                  ))}
+               </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                {otherTeamMembers.map((member) => (
+                  <div key={member.id} className="mx-auto w-full max-w-sm">
+                    <TeamMemberCard 
+                      name={member.name}
+                      role={member.role}
+                      role2={member.role2}
+                      imageUrl={member.imageUrl}
+                      imageHint="staff portrait"
+                      backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </main>
