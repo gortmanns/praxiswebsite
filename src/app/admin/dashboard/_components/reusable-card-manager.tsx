@@ -14,7 +14,7 @@ import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionRefe
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, Upload } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, Upload, CheckCircle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -230,10 +230,10 @@ export function ReusableCardManager<T extends BaseCardData>({
                 <div className="mt-2 flex w-full flex-col gap-2">
                     <div className="grid grid-cols-2 gap-2">
                         <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
-                            <ChevronLeft className="mr-2 h-4 w-4" /> Nach links
+                            <ChevronLeft className="mr-2 h-4 w-4" /> Verschieben
                         </Button>
                         <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === visibleItems.length - 1 || isEditing}>
-                            Nach rechts <ChevronRight className="ml-2 h-4 w-4" />
+                            Verschieben <ChevronRight className="ml-2 h-4 w-4" />
                         </Button>
                     </div>
                      <div className="grid grid-cols-2 gap-2">
