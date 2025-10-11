@@ -30,6 +30,40 @@
         "hidden": { "type": "boolean", "description": "Whether the staff member card is hidden." }
       },
       "required": ["id", "order", "name", "role", "imageUrl"]
+    },
+    "MedicalPartner": {
+      "title": "Medical Partner",
+      "description": "Represents a medical cooperation partner.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "order": { "type": "number" },
+        "name": { "type": "string" },
+        "websiteUrl": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "hint": { "type": "string" },
+        "width": { "type": "number" },
+        "height": { "type": "number" },
+        "hidden": { "type": "boolean" }
+      },
+      "required": ["id", "order", "name", "websiteUrl", "logoUrl"]
+    },
+    "OtherPartner": {
+      "title": "Other Partner",
+      "description": "Represents another (non-medical) cooperation partner.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "order": { "type": "number" },
+        "name": { "type": "string" },
+        "websiteUrl": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "hint": { "type": "string" },
+        "width": { "type": "number" },
+        "height": { "type": "number" },
+        "hidden": { "type": "boolean" }
+      },
+      "required": ["id", "order", "name", "websiteUrl", "logoUrl"]
     }
   },
   "auth": {
@@ -43,6 +77,14 @@
     "staff": {
       "schema": { "$ref": "#/entities/StaffMember" },
       "description": "Stores practice staff member profiles."
+    },
+    "medicalPartners": {
+      "schema": { "$ref": "#/entities/MedicalPartner" },
+      "description": "Stores medical cooperation partner information."
+    },
+    "otherPartners": {
+      "schema": { "$ref": "#/entities/OtherPartner" },
+      "description": "Stores other cooperation partner information."
     }
   }
 }
