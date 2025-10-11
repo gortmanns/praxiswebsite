@@ -1,14 +1,13 @@
-
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
 import { Button } from '@/components/ui/button';
 import { useFirestore } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
-import { useToast } from '@/hooks/use-toast';
+import { Textarea } from '@/components/ui/textarea';
 
 export interface Doctor {
     id: string;
@@ -21,25 +20,35 @@ export interface Doctor {
 
 export default function DoctorsPage() {
     const firestore = useFirestore();
-    const { toast } = useToast();
+    const [dbLog, setDbLog] = useState('');
     
     const handleWriteToDb = async () => {
+        setDbLog('Attempting to write to Firestore...');
         if (!firestore) {
-            console.error("Firestore ist nicht verfügbar.");
+            const errorMsg = 'Firestore instance is not available. Ensure Firebase is initialized correctly.';
+            console.error(errorMsg);
+            setDbLog(errorMsg);
             return;
         }
+
         const ortmannsData = DOCTOR_CARDS_INITIAL_DATA.find(d => d.id === 'ortmanns');
-        if (ortmannsData) {
+        if (!ortmannsData) {
+            const errorMsg = 'Could not find doctor data for "ortmanns".';
+            console.error(errorMsg);
+            setDbLog(errorMsg);
+            return;
+        }
+
+        try {
             const docRef = doc(firestore, 'doctors', ortmannsData.id);
-            // We now AWAIT the result of the setDoc operation.
-            // Any error will be thrown and caught by the Next.js error overlay.
             await setDoc(docRef, ortmannsData, { merge: true });
-            
-            // This toast will only show if the await above succeeds.
-            toast({
-                title: 'Schreibvorgang erfolgreich!',
-                description: 'Die Daten wurden ohne Fehler an die Datenbank gesendet.',
-            });
+            const successMsg = `SUCCESS: Write operation for document 'doctors/${ortmannsData.id}' completed without errors.`;
+            console.log(successMsg);
+            setDbLog(successMsg);
+        } catch (error: any) {
+            const errorMsg = `FAILED: An error occurred during the write operation.\n\nRAW ERROR OBJECT:\n${JSON.stringify(error, null, 2)}`;
+            console.error(error);
+            setDbLog(errorMsg);
         }
     };
 
@@ -51,16 +60,24 @@ export default function DoctorsPage() {
                         <div>
                             <CardTitle className="text-primary">Ärzte verwalten</CardTitle>
                             <CardDescription>
-                                Verwalten Sie die auf der Team-Seite angezeigten Ärzte.
+                                Verwalten Sie die auf der Team-Seite angezeigten Ärzte. Klicken Sie auf den Button, um den Schreibvorgang zu testen.
                             </CardDescription>
                         </div>
-                        <Button onClick={handleWriteToDb}>
-                            Ortmanns Card in DB schreiben
-                        </Button>
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="space-y-4">
+                     <div className="flex flex-col md:flex-row gap-4">
+                        <Button onClick={handleWriteToDb} className="shrink-0">
+                            Ortmanns Card in DB schreiben
+                        </Button>
+                        <Textarea
+                            readOnly
+                            placeholder="Die rohe Antwort der Datenbank wird hier angezeigt..."
+                            value={dbLog}
+                            className="h-32 w-full font-mono text-xs"
+                        />
+                    </div>
+                    <div className="mt-8 space-y-4">
                         <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Vorhandene Ärztekarten (Lokale Daten)</h3>
                          <p className="text-sm text-muted-foreground">
                             Dieser Bereich zeigt die Karten so an, wie sie aus der lokalen Datei `doctor-cards-data.ts` geladen werden.
