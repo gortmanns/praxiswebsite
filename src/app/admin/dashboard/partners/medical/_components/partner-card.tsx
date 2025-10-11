@@ -5,6 +5,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
+import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 
 export interface Partner {
     id: string;
@@ -28,19 +29,23 @@ export const PartnerCard: React.FC<Partner> = (props) => {
         >
           <Card className="flex h-full w-full items-center p-6">
             <CardContent className="flex w-full items-center justify-center p-0">
-                {props.logoUrl ? (
-                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                        <Image
-                            src={props.logoUrl}
-                            alt={`${props.name} Logo`}
-                            width={props.width || 200}
-                            height={props.height || 60}
-                            className="object-contain"
-                            data-ai-hint={props.hint}
-                        />
-                    </div>
+                {props.name === 'orthozentrum-bern' ? (
+                    <OrthozentrumLogo className="h-24 w-auto" />
                 ) : (
-                    <span className="text-lg font-bold">{props.name}</span>
+                    props.logoUrl ? (
+                        <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                            <Image
+                                src={props.logoUrl}
+                                alt={`${props.name} Logo`}
+                                width={props.width || 200}
+                                height={props.height || 60}
+                                className="object-contain"
+                                data-ai-hint={props.hint}
+                            />
+                        </div>
+                    ) : (
+                        <span className="text-lg font-bold">{props.name}</span>
+                    )
                 )}
             </CardContent>
           </Card>
