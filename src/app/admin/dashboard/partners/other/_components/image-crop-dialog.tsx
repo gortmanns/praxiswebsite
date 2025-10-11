@@ -52,10 +52,26 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
 
       ctx.drawImage(background, 0, 0);
 
-      const centerX = (finalCanvas.width - croppedLogoCanvas.width) / 2;
-      const centerY = (finalCanvas.height - croppedLogoCanvas.height) / 2;
+      const targetWidth = finalCanvas.width * 0.8; 
+      const targetHeight = finalCanvas.height * 0.8;
 
-      ctx.drawImage(croppedLogoCanvas, centerX, centerY);
+      let drawWidth = croppedLogoCanvas.width;
+      let drawHeight = croppedLogoCanvas.height;
+      const ratio = drawWidth / drawHeight;
+
+      if (drawWidth > targetWidth) {
+        drawWidth = targetWidth;
+        drawHeight = drawWidth / ratio;
+      }
+      if (drawHeight > targetHeight) {
+        drawHeight = targetHeight;
+        drawWidth = drawHeight * ratio;
+      }
+
+      const centerX = (finalCanvas.width - drawWidth) / 2;
+      const centerY = (finalCanvas.height - drawHeight) / 2;
+
+      ctx.drawImage(croppedLogoCanvas, centerX, centerY, drawWidth, drawHeight);
       
       const resultDataUrl = finalCanvas.toDataURL('image/jpeg', 0.9);
       onCropComplete(resultDataUrl);
@@ -74,7 +90,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
         <DialogHeader>
           <DialogTitle>Logo zuschneiden und platzieren</DialogTitle>
           <DialogDescription>
-            Skalieren (Mausrad) und verschieben Sie das Logo. Wählen Sie den gewünschten Ausschnitt aus. Das Ergebnis wird auf der Karte zentriert.
+            Skalieren (Mausrad) Sie das Logo und wählen Sie den gewünschten Ausschnitt. Das Ergebnis wird auf der Karte zentriert.
           </DialogDescription>
         </DialogHeader>
         <div className="my-4 flex-1 flex justify-center items-center bg-muted/30 p-4">
@@ -82,7 +98,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
             ref={cropperRef}
             src={imageUrl}
             style={{ height: '100%', width: '100%' }}
-            // Core settings for free cropping and scaling
+            // --- Settings for free scaling and cropping ---
             zoomable={true}
             viewMode={1} 
             dragMode="move"
@@ -91,6 +107,8 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
             autoCrop={true}
             movable={true}
             cropBoxResizable={true}
+            minCropBoxWidth={10}
+            minCropBoxHeight={10}
             checkOrientation={false}
             guides={true}
           />
