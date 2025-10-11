@@ -7,7 +7,6 @@ import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
 import { Button } from '@/components/ui/button';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, getDoc, setDoc, collection, query, orderBy } from 'firebase/firestore';
-import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export interface Doctor {
@@ -21,7 +20,6 @@ export interface Doctor {
 
 export default function DoctorsPage() {
     const firestore = useFirestore();
-    const [dbLog, setDbLog] = useState('');
 
     const doctorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
@@ -30,40 +28,8 @@ export default function DoctorsPage() {
 
     const { data: dbDoctors, isLoading: isLoadingDbDoctors, error: dbError } = useCollection<Doctor>(doctorsQuery);
     
-    const handleWriteToDb = async () => {
-        setDbLog('Attempting to write to Firestore...');
-        if (!firestore) {
-            const errorMsg = 'Firestore instance is not available. Ensure Firebase is initialized correctly.';
-            console.error(errorMsg);
-            setDbLog(errorMsg);
-            return;
-        }
-
-        const doctorsToWrite = DOCTOR_CARDS_INITIAL_DATA.filter(d => ['schemmer', 'rosenov', 'herschel', 'slezak'].includes(d.id));
-
-        try {
-            const writePromises = doctorsToWrite.map(doctorData => {
-                const docRef = doc(firestore, 'doctors', doctorData.id);
-                const dataToWrite = {
-                    id: doctorData.id,
-                    name: doctorData.name,
-                    order: doctorData.order,
-                    frontSideCode: doctorData.frontSideCode,
-                    backSideCode: doctorData.backSideCode
-                };
-                return setDoc(docRef, dataToWrite, { merge: true });
-            });
-            
-            await Promise.all(writePromises);
-            
-            const successMsg = `SUCCESS: Documents for ${doctorsToWrite.map(d => d.name).join(', ')} written/merged successfully.`;
-            setDbLog(successMsg);
-
-        } catch (error: any) {
-            const errorMsg = `FAILED: An error occurred during the write operation.\n\nRAW ERROR OBJECT:\n${JSON.stringify(error, null, 2)}`;
-            setDbLog(errorMsg);
-        }
-    };
+    // Temporarily use the Ortmanns card data for the editable card
+    const ortmannsCardData = DOCTOR_CARDS_INITIAL_DATA.find(d => d.id === 'ortmanns');
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -73,22 +39,19 @@ export default function DoctorsPage() {
                         <div>
                             <CardTitle className="text-primary">Ärzte verwalten</CardTitle>
                             <CardDescription>
-                                Verwalten Sie die auf der Team-Seite angezeigten Ärzte. Klicken Sie auf den Button, um den Schreibvorgang auszulösen.
+                                Verwalten Sie die auf der Team-Seite angezeigten Ärzte.
                             </CardDescription>
                         </div>
                     </div>
                 </CardHeader>
                 <CardContent>
-                     <div className="flex flex-col md:flex-row gap-4">
-                        <Button onClick={handleWriteToDb} className="shrink-0">
-                           Schemmer bis Slezak in DB schreiben
-                        </Button>
-                        <Textarea
-                            readOnly
-                            placeholder="Die rohe Antwort der Datenbank wird hier angezeigt..."
-                            value={dbLog}
-                            className="h-32 w-full font-mono text-xs"
-                        />
+                     <div className="flex justify-center items-center p-8 border-dashed border-2 border-muted rounded-lg">
+                        {ortmannsCardData && (
+                            <EditableDoctorCard 
+                                doctor={ortmannsCardData} 
+                                onVitaClick={() => {}} 
+                            />
+                        )}
                     </div>
 
                     <div className="mt-8 space-y-4">
