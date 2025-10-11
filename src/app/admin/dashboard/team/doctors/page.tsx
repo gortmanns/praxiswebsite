@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
@@ -387,31 +386,32 @@ export default function DoctorsPage() {
             const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
             const downloadURL = await getDownloadURL(snapshot.ref);
 
-            const parser = new DOMParser();
-            const docParser = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
+            setEditorCardState(prev => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(prev.frontSideCode, 'text/html');
                 
-            if (field === 'image') {
-                const imageContainer = docParser.getElementById('image-container');
-                if(imageContainer) {
-                     imageContainer.innerHTML = `
-                        <button id="edit-image" class="image-button-background w-full h-full relative">
-                            <img src="${downloadURL}" alt="Portrait" class="h-full w-full object-cover relative" />
-                        </button>`;
+                if (field === 'image') {
+                    const imageContainer = doc.getElementById('image-container');
+                    if (imageContainer) {
+                         imageContainer.innerHTML = `
+                            <button id="edit-image" class="image-button-background w-full h-full relative">
+                                <img src="${downloadURL}" alt="Portrait" class="h-full w-full object-cover relative" />
+                            </button>`;
+                    }
+                } else {
+                    const positionContainer = doc.getElementById('position-container');
+                     if (positionContainer) {
+                        positionContainer.innerHTML = `
+                            <button id="edit-position" class="image-button-background">
+                                <div class="relative">
+                                    <img src="${downloadURL}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
+                                </div>
+                            </button>`;
+                    }
                 }
-            } else {
-                const positionContainer = docParser.getElementById('position-container');
-                 if (positionContainer) {
-                    positionContainer.innerHTML = `
-                        <button id="edit-position" class="image-button-background">
-                            <div class="relative">
-                                <img src="${downloadURL}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
-                            </div>
-                        </button>`;
-                }
-            }
-            
-            const updatedHtml = docParser.body.innerHTML;
-            setEditorCardState(prev => ({ ...prev, frontSideCode: updatedHtml }));
+                
+                return { ...prev, frontSideCode: doc.body.innerHTML };
+            });
         
         } catch (error) {
             console.error("Error uploading image: ", error);
@@ -444,27 +444,27 @@ export default function DoctorsPage() {
     const handleTextSave = (newValue: string) => {
         const field = dialogState.data.field;
         if (!field) return;
-
-        const parser = new DOMParser();
-        const docParser = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
         
-        if(field === 'position') {
-            const container = docParser.getElementById('position-container');
-             if (container) {
-                container.innerHTML = `<button id="edit-position" class="w-full text-left"><p class="text-base">${newValue}</p></button>`;
-            }
-        } else {
-            let button = docParser.getElementById(`edit-${field}`);
-            if (button) {
-                const p = button.querySelector('p') || button.querySelector('h3');
-                if (p) {
-                    p.textContent = newValue;
+        setEditorCardState(prev => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(prev.frontSideCode, 'text/html');
+            
+            if(field === 'position') {
+                const container = doc.getElementById('position-container');
+                 if (container) {
+                    container.innerHTML = `<button id="edit-position" class="w-full text-left"><p class="text-base">${newValue}</p></button>`;
+                }
+            } else {
+                let button = doc.getElementById(`edit-${field}`);
+                if (button) {
+                    const p = button.querySelector('p') || button.querySelector('h3');
+                    if (p) {
+                        p.textContent = newValue;
+                    }
                 }
             }
-        }
-        
-        const updatedHtml = docParser.body.innerHTML;
-        setEditorCardState(prev => ({ ...prev, frontSideCode: updatedHtml }));
+            return { ...prev, frontSideCode: doc.body.innerHTML };
+        });
         setDialogState({ type: null, data: {} });
     };
 
@@ -521,16 +521,33 @@ export default function DoctorsPage() {
     const handleSaveChanges = async () => {
         if (!firestore || !dbDoctors) return;
 
+        // Clean up the HTML before saving
+        const parser = new DOMParser();
+        const docParser = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
+        docParser.querySelectorAll('button[id^="edit-"]').forEach(button => {
+            // Replace button with its content
+            const parent = button.parentElement;
+            if (parent) {
+                while(button.firstChild) {
+                    parent.insertBefore(button.firstChild, button);
+                }
+                parent.removeChild(button);
+            }
+        });
+        
+        const cleanedFrontSideCode = docParser.body.innerHTML;
+        const finalCardData = { ...editorCardState, frontSideCode: cleanedFrontSideCode };
+
         if (editingDoctorId) {
             // Update existing document
             const docRef = doc(firestore, 'doctors', editingDoctorId);
-            await setDoc(docRef, { ...editorCardState }, { merge: true });
+            await setDoc(docRef, finalCardData, { merge: true });
         } else {
             // Create new document
             const highestOrder = dbDoctors.reduce((max, doc) => doc.order > max ? doc.order : max, 0);
             const newDoctorData: Omit<Doctor, 'id'> = {
                 name: editorCardState.name === 'Template' ? 'Neuer Arzt' : editorCardState.name,
-                frontSideCode: editorCardState.frontSideCode,
+                frontSideCode: finalCardData.frontSideCode,
                 backSideCode: editorCardState.backSideCode,
                 languages: editorCardState.languages || [],
                 order: highestOrder + 1,
@@ -563,8 +580,10 @@ export default function DoctorsPage() {
         const currentDoc = dbDoctors?.find(d => d.id === editingDoctorId);
         if (currentDoc) {
             setEditorCardState(currentDoc);
+        } else if (editingDoctorId === null) {
+            setEditorCardState(initialExampleDoctorState);
         }
-    }, [editingDoctorId, dbDoctors]);
+    }, [editingDoctorId, dbDoctors, initialExampleDoctorState]);
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -636,19 +655,19 @@ export default function DoctorsPage() {
                         {!isLoadingDbDoctors && visibleDoctors.map((doctor, index) => (
                             <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
                                 <div className="flex w-36 flex-shrink-0 flex-col items-center justify-center gap-2">
-                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'up')} disabled={index === 0 || !!editingDoctorId && editorCardState.id !== 'template'}>
+                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'up')} disabled={index === 0 || !!editingDoctorId || editorCardState.id !== 'template'}>
                                         <ChevronUp className="h-4 w-4" />
                                         <span className="sr-only">Nach oben</span>
                                     </Button>
-                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'down')} disabled={index === visibleDoctors.length - 1 || !!editingDoctorId && editorCardState.id !== 'template'}>
+                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'down')} disabled={index === visibleDoctors.length - 1 || !!editingDoctorId || editorCardState.id !== 'template'}>
                                         <ChevronDown className="h-4 w-4" />
                                         <span className="sr-only">Nach unten</span>
                                     </Button>
-                                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)} disabled={!!editingDoctorId && editorCardState.id !== 'template'}>
+                                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)} disabled={!!editingDoctorId || editorCardState.id !== 'template'}>
                                         <EyeOff className="h-4 w-4" />
                                         <span className="sr-only">Ausblenden</span>
                                     </Button>
-                                     <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)} disabled={!!editingDoctorId && editorCardState.id !== 'template'}>
+                                     <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)} disabled={!!editingDoctorId || editorCardState.id !== 'template'}>
                                         <Pencil className="h-4 w-4" />
                                         <span className="sr-only">Bearbeiten</span>
                                     </Button>
@@ -677,15 +696,15 @@ export default function DoctorsPage() {
                                 {hiddenDoctors.map((doctor) => (
                                     <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
                                         <div className="flex w-36 flex-shrink-0 flex-col items-center justify-center gap-2">
-                                            <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)} disabled={!!editingDoctorId && editorCardState.id !== 'template'}>
+                                            <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)} disabled={!!editingDoctorId || editorCardState.id !== 'template'}>
                                                 <Eye className="h-4 w-4" />
                                                 <span className="sr-only">Einblenden</span>
                                             </Button>
-                                            <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)} disabled={!!editingDoctorId && editorCardState.id !== 'template'}>
+                                            <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)} disabled={!!editingDoctorId || editorCardState.id !== 'template'}>
                                                 <Pencil className="h-4 w-4" />
                                                 <span className="sr-only">Bearbeiten</span>
                                             </Button>
-                                             <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name } })} disabled={!!editingDoctorId && editorCardState.id !== 'template'}>
+                                             <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name } })} disabled={!!editingDoctorId || editorCardState.id !== 'template'}>
                                                 <Trash2 className="h-4 w-4" />
                                                 <span className="sr-only">Löschen</span>
                                             </Button>
@@ -809,5 +828,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
-    

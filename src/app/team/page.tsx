@@ -4,9 +4,9 @@ import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { TeamMemberCard } from './_components/team-member-card';
 import { DoctorCard, type Doctor } from './_components/doctor-card';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import { DOCTOR_CARDS_INITIAL_DATA } from '../admin/dashboard/team/doctors/_data/doctor-cards-data';
-
 
 const garcia = {
     name: 'S. Garcia',
@@ -99,8 +99,15 @@ const otherTeamMembers = [
 ];
 
 export default function TeamPage() {
-  const doctors = DOCTOR_CARDS_INITIAL_DATA.sort((a, b) => a.order - b.order);
-  const isLoading = false;
+  const firestore = useFirestore();
+  const doctorsQuery = useMemoFirebase(() => {
+      if (!firestore) return null;
+      return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
+  }, [firestore]);
+
+  const { data: doctors, isLoading } = useCollection<Doctor>(doctorsQuery);
+
+  const visibleDoctors = doctors?.filter(doc => !doc.hidden) || [];
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -114,13 +121,13 @@ export default function TeamPage() {
             </div>
             
             {isLoading ? (
-                Array.from({ length: 5 }).map((_, index) => (
+                Array.from({ length: 3 }).map((_, index) => (
                     <div key={index} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
                         <Skeleton className="w-full aspect-[1000/495] rounded-lg" />
                     </div>
                 ))
             ) : (
-              doctors?.map(doctor => (
+              visibleDoctors.map(doctor => (
                 <div key={doctor.id} id={doctor.id} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
                   <DoctorCard {...doctor} />
                 </div>
