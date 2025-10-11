@@ -3,11 +3,11 @@
 
 import React from 'react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, serverTimestamp } from 'firebase/firestore';
+import { collection, serverTimestamp, writeBatch, doc } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2, Info, CheckCircle, AlertCircle } from 'lucide-react';
-import { addDocumentNonBlocking, setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { v4 as uuidv4 } from 'uuid';
 
 const staffData = [
     {
@@ -73,7 +73,7 @@ export function SeedButton({ collectionName }: SeedButtonProps) {
 
     const { data, isLoading, error: collectionError } = useCollection(collectionQuery);
 
-    const handleSeed = () => {
+    const handleSeed = async () => {
         if (!firestore) {
             setAlertState({ type: 'error', message: 'Firestore ist nicht verfügbar.' });
             return;
@@ -82,30 +82,29 @@ export function SeedButton({ collectionName }: SeedButtonProps) {
         setIsSeeding(true);
         setAlertState(null);
         
-        const promises = staffData.map(member => {
-            const staffCollectionRef = collection(firestore, 'staff');
-            const newMemberData = { ...member, createdAt: serverTimestamp() };
+        try {
+            const batch = writeBatch(firestore);
             
-            return addDocumentNonBlocking(staffCollectionRef, newMemberData)
-                .then(newDocRef => {
-                    if (newDocRef) {
-                        // Now update the document with its own ID
-                        setDocumentNonBlocking(newDocRef, { id: newDocRef.id }, { merge: true });
-                    }
-                    return newDocRef; // Pass the ref for further promise chaining
-                });
-        });
-
-        Promise.all(promises)
-            .then(() => {
-                setSuccess(`${staffData.length} Mitarbeiter-Einträge erfolgreich in die Datenbank geschrieben.`);
-                setIsSeeding(false);
-            })
-            .catch((err: any) => {
-                console.error('Client-side Seeding failed:', err);
-                setError(err.message || 'Die Daten konnten nicht geschrieben werden.');
-                setIsSeeding(false);
+            staffData.forEach(member => {
+                const docId = uuidv4();
+                const docRef = doc(firestore, 'staff', docId);
+                const newMemberData = { 
+                    ...member, 
+                    id: docId,
+                    createdAt: serverTimestamp() 
+                };
+                batch.set(docRef, newMemberData);
             });
+
+            await batch.commit();
+
+            setSuccess(`${staffData.length} Mitarbeiter-Einträge erfolgreich in die Datenbank geschrieben.`);
+        } catch (err: any) {
+            console.error('Client-side Seeding failed:', err);
+            setError(err.message || 'Die Daten konnten nicht geschrieben werden.');
+        } finally {
+            setIsSeeding(false);
+        }
     };
 
     const setError = (message: string) => {
