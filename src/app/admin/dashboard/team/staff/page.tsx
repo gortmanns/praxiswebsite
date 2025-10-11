@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -25,7 +26,7 @@ export default function StaffPage() {
             <div className="p-4 sm:p-6">
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-primary">Daten-Übertragung</dCardTitle>
+                        <CardTitle className="text-primary">Daten-Übertragung</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <SeedButton collectionName='staff' />
