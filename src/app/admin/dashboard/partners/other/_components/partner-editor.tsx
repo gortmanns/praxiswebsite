@@ -75,32 +75,50 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
     return (
         <>
             <div className="flex flex-col gap-8 items-start">
-                 <div className="w-full space-y-4">
-                    <div className="flex w-full items-end gap-4">
-                        <div className="flex-1 space-y-2">
-                            <Label htmlFor="name" className="font-bold">Name (für interne Verwendung)</Label>
-                            <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
-                        </div>
-                        
-                        <Button variant="outline" onClick={() => setDialogState('imageSource')}>
-                             <ImageUp className="mr-2 h-4 w-4" />
-                             Logo einfügen/ändern
-                        </Button>
-
-                        <div className="flex-1 space-y-2">
-                            <Label htmlFor="websiteUrl" className="font-bold">URL die beim Klick geöffnet werden soll</Label>
-                            <Input id="websiteUrl" value={cardData.websiteUrl} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
-                        </div>
-
-                        <div className="flex flex-col items-center pb-2">
-                            <Label htmlFor="openInNewTab" className="cursor-pointer whitespace-nowrap font-bold mb-2">In neuer Seite öffnen</Label>
-                            <Checkbox 
-                                id="openInNewTab" 
-                                checked={cardData.openInNewTab} 
-                                onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
-                            />
-                        </div>
-                    </div>
+                 <div className="w-full space-y-4 bg-muted/50 p-6">
+                    <table className="w-full border-separate" style={{ borderSpacing: '0 1rem' }}>
+                        <thead>
+                            <tr>
+                                <th className="w-1/3 text-left align-bottom pr-4">
+                                    <Label htmlFor="name" className="font-bold">Name (für interne Verwendung)</Label>
+                                </th>
+                                <th className="w-auto text-left align-bottom px-4">
+                                    {/* Empty header for button */}
+                                </th>
+                                <th className="w-1/3 text-left align-bottom px-4">
+                                    <Label htmlFor="websiteUrl" className="font-bold">URL für onClick</Label>
+                                </th>
+                                <th className="w-auto text-left align-bottom pl-4">
+                                    <Label htmlFor="openInNewTab" className="font-bold whitespace-nowrap">In neuer Seite öffnen</Label>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td className="pr-4">
+                                    <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
+                                </td>
+                                <td className="px-4">
+                                    <Button variant="outline" onClick={() => setDialogState('imageSource')}>
+                                         <ImageUp className="mr-2 h-4 w-4" />
+                                         Logo wählen
+                                    </Button>
+                                </td>
+                                <td className="px-4">
+                                    <Input id="websiteUrl" value={cardData.websiteUrl} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
+                                </td>
+                                <td className="pl-4 text-center">
+                                    <div className="flex justify-center items-center h-full">
+                                        <Checkbox 
+                                            id="openInNewTab" 
+                                            checked={cardData.openInNewTab} 
+                                            onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
+                                        />
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <div className="relative w-full mt-4">
