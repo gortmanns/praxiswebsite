@@ -49,6 +49,8 @@ export default function DoctorsPage() {
     
     const ortmannsCardData = DOCTOR_CARDS_INITIAL_DATA.find(d => d.id === 'ortmanns');
 
+    const cardAspectRatio = 1000 / 495;
+
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
             <Card className="w-full">
@@ -63,16 +65,36 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="w-full rounded-lg border-2 border-dashed border-muted p-8">
+                    <div className="w-full rounded-lg border-2 border-dashed border-muted p-4">
                         {ortmannsCardData && (
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="relative w-full aspect-[1000/495] overflow-hidden">
-                                    <div className="absolute inset-0">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                
+                                {/* Front side preview */}
+                                <div style={{ aspectRatio: cardAspectRatio }} className="relative w-full">
+                                    <div 
+                                        style={{
+                                            width: '1000px',
+                                            height: '495px',
+                                            transform: 'scale(calc(1 / (1000 / 100%) / (100vw / 100vw)))',
+                                            transformOrigin: 'top left',
+                                        }}
+                                        className="absolute"
+                                    >
                                         <CodeRenderer html={ortmannsCardData.frontSideCode} />
                                     </div>
                                 </div>
-                                <div className="relative w-full aspect-[1000/495] overflow-hidden rounded-lg bg-accent/95 text-left text-background">
-                                    <div className="absolute inset-0">
+                                
+                                {/* Back side preview */}
+                                <div style={{ aspectRatio: cardAspectRatio }} className="relative w-full">
+                                    <div 
+                                        style={{
+                                            width: '1000px',
+                                            height: '495px',
+                                            transform: 'scale(calc(1 / (1000 / 100%) / (100vw / 100vw)))',
+                                            transformOrigin: 'top left',
+                                        }}
+                                        className="absolute bg-accent/95"
+                                    >
                                         <CodeRenderer html={ortmannsCardData.backSideCode} />
                                     </div>
                                 </div>
