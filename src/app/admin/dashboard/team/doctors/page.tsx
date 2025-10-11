@@ -32,13 +32,15 @@ const CardHtmlRenderer: React.FC<{ html: string }> = ({ html }) => {
     }, [html]);
 
     return (
-        <svg viewBox="0 0 1000 495" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
-            <foreignObject width="1000" height="495">
-                <div xmlns="http://www.w3.org/1999/xhtml">
-                    <div dangerouslySetInnerHTML={sanitizedHtml} />
-                </div>
-            </foreignObject>
-        </svg>
+        <div className="absolute w-full h-full">
+            <svg viewBox="0 0 1000 495" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+                <foreignObject width="1000" height="495">
+                    <div xmlns="http://www.w3.org/1999/xhtml">
+                        <div dangerouslySetInnerHTML={sanitizedHtml} />
+                    </div>
+                </foreignObject>
+            </svg>
+        </div>
     );
 };
 
@@ -68,12 +70,12 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="w-full rounded-lg border-2 border-dashed border-muted p-4">
+                    <div className="w-full rounded-lg border-2 border-dashed border-muted">
                        <div className="grid grid-cols-2 gap-2.5">
-                            <div className="aspect-[1000/495] w-full overflow-hidden bg-muted/50">
+                            <div className="relative aspect-[1000/495] w-full overflow-hidden bg-muted/50">
                                 {exampleDoctor && <CardHtmlRenderer html={exampleDoctor.frontSideCode} />}
                             </div>
-                            <div className="aspect-[1000/495] w-full overflow-hidden bg-muted/50">
+                            <div className="relative aspect-[1000/495] w-full overflow-hidden bg-muted/50">
                                 {exampleDoctor && <CardHtmlRenderer html={exampleDoctor.backSideCode} />}
                             </div>
                        </div>
