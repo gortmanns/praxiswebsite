@@ -21,7 +21,6 @@ export interface Doctor {
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
-        // This check ensures DOMPurify only runs on the client
         if (typeof window !== 'undefined') {
             const config = {
                 ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img"],
@@ -49,8 +48,6 @@ export default function DoctorsPage() {
     const { data: dbDoctors, isLoading: isLoadingDbDoctors, error: dbError } = useCollection<Doctor>(doctorsQuery);
     
     const ortmannsCardData = DOCTOR_CARDS_INITIAL_DATA.find(d => d.id === 'ortmanns');
-    const cardAspectRatio = 1000 / 495;
-    const previewScale = 0.5; // Example scale, can be adjusted
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -66,36 +63,16 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="w-full border-dashed border-2 border-muted rounded-lg debug-grid">
+                    <div className="w-full rounded-lg border-2 border-dashed border-muted p-8">
                         {ortmannsCardData && (
-                            <div className="grid grid-cols-2 gap-2.5">
-                                <div style={{ 
-                                    width: `${1000 * previewScale}px`, 
-                                    height: `${495 * previewScale}px`,
-                                    position: 'relative'
-                                }}>
-                                    <div style={{
-                                        position: 'absolute',
-                                        width: '1000px',
-                                        height: '495px',
-                                        transform: `scale(${previewScale})`,
-                                        transformOrigin: 'top left',
-                                    }}>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="relative w-full aspect-[1000/495] overflow-hidden">
+                                    <div className="absolute inset-0">
                                         <CodeRenderer html={ortmannsCardData.frontSideCode} />
                                     </div>
                                 </div>
-                                <div style={{ 
-                                    width: `${1000 * previewScale}px`, 
-                                    height: `${495 * previewScale}px`,
-                                    position: 'relative'
-                                }}>
-                                     <div style={{
-                                        position: 'absolute',
-                                        width: '1000px',
-                                        height: '495px',
-                                        transform: `scale(${previewScale})`,
-                                        transformOrigin: 'top left',
-                                    }} className="bg-accent/95 text-left text-background">
+                                <div className="relative w-full aspect-[1000/495] overflow-hidden rounded-lg bg-accent/95 text-left text-background">
+                                    <div className="absolute inset-0">
                                         <CodeRenderer html={ortmannsCardData.backSideCode} />
                                     </div>
                                 </div>
@@ -153,4 +130,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
