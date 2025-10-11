@@ -56,9 +56,7 @@ const staffData = [
 export async function seedStaffData() {
   let app: App | undefined;
   try {
-    // Generate a unique app name for each invocation.
     const appName = `firebase-admin-seed-${Date.now()}`;
-    // Initialize the app within the function scope.
     app = initializeApp({}, appName);
     
     const db = getFirestore(app);
@@ -71,23 +69,22 @@ export async function seedStaffData() {
 
     const batch = db.batch();
 
-    for (const member of staffData) {
+    staffData.forEach(member => {
         const docRef = staffCollection.doc();
         batch.set(docRef, {
             ...member,
             id: docRef.id,
             createdAt: new Date(),
         });
-    }
+    });
 
     await batch.commit();
     return { success: true, count: staffData.length };
   } catch (error: any) {
-    console.error('Error seeding database:', error);
-    // Ensure the error message is a plain string.
-    return { success: false, error: error.message || 'Ein unbekannter Fehler ist aufgetreten.' };
+    console.error('Detaillierter Fehler beim Seeding:', JSON.stringify(error, null, 2));
+    const errorMessage = `Fehlerdetails: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`;
+    return { success: false, error: errorMessage };
   } finally {
-    // Always clean up the app instance.
     if (app) {
       await deleteApp(app);
     }
