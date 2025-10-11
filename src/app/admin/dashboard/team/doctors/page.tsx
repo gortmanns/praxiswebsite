@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
@@ -64,14 +64,20 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="border-dashed border-2 border-muted rounded-lg debug-grid">
+                    <div className="w-full border-dashed border-2 border-muted rounded-lg debug-grid">
                         {ortmannsCardData && (
                             <div className="grid grid-cols-2 gap-2.5">
-                                <div className="relative w-full aspect-[1000/495] overflow-hidden rounded-lg shadow-sm">
-                                    <CodeRenderer html={ortmannsCardData.frontSideCode} />
+                                <div className="relative aspect-[1000/495] w-full overflow-hidden">
+                                    <div className="absolute top-0 left-0 origin-top-left" style={{ width: '1000px', height: '495px', transform: 'scale(calc(100% / 1000))' }}>
+                                        <CodeRenderer html={ortmannsCardData.frontSideCode} />
+                                    </div>
                                 </div>
-                                <div className="relative w-full aspect-[1000/495] overflow-auto rounded-lg shadow-sm bg-accent/95 text-left text-background">
-                                     <CodeRenderer html={ortmannsCardData.backSideCode} />
+                                <div className="relative aspect-[1000/495] w-full overflow-hidden bg-accent/95">
+                                    <div className="absolute top-0 left-0 origin-top-left" style={{ width: '1000px', height: '495px', transform: 'scale(calc(100% / 1000))' }}>
+                                        <div className="h-full w-full bg-accent/95 text-left text-background">
+                                            <CodeRenderer html={ortmannsCardData.backSideCode} />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         )}
