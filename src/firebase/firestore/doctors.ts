@@ -19,7 +19,7 @@ export type DoctorData = {
 };
 
 // Create or OVERWRITE a doctor document in Firestore
-export function addDoctor(firestore: Firestore, doctorData: DoctorData, docId: string) {
+export async function addDoctor(firestore: Firestore, doctorData: DoctorData, docId: string) {
     const docRef = doc(firestore, 'doctors', docId);
 
     const finalDoctorData = {
@@ -28,38 +28,36 @@ export function addDoctor(firestore: Firestore, doctorData: DoctorData, docId: s
         updatedAt: serverTimestamp(),
     };
     
-    // Using setDoc with a specific ID will create or overwrite the document.
-    // No await, chain .catch for non-blocking error handling
-    setDoc(docRef, finalDoctorData)
-        .catch(error => {
-            const contextualError = new FirestorePermissionError({
-                path: docRef.path,
-                operation: 'write',
-                requestResourceData: finalDoctorData,
-            });
-            console.error("Firestore Error in addDoctor:", error, contextualError.message);
-            errorEmitter.emit('permission-error', contextualError);
-            // Re-throw or handle as needed for UI feedback
-            throw contextualError; 
+    try {
+        await setDoc(docRef, finalDoctorData);
+    } catch (error) {
+        const contextualError = new FirestorePermissionError({
+            path: docRef.path,
+            operation: 'write',
+            requestResourceData: finalDoctorData,
         });
+        console.error("Firestore Error in addDoctor:", error, contextualError.message);
+        errorEmitter.emit('permission-error', contextualError);
+        throw contextualError; 
+    }
 }
 
 // Update an existing doctor document
-export function updateDoctor(firestore: Firestore, id: string, data: Partial<DoctorData>) {
+export async function updateDoctor(firestore: Firestore, id: string, data: Partial<DoctorData>) {
     const doctorRef = doc(firestore, 'doctors', id);
     
     const updateData: { [key: string]: any } = { ...data, updatedAt: serverTimestamp() };
 
-    // No await, chain .catch for non-blocking error handling
-    return updateDoc(doctorRef, updateData)
-        .catch(error => {
-            const contextualError = new FirestorePermissionError({
-                path: doctorRef.path,
-                operation: 'update',
-                requestResourceData: updateData,
-            });
-            console.error("Firestore Error in updateDoctor:", error, contextualError.message);
-            errorEmitter.emit('permission-error', contextualError);
-            throw contextualError;
+    try {
+        await updateDoc(doctorRef, updateData);
+    } catch (error) {
+        const contextualError = new FirestorePermissionError({
+            path: doctorRef.path,
+            operation: 'update',
+            requestResourceData: updateData,
         });
+        console.error("Firestore Error in updateDoctor:", error, contextualError.message);
+        errorEmitter.emit('permission-error', contextualError);
+        throw contextualError;
+    }
 }
