@@ -56,12 +56,16 @@ const staffData = [
 export async function seedStaffData() {
   let app: App | undefined;
   try {
+    // Generate a unique app name for each invocation to ensure a fresh instance.
     const appName = `firebase-admin-seed-${Date.now()}`;
+    
+    // Initialize a new Firebase Admin app instance for this function call.
     app = initializeApp({}, appName);
     
     const db = getFirestore(app);
     const staffCollection = db.collection('staff');
 
+    // Check if the collection is already seeded.
     const snapshot = await staffCollection.limit(1).get();
     if (!snapshot.empty) {
       return { success: true, count: 0, message: 'Die Sammlung ist nicht leer. Das Seeding wurde übersprungen.' };
@@ -73,18 +77,20 @@ export async function seedStaffData() {
         const docRef = staffCollection.doc();
         batch.set(docRef, {
             ...member,
-            id: docRef.id,
+            id: docRef.id, // Explicitly set the ID within the document.
             createdAt: new Date(),
         });
     });
 
     await batch.commit();
+    
     return { success: true, count: staffData.length };
   } catch (error: any) {
     console.error('Detaillierter Fehler beim Seeding:', JSON.stringify(error, null, 2));
     const errorMessage = `Fehlerdetails: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`;
     return { success: false, error: errorMessage };
   } finally {
+    // Crucially, delete the app instance to clean up resources and prevent token issues.
     if (app) {
       await deleteApp(app);
     }
