@@ -5,7 +5,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, setDoc, doc, writeBatch } from 'firebase/firestore';
+import { collection, query, orderBy, setDoc, doc, writeBatch, deleteDoc } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { TextEditDialog } from './_components/text-edit-dialog';
@@ -17,7 +17,7 @@ import { ImageCropDialog } from './_components/image-crop-dialog';
 import { LogoFunctionSelectDialog } from './_components/logo-function-select-dialog';
 import { cn } from '@/lib/utils';
 import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
-import { ChevronUp, ChevronDown, Pencil, EyeOff, Globe, Image as ImageIcon, User, Info } from 'lucide-react';
+import { ChevronUp, ChevronDown, Pencil, EyeOff, Eye, Globe, Image as ImageIcon, User, Info, Trash2 } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -30,6 +30,7 @@ export interface Doctor {
     frontSideCode: string;
     backSideCode: string;
     languages?: string[];
+    hidden?: boolean;
     [key: string]: any;
 }
 
@@ -131,15 +132,15 @@ export default function DoctorsPage() {
                 .template-card .gap-2 { gap: 0.5rem; }
                 .template-card .object-contain { object-fit: contain; }
                 .template-card .object-cover { object-fit: cover; }
-                 .template-card .bg-muted { background-color: hsl(var(--muted)); }
+                .template-card .bg-muted { background-color: hsl(var(--muted)); }
                 .template-card .text-muted-foreground { color: hsl(var(--muted-foreground)); }
                 .template-card .text-center { text-align: center; }
                 .template-card .mt-2 { margin-top: 0.5rem; }
             </style>
              <div class="template-card w-full h-full bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
-                    <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
-                        <button id="edit-image" class="image-button h-full w-full bg-muted text-muted-foreground p-4 flex flex-col items-center justify-center">
+                    <div id="image-container" class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
+                        <button id="edit-image" class="image-button w-full h-full p-4 flex flex-col items-center justify-center text-muted-foreground bg-muted">
                             <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="font-bold"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                             <span class="mt-2 text-sm font-bold">Zum Ändern anklicken</span>
                         </button>
@@ -161,8 +162,8 @@ export default function DoctorsPage() {
                                 <button id="edit-qual3" class="w-full text-left"><p>Qualifikation 3</p></button>
                                 <button id="edit-qual4" class="w-full text-left"><p>Qualifikation 4</p></button>
                             </div>
-                            <div id="position-container" class="mt-6">
-                                <button id="edit-position" class="w-full text-left"><p class="text-base">Position oder Logo</p></button>
+                             <div id="position-container" class="mt-6">
+                                <button id="edit-position"><div class="w-full text-left"><p class="text-base">Position oder Logo</p></div></button>
                             </div>
                         </div>
                         <div id="language-container" class="absolute bottom-0 right-0 flex items-center gap-2">
@@ -175,7 +176,11 @@ export default function DoctorsPage() {
             <style>
                 .vita-content { color: hsl(var(--background)); }
                 .vita-content p { margin: 0; }
+                .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; }
+                .vita-content li { margin-bottom: 0.5em; }
                 .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
+                .vita-content .is-small { font-size: 0.8em; font-weight: normal; }
+                .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }
             </style>
             <div class="w-full h-full">
                 <button id="edit-vita" class="w-full h-full text-left">
@@ -290,18 +295,10 @@ export default function DoctorsPage() {
         const doc = parser.parseFromString(exampleDoctor.frontSideCode, 'text/html');
         
         if (field === 'image') {
-          const targetButton = doc.getElementById(`edit-image`);
-          if (targetButton) {
-            const parent = targetButton.parentElement;
-            if(parent) {
-                targetButton.remove();
-                const img = doc.createElement('img');
-                img.src = croppedImageUrl;
-                img.alt = "Portrait";
-                img.className = "h-full w-full object-cover";
-                parent.appendChild(img);
+            const imageContainer = doc.getElementById('image-container');
+            if(imageContainer) {
+                 imageContainer.innerHTML = `<button id="edit-image" class="w-full h-full"><img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-cover" /></button>`;
             }
-          }
         } else {
           const positionContainer = doc.getElementById('position-container');
            if (positionContainer) {
@@ -319,28 +316,52 @@ export default function DoctorsPage() {
     };
 
     const handleVitaSave = (newVita: string) => {
-        if (activeDoctor === 'template') {
+        let contentToSave = newVita;
+        
+        // Wrap the content in a button if it's for the template
+        if (activeDoctor === 'template' || (typeof activeDoctor === 'object' && !newVita.includes('<button id="edit-vita"'))) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(newVita, 'text/html');
             const button = doc.createElement('button');
             button.id = 'edit-vita';
             button.className = 'w-full h-full text-left';
-            while(doc.body.firstChild) {
-                button.appendChild(doc.body.firstChild);
-            }
+            
+            const style = doc.createElement('style');
+            style.innerHTML = `
+                .vita-content { color: hsl(var(--background)); }
+                .vita-content p { margin: 0; }
+                .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; }
+                .vita-content li { margin-bottom: 0.5em; }
+                .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
+                .vita-content .is-small { font-size: 0.8em; font-weight: normal; }
+                .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }
+            `;
+            
+            const contentDiv = doc.createElement('div');
+            contentDiv.className = 'vita-content p-8 w-full h-full';
+            contentDiv.innerHTML = newVita;
+
+            button.appendChild(style);
+            button.appendChild(contentDiv);
+            
             const wrapperDiv = doc.createElement('div');
             wrapperDiv.className = "w-full h-full";
             wrapperDiv.appendChild(button);
 
+            contentToSave = wrapperDiv.innerHTML;
+        }
+
+        if (activeDoctor === 'template') {
             setExampleDoctor(prev => ({
                 ...prev,
-                backSideCode: wrapperDiv.innerHTML,
+                backSideCode: contentToSave,
             }));
         } else if (firestore && activeDoctor && typeof activeDoctor === 'object') {
              const docRef = doc(firestore, 'doctors', activeDoctor.id);
-             setDoc(docRef, { backSideCode: newVita }, { merge: true });
+             setDoc(docRef, { backSideCode: contentToSave }, { merge: true });
         }
     };
+
 
     const handleTextSave = (newValue: string) => {
         const field = dialogState.data.field;
@@ -379,26 +400,20 @@ export default function DoctorsPage() {
     };
     
     useEffect(() => {
-        let currentDoctor = activeDoctor === 'template' ? exampleDoctor : null;
-        if (typeof activeDoctor === 'object') {
-            currentDoctor = activeDoctor;
+        let currentDoctor: Doctor | null = null;
+        if (activeDoctor === 'template') {
+          currentDoctor = exampleDoctor;
+        } else if (typeof activeDoctor === 'object') {
+          currentDoctor = dbDoctors?.find(d => d.id === activeDoctor.id) || null;
         }
-
+        
         if (!currentDoctor) return;
-    
+        
         const flagComponents: Record<string, React.FC<{ className?: string }>> = { de: DeFlag, en: EnFlag, fr: FrFlag, it: ItFlag, es: EsFlag, pt: PtFlag, ru: RuFlag, sq: SqFlag, ar: ArFlag, bs: BsFlag, zh: ZhFlag, da: DaFlag, fi: FiFlag, el: ElFlag, he: HeFlag, hi: HiFlag, ja: JaFlag, ko: KoFlag, hr: HrFlag, nl: NlFlag, no: NoFlag, fa: FaFlag, pl: PlFlag, pa: PaFlag, ro: RoFlag, sv: SvFlag, sr: SrFlag, ta: TaFlag, cs: CsFlag, tr: TrFlag, uk: UkFlag, hu: HuFlag, ur: UrFlag };
         
-        const langToFlagHtml: Record<string, string> = {};
-        for(const lang in flagComponents) {
-            const FlagComponent = flagComponents[lang];
-            if (FlagComponent) {
-                 langToFlagHtml[lang] = renderToStaticMarkup(React.createElement(FlagComponent, { className: "h-5 w-auto rounded-sm shadow-md" }));
-            }
-        }
-
         const languages = currentDoctor.languages || [];
-        
         const languageOrder = ['de', 'fr', 'it', 'en', 'es', 'pt', 'ru'];
+
         const sortedLangs = [...languages].sort((a, b) => {
             const indexA = languageOrder.indexOf(a);
             const indexB = languageOrder.indexOf(b);
@@ -408,8 +423,11 @@ export default function DoctorsPage() {
             return a.localeCompare(b);
         });
 
-        const flagsHtml = sortedLangs.map(lang => langToFlagHtml[lang] || '').join('');
-        
+        const flagsHtml = sortedLangs.map(lang => {
+            const FlagComponent = flagComponents[lang];
+            return FlagComponent ? renderToStaticMarkup(React.createElement(FlagComponent, { className: "h-5 w-auto rounded-sm shadow-md" })) : '';
+        }).join('');
+
         const buttonHtml = `<button id="edit-languages" style="display: flex; align-items: center; gap: 0.5rem; height: 2rem; padding: 0 0.75rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem;" onmouseover="this.style.backgroundColor='hsl(var(--primary) / 0.9)'" onmouseout="this.style.backgroundColor='hsl(var(--primary))'">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
             <span>Sprachen</span>
@@ -418,24 +436,22 @@ export default function DoctorsPage() {
         const newHtml = `${buttonHtml}${flagsHtml}`;
         
         const parser = new DOMParser();
-        const doc = parser.parseFromString(exampleDoctor.frontSideCode, 'text/html');
+        const doc = parser.parseFromString(currentDoctor.frontSideCode, 'text/html');
         const langContainer = doc.getElementById('language-container');
-        if (langContainer) {
+        
+        if (langContainer && langContainer.innerHTML !== newHtml) {
             langContainer.innerHTML = newHtml;
-        }
+            const updatedCode = doc.body.innerHTML;
 
-        const updatedCode = doc.body.innerHTML;
-
-        if (activeDoctor === 'template') {
-            setExampleDoctor(prev => ({
-                ...prev,
-                frontSideCode: updatedCode,
-            }));
-        } else if (firestore && activeDoctor && typeof activeDoctor === 'object' && activeDoctor.frontSideCode !== updatedCode) {
-            const docRef = doc(firestore, 'doctors', activeDoctor.id);
-            setDoc(docRef, { frontSideCode: updatedCode }, { merge: true });
+            if (activeDoctor === 'template') {
+                setExampleDoctor(prev => ({ ...prev, frontSideCode: updatedCode }));
+            } else if (firestore && typeof activeDoctor === 'object') {
+                const docRef = doc(firestore, 'doctors', activeDoctor.id);
+                setDoc(docRef, { frontSideCode: updatedCode }, { merge: true });
+            }
         }
-    }, [exampleDoctor.languages, activeDoctor, firestore]);
+    }, [exampleDoctor.languages, activeDoctor, dbDoctors, firestore]);
+
 
     const doctorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
@@ -444,39 +460,53 @@ export default function DoctorsPage() {
 
     const { data: dbDoctors, isLoading: isLoadingDbDoctors, error: dbError } = useCollection<Doctor>(doctorsQuery);
 
-    const handleMove = async (doctorId: string, currentOrder: number, direction: 'up' | 'down') => {
+    const handleMove = async (doctorId: string, direction: 'up' | 'down') => {
         if (!dbDoctors || !firestore) return;
     
-        const currentIndex = dbDoctors.findIndex(doc => doc.id === doctorId);
-        if (currentIndex === -1) return;
+        const visibleDoctors = dbDoctors.filter(d => !d.hidden);
+        const currentIndex = visibleDoctors.findIndex(doc => doc.id === doctorId);
     
-        let otherIndex = -1;
-        if (direction === 'up') {
-            if (currentIndex === 0) return; // Already at the top
-            otherIndex = currentIndex - 1;
-        } else {
-            if (currentIndex === dbDoctors.length - 1) return; // Already at the bottom
-            otherIndex = currentIndex + 1;
+        if (direction === 'up' && currentIndex > 0) {
+            const doc1 = visibleDoctors[currentIndex];
+            const doc2 = visibleDoctors[currentIndex - 1];
+            const batch = writeBatch(firestore);
+            const doc1Ref = doc(firestore, 'doctors', doc1.id);
+            const doc2Ref = doc(firestore, 'doctors', doc2.id);
+            batch.update(doc1Ref, { order: doc2.order });
+            batch.update(doc2Ref, { order: doc1.order });
+            await batch.commit();
+        } else if (direction === 'down' && currentIndex < visibleDoctors.length - 1) {
+            const doc1 = visibleDoctors[currentIndex];
+            const doc2 = visibleDoctors[currentIndex + 1];
+            const batch = writeBatch(firestore);
+            const doc1Ref = doc(firestore, 'doctors', doc1.id);
+            const doc2Ref = doc(firestore, 'doctors', doc2.id);
+            batch.update(doc1Ref, { order: doc2.order });
+            batch.update(doc2Ref, { order: doc1.order });
+            await batch.commit();
         }
-    
-        const doctor1 = dbDoctors[currentIndex];
-        const doctor2 = dbDoctors[otherIndex];
-    
-        const batch = writeBatch(firestore);
-    
-        const doc1Ref = doc(firestore, 'doctors', doctor1.id);
-        batch.update(doc1Ref, { order: doctor2.order });
-    
-        const doc2Ref = doc(firestore, 'doctors', doctor2.id);
-        batch.update(doc2Ref, { order: doctor1.order });
-    
-        await batch.commit();
     };
 
     const handleEdit = (doctor: Doctor) => {
         setActiveDoctor('template');
         setExampleDoctor(doctor);
     };
+
+    const handleDelete = async (doctorId: string) => {
+        if (!firestore) return;
+        const docRef = doc(firestore, 'doctors', doctorId);
+        await deleteDoc(docRef);
+        setDialogState({ type: null, data: {} });
+    };
+
+    const handleToggleHidden = async (doctor: Doctor) => {
+        if (!firestore) return;
+        const docRef = doc(firestore, 'doctors', doctor.id);
+        await setDoc(docRef, { hidden: !doctor.hidden }, { merge: true });
+    };
+
+    const visibleDoctors = useMemo(() => dbDoctors?.filter(d => !d.hidden) || [], [dbDoctors]);
+    const hiddenDoctors = useMemo(() => dbDoctors?.filter(d => d.hidden) || [], [dbDoctors]);
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -509,7 +539,7 @@ export default function DoctorsPage() {
                     </div>
 
                     <div className="mt-8 space-y-4">
-                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Datenbank Ärztekarten</h3>
+                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Ärztekarten</h3>
                          <p className="text-sm text-muted-foreground">
                             Dieser Bereich zeigt die Karten so an, wie sie live aus der Firestore-Datenbank geladen werden.
                         </p>
@@ -526,18 +556,18 @@ export default function DoctorsPage() {
                             ))
                         )}
                         {dbError && <p className="text-destructive">Fehler beim Laden der Daten: {dbError.message}</p>}
-                        {!isLoadingDbDoctors && dbDoctors?.map((doctor, index) => (
+                        {!isLoadingDbDoctors && visibleDoctors.map((doctor, index) => (
                             <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
                                 <div className="flex w-36 flex-shrink-0 flex-col items-center justify-center gap-2">
-                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, doctor.order, 'up')} disabled={index === 0}>
+                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'up')} disabled={index === 0}>
                                         <ChevronUp className="h-4 w-4" />
                                         <span className="sr-only">Nach oben</span>
                                     </Button>
-                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, doctor.order, 'down')} disabled={index === dbDoctors.length - 1}>
+                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'down')} disabled={index === visibleDoctors.length - 1}>
                                         <ChevronDown className="h-4 w-4" />
                                         <span className="sr-only">Nach unten</span>
                                     </Button>
-                                    <Button variant="outline" size="icon" onClick={() => {}}>
+                                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)}>
                                         <EyeOff className="h-4 w-4" />
                                         <span className="sr-only">Ausblenden</span>
                                     </Button>
@@ -555,6 +585,34 @@ export default function DoctorsPage() {
                             </div>
                         ))}
                     </div>
+
+                    {hiddenDoctors.length > 0 && (
+                        <>
+                            <div className="mt-16 space-y-4">
+                                <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Ärztekarten</h3>
+                            </div>
+                            <div className="mt-8 space-y-12">
+                                {hiddenDoctors.map((doctor) => (
+                                    <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
+                                        <div className="flex w-36 flex-shrink-0 flex-col items-center justify-center gap-2">
+                                            <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)}>
+                                                <Eye className="h-4 w-4" />
+                                                <span className="sr-only">Einblenden</span>
+                                            </Button>
+                                            <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name } })}>
+                                                <Trash2 className="h-4 w-4" />
+                                                <span className="sr-only">Löschen</span>
+                                            </Button>
+                                        </div>
+                                        <div className="relative flex-1 w-full max-w-[1000px] p-2 grayscale">
+                                            <EditableDoctorCard doctor={doctor} onVitaClick={() => {}} />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    )}
+
                 </CardContent>
             </Card>
 
@@ -582,7 +640,7 @@ export default function DoctorsPage() {
                 <LanguageSelectDialog
                     isOpen={true}
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
-                    initialLanguages={(activeDoctor === 'template' ? exampleDoctor.languages : (typeof activeDoctor === 'object' && activeDoctor.languages)) || []}
+                    initialLanguages={(activeDoctor === 'template' ? exampleDoctor.languages : (typeof activeDoctor === 'object' ? (dbDoctors?.find(d => d.id === activeDoctor.id)?.languages || []) : []))}
                     onSave={handleLanguageSave}
                 />
             )}
@@ -645,7 +703,26 @@ export default function DoctorsPage() {
                     onClose={() => setDialogState({ type: null, data: {} })}
                 />
             )}
+
+            {dialogState.type === 'deleteConfirm' && (
+                <AlertDialog open={true} onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Sind Sie sicher?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Möchten Sie die Karte für <strong>{dialogState.data.doctorName}</strong> wirklich endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDelete(dialogState.data.doctorId)} className={cn(buttonVariants({ variant: "destructive" }))}>Löschen</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            )}
         </div>
     );
 }
 
+
+    

@@ -9,7 +9,9 @@
         "order": { "type": "number", "description": "Display order of the doctor." },
         "name": { "type": "string", "description": "The full name of the doctor." },
         "frontSideCode": { "type": "string", "description": "HTML code for the front side of the doctor card." },
-        "backSideCode": { "type": "string", "description": "HTML code for the back side of the doctor card." }
+        "backSideCode": { "type": "string", "description": "HTML code for the back side of the doctor card." },
+        "languages": { "type": "array", "items": { "type": "string" }, "description": "Languages spoken by the doctor." },
+        "hidden": { "type": "boolean", "description": "Whether the doctor card is hidden." }
       },
       "required": ["id", "name", "order", "frontSideCode", "backSideCode"]
     }
