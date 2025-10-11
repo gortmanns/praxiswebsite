@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useRef } from 'react';
@@ -232,7 +233,7 @@ export default function DoctorsPage() {
                             </div>
                             <div className="relative aspect-[1000/495] w-full transform-origin-top-left overflow-hidden bg-accent/95">
                                  <div className="absolute w-full h-full">
-                                    <CardHtmlRenderer html={exampleDoctor.backSideCode} />
+                                    <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" />
                                  </div>
                             </div>
                        </div>
@@ -379,4 +380,6 @@ export default function DoctorsPage() {
         </div>
     );
  
+    
+
     
