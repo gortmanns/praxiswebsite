@@ -27,7 +27,7 @@ export const PartnerCard: React.FC<Partner> = (props) => {
           rel="noopener noreferrer"
           className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
-          <Card className="flex h-full w-full items-center p-6">
+          <Card className="flex h-full w-full items-center bg-card p-6">
             <CardContent className="flex w-full items-center justify-center p-0">
                 {props.name === 'orthozentrum-bern' ? (
                     <OrthozentrumLogo className="h-24 w-auto" />
