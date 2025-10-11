@@ -117,6 +117,7 @@ export default function DoctorsPage() {
                 .template-card .right-0 { right: 0; }
                 .template-card .h-full { height: 100%; }
                 .template-card .w-full { width: 100%; }
+                .template-card .gap-2 { gap: 0.5rem; }
             </style>
             <div class="template-card group relative w-full h-full overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
@@ -156,9 +157,9 @@ export default function DoctorsPage() {
         `,
         backSideCode: `
             <style>
-                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: flex; align-items: flex-start; justify-content: flex-start; }
                 .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
-                .vita-content { color: hsl(var(--background)); text-align: left; width: 100%;}
+                .vita-content { color: hsl(var(--background)); text-align: left; width: 100%; }
                 .vita-content p { margin: 0; }
                 .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
             </style>
@@ -234,7 +235,7 @@ export default function DoctorsPage() {
                     openDialog('vita', { initialValue: '' });
                     break;
                 case 'languages':
-                    openDialog('language', { initialLanguages: [] });
+                    openDialog('language', { initialLanguages: ['de'] });
                     break;
                 case 'image':
                     openDialog('imageSource', {});
