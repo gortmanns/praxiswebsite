@@ -55,7 +55,14 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string; onClick?: (
         window.addEventListener('resize', handleResize);
 
         const sidebar = document.querySelector('[data-sidebar="sidebar"]');
-        if (!sidebar) return;
+        if (!sidebar) {
+            const observer = new MutationObserver(handleResize);
+            observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+             return () => {
+                window.removeEventListener('resize', handleResize);
+                observer.disconnect();
+            };
+        }
         
         const observer = new MutationObserver(handleResize);
         observer.observe(sidebar, { attributes: true, attributeFilter: ['style', 'class', 'data-state'] });
@@ -376,7 +383,11 @@ export default function DoctorsPage() {
     };
 
     const handleCropComplete = async (croppedImageUrl: string) => {
-        if (!storage) return;
+        if (!storage) {
+            console.error("Storage service not available");
+            setDialogState({ type: null, data: {} });
+            return;
+        }
 
         const field = dialogState.data.field || 'image';
         const imagePath = `doctors/${uuidv4()}.jpg`;
@@ -386,32 +397,31 @@ export default function DoctorsPage() {
             const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
             const downloadURL = await getDownloadURL(snapshot.ref);
 
-            setEditorCardState(prev => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(prev.frontSideCode, 'text/html');
-                
-                if (field === 'image') {
-                    const imageContainer = doc.getElementById('image-container');
-                    if (imageContainer) {
-                         imageContainer.innerHTML = `
-                            <button id="edit-image" class="image-button-background w-full h-full relative">
-                                <img src="${downloadURL}" alt="Portrait" class="h-full w-full object-cover relative" />
-                            </button>`;
-                    }
-                } else {
-                    const positionContainer = doc.getElementById('position-container');
-                     if (positionContainer) {
-                        positionContainer.innerHTML = `
-                            <button id="edit-position" class="image-button-background">
-                                <div class="relative">
-                                    <img src="${downloadURL}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
-                                </div>
-                            </button>`;
-                    }
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
+            
+            if (field === 'image') {
+                const imageContainer = doc.getElementById('image-container');
+                if (imageContainer) {
+                    imageContainer.innerHTML = `
+                        <button id="edit-image" class="image-button-background w-full h-full relative">
+                            <img src="${downloadURL}" alt="Portrait" class="h-full w-full object-cover relative" />
+                        </button>`;
                 }
-                
-                return { ...prev, frontSideCode: doc.body.innerHTML };
-            });
+            } else { // 'position' field
+                const positionContainer = doc.getElementById('position-container');
+                if (positionContainer) {
+                    positionContainer.innerHTML = `
+                        <button id="edit-position" class="image-button-background">
+                            <div class="relative">
+                                <img src="${downloadURL}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
+                            </div>
+                        </button>`;
+                }
+            }
+            
+            const updatedHtml = doc.body.innerHTML;
+            setEditorCardState(prev => ({ ...prev, frontSideCode: updatedHtml }));
         
         } catch (error) {
             console.error("Error uploading image: ", error);
@@ -552,7 +562,9 @@ export default function DoctorsPage() {
         } else {
             // Create new document
             const highestOrder = dbDoctors.reduce((max, doc) => doc.order > max ? doc.order : max, 0);
+            const { id, ...restOfEditorState } = editorCardState;
             const newDoctorData: Omit<Doctor, 'id'> = {
+                ...restOfEditorState,
                 name: editorCardState.name === 'Template' ? 'Neuer Arzt' : editorCardState.name,
                 frontSideCode: finalCardData.frontSideCode,
                 backSideCode: finalCardData.backSideCode,
@@ -584,11 +596,13 @@ export default function DoctorsPage() {
     const hiddenDoctors = useMemo(() => dbDoctors?.filter(d => d.hidden) || [], [dbDoctors]);
 
     useEffect(() => {
-        const currentDoc = dbDoctors?.find(d => d.id === editingDoctorId);
-        if (currentDoc) {
-            setEditorCardState(currentDoc);
-        } else if (editingDoctorId === null) {
+        if (!editingDoctorId) {
             setEditorCardState(initialExampleDoctorState);
+        } else {
+            const currentDoc = dbDoctors?.find(d => d.id === editingDoctorId);
+            if (currentDoc) {
+                setEditorCardState(currentDoc);
+            }
         }
     }, [editingDoctorId, dbDoctors, initialExampleDoctorState]);
 
