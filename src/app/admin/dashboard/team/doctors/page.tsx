@@ -89,7 +89,6 @@ export default function DoctorsPage() {
         if (!firestore) return null;
         return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
     }, [firestore]);
-
     const { data: dbDoctors, isLoading: isLoadingDbDoctors, error: dbError } = useCollection<Doctor>(doctorsQuery);
 
     const [dialogState, setDialogState] = useState<{
@@ -145,11 +144,12 @@ export default function DoctorsPage() {
                 .template-card .text-center { text-align: center; }
                 .template-card .mt-2 { margin-top: 0.5rem; }
                 .template-card .font-extrabold { font-weight: 800; }
+                .template-card .bg-white { background-color: white; }
             </style>
              <div class="template-card w-full h-full bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
                     <div id="image-container" class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
-                        <button id="edit-image" class="image-button w-full h-full flex flex-col items-center justify-center text-center p-4 text-muted-foreground bg-muted">
+                        <button id="edit-image" class="image-button w-full h-full flex flex-col items-center justify-center text-center p-4 text-muted-foreground">
                             <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="font-extrabold"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                             <span class="mt-2 text-sm font-bold">Zum Ändern klicken</span>
                         </button>
@@ -307,9 +307,8 @@ export default function DoctorsPage() {
         if (field === 'image') {
             const imageContainer = doc.getElementById('image-container');
             if(imageContainer) {
-                 imageContainer.innerHTML = `<button id="edit-image" class="w-full h-full relative">
-                    <div style="position: absolute; inset: 0; background-color: white;"></div>
-                    <img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-contain" style="position: relative; z-index: 1;" />
+                 imageContainer.innerHTML = `<button id="edit-image" class="w-full h-full relative bg-white">
+                    <img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-contain relative" />
                  </button>`;
             }
         } else {
@@ -317,9 +316,8 @@ export default function DoctorsPage() {
            if (positionContainer) {
              positionContainer.innerHTML = `<div class="mt-6">
                 <button id="edit-position">
-                    <div style="position: relative;">
-                        <div style="position: absolute; inset: 0; background-color: white;"></div>
-                        <img src="${croppedImageUrl}" alt="Logo" class="h-auto object-contain" style="max-width: 75%; position: relative; z-index: 1;" />
+                    <div class="relative bg-white">
+                        <img src="${croppedImageUrl}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
                     </div>
                 </button>
              </div>`;
@@ -647,8 +645,12 @@ export default function DoctorsPage() {
                                                 <Pencil className="h-4 w-4" />
                                                 <span className="sr-only">Bearbeiten</span>
                                             </Button>
+                                             <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name } })}>
+                                                <Trash2 className="h-4 w-4" />
+                                                <span className="sr-only">Löschen</span>
+                                            </Button>
                                         </div>
-                                        <div className="relative flex-1 w-full max-w-[1000px] p-2 grayscale">
+                                        <div className={cn("relative flex-1 w-full max-w-[1000px] p-2 rounded-lg border-2 grayscale", activeDoctor === doctor ? 'border-primary' : 'border-transparent')}>
                                             <EditableDoctorCard doctor={doctor} onVitaClick={() => {}} />
                                         </div>
                                     </div>
@@ -767,5 +769,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
-    
