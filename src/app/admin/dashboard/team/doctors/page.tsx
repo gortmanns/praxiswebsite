@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -9,10 +8,14 @@ import { RosenovCard } from '@/app/team/_components/doctors/rosenov-card';
 import { HerschelCard } from '@/app/team/_components/doctors/herschel-card';
 import { SlezakCard } from '@/app/team/_components/doctors/slezak-card';
 import { Button } from '@/components/ui/button';
-import { EyeOff, ArrowUp, ArrowDown, Info } from 'lucide-react';
+import { EyeOff, ArrowUp, ArrowDown, Info, Database } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useFirestore } from '@/firebase';
+import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
+import { addDoctor } from '@/firebase/firestore/doctors';
+import { useToast } from '@/hooks/use-toast';
 
 // Statische Definition der Ärzte für die Anzeige
 const doctors = [
@@ -26,6 +29,9 @@ const doctors = [
 export default function DoctorsPage() {
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
     const [status, setStatus] = useState<{ type: 'info', message: string } | null>(null);
+    const [isSavingToDb, setIsSavingToDb] = useState(false);
+    const firestore = useFirestore();
+    const { toast } = useToast();
 
     const handleEditClick = (doctorId: string, doctorName: string) => {
         setEditingDoctorId(doctorId);
@@ -35,6 +41,33 @@ export default function DoctorsPage() {
     const handleCancel = () => {
         setEditingDoctorId(null);
         setStatus(null);
+    };
+
+    const handleSaveAllToDb = async () => {
+        if (!firestore) {
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Firestore-Instanz nicht verfügbar.' });
+            return;
+        }
+        setIsSavingToDb(true);
+        try {
+            const promises = DOCTOR_CARDS_INITIAL_DATA.map(doctorData => 
+                addDoctor(firestore, doctorData, doctorData.id)
+            );
+            await Promise.all(promises);
+            toast({
+                title: "Erfolg",
+                description: "Alle 5 Ärztekarten wurden erfolgreich in der Datenbank gespeichert.",
+            });
+        } catch (error) {
+            console.error("Fehler beim Speichern der Karten in der Datenbank:", error);
+            toast({
+                variant: "destructive",
+                title: "Fehler beim Speichern",
+                description: "Die Karten konnten nicht in der Datenbank gespeichert werden. Details in der Konsole.",
+            });
+        } finally {
+            setIsSavingToDb(false);
+        }
     };
 
     const editingDoctor = doctors.find(d => d.id === editingDoctorId);
@@ -57,10 +90,18 @@ export default function DoctorsPage() {
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
             <Card className="w-full">
                 <CardHeader>
-                    <CardTitle className="text-primary">Ärzte verwalten</CardTitle>
-                    <CardDescription>
-                        Hier können Sie die Profile der Ärzte bearbeiten.
-                    </CardDescription>
+                    <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
+                        <div>
+                            <CardTitle className="text-primary">Ärzte verwalten</CardTitle>
+                            <CardDescription>
+                                Hier können Sie die Profile der Ärzte bearbeiten.
+                            </CardDescription>
+                        </div>
+                        <Button onClick={handleSaveAllToDb} disabled={isSavingToDb} className="w-full sm:w-auto">
+                            <Database className="mr-2 h-4 w-4" />
+                            {isSavingToDb ? 'Wird gespeichert...' : 'Alle Karten in DB speichern'}
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-4">

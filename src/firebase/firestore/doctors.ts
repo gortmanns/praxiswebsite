@@ -27,6 +27,7 @@ export async function addDoctor(firestore: Firestore, doctorData: DoctorData, do
         updatedAt: serverTimestamp(),
     };
     
+    // Using setDoc with a specific ID will create or overwrite the document.
     await setDoc(docRef, finalDoctorData);
 }
 
@@ -36,4 +37,5 @@ export async function updateDoctor(firestore: Firestore, id: string, data: Parti
     
     const updateData: { [key: string]: any } = { ...data, updatedAt: serverTimestamp() };
 
-    return await updateDoc(doctorRef, update
+    return await updateDoc(doctorRef, updateData);
+}
