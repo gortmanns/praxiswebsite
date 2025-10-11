@@ -47,11 +47,11 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string; onClick?: (
         const handleResize = () => calculateScale();
         window.addEventListener('resize', handleResize);
 
-        const observer = new MutationObserver(handleResize);
         const sidebar = document.querySelector('[data-sidebar="sidebar"]');
-        if(sidebar) {
-            observer.observe(sidebar, { attributes: true, attributeFilter: ['style', 'class'] });
-        }
+        if (!sidebar) return;
+        
+        const observer = new MutationObserver(handleResize);
+        observer.observe(sidebar, { attributes: true, attributeFilter: ['style', 'class', 'data-state'] });
         
         return () => {
             window.removeEventListener('resize', handleResize);
@@ -81,9 +81,8 @@ export default function DoctorsPage() {
         type: 'text' | 'vita' | 'language' | 'imageSource' | 'imageLibrary' | 'imageCrop' | 'logoFunction' | null;
         data: any;
     }>({ type: null, data: {} });
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
-    const exampleDoctor: Doctor = useMemo(() => ({
+    
+    const [exampleDoctor, setExampleDoctor] = useState<Doctor>({
         id: "template",
         name: "Template",
         order: 0,
@@ -172,7 +171,9 @@ export default function DoctorsPage() {
                 </div>
             </button>
         `
-    }), []);
+    });
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
     
     const projectImages = [
         '/images/luftbild.jpg',
@@ -212,9 +213,8 @@ export default function DoctorsPage() {
 
     const handleTemplateClick = (e: React.MouseEvent) => {
         let target = e.target as HTMLElement;
-        // Traverse up to find a button with an ID
         while (target && (!target.tagName || target.tagName.toLowerCase() !== 'button' || !target.id.startsWith('edit-'))) {
-            if (target.id === 'template-container') {
+            if (target.classList.contains('template-card')) {
                 target = null!;
                 break;
             }
@@ -248,7 +248,7 @@ export default function DoctorsPage() {
                 case 'qual2':
                 case 'qual3':
                 case 'qual4':
-                     openDialog('text', { title: `Feld bearbeiten`, label: 'Text', initialValue: '' });
+                    openDialog('text', { title: `Feld bearbeiten`, label: 'Text', initialValue: '' });
                     break;
             }
         }
@@ -263,6 +263,38 @@ export default function DoctorsPage() {
             reader.readAsDataURL(e.target.files[0]);
         }
         e.target.value = '';
+    };
+
+    const handleCropComplete = (croppedImageUrl: string) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(exampleDoctor.frontSideCode, 'text/html');
+        
+        const imageButton = doc.getElementById('edit-image');
+        if (imageButton) {
+            const newImageDiv = doc.createElement('div');
+            newImageDiv.id = 'edit-image'; // Keep the ID for future edits
+            newImageDiv.className = 'image-button'; // Keep classes for styling and interactions
+            newImageDiv.style.padding = '0'; // Remove padding to let image fill the space
+
+            const img = doc.createElement('img');
+            img.src = croppedImageUrl;
+            img.alt = "Portrait";
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'contain';
+            
+            newImageDiv.appendChild(img);
+            
+            imageButton.replaceWith(newImageDiv);
+        }
+        
+        const updatedHtml = doc.body.innerHTML;
+
+        setExampleDoctor(prev => ({
+            ...prev,
+            frontSideCode: updatedHtml,
+        }));
+        setDialogState({ type: null, data: {} });
     };
 
     const doctorsQuery = useMemoFirebase(() => {
@@ -426,10 +458,7 @@ export default function DoctorsPage() {
                 <ImageCropDialog
                     imageUrl={dialogState.data.imageUrl}
                     aspectRatio={dialogState.data.aspectRatio}
-                    onCropComplete={(croppedImageUrl) => {
-                        console.log('Cropped Image URL:', croppedImageUrl);
-                        setDialogState({ type: null, data: {} });
-                    }}
+                    onCropComplete={handleCropComplete}
                     onClose={() => setDialogState({ type: null, data: {} })}
                 />
             )}
