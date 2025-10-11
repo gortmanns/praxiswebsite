@@ -18,7 +18,7 @@ interface ImageCropDialogProps {
   imageUrl: string;
   onCropComplete: (croppedImageUrl: string) => void;
   onClose: () => void;
-  aspectRatio: number; // Aspect ratio is now mandatory
+  aspectRatio: number;
 }
 
 export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
@@ -37,6 +37,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
         onCropComplete(croppedCanvas.toDataURL('image/jpeg', 0.9));
       }
     }
+    onClose();
   };
 
   return (
@@ -46,19 +47,18 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
           <DialogTitle>Bild zuschneiden</DialogTitle>
         </DialogHeader>
         <div 
-          className="my-4 flex h-full justify-center bg-muted"
-          style={{ maxHeight: '600px' }}
+          className="my-4 flex justify-center bg-muted"
+          style={{ height: '600px' }}
         >
           <Cropper
-            key={aspectRatio} // Force re-initialization when aspectRatio changes
+            key={aspectRatio}
             ref={cropperRef}
             src={imageUrl}
-            style={{ height: '100%', width: '100%', maxWidth: '1000px' }}
-            // Cropper.js options
+            style={{ height: '100%', width: '100%' }}
             aspectRatio={aspectRatio}
             guides={false}
-            viewMode={1} // Restrict crop box to be within the canvas
-            autoCropArea={1} // Initialize crop box to 100% of the image
+            viewMode={1}
+            autoCropArea={1}
             background={false}
             responsive={true}
             checkOrientation={false}

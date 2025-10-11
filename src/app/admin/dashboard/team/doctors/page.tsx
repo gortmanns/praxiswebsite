@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
@@ -146,10 +147,12 @@ export default function DoctorsPage() {
                                 <button id="edit-position" class="w-full text-left"><p>Position oder Logo</p></button>
                             </div>
                         </div>
-                        <div class="absolute bottom-0 right-0">
-                            <button id="edit-languages" class="lang-button">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>
+                        <div class="absolute bottom-0 right-0 flex items-center gap-2">
+                             <button id="edit-languages" class="lang-button inline-flex items-center justify-center gap-2 h-8 px-3 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                                Sprachen
                             </button>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>
                         </div>
                     </div>
                 </div>
@@ -319,6 +322,7 @@ export default function DoctorsPage() {
             ...prev,
             backSideCode: updatedHtml,
         }));
+        setDialogState({ type: null, data: {} });
     };
 
     const handleTextSave = (newValue: string) => {
