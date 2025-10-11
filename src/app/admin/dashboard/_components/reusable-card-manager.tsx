@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, Upload, CheckCircle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useToast } from '@/hooks/use-toast';
 
 export interface BaseCardData {
     id: string;
@@ -48,6 +49,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     seedData,
 }: ReusableCardManagerProps<T>) {
     const firestore = useFirestore();
+    const { toast } = useToast();
 
     const dataQuery = useMemoFirebase(() => {
         if (!firestore) return null;
@@ -60,7 +62,6 @@ export function ReusableCardManager<T extends BaseCardData>({
     const [isCreatingNew, setIsCreatingNew] = useState(false);
     const [editorCardState, setEditorCardState] = useState<T>(initialCardState as T);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
-    const [alertState, setAlertState] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
     const [isSeeding, setIsSeeding] = useState(false);
 
 
@@ -70,29 +71,25 @@ export function ReusableCardManager<T extends BaseCardData>({
         setEditingCardId(card.id);
         setIsCreatingNew(false);
         setEditorCardState(card);
-        setAlertState(null);
     };
 
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
         setEditorCardState(initialCardState as T);
-        setAlertState(null);
     };
 
     const handleCancelEdit = () => {
         setEditingCardId(null);
         setIsCreatingNew(false);
-        setAlertState(null);
     };
     
     const handleSeedData = async () => {
         if (!firestore || !seedData || seedData.length === 0) {
-            setAlertState({ type: 'error', message: 'Keine Seed-Daten verfügbar oder Datenbankverbindung fehlgeschlagen.' });
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Keine Seed-Daten verfügbar oder Datenbankverbindung fehlgeschlagen.' });
             return;
         }
         setIsSeeding(true);
-        setAlertState(null);
         try {
             const batch = writeBatch(firestore);
             const collectionRef = collection(firestore, collectionName);
@@ -115,10 +112,10 @@ export function ReusableCardManager<T extends BaseCardData>({
                 batch.set(newDocRef, dataWithTimestampAndId);
             });
             await batch.commit();
-            setAlertState({ type: 'success', message: `${seedData.length} ${entityName}-Einträge erfolgreich geschrieben.` });
+            toast({ title: 'Erfolgreich', description: `${seedData.length} ${entityName}-Einträge erfolgreich geschrieben.` });
         } catch (error: any) {
             console.error('Seeding failed:', error);
-            setAlertState({ type: 'error', message: `Fehler beim Schreiben der Daten: ${error.message}` });
+            toast({ variant: 'destructive', title: 'Fehler', description: `Fehler beim Schreiben der Daten: ${error.message}` });
         } finally {
             setIsSeeding(false);
         }
@@ -127,7 +124,6 @@ export function ReusableCardManager<T extends BaseCardData>({
 
     const handleMove = async (cardId: string, direction: 'up' | 'down') => {
         if (!dbData || !firestore) return;
-        setAlertState(null);
 
         const visibleItems = dbData.filter(d => !d.hidden);
         const currentIndex = visibleItems.findIndex(item => item.id === cardId);
@@ -155,13 +151,12 @@ export function ReusableCardManager<T extends BaseCardData>({
 
     const handleToggleHidden = async (card: T) => {
         if (!firestore) return;
-        setAlertState(null);
         const docRef = doc(firestore, collectionName, card.id);
         try {
             await setDoc(docRef, { hidden: !card.hidden }, { merge: true });
         } catch (error: any) {
             console.error('Error toggling hidden state:', error);
-            setAlertState({ type: 'error', message: `Sichtbarkeit konnte nicht geändert werden: ${error.message}` });
+            toast({ variant: 'destructive', title: 'Fehler', description: `Sichtbarkeit konnte nicht geändert werden: ${error.message}` });
         }
     };
 
@@ -174,17 +169,17 @@ export function ReusableCardManager<T extends BaseCardData>({
         try {
             const docRef = doc(firestore, collectionName, deleteConfirmState.cardId);
             await deleteDoc(docRef);
-            setAlertState({ type: 'success', message: 'Karte wurde erfolgreich gelöscht.' });
+            toast({ title: 'Erfolgreich', description: 'Karte wurde erfolgreich gelöscht.' });
             setDeleteConfirmState({ isOpen: false });
         } catch (error) {
             console.error("Error deleting document: ", error);
-            setAlertState({ type: 'error', message: 'Karte konnte nicht gelöscht werden.' });
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Karte konnte nicht gelöscht werden.' });
         }
     };
 
     const handleSaveChanges = async () => {
         if (!firestore || !dbData) {
-            setAlertState({ type: 'error', message: 'Datenbankverbindung nicht verfügbar.' });
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Datenbankverbindung nicht verfügbar.' });
             return;
         }
 
@@ -196,7 +191,7 @@ export function ReusableCardManager<T extends BaseCardData>({
             if (editingCardId && !isCreatingNew) {
                 const docRef = doc(firestore, collectionName, editingCardId);
                 await setDoc(docRef, finalCardData, { merge: true });
-                setAlertState({ type: 'success', message: 'Änderungen erfolgreich gespeichert.' });
+                toast({ title: 'Erfolgreich', description: 'Änderungen erfolgreich gespeichert.' });
             } else {
                 const highestOrder = dbData.reduce((max, item) => item.order > max ? item.order : max, 0);
                 const collectionRef = collection(firestore, collectionName);
@@ -210,12 +205,12 @@ export function ReusableCardManager<T extends BaseCardData>({
                 };
                 await setDoc(newDocRef, newCardData); // Set the document with its ID
 
-                setAlertState({ type: 'success', message: `Neue ${entityName}-Karte erfolgreich erstellt.` });
+                toast({ title: 'Erfolgreich', description: `Neue ${entityName}-Karte erfolgreich erstellt.` });
             }
             handleCancelEdit();
         } catch (error: any) {
             console.error("Error saving changes: ", error);
-            setAlertState({ type: 'error', message: `Die Änderungen konnten nicht gespeichert werden: ${error.message}` });
+            toast({ variant: 'destructive', title: 'Fehler', description: `Die Änderungen konnten nicht gespeichert werden: ${error.message}` });
         }
     };
 
@@ -357,14 +352,6 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </Alert>
                         </div>
                     )}
-                    
-                    {alertState && (
-                        <Alert variant={alertState.type === 'error' ? 'destructive' : 'default'} className="mb-8">
-                             {alertState.type === 'success' ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
-                            <AlertTitle>{alertState.type === 'success' ? 'Erfolgreich' : 'Fehler'}</AlertTitle>
-                            <AlertDescription>{alertState.message}</AlertDescription>
-                        </Alert>
-                    )}
                      
                     {seedData && (
                         <Card className="mb-8">
@@ -457,4 +444,4 @@ export function ReusableCardManager<T extends BaseCardData>({
     );
 }
 
-    
+  
