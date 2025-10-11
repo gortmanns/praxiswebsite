@@ -42,9 +42,7 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string }> = ({ html
     }, [html]);
 
     return (
-        <div className={className}>
-             <div className="w-full h-full text-background" dangerouslySetInnerHTML={sanitizedHtml} />
-        </div>
+        <div className={className} dangerouslySetInnerHTML={sanitizedHtml} />
     );
 };
 
@@ -67,40 +65,36 @@ export default function DoctorsPage() {
                 .template-card button:hover:not(.image-button) { background-color: rgba(255,255,255,0.1); }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
-            <svg viewBox="0 0 1000 495" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" class="w-full h-full">
-                <foreignObject width="1000" height="495">
-                    <div class="template-card group relative w-full h-full overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline" xmlns="http://www.w3.org/1999/xhtml">
-                        <div class="flex h-full w-full items-start">
-                            <button id="edit-image" class="image-button relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted flex flex-col items-center justify-center text-center p-4 text-muted-foreground">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                <span class="mt-2 text-sm">Zum Ändern klicken</span>
-                            </button>
-                            <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
-                                <div>
-                                     <button id="edit-title" class="text-2xl font-bold text-primary p-1 -m-1">Titel</button>
-                                     <button id="edit-name" class="text-5xl font-bold text-primary my-2 p-1 -m-1">Name</button>
-                                     <button id="edit-specialty" class="text-xl font-bold p-1 -m-1">Spezialisierung</button>
-                                    <div class="mt-6 text-xl space-y-1">
-                                        <button id="edit-qual1" class="p-1 -m-1">Qualifikation 1</button>
-                                        <button id="edit-qual2" class="p-1 -m-1">Qualifikation 2</button>
-                                        <button id="edit-qual3" class="p-1 -m-1">Qualifikation 3</button>
-                                        <button id="edit-qual4" class="p-1 -m-1">Qualifikation 4</button>
-                                    </div>
-                                    <div class="mt-6 text-base">
-                                        <button id="edit-position" class="p-1 -m-1">Position oder Logo</button>
-                                    </div>
-                                </div>
-                                <div class="absolute bottom-0 right-0">
-                                   <button id="edit-languages" class="inline-flex items-center justify-center gap-2 h-10 px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6-6 6"/><path d="m12 4-6 6 6 6"/><path d="m19 12-6-6 6-6"/></svg>
-                                        Sprachen
-                                    </button>
-                                </div>
+            <div class="template-card group relative w-full h-full overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline" xmlns="http://www.w3.org/1999/xhtml">
+                <div class="flex h-full w-full items-start">
+                    <button id="edit-image" class="image-button relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted flex flex-col items-center justify-center text-center p-4 text-muted-foreground">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span class="mt-2 text-sm">Zum Ändern klicken</span>
+                    </button>
+                    <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
+                        <div>
+                                <button id="edit-title" class="text-2xl font-bold text-primary p-1 -m-1">Titel</button>
+                                <button id="edit-name" class="text-5xl font-bold text-primary my-2 p-1 -m-1">Name</button>
+                                <button id="edit-specialty" class="text-xl font-bold p-1 -m-1">Spezialisierung</button>
+                            <div class="mt-6 text-xl space-y-1">
+                                <button id="edit-qual1" class="p-1 -m-1">Qualifikation 1</button>
+                                <button id="edit-qual2" class="p-1 -m-1">Qualifikation 2</button>
+                                <button id="edit-qual3" class="p-1 -m-1">Qualifikation 3</button>
+                                <button id="edit-qual4" class="p-1 -m-1">Qualifikation 4</button>
+                            </div>
+                            <div class="mt-6 text-base">
+                                <button id="edit-position" class="p-1 -m-1">Position oder Logo</button>
                             </div>
                         </div>
+                        <div class="absolute bottom-0 right-0">
+                            <button id="edit-languages" class="inline-flex items-center justify-center gap-2 h-10 px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6-6 6"/><path d="m12 4-6 6 6 6"/><path d="m19 12-6-6 6-6"/></svg>
+                                Sprachen
+                            </button>
+                        </div>
                     </div>
-                </foreignObject>
-            </svg>
+                </div>
+            </div>
         `,
         backSideCode: `
              <style>
@@ -110,15 +104,11 @@ export default function DoctorsPage() {
                 .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; }
                 .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
-            <svg viewBox="0 0 1000 495" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" class="w-full h-full">
-                <foreignObject width="1000" height="495">
-                    <button id="edit-vita" class="vita-content-button" xmlns="http://www.w3.org/1999/xhtml">
-                        <div class="vita-content p-8 w-full h-full text-left">
-                            <h4>Curriculum Vitae</h4>
-                        </div>
-                    </button>
-                </foreignObject>
-            </svg>
+            <button id="edit-vita" class="vita-content-button" xmlns="http://www.w3.org/1999/xhtml">
+                <div class="vita-content p-8 w-full h-full text-left">
+                    <h4>Curriculum Vitae</h4>
+                </div>
+            </button>
         `
     }), []);
     
@@ -161,7 +151,6 @@ export default function DoctorsPage() {
 
     const handleTemplateClick = (e: React.MouseEvent) => {
         let target = e.target as HTMLElement;
-        // Traverse up the DOM to find the button if a child was clicked
         while (target && target.tagName !== 'BUTTON' && target.id !== 'template-container') {
             target = target.parentElement as HTMLElement;
         }
@@ -199,7 +188,6 @@ export default function DoctorsPage() {
             };
             reader.readAsDataURL(e.target.files[0]);
         }
-        // Reset file input to allow selecting the same file again
         e.target.value = '';
     };
 
@@ -226,15 +214,19 @@ export default function DoctorsPage() {
                 <CardContent>
                     <div id="template-container" className="w-full rounded-lg border-2 border-dashed border-muted" onClick={handleTemplateClick}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                            <div className="relative aspect-[1000/495] w-full transform-origin-top-left overflow-hidden">
-                                <div className="absolute w-full h-full">
-                                    <CardHtmlRenderer html={exampleDoctor.frontSideCode} />
-                                </div>
+                           <div className="relative aspect-[1000/495] w-full overflow-hidden">
+                                <svg viewBox="0 0 1000 495" className="w-full h-full">
+                                    <foreignObject width="1000" height="495">
+                                        <CardHtmlRenderer html={exampleDoctor.frontSideCode} />
+                                    </foreignObject>
+                                </svg>
                             </div>
-                            <div className="relative aspect-[1000/495] w-full transform-origin-top-left overflow-hidden bg-accent/95">
-                                 <div className="absolute w-full h-full">
-                                    <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" />
-                                 </div>
+                            <div className="relative aspect-[1000/495] w-full overflow-hidden bg-accent/95 rounded-md">
+                                <svg viewBox="0 0 1000 495" className="w-full h-full">
+                                    <foreignObject width="1000" height="495">
+                                        <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" />
+                                    </foreignObject>
+                                </svg>
                             </div>
                        </div>
                     </div>
@@ -379,9 +371,6 @@ export default function DoctorsPage() {
             )}
         </div>
     );
- 
-    
-
-    
+}
 
     
