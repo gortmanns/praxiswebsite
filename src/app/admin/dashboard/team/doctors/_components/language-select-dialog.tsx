@@ -13,27 +13,46 @@ import {
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 
-export const availableLanguages = [
+const mainLanguages = [
   { id: 'de', name: 'Deutsch' },
   { id: 'fr', name: 'Französisch' },
   { id: 'it', name: 'Italienisch' },
   { id: 'en', name: 'Englisch' },
-  { id: 'es', name: 'Spanisch' },
-  { id: 'pt', name: 'Portugiesisch' },
-  { id: 'tr', name: 'Türkisch' },
 ];
 
-// Sort main languages first, then alphabetically
-const sortedLanguages = [...availableLanguages].sort((a, b) => {
-    const mainLangs = ['de', 'fr', 'it'];
-    const indexA = mainLangs.indexOf(a.id);
-    const indexB = mainLangs.indexOf(b.id);
-    if (indexA > -1 && indexB > -1) return indexA - indexB;
-    if (indexA > -1) return -1;
-    if (indexB > -1) return 1;
-    return a.name.localeCompare(b.name);
-});
+const otherLanguages = [
+  { id: 'sq', name: 'Albanisch' },
+  { id: 'ar', name: 'Arabisch' },
+  { id: 'bs', name: 'Bosnisch' },
+  { id: 'zh', name: 'Chinesisch (Mandarin)' },
+  { id: 'da', name: 'Dänisch' },
+  { id: 'fi', name: 'Finnisch' },
+  { id: 'el', name: 'Griechisch' },
+  { id: 'he', name: 'Hebräisch' },
+  { id: 'hi', name: 'Hindi' },
+  { id: 'ja', name: 'Japanisch' },
+  { id: 'ko', name: 'Koreanisch' },
+  { id: 'hr', name: 'Kroatisch' },
+  { id: 'nl', name: 'Niederländisch' },
+  { id: 'no', name: 'Norwegisch' },
+  { id: 'fa', name: 'Persisch (Farsi)' },
+  { id: 'pl', name: 'Polnisch' },
+  { id: 'pt', name: 'Portugiesisch' },
+  { id: 'pa', name: 'Punjabi' },
+  { id: 'ro', name: 'Rumänisch' },
+  { id: 'ru', name: 'Russisch' },
+  { id: 'sv', name: 'Schwedisch' },
+  { id: 'sr', name: 'Serbisch' },
+  { id: 'es', name: 'Spanisch' },
+  { id: 'ta', name: 'Tamil' },
+  { id: 'cs', name: 'Tschechisch' },
+  { id: 'tr', name: 'Türkisch' },
+  { id: 'uk', name: 'Ukrainisch' },
+  { id: 'hu', name: 'Ungarisch' },
+  { id: 'ur', name: 'Urdu' },
+].sort((a, b) => a.name.localeCompare(b.name));
 
 
 interface LanguageSelectDialogProps {
@@ -49,11 +68,14 @@ export const LanguageSelectDialog: React.FC<LanguageSelectDialogProps> = ({
   initialLanguages,
   onSave,
 }) => {
-  const [selected, setSelected] = useState<Set<string>>(new Set(initialLanguages));
+  // If initialLanguages is empty, it's a new card, so default to German.
+  const isNewCard = initialLanguages.length === 0;
+  const [selected, setSelected] = useState<Set<string>>(new Set(isNewCard ? ['de'] : initialLanguages));
 
   useEffect(() => {
     if (isOpen) {
-      setSelected(new Set(initialLanguages));
+      const isNew = initialLanguages.length === 0;
+      setSelected(new Set(isNew ? ['de'] : initialLanguages));
     }
   }, [isOpen, initialLanguages]);
 
@@ -76,26 +98,45 @@ export const LanguageSelectDialog: React.FC<LanguageSelectDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Sprachen auswählen</DialogTitle>
           <DialogDescription>
             Wählen Sie die Sprachen aus, die von diesem Arzt gesprochen werden.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid grid-cols-2 gap-4 py-4">
-          {sortedLanguages.map((lang) => (
-            <div key={lang.id} className="flex items-center space-x-2">
-              <Checkbox
-                id={`lang-${lang.id}`}
-                checked={selected.has(lang.id)}
-                onCheckedChange={(checked) => handleCheckedChange(lang.id, !!checked)}
-              />
-              <Label htmlFor={`lang-${lang.id}`} className="cursor-pointer">
-                {lang.name}
-              </Label>
+        <div className="max-h-[60vh] overflow-y-auto py-4 pr-4">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+            {mainLanguages.map((lang) => (
+                <div key={lang.id} className="flex items-center space-x-2">
+                <Checkbox
+                    id={`lang-${lang.id}`}
+                    checked={selected.has(lang.id)}
+                    onCheckedChange={(checked) => handleCheckedChange(lang.id, !!checked)}
+                />
+                <Label htmlFor={`lang-${lang.id}`} className="cursor-pointer">
+                    {lang.name}
+                </Label>
+                </div>
+            ))}
             </div>
-          ))}
+
+            <Separator className="my-6" />
+
+            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                {otherLanguages.map((lang) => (
+                    <div key={lang.id} className="flex items-center space-x-2">
+                    <Checkbox
+                        id={`lang-${lang.id}`}
+                        checked={selected.has(lang.id)}
+                        onCheckedChange={(checked) => handleCheckedChange(lang.id, !!checked)}
+                    />
+                    <Label htmlFor={`lang-${lang.id}`} className="cursor-pointer">
+                        {lang.name}
+                    </Label>
+                    </div>
+                ))}
+            </div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
