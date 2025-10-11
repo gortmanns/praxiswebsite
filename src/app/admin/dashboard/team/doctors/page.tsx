@@ -84,6 +84,13 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string; onClick?: (
 
 export default function DoctorsPage() {
     const firestore = useFirestore();
+    const doctorsQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
+    }, [firestore]);
+
+    const { data: dbDoctors, isLoading: isLoadingDbDoctors, error: dbError } = useCollection<Doctor>(doctorsQuery);
+
     const [dialogState, setDialogState] = useState<{
         type: 'text' | 'vita' | 'language' | 'imageSource' | 'imageLibrary' | 'imageCrop' | 'logoFunction' | 'deleteConfirm' | null;
         data: any;
@@ -98,8 +105,8 @@ export default function DoctorsPage() {
         languages: ['de'],
         frontSideCode: `
             <style>
-                .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; border-radius: 0.25rem; display: block; }
-                .template-card .image-button:hover { background-color: rgba(0,0,0,0.2); }
+                .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; display: block; }
+                .template-card .image-button:hover { background-color: rgba(0,0,0,0.1); }
                 .template-card p, .template-card h3, .template-card span { margin:0; }
                 .template-card .font-headline { font-family: var(--font-headline); }
                 .template-card .text-card-foreground { color: hsl(var(--card-foreground)); }
@@ -133,7 +140,6 @@ export default function DoctorsPage() {
                 .template-card .gap-2 { gap: 0.5rem; }
                 .template-card .object-contain { object-fit: contain; }
                 .template-card .object-cover { object-fit: cover; }
-                .template-card .bg-muted { background-color: hsl(var(--muted)); }
                 .template-card .text-muted-foreground { color: hsl(var(--muted-foreground)); }
                 .template-card .text-center { text-align: center; }
                 .template-card .mt-2 { margin-top: 0.5rem; }
@@ -142,7 +148,7 @@ export default function DoctorsPage() {
              <div class="template-card w-full h-full bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
                     <div id="image-container" class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
-                         <button id="edit-image" class="w-full h-full flex flex-col items-center justify-center bg-muted text-muted-foreground">
+                         <button id="edit-image" class="image-button w-full h-full flex flex-col items-center justify-center text-center p-4 text-muted-foreground bg-muted">
                             <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="font-extrabold"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                             <span class="mt-2 text-sm font-bold">Zum Ändern klicken</span>
                         </button>
@@ -197,13 +203,6 @@ export default function DoctorsPage() {
 
     const [exampleDoctor, setExampleDoctor] = useState<Doctor>(initialExampleDoctorState);
     const fileInputRef = useRef<HTMLInputElement>(null);
-
-    const doctorsQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
-        return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
-    }, [firestore]);
-
-    const { data: dbDoctors, isLoading: isLoadingDbDoctors, error: dbError } = useCollection<Doctor>(doctorsQuery);
     
     const projectImages = [
         '/images/luftbild.jpg',
@@ -339,7 +338,6 @@ export default function DoctorsPage() {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             
-            // Re-create the structure
             const style = `<style>.vita-content { color: hsl(var(--background)); } .vita-content p { margin: 0; } .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; } .vita-content li { margin-bottom: 0.5em; } .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; } .vita-content .is-small { font-size: 0.8em; font-weight: normal; } .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }</style>`;
             
             const contentDiv = `<div class="vita-content w-full h-full">${html}</div>`;
@@ -663,9 +661,9 @@ export default function DoctorsPage() {
                                                 <Eye className="h-4 w-4" />
                                                 <span className="sr-only">Einblenden</span>
                                             </Button>
-                                            <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name } })}>
-                                                <Trash2 className="h-4 w-4" />
-                                                <span className="sr-only">Löschen</span>
+                                            <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)}>
+                                                <Pencil className="h-4 w-4" />
+                                                <span className="sr-only">Bearbeiten</span>
                                             </Button>
                                         </div>
                                         <div className="relative flex-1 w-full max-w-[1000px] p-2 grayscale">
@@ -787,3 +785,5 @@ export default function DoctorsPage() {
         </div>
     );
 }
+
+    
