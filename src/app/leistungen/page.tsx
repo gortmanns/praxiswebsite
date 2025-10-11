@@ -100,7 +100,7 @@ const leistungen = [
       <>
         <p>Die Versorgung kleiner Wunden und die Durchführung kleiner Eingriffe (z. B. Entfernung von Hautveränderungen) können wir direkt in der normalen Sprechstunde durchführen.</p>
         <br/>
-        <p>Für grössere Eingriffe steht mit <Link href="/team#schemmer" className="underline hover:text-primary">Prof. Dr. med. Dr. h. c. Schemmer</Link> ein Spezialist zur Verfügung, der mehrmals pro Monat eine Sprechstunde im Praxiszentrum anbietet.</p>
+        <p>Für grössere Eingriffe steht mit <Link href="/team#prof-dr-med-dr-h-c-peter-schemmer" className="underline hover:text-primary">Prof. Dr. med. Dr. h. c. P. Schemmer</Link> ein Spezialist zur Verfügung, der mehrmals pro Monat eine Sprechstunde im Praxiszentrum anbietet.</p>
       </>
     ),
   }

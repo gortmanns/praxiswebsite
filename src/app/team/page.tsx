@@ -128,7 +128,7 @@ export default function TeamPage() {
                 ))
             ) : (
               visibleDoctors.map(doctor => (
-                <div key={doctor.id} id={doctor.id} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                <div key={doctor.id} id={doctor.id.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
                   <DoctorCard {...doctor} />
                 </div>
               ))

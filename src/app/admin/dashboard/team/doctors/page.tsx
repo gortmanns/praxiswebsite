@@ -151,6 +151,7 @@ export default function DoctorsPage() {
                 .template-card .object-contain { object-fit: contain; }
                 .template-card .object-cover { object-fit: cover; }
                 .template-card .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+                .template-card .bg-muted { background-color: hsl(var(--muted)); }
                 .template-card .text-center { text-align: center; }
                 .template-card .mt-2 { margin-top: 0.5rem; }
                 .template-card .font-extrabold { font-weight: 800; }
@@ -312,18 +313,20 @@ export default function DoctorsPage() {
             <span>Sprachen</span>
         </button>`;
         
-        const parser = new DOMParser();
-        const docParser = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
-        const langContainer = docParser.getElementById('language-container');
-        
-        if (langContainer) {
-            langContainer.innerHTML = buttonHtml + flagsHtml;
-            const updatedCode = docParser.body.innerHTML;
-            if (editorCardState.frontSideCode !== updatedCode) {
-                 setEditorCardState(prev => ({ ...prev, frontSideCode: updatedCode }));
+        setEditorCardState(prev => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(prev.frontSideCode, 'text/html');
+            const langContainer = doc.getElementById('language-container');
+            if (langContainer) {
+                langContainer.innerHTML = buttonHtml + flagsHtml;
+                const updatedCode = doc.body.innerHTML;
+                if (prev.frontSideCode !== updatedCode) {
+                    return { ...prev, frontSideCode: updatedCode };
+                }
             }
-        }
-    }, [editorCardState.languages, editorCardState.frontSideCode]);
+            return prev;
+        });
+    }, [editorCardState.languages]);
 
     const handleTemplateClick = (e: React.MouseEvent) => {
         let target = e.target as HTMLElement;
@@ -397,31 +400,32 @@ export default function DoctorsPage() {
             const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
             const downloadURL = await getDownloadURL(snapshot.ref);
 
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
-            
-            if (field === 'image') {
-                const imageContainer = doc.getElementById('image-container');
-                if (imageContainer) {
-                    imageContainer.innerHTML = `
-                        <button id="edit-image" class="image-button-background w-full h-full relative">
-                            <img src="${downloadURL}" alt="Portrait" class="h-full w-full object-cover relative" />
-                        </button>`;
+            setEditorCardState(prev => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(prev.frontSideCode, 'text/html');
+                
+                if (field === 'image') {
+                    const imageContainer = doc.getElementById('image-container');
+                    if (imageContainer) {
+                        imageContainer.innerHTML = `
+                            <button id="edit-image" class="image-button-background w-full h-full relative">
+                                <img src="${downloadURL}" alt="Portrait" class="h-full w-full object-cover relative" />
+                            </button>`;
+                    }
+                } else { // 'position' field
+                    const positionContainer = doc.getElementById('position-container');
+                    if (positionContainer) {
+                        positionContainer.innerHTML = `
+                            <button id="edit-position" class="image-button-background">
+                                <div class="relative">
+                                    <img src="${downloadURL}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
+                                </div>
+                            </button>`;
+                    }
                 }
-            } else { // 'position' field
-                const positionContainer = doc.getElementById('position-container');
-                if (positionContainer) {
-                    positionContainer.innerHTML = `
-                        <button id="edit-position" class="image-button-background">
-                            <div class="relative">
-                                <img src="${downloadURL}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
-                            </div>
-                        </button>`;
-                }
-            }
-            
-            const updatedHtml = doc.body.innerHTML;
-            setEditorCardState(prev => ({ ...prev, frontSideCode: updatedHtml }));
+                
+                return { ...prev, frontSideCode: doc.body.innerHTML };
+            });
         
         } catch (error) {
             console.error("Error uploading image: ", error);
@@ -549,11 +553,15 @@ export default function DoctorsPage() {
         const cleanedFrontSideCode = cleanupHtml(editorCardState.frontSideCode);
         const cleanedBackSideCode = cleanupHtml(editorCardState.backSideCode);
 
-        const finalCardData = { 
+        const finalCardData: Partial<Doctor> = { 
             ...editorCardState, 
             frontSideCode: cleanedFrontSideCode,
             backSideCode: cleanedBackSideCode,
         };
+        
+        delete finalCardData.id;
+        delete finalCardData.createdAt;
+
 
         if (editingDoctorId) {
             // Update existing document
@@ -562,13 +570,10 @@ export default function DoctorsPage() {
         } else {
             // Create new document
             const highestOrder = dbDoctors.reduce((max, doc) => doc.order > max ? doc.order : max, 0);
-            const { id, ...restOfEditorState } = editorCardState;
+            
             const newDoctorData: Omit<Doctor, 'id'> = {
-                ...restOfEditorState,
+                ...(finalCardData as Omit<Doctor, 'id'>),
                 name: editorCardState.name === 'Template' ? 'Neuer Arzt' : editorCardState.name,
-                frontSideCode: finalCardData.frontSideCode,
-                backSideCode: finalCardData.backSideCode,
-                languages: editorCardState.languages || [],
                 order: highestOrder + 1,
                 createdAt: serverTimestamp(),
                 hidden: false,
