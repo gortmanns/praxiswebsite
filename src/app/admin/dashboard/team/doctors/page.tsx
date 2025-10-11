@@ -248,15 +248,6 @@ export default function DoctorsPage() {
     ];
 
     useEffect(() => {
-        let currentDoctor: Doctor | null = null;
-        if (activeDoctor === 'template') {
-          currentDoctor = editorCardState;
-        } else if (typeof activeDoctor === 'object' && dbDoctors) {
-          currentDoctor = dbDoctors.find(d => d.id === activeDoctor.id) || null;
-        }
-        
-        if (!currentDoctor || !currentDoctor.frontSideCode) return;
-        
         const langToFlagHtml: Record<string, string> = {
             de: renderToStaticMarkup(React.createElement(DeFlag)),
             en: renderToStaticMarkup(React.createElement(EnFlag)),
@@ -293,7 +284,7 @@ export default function DoctorsPage() {
             ur: renderToStaticMarkup(React.createElement(UrFlag)),
         };
 
-        const languages = currentDoctor.languages || [];
+        const languages = editorCardState.languages || [];
         const languageOrder = ['de', 'fr', 'it', 'en', 'es', 'pt', 'ru'];
 
         const sortedLangs = [...languages].sort((a, b) => {
@@ -319,25 +310,16 @@ export default function DoctorsPage() {
         const newHtml = `${buttonHtml}${flagsHtml}`;
         
         const parser = new DOMParser();
-        const docParser = parser.parseFromString(currentDoctor.frontSideCode, 'text/html');
+        const docParser = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
         const langContainer = docParser.getElementById('language-container');
         
         if (langContainer && langContainer.innerHTML !== newHtml) {
             langContainer.innerHTML = newHtml;
             const updatedCode = docParser.body.innerHTML;
 
-             if (editingDoctorId) {
-                if (firestore) {
-                    const docRef = doc(firestore, 'doctors', editingDoctorId);
-                    setDoc(docRef, { frontSideCode: updatedCode }, { merge: true });
-                }
-            } else {
-                 if (editorCardState.frontSideCode !== updatedCode) {
-                    setEditorCardState(prev => ({ ...prev, frontSideCode: updatedCode }));
-                }
-            }
+            setEditorCardState(prev => ({ ...prev, frontSideCode: updatedCode }));
         }
-    }, [editorCardState.languages, editingDoctorId, dbDoctors, firestore]);
+    }, [editorCardState.languages, editorCardState.frontSideCode]);
 
     const handleTemplateClick = (e: React.MouseEvent) => {
         let target = e.target as HTMLElement;
@@ -404,11 +386,9 @@ export default function DoctorsPage() {
         const imageRef = storageRef(storage, imagePath);
 
         try {
-            // Upload the base64 string to Firebase Storage
             const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
             const downloadURL = await getDownloadURL(snapshot.ref);
 
-            // Now update the Firestore document with the public URL
             const parser = new DOMParser();
             const docParser = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
                 
@@ -423,30 +403,20 @@ export default function DoctorsPage() {
             } else {
                 const positionContainer = docParser.getElementById('position-container');
                  if (positionContainer) {
-                     const mainDiv = positionContainer.parentElement;
-                     if(mainDiv) {
-                        positionContainer.innerHTML = `
-                            <button id="edit-position" class="image-button-background">
-                                <div class="relative">
-                                    <img src="${downloadURL}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
-                                </div>
-                            </button>`;
-                         mainDiv.replaceChild(positionContainer, mainDiv.children[4]);
-                     }
+                    positionContainer.innerHTML = `
+                        <button id="edit-position" class="image-button-background">
+                            <div class="relative">
+                                <img src="${downloadURL}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
+                            </div>
+                        </button>`;
                 }
             }
             
             const updatedHtml = docParser.body.innerHTML;
+            setEditorCardState(prev => ({ ...prev, frontSideCode: updatedHtml }));
         
-            if (editingDoctorId && firestore) {
-                const docRef = doc(firestore, 'doctors', editingDoctorId);
-                setDoc(docRef, { frontSideCode: updatedHtml }, { merge: true });
-            } else {
-                 setEditorCardState(prev => ({ ...prev, frontSideCode: updatedHtml }));
-            }
         } catch (error) {
             console.error("Error uploading image: ", error);
-            // Handle error, maybe show a toast
         }
         
         setDialogState({ type: null, data: {} });
@@ -459,7 +429,7 @@ export default function DoctorsPage() {
             if (html.trim().startsWith('<button id="edit-vita"')) return html;
             
             const parser = new DOMParser();
-            const docParser = parser.parseFromString(html, 'text/html');
+            const doc = parser.parseFromString(html, 'text/html');
             
             const style = `<style>.vita-content { color: hsl(var(--background)); } .vita-content p { margin: 0; } .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; } .vita-content li { margin-bottom: 0.5em; } .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; } .vita-content .is-small { font-size: 0.8em; font-weight: normal; } .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }</style>`;
             
@@ -469,14 +439,8 @@ export default function DoctorsPage() {
         }
 
         contentToSave = wrapInButton(newVita);
-
-        if (editingDoctorId && firestore) {
-             const docRef = doc(firestore, 'doctors', editingDoctorId);
-             setDoc(docRef, { backSideCode: contentToSave }, { merge: true });
-        } else {
-            setEditorCardState(prev => ({ ...prev, backSideCode: contentToSave }));
-        }
-         setDialogState({ type: null, data: {} });
+        setEditorCardState(prev => ({ ...prev, backSideCode: contentToSave }));
+        setDialogState({ type: null, data: {} });
     };
 
     const handleTextSave = (newValue: string) => {
@@ -489,11 +453,7 @@ export default function DoctorsPage() {
         if(field === 'position') {
             const container = docParser.getElementById('position-container');
              if (container) {
-                const mainDiv = container.parentElement;
-                if(mainDiv) {
-                    container.innerHTML = `<button id="edit-position" class="w-full text-left"><p class="text-base">${newValue}</p></button>`;
-                    mainDiv.replaceChild(container, mainDiv.children[4]);
-                }
+                container.innerHTML = `<button id="edit-position" class="w-full text-left"><p class="text-base">${newValue}</p></button>`;
             }
         } else {
             let button = docParser.getElementById(`edit-${field}`);
@@ -506,23 +466,12 @@ export default function DoctorsPage() {
         }
         
         const updatedHtml = docParser.body.innerHTML;
-        if (editingDoctorId && firestore) {
-            const docRef = doc(firestore, 'doctors', editingDoctorId);
-            setDoc(docRef, { frontSideCode: updatedHtml }, { merge: true });
-        } else {
-             setEditorCardState(prev => ({ ...prev, frontSideCode: updatedHtml }));
-        }
+        setEditorCardState(prev => ({ ...prev, frontSideCode: updatedHtml }));
         setDialogState({ type: null, data: {} });
     };
 
     const handleLanguageSave = (selectedLanguages: string[]) => {
-        if (editingDoctorId && firestore) {
-            const docRef = doc(firestore, 'doctors', editingDoctorId);
-            setDoc(docRef, { languages: selectedLanguages }, { merge: true });
-        } else {
-            setEditorCardState(prev => ({ ...prev, languages: selectedLanguages }));
-        }
-        
+        setEditorCardState(prev => ({ ...prev, languages: selectedLanguages }));
         setDialogState({ type: null, data: {} });
     };
     
@@ -571,33 +520,38 @@ export default function DoctorsPage() {
         await setDoc(docRef, { hidden: !doctor.hidden }, { merge: true });
     };
 
-    const handleCreateNew = async () => {
-        setEditingDoctorId(null);
-        setEditorCardState(initialExampleDoctorState);
+    const handleSaveChanges = async () => {
         if (!firestore || !dbDoctors) return;
 
-        const highestOrder = dbDoctors.reduce((max, doc) => doc.order > max ? doc.order : max, 0);
+        if (editingDoctorId) {
+            // Update existing document
+            const docRef = doc(firestore, 'doctors', editingDoctorId);
+            await setDoc(docRef, { ...editorCardState }, { merge: true });
+        } else {
+            // Create new document
+            const highestOrder = dbDoctors.reduce((max, doc) => doc.order > max ? doc.order : max, 0);
+            const newDoctorData: Omit<Doctor, 'id'> = {
+                name: editorCardState.name === 'Template' ? 'Neuer Arzt' : editorCardState.name,
+                frontSideCode: editorCardState.frontSideCode,
+                backSideCode: editorCardState.backSideCode,
+                languages: editorCardState.languages || [],
+                order: highestOrder + 1,
+                createdAt: serverTimestamp(),
+                hidden: false,
+            };
+            const newDocRef = await addDoc(collection(firestore, 'doctors'), newDoctorData);
+            await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
+        }
 
-        const newDoctorData: Omit<Doctor, 'id'> = {
-            name: editorCardState.name === 'Template' ? 'Neuer Arzt' : editorCardState.name,
-            frontSideCode: editorCardState.frontSideCode,
-            backSideCode: editorCardState.backSideCode,
-            languages: editorCardState.languages || [],
-            order: highestOrder + 1,
-            createdAt: serverTimestamp(),
-            hidden: false,
-        };
-
-        const newDocRef = await addDoc(collection(firestore, 'doctors'), newDoctorData);
-        await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
-
-        handleEdit({ ...newDoctorData, id: newDocRef.id });
-    };
-
-    const handleSaveChanges = () => {
         setEditingDoctorId(null);
         setEditorCardState(initialExampleDoctorState);
     };
+
+    const handleCreateNew = () => {
+        setEditingDoctorId(null);
+        setEditorCardState(initialExampleDoctorState);
+    };
+
 
     const handleCancelEdit = () => {
         setEditingDoctorId(null);
@@ -626,7 +580,7 @@ export default function DoctorsPage() {
                             </CardDescription>
                         </div>
                         <div className="flex gap-2">
-                             {editingDoctorId ? (
+                             {editingDoctorId !== null ? (
                                 <>
                                     <Button onClick={handleSaveChanges}>
                                         <Save className="mr-2 h-4 w-4" />
@@ -640,7 +594,7 @@ export default function DoctorsPage() {
                             ) : (
                                 <Button onClick={handleCreateNew}>
                                     <Plus className="mr-2 h-4 w-4" />
-                                    Neue Karte hinzufügen
+                                    Neue Karte erstellen
                                 </Button>
                             )}
                         </div>
@@ -656,9 +610,9 @@ export default function DoctorsPage() {
                        </div>
                         <Alert variant="info" className="mt-4">
                             <Info className="h-4 w-4" />
-                            <AlertTitle>Hinweis</AlertTitle>
+                            <AlertTitle>Bearbeitungsmodus</AlertTitle>
                             <AlertDescription>
-                                Zum Ändern bitte das jeweilige Element anklicken.
+                                {editingDoctorId ? `Sie bearbeiten gerade die Karte von ${editorCardState.name}.` : 'Erstellen Sie eine neue Karte. Klicken Sie auf Elemente, um sie zu bearbeiten.'}
                             </AlertDescription>
                         </Alert>
                     </div>
