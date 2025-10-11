@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { OrtmannsCard } from '@/app/team/_components/doctors/ortmanns-card';
 import { SchemmerCard } from '@/app/team/_components/doctors/schemmer-card';
@@ -47,7 +47,7 @@ export default function DoctorsPage() {
         return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
     }, [firestore]);
 
-    const { data: dbDoctors, isLoading: isLoadingDbDoctors, setData: setDbDoctors, refetch: refetchDbDoctors } = useCollection<Doctor>(doctorsQuery);
+    const { data: dbDoctors, isLoading: isLoadingDbDoctors, refetch: refetchDbDoctors } = useCollection<Doctor>(doctorsQuery);
 
     useEffect(() => {
         if (status) {
@@ -76,26 +76,35 @@ export default function DoctorsPage() {
         }
         setIsSavingToDb(true);
         setStatus(null);
+        
         try {
             const promises = DOCTOR_CARDS_INITIAL_DATA.map(doctorData => 
                 addDoctor(firestore, doctorData, doctorData.id)
             );
+            
+            // We don't await the promises here because addDoctor is now non-blocking
+            // and handles its own errors. We just fire and forget.
             await Promise.all(promises);
-
-            // Manually refetch after saving
-            if (refetchDbDoctors) {
-                await refetchDbDoctors();
-            }
 
             setStatus({
                 type: "success",
-                message: "Alle 5 Ärztekarten wurden erfolgreich in der Datenbank gespeichert.",
+                message: "Alle 5 Ärztekarten wurden erfolgreich in die Datenbank gespeichert.",
             });
+            
+            // Give Firestore a moment to process writes before refetching
+            setTimeout(() => {
+                 if (refetchDbDoctors) {
+                    refetchDbDoctors();
+                }
+            }, 500);
+
         } catch (error) {
-            console.error("Fehler beim Speichern der Karten in der Datenbank:", error);
+            // This catch block might not even be hit if addDoctor handles all errors,
+            // but it's good practice to have it.
+            console.error("Unerwarteter Fehler beim Initiieren des Speicherns:", error);
             setStatus({
                 type: "error",
-                message: "Die Karten konnten nicht in der Datenbank gespeichert werden. Details in der Konsole.",
+                message: "Ein unerwarteter Fehler ist aufgetreten. Details in der Konsole.",
             });
         } finally {
             setIsSavingToDb(false);
