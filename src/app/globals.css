@@ -35,6 +35,13 @@
     
     --radius: 0.5rem;
 
+    --sidebar: 220 9% 40%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-border: 220 9% 45%;
+    --sidebar-accent: 220 9% 45%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-ring: 197 100% 47%;
+
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
