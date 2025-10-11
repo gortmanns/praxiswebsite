@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirestore, useCollection, useMemoFirebase, refetchCollection } from '@/firebase';
 import { collection, query, orderBy, doc, getDoc } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -36,7 +36,14 @@ export default function DoctorsPage() {
         return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
     }, [firestore]);
 
-    const { data: dbDoctors, isLoading: isLoadingDbDoctors, refetch: refetchDbDoctors } = useCollection<Doctor>(doctorsQuery);
+    const { data: dbDoctors, isLoading: isLoadingDbDoctors, setData: setDbDoctors } = useCollection<Doctor>(doctorsQuery);
+
+    const refetchDbDoctors = async () => {
+        if (firestore && doctorsQuery) {
+            const freshData = await refetchCollection<Doctor>(doctorsQuery);
+            setDbDoctors(freshData);
+        }
+    };
 
     useEffect(() => {
         if (status) {
@@ -74,7 +81,7 @@ export default function DoctorsPage() {
 
             // Kurze Verzögerung, um Firestore Zeit zur Konsistenz zu geben, bevor neu geladen wird.
             setTimeout(() => {
-                refetchDbDoctors?.();
+                refetchDbDoctors();
             }, 500);
 
         } catch (error: any) {
@@ -83,7 +90,7 @@ export default function DoctorsPage() {
         } finally {
             setIsSavingToDb(false);
         }
-    }, [firestore, refetchDbDoctors]);
+    }, [firestore]);
 
     const handleEditClick = (doctorId: string, doctorName: string) => {
         setEditingDoctorId(doctorId);
@@ -284,5 +291,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
-    

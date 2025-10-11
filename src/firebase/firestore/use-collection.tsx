@@ -25,7 +25,6 @@ export interface UseCollectionResult<T> {
   isLoading: boolean;       // True if loading.
   error: FirestoreError | Error | null; // Error object, or null.
   setData: React.Dispatch<React.SetStateAction<WithId<T>[] | null>>;
-  refetch: (() => Promise<void>) | null;
 }
 
 /* Internal implementation of Query:
@@ -63,24 +62,6 @@ export function useCollection<T = any>(
   const [data, setData] = useState<StateDataType>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<FirestoreError | Error | null>(null);
-
-  const refetch = useCallback(async () => {
-    if (!memoizedTargetRefOrQuery) {
-        setData(null);
-        return;
-    }
-    setIsLoading(true);
-    try {
-        const snapshot = await getDocs(memoizedTargetRefOrQuery);
-        const results: ResultItemType[] = snapshot.docs.map(doc => ({ ...(doc.data() as T), id: doc.id }));
-        setData(results);
-        setError(null);
-    } catch (e: any) {
-        setError(e);
-    } finally {
-        setIsLoading(false);
-    }
-  }, [memoizedTargetRefOrQuery]);
 
   useEffect(() => {
     if (!memoizedTargetRefOrQuery) {
@@ -133,5 +114,12 @@ export function useCollection<T = any>(
     throw new Error(memoizedTargetRefOrQuery + ' was not properly memoized using useMemoFirebase');
   }
 
-  return { data, isLoading, error, setData, refetch: refetch };
+  return { data, isLoading, error, setData };
+}
+
+export async function refetchCollection<T = any>(
+    targetRefOrQuery: CollectionReference<DocumentData> | Query<DocumentData>
+): Promise<WithId<T>[]> {
+    const snapshot = await getDocs(targetRefOrQuery);
+    return snapshot.docs.map(doc => ({ ...(doc.data() as T), id: doc.id }));
 }
