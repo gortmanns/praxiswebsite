@@ -63,16 +63,16 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="w-full rounded-lg border-2 border-dashed border-muted">
+                    <div className="w-full rounded-lg border-2 border-dashed border-muted p-4">
                         {ortmannsCardData && (
                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                                 <div className="relative aspect-[1000/495] w-full overflow-hidden">
-                                    <div className="absolute top-0 left-0 h-[495px] w-[1000px] origin-top-left scale-[calc(1/1000*100%)]">
+                                    <div className="h-[495px] w-[1000px] origin-top-left scale-[var(--scale-factor)]" style={{ '--scale-factor': 'calc(100% / 1000)' } as React.CSSProperties}>
                                         <CodeRenderer html={ortmannsCardData.frontSideCode} />
                                     </div>
                                 </div>
                                 <div className="relative aspect-[1000/495] w-full overflow-hidden bg-accent/95">
-                                     <div className="absolute top-0 left-0 h-[495px] w-[1000px] origin-top-left scale-[calc(1/1000*100%)]">
+                                     <div className="h-[495px] w-[1000px] origin-top-left scale-[var(--scale-factor)]" style={{ '--scale-factor': 'calc(100% / 1000)' } as React.CSSProperties}>
                                         <CodeRenderer html={ortmannsCardData.backSideCode} />
                                     </div>
                                 </div>
