@@ -1,14 +1,12 @@
-
 'use client';
 
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { TeamMemberCard } from './_components/team-member-card';
-import { OrtmannsCard } from './_components/doctors/ortmanns-card';
-import { SchemmerCard } from './_components/doctors/schemmer-card';
-import { RosenovCard } from './_components/doctors/rosenov-card';
-import { HerschelCard } from './_components/doctors/herschel-card';
-import { SlezakCard } from './_components/doctors/slezak-card';
+import { DoctorCard, type Doctor } from './_components/doctor-card';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, orderBy } from 'firebase/firestore';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const garcia = {
     name: 'S. Garcia',
@@ -101,6 +99,14 @@ const otherTeamMembers = [
 ];
 
 export default function TeamPage() {
+  const firestore = useFirestore();
+  const doctorsQuery = useMemoFirebase(() => {
+      if (!firestore) return null;
+      return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
+  }, [firestore]);
+
+  const { data: doctors, isLoading } = useCollection<Doctor>(doctorsQuery);
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -112,26 +118,20 @@ export default function TeamPage() {
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
             
-            <div id="ortmanns" className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
-                <OrtmannsCard />
-            </div>
-
-            <div id="schemmer" className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
-                <SchemmerCard />
-            </div>
-
-            <div id="rosenov" className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
-                <RosenovCard />
-            </div>
-
-            <div id="herschel" className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
-                <HerschelCard />
-            </div>
-
-            <div id="slezak" className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
-                <SlezakCard />
-            </div>
-
+            {isLoading ? (
+                Array.from({ length: 5 }).map((_, index) => (
+                    <div key={index} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                        <Skeleton className="w-full aspect-[1000/495] rounded-lg" />
+                    </div>
+                ))
+            ) : (
+              doctors?.map(doctor => (
+                <div key={doctor.id} id={doctor.id} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                  <DoctorCard {...doctor} />
+                </div>
+              ))
+            )}
+            
             <div id="praxispersonal">
               <h2 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">Praxispersonal</h2>
               <div className="mt-2 h-1 w-full bg-primary"></div>
