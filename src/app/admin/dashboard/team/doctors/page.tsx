@@ -67,15 +67,14 @@ export default function DoctorsPage() {
                 <CardContent>
                     <div className="w-full rounded-lg border-2 border-dashed border-muted p-4">
                         {ortmannsCardData && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                
+                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                                 {/* Front side preview */}
-                                <div style={{ aspectRatio: cardAspectRatio }} className="relative w-full">
-                                    <div 
+                                <div style={{ aspectRatio: cardAspectRatio }} className="relative w-full overflow-hidden">
+                                    <div
                                         style={{
                                             width: '1000px',
                                             height: '495px',
-                                            transform: 'scale(calc(1 / (1000 / 100%) / (100vw / 100vw)))',
+                                            transform: `scale(calc(1 / (1000 / 100%)))`,
                                             transformOrigin: 'top left',
                                         }}
                                         className="absolute"
@@ -85,12 +84,12 @@ export default function DoctorsPage() {
                                 </div>
                                 
                                 {/* Back side preview */}
-                                <div style={{ aspectRatio: cardAspectRatio }} className="relative w-full">
-                                    <div 
+                                <div style={{ aspectRatio: cardAspectRatio }} className="relative w-full overflow-hidden">
+                                     <div
                                         style={{
                                             width: '1000px',
                                             height: '495px',
-                                            transform: 'scale(calc(1 / (1000 / 100%) / (100vw / 100vw)))',
+                                            transform: `scale(calc(1 / (1000 / 100%)))`,
                                             transformOrigin: 'top left',
                                         }}
                                         className="absolute bg-accent/95"
@@ -98,7 +97,7 @@ export default function DoctorsPage() {
                                         <CodeRenderer html={ortmannsCardData.backSideCode} />
                                     </div>
                                 </div>
-                            </div>
+                           </div>
                         )}
                     </div>
 
