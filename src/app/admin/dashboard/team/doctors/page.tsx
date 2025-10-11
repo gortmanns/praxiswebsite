@@ -248,45 +248,15 @@ export default function DoctorsPage() {
     ];
 
     useEffect(() => {
+        if (!isCreatingNew && !editingDoctorId) return;
+    
         const langToFlagHtml: Record<string, string> = {
-            de: renderToStaticMarkup(React.createElement(DeFlag)),
-            en: renderToStaticMarkup(React.createElement(EnFlag)),
-            fr: renderToStaticMarkup(React.createElement(FrFlag)),
-            it: renderToStaticMarkup(React.createElement(ItFlag)),
-            es: renderToStaticMarkup(React.createElement(EsFlag)),
-            pt: renderToStaticMarkup(React.createElement(PtFlag)),
-            ru: renderToStaticMarkup(React.createElement(RuFlag)),
-            sq: renderToStaticMarkup(React.createElement(SqFlag)),
-            ar: renderToStaticMarkup(React.createElement(ArFlag)),
-            bs: renderToStaticMarkup(React.createElement(BsFlag)),
-            zh: renderToStaticMarkup(React.createElement(ZhFlag)),
-            da: renderToStaticMarkup(React.createElement(DaFlag)),
-            fi: renderToStaticMarkup(React.createElement(FiFlag)),
-            el: renderToStaticMarkup(React.createElement(ElFlag)),
-            he: renderToStaticMarkup(React.createElement(HeFlag)),
-            hi: renderToStaticMarkup(React.createElement(HiFlag)),
-            ja: renderToStaticMarkup(React.createElement(JaFlag)),
-            ko: renderToStaticMarkup(React.createElement(KoFlag)),
-            hr: renderToStaticMarkup(React.createElement(HrFlag)),
-            nl: renderToStaticMarkup(React.createElement(NlFlag)),
-            no: renderToStaticMarkup(React.createElement(NoFlag)),
-            fa: renderToStaticMarkup(React.createElement(FaFlag)),
-            pl: renderToStaticMarkup(React.createElement(PlFlag)),
-            pa: renderToStaticMarkup(React.createElement(PaFlag)),
-            ro: renderToStaticMarkup(React.createElement(RoFlag)),
-            sv: renderToStaticMarkup(React.createElement(SvFlag)),
-            sr: renderToStaticMarkup(React.createElement(SrFlag)),
-            ta: renderToStaticMarkup(React.createElement(TaFlag)),
-            cs: renderToStaticMarkup(React.createElement(CsFlag)),
-            tr: renderToStaticMarkup(React.createElement(TrFlag)),
-            uk: renderToStaticMarkup(React.createElement(UkFlag)),
-            hu: renderToStaticMarkup(React.createElement(HuFlag)),
-            ur: renderToStaticMarkup(React.createElement(UrFlag)),
+            de: renderToStaticMarkup(React.createElement(DeFlag)), en: renderToStaticMarkup(React.createElement(EnFlag)), fr: renderToStaticMarkup(React.createElement(FrFlag)), it: renderToStaticMarkup(React.createElement(ItFlag)), es: renderToStaticMarkup(React.createElement(EsFlag)), pt: renderToStaticMarkup(React.createElement(PtFlag)), ru: renderToStaticMarkup(React.createElement(RuFlag)), sq: renderToStaticMarkup(React.createElement(SqFlag)), ar: renderToStaticMarkup(React.createElement(ArFlag)), bs: renderToStaticMarkup(React.createElement(BsFlag)), zh: renderToStaticMarkup(React.createElement(ZhFlag)), da: renderToStaticMarkup(React.createElement(DaFlag)), fi: renderToStaticMarkup(React.createElement(FiFlag)), el: renderToStaticMarkup(React.createElement(ElFlag)), he: renderToStaticMarkup(React.createElement(HeFlag)), hi: renderToStaticMarkup(React.createElement(HiFlag)), ja: renderToStaticMarkup(React.createElement(JaFlag)), ko: renderToStaticMarkup(React.createElement(KoFlag)), hr: renderToStaticMarkup(React.createElement(HrFlag)), nl: renderToStaticMarkup(React.createElement(NlFlag)), no: renderToStaticMarkup(React.createElement(NoFlag)), fa: renderToStaticMarkup(React.createElement(FaFlag)), pl: renderToStaticMarkup(React.createElement(PlFlag)), pa: renderToStaticMarkup(React.createElement(PaFlag)), ro: renderToStaticMarkup(React.createElement(RoFlag)), sv: renderToStaticMarkup(React.createElement(SvFlag)), sr: renderToStaticMarkup(React.createElement(SrFlag)), ta: renderToStaticMarkup(React.createElement(TaFlag)), cs: renderToStaticMarkup(React.createElement(CsFlag)), tr: renderToStaticMarkup(React.createElement(TrFlag)), uk: renderToStaticMarkup(React.createElement(UkFlag)), hu: renderToStaticMarkup(React.createElement(HuFlag)), ur: renderToStaticMarkup(React.createElement(UrFlag)),
         };
-
+    
         const languages = editorCardState.languages || [];
         const languageOrder = ['de', 'fr', 'it', 'en', 'es', 'pt', 'ru'];
-
+    
         const sortedLangs = [...languages].sort((a, b) => {
             const indexA = languageOrder.indexOf(a);
             const indexB = languageOrder.indexOf(b);
@@ -295,21 +265,21 @@ export default function DoctorsPage() {
             if (indexB !== -1) return 1;
             return a.localeCompare(b);
         });
-
+    
         const flagsHtml = sortedLangs.map(lang => {
             const flagHtml = langToFlagHtml[lang];
             if (!flagHtml) return '';
             return flagHtml.replace('<svg', '<svg class="h-5 w-auto rounded-sm shadow-md"');
         }).join('');
-
+    
         const buttonHtml = `<button id="edit-languages" style="display: flex; align-items: center; gap: 0.5rem; height: 2rem; padding: 0 0.75rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem;" onmouseover="this.style.backgroundColor='hsl(var(--primary) / 0.9)'" onmouseout="this.style.backgroundColor='hsl(var(--primary))'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg><span>Sprachen</span></button>`;
-        
         const newLangContainerHtml = buttonHtml + flagsHtml;
-
+    
         setEditorCardState(prev => {
             const parser = new DOMParser();
             const doc = parser.parseFromString(prev.frontSideCode, 'text/html');
             const langContainer = doc.getElementById('language-container');
+            
             if (langContainer && langContainer.innerHTML !== newLangContainerHtml) {
                 langContainer.innerHTML = newLangContainerHtml;
                 const updatedCode = doc.body.innerHTML;
@@ -317,7 +287,8 @@ export default function DoctorsPage() {
             }
             return prev;
         });
-    }, [editorCardState.languages]);
+    }, [editorCardState.languages, isCreatingNew, editingDoctorId]);
+
 
     const handleTemplateClick = (e: React.MouseEvent) => {
         if (!isCreatingNew && !editingDoctorId) return;
@@ -327,7 +298,7 @@ export default function DoctorsPage() {
             if (target.classList.contains('template-card') || target.parentElement === null) {
                 return;
             }
-            target = target.parentElement as HTMLElement;
+            target = target.parentElement;
         }
 
         if (target && target.id && target.id.startsWith('edit-')) {
@@ -397,7 +368,7 @@ export default function DoctorsPage() {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(prev.frontSideCode, 'text/html');
                 let newHtmlContent: string;
-
+    
                 if (field === 'image') {
                     newHtmlContent = `<button id="edit-image" class="image-button-background w-full h-full relative">
                                         <img src="${downloadURL}" alt="Portrait" class="h-full w-full object-cover relative" />
@@ -432,7 +403,6 @@ export default function DoctorsPage() {
             const doc = parser.parseFromString(html, 'text/html');
             const button = doc.querySelector('button#edit-vita');
 
-            // If it's already wrapped, just return the original html
             if (button && button.parentElement?.classList.contains('w-full')) {
                 return html;
             }
@@ -530,42 +500,26 @@ export default function DoctorsPage() {
     const handleSaveChanges = async () => {
         if (!firestore || !dbDoctors) return;
     
-        const cleanupHtml = (html: string, isFront: boolean) => {
+        const cleanupHtml = (html: string) => {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             
-            // Remove all <button id="edit-..."> elements
             doc.querySelectorAll('button[id^="edit-"]').forEach(button => {
                 const parent = button.parentElement;
                 if (parent) {
-                    // Create a new div to hold the button's children
                     const contentWrapper = document.createElement('div');
-                    // Move all children from the button to the new wrapper
                     while (button.firstChild) {
                         contentWrapper.appendChild(button.firstChild);
                     }
-                    // Replace the button with the wrapper
                     parent.replaceChild(contentWrapper, button);
                 }
             });
-
-            // Special handling for the language container on the front card
-            if (isFront) {
-                const langContainer = doc.getElementById('language-container');
-                if (langContainer) {
-                    // Find and remove the "Sprachen" button specifically
-                    const langButton = langContainer.querySelector('button');
-                    if (langButton) {
-                        langContainer.removeChild(langButton);
-                    }
-                }
-            }
     
             return doc.body.innerHTML;
         };
         
-        const cleanedFrontSideCode = cleanupHtml(editorCardState.frontSideCode, true);
-        const cleanedBackSideCode = cleanupHtml(editorCardState.backSideCode, false);
+        const cleanedFrontSideCode = cleanupHtml(editorCardState.frontSideCode);
+        const cleanedBackSideCode = cleanupHtml(editorCardState.backSideCode);
     
         const finalCardData: Partial<Doctor> = { 
             ...editorCardState, 
@@ -589,7 +543,6 @@ export default function DoctorsPage() {
                 hidden: false,
             };
             const newDocRef = await addDoc(collection(firestore, 'doctors'), newDoctorData);
-            // After creating, update it with its own ID
             await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
         }
         handleCancelEdit();
@@ -846,5 +799,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
-    
