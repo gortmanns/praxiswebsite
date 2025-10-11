@@ -19,7 +19,7 @@ import { LogoFunctionSelectDialog } from './_components/logo-function-select-dia
 import { cn } from '@/lib/utils';
 import DOMPurify from 'dompurify';
 import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
-import { ChevronUp, ChevronDown, Pencil, EyeOff, Globe, Image as ImageIcon } from 'lucide-react';
+import { ChevronUp, ChevronDown, Pencil, EyeOff, Globe, Image as ImageIcon, Trash2, User } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 
@@ -96,43 +96,50 @@ export default function DoctorsPage() {
         languages: ['de'],
         frontSideCode: `
             <style>
-                .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; border-radius: 0.25rem; display: block; padding: 0.125rem 0.25rem; margin: -0.125rem -0.25rem; }
+                .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; border-radius: 0.25rem; display: block; }
                 .template-card button:hover:not(.image-button) { background-color: rgba(0,0,0,0.1); }
                 .template-card .image-button { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.2); }
-                .template-card .lang-button:hover { background-color: hsla(var(--primary-foreground), 0.1); }
-                .template-card p, .template-card h3 { padding: 0.125rem 0.25rem; margin:0; }
-                .template-card .my-2 { margin-top: 0.5rem; margin-bottom: 0.5rem; }
-                .template-card .mt-2 { margin-top: 0.5rem; }
-                .template-card .mt-6 { margin-top: 1.5rem; }
-                .template-card .ml-6 { margin-left: 1.5rem; }
+                .template-card p, .template-card h3, .template-card span { margin:0; }
+                .template-card .font-headline { font-family: var(--font-headline); }
+                .template-card .text-card-foreground { color: hsl(var(--card-foreground)); }
+                .template-card .p-6 { padding: 1.5rem; }
                 .template-card .flex { display: flex; }
-                .template-card .flex-col { flex-direction: column; }
-                .template-card .flex-grow { flex-grow: 1; }
+                .template-card .h-full { height: 100%; }
+                .template-card .w-full { width: 100%; }
                 .template-card .items-start { align-items: flex-start; }
-                .template-card .justify-center { justify-content: center; }
                 .template-card .relative { position: relative; }
+                .template-card .aspect-\\[2\\/3\\] { aspect-ratio: 2 / 3; }
+                .template-card .overflow-hidden { overflow: hidden; }
+                .template-card .rounded-md { border-radius: 0.375rem; }
+                .template-card .bg-muted { background-color: hsl(var(--muted)); }
+                .template-card .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+                .template-card .flex-grow { flex-grow: 1; }
+                .template-card .flex-col { flex-direction: column; }
+                .template-card .justify-center { justify-content: center; }
+                .template-card .ml-6 { margin-left: 1.5rem; }
+                .template-card .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+                .template-card .font-bold { font-weight: 700; }
+                .template-card .text-primary { color: hsl(var(--primary)); }
+                .template-card .my-2 { margin-top: 0.5rem; margin-bottom: 0.5rem; }
+                .template-card .text-5xl { font-size: 3rem; line-height: 1; }
+                .template-card .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+                .template-card .mt-6 { margin-top: 1.5rem; }
+                .template-card .text-base { font-size: 1rem; line-height: 1.5rem; }
+                .template-card .text-left { text-align: left; }
                 .template-card .absolute { position: absolute; }
                 .template-card .bottom-0 { bottom: 0; }
                 .template-card .right-0 { right: 0; }
-                .template-card .gap-2 { gap: 0.5rem; }
                 .template-card .items-center { align-items: center; }
-                .template-card .h-full { height: 100%; }
-                .template-card .w-full { width: 100%; }
-                .template-card .text-2xl { font-size: 1.5rem; line-height: 2rem; }
-                .template-card .text-5xl { font-size: 3rem; line-height: 1; }
-                .template-card .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
-                .template-card .text-base { font-size: 1rem; line-height: 1.5rem; }
-                .template-card .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
-                .template-card .font-bold { font-weight: 700; }
-                .template-card .text-primary { color: hsl(var(--primary)); }
-                .template-card .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+                .template-card .gap-2 { gap: 0.5rem; }
+                .template-card .object-contain { object-fit: contain; }
+                .template-card .object-cover { object-fit: cover; }
             </style>
-            <div class="template-card group relative w-full h-full overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
+             <div class="template-card w-full h-full bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
-                    <button id="edit-image" class="image-button relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted p-4 text-muted-foreground">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        <span class="mt-2 text-sm">Zum Ändern anklicken</span>
+                    <button id="edit-image" class="image-button relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted text-muted-foreground p-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="font-bold"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span class="mt-2 text-sm font-bold">Zum Ändern anklicken</span>
                     </button>
                     <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
                         <div>
@@ -151,7 +158,7 @@ export default function DoctorsPage() {
                                 <button id="edit-qual3" class="w-full text-left"><p>Qualifikation 3</p></button>
                                 <button id="edit-qual4" class="w-full text-left"><p>Qualifikation 4</p></button>
                             </div>
-                            <div class="mt-6 text-base" id="position-container">
+                            <div id="position-container" class="mt-6 text-base">
                                 <button id="edit-position" class="w-full text-left"><p>Position oder Logo</p></button>
                             </div>
                         </div>
@@ -162,15 +169,17 @@ export default function DoctorsPage() {
             </div>
         `,
         backSideCode: `
-             <style>
+            <style>
                 .vita-content { color: hsl(var(--background)); }
                 .vita-content p { margin: 0; }
                 .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
-             </style>
-             <div class="vita-content p-8 w-full h-full text-left">
+            </style>
+            <div class="w-full h-full">
                 <button id="edit-vita" class="w-full h-full text-left">
-                    <h4>Curriculum Vitae</h4>
-                    <p>Zum Bearbeiten klicken</p>
+                    <div class="vita-content p-8 w-full h-full">
+                        <h4>Curriculum Vitae</h4>
+                        <p>Zum Bearbeiten klicken</p>
+                    </div>
                 </button>
             </div>
         `
@@ -282,6 +291,7 @@ export default function DoctorsPage() {
           if (targetButton) {
             targetButton.innerHTML = `<img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-cover" />`;
             targetButton.style.padding = '0';
+            targetButton.classList.remove('bg-muted', 'text-muted-foreground', 'p-4');
           }
         } else {
           const positionContainer = doc.getElementById('position-container');
@@ -300,10 +310,15 @@ export default function DoctorsPage() {
     };
 
     const handleVitaSave = (newVita: string) => {
-        setExampleDoctor(prev => ({
-            ...prev,
-            backSideCode: newVita,
-        }));
+        if (activeDoctor === 'template') {
+            setExampleDoctor(prev => ({
+                ...prev,
+                backSideCode: newVita,
+            }));
+        } else if (firestore && activeDoctor) {
+             const docRef = doc(firestore, 'doctors', activeDoctor.id);
+             setDoc(docRef, { backSideCode: newVita }, { merge: true });
+        }
     };
 
     const handleTextSave = (newValue: string) => {
@@ -317,7 +332,7 @@ export default function DoctorsPage() {
         if(field === 'position') {
             const container = doc.getElementById('position-container');
             if (container) {
-                container.innerHTML = `<button id="edit-position" class="w-full text-left"><p>${newValue}</p></button>`;
+                container.innerHTML = `<button id="edit-position" class="w-full text-left"><p class="text-base">${newValue}</p></button>`;
             }
         } else if (button) {
             const p = button.querySelector('p') || button.querySelector('h3');
@@ -344,42 +359,42 @@ export default function DoctorsPage() {
     
     useEffect(() => {
         let currentDoctor = activeDoctor === 'template' ? exampleDoctor : activeDoctor;
-        if (!currentDoctor) return;
+        if (!currentDoctor || typeof currentDoctor === 'string') return;
     
         const langToFlagHtml: Record<string, string> = {
-            de: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>`,
-            en: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="h-5 w-auto rounded-sm shadow-md"><clipPath id="a-lang-en"><path d="M30 15h30v15zv-15z"></path></clipPath><path d="M0 0v30h60V0z" fill="#012169"></path><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"></path><path d="M0 0l60 30m0-30L0 30" clip-path="url(#a-lang-en)" stroke="#C8102E" stroke-width="4"></path><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"></path><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"></path></svg>`,
-            fr: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#ED2939" d="M0 0h3v2H0z"></path><path fill="#fff" d="M0 0h2v2H0z"></path><path fill="#002395" d="M0 0h1v2H0z"></path></svg>`,
-            it: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#008C45" d="M0 0h1v2H0z"></path><path fill="#F4F5F0" d="M1 0h1v2H1z"></path><path fill="#CD212A" d="M2 0h1v2H2z"></path></svg>`,
-            es: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#c60b1e" d="M0 0h3v2H0z"></path><path fill="#ffc400" d="M0 .5h3v1H0z"></path></svg>`,
-            pt: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#006233" d="M0 0h1.2v2H0z"></path><path fill="#D21034" d="M1.2 0H3v2H1.2z"></path></svg>`,
-            ru: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" class="h-5 w-auto rounded-sm shadow-md"><path fill="#fff" d="M0 0h9v3H0z"/><path fill="#d52b1e" d="M0 3h9v3H0z"/><path fill="#0039a6" d="M0 2h9v2H0z"/></svg>`,
-            sq: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 5" class="h-5 w-auto rounded-sm shadow-md"><path d="M0 0h7v5H0z" fill="#e41e20"/><path d="M3.5 1.93L2.56 1.5 2.5 1.25l.44.63-.94.32.94.31-.44.63.06-.25.94-.43zm0 1.14L2.56 2.64l-.06.25.44-.63.94-.31-.94-.32.44-.63.06.25.94.43z" fill="#000"/></svg>`,
-            ar: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#007a3d" d="M0 0h3v2H0z"/><path fill="#fff" d="M0 .67h3v.67H0z"/><path fill="#000" d="M0 1.33h3v.67H0z"/><path fill="red" d="M0 0v2l1-1z"/></svg>`,
-            bs: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 10" class="h-5 w-auto rounded-sm shadow-md"><path fill="#002395" d="M0 0h20v10H0z"/><path fill="#fecb00" d="M4 0L20 8V10L4 2z"/><path fill="#fff" d="M3.5 1.5l1 3h-3zM5.5 2.5l1 3h-3zM7.5 3.5l1 3h-3zM9.5 4.5l1 3h-3zM11.5 5.5l1 3h-3zM13.5 6.5l1 3h-3zM15.5 7.5l1 3h-3z"/></svg>`,
-            zh: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#ee1c25" d="M0 0h3v2H0z"/><path fill="#ff0" d="M.5.5l.2.6L1 .6l-.2.5.5.2-.6.2.2.5-.5-.2-.5.2.2-.5-.6-.2.5-.2zM1.2 1l.1.2.2-.1-.1.2.2.1-.2-.1-.1.2.1.1-.2-.1.1-.2-.2-.1.2-.1zM1.6 1.2l.1.2.2-.1-.1.2.2.1-.2-.1-.1.2.1.1-.2-.1.1-.2-.2-.1.2-.1zM1.6.8l.1.2.2-.1-.1.2.2.1-.2-.1-.1.2.1.1-.2-.1.1-.2-.2-.1.2-.1zM1.2.6l.1.2.2-.1-.1.2.2.1-.2-.1-.1.2.1.1-.2-.1.1-.2-.2-.1.2-.1z"/></svg>`,
-            da: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 28" class="h-5 w-auto rounded-sm shadow-md"><path fill="#c60b1e" d="M0 0h37v28H0z"/><path fill="#fff" d="M12 0h4v28h-4zM0 12h37v4H0z"/></svg>`,
-            fi: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 11" class="h-5 w-auto rounded-sm shadow-md"><path fill="#fff" d="M0 0h18v11H0z"/><path fill="#002f6c" d="M5 0h3v11H5zM0 4h18v3H0z"/></svg>`,
-            el: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 18" class="h-5 w-auto rounded-sm shadow-md"><path fill="#0d5eaf" d="M0 0h27v18H0z"/><path fill="#fff" d="M0 2h27v2H0zm0 4h27v2H0zm0 4h27v2H0zm0 4h27v2H0z"/><path fill="#0d5eaf" d="M0 0h10v10H0z"/><path fill="#fff" d="M4 0h2v10H4zM0 4h10v2H0z"/></svg>`,
-            he: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 8" class="h-5 w-auto rounded-sm shadow-md"><path fill="#fff" d="M0 0h11v8H0z"/><path fill="#0038b8" d="M0 0h11v1H0zm0 7h11v1H0zm4.5 3.5l1-1.73 1 1.73H4.5zm1-2.73l-1-1.73h2z"/></svg>`,
-            hi: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#f93" d="M0 0h3v2H0z"/><path fill="#fff" d="M0 .67h3v.67H0z"/><path fill="#128807" d="M0 1.33h3v.67H0z"/><circle cx="1.5" cy="1" r=".3" fill="none" stroke="#000080" stroke-width=".05"/><path d="M1.5 1l.29.07m-.29-.07l.27.12m-.27-.12l.24.18m-.24-.18l.18.24m-.18-.24l.12.27m-.12-.27l.07.29m-.07-.29l-.07.29m.07-.29l-.12.27m.12-.27l-.18.24m.18-.24l-.24.18m.24-.18l-.27.12m.27-.12l-.29.07" stroke="#000080" stroke-width=".025" stroke-linecap="round"/></svg>`,
-            ja: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#fff" d="M0 0h3v2H0z"/><circle cx="1.5" cy="1" r=".6" fill="#bc002d"/></svg>`,
-            ko: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#fff" d="M0 0h3v2H0z"/><circle cx="1.5" cy="1" r=".5" fill="#cd2e3a"/><path d="M1.5 1a.5.5 0 000-1 .25.25 0 000 .5.25.25 0 010 .5z" fill="#0047a0"/><g fill="#000"><path d="M.2.3h.2v.2H.2zm0 .2h.2v.2H.2zM.4.3h.2v.2H.4zm2 .8h.2v.2H2.6zm0 .2h.2v.2H2.6zm-.2.2h.2v.2H2.4zM.2.9h.2v.2H.2zm0 .2h.2v.2H.2zM.4.9h.2v.2H.4zm2-1.2h.2v.2H2.6zm0 .2h.2v.2H2.6zm-.2-.2h.2v.2H2.4z"/></g></svg>`,
-            hr: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 1" class="h-5 w-auto rounded-sm shadow-md"><path fill="#ff0000" d="M0 0h2v1H0z"/><path fill="#fff" d="M0 .333h2v.333H0z"/><path fill="#0000ff" d="M0 .667h2v.333H0z"/><path d="M1 .37a.16.16 0 100 .26.16.16 0 100-.26z" fill="#ff0000" stroke="#fff" stroke-width=".04"/></svg>`,
-            nl: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#21468B" d="M0 0h3v2H0z"/><path fill="#fff" d="M0 0h3v1.33H0z"/><path fill="#AE1C28" d="M0 0h3v.67H0z"/></svg>`,
-            no: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 16" class="h-5 w-auto rounded-sm shadow-md"><path fill="#ba0c2f" d="M0 0h22v16H0z"/><path fill="#fff" d="M6 0h4v16H6zM0 6h22v4H0z"/><path fill="#00205b" d="M7 0h2v16H7zM0 7h22v2H0z"/></svg>`,
-            fa: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 4" class="h-5 w-auto rounded-sm shadow-md"><path fill="#239f40" d="M0 0h7v4H0z"/><path fill="#da0000" d="M0 2.67h7v1.33H0z"/><path fill="#fff" d="M0 1.33h7v1.33H0z"/><path d="M3.5 1.6a.2.2 0 00-.2.2.2.2 0 10.4 0 .2.2 0 00-.2-.2m0 .1a.1.1 0 110 .2.1.1 0 010-.2" fill="#da0000"/></svg>`,
-            pl: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 5" class="h-5 w-auto rounded-sm shadow-md"><path fill="#fff" d="M0 0h8v5H0z"/><path fill="#dc143c" d="M0 2.5h8v2.5H0z"/></svg>`,
-            pa: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path d="M0 0h3v2H0z" fill="#008000"/><path d="M0 1h3v1H0z" fill="#f93"/><circle r=".4" cx="1.5" cy="1" fill="#00f" stroke="#fff" stroke-width=".1"/></svg>`,
-            ro: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#002B7F" d="M0 0h1v2H0z"/><path fill="#FCD116" d="M1 0h1v2H1z"/><path fill="#CE1126" d="M2 0h1v2H2z"/></svg>`,
-            sv: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10" class="h-5 w-auto rounded-sm shadow-md"><path fill="#006aa7" d="M0 0h16v10H0z"/><path fill="#fecc00" d="M5 0h2v10H5zM0 4h16v2H0z"/></svg>`,
-            sr: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#C6363C" d="M0 0h3v.67H0z"/><path fill="#0C4076" d="M0 .67h3v.67H0z"/><path fill="#fff" d="M0 1.33h3V2H0z"/></svg>`,
-            ta: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><path fill="#f93" d="M0 0h5v1H0z"/><path fill="green" d="M0 2h5v1H0z"/><path d="M0 1h5v1H0z" fill="#fff"/><circle cx="2.5" cy="1.5" r=".4" fill="#00f" stroke="#fff" stroke-width=".1"/></svg>`,
-            cs: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#fff" d="M0 0h3v1H0z"/><path fill="#d7141a" d="M0 1h3v1H0z"/><path fill="#11457e" d="M0 0v2l1.5-1z"/></svg>`,
-            tr: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#e30a17" d="M0 0h3v2H0z"/><circle cx="1.125" cy="1" r=".5" fill="#fff"/><path d="M1.25 1a.4.4 0 100-.8.5.5 0 010 .8z" fill="#fff"/><path d="M1.375 1l.1-.3.1.3-.2-.2z" fill="#e30a17"/></svg>`,
-            uk: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#0057b7" d="M0 0h3v2H0z"/><path fill="#ffd700" d="M0 1h3v1H0z"/></svg>`,
-            hu: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#436F4D" d="M0 1.33h3V2H0z"/><path fill="#fff" d="M0 .67h3v.66H0z"/><path fill="#CD2A3E" d="M0 0h3v.67H0z"/></svg>`,
-            ur: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#006600" d="M0 0h3v2H0z"/><path fill="#fff" d="M.75 0h.5v2h-.5z"/><circle cx="1.75" cy="1" r=".4" fill="#fff"/><path d="M1.88 1a.3.3 0 100-.6.4.4 0 010 .6z" fill="#006600"/><path d="M2.2 1l-.2-.1.1.2-.1-.2z" fill="#fff"/></svg>`,
+            de: DeFlag({}).props.dangerouslySetInnerHTML.__html,
+            en: EnFlag({}).props.dangerouslySetInnerHTML.__html,
+            fr: FrFlag({}).props.dangerouslySetInnerHTML.__html,
+            it: ItFlag({}).props.dangerouslySetInnerHTML.__html,
+            es: EsFlag({}).props.dangerouslySetInnerHTML.__html,
+            pt: PtFlag({}).props.dangerouslySetInnerHTML.__html,
+            ru: RuFlag({}).props.dangerouslySetInnerHTML.__html,
+            sq: SqFlag({}).props.dangerouslySetInnerHTML.__html,
+            ar: ArFlag({}).props.dangerouslySetInnerHTML.__html,
+            bs: BsFlag({}).props.dangerouslySetInnerHTML.__html,
+            zh: ZhFlag({}).props.dangerouslySetInnerHTML.__html,
+            da: DaFlag({}).props.dangerouslySetInnerHTML.__html,
+            fi: FiFlag({}).props.dangerouslySetInnerHTML.__html,
+            el: ElFlag({}).props.dangerouslySetInnerHTML.__html,
+            he: HeFlag({}).props.dangerouslySetInnerHTML.__html,
+            hi: HiFlag({}).props.dangerouslySetInnerHTML.__html,
+            ja: JaFlag({}).props.dangerouslySetInnerHTML.__html,
+            ko: KoFlag({}).props.dangerouslySetInnerHTML.__html,
+            hr: HrFlag({}).props.dangerouslySetInnerHTML.__html,
+            nl: NlFlag({}).props.dangerouslySetInnerHTML.__html,
+            no: NoFlag({}).props.dangerouslySetInnerHTML.__html,
+            fa: FaFlag({}).props.dangerouslySetInnerHTML.__html,
+            pl: PlFlag({}).props.dangerouslySetInnerHTML.__html,
+            pa: PaFlag({}).props.dangerouslySetInnerHTML.__html,
+            ro: RoFlag({}).props.dangerouslySetInnerHTML.__html,
+            sv: SvFlag({}).props.dangerouslySetInnerHTML.__html,
+            sr: SrFlag({}).props.dangerouslySetInnerHTML.__html,
+            ta: TaFlag({}).props.dangerouslySetInnerHTML.__html,
+            cs: CsFlag({}).props.dangerouslySetInnerHTML.__html,
+            tr: TrFlag({}).props.dangerouslySetInnerHTML.__html,
+            uk: UkFlag({}).props.dangerouslySetInnerHTML.__html,
+            hu: HuFlag({}).props.dangerouslySetInnerHTML.__html,
+            ur: UrFlag({}).props.dangerouslySetInnerHTML.__html,
         };
 
         const languages = currentDoctor.languages || [];
@@ -396,7 +411,7 @@ export default function DoctorsPage() {
 
         const flagsHtml = sortedLangs.map(lang => langToFlagHtml[lang] || '').join('');
         
-        const buttonHtml = `<button id="edit-languages" class="inline-flex items-center justify-center gap-2 h-8 px-3 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+        const buttonHtml = `<button id="edit-languages" style="display: flex; align-items: center; gap: 0.5rem; height: 2rem; padding: 0 0.75rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem;" onmouseover="this.style.backgroundColor='hsl(var(--primary) / 0.9)'" onmouseout="this.style.backgroundColor='hsl(var(--primary))'">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
             <span>Sprachen</span>
         </button>`;
@@ -410,11 +425,16 @@ export default function DoctorsPage() {
             langContainer.innerHTML = newHtml;
         }
 
-        setExampleDoctor(prev => ({
-            ...prev,
-            frontSideCode: doc.body.innerHTML,
-        }));
-    }, [exampleDoctor.languages, activeDoctor]);
+        if (activeDoctor === 'template') {
+            setExampleDoctor(prev => ({
+                ...prev,
+                frontSideCode: doc.body.innerHTML,
+            }));
+        } else if (firestore && activeDoctor) {
+            const docRef = doc(firestore, 'doctors', activeDoctor.id);
+            setDoc(docRef, { frontSideCode: doc.body.innerHTML }, { merge: true });
+        }
+    }, [exampleDoctor.languages, activeDoctor, firestore]);
 
     const doctorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
@@ -456,6 +476,11 @@ export default function DoctorsPage() {
         if (!firestore) return;
         await deleteDoc(doc(firestore, "doctors", doctorId));
         setDialogState({ type: null, data: {} });
+    };
+
+    const handleEdit = (doctor: Doctor) => {
+        setActiveDoctor('template');
+        setExampleDoctor(doctor);
     };
 
     return (
@@ -513,11 +538,11 @@ export default function DoctorsPage() {
                                         <ChevronDown className="h-4 w-4" />
                                         <span className="sr-only">Nach unten</span>
                                     </Button>
-                                    <Button variant="outline" size="icon" onClick={() => { setActiveDoctor(doctor); setDialogState({ type: 'vita', data: { initialValue: doctor.backSideCode }})}}>
+                                    <Button variant="outline" size="icon" onClick={() => {}}>
                                         <EyeOff className="h-4 w-4" />
                                         <span className="sr-only">Ausblenden</span>
                                     </Button>
-                                     <Button variant="outline" size="icon" onClick={() => { setActiveDoctor(doctor); setDialogState({ type: 'vita', data: { initialValue: doctor.backSideCode }})}}>
+                                     <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)}>
                                         <Pencil className="h-4 w-4" />
                                         <span className="sr-only">Bearbeiten</span>
                                     </Button>
@@ -531,24 +556,6 @@ export default function DoctorsPage() {
                             </div>
                         ))}
                     </div>
-
-                    <div className="mt-16 space-y-4">
-                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Lokale Ärztekarten (Vergleich)</h3>
-                         <p className="text-sm text-muted-foreground">
-                            Dieser Bereich zeigt die Karten so an, wie sie aus der lokalen Datei `doctor-cards-data.ts` geladen werden.
-                        </p>
-                    </div>
-                     <div className="mt-8 space-y-12">
-                        {DOCTOR_CARDS_INITIAL_DATA.map(doctor => (
-                            <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
-                                <div className="w-36 flex-shrink-0"></div>
-                                <div className="relative flex-1 w-full max-w-[1000px] p-2">
-                                        <EditableDoctorCard doctor={doctor} onVitaClick={() => {}} />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
                 </CardContent>
             </Card>
 
@@ -581,7 +588,7 @@ export default function DoctorsPage() {
                 />
             )}
 
-            {dialogState.type === 'logoFunction' && (
+             {dialogState.type === 'logoFunction' && (
                 <LogoFunctionSelectDialog
                     isOpen={true}
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
