@@ -9,7 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ImageUp } from 'lucide-react';
 import { ImageSourceDialog } from '@/app/admin/dashboard/team/doctors/_components/image-source-dialog';
 import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_components/image-library-dialog';
-import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/image-crop-dialog';
+import { ImageCropDialog } from './image-crop-dialog';
 import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 import Image from 'next/image';
@@ -23,7 +23,6 @@ const projectImages = [
 ];
 
 // A static path to a generic card background image.
-// In a real app, you might generate this dynamically or have different templates.
 const CARD_BACKGROUND_IMAGE = '/images/partner-card-background.png';
 
 export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partner) => void }> = ({ cardData, onUpdate }) => {
@@ -48,7 +47,7 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
         e.target.value = '';
     };
 
-    const handleCropComplete = async (composedImage: string) => {
+    const handleCropComplete = (composedImage: string) => {
         onUpdate({ ...cardData, logoUrl: composedImage });
         setDialogState(null);
         setLogoToCrop(null);
@@ -125,7 +124,7 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                 </div>
                  
                  <section id="partners" className="w-full bg-primary">
-                    <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+                    <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24">
                         <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
                         Live-Vorschau
                         </h2>
@@ -170,7 +169,6 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                 <ImageCropDialog 
                   imageUrl={logoToCrop} 
                   backgroundImageUrl={CARD_BACKGROUND_IMAGE}
-                  aspectRatio={16/9} 
                   onCropComplete={handleCropComplete} 
                   onClose={() => setDialogState(null)} 
                 />
@@ -178,5 +176,3 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
         </>
     );
 };
-
-    

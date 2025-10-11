@@ -37,7 +37,6 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
     
     if (!cropper || !finalCanvas) return;
 
-    // Get the canvas for the user-cropped section of the logo
     const croppedLogoCanvas = cropper.getCroppedCanvas();
     if (!croppedLogoCanvas) return;
 
@@ -47,19 +46,14 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
     const background = new window.Image();
     background.crossOrigin = 'Anonymous';
     background.onload = () => {
-      // Set final canvas to the size of the background card
       finalCanvas.width = background.width;
       finalCanvas.height = background.height;
       ctx.clearRect(0, 0, finalCanvas.width, finalCanvas.height);
-
-      // 1. Draw the background card template
       ctx.drawImage(background, 0, 0);
 
-      // 2. Define the maximum size for the logo on the card
       const targetWidth = finalCanvas.width * 0.8; 
       const targetHeight = finalCanvas.height * 0.8;
 
-      // 3. Calculate scaling factor to fit the cropped logo within the target area
       let drawWidth = croppedLogoCanvas.width;
       let drawHeight = croppedLogoCanvas.height;
       const ratio = drawWidth / drawHeight;
@@ -73,11 +67,9 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
         drawWidth = drawHeight * ratio;
       }
 
-      // 4. Calculate center position
       const centerX = (finalCanvas.width - drawWidth) / 2;
       const centerY = (finalCanvas.height - drawHeight) / 2;
-
-      // 5. Draw the (scaled down if needed) cropped logo centered on the card
+      
       ctx.drawImage(croppedLogoCanvas, centerX, centerY, drawWidth, drawHeight);
       
       const resultDataUrl = finalCanvas.toDataURL('image/jpeg', 0.9);
