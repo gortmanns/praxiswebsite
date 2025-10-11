@@ -6,8 +6,9 @@ import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
 import { Button } from '@/components/ui/button';
 import { useFirestore } from '@/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 
 export interface Doctor {
     id: string;
@@ -22,8 +23,8 @@ export default function DoctorsPage() {
     const firestore = useFirestore();
     const [dbLog, setDbLog] = useState('');
     
-    const handleReadFromDb = async () => {
-        setDbLog('Attempting to read from Firestore...');
+    const handleWriteToDb = async () => {
+        setDbLog('Attempting to write to Firestore...');
         if (!firestore) {
             const errorMsg = 'Firestore instance is not available. Ensure Firebase is initialized correctly.';
             console.error(errorMsg);
@@ -31,20 +32,29 @@ export default function DoctorsPage() {
             return;
         }
 
-        const docRef = doc(firestore, 'doctors', 'ortmanns');
+        const doctorsToWrite = DOCTOR_CARDS_INITIAL_DATA.filter(d => ['schemmer', 'rosenov', 'herschel', 'slezak'].includes(d.id));
 
         try {
-            const docSnap = await getDoc(docRef);
+            const writePromises = doctorsToWrite.map(doctorData => {
+                const docRef = doc(firestore, 'doctors', doctorData.id);
+                // The data being written must be a plain object.
+                const dataToWrite = {
+                    id: doctorData.id,
+                    name: doctorData.name,
+                    order: doctorData.order,
+                    frontSideCode: doctorData.frontSideCode,
+                    backSideCode: doctorData.backSideCode
+                };
+                return setDoc(docRef, dataToWrite, { merge: true });
+            });
+            
+            await Promise.all(writePromises);
+            
+            const successMsg = `SUCCESS: Documents for ${doctorsToWrite.map(d => d.name).join(', ')} written/merged successfully.`;
+            setDbLog(successMsg);
 
-            if (docSnap.exists()) {
-                const successMsg = `SUCCESS: Document data read successfully.\n\nRAW DATA:\n${JSON.stringify(docSnap.data(), null, 2)}`;
-                setDbLog(successMsg);
-            } else {
-                const notFoundMsg = 'No such document!';
-                setDbLog(notFoundMsg);
-            }
         } catch (error: any) {
-            const errorMsg = `FAILED: An error occurred during the read operation.\n\nRAW ERROR OBJECT:\n${JSON.stringify(error, null, 2)}`;
+            const errorMsg = `FAILED: An error occurred during the write operation.\n\nRAW ERROR OBJECT:\n${JSON.stringify(error, null, 2)}`;
             setDbLog(errorMsg);
         }
     };
@@ -57,15 +67,15 @@ export default function DoctorsPage() {
                         <div>
                             <CardTitle className="text-primary">Ärzte verwalten</CardTitle>
                             <CardDescription>
-                                Verwalten Sie die auf der Team-Seite angezeigten Ärzte. Klicken Sie auf den Button, um den Lesevorgang zu testen.
+                                Verwalten Sie die auf der Team-Seite angezeigten Ärzte. Klicken Sie auf den Button, um den Schreibvorgang auszulösen.
                             </CardDescription>
                         </div>
                     </div>
                 </CardHeader>
                 <CardContent>
                      <div className="flex flex-col md:flex-row gap-4">
-                        <Button onClick={handleReadFromDb} className="shrink-0">
-                            Ortmanns Card aus DB lesen
+                        <Button onClick={handleWriteToDb} className="shrink-0">
+                           Schemmer bis Slezak in DB schreiben
                         </Button>
                         <Textarea
                             readOnly
