@@ -1,8 +1,9 @@
+
 'use server';
 
 import { initializeApp, getApps, deleteApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import { medicalPartnersData, slezakPartner } from './medical-partners-data';
+import { medicalPartnersData } from './medical-partners-data';
 
 export async function seedMedicalPartnersData(): Promise<{ success: boolean; message: string; error?: string; }> {
   const appName = `seed-medical-partners-${Date.now()}`;
@@ -31,9 +32,8 @@ export async function seedMedicalPartnersData(): Promise<{ success: boolean; mes
     }
 
     const batch = db.batch();
-    const allPartners = [...medicalPartnersData, slezakPartner];
 
-    for (const partner of allPartners) {
+    for (const partner of medicalPartnersData) {
       const docRef = collectionRef.doc();
       const dataWithTimestamp = {
         ...partner,
@@ -45,7 +45,7 @@ export async function seedMedicalPartnersData(): Promise<{ success: boolean; mes
 
     await batch.commit();
 
-    return { success: true, message: `${allPartners.length} Partner-Einträge erfolgreich geschrieben.` };
+    return { success: true, message: `${medicalPartnersData.length} Partner-Einträge erfolgreich geschrieben.` };
 
   } catch (error: any) {
     console.error("Error during seeding:", error);
