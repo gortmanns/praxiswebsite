@@ -26,11 +26,17 @@ const projectImages = [
     '/images/luftbild.jpg', '/images/VASC-Alliance-Logo.png', '/images/schemmer-worni-logo.png', '/images/go-medical-logo.png', '/images/mcl-labor-logo.png', '/images/doxnet-logo.jpg', '/images/logos/slezak-logo.png', '/images/praxiszentrum-logo.png', '/images/praxiszentrum-logo-icon.png', '/images/mehrfacharzt-logo.png', '/images/rtw-bern.jpg', '/images/medphone_logo.png', '/images/toxinfo-logo.svg', '/images/foto-medis.jpg', '/images/team/Ortmanns.jpg', '/images/team/Prof.Schemmer.jpg', '/images/team/Dr.Rosenov.jpg', '/images/team/Dr.Herschel.jpg', '/images/team/Dr.Slezak.jpg', '/images/team/Garcia.jpg', '/images/team/Aeschlimann.jpg', '/images/team/Huber.jpg', '/images/team/Oetztuerk.jpg', '/images/team/Sommer.jpg', '/images/leistungen/audiometrie.jpg', '/images/leistungen/ekg.jpg', '/images/leistungen/labor.jpg', '/images/leistungen/praxisapotheke.jpg', '/images/leistungen/roentgen.jpg', '/images/leistungen/spirometrie.jpg', '/images/leistungen/twint_logo.png', '/images/leistungen/VMU.png', '/images/leistungen/wundversorgung.jpg',
 ];
 
+// A static path to a generic card background image.
+// In a real app, you might generate this dynamically or have different templates.
+const CARD_BACKGROUND_IMAGE = '/images/partner-card-background.png';
+
 export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partner) => void }> = ({ cardData, onUpdate }) => {
     const storage = useStorage();
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [dialogState, setDialogState] = useState<'imageSource' | 'imageLibrary' | 'imageCrop' | null>(null);
+    const [logoToCrop, setLogoToCrop] = useState<string | null>(null);
+
 
     const handleInputChange = (field: keyof Partner, value: string | boolean) => {
         onUpdate({ ...cardData, [field]: value });
@@ -40,15 +46,15 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
         if (e.target.files?.[0]) {
             const reader = new FileReader();
             reader.onload = (event) => {
+                setLogoToCrop(event.target?.result as string);
                 setDialogState('imageCrop');
-                onUpdate({ ...cardData, logoUrl: event.target?.result as string });
             };
             reader.readAsDataURL(e.target.files[0]);
         }
         e.target.value = '';
     };
 
-    const handleCropComplete = async (croppedImageUrl: string) => {
+    const handleCropComplete = async (composedImage: string) => {
         if (!storage) {
             toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
             return setDialogState(null);
@@ -56,14 +62,16 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
         const imagePath = `partners/${uuidv4()}.jpg`;
         const imageRef = storageRef(storage, imagePath);
         try {
-            const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
+            // The 'composedImage' is the final image from the crop dialog (card + logo)
+            const snapshot = await uploadString(imageRef, composedImage, 'data_url');
             const downloadURL = await getDownloadURL(snapshot.ref);
-            onUpdate({ ...cardData, logoUrl: downloadURL });
+            onUpdate({ ...cardData, logoUrl: downloadURL }); // Update the card with the new composite image
         } catch (error) {
             console.error("Error uploading image: ", error);
             toast({ variant: 'destructive', title: 'Upload-Fehler', description: 'Das Bild konnte nicht hochgeladen werden.' });
         }
         setDialogState(null);
+        setLogoToCrop(null);
     };
 
      const renderPartnerLogo = (partner: Partner) => {
@@ -134,15 +142,15 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                     </table>
                 </div>
 
-                <div className="rounded-lg bg-primary p-4 flex items-center justify-center w-full">
+                <div className="w-full justify-center flex bg-primary p-4">
                     <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
-                        <Link
+                         <Link
                             href={cardData.websiteUrl || '#'}
                             target={cardData.openInNewTab ? '_blank' : '_self'}
                             rel="noopener noreferrer"
                             className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                             onClick={(e) => e.preventDefault()}
-                        >
+                         >
                             <Card className="flex h-full w-full items-center p-6">
                             <CardContent className="flex w-full items-center justify-center p-0">
                                 <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
@@ -151,7 +159,7 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                             </CardContent>
                             </Card>
                             <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                        </Link>
+                         </Link>
                     </div>
                 </div>
             </div>
@@ -164,13 +172,19 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
             
             {dialogState === 'imageLibrary' && (
                 <ImageLibraryDialog isOpen={true} onOpenChange={() => setDialogState(null)} images={projectImages} onImageSelect={(imageUrl) => {
-                    onUpdate({ ...cardData, logoUrl: imageUrl });
+                    setLogoToCrop(imageUrl);
                     setDialogState('imageCrop');
                 }} />
             )}
 
-            {dialogState === 'imageCrop' && (
-                <ImageCropDialog imageUrl={cardData.logoUrl} aspectRatio={16 / 9} onCropComplete={handleCropComplete} onClose={() => setDialogState(null)} />
+            {dialogState === 'imageCrop' && logoToCrop && (
+                <ImageCropDialog 
+                  imageUrl={logoToCrop} 
+                  backgroundImageUrl={CARD_BACKGROUND_IMAGE}
+                  aspectRatio={16/9} 
+                  onCropComplete={handleCropComplete} 
+                  onClose={() => setDialogState(null)} 
+                />
             )}
         </>
     );
