@@ -319,12 +319,12 @@ export default function DoctorsPage() {
         const newHtml = `${buttonHtml}${flagsHtml}`;
         
         const parser = new DOMParser();
-        const doc = parser.parseFromString(currentDoctor.frontSideCode, 'text/html');
-        const langContainer = doc.getElementById('language-container');
+        const docParser = parser.parseFromString(currentDoctor.frontSideCode, 'text/html');
+        const langContainer = docParser.getElementById('language-container');
         
         if (langContainer && langContainer.innerHTML !== newHtml) {
             langContainer.innerHTML = newHtml;
-            const updatedCode = doc.body.innerHTML;
+            const updatedCode = docParser.body.innerHTML;
 
              if (editingDoctorId) {
                 if (firestore) {
@@ -410,10 +410,10 @@ export default function DoctorsPage() {
 
             // Now update the Firestore document with the public URL
             const parser = new DOMParser();
-            const doc = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
+            const docParser = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
                 
             if (field === 'image') {
-                const imageContainer = doc.getElementById('image-container');
+                const imageContainer = docParser.getElementById('image-container');
                 if(imageContainer) {
                      imageContainer.innerHTML = `
                         <button id="edit-image" class="image-button-background w-full h-full relative">
@@ -421,7 +421,7 @@ export default function DoctorsPage() {
                         </button>`;
                 }
             } else {
-                const positionContainer = doc.getElementById('position-container');
+                const positionContainer = docParser.getElementById('position-container');
                  if (positionContainer) {
                      const mainDiv = positionContainer.parentElement;
                      if(mainDiv) {
@@ -436,7 +436,7 @@ export default function DoctorsPage() {
                 }
             }
             
-            const updatedHtml = doc.body.innerHTML;
+            const updatedHtml = docParser.body.innerHTML;
         
             if (editingDoctorId && firestore) {
                 const docRef = doc(firestore, 'doctors', editingDoctorId);
@@ -459,7 +459,7 @@ export default function DoctorsPage() {
             if (html.trim().startsWith('<button id="edit-vita"')) return html;
             
             const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
+            const docParser = parser.parseFromString(html, 'text/html');
             
             const style = `<style>.vita-content { color: hsl(var(--background)); } .vita-content p { margin: 0; } .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; } .vita-content li { margin-bottom: 0.5em; } .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; } .vita-content .is-small { font-size: 0.8em; font-weight: normal; } .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }</style>`;
             
@@ -484,10 +484,10 @@ export default function DoctorsPage() {
         if (!field) return;
 
         const parser = new DOMParser();
-        const doc = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
+        const docParser = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
         
         if(field === 'position') {
-            const container = doc.getElementById('position-container');
+            const container = docParser.getElementById('position-container');
              if (container) {
                 const mainDiv = container.parentElement;
                 if(mainDiv) {
@@ -496,7 +496,7 @@ export default function DoctorsPage() {
                 }
             }
         } else {
-            let button = doc.getElementById(`edit-${field}`);
+            let button = docParser.getElementById(`edit-${field}`);
             if (button) {
                 const p = button.querySelector('p') || button.querySelector('h3');
                 if (p) {
@@ -505,7 +505,7 @@ export default function DoctorsPage() {
             }
         }
         
-        const updatedHtml = doc.body.innerHTML;
+        const updatedHtml = docParser.body.innerHTML;
         if (editingDoctorId && firestore) {
             const docRef = doc(firestore, 'doctors', editingDoctorId);
             setDoc(docRef, { frontSideCode: updatedHtml }, { merge: true });
@@ -857,5 +857,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
-    
