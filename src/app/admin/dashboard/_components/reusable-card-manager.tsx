@@ -1,6 +1,12 @@
 
 'use client';
 
+// WICHTIGER HINWEIS: Bei der Implementierung neuer Sammlungen mit dieser Komponente
+// muss sichergestellt werden, dass die `firestore.rules`-Datei angepasst wird,
+// um authentifizierten Benutzern Lese- und Schreibzugriff (read, write)
+// auf die neue Sammlung (z.B. /neueSammlung/{docId}) zu gewähren.
+// Andernfalls führt dies zu "Missing or insufficient permissions"-Fehlern.
+
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
@@ -421,5 +427,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
