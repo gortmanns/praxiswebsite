@@ -16,13 +16,6 @@ export default function VisualDesignPage() {
                 <div>
                     <h3 className="mb-4 text-lg font-medium text-primary">Standard-Alerts</h3>
                     <div className="space-y-4">
-                        <Alert>
-                            <Info className="h-4 w-4" />
-                            <AlertTitle>Standard-Meldung</AlertTitle>
-                            <AlertDescription>
-                                Dies ist eine normale Benachrichtigung für allgemeine Informationen.
-                            </AlertDescription>
-                        </Alert>
                         <Alert variant="info">
                             <Info className="h-4 w-4" />
                             <AlertTitle>Info-Meldung</AlertTitle>

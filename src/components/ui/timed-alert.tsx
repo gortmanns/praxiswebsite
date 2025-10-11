@@ -15,11 +15,10 @@ export interface TimedAlertProps extends React.HTMLAttributes<HTMLDivElement>, V
 }
 
 const alertIcons = {
-  default: Info,
+  info: Info,
   destructive: AlertCircle,
   success: CheckCircle,
   warning: AlertCircle,
-  info: Info
 };
 
 export const TimedAlert: React.FC<TimedAlertProps> = ({

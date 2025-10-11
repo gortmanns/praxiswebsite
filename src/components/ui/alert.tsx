@@ -9,18 +9,16 @@ export const alertVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          "border-secondary bg-secondary text-secondary-foreground [&>svg]:text-secondary-foreground",
+        info: "border-blue-600 bg-blue-600 text-white [&>svg]:text-white",
         destructive:
           "border-destructive bg-destructive text-destructive-foreground [&>svg]:text-destructive-foreground",
         success:
           "border-green-600 bg-green-600 text-white [&>svg]:text-white",
         warning: "border-yellow-500 bg-yellow-500 text-white [&>svg]:text-white",
-        info: "border-blue-600 bg-blue-600 text-white [&>svg]:text-white"
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "info",
     },
   }
 )
