@@ -304,26 +304,27 @@ export default function DoctorsPage() {
         const field = dialogState.data.field || 'image';
         const parser = new DOMParser();
         const doc = parser.parseFromString(exampleDoctor.frontSideCode, 'text/html');
-        const mainContentDiv = doc.querySelector('.flex-grow');
-    
+            
         if (field === 'image') {
             const imageContainer = doc.getElementById('image-container');
             if(imageContainer) {
-                 imageContainer.innerHTML = `<button id="edit-image" class="w-full h-full relative bg-white">
-                    <img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-contain relative" />
-                 </button>`;
+                 imageContainer.innerHTML = `
+                    <button id="edit-image" class="w-full h-full relative bg-white">
+                        <img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-cover relative" />
+                    </button>`;
             }
-        } else if (mainContentDiv) {
-          const positionContainer = doc.getElementById('position-container');
-           if (positionContainer) {
-             positionContainer.innerHTML = `<div class="mt-6">
-                <button id="edit-position">
-                    <div class="relative bg-white">
-                        <img src="${croppedImageUrl}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
-                    </div>
-                </button>
-             </div>`;
-           }
+        } else {
+            const positionContainer = doc.getElementById('position-container');
+            if (positionContainer) {
+                positionContainer.innerHTML = `
+                    <div class="mt-6">
+                        <button id="edit-position">
+                            <div class="relative bg-white">
+                                <img src="${croppedImageUrl}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
+                            </div>
+                        </button>
+                    </div>`;
+            }
         }
         
         const updatedHtml = doc.body.innerHTML;
@@ -427,8 +428,42 @@ export default function DoctorsPage() {
         
         if (!currentDoctor || !currentDoctor.frontSideCode) return;
         
-        const flagComponents: Record<string, React.FC<{ className?: string }>> = { de: DeFlag, en: EnFlag, fr: FrFlag, it: ItFlag, es: EsFlag, pt: PtFlag, ru: RuFlag, sq: SqFlag, ar: ArFlag, bs: BsFlag, zh: ZhFlag, da: DaFlag, fi: FiFlag, el: ElFlag, he: HeFlag, hi: HiFlag, ja: JaFlag, ko: KoFlag, hr: HrFlag, nl: NlFlag, no: NoFlag, fa: FaFlag, pl: PlFlag, pa: PaFlag, ro: RoFlag, sv: SvFlag, sr: SrFlag, ta: TaFlag, cs: CsFlag, tr: TrFlag, uk: UkFlag, hu: HuFlag, ur: UrFlag };
-        
+        const langToFlagHtml: Record<string, string> = {
+            de: renderToStaticMarkup(React.createElement(DeFlag)),
+            en: renderToStaticMarkup(React.createElement(EnFlag)),
+            fr: renderToStaticMarkup(React.createElement(FrFlag)),
+            it: renderToStaticMarkup(React.createElement(ItFlag)),
+            es: renderToStaticMarkup(React.createElement(EsFlag)),
+            pt: renderToStaticMarkup(React.createElement(PtFlag)),
+            ru: renderToStaticMarkup(React.createElement(RuFlag)),
+            sq: renderToStaticMarkup(React.createElement(SqFlag)),
+            ar: renderToStaticMarkup(React.createElement(ArFlag)),
+            bs: renderToStaticMarkup(React.createElement(BsFlag)),
+            zh: renderToStaticMarkup(React.createElement(ZhFlag)),
+            da: renderToStaticMarkup(React.createElement(DaFlag)),
+            fi: renderToStaticMarkup(React.createElement(FiFlag)),
+            el: renderToStaticMarkup(React.createElement(ElFlag)),
+            he: renderToStaticMarkup(React.createElement(HeFlag)),
+            hi: renderToStaticMarkup(React.createElement(HiFlag)),
+            ja: renderToStaticMarkup(React.createElement(JaFlag)),
+            ko: renderToStaticMarkup(React.createElement(KoFlag)),
+            hr: renderToStaticMarkup(React.createElement(HrFlag)),
+            nl: renderToStaticMarkup(React.createElement(NlFlag)),
+            no: renderToStaticMarkup(React.createElement(NoFlag)),
+            fa: renderToStaticMarkup(React.createElement(FaFlag)),
+            pl: renderToStaticMarkup(React.createElement(PlFlag)),
+            pa: renderToStaticMarkup(React.createElement(PaFlag)),
+            ro: renderToStaticMarkup(React.createElement(RoFlag)),
+            sv: renderToStaticMarkup(React.createElement(SvFlag)),
+            sr: renderToStaticMarkup(React.createElement(SrFlag)),
+            ta: renderToStaticMarkup(React.createElement(TaFlag)),
+            cs: renderToStaticMarkup(React.createElement(CsFlag)),
+            tr: renderToStaticMarkup(React.createElement(TrFlag)),
+            uk: renderToStaticMarkup(React.createElement(UkFlag)),
+            hu: renderToStaticMarkup(React.createElement(HuFlag)),
+            ur: renderToStaticMarkup(React.createElement(UrFlag)),
+        };
+
         const languages = currentDoctor.languages || [];
         const languageOrder = ['de', 'fr', 'it', 'en', 'es', 'pt', 'ru'];
 
@@ -442,9 +477,10 @@ export default function DoctorsPage() {
         });
 
         const flagsHtml = sortedLangs.map(lang => {
-            const FlagComponent = flagComponents[lang];
-            if (!FlagComponent) return '';
-            return renderToStaticMarkup(React.createElement(FlagComponent, { className: "h-5 w-auto rounded-sm shadow-md" }));
+            const flagHtml = langToFlagHtml[lang];
+            if (!flagHtml) return '';
+            // Add classes to the SVG string
+            return flagHtml.replace('<svg', '<svg class="h-5 w-auto rounded-sm shadow-md"');
         }).join('');
 
         const buttonHtml = `<button id="edit-languages" style="display: flex; align-items: center; gap: 0.5rem; height: 2rem; padding: 0 0.75rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem;" onmouseover="this.style.backgroundColor='hsl(var(--primary) / 0.9)'" onmouseout="this.style.backgroundColor='hsl(var(--primary))'">
@@ -639,10 +675,6 @@ export default function DoctorsPage() {
                                             <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)}>
                                                 <Pencil className="h-4 w-4" />
                                                 <span className="sr-only">Bearbeiten</span>
-                                            </Button>
-                                             <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name } })}>
-                                                <Trash2 className="h-4 w-4" />
-                                                <span className="sr-only">Löschen</span>
                                             </Button>
                                         </div>
                                         <div className={cn("relative flex-1 w-full max-w-[1000px] p-2 rounded-lg border-2 grayscale", activeDoctor === doctor ? 'border-primary' : 'border-transparent')}>
