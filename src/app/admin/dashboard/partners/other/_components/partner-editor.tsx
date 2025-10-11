@@ -8,21 +8,13 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { ImageUp } from 'lucide-react';
-import { ImageSourceDialog } from '@/app/admin/dashboard/team/doctors/_components/image-source-dialog';
-import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_components/image-library-dialog';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import type { OtherPartner as Partner } from '@/docs/backend-types';
 
-const projectImages = [
-    '/images/luftbild.jpg', '/images/VASC-Alliance-Logo.png', '/images/schemmer-worni-logo.png', '/images/go-medical-logo.png', '/images/mcl-labor-logo.png', '/images/doxnet-logo.jpg', '/images/logos/slezak-logo.png', '/images/praxiszentrum-logo.png', '/images/praxiszentrum-logo-icon.png', '/images/mehrfacharzt-logo.png', '/images/rtw-bern.jpg', '/images/medphone_logo.png', '/images/toxinfo-logo.svg', '/images/foto-medis.jpg', '/images/team/Ortmanns.jpg', '/images/team/Prof.Schemmer.jpg', '/images/team/Dr.Rosenov.jpg', '/images/team/Dr.Herschel.jpg', '/images/team/Dr.Slezak.jpg', '/images/team/Garcia.jpg', '/images/team/Aeschlimann.jpg', '/images/team/Huber.jpg', '/images/team/Oetztuerk.jpg', '/images/team/Sommer.jpg', '/images/leistungen/audiometrie.jpg', '/images/leistungen/ekg.jpg', '/images/leistungen/labor.jpg', '/images/leistungen/praxisapotheke.jpg', '/images/leistungen/roentgen.jpg', '/images/leistungen/spirometrie.jpg', '/images/leistungen/twint_logo.png', '/images/leistungen/VMU.png', '/images/leistungen/wundversorgung.jpg',
-];
-
-
 export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partner) => void }> = ({ cardData, onUpdate }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [dialogState, setDialogState] = useState<'imageSource' | 'imageLibrary' | null>(null);
 
     const handleInputChange = (field: keyof Partner, value: string | boolean | number) => {
         onUpdate({ ...cardData, [field]: value });
@@ -37,7 +29,6 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
             reader.readAsDataURL(e.target.files[0]);
         }
         e.target.value = '';
-        setDialogState(null);
     };
 
     return (
@@ -66,13 +57,15 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
 
                     {/* Image Settings */}
                     <div className="space-y-4 border p-4 rounded-lg">
-                         <p className="text-sm text-muted-foreground">
-                            Tipp: Bereiten Sie Ihr Logo idealerweise in einem Bildbearbeitungsprogramm vor (ca. 400x130 Pixel), bevor Sie es hochladen.
-                        </p>
-                        <Button variant="outline" onClick={() => setDialogState('imageSource')} className="w-full">
-                             <ImageUp className="mr-2 h-4 w-4" />
-                             Logo wählen/hochladen
-                        </Button>
+                         <div className="space-y-2">
+                            <p className="text-sm text-muted-foreground">
+                                Tipp: Bereiten Sie Ihr Logo idealerweise in einem Bildbearbeitungsprogramm vor (ca. 400x130 Pixel), bevor Sie es hochladen.
+                            </p>
+                            <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="w-full">
+                                <ImageUp className="mr-2 h-4 w-4" />
+                                Logo hochladen
+                            </Button>
+                        </div>
                         <div className="space-y-2">
                             <Label htmlFor="logoScale">Grösse des Logos ({cardData.logoScale || 100}%)</Label>
                             <Slider
@@ -125,7 +118,7 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                                     className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                                     onClick={(e) => e.preventDefault()}
                                 >
-                                    <Card className="flex h-full w-full items-center justify-center p-6">
+                                    <Card className="flex h-full w-full items-center justify-center p-2">
                                         <CardContent className="relative flex w-full h-full items-center justify-center p-0 overflow-hidden">
                                            {cardData.logoUrl ? (
                                                 <Image
@@ -152,17 +145,6 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
             </div>
             
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
-            
-            {dialogState === 'imageSource' && (
-                <ImageSourceDialog isOpen={true} onOpenChange={() => setDialogState(null)} onUpload={() => fileInputRef.current?.click()} onSelect={() => setDialogState('imageLibrary')} />
-            )}
-            
-            {dialogState === 'imageLibrary' && (
-                <ImageLibraryDialog isOpen={true} onOpenChange={() => setDialogState(null)} images={projectImages} onImageSelect={(imageUrl) => {
-                    onUpdate({ ...cardData, logoUrl: imageUrl });
-                    setDialogState(null);
-                }} />
-            )}
         </>
     );
 };

@@ -226,22 +226,7 @@ export function ReusableCardManager<T extends BaseCardData>({
             return (
                 <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
                     <div className="flex flex-col gap-2">
-                         <Link
-                            href={item.websiteUrl || '#'}
-                            target={item.openInNewTab ? '_blank' : '_self'}
-                            rel="noopener noreferrer"
-                            className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                             onClick={(e) => e.preventDefault()} // Prevent navigation in admin UI
-                          >
-                            <Card className="flex h-full w-full items-center p-6">
-                                <CardContent className="flex w-full items-center justify-center p-0">
-                                <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                                    {renderPartnerLogo(item)}
-                                </div>
-                                </CardContent>
-                            </Card>
-                            <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                          </Link>
+                        <DisplayCardComponent {...item} />
                         <div className="mt-2 flex w-full flex-col gap-2">
                             <div className="grid grid-cols-2 gap-2">
                                 <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
@@ -295,21 +280,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                     <div className="flex flex-col gap-2">
                         <div className="relative">
                             <div className="absolute inset-0 z-10 bg-black/50 rounded-lg"></div>
-                            <Link
-                                href={item.websiteUrl || '#'}
-                                target={item.openInNewTab ? '_blank' : '_self'}
-                                rel="noopener noreferrer"
-                                className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                                onClick={(e) => e.preventDefault()} // Prevent navigation in admin UI
-                            >
-                                <Card className="flex h-full w-full items-center p-6">
-                                    <CardContent className="flex w-full items-center justify-center p-0">
-                                        <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                                            {renderPartnerLogo(item)}
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </Link>
+                            <DisplayCardComponent {...item} />
                         </div>
                         <div className="mt-2 flex w-full flex-col gap-2">
                             <div className="grid grid-cols-2 gap-2">
@@ -480,5 +451,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    

@@ -8,6 +8,7 @@ import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
+import type { OtherPartner as OtherPartnerData } from '@/docs/backend-types';
 
 interface Partner {
     id: string;
@@ -36,7 +37,7 @@ export function CooperationPartnersSection() {
   }, [firestore]);
 
   const { data: medicalPartners, isLoading: isLoadingMedical } = useCollection<Partner>(medicalPartnersQuery);
-  const { data: otherPartners, isLoading: isLoadingOther } = useCollection<Partner>(otherPartnersQuery);
+  const { data: otherPartners, isLoading: isLoadingOther } = useCollection<OtherPartnerData>(otherPartnersQuery);
 
   const visibleMedicalPartners = medicalPartners?.filter(p => !p.hidden) || [];
   const visibleOtherPartners = otherPartners?.filter(p => !p.hidden) || [];
@@ -118,17 +119,18 @@ export function CooperationPartnersSection() {
                   rel="noopener noreferrer"
                   className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
-                  <Card className="flex h-full w-full items-center justify-center p-6">
-                    <CardContent className="flex w-full items-center justify-center p-0">
-                      <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                  <Card className="flex h-full w-full items-center justify-center p-2">
+                    <CardContent className="relative flex w-full h-full items-center justify-center p-0 overflow-hidden">
                         <Image
                           src={partner.logoUrl!}
                           alt={`${partner.name} Logo`}
-                          width={partner.width || 200}
-                          height={partner.height || 60}
+                          fill
                           className="object-contain"
+                          style={{
+                              transform: `scale(${ (partner.logoScale || 100) / 100}) translate(${partner.logoX || 0}px, ${partner.logoY || 0}px)`,
+                              transformOrigin: 'center center',
+                          }}
                         />
-                      </div>
                     </CardContent>
                   </Card>
                   <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
