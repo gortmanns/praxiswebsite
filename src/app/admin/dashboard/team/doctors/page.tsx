@@ -49,6 +49,8 @@ export default function DoctorsPage() {
     const { data: dbDoctors, isLoading: isLoadingDbDoctors, error: dbError } = useCollection<Doctor>(doctorsQuery);
     
     const ortmannsCardData = DOCTOR_CARDS_INITIAL_DATA.find(d => d.id === 'ortmanns');
+    const cardAspectRatio = 1000 / 495;
+    const previewScale = 0.5; // Example scale, can be adjusted
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -67,11 +69,35 @@ export default function DoctorsPage() {
                     <div className="w-full border-dashed border-2 border-muted rounded-lg debug-grid">
                         {ortmannsCardData && (
                             <div className="grid grid-cols-2 gap-2.5">
-                                <div className="aspect-[1000/495] w-full">
-                                    <CodeRenderer html={ortmannsCardData.frontSideCode} />
+                                <div style={{ 
+                                    width: `${1000 * previewScale}px`, 
+                                    height: `${495 * previewScale}px`,
+                                    position: 'relative'
+                                }}>
+                                    <div style={{
+                                        position: 'absolute',
+                                        width: '1000px',
+                                        height: '495px',
+                                        transform: `scale(${previewScale})`,
+                                        transformOrigin: 'top left',
+                                    }}>
+                                        <CodeRenderer html={ortmannsCardData.frontSideCode} />
+                                    </div>
                                 </div>
-                                <div className="aspect-[1000/495] w-full bg-accent/95 text-left text-background">
-                                    <CodeRenderer html={ortmannsCardData.backSideCode} />
+                                <div style={{ 
+                                    width: `${1000 * previewScale}px`, 
+                                    height: `${495 * previewScale}px`,
+                                    position: 'relative'
+                                }}>
+                                     <div style={{
+                                        position: 'absolute',
+                                        width: '1000px',
+                                        height: '495px',
+                                        transform: `scale(${previewScale})`,
+                                        transformOrigin: 'top left',
+                                    }} className="bg-accent/95 text-left text-background">
+                                        <CodeRenderer html={ortmannsCardData.backSideCode} />
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -127,3 +153,4 @@ export default function DoctorsPage() {
         </div>
     );
 }
+
