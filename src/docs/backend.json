@@ -1,2 +1,26 @@
 {
+  "entities": {
+    "Doctor": {
+      "title": "Doctor",
+      "description": "Represents a doctor's profile.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the doctor." },
+        "order": { "type": "number", "description": "Display order of the doctor." },
+        "name": { "type": "string", "description": "The full name of the doctor." },
+        "frontSideCode": { "type": "string", "description": "HTML code for the front side of the doctor card." },
+        "backSideCode": { "type": "string", "description": "HTML code for the back side of the doctor card." }
+      },
+      "required": ["id", "name", "order", "frontSideCode", "backSideCode"]
+    }
+  },
+  "auth": {
+    "providers": ["password"]
+  },
+  "firestore": {
+    "doctors": {
+      "schema": { "$ref": "#/entities/Doctor" },
+      "description": "Stores doctor profile information."
+    }
+  }
 }
