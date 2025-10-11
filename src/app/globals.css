@@ -70,3 +70,8 @@
         animation: marquee 60s linear infinite;
     }
 }
+
+.cropper-modal {
+  background-color: #000;
+  opacity: 0.5;
+}
