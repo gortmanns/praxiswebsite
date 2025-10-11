@@ -4,8 +4,10 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirestore, useCollection, useMemoFirebase, useStorage } from '@/firebase';
 import { collection, query, orderBy, setDoc, doc, writeBatch, deleteDoc, addDoc, serverTimestamp } from 'firebase/firestore';
+import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { TextEditDialog } from './_components/text-edit-dialog';
@@ -84,6 +86,7 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string; onClick?: (
 
 export default function DoctorsPage() {
     const firestore = useFirestore();
+    const storage = useStorage();
      const doctorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
         return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
@@ -393,43 +396,59 @@ export default function DoctorsPage() {
         e.target.value = '';
     };
 
-    const handleCropComplete = (croppedImageUrl: string) => {
+    const handleCropComplete = async (croppedImageUrl: string) => {
+        if (!storage) return;
+
         const field = dialogState.data.field || 'image';
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
-            
-        if (field === 'image') {
-            const imageContainer = doc.getElementById('image-container');
-            if(imageContainer) {
-                 imageContainer.innerHTML = `
-                    <button id="edit-image" class="image-button-background w-full h-full relative">
-                        <img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-cover relative" />
-                    </button>`;
-            }
-        } else {
-            const positionContainer = doc.getElementById('position-container');
-             if (positionContainer) {
-                 const mainDiv = positionContainer.parentElement;
-                 if(mainDiv) {
-                    positionContainer.innerHTML = `
-                        <button id="edit-position" class="image-button-background">
-                            <div class="relative">
-                                <img src="${croppedImageUrl}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
-                            </div>
+        const imagePath = `doctors/${uuidv4()}.jpg`;
+        const imageRef = storageRef(storage, imagePath);
+
+        try {
+            // Upload the base64 string to Firebase Storage
+            const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
+            const downloadURL = await getDownloadURL(snapshot.ref);
+
+            // Now update the Firestore document with the public URL
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
+                
+            if (field === 'image') {
+                const imageContainer = doc.getElementById('image-container');
+                if(imageContainer) {
+                     imageContainer.innerHTML = `
+                        <button id="edit-image" class="image-button-background w-full h-full relative">
+                            <img src="${downloadURL}" alt="Portrait" class="h-full w-full object-cover relative" />
                         </button>`;
-                     mainDiv.replaceChild(positionContainer, mainDiv.children[4]);
-                 }
+                }
+            } else {
+                const positionContainer = doc.getElementById('position-container');
+                 if (positionContainer) {
+                     const mainDiv = positionContainer.parentElement;
+                     if(mainDiv) {
+                        positionContainer.innerHTML = `
+                            <button id="edit-position" class="image-button-background">
+                                <div class="relative">
+                                    <img src="${downloadURL}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
+                                </div>
+                            </button>`;
+                         mainDiv.replaceChild(positionContainer, mainDiv.children[4]);
+                     }
+                }
             }
+            
+            const updatedHtml = doc.body.innerHTML;
+        
+            if (editingDoctorId && firestore) {
+                const docRef = doc(firestore, 'doctors', editingDoctorId);
+                setDoc(docRef, { frontSideCode: updatedHtml }, { merge: true });
+            } else {
+                 setEditorCardState(prev => ({ ...prev, frontSideCode: updatedHtml }));
+            }
+        } catch (error) {
+            console.error("Error uploading image: ", error);
+            // Handle error, maybe show a toast
         }
         
-        const updatedHtml = doc.body.innerHTML;
-    
-        if (editingDoctorId && firestore) {
-            const docRef = doc(firestore, 'doctors', editingDoctorId);
-            setDoc(docRef, { frontSideCode: updatedHtml }, { merge: true });
-        } else {
-             setEditorCardState(prev => ({ ...prev, frontSideCode: updatedHtml }));
-        }
         setDialogState({ type: null, data: {} });
     };
 
