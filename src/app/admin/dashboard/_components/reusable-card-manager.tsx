@@ -392,7 +392,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                     </div>
                      <div className={cn(
                         "mt-8",
-                        isPartnerManager ? "rounded-lg bg-primary p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
+                        isPartnerManager ? "rounded-lg bg-primary p-4 flex flex-wrap justify-center gap-4" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
                      )}>
                         {isLoadingData && (
                             isPartnerManager ? 
@@ -427,7 +427,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </div>
                             <div className={cn(
                                 "mt-8",
-                                isPartnerManager ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
+                                isPartnerManager ? "flex flex-wrap justify-center gap-4" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
                             )}>
                                 {hiddenItems.map((item) => (
                                     <HiddenDisplayWrapper key={item.id} item={item} />
