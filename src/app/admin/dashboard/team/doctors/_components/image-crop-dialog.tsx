@@ -48,7 +48,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
         </DialogHeader>
         <div 
           className="my-4 flex justify-center bg-muted"
-          style={{ height: '600px' }}
+          style={{ height: '600px', maxHeight: '70vh' }}
         >
           <Cropper
             key={aspectRatio}
@@ -68,7 +68,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
           <DialogClose asChild>
             <Button variant="outline">Abbrechen</Button>
           </DialogClose>
-          <Button onClick={handleCrop}>Zuschneiden und übernehmen</Button>
+          <Button onClick={handleCrop}>Übernehmen</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

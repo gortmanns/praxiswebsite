@@ -17,6 +17,7 @@ import { ImageCropDialog } from './_components/image-crop-dialog';
 import { LogoFunctionSelectDialog } from './_components/logo-function-select-dialog';
 import { cn } from '@/lib/utils';
 import DOMPurify from 'dompurify';
+import { DeFlag, EnFlag, FrFlag, ItFlag, EsFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
 
 
 export interface Doctor {
@@ -151,7 +152,7 @@ export default function DoctorsPage() {
                             </div>
                         </div>
                         <div id="language-container" class="absolute bottom-0 right-0 flex items-center gap-2">
-                            <button id="edit-languages" class="lang-button inline-flex items-center justify-center gap-2 h-8 px-3 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+                             <button id="edit-languages" class="lang-button inline-flex items-center justify-center gap-2 h-8 px-3 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
                                 Sprachen
                             </button>
@@ -218,19 +219,13 @@ export default function DoctorsPage() {
 
     const handleTemplateClick = (e: React.MouseEvent) => {
         let target = e.target as HTMLElement;
+        // Traverse up the DOM to find the button with the ID
         while (target && !target.id.startsWith('edit-')) {
-             if (target.classList.contains('template-card') || target.classList.contains('vita-content-button') || target.id === 'language-container') {
-                if (target.id === 'language-container') {
-                    target = target.querySelector('#edit-languages') as HTMLElement;
-                } else {
-                     break;
-                }
+            if (target.classList.contains('template-card') || target.parentElement === null) {
+                // Stop if we reach the card's root or the top of the tree
+                return;
             }
-            target = target.parentElement as HTMLElement;
-        }
-        
-        if (target && target.id && target.id === 'edit-vita') {
-            target = document.getElementById('edit-vita') as HTMLElement;
+            target = target.parentElement;
         }
 
         if (target && target.id && target.id.startsWith('edit-')) {
@@ -287,22 +282,13 @@ export default function DoctorsPage() {
         
         const targetButton = doc.getElementById(`edit-${field}`);
         if (targetButton) {
-            targetButton.innerHTML = '';
-            const img = doc.createElement('img');
-            img.src = croppedImageUrl;
-            img.alt = "Neues Bild";
-            
-            if(field === 'image') {
-              // The styles are now in the CSS block, so we just add the img
-              targetButton.appendChild(img);
+            if (field === 'image') {
+              targetButton.innerHTML = `<img src="${croppedImageUrl}" alt="Neues Bild" style="width: 100%; height: 100%; object-fit: cover;" />`;
               targetButton.style.padding = '0';
             } else { // It's a logo
-              img.style.height = 'auto';
-              img.style.width = '75%';
-              img.style.objectFit = 'contain';
-              targetButton.style.textAlign = 'left'; 
-              targetButton.innerHTML = ''; 
-              targetButton.appendChild(img);
+              targetButton.innerHTML = `<img src="${croppedImageUrl}" alt="Neues Logo" style="height: auto; width: 75%; max-width: 75%; object-fit: contain; background: transparent;" />`;
+              targetButton.style.textAlign = 'left';
+              targetButton.style.justifyContent = 'flex-start';
             }
         }
         
@@ -348,7 +334,7 @@ export default function DoctorsPage() {
         
         if (button) {
             if (field === 'position') {
-                 button.innerHTML = `<p>${newValue}</p>`;
+                 button.innerHTML = `<p class="text-base">${newValue}</p>`;
             } else {
                 const p = button.querySelector('p') || button.querySelector('h3');
                 if (p) {
@@ -366,7 +352,7 @@ export default function DoctorsPage() {
         
         const langToFlagHtml: Record<string, string> = {
             de: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>`,
-            en: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="h-5 w-auto rounded-sm shadow-md"><clipPath id="a-lang"><path d="M30 15h30v15zv-15z"></path></clipPath><path d="M0 0v30h60V0z" fill="#012169"></path><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"></path><path d="M0 0l60 30m0-30L0 30" clip-path="url(#a-lang)" stroke="#C8102E" stroke-width="4"></path><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"></path><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"></path></svg>`,
+            en: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="h-5 w-auto rounded-sm shadow-md"><clipPath id="a-lang-en"><path d="M30 15h30v15zv-15z"></path></clipPath><path d="M0 0v30h60V0z" fill="#012169"></path><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"></path><path d="M0 0l60 30m0-30L0 30" clip-path="url(#a-lang-en)" stroke="#C8102E" stroke-width="4"></path><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"></path><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"></path></svg>`,
             fr: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#ED2939" d="M0 0h3v2H0z"></path><path fill="#fff" d="M0 0h2v2H0z"></path><path fill="#002395" d="M0 0h1v2H0z"></path></svg>`,
             it: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#008C45" d="M0 0h1v2H0z"></path><path fill="#F4F5F0" d="M1 0h1v2H1z"></path><path fill="#CD212A" d="M2 0h1v2H2z"></path></svg>`,
             es: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#c60b1e" d="M0 0h3v2H0z"></path><path fill="#ffc400" d="M0 .5h3v1H0z"></path></svg>`,
@@ -430,7 +416,13 @@ export default function DoctorsPage() {
             ...prev,
             frontSideCode: doc.body.innerHTML,
         }));
+        setDialogState({ type: null, data: {} });
     };
+    
+    useEffect(() => {
+        // Run on mount to apply initial languages
+        handleLanguageSave(exampleDoctor.languages || ['de']);
+    }, []);
 
     const doctorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
@@ -550,7 +542,8 @@ export default function DoctorsPage() {
                         setDialogState({ type: 'imageLibrary', data: { field: 'position', aspectRatio: 1600/265 } });
                     }}
                     onUploadNew={() => {
-                        setDialogState(prev => ({ type: 'imageSource', data: { ...prev.data, field: 'position', aspectRatio: 1600/265 } }));
+                        setDialogState({ type: null, data: {} });
+                        fileInputRef.current?.click();
                     }}
                 />
             )}

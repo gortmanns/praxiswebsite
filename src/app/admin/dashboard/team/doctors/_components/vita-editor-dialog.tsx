@@ -334,6 +334,7 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ isOpen, onOp
   const handleSave = () => {
     const contentToSave = isHtmlMode ? htmlContent : editor?.getHTML() || '';
     onSave(contentToSave);
+    onOpenChange(false);
   };
 
   const handleHtmlModeToggle = () => {
