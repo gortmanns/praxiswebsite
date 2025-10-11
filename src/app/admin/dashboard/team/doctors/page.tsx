@@ -1,15 +1,9 @@
-
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, doc, getDoc } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { OrtmannsCard } from '@/app/team/_components/doctors/ortmanns-card';
-import { SchemmerCard } from '@/app/team/_components/doctors/schemmer-card';
-import { RosenovCard } from '@/app/team/_components/doctors/rosenov-card';
-import { HerschelCard } from '@/app/team/_components/doctors/herschel-card';
-import { SlezakCard } from '@/app/team/_components/doctors/slezak-card';
 import { Button } from '@/components/ui/button';
 import { EyeOff, ArrowUp, ArrowDown, Info, Database, AlertCircle, CheckCircle, TriangleAlert, Binary } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
@@ -29,14 +23,6 @@ export interface Doctor {
     backSideCode: string;
     [key: string]: any;
 }
-
-const localDoctors = [
-    { id: 'ortmanns', name: 'G. Ortmanns', Component: OrtmannsCard },
-    { id: 'schemmer', name: 'P. Schemmer', Component: SchemmerCard },
-    { id: 'rosenov', name: 'A. Rosenov', Component: RosenovCard },
-    { id: 'herschel', name: 'R. Herschel', Component: HerschelCard },
-    { id: 'slezak', name: 'A. Slezak', Component: SlezakCard },
-];
 
 export default function DoctorsPage() {
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
@@ -62,6 +48,43 @@ export default function DoctorsPage() {
     }, [status]);
 
 
+    const handleSaveAllToDb = useCallback(async () => {
+        if (!firestore) {
+            setStatus({ type: 'error', message: 'Firestore ist nicht initialisiert.' });
+            return;
+        }
+
+        setIsSavingToDb(true);
+        setStatus({ type: 'info', message: 'Speichere alle Karten in der Datenbank...' });
+        setDebugData(null);
+
+        try {
+            const savePromises = DOCTOR_CARDS_INITIAL_DATA.map(doctor => 
+                addDoctor(firestore, {
+                    name: doctor.name,
+                    order: doctor.order,
+                    frontSideCode: doctor.frontSideCode,
+                    backSideCode: doctor.backSideCode,
+                }, doctor.id)
+            );
+
+            await Promise.all(savePromises);
+            
+            setStatus({ type: 'success', message: 'Alle 5 Karten wurden erfolgreich in der Datenbank gespeichert.' });
+
+            // Kurze Verzögerung, um Firestore Zeit zur Konsistenz zu geben, bevor neu geladen wird.
+            setTimeout(() => {
+                refetchDbDoctors?.();
+            }, 500);
+
+        } catch (error: any) {
+            console.error("Fehler beim Speichern aller Karten:", error);
+            setStatus({ type: 'error', message: `Fehler beim Speichern der Karten: ${error.message}` });
+        } finally {
+            setIsSavingToDb(false);
+        }
+    }, [firestore, refetchDbDoctors]);
+
     const handleEditClick = (doctorId: string, doctorName: string) => {
         setEditingDoctorId(doctorId);
         setStatus({ type: 'info', message: `Sie bearbeiten nun das Profil von ${doctorName}. Alle Änderungen werden in der Vorschau angezeigt.` });
@@ -80,7 +103,8 @@ export default function DoctorsPage() {
         setDebugData("Lese Dokument 'ortmanns' aus der Datenbank...");
         try {
             const docRef = doc(firestore, 'doctors', 'ortmanns');
-            const docSnap = await getDoc(docRef);
+            // Force a server read to bypass the offline cache
+            const docSnap = await getDoc(docRef, { source: 'server' });
 
             if (docSnap.exists()) {
                 const data = docSnap.data();
@@ -94,8 +118,6 @@ export default function DoctorsPage() {
             setDebugData(`FEHLER BEIM AUSLESEN:\n\n${error.message}\n\nStack: ${error.stack}`);
         }
     };
-
-    const editingDoctor = localDoctors.find(d => d.id === editingDoctorId);
 
     const getStatusAlert = () => {
         if (!status) return null;
@@ -148,10 +170,16 @@ export default function DoctorsPage() {
                                 Hier können Sie die Profile der Ärzte bearbeiten.
                             </CardDescription>
                         </div>
-                        <Button onClick={handleDebugRead} className="w-full sm:w-auto">
-                            <Binary className="mr-2 h-4 w-4" />
-                            Ortmanns Card auslesen
-                        </Button>
+                        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                            <Button onClick={handleSaveAllToDb} disabled={isSavingToDb} className="w-full sm:w-auto">
+                                <Database className="mr-2 h-4 w-4" />
+                                {isSavingToDb ? 'Wird gespeichert...' : 'Alle Karten in DB speichern'}
+                            </Button>
+                            <Button onClick={handleDebugRead} className="w-full sm:w-auto">
+                                <Binary className="mr-2 h-4 w-4" />
+                                Ortmanns Card auslesen
+                            </Button>
+                        </div>
                     </div>
                 </CardHeader>
                 <CardContent>
@@ -181,17 +209,7 @@ export default function DoctorsPage() {
                                 </div>
                             )}
                         </div>
-                        {editingDoctor ? (
-                            <div className="rounded-lg bg-muted p-4 md:p-6 border-2 border-dashed border-red-500">
-                                <div className="mx-auto w-full max-w-[1000px] p-2">
-                                   <editingDoctor.Component />
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="flex items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted p-12 text-center">
-                                <h4 className="text-lg font-semibold text-muted-foreground">Wählen Sie unten eine Karte zur Bearbeitung aus.</h4>
-                            </div>
-                        )}
+                        
                          <div className="mt-4 min-h-[76px]">
                             {getStatusAlert()}
                          </div>
@@ -226,7 +244,7 @@ export default function DoctorsPage() {
                                         <Button variant="outline" size="sm" onClick={() => {}} disabled={true} className="justify-start">
                                             <EyeOff className="mr-2 h-4 w-4" /> Ausblenden
                                         </Button>
-                                        <Button variant="default" size="sm" onClick={() => {}} disabled={true} className="justify-start">
+                                        <Button variant="default" size="sm" onClick={() => handleEditClick(doctor.id, doctor.name)} disabled={isSavingToDb || !!editingDoctorId} className="justify-start">
                                             <Info className="mr-2 h-4 w-4" /> Bearbeiten
                                         </Button>
                                     </div>
@@ -236,51 +254,10 @@ export default function DoctorsPage() {
                                 </div>
                             ))
                         ) : (
-                            <p className="text-center text-muted-foreground">Keine Ärztekarten in der Datenbank gefunden.</p>
+                             <div className="flex items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 bg-muted p-12 text-center">
+                                <h4 className="text-lg font-semibold text-muted-foreground">Keine Karten in der Datenbank gefunden.</h4>
+                            </div>
                         )}
-                    </div>
-
-                    <Separator className="my-12" />
-
-                    <div className="space-y-4">
-                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Vorhandene Ärztekarten (Lokal)</h3>
-                         <p className="text-sm text-muted-foreground">
-                            Dieser Bereich zeigt die Karten an, wie sie in den lokalen Anwendungsdateien definiert sind.
-                        </p>
-                    </div>
-
-                    <div className="mt-8 space-y-12">
-                        {localDoctors.map((doctor) => {
-                            const isEditing = editingDoctorId === doctor.id;
-                            return (
-                                <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
-                                    <div className="flex w-36 flex-col gap-2">
-                                        <Button variant="outline" size="sm" onClick={() => {}} disabled={isEditing} className="justify-start">
-                                            <ArrowUp className="mr-2 h-4 w-4" /> Nach oben
-                                        </Button>
-                                        <Button variant="outline" size="sm" onClick={() => {}} disabled={isEditing} className="justify-start">
-                                            <ArrowDown className="mr-2 h-4 w-4" /> Nach unten
-                                        </Button>
-                                        <Separator className="my-2" />
-                                        <Button variant="outline" size="sm" onClick={() => {}} disabled={isEditing} className="justify-start">
-                                            <EyeOff className="mr-2 h-4 w-4" /> Ausblenden
-                                        </Button>
-                                        <Button variant="default" size="sm" onClick={() => handleEditClick(doctor.id, doctor.name)} disabled={isEditing || !!editingDoctorId} className="justify-start">
-                                            <Info className="mr-2 h-4 w-4" /> Bearbeiten
-                                        </Button>
-                                    </div>
-
-                                    <div className={cn("relative flex-1 w-full max-w-[1000px] p-2")}>
-                                        <doctor.Component />
-                                        {isEditing && (
-                                            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/90">
-                                                <span className="text-2xl font-bold text-primary-foreground">Wird bearbeitet</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        })}
                     </div>
                 </CardContent>
             </Card>
