@@ -93,6 +93,7 @@ export default function DoctorsPage() {
                 .template-card button:hover:not(.image-button) { background-color: rgba(0,0,0,0.1); }
                 .template-card .image-button { position: relative; height: 100%; aspect-ratio: 2/3; overflow: hidden; border-radius: 0.375rem; background-color: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1rem; color: #64748b; }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.2); }
+                .template-card .lang-button:hover { background-color: hsla(var(--primary-foreground), 0.1); }
                 .template-card p, .template-card h3 { padding: 0.125rem 0.25rem; margin: 0; }
                 .template-card .text-2xl { font-size: 1.5rem; line-height: 2rem; }
                 .template-card .text-5xl { font-size: 3rem; line-height: 1; }
@@ -147,7 +148,7 @@ export default function DoctorsPage() {
                             </div>
                         </div>
                         <div class="absolute bottom-0 right-0">
-                            <button id="edit-languages" class="flex items-center gap-2">
+                             <button id="edit-languages" class="lang-button inline-flex items-center justify-center gap-2 rounded-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>
                             </button>
                         </div>
@@ -293,6 +294,24 @@ export default function DoctorsPage() {
         setDialogState({ type: null, data: {} });
     };
 
+    const handleVitaSave = (newVita: string) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(exampleDoctor.backSideCode, 'text/html');
+        const button = doc.getElementById('edit-vita');
+        if (button) {
+            // Replace only the inner content of the button
+            button.innerHTML = newVita;
+        }
+        
+        const updatedHtml = doc.body.innerHTML;
+        
+        setExampleDoctor(prev => ({
+            ...prev,
+            backSideCode: updatedHtml,
+        }));
+        setDialogState({ type: null, data: {} });
+    };
+
     const doctorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
         return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
@@ -387,7 +406,7 @@ export default function DoctorsPage() {
                     isOpen={true}
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
                     initialValue={dialogState.data.initialValue}
-                    onSave={(newValue) => console.log('Saved vita:', newValue)}
+                    onSave={handleVitaSave}
                 />
             )}
             
