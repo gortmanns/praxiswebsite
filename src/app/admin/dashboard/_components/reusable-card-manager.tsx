@@ -237,8 +237,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                             Array.from({ length: 2 }).map((_, index) => (
                                 <div key={index} className="flex w-full items-center justify-center gap-4">
                                     <div className="w-36 flex-shrink-0"></div>
-                                    <div className="relative flex-1 w-full max-w-sm sm:max-w-none p-2">
-                                        <Skeleton className="w-full aspect-square sm:aspect-[4/5] lg:aspect-auto lg:h-[500px] rounded-lg" />
+                                    <div className="relative flex-1 w-full max-w-sm p-2">
+                                        <Skeleton className="w-full aspect-[4/5] rounded-lg" />
                                     </div>
                                 </div>
                             ))
@@ -268,7 +268,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                         <Pencil className="h-4 w-4" />
                                     </Button>
                                 </div>
-                                <div className={cn("relative flex-1 w-full max-w-sm sm:max-w-none order-1 sm:order-2")}>
+                                <div className={cn("relative flex-1 w-full max-w-sm order-1 sm:order-2")}>
                                     <DisplayCardComponent {...item} />
                                 </div>
                             </div>
@@ -294,7 +294,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                         </div>
-                                        <div className={cn("relative flex-1 w-full max-w-sm sm:max-w-none order-1 sm:order-2 grayscale")}>
+                                        <div className={cn("relative flex-1 w-full max-w-sm order-1 sm:order-2 grayscale")}>
                                             <DisplayCardComponent {...item} />
                                         </div>
                                     </div>
@@ -323,4 +323,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
