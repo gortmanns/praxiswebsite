@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
@@ -106,6 +107,7 @@ export default function DoctorsPage() {
             <style>
                 .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; display: block; }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.1); }
+                .template-card .image-button-background { background-color: white !important; }
                 .template-card p, .template-card h3, .template-card span { margin:0; }
                 .template-card .font-headline { font-family: var(--font-headline); }
                 .template-card .text-card-foreground { color: hsl(var(--card-foreground)); }
@@ -144,8 +146,7 @@ export default function DoctorsPage() {
                 .template-card .mt-2 { margin-top: 0.5rem; }
                 .template-card .font-extrabold { font-weight: 800; }
                 .template-card .bg-white { background-color: white; }
-                .template-card .bg-muted { background-color: hsl(var(--muted)); }
-                 .template-card .shrink-0 { flex-shrink: 0; }
+                .template-card .shrink-0 { flex-shrink: 0; }
             </style>
              <div class="template-card w-full h-full bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
@@ -309,23 +310,23 @@ export default function DoctorsPage() {
             const imageContainer = doc.getElementById('image-container');
             if(imageContainer) {
                  imageContainer.innerHTML = `
-                    <button id="edit-image" class="w-full h-full relative bg-white">
+                    <button id="edit-image" class="image-button-background w-full h-full relative">
                         <img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-cover relative" />
                     </button>`;
             }
         } else {
             const positionContainer = doc.getElementById('position-container');
              if (positionContainer) {
-                const mainDiv = positionContainer.parentElement;
-                if(mainDiv) {
+                 const mainDiv = positionContainer.parentElement;
+                 if(mainDiv) {
                     positionContainer.innerHTML = `
                         <button id="edit-position">
-                            <div class="relative bg-white">
+                            <div class="relative image-button-background">
                                 <img src="${croppedImageUrl}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
                             </div>
                         </button>`;
-                    mainDiv.replaceChild(positionContainer, mainDiv.children[4]);
-                }
+                     mainDiv.replaceChild(positionContainer, mainDiv.children[4]);
+                 }
             }
         }
         
@@ -806,3 +807,5 @@ export default function DoctorsPage() {
         </div>
     );
 }
+
+    
