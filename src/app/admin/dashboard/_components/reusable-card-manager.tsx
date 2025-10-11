@@ -35,7 +35,6 @@ interface ReusableCardManagerProps<T extends BaseCardData> {
     DisplayCardComponent: React.ComponentType<T>;
     EditorCardComponent: React.ComponentType<{ cardData: T; onUpdate: (updatedData: T) => void }>;
     entityName: string;
-    seedData?: Omit<T, 'id' | 'order' | 'createdAt'>[];
 }
 
 export function ReusableCardManager<T extends BaseCardData>({
@@ -46,7 +45,6 @@ export function ReusableCardManager<T extends BaseCardData>({
     DisplayCardComponent,
     EditorCardComponent,
     entityName,
-    seedData,
 }: ReusableCardManagerProps<T>) {
     const firestore = useFirestore();
     
