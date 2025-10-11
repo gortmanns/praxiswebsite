@@ -75,7 +75,7 @@ export default function DoctorsPage() {
                             <div className="relative aspect-[1000/495] w-full overflow-hidden bg-muted/50">
                                 {exampleDoctor && <CardHtmlRenderer html={exampleDoctor.frontSideCode} />}
                             </div>
-                            <div className="relative aspect-[1000/495] w-full overflow-hidden bg-muted/50">
+                            <div className="relative aspect-[1000/495] w-full overflow-hidden bg-accent/95">
                                 {exampleDoctor && <CardHtmlRenderer html={exampleDoctor.backSideCode} />}
                             </div>
                        </div>
