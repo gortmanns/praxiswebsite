@@ -273,14 +273,14 @@ export function ReusableCardManager<T extends BaseCardData>({
                     <DisplayCardComponent {...item} />
                 </div>
                 <div className="flex w-full mt-2 flex-shrink-0 items-center justify-center gap-2">
-                    <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                        <Eye className="mr-2 h-4 w-4" /> Einblenden
+                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                        <Eye className="h-4 w-4" />
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
-                        <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                    <Button variant="outline" size="icon" onClick={() => handleEdit(item)} disabled={isEditing}>
+                        <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(item.id, (item as any).name || 'diese Karte')} disabled={isEditing}>
-                        <Trash2 className="mr-2 h-4 w-4" /> Löschen
+                    <Button variant="destructive" size="icon" onClick={() => openDeleteConfirmation(item.id, (item as any).name || 'diese Karte')} disabled={isEditing}>
+                        <Trash2 className="h-4 w-4" />
                     </Button>
                 </div>
             </div>
