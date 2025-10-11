@@ -1,81 +1,77 @@
 /**
- * @fileOverview Firestore Security Rules for the application.
+ * @fileoverview Firestore Security Rules for the application.
  *
  * Core Philosophy:
- * This ruleset prioritizes a secure-by-default posture, granting broad read access where appropriate while strictly controlling write access based on role-based authorization.
+ * This ruleset enforces role-based access control for contact form submissions and
+ * allows public read access to doctor profiles while restricting write access.
  *
  * Data Structure:
- * - `/doctor_profiles/{doctorId}`: Stores publicly accessible doctor profile information.
- * - `/contact_form_submissions/{submissionId}`: Stores sensitive contact form submissions, accessible only to administrators.
- * - `/roles_admin/{userId}`:  A collection that marks users as admins. The existence of a document with a user's ID grants admin access. The content of this document is ignored.
+ * - /doctor_profiles/{doctorId}: Stores doctor profile information.
+ * - /contact_form_submissions/{submissionId}: Stores contact form submissions.
+ * - /roles_admin/{userId}: Indicates admin status; document content is irrelevant.
  *
  * Key Security Decisions:
- * - Doctor profiles are publicly readable to all authenticated users.
- * - Contact form submissions are strictly restricted to admin users.
- * - Admin status is determined solely by the presence of a document in the `/roles_admin/{userId}` collection.
- * - No user listing is allowed for the `/roles_admin/{userId}` collection.
- * - Data validation is relaxed in favor of rapid prototyping. Only authorization-critical data is validated.
+ * - Doctor profiles are publicly readable but only admins can modify them.
+ * - Contact form submissions are strictly limited to admin access only.
+ * - Listing of contact form submissions is disallowed for non-admins.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows read access to doctor profiles for all authenticated users, but restricts writes.
+     * @description Grants public read access to doctor profiles, but restricts write access to admins only.
      * @path /doctor_profiles/{doctorId}
-     * @allow (get, list) User is authenticated.
-     * @deny (create, update, delete) User is not an admin.
-     * @principle Public read, restricted write access.
+     * @allow (get, list): Any authenticated user can read doctor profiles.
+     * @allow (create, update, delete): Only admins can create, update, or delete doctor profiles.
+     * @deny (create, update, delete): Non-admins cannot modify doctor profiles.
+     * @principle Allows public read access with restricted writes.
      */
     match /doctor_profiles/{doctorId} {
-      allow get, list: if isSignedIn();
-      allow create, update, delete: if isAdmin();
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
     }
 
     /**
-     * @description Restricts access to contact form submissions to admin users only.
+     * @description Restricts access to contact form submissions to admins only.
      * @path /contact_form_submissions/{submissionId}
-     * @allow (get, list) User is an admin.
-     * @deny (get, list) User is not an admin.
-     * @allow (create, update, delete) User is an admin.
-     * @deny (create, update, delete) User is not an admin.
-     * @principle Role-based access control.
+     * @allow (get): Only admins can read contact form submissions.
+     * @deny (list): Listing contact form submissions is disallowed for all users.
+     * @allow (create, update, delete): Only admins can create, update, or delete contact form submissions.
+     * @deny (create, update, delete): Non-admins cannot modify contact form submissions.
+     * @principle Enforces strict admin-only access for sensitive data.
      */
     match /contact_form_submissions/{submissionId} {
-      allow get, list: if isAdmin();
-      allow create, update, delete: if isAdmin();
+      allow get: if isAdmin();
+      allow list: if false;
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
     }
 
-     /**
-      * @description Determines admin status based on the existence of a document in this collection. No listing allowed.
-      * @path /roles_admin/{userId}
-      * @allow create: if isOwner(userId);
-      * @deny create: if !isOwner(userId);
-      * @allow get: if isAdmin();
-      * @deny get: if !isAdmin();
-      * @allow list: if false;
-      * @deny update, delete: if true;
-      * @principle Role-based access control through document existence.
-      */
+    /**
+     * @description Grants admin privileges based on the existence of a document in this collection.
+     * @path /roles_admin/{userId}
+     */
     match /roles_admin/{userId} {
-        allow get: if isAdmin();
-        allow list: if false;
-        allow create: if isOwner(userId);
-        allow update: if false;
-        allow delete: if false;
-    }
+          allow get: if isAdmin();
+      allow list: if isAdmin();
+          allow create: if isAdmin();
+          allow update: if isAdmin();
+          allow delete: if isAdmin();
+        }
+  }
 
-    // Helper functions
-    function isSignedIn() {
-      return request.auth != null;
-    }
+  // Helper function to determine if a user is signed in.
+  function isSignedIn() {
+    return request.auth != null;
+  }
 
-    function isOwner(userId) {
-      return request.auth.uid == userId;
-    }
-
-    function isAdmin() {
-        return exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
-    }
+  // Helper function to determine if a user is an admin based on the existence of their UID in `/roles_admin/{uid}`.
+  function isAdmin() {
+    return request.auth != null && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
   }
 }
