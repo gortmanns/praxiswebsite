@@ -19,7 +19,7 @@ import { LogoFunctionSelectDialog } from './_components/logo-function-select-dia
 import { cn } from '@/lib/utils';
 import DOMPurify from 'dompurify';
 import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
-import { ChevronUp, ChevronDown, Pencil, Trash2, User as UserIcon, Globe, Image as ImageIcon } from 'lucide-react';
+import { ChevronUp, ChevronDown, Pencil, EyeOff, Globe, Image as ImageIcon } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 
@@ -103,6 +103,7 @@ export default function DoctorsPage() {
                 .template-card .lang-button:hover { background-color: hsla(var(--primary-foreground), 0.1); }
                 .template-card p, .template-card h3 { padding: 0.125rem 0.25rem; margin:0; }
                 .template-card .my-2 { margin-top: 0.5rem; margin-bottom: 0.5rem; }
+                .template-card .mt-2 { margin-top: 0.5rem; }
                 .template-card .mt-6 { margin-top: 1.5rem; }
                 .template-card .ml-6 { margin-left: 1.5rem; }
                 .template-card .flex { display: flex; }
@@ -130,8 +131,8 @@ export default function DoctorsPage() {
             <div class="template-card group relative w-full h-full overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
                     <button id="edit-image" class="image-button relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted p-4 text-muted-foreground">
-                       <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                       <span class="mt-2 text-sm">Zum Ändern klicken</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span class="mt-2 text-sm">Zum Ändern anklicken</span>
                     </button>
                     <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
                         <div>
@@ -193,7 +194,7 @@ export default function DoctorsPage() {
         '/images/toxinfo-logo.svg',
         '/images/foto-medis.jpg',
         '/images/team/Ortmanns.jpg', 
-        '/images/team/Prof.Schemmer.jpg', 
+        '/images/team/Prof.Schemmer.jpg',
         '/images/team/Dr.Rosenov.jpg',
         '/images/team/Dr.Herschel.jpg',
         '/images/team/Dr.Slezak.jpg',
@@ -285,7 +286,7 @@ export default function DoctorsPage() {
         } else {
           const positionContainer = doc.getElementById('position-container');
            if (positionContainer) {
-             positionContainer.innerHTML = `<div class="mt-6"><img src="${croppedImageUrl}" alt="Logo" class="h-auto object-contain" style="max-width: 75%;" /></div>`;
+             positionContainer.innerHTML = `<div class="mt-6"><button id="edit-position"><img src="${croppedImageUrl}" alt="Logo" class="h-auto object-contain" style="max-width: 75%;" /></button></div>`;
            }
         }
         
@@ -299,27 +300,10 @@ export default function DoctorsPage() {
     };
 
     const handleVitaSave = (newVita: string) => {
-        setExampleDoctor(prev => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(prev.backSideCode, 'text/html');
-            const button = doc.getElementById('edit-vita');
-            if (button) {
-                const vitaContainer = doc.createElement('div');
-                vitaContainer.className = 'vita-content p-8 w-full h-full text-left';
-                vitaContainer.innerHTML = newVita;
-                
-                const newButton = doc.createElement('button');
-                newButton.id = 'edit-vita';
-                newButton.className = 'w-full h-full text-left';
-                newButton.appendChild(vitaContainer);
-
-                button.replaceWith(newButton);
-            }
-            return {
-                ...prev,
-                backSideCode: doc.body.innerHTML,
-            };
-        });
+        setExampleDoctor(prev => ({
+            ...prev,
+            backSideCode: newVita,
+        }));
     };
 
     const handleTextSave = (newValue: string) => {
@@ -328,14 +312,20 @@ export default function DoctorsPage() {
 
         const parser = new DOMParser();
         const doc = parser.parseFromString(exampleDoctor.frontSideCode, 'text/html');
-        const button = doc.getElementById(`edit-${field}`);
-        
-        if (button) {
+        let button = doc.getElementById(`edit-${field}`);
+
+        if(field === 'position') {
+            const container = doc.getElementById('position-container');
+            if (container) {
+                container.innerHTML = `<button id="edit-position" class="w-full text-left"><p>${newValue}</p></button>`;
+            }
+        } else if (button) {
             const p = button.querySelector('p') || button.querySelector('h3');
             if (p) {
                 p.textContent = newValue;
             }
         }
+        
         const updatedHtml = doc.body.innerHTML;
         setExampleDoctor(prev => ({ ...prev, frontSideCode: updatedHtml }));
         setDialogState({ type: null, data: {} });
@@ -353,8 +343,9 @@ export default function DoctorsPage() {
     };
     
     useEffect(() => {
-        if(activeDoctor !== 'template') return;
-
+        let currentDoctor = activeDoctor === 'template' ? exampleDoctor : activeDoctor;
+        if (!currentDoctor) return;
+    
         const langToFlagHtml: Record<string, string> = {
             de: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>`,
             en: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="h-5 w-auto rounded-sm shadow-md"><clipPath id="a-lang-en"><path d="M30 15h30v15zv-15z"></path></clipPath><path d="M0 0v30h60V0z" fill="#012169"></path><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"></path><path d="M0 0l60 30m0-30L0 30" clip-path="url(#a-lang-en)" stroke="#C8102E" stroke-width="4"></path><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"></path><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"></path></svg>`,
@@ -391,13 +382,8 @@ export default function DoctorsPage() {
             ur: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#006600" d="M0 0h3v2H0z"/><path fill="#fff" d="M.75 0h.5v2h-.5z"/><circle cx="1.75" cy="1" r=".4" fill="#fff"/><path d="M1.88 1a.3.3 0 100-.6.4.4 0 010 .6z" fill="#006600"/><path d="M2.2 1l-.2-.1.1.2-.1-.2z" fill="#fff"/></svg>`,
         };
 
-        const languages = activeDoctor === 'template' ? exampleDoctor.languages : activeDoctor.languages;
+        const languages = currentDoctor.languages || [];
         
-        if (!languages) {
-            setDialogState({ type: null, data: {} });
-            return;
-        }
-
         const languageOrder = ['de', 'fr', 'it', 'en', 'es', 'pt', 'ru'];
         const sortedLangs = [...languages].sort((a, b) => {
             const indexA = languageOrder.indexOf(a);
@@ -527,13 +513,13 @@ export default function DoctorsPage() {
                                         <ChevronDown className="h-4 w-4" />
                                         <span className="sr-only">Nach unten</span>
                                     </Button>
+                                    <Button variant="outline" size="icon" onClick={() => { setActiveDoctor(doctor); setDialogState({ type: 'vita', data: { initialValue: doctor.backSideCode }})}}>
+                                        <EyeOff className="h-4 w-4" />
+                                        <span className="sr-only">Ausblenden</span>
+                                    </Button>
                                      <Button variant="outline" size="icon" onClick={() => { setActiveDoctor(doctor); setDialogState({ type: 'vita', data: { initialValue: doctor.backSideCode }})}}>
                                         <Pencil className="h-4 w-4" />
                                         <span className="sr-only">Bearbeiten</span>
-                                    </Button>
-                                    <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name } })}>
-                                        <Trash2 className="h-4 w-4" />
-                                        <span className="sr-only">Löschen</span>
                                     </Button>
                                 </div>
                                 <div className="relative flex-1 w-full max-w-[1000px] p-2">
@@ -590,7 +576,7 @@ export default function DoctorsPage() {
                 <LanguageSelectDialog
                     isOpen={true}
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
-                    initialLanguages={activeDoctor === 'template' ? exampleDoctor.languages || [] : activeDoctor.languages || []}
+                    initialLanguages={activeDoctor === 'template' ? (exampleDoctor.languages || []) : (typeof activeDoctor === 'object' && activeDoctor.languages) || []}
                     onSave={handleLanguageSave}
                 />
             )}
