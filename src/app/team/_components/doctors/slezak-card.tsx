@@ -1,7 +1,6 @@
 'use client';
 
 import { DoctorCard } from '../doctor-card';
-import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
 
 export function SlezakCard() {
     return (
@@ -27,7 +26,7 @@ export function SlezakCard() {
                                 <div class="mt-6 bg-special-green p-4 rounded-md">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 50" class="h-auto" style="height: 6.9rem;" aria-label="Dr. med. Agnieszka Slezak - Fachärztin für Neurologie Logo">
                                         <text x="50%" y="20" dominant-baseline="middle" text-anchor="middle" style="font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: bold; fill: white;">Agnieszka Slezak</text>
-                                        <text x="50%" y="38" dominant-baseline="middle" text-anchor="middle" style="font-family: 'Montserrat', sans-serif; font-size: 7.7px; font-weight: bold; fill: white;">Fachärztin für Neurologie</text>
+                                        <text x="50%" y="38" dominant-baseline="middle" text-anchor="middle" style="font-family: 'Montserrat', sans-serif; font-size: 7.7px; fill: white;">Fachärztin für Neurologie</text>
                                     </svg>
                                 </div>
                             </div>
