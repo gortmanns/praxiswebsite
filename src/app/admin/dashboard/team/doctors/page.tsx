@@ -67,7 +67,7 @@ export default function DoctorsPage() {
                 .template-card button:hover:not(.image-button) { background-color: rgba(255,255,255,0.1); }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
-            <svg viewBox="0 0 1000 495" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+            <svg viewBox="0 0 1000 495" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" class="w-full h-full">
                 <foreignObject width="1000" height="495">
                     <div class="template-card group relative w-full h-full overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline" xmlns="http://www.w3.org/1999/xhtml">
                         <div class="flex h-full w-full items-start">
@@ -110,7 +110,7 @@ export default function DoctorsPage() {
                 .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; }
                 .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
-            <svg viewBox="0 0 1000 495" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+            <svg viewBox="0 0 1000 495" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" class="w-full h-full">
                 <foreignObject width="1000" height="495">
                     <button id="edit-vita" class="vita-content-button" xmlns="http://www.w3.org/1999/xhtml">
                         <div class="vita-content p-8 w-full h-full text-left">
@@ -380,6 +380,8 @@ export default function DoctorsPage() {
         </div>
     );
  
+    
+
     
 
     
