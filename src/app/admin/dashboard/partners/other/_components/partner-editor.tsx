@@ -75,38 +75,35 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
     return (
         <>
             <div className="flex flex-col gap-8 items-start">
-                 <div className="w-full space-y-6 rounded-lg border p-6">
+                 <div className="w-full space-y-4">
                     <div className="flex w-full items-end gap-4">
                         <div className="flex-1 space-y-2">
-                            <Label htmlFor="name">Name (für interne Verwendung)</Label>
+                            <Label htmlFor="name" className="font-bold">Name (für interne Verwendung)</Label>
                             <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
                         </div>
                         
-                        <div className="space-y-2">
-                             <Label>Logo</Label>
-                             <Button variant="outline" className="w-full justify-start" onClick={() => setDialogState('imageSource')}>
-                                 <ImageUp className="mr-2 h-4 w-4" />
-                                 Logo einfügen/ändern
-                             </Button>
-                        </div>
+                        <Button variant="outline" onClick={() => setDialogState('imageSource')}>
+                             <ImageUp className="mr-2 h-4 w-4" />
+                             Logo einfügen/ändern
+                        </Button>
 
                         <div className="flex-1 space-y-2">
-                            <Label htmlFor="websiteUrl">URL die beim Klick geöffnet werden soll</Label>
+                            <Label htmlFor="websiteUrl" className="font-bold">URL die beim Klick geöffnet werden soll</Label>
                             <Input id="websiteUrl" value={cardData.websiteUrl} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
                         </div>
 
-                        <div className="flex items-center space-x-2 pb-2">
+                        <div className="flex flex-col items-center pb-2">
+                            <Label htmlFor="openInNewTab" className="cursor-pointer whitespace-nowrap font-bold mb-2">In neuer Seite öffnen</Label>
                             <Checkbox 
                                 id="openInNewTab" 
                                 checked={cardData.openInNewTab} 
                                 onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
                             />
-                            <Label htmlFor="openInNewTab" className="cursor-pointer whitespace-nowrap">In neuer Seite öffnen</Label>
                         </div>
                     </div>
                 </div>
 
-                <div className="relative w-full mt-8">
+                <div className="relative w-full mt-4">
                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                     <div className="rounded-lg bg-primary p-4 flex justify-center">
                        <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
