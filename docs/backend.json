@@ -56,6 +56,9 @@
         "name": { "type": "string" },
         "websiteUrl": { "type": "string" },
         "logoUrl": { "type": "string" },
+        "logoScale": { "type": "number", "description": "Logo size percentage (10-200)." },
+        "logoX": { "type": "number", "description": "Horizontal offset in pixels." },
+        "logoY": { "type": "number", "description": "Vertical offset in pixels." },
         "openInNewTab": { "type": "boolean" },
         "hidden": { "type": "boolean" }
       },
@@ -84,3 +87,5 @@
     }
   }
 }
+
+    

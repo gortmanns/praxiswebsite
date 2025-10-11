@@ -6,32 +6,25 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Slider } from '@/components/ui/slider';
 import { ImageUp } from 'lucide-react';
 import { ImageSourceDialog } from '@/app/admin/dashboard/team/doctors/_components/image-source-dialog';
 import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_components/image-library-dialog';
-import { ImageCropDialog } from './image-crop-dialog';
-import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
-import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import type { OtherPartner as Partner } from '@/docs/backend-types';
 
-
 const projectImages = [
     '/images/luftbild.jpg', '/images/VASC-Alliance-Logo.png', '/images/schemmer-worni-logo.png', '/images/go-medical-logo.png', '/images/mcl-labor-logo.png', '/images/doxnet-logo.jpg', '/images/logos/slezak-logo.png', '/images/praxiszentrum-logo.png', '/images/praxiszentrum-logo-icon.png', '/images/mehrfacharzt-logo.png', '/images/rtw-bern.jpg', '/images/medphone_logo.png', '/images/toxinfo-logo.svg', '/images/foto-medis.jpg', '/images/team/Ortmanns.jpg', '/images/team/Prof.Schemmer.jpg', '/images/team/Dr.Rosenov.jpg', '/images/team/Dr.Herschel.jpg', '/images/team/Dr.Slezak.jpg', '/images/team/Garcia.jpg', '/images/team/Aeschlimann.jpg', '/images/team/Huber.jpg', '/images/team/Oetztuerk.jpg', '/images/team/Sommer.jpg', '/images/leistungen/audiometrie.jpg', '/images/leistungen/ekg.jpg', '/images/leistungen/labor.jpg', '/images/leistungen/praxisapotheke.jpg', '/images/leistungen/roentgen.jpg', '/images/leistungen/spirometrie.jpg', '/images/leistungen/twint_logo.png', '/images/leistungen/VMU.png', '/images/leistungen/wundversorgung.jpg',
 ];
 
-// A static path to a generic card background image.
-const CARD_BACKGROUND_IMAGE = '/images/partner-card-background.png';
 
 export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partner) => void }> = ({ cardData, onUpdate }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [dialogState, setDialogState] = useState<'imageSource' | 'imageLibrary' | 'imageCrop' | null>(null);
-    const [logoToCrop, setLogoToCrop] = useState<string | null>(null);
+    const [dialogState, setDialogState] = useState<'imageSource' | 'imageLibrary' | null>(null);
 
-
-    const handleInputChange = (field: keyof Partner, value: string | boolean) => {
+    const handleInputChange = (field: keyof Partner, value: string | boolean | number) => {
         onUpdate({ ...cardData, [field]: value });
     };
 
@@ -39,88 +32,69 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
         if (e.target.files?.[0]) {
             const reader = new FileReader();
             reader.onload = (event) => {
-                setLogoToCrop(event.target?.result as string);
-                setDialogState('imageCrop');
+                onUpdate({ ...cardData, logoUrl: event.target?.result as string });
             };
             reader.readAsDataURL(e.target.files[0]);
         }
         e.target.value = '';
-    };
-
-    const handleCropComplete = (composedImage: string) => {
-        onUpdate({ ...cardData, logoUrl: composedImage });
         setDialogState(null);
-        setLogoToCrop(null);
-    };
-
-     const renderPartnerLogo = (partner: Partner) => {
-        if (!partner.logoUrl) {
-            return <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground">Kein Logo</div>;
-        }
-        if (partner.name === 'orthozentrum-bern') {
-          return <OrthozentrumLogo className="h-full w-full object-contain" />;
-        }
-        if (partner.name === 'Agnieszka Slezak') {
-          return <AgnieszkaSlezakLogo className="h-full w-full object-contain" />;
-        }
-        return (
-            <Image
-              src={partner.logoUrl}
-              alt={`${partner.name} Logo`}
-              width={partner.width || 200}
-              height={partner.height || 60}
-              className="object-contain"
-            />
-        );
     };
 
     return (
         <>
             <div className="flex flex-col gap-8 items-start">
-                 <div className="w-full space-y-2">
-                    <table className="w-full border-separate" style={{ borderSpacing: '0 0.5rem' }}>
-                        <thead>
-                            <tr>
-                                <th className="w-1/3 text-left align-bottom pr-4">
-                                    <Label htmlFor="name" className="font-bold">Name (für interne Verwendung)</Label>
-                                </th>
-                                <th className="w-auto text-left align-bottom px-4">
-                                    {/* Empty header for button */}
-                                </th>
-                                <th className="w-1/3 text-left align-bottom px-4">
-                                    <Label htmlFor="websiteUrl" className="font-bold">URL für onClick</Label>
-                                </th>
-                                <th className="w-auto text-left align-bottom pl-4 text-center">
-                                    <Label htmlFor="openInNewTab" className="font-bold whitespace-nowrap">In neuer Seite öffnen</Label>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td className="pr-4">
-                                    <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
-                                </td>
-                                <td className="px-4">
-                                    <Button variant="default" onClick={() => setDialogState('imageSource')}>
-                                         <ImageUp className="mr-2 h-4 w-4" />
-                                         Logo wählen
-                                    </Button>
-                                </td>
-                                <td className="px-4">
-                                    <Input id="websiteUrl" value={cardData.websiteUrl} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
-                                </td>
-                                <td className="pl-4 text-center">
-                                    <div className="flex justify-center items-center h-full">
-                                        <Checkbox 
-                                            id="openInNewTab" 
-                                            checked={cardData.openInNewTab} 
-                                            onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
-                                        />
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Basic Settings */}
+                    <div className="space-y-4 border p-4 rounded-lg">
+                        <div>
+                            <Label htmlFor="name" className="font-bold">Name (für interne Verwendung)</Label>
+                            <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
+                        </div>
+                        <div>
+                            <Label htmlFor="websiteUrl" className="font-bold">URL für onClick</Label>
+                            <Input id="websiteUrl" value={cardData.websiteUrl} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
+                        </div>
+                        <div className="flex items-center space-x-2 pt-2">
+                            <Checkbox 
+                                id="openInNewTab" 
+                                checked={cardData.openInNewTab} 
+                                onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
+                            />
+                            <Label htmlFor="openInNewTab">In neuer Seite öffnen</Label>
+                        </div>
+                    </div>
+
+                    {/* Image Settings */}
+                    <div className="space-y-4 border p-4 rounded-lg">
+                         <p className="text-sm text-muted-foreground">
+                            Tipp: Bereiten Sie Ihr Logo idealerweise in einem Bildbearbeitungsprogramm vor (ca. 400x130 Pixel), bevor Sie es hochladen.
+                        </p>
+                        <Button variant="outline" onClick={() => setDialogState('imageSource')} className="w-full">
+                             <ImageUp className="mr-2 h-4 w-4" />
+                             Logo wählen/hochladen
+                        </Button>
+                        <div className="space-y-2">
+                            <Label htmlFor="logoScale">Grösse des Logos ({cardData.logoScale || 100}%)</Label>
+                            <Slider
+                                id="logoScale"
+                                min={10}
+                                max={200}
+                                step={1}
+                                value={[cardData.logoScale || 100]}
+                                onValueChange={(value) => handleInputChange('logoScale', value[0])}
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="logoX">Horizontale Position</Label>
+                                <Input type="number" id="logoX" value={cardData.logoX || 0} onChange={(e) => handleInputChange('logoX', parseInt(e.target.value) || 0)} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="logoY">Vertikale Position</Label>
+                                <Input type="number" id="logoY" value={cardData.logoY || 0} onChange={(e) => handleInputChange('logoY', parseInt(e.target.value) || 0)} />
+                            </div>
+                        </div>
+                    </div>
                 </div>
                  
                  <section id="partners" className="w-full bg-primary">
@@ -137,12 +111,23 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                                     className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                                     onClick={(e) => e.preventDefault()}
                                 >
-                                    <Card className="flex h-full w-full items-center p-6">
-                                    <CardContent className="flex w-full items-center justify-center p-0">
-                                        <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                                            {renderPartnerLogo(cardData)}
-                                        </div>
-                                    </CardContent>
+                                    <Card className="flex h-full w-full items-center justify-center p-6">
+                                        <CardContent className="relative flex w-full h-full items-center justify-center p-0 overflow-hidden">
+                                           {cardData.logoUrl ? (
+                                                <Image
+                                                    src={cardData.logoUrl}
+                                                    alt={`${cardData.name} Logo`}
+                                                    fill
+                                                    className="object-contain"
+                                                    style={{
+                                                        transform: `scale(${ (cardData.logoScale || 100) / 100}) translate(${cardData.logoX || 0}px, ${cardData.logoY || 0}px)`,
+                                                        transformOrigin: 'center center',
+                                                    }}
+                                                />
+                                           ) : (
+                                            <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground">Kein Logo</div>
+                                           )}
+                                        </CardContent>
                                     </Card>
                                     <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                                 </Link>
@@ -160,19 +145,12 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
             
             {dialogState === 'imageLibrary' && (
                 <ImageLibraryDialog isOpen={true} onOpenChange={() => setDialogState(null)} images={projectImages} onImageSelect={(imageUrl) => {
-                    setLogoToCrop(imageUrl);
-                    setDialogState('imageCrop');
+                    onUpdate({ ...cardData, logoUrl: imageUrl });
+                    setDialogState(null);
                 }} />
-            )}
-
-            {dialogState === 'imageCrop' && logoToCrop && (
-                <ImageCropDialog 
-                  imageUrl={logoToCrop} 
-                  backgroundImageUrl={CARD_BACKGROUND_IMAGE}
-                  onCropComplete={handleCropComplete} 
-                  onClose={() => setDialogState(null)} 
-                />
             )}
         </>
     );
 };
+
+    
