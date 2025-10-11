@@ -3,10 +3,11 @@
 
 import React from 'react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, writeBatch, doc } from 'firebase/firestore';
+import { collection } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2, Info } from 'lucide-react';
+import { addDocumentNonBlocking, setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 const staffData = [
     {
@@ -85,19 +86,26 @@ export function SeedButton({ collectionName }: SeedButtonProps) {
         
         try {
             const staffCollectionRef = collection(firestore, 'staff');
-            const batch = writeBatch(firestore);
 
-            staffData.forEach(member => {
-                const docRef = doc(staffCollectionRef); // Create a new document reference with a unique ID
-                batch.set(docRef, {
+            for (const member of staffData) {
+                const newDocPromise = addDocumentNonBlocking(staffCollectionRef, {
                     ...member,
-                    id: docRef.id, // Set the id field explicitly
                     createdAt: new Date(),
                 });
-            });
+                
+                newDocPromise.then(newDocRef => {
+                    if (newDocRef) {
+                        setDocumentNonBlocking(newDocRef, { id: newDocRef.id }, { merge: true });
+                    }
+                }).catch(e => {
+                    console.error("Fehler beim Hinzufügen des Dokuments oder Aktualisieren der ID: ", e);
+                    setError(e.message || 'Ein Dokument konnte nicht geschrieben werden.');
+                });
+            }
 
-            await batch.commit();
-            setSuccess(`${staffData.length} Mitarbeiter-Einträge wurden erfolgreich in die Datenbank geschrieben.`);
+            // We assume success optimistically for the UI, as the operations are non-blocking.
+            // A more robust implementation might track promises and update on completion.
+            setSuccess(`${staffData.length} Mitarbeiter-Einträge werden in die Datenbank geschrieben.`);
         } catch (err: any) {
             console.error('Client-side Seeding failed:', err);
             setError(err.message || 'Die Daten konnten nicht geschrieben werden.');
