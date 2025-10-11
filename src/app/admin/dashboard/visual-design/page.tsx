@@ -34,14 +34,14 @@ export default function VisualDesignPage() {
                             <AlertCircle className="h-4 w-4" />
                             <AlertTitle>Warnung</AlertTitle>
                             <AlertDescription>
-                                Dies ist eine Warnung. Bitte überprüfen Sie Ihre Eingabe.
+                                Etwas ist unerwartet, aber die Aktion wurde nicht unbedingt abgebrochen.
                             </AlertDescription>
                         </Alert>
                         <Alert variant="destructive">
                             <XCircle className="h-4 w-4" />
                             <AlertTitle>Fehlermeldung</AlertTitle>
                             <AlertDescription>
-                                Ein Fehler ist aufgetreten. Die Aktion konnte nicht ausgeführt werden.
+                                Ein kritischer Fehler ist aufgetreten. Die Aktion konnte nicht ausgeführt werden.
                             </AlertDescription>
                         </Alert>
                     </div>
