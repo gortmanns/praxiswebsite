@@ -3,10 +3,10 @@
 
 import React from 'react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { collection, serverTimestamp } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, Info } from 'lucide-react';
+import { Loader2, Info, CheckCircle, AlertCircle } from 'lucide-react';
 import { addDocumentNonBlocking, setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 const staffData = [
@@ -64,8 +64,7 @@ interface SeedButtonProps {
 export function SeedButton({ collectionName }: SeedButtonProps) {
     const firestore = useFirestore();
     const [isSeeding, setIsSeeding] = React.useState(false);
-    const [error, setError] = React.useState<string | null>(null);
-    const [success, setSuccess] = React.useState<string | null>(null);
+    const [alertState, setAlertState] = React.useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
     const collectionQuery = useMemoFirebase(() => {
         if (!firestore) return null;
@@ -74,45 +73,48 @@ export function SeedButton({ collectionName }: SeedButtonProps) {
 
     const { data, isLoading, error: collectionError } = useCollection(collectionQuery);
 
-    const handleSeed = async () => {
+    const handleSeed = () => {
         if (!firestore) {
-            setError('Firestore ist nicht verfügbar.');
+            setAlertState({ type: 'error', message: 'Firestore ist nicht verfügbar.' });
             return;
         }
 
         setIsSeeding(true);
-        setError(null);
-        setSuccess(null);
+        setAlertState(null);
         
-        try {
+        const promises = staffData.map(member => {
             const staffCollectionRef = collection(firestore, 'staff');
-
-            for (const member of staffData) {
-                const newDocPromise = addDocumentNonBlocking(staffCollectionRef, {
-                    ...member,
-                    createdAt: new Date(),
-                });
-                
-                newDocPromise.then(newDocRef => {
+            const newMemberData = { ...member, createdAt: serverTimestamp() };
+            
+            return addDocumentNonBlocking(staffCollectionRef, newMemberData)
+                .then(newDocRef => {
                     if (newDocRef) {
+                        // Now update the document with its own ID
                         setDocumentNonBlocking(newDocRef, { id: newDocRef.id }, { merge: true });
                     }
-                }).catch(e => {
-                    console.error("Fehler beim Hinzufügen des Dokuments oder Aktualisieren der ID: ", e);
-                    setError(e.message || 'Ein Dokument konnte nicht geschrieben werden.');
+                    return newDocRef; // Pass the ref for further promise chaining
                 });
-            }
+        });
 
-            // We assume success optimistically for the UI, as the operations are non-blocking.
-            // A more robust implementation might track promises and update on completion.
-            setSuccess(`${staffData.length} Mitarbeiter-Einträge werden in die Datenbank geschrieben.`);
-        } catch (err: any) {
-            console.error('Client-side Seeding failed:', err);
-            setError(err.message || 'Die Daten konnten nicht geschrieben werden.');
-        } finally {
-            setIsSeeding(false);
-        }
+        Promise.all(promises)
+            .then(() => {
+                setSuccess(`${staffData.length} Mitarbeiter-Einträge erfolgreich in die Datenbank geschrieben.`);
+                setIsSeeding(false);
+            })
+            .catch((err: any) => {
+                console.error('Client-side Seeding failed:', err);
+                setError(err.message || 'Die Daten konnten nicht geschrieben werden.');
+                setIsSeeding(false);
+            });
     };
+
+    const setError = (message: string) => {
+        setAlertState({ type: 'error', message });
+    };
+
+    const setSuccess = (message: string) => {
+        setAlertState({ type: 'success', message });
+    }
     
     if (isLoading) {
         return (
@@ -126,6 +128,7 @@ export function SeedButton({ collectionName }: SeedButtonProps) {
     if (collectionError) {
         return (
             <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Datenbankfehler</AlertTitle>
                 <AlertDescription>
                     Die Daten konnten nicht geladen werden: {collectionError.message}
@@ -155,16 +158,11 @@ export function SeedButton({ collectionName }: SeedButtonProps) {
                 {isSeeding && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isSeeding ? 'Übertrage Daten...' : 'Personaldaten in Datenbank schreiben'}
             </Button>
-            {error && (
-                 <Alert variant="destructive" className="mt-4">
-                    <AlertTitle>Fehler beim Seeding</AlertTitle>
-                    <AlertDescription>{error}</AlertDescription>
-                </Alert>
-            )}
-            {success && (
-                 <Alert variant="default" className="mt-4">
-                    <AlertTitle>Erfolgreich</AlertTitle>
-                    <AlertDescription>{success}</AlertDescription>
+            {alertState && (
+                 <Alert variant={alertState.type === 'error' ? 'destructive' : 'default'} className="mt-4">
+                    {alertState.type === 'success' ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+                    <AlertTitle>{alertState.type === 'success' ? 'Erfolgreich' : 'Fehler'}</AlertTitle>
+                    <AlertDescription>{alertState.message}</AlertDescription>
                 </Alert>
             )}
         </div>
