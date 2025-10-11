@@ -64,13 +64,13 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                     <div className="p-8 border-dashed border-2 border-muted rounded-lg">
+                    <div className="p-8 border-dashed border-2 border-muted rounded-lg">
                         {ortmannsCardData && (
                             <div className="grid grid-cols-2 gap-2.5">
-                                <div className="relative w-full aspect-[1000/495] overflow-hidden rounded-lg shadow-sm">
+                                <div className="relative w-full aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-blue-200">
                                     <CodeRenderer html={ortmannsCardData.frontSideCode} />
                                 </div>
-                                <div className="relative w-full aspect-[1000/495] overflow-auto rounded-lg shadow-sm bg-accent/95 text-left text-background">
+                                <div className="relative w-full aspect-[1000/495] overflow-auto rounded-lg shadow-sm bg-green-200 text-left text-background">
                                      <CodeRenderer html={ortmannsCardData.backSideCode} />
                                 </div>
                             </div>
