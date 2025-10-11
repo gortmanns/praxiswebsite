@@ -1,4 +1,3 @@
-
 'use client';
 
 import 'cropperjs/dist/cropper.css';
@@ -32,7 +31,9 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
   const handleCrop = () => {
     const cropper = cropperRef.current?.cropper;
     if (typeof cropper !== 'undefined') {
-      const croppedCanvas = cropper.getCroppedCanvas();
+      const croppedCanvas = cropper.getCroppedCanvas({
+        fillColor: '#fff' // Setzt den Hintergrund auf Weiss
+      });
       if (croppedCanvas) {
         onCropComplete(croppedCanvas.toDataURL('image/jpeg', 0.9));
       }
@@ -47,7 +48,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
           <DialogTitle>Bild zuschneiden</DialogTitle>
         </DialogHeader>
         <div 
-          className="my-4 flex justify-center bg-white"
+          className="my-4 flex justify-center"
           style={{ height: '600px', maxHeight: '70vh' }}
         >
           <Cropper
@@ -74,5 +75,3 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
     </Dialog>
   );
 };
-
-    
