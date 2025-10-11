@@ -67,6 +67,7 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string; onClick?: (
                     width: '1000px', 
                     height: '495px',
                     transform: `scale(${scale})`,
+                    transformOrigin: 'top left',
                 }}
                 dangerouslySetInnerHTML={{ __html: html }}
             />
@@ -92,8 +93,6 @@ export default function DoctorsPage() {
                 .template-card button:hover:not(.image-button) { background-color: rgba(0,0,0,0.1); }
                 .template-card .image-button { position: relative; height: 100%; aspect-ratio: 2/3; overflow: hidden; border-radius: 0.375rem; background-color: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1rem; color: #64748b; }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.2); }
-                .template-card .lang-button { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; height: 2.5rem; padding: 0 1rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem; }
-                .template-card .lang-button:hover { background-color: hsla(var(--primary), 0.9); }
                 .template-card p, .template-card h3 { padding: 0.125rem 0.25rem; margin: 0; }
                 .template-card .text-2xl { font-size: 1.5rem; line-height: 2rem; }
                 .template-card .text-5xl { font-size: 3rem; line-height: 1; }
@@ -147,9 +146,8 @@ export default function DoctorsPage() {
                             </div>
                         </div>
                         <div class="absolute bottom-0 right-0">
-                            <button id="edit-languages" class="lang-button">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6-6 6"/><path d="m12 4-6 6 6 6"/><path d="m19 12-6-6 6-6"/></svg>
-                                Sprachen
+                            <button id="edit-languages" class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>
                             </button>
                         </div>
                     </div>
@@ -157,15 +155,15 @@ export default function DoctorsPage() {
             </div>
         `,
         backSideCode: `
-             <style>
-                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: block; }
+            <style>
+                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
                 .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
-                .vita-content { color: hsl(var(--background)); }
+                .vita-content { color: hsl(var(--background)); text-align: left; width: 100%;}
                 .vita-content p { margin: 0; }
                 .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
             </style>
             <button id="edit-vita" class="vita-content-button">
-                <div class="vita-content p-8 w-full h-full text-left">
+                <div class="vita-content p-8">
                     <h4>Curriculum Vitae</h4>
                     <p>Zum Bearbeiten klicken</p>
                 </div>
@@ -213,12 +211,15 @@ export default function DoctorsPage() {
 
     const handleTemplateClick = (e: React.MouseEvent) => {
         let target = e.target as HTMLElement;
-        while (target && (!target.tagName || target.tagName.toLowerCase() !== 'button' || !target.id.startsWith('edit-'))) {
-            if (target.classList.contains('template-card')) {
-                target = null!;
+        while (target && (!target.tagName || !target.id.startsWith('edit-'))) {
+             if (target.classList.contains('template-card') || target.classList.contains('vita-content-button')) {
                 break;
             }
             target = target.parentElement as HTMLElement;
+        }
+        
+        if (target && target.id.startsWith('edit-vita')) {
+            target = document.getElementById('edit-vita') as HTMLElement;
         }
 
         if (target && target.id && target.id.startsWith('edit-')) {
@@ -271,21 +272,15 @@ export default function DoctorsPage() {
         
         const imageButton = doc.getElementById('edit-image');
         if (imageButton) {
-            const newImageDiv = doc.createElement('div');
-            newImageDiv.id = 'edit-image'; // Keep the ID for future edits
-            newImageDiv.className = 'image-button'; // Keep classes for styling and interactions
-            newImageDiv.style.padding = '0'; // Remove padding to let image fill the space
-
+            imageButton.innerHTML = '';
             const img = doc.createElement('img');
             img.src = croppedImageUrl;
             img.alt = "Portrait";
             img.style.width = '100%';
             img.style.height = '100%';
             img.style.objectFit = 'contain';
-            
-            newImageDiv.appendChild(img);
-            
-            imageButton.replaceWith(newImageDiv);
+            imageButton.appendChild(img);
+            imageButton.style.padding = '0';
         }
         
         const updatedHtml = doc.body.innerHTML;
@@ -465,3 +460,5 @@ export default function DoctorsPage() {
         </div>
     );
 }
+
+    
