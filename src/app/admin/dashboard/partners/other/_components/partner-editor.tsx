@@ -34,83 +34,58 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
     return (
         <>
             <div className="flex flex-col gap-8 items-start">
-                <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Basic Settings */}
-                    <div className="space-y-4 border p-4 rounded-lg">
-                        <div>
-                            <Label htmlFor="name" className="font-bold">Name (für interne Verwendung)</Label>
-                            <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
-                        </div>
-                        <div>
-                            <Label htmlFor="websiteUrl" className="font-bold">URL für onClick</Label>
-                            <Input id="websiteUrl" value={cardData.websiteUrl} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
-                        </div>
-                        <div className="flex items-center space-x-2 pt-2">
-                            <Checkbox 
-                                id="openInNewTab" 
-                                checked={cardData.openInNewTab} 
-                                onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
-                            />
-                            <Label htmlFor="openInNewTab">In neuer Seite öffnen</Label>
-                        </div>
+                {/* Basic Settings remain at the top */}
+                <div className="w-full space-y-4 border p-4 rounded-lg">
+                     <div>
+                        <Label htmlFor="name" className="font-bold">Name (für interne Verwendung)</Label>
+                        <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
                     </div>
-
-                    {/* Image Settings */}
-                    <div className="space-y-4 border p-4 rounded-lg">
-                         <div className="space-y-2">
-                            <p className="text-sm text-muted-foreground">
-                                Tipp: Bereiten Sie Ihr Logo idealerweise in einem Bildbearbeitungsprogramm vor (ca. 400x130 Pixel), bevor Sie es hochladen.
-                            </p>
-                            <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="w-full">
-                                <ImageUp className="mr-2 h-4 w-4" />
-                                Logo hochladen
-                            </Button>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="logoScale">Grösse des Logos ({cardData.logoScale || 100}%)</Label>
-                            <Slider
-                                id="logoScale"
-                                min={10}
-                                max={200}
-                                step={1}
-                                value={[cardData.logoScale || 100]}
-                                onValueChange={(value) => handleInputChange('logoScale', value[0])}
-                            />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="logoX">Horizontale Position ({cardData.logoX || 0}px)</Label>
-                                <Slider
-                                    id="logoX"
-                                    min={-100}
-                                    max={100}
-                                    step={1}
-                                    value={[cardData.logoX || 0]}
-                                    onValueChange={(value) => handleInputChange('logoX', value[0])}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="logoY">Vertikale Position ({cardData.logoY || 0}px)</Label>
-                                <Slider
-                                    id="logoY"
-                                    min={-50}
-                                    max={50}
-                                    step={1}
-                                    value={[cardData.logoY || 0]}
-                                    onValueChange={(value) => handleInputChange('logoY', value[0])}
-                                />
-                            </div>
-                        </div>
+                    <div>
+                        <Label htmlFor="websiteUrl" className="font-bold">URL für onClick</Label>
+                        <Input id="websiteUrl" value={cardData.websiteUrl} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
+                    </div>
+                    <div className="flex items-center space-x-2 pt-2">
+                        <Checkbox 
+                            id="openInNewTab" 
+                            checked={cardData.openInNewTab} 
+                            onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
+                        />
+                        <Label htmlFor="openInNewTab">In neuer Seite öffnen</Label>
+                    </div>
+                    <div className="space-y-2">
+                        <p className="text-sm text-muted-foreground">
+                            Tipp: Bereiten Sie Ihr Logo idealerweise in einem Bildbearbeitungsprogramm vor (ca. 400x130 Pixel), bevor Sie es hochladen.
+                        </p>
+                        <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="w-full">
+                            <ImageUp className="mr-2 h-4 w-4" />
+                            Logo hochladen
+                        </Button>
                     </div>
                 </div>
-                 
-                 <section id="partners" className="w-full bg-primary">
+
+                {/* Live Preview Section with integrated sliders */}
+                 <section id="partners" className="w-full bg-primary rounded-lg">
                     <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24">
                         <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
                         Live-Vorschau
                         </h2>
-                        <div className="mt-12 flex flex-wrap justify-center gap-8">
-                            <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                        
+                        <div className="mt-12 flex flex-col items-center justify-center gap-8">
+                            {/* Scale Slider */}
+                            <div className="w-full max-w-lg space-y-2">
+                                <Label htmlFor="logoScale" className="text-primary-foreground">Grösse des Logos ({cardData.logoScale || 100}%)</Label>
+                                <Slider
+                                    id="logoScale"
+                                    min={10}
+                                    max={200}
+                                    step={1}
+                                    value={[cardData.logoScale || 100]}
+                                    onValueChange={(value) => handleInputChange('logoScale', value[0])}
+                                />
+                            </div>
+
+                            {/* Partner Card Preview */}
+                             <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
                                 <Link
                                     href={cardData.websiteUrl || '#'}
                                     target={cardData.openInNewTab ? '_blank' : '_self'}
@@ -136,8 +111,36 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                                            )}
                                         </CardContent>
                                     </Card>
-                                    <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                                 </Link>
+                            </div>
+                            
+                            {/* Position Sliders */}
+                            <div className="flex w-full max-w-lg items-center justify-center gap-4">
+                                <div className="w-full space-y-2">
+                                    <Label htmlFor="logoX" className="text-primary-foreground">Horizontale Position ({cardData.logoX || 0}px)</Label>
+                                    <Slider
+                                        id="logoX"
+                                        min={-100}
+                                        max={100}
+                                        step={1}
+                                        value={[cardData.logoX || 0]}
+                                        onValueChange={(value) => handleInputChange('logoX', value[0])}
+                                    />
+                                </div>
+                                <div className="flex h-full flex-col items-center space-y-2">
+                                    <Label htmlFor="logoY" className="text-primary-foreground [writing-mode:vertical-rl] transform rotate-180">Vertikal ({cardData.logoY || 0}px)</Label>
+                                    <Slider
+                                        id="logoY"
+                                        orientation="vertical"
+                                        min={-50}
+                                        max={50}
+                                        step={1}
+                                        inverted
+                                        value={[cardData.logoY || 0]}
+                                        onValueChange={(value) => handleInputChange('logoY', value[0])}
+                                        className="h-32"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
