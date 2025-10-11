@@ -41,16 +41,19 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl">
+      <DialogContent className="max-w-7xl">
         <DialogHeader>
           <DialogTitle>Bild zuschneiden</DialogTitle>
         </DialogHeader>
-        <div className="my-4 flex justify-center bg-muted">
+        <div 
+          className="my-4 flex justify-center bg-muted"
+          style={{ maxHeight: '600px' }}
+        >
           <Cropper
             key={aspectRatio} // Force re-initialization when aspectRatio changes
             ref={cropperRef}
             src={imageUrl}
-            style={{ height: 'auto', maxHeight: '70vh', width: '100%' }}
+            style={{ height: '100%', width: '100%', maxWidth: '1000px' }}
             // Cropper.js options
             aspectRatio={aspectRatio}
             guides={false}
@@ -71,5 +74,3 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
     </Dialog>
   );
 };
-
-    
