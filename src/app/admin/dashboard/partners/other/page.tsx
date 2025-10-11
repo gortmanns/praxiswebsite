@@ -6,7 +6,6 @@ import { PartnerCard as DisplayCard } from './_components/partner-card';
 import { PartnerEditor as EditorComponent } from './_components/partner-editor';
 import { ReusableCardManager } from '../../_components/reusable-card-manager';
 import type { Partner as CardData } from './_components/partner-card';
-import { otherPartnersSeedData } from './_components/other-partners-data';
 
 const initialPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     name: "Neuer Partner",
@@ -28,7 +27,6 @@ export default function OtherPartnersPage() {
             DisplayCardComponent={DisplayCard}
             EditorCardComponent={EditorComponent}
             entityName="Partner"
-            seedData={otherPartnersSeedData}
         />
     );
 }

@@ -63,7 +63,6 @@ export function ReusableCardManager<T extends BaseCardData>({
     const [isCreatingNew, setIsCreatingNew] = useState(false);
     const [editorCardState, setEditorCardState] = useState<T>(initialCardState as T);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
-    const [isSeeding, setIsSeeding] = useState(false);
 
 
     const isEditing = editingCardId !== null || isCreatingNew;
@@ -85,42 +84,6 @@ export function ReusableCardManager<T extends BaseCardData>({
         setIsCreatingNew(false);
     };
     
-    const handleSeedData = async () => {
-        if (!firestore || !seedData || seedData.length === 0) {
-            setNotification({ variant: 'destructive', title: 'Fehler', description: 'Keine Seed-Daten verfügbar oder Datenbankverbindung fehlgeschlagen.' });
-            return;
-        }
-        setIsSeeding(true);
-        setNotification(null);
-        try {
-            const batch = writeBatch(firestore);
-            const collectionRef = collection(firestore, collectionName);
-            
-            const existingDocsSnapshot = await getDocs(collectionRef);
-            existingDocsSnapshot.forEach(doc => {
-                batch.delete(doc.ref);
-            });
-            
-            seedData.forEach((item, index) => {
-                const newDocRef = doc(collectionRef);
-                const dataWithTimestampAndId = {
-                    ...item,
-                    id: newDocRef.id,
-                    order: index + 1,
-                    createdAt: serverTimestamp(),
-                };
-                batch.set(newDocRef, dataWithTimestampAndId);
-            });
-            await batch.commit();
-            setNotification({ variant: 'success', title: 'Erfolgreich', description: `${seedData.length} ${entityName}-Einträge erfolgreich geschrieben.` });
-        } catch (error: any) {
-            console.error('Seeding failed:', error);
-            setNotification({ variant: 'destructive', title: 'Fehler', description: `Fehler beim Schreiben der Daten: ${error.message}` });
-        } finally {
-            setIsSeeding(false);
-        }
-    };
-
 
     const handleMove = async (cardId: string, direction: 'up' | 'down') => {
         if (!dbData || !firestore) return;
@@ -365,24 +328,6 @@ export function ReusableCardManager<T extends BaseCardData>({
                         </div>
                     )}
                      
-                    {seedData && (
-                        <Card className="mb-8">
-                            <CardHeader>
-                                <CardTitle className="text-primary">Daten-Übertragung</CardTitle>
-                                <CardDescription>
-                                    Schreiben Sie die initialen Demodaten in die Datenbank. Achtung: Alle bestehenden Daten in der `{collectionName}`-Sammlung werden dabei gelöscht.
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <Button onClick={handleSeedData} disabled={isSeeding}>
-                                    <Upload className="mr-2 h-4 w-4" />
-                                    {isSeeding ? 'Übertrage Daten...' : `Demodaten für ${entityName} übertragen`}
-                                </Button>
-                            </CardContent>
-                        </Card>
-                    )}
-
-
                     <div className="space-y-4">
                         <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Karten</h3>
                          <p className="text-sm text-muted-foreground">
@@ -455,5 +400,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
