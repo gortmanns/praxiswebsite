@@ -171,7 +171,77 @@ export function ReusableCardManager<T extends BaseCardData>({
 
     const visibleItems = useMemo(() => dbData?.filter(d => !d.hidden) || [], [dbData]);
     const hiddenItems = useMemo(() => dbData?.filter(d => d.hidden) || [], [dbData]);
+
+    const isPartnerManager = collectionName.toLowerCase().includes('partner');
     
+    const DisplayWrapper: React.FC<{ item: T, index: number }> = ({ item, index }) => (
+        isPartnerManager ? (
+            <div className='p-2'>
+                <DisplayCardComponent {...item} />
+            </div>
+        ) : (
+            <div className="flex w-full flex-col sm:flex-row items-center justify-center gap-4">
+                <div className="flex sm:flex-col w-full sm:w-36 order-2 sm:order-1 flex-shrink-0 items-center justify-center gap-2">
+                    <Button variant="outline" size="icon" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
+                        <ChevronUp className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="icon" onClick={() => handleMove(item.id, 'down')} disabled={index === visibleItems.length - 1 || isEditing}>
+                        <ChevronDown className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                        <EyeOff className="h-4 w-4" />
+                    </Button>
+                        <Button variant="outline" size="icon" onClick={() => handleEdit(item)} disabled={isEditing}>
+                        <Pencil className="h-4 w-4" />
+                    </Button>
+                </div>
+                <div className={cn("relative flex-1 w-full max-w-sm sm:max-w-none order-1 sm:order-2")}>
+                    <DisplayCardComponent {...item} />
+                </div>
+            </div>
+        )
+    );
+
+    const HiddenDisplayWrapper: React.FC<{ item: T }> = ({ item }) => (
+         isPartnerManager ? (
+            <div className='p-2'>
+                <div className="relative">
+                    <div className="absolute inset-0 z-10 bg-black/50 rounded-lg"></div>
+                    <DisplayCardComponent {...item} />
+                </div>
+                <div className="flex w-full mt-2 flex-shrink-0 items-center justify-center gap-2">
+                    <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                        <Eye className="mr-2 h-4 w-4" /> Einblenden
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
+                        <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                    </Button>
+                    <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(item.id, (item as any).name || 'diese Karte')} disabled={isEditing}>
+                        <Trash2 className="mr-2 h-4 w-4" /> Löschen
+                    </Button>
+                </div>
+            </div>
+         ) : (
+            <div className="flex w-full flex-col sm:flex-row items-center justify-center gap-4">
+                <div className="flex sm:flex-col w-full sm:w-36 order-2 sm:order-1 flex-shrink-0 items-center justify-center gap-2">
+                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                        <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="icon" onClick={() => handleEdit(item)} disabled={isEditing}>
+                        <Pencil className="h-4 w-4" />
+                    </Button>
+                        <Button variant="destructive" size="icon" onClick={() => openDeleteConfirmation(item.id, (item as any).name || 'diese Karte')} disabled={isEditing}>
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                </div>
+                <div className={cn("relative flex-1 w-full max-w-sm sm:max-w-none order-1 sm:order-2 grayscale")}>
+                    <DisplayCardComponent {...item} />
+                </div>
+            </div>
+         )
+    );
+
+
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
             <Card className="w-full">
@@ -207,7 +277,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                 <CardContent>
                     {isEditing && (
                         <div className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12">
-                           <EditorComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                           <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                             <Alert variant="info" className="mt-4">
                                 <Info className="h-4 w-4" />
                                 <AlertTitle>Bearbeitungsmodus</AlertTitle>
@@ -232,19 +302,24 @@ export function ReusableCardManager<T extends BaseCardData>({
                             Klicken Sie auf &quot;Bearbeiten&quot;, um eine Karte in den Bearbeitungsmodus zu laden.
                         </p>
                     </div>
-                     <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
+                     <div className={cn(
+                        "mt-8",
+                        isPartnerManager ? "rounded-lg bg-primary p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
+                     )}>
                         {isLoadingData && (
-                            Array.from({ length: 2 }).map((_, index) => (
-                                <div key={index} className="flex w-full items-center justify-center gap-4">
-                                    <div className="w-36 flex-shrink-0"></div>
-                                    <div className="relative flex-1 w-full max-w-sm p-2">
-                                        <Skeleton className="w-full aspect-[4/5] rounded-lg" />
+                            isPartnerManager ? 
+                                Array.from({ length: 4 }).map((_, index) => <Skeleton key={index} className="h-32 w-full rounded-lg bg-primary-foreground/20" />) :
+                                Array.from({ length: 2 }).map((_, index) => (
+                                    <div key={index} className="flex w-full items-center justify-center gap-4">
+                                        <div className="w-36 flex-shrink-0"></div>
+                                        <div className="relative flex-1 w-full max-w-sm sm:max-w-none p-2">
+                                            <Skeleton className="w-full aspect-[4/5] rounded-lg" />
+                                        </div>
                                     </div>
-                                </div>
-                            ))
+                                ))
                         )}
                         {dbError && (
-                             <Alert variant="destructive" className="lg:col-span-2">
+                             <Alert variant="destructive" className={cn(isPartnerManager ? "sm:col-span-2 md:col-span-3 xl:col-span-4" : "lg:col-span-2")}>
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertTitle>Datenbankfehler</AlertTitle>
                                 <AlertDescription>
@@ -253,25 +328,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </Alert>
                         )}
                         {!isLoadingData && visibleItems.map((item, index) => (
-                            <div key={item.id} className="flex w-full flex-col sm:flex-row items-center justify-center gap-4">
-                                <div className="flex sm:flex-col w-full sm:w-36 order-2 sm:order-1 flex-shrink-0 items-center justify-center gap-2">
-                                    <Button variant="outline" size="icon" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
-                                        <ChevronUp className="h-4 w-4" />
-                                    </Button>
-                                    <Button variant="outline" size="icon" onClick={() => handleMove(item.id, 'down')} disabled={index === visibleItems.length - 1 || isEditing}>
-                                        <ChevronDown className="h-4 w-4" />
-                                    </Button>
-                                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                                        <EyeOff className="h-4 w-4" />
-                                    </Button>
-                                     <Button variant="outline" size="icon" onClick={() => handleEdit(item)} disabled={isEditing}>
-                                        <Pencil className="h-4 w-4" />
-                                    </Button>
-                                </div>
-                                <div className={cn("relative flex-1 w-full max-w-sm order-1 sm:order-2")}>
-                                    <DisplayCardComponent {...item} />
-                                </div>
-                            </div>
+                            <DisplayWrapper key={item.id} item={item} index={index} />
                         ))}
                     </div>
 
@@ -280,24 +337,12 @@ export function ReusableCardManager<T extends BaseCardData>({
                             <div className="mt-16 space-y-4">
                                 <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
                             </div>
-                            <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
+                            <div className={cn(
+                                "mt-8",
+                                isPartnerManager ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
+                            )}>
                                 {hiddenItems.map((item) => (
-                                    <div key={item.id} className="flex w-full flex-col sm:flex-row items-center justify-center gap-4">
-                                        <div className="flex sm:flex-col w-full sm:w-36 order-2 sm:order-1 flex-shrink-0 items-center justify-center gap-2">
-                                            <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                                                <Eye className="h-4 w-4" />
-                                            </Button>
-                                            <Button variant="outline" size="icon" onClick={() => handleEdit(item)} disabled={isEditing}>
-                                                <Pencil className="h-4 w-4" />
-                                            </Button>
-                                             <Button variant="destructive" size="icon" onClick={() => openDeleteConfirmation(item.id, (item as any).name || 'diese Karte')} disabled={isEditing}>
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                        <div className={cn("relative flex-1 w-full max-w-sm order-1 sm:order-2 grayscale")}>
-                                            <DisplayCardComponent {...item} />
-                                        </div>
-                                    </div>
+                                    <HiddenDisplayWrapper key={item.id} item={item} />
                                 ))}
                             </div>
                         </>
