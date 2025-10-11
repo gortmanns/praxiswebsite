@@ -98,11 +98,11 @@ export default function DoctorsPage() {
     }>({ type: null, data: {} });
 
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
-    const [isCreatingNew, setIsCreatingNew] = useState(true);
+    const [isCreatingNew, setIsCreatingNew] = useState(false);
     
     const initialExampleDoctorState: Doctor = useMemo(() => ({
         id: "template",
-        name: "Template",
+        name: "Neuer Arzt",
         order: 0,
         languages: ['de'],
         frontSideCode: `
@@ -320,6 +320,8 @@ export default function DoctorsPage() {
     }, [editorCardState.languages]);
 
     const handleTemplateClick = (e: React.MouseEvent) => {
+        if (!isCreatingNew && !editingDoctorId) return;
+
         let target = e.target as HTMLElement;
         while (target && !target.id.startsWith('edit-')) {
             if (target.classList.contains('template-card') || target.parentElement === null) {
@@ -394,25 +396,22 @@ export default function DoctorsPage() {
             setEditorCardState(prev => {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(prev.frontSideCode, 'text/html');
-                
+                let newHtmlContent: string;
+
                 if (field === 'image') {
+                    newHtmlContent = `<button id="edit-image" class="image-button-background w-full h-full relative">
+                                        <img src="${downloadURL}" alt="Portrait" class="h-full w-full object-cover relative" />
+                                     </button>`;
                     const imageContainer = doc.getElementById('image-container');
-                    if (imageContainer) {
-                        imageContainer.innerHTML = `
-                            <button id="edit-image" class="image-button-background w-full h-full relative">
-                                <img src="${downloadURL}" alt="Portrait" class="h-full w-full object-cover relative" />
-                            </button>`;
-                    }
+                    if(imageContainer) imageContainer.innerHTML = newHtmlContent;
                 } else { // 'position' field
+                    newHtmlContent = `<button id="edit-position" class="image-button-background">
+                                        <div class="relative">
+                                            <img src="${downloadURL}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
+                                        </div>
+                                      </button>`;
                     const positionContainer = doc.getElementById('position-container');
-                    if (positionContainer) {
-                        positionContainer.innerHTML = `
-                            <button id="edit-position" class="image-button-background">
-                                <div class="relative">
-                                    <img src="${downloadURL}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
-                                </div>
-                            </button>`;
-                    }
+                    if (positionContainer) positionContainer.innerHTML = newHtmlContent;
                 }
                 
                 return { ...prev, frontSideCode: doc.body.innerHTML };
@@ -429,16 +428,20 @@ export default function DoctorsPage() {
         let contentToSave = newVita;
         
         const wrapInButton = (html: string) => {
-            if (html.trim().startsWith('<button id="edit-vita"')) return html;
-            
             const parser = new DOMParser();
-            parser.parseFromString(html, 'text/html');
+            const doc = parser.parseFromString(html, 'text/html');
+            const button = doc.querySelector('button#edit-vita');
+
+            // If it's already wrapped, just return the original html
+            if (button && button.parentElement?.classList.contains('w-full')) {
+                return html;
+            }
             
             const style = `<style>.vita-content { color: hsl(var(--background)); } .vita-content p { margin: 0; } .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; } .vita-content li { margin-bottom: 0.5em; } .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; } .vita-content .is-small { font-size: 0.8em; font-weight: normal; } .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); } .vita-content span[style*="color: var(--color-tiptap-gray)"] { color: hsl(var(--secondary-foreground)); }</style>`;
             
             const contentDiv = `<div class="vita-content w-full h-full">${html}</div>`;
-            const button = `<button id="edit-vita" class="w-full h-full text-left p-8">${contentDiv}</button>`;
-            return `<div class="w-full h-full text-left">${style}${button}</div>`;
+            const newButton = `<button id="edit-vita" class="w-full h-full text-left p-8">${contentDiv}</button>`;
+            return `<div class="w-full h-full text-left">${style}${newButton}</div>`;
         }
 
         contentToSave = wrapInButton(newVita);
@@ -526,25 +529,44 @@ export default function DoctorsPage() {
 
     const handleSaveChanges = async () => {
         if (!firestore || !dbDoctors) return;
-
-        const cleanupHtml = (html: string) => {
+    
+        const cleanupHtml = (html: string, isFront: boolean) => {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+            
+            // Remove all <button id="edit-..."> elements
             doc.querySelectorAll('button[id^="edit-"]').forEach(button => {
                 const parent = button.parentElement;
                 if (parent) {
+                    // Create a new div to hold the button's children
+                    const contentWrapper = document.createElement('div');
+                    // Move all children from the button to the new wrapper
                     while (button.firstChild) {
-                        parent.insertBefore(button.firstChild, button);
+                        contentWrapper.appendChild(button.firstChild);
                     }
-                    parent.removeChild(button);
+                    // Replace the button with the wrapper
+                    parent.replaceChild(contentWrapper, button);
                 }
             });
+
+            // Special handling for the language container on the front card
+            if (isFront) {
+                const langContainer = doc.getElementById('language-container');
+                if (langContainer) {
+                    // Find and remove the "Sprachen" button specifically
+                    const langButton = langContainer.querySelector('button');
+                    if (langButton) {
+                        langContainer.removeChild(langButton);
+                    }
+                }
+            }
+    
             return doc.body.innerHTML;
         };
         
-        const cleanedFrontSideCode = cleanupHtml(editorCardState.frontSideCode);
-        const cleanedBackSideCode = cleanupHtml(editorCardState.backSideCode);
-
+        const cleanedFrontSideCode = cleanupHtml(editorCardState.frontSideCode, true);
+        const cleanedBackSideCode = cleanupHtml(editorCardState.backSideCode, false);
+    
         const finalCardData: Partial<Doctor> = { 
             ...editorCardState, 
             frontSideCode: cleanedFrontSideCode,
@@ -562,12 +584,12 @@ export default function DoctorsPage() {
             
             const newDoctorData: Omit<Doctor, 'id'> = {
                 ...(finalCardData as Omit<Doctor, 'id'>),
-                name: editorCardState.name === 'Template' ? 'Neuer Arzt' : editorCardState.name,
                 order: highestOrder + 1,
                 createdAt: serverTimestamp(),
                 hidden: false,
             };
             const newDocRef = await addDoc(collection(firestore, 'doctors'), newDoctorData);
+            // After creating, update it with its own ID
             await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
         }
         handleCancelEdit();
@@ -581,7 +603,7 @@ export default function DoctorsPage() {
 
     const handleCancelEdit = () => {
         setEditingDoctorId(null);
-        setIsCreatingNew(true);
+        setIsCreatingNew(false);
         setEditorCardState(initialExampleDoctorState);
     };
 
@@ -824,3 +846,5 @@ export default function DoctorsPage() {
         </div>
     );
 }
+
+    
