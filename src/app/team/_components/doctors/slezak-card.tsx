@@ -1,4 +1,3 @@
-
 'use client';
 
 import { DoctorCard } from '../doctor-card';
@@ -13,8 +12,8 @@ export function SlezakCard() {
                 <style>
                     .vita-content { color: hsl(var(--background)); }
                     .vita-content p { margin: 0; }
-                    .slezak-text-special { fill: #358392; font-family: 'Montserrat', sans-serif; }
-                    .slezak-text-normal { fill: #358392; font-family: 'Montserrat', sans-serif; font-weight: bold; }
+                    .slezak-text-special { fill: hsl(var(--primary)); font-family: 'Montserrat', sans-serif; }
+                    .slezak-text-normal { fill: hsl(var(--primary)); font-family: 'Montserrat', sans-serif; font-weight: bold; }
                 </style>
                 <div class="font-headline group relative max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 border-2 border-green-500">
                     <div class="flex h-full w-full items-start">
