@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag } from '@/components/logos/flags';
+import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
 
 interface LanguageFlagsProps {
   languages: string[] | undefined;
@@ -14,6 +14,34 @@ const flagComponents: { [key: string]: React.FC<{ className?: string }> } = {
   fr: FrFlag,
   it: ItFlag,
   es: EsFlag,
+  pt: PtFlag,
+  ru: RuFlag,
+  sq: SqFlag,
+  ar: ArFlag,
+  bs: BsFlag,
+  zh: ZhFlag,
+  da: DaFlag,
+  fi: FiFlag,
+  el: ElFlag,
+  he: HeFlag,
+  hi: HiFlag,
+  ja: JaFlag,
+  ko: KoFlag,
+  hr: HrFlag,
+  nl: NlFlag,
+  no: NoFlag,
+  fa: FaFlag,
+  pl: PlFlag,
+  pa: PaFlag,
+  ro: RoFlag,
+  sv: SvFlag,
+  sr: SrFlag,
+  ta: TaFlag,
+  cs: CsFlag,
+  tr: TrFlag,
+  uk: UkFlag,
+  hu: HuFlag,
+  ur: UrFlag,
 };
 
 const languageOrder = ['de', 'fr', 'it'];

@@ -1,0 +1,11 @@
+import { cn } from '@/lib/utils';
+import React from 'react';
+
+export function SvFlag({ className }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10" className={cn(className)}>
+      <path fill="#006aa7" d="M0 0h16v10H0z"/>
+      <path fill="#fecc00" d="M5 0h2v10H5zM0 4h16v2H0z"/>
+    </svg>
+  );
+}

@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
@@ -26,6 +25,7 @@ export interface Doctor {
     name: string;
     frontSideCode: string;
     backSideCode: string;
+    languages?: string[];
     [key: string]: any;
 }
 
@@ -87,11 +87,13 @@ export default function DoctorsPage() {
         id: "template",
         name: "Template",
         order: 0,
+        languages: ['de'],
         frontSideCode: `
             <style>
                 .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; border-radius: 0.25rem; display: block; padding: 0.125rem 0.25rem; margin: -0.125rem -0.25rem; }
                 .template-card button:hover:not(.image-button) { background-color: rgba(0,0,0,0.1); }
                 .template-card .image-button { position: relative; height: 100%; aspect-ratio: 2/3; overflow: hidden; border-radius: 0.375rem; background-color: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1rem; color: #64748b; }
+                .template-card .image-button img { width: 100%; height: 100%; object-fit: cover; }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.2); }
                 .template-card .lang-button-container { display: flex; align-items: center; gap: 0.5rem; }
                 .template-card .lang-button:hover { background-color: hsla(var(--primary-foreground), 0.1); }
@@ -196,7 +198,7 @@ export default function DoctorsPage() {
         '/images/team/Ortmanns.jpg', 
         '/images/team/Prof.Schemmer.jpg', 
         '/images/team/Dr.Rosenov.jpg',
-        '/images/team/Dr.Herschel.jpg', 
+        '/images/team/Dr.Herschel.jpg',
         '/images/team/Dr.Slezak.jpg',
         '/images/team/Garcia.jpg',
         '/images/team/Aeschlimann.jpg',
@@ -244,7 +246,7 @@ export default function DoctorsPage() {
                     break;
                 case 'languages':
                      openDialog('language', { 
-                        initialLanguages: dialogState.data.selectedLanguages || ['de'] 
+                        initialLanguages: exampleDoctor.languages || ['de'] 
                     });
                     break;
                 case 'image':
@@ -291,20 +293,17 @@ export default function DoctorsPage() {
             img.alt = "Neues Bild";
             
             if(field === 'image') {
-              img.style.width = '100%';
-              img.style.height = '100%';
-              img.style.objectFit = 'cover'; // Fill the container
+              // The styles are now in the CSS block, so we just add the img
+              targetButton.appendChild(img);
               targetButton.style.padding = '0';
             } else { // It's a logo
               img.style.height = 'auto';
-              img.style.width = '75%'; // Max 3/4 width of the text area
+              img.style.width = '75%';
               img.style.objectFit = 'contain';
-              targetButton.style.textAlign = 'left'; // Align logo to the left
-              targetButton.innerHTML = ''; // Clear any placeholder text
+              targetButton.style.textAlign = 'left'; 
+              targetButton.innerHTML = ''; 
               targetButton.appendChild(img);
             }
-            
-            targetButton.appendChild(img);
         }
         
         const updatedHtml = doc.body.innerHTML;
@@ -321,10 +320,12 @@ export default function DoctorsPage() {
         const doc = parser.parseFromString(exampleDoctor.backSideCode, 'text/html');
         const button = doc.getElementById('edit-vita');
         if (button) {
+            // Re-create the inner div with content
             const vitaContainer = doc.createElement('div');
-            vitaContainer.className = 'vita-content p-8 w-full max-w-[1000px]';
+            vitaContainer.className = 'vita-content p-8';
             vitaContainer.innerHTML = newVita;
             
+            // Clear the button and append the new structure
             button.innerHTML = '';
             button.appendChild(vitaContainer);
         }
@@ -361,7 +362,7 @@ export default function DoctorsPage() {
     };
 
     const handleLanguageSave = (selectedLanguages: string[]) => {
-        setDialogState(prev => ({ ...prev, data: { ...prev.data, selectedLanguages } }));
+        setExampleDoctor(prev => ({ ...prev, languages: selectedLanguages }));
         
         const langToFlagHtml: Record<string, string> = {
             de: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>`,
@@ -371,6 +372,32 @@ export default function DoctorsPage() {
             es: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#c60b1e" d="M0 0h3v2H0z"></path><path fill="#ffc400" d="M0 .5h3v1H0z"></path></svg>`,
             pt: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#006233" d="M0 0h1.2v2H0z"></path><path fill="#D21034" d="M1.2 0H3v2H1.2z"></path></svg>`,
             ru: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" class="h-5 w-auto rounded-sm shadow-md"><path fill="#fff" d="M0 0h9v3H0z"/><path fill="#d52b1e" d="M0 3h9v3H0z"/><path fill="#0039a6" d="M0 2h9v2H0z"/></svg>`,
+            sq: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 5" class="h-5 w-auto rounded-sm shadow-md"><path d="M0 0h7v5H0z" fill="#e41e20"/><path d="M3.5 1.93L2.56 1.5 2.5 1.25l.44.63-.94.32.94.31-.44.63.06-.25.94-.43zm0 1.14L2.56 2.64l-.06.25.44-.63.94-.31-.94-.32.44-.63.06.25.94.43z" fill="#000"/></svg>`,
+            ar: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#007a3d" d="M0 0h3v2H0z"/><path fill="#fff" d="M0 .67h3v.67H0z"/><path fill="#000" d="M0 1.33h3v.67H0z"/><path fill="red" d="M0 0v2l1-1z"/></svg>`,
+            bs: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 10" class="h-5 w-auto rounded-sm shadow-md"><path fill="#002395" d="M0 0h20v10H0z"/><path fill="#fecb00" d="M4 0L20 8V10L4 2z"/><path fill="#fff" d="M3.5 1.5l1 3h-3zM5.5 2.5l1 3h-3zM7.5 3.5l1 3h-3zM9.5 4.5l1 3h-3zM11.5 5.5l1 3h-3zM13.5 6.5l1 3h-3zM15.5 7.5l1 3h-3z"/></svg>`,
+            zh: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#ee1c25" d="M0 0h3v2H0z"/><path fill="#ff0" d="M.5.5l.2.6L1 .6l-.2.5.5.2-.6.2.2.5-.5-.2-.5.2.2-.5-.6-.2.5-.2zM1.2 1l.1.2.2-.1-.1.2.2.1-.2-.1-.1.2.1.1-.2-.1.1-.2-.2-.1.2-.1zM1.6 1.2l.1.2.2-.1-.1.2.2.1-.2-.1-.1.2.1.1-.2-.1.1-.2-.2-.1.2-.1zM1.6.8l.1.2.2-.1-.1.2.2.1-.2-.1-.1.2.1.1-.2-.1.1-.2-.2-.1.2-.1zM1.2.6l.1.2.2-.1-.1.2.2.1-.2-.1-.1.2.1.1-.2-.1.1-.2-.2-.1.2-.1z"/></svg>`,
+            da: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 28" class="h-5 w-auto rounded-sm shadow-md"><path fill="#c60b1e" d="M0 0h37v28H0z"/><path fill="#fff" d="M12 0h4v28h-4zM0 12h37v4H0z"/></svg>`,
+            fi: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 11" class="h-5 w-auto rounded-sm shadow-md"><path fill="#fff" d="M0 0h18v11H0z"/><path fill="#002f6c" d="M5 0h3v11H5zM0 4h18v3H0z"/></svg>`,
+            el: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 18" class="h-5 w-auto rounded-sm shadow-md"><path fill="#0d5eaf" d="M0 0h27v18H0z"/><path fill="#fff" d="M0 2h27v2H0zm0 4h27v2H0zm0 4h27v2H0zm0 4h27v2H0z"/><path fill="#0d5eaf" d="M0 0h10v10H0z"/><path fill="#fff" d="M4 0h2v10H4zM0 4h10v2H0z"/></svg>`,
+            he: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 8" class="h-5 w-auto rounded-sm shadow-md"><path fill="#fff" d="M0 0h11v8H0z"/><path fill="#0038b8" d="M0 0h11v1H0zm0 7h11v1H0zm4.5 3.5l1-1.73 1 1.73H4.5zm1-2.73l-1-1.73h2z"/></svg>`,
+            hi: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#f93" d="M0 0h3v2H0z"/><path fill="#fff" d="M0 .67h3v.67H0z"/><path fill="#128807" d="M0 1.33h3v.67H0z"/><circle cx="1.5" cy="1" r=".3" fill="none" stroke="#000080" stroke-width=".05"/><path d="M1.5 1l.29.07m-.29-.07l.27.12m-.27-.12l.24.18m-.24-.18l.18.24m-.18-.24l.12.27m-.12-.27l.07.29m-.07-.29l-.07.29m.07-.29l-.12.27m.12-.27l-.18.24m.18-.24l-.24.18m.24-.18l-.27.12m.27-.12l-.29.07" stroke="#000080" stroke-width=".025" stroke-linecap="round"/></svg>`,
+            ja: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#fff" d="M0 0h3v2H0z"/><circle cx="1.5" cy="1" r=".6" fill="#bc002d"/></svg>`,
+            ko: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#fff" d="M0 0h3v2H0z"/><circle cx="1.5" cy="1" r=".5" fill="#cd2e3a"/><path d="M1.5 1a.5.5 0 000-1 .25.25 0 000 .5.25.25 0 010 .5z" fill="#0047a0"/><g fill="#000"><path d="M.2.3h.2v.2H.2zm0 .2h.2v.2H.2zM.4.3h.2v.2H.4zm2 .8h.2v.2H2.6zm0 .2h.2v.2H2.6zm-.2.2h.2v.2H2.4zM.2.9h.2v.2H.2zm0 .2h.2v.2H.2zM.4.9h.2v.2H.4zm2-1.2h.2v.2H2.6zm0 .2h.2v.2H2.6zm-.2-.2h.2v.2H2.4z"/></g></svg>`,
+            hr: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 1" class="h-5 w-auto rounded-sm shadow-md"><path fill="#ff0000" d="M0 0h2v1H0z"/><path fill="#fff" d="M0 .333h2v.333H0z"/><path fill="#0000ff" d="M0 .667h2v.333H0z"/><path d="M1 .37a.16.16 0 100 .26.16.16 0 100-.26z" fill="#ff0000" stroke="#fff" stroke-width=".04"/></svg>`,
+            nl: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#21468B" d="M0 0h3v2H0z"/><path fill="#fff" d="M0 0h3v1.33H0z"/><path fill="#AE1C28" d="M0 0h3v.67H0z"/></svg>`,
+            no: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 16" class="h-5 w-auto rounded-sm shadow-md"><path fill="#ba0c2f" d="M0 0h22v16H0z"/><path fill="#fff" d="M6 0h4v16H6zM0 6h22v4H0z"/><path fill="#00205b" d="M7 0h2v16H7zM0 7h22v2H0z"/></svg>`,
+            fa: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 4" class="h-5 w-auto rounded-sm shadow-md"><path fill="#239f40" d="M0 0h7v4H0z"/><path fill="#da0000" d="M0 2.67h7v1.33H0z"/><path fill="#fff" d="M0 1.33h7v1.33H0z"/><path d="M3.5 1.6a.2.2 0 00-.2.2.2.2 0 10.4 0 .2.2 0 00-.2-.2m0 .1a.1.1 0 110 .2.1.1 0 010-.2" fill="#da0000"/></svg>`,
+            pl: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 5" class="h-5 w-auto rounded-sm shadow-md"><path fill="#fff" d="M0 0h8v5H0z"/><path fill="#dc143c" d="M0 2.5h8v2.5H0z"/></svg>`,
+            pa: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path d="M0 0h3v2H0z" fill="#008000"/><path d="M0 1h3v1H0z" fill="#f93"/><circle r=".4" cx="1.5" cy="1" fill="#00f" stroke="#fff" stroke-width=".1"/></svg>`,
+            ro: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#002B7F" d="M0 0h1v2H0z"/><path fill="#FCD116" d="M1 0h1v2H1z"/><path fill="#CE1126" d="M2 0h1v2H2z"/></svg>`,
+            sv: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10" class="h-5 w-auto rounded-sm shadow-md"><path fill="#006aa7" d="M0 0h16v10H0z"/><path fill="#fecc00" d="M5 0h2v10H5zM0 4h16v2H0z"/></svg>`,
+            sr: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#C6363C" d="M0 0h3v.67H0z"/><path fill="#0C4076" d="M0 .67h3v.67H0z"/><path fill="#fff" d="M0 1.33h3V2H0z"/></svg>`,
+            ta: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><path fill="#f93" d="M0 0h5v1H0z"/><path fill="green" d="M0 2h5v1H0z"/><path d="M0 1h5v1H0z" fill="#fff"/><circle cx="2.5" cy="1.5" r=".4" fill="#00f" stroke="#fff" stroke-width=".1"/></svg>`,
+            cs: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#fff" d="M0 0h3v1H0z"/><path fill="#d7141a" d="M0 1h3v1H0z"/><path fill="#11457e" d="M0 0v2l1.5-1z"/></svg>`,
+            tr: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#e30a17" d="M0 0h3v2H0z"/><circle cx="1.125" cy="1" r=".5" fill="#fff"/><path d="M1.25 1a.4.4 0 100-.8.5.5 0 010 .8z" fill="#fff"/><path d="M1.375 1l.1-.3.1.3-.2-.2z" fill="#e30a17"/></svg>`,
+            uk: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#0057b7" d="M0 0h3v2H0z"/><path fill="#ffd700" d="M0 1h3v1H0z"/></svg>`,
+            hu: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#436F4D" d="M0 1.33h3V2H0z"/><path fill="#fff" d="M0 .67h3v.66H0z"/><path fill="#CD2A3E" d="M0 0h3v.67H0z"/></svg>`,
+            ur: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#006600" d="M0 0h3v2H0z"/><path fill="#fff" d="M.75 0h.5v2h-.5z"/><circle cx="1.75" cy="1" r=".4" fill="#fff"/><path d="M1.88 1a.3.3 0 100-.6.4.4 0 010 .6z" fill="#006600"/><path d="M2.2 1l-.2-.1.1.2-.1-.2z" fill="#fff"/></svg>`,
         };
 
         const languageOrder = ['de', 'fr', 'it', 'en', 'es', 'pt', 'ru'];

@@ -1,0 +1,12 @@
+import { cn } from '@/lib/utils';
+import React from 'react';
+
+export function NoFlag({ className }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 16" className={cn(className)}>
+      <path fill="#ba0c2f" d="M0 0h22v16H0z"/>
+      <path fill="#fff" d="M6 0h4v16H6zM0 6h22v4H0z"/>
+      <path fill="#00205b" d="M7 0h2v16H7zM0 7h22v2H0z"/>
+    </svg>
+  );
+}
