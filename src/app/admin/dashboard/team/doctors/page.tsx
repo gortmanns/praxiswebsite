@@ -4,6 +4,11 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
+import { Button } from '@/components/ui/button';
+import { useFirestore } from '@/firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import { useToast } from '@/hooks/use-toast';
+import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 export interface Doctor {
     id: string;
@@ -15,6 +20,36 @@ export interface Doctor {
 }
 
 export default function DoctorsPage() {
+    const firestore = useFirestore();
+    const { toast } = useToast();
+    
+    const handleWriteToDb = () => {
+        if (!firestore) {
+            toast({
+                variant: 'destructive',
+                title: 'Fehler',
+                description: 'Firestore ist nicht verfügbar.',
+            });
+            return;
+        }
+        const ortmannsData = DOCTOR_CARDS_INITIAL_DATA.find(d => d.id === 'ortmanns');
+        if (ortmannsData) {
+            try {
+                const docRef = doc(firestore, 'doctors', ortmannsData.id);
+                setDocumentNonBlocking(docRef, ortmannsData, { merge: true });
+                toast({
+                    title: 'Erfolg',
+                    description: 'Schreibvorgang für Dr. Ortmanns wurde gestartet.',
+                });
+            } catch (error: any) {
+                 toast({
+                    variant: 'destructive',
+                    title: 'Fehler beim Schreiben in die DB',
+                    description: error.message,
+                });
+            }
+        }
+    };
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -27,6 +62,9 @@ export default function DoctorsPage() {
                                 Verwalten Sie die auf der Team-Seite angezeigten Ärzte.
                             </CardDescription>
                         </div>
+                        <Button onClick={handleWriteToDb}>
+                            Ortmanns Card in DB schreiben
+                        </Button>
                     </div>
                 </CardHeader>
                 <CardContent>
