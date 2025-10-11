@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
@@ -94,13 +94,25 @@ export default function DoctorsPage() {
             <style>
                 .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; border-radius: 0.25rem; display: block; padding: 0.125rem 0.25rem; margin: -0.125rem -0.25rem; }
                 .template-card button:hover:not(.image-button) { background-color: rgba(0,0,0,0.1); }
-                .template-card .image-button { position: relative; height: 100%; aspect-ratio: 2/3; overflow: hidden; border-radius: 0.375rem; background-color: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1rem; color: #64748b; }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.2); }
-                .template-card .image-button img { width: 100%; height: 100%; object-fit: cover; }
-                .template-card .lang-button-container { display: flex; align-items: center; gap: 0.5rem; }
-                .template-card .lang-button { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; height: 2rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem; }
-                .template-card .lang-button:hover { background-color: hsl(var(--primary) / 0.9); }
-                .template-card p, .template-card h3 { padding: 0.125rem 0.25rem; margin: 0; }
+                .template-card .lang-button:hover { background-color: hsla(var(--primary-foreground), 0.1); }
+                .template-card p, .template-card h3 { padding: 0.125rem 0.25rem; margin:0; }
+                .template-card .my-2 { margin-top: 0.5rem; margin-bottom: 0.5rem; }
+                .template-card .mt-6 { margin-top: 1.5rem; }
+                .template-card .ml-6 { margin-left: 1.5rem; }
+                .template-card .flex { display: flex; }
+                .template-card .flex-col { flex-direction: column; }
+                .template-card .flex-grow { flex-grow: 1; }
+                .template-card .items-start { align-items: flex-start; }
+                .template-card .justify-center { justify-content: center; }
+                .template-card .relative { position: relative; }
+                .template-card .absolute { position: absolute; }
+                .template-card .bottom-0 { bottom: 0; }
+                .template-card .right-0 { right: 0; }
+                .template-card .gap-2 { gap: 0.5rem; }
+                .template-card .items-center { align-items: center; }
+                .template-card .h-full { height: 100%; }
+                .template-card .w-full { width: 100%; }
                 .template-card .text-2xl { font-size: 1.5rem; line-height: 2rem; }
                 .template-card .text-5xl { font-size: 3rem; line-height: 1; }
                 .template-card .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
@@ -108,27 +120,11 @@ export default function DoctorsPage() {
                 .template-card .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
                 .template-card .font-bold { font-weight: 700; }
                 .template-card .text-primary { color: hsl(var(--primary)); }
-                .template-card .my-2 { margin-top: 0.5rem; margin-bottom: 0.5rem; }
-                .template-card .mt-2 { margin-top: 0.5rem; }
-                .template-card .mt-6 { margin-top: 1.5rem; }
-                .template-card .ml-6 { margin-left: 1.5rem; }
-                .template-card .flex { display: flex; }
-                .template-card .flex-col { flex-direction: column; }
-                .template-card .flex-grow { flex-grow: 1; }
-                .template-card .items-start { align-items: flex-start; }
-                .template-card .items-center { align-items: center; }
-                .template-card .justify-center { justify-content: center; }
-                .template-card .relative { position: relative; }
-                .template-card .absolute { position: absolute; }
-                .template-card .bottom-0 { bottom: 0; }
-                .template-card .right-0 { right: 0; }
-                .template-card .h-full { height: 100%; }
-                .template-card .w-full { width: 100%; }
-                .template-card .gap-2 { gap: 0.5rem; }
+                .template-card .text-muted-foreground { color: hsl(var(--muted-foreground)); }
             </style>
             <div class="template-card group relative w-full h-full overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
-                    <button id="edit-image" class="image-button">
+                    <button id="edit-image" class="relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted flex flex-col items-center justify-center text-center p-4 text-muted-foreground">
                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
                         <span class="mt-2 text-sm">Bild ändern</span>
                     </button>
@@ -154,7 +150,7 @@ export default function DoctorsPage() {
                             </div>
                         </div>
                         <div id="language-container" class="absolute bottom-0 right-0 flex items-center gap-2">
-                             <button id="edit-languages" class="lang-button">
+                             <button id="edit-languages" class="inline-flex items-center justify-center gap-2 h-8 px-3 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
                                 <span>Sprachen</span>
                             </button>
@@ -166,14 +162,14 @@ export default function DoctorsPage() {
         `,
         backSideCode: `
              <style>
-                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; }
-                .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
                 .vita-content { color: hsl(var(--background)); }
                 .vita-content p { margin: 0; }
                 .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
+                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: block; }
+                .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
             <button id="edit-vita" class="vita-content-button">
-                <div class="vita-content p-8">
+                <div class="vita-content p-8 w-full max-w-[1000px] text-left">
                     <h4>Curriculum Vitae</h4>
                     <p>Zum Bearbeiten klicken</p>
                 </div>
@@ -221,10 +217,8 @@ export default function DoctorsPage() {
 
     const handleTemplateClick = (e: React.MouseEvent) => {
         let target = e.target as HTMLElement;
-        // Traverse up the DOM to find the button with the ID
         while (target && !target.id.startsWith('edit-')) {
             if (target.classList.contains('template-card') || target.parentElement === null) {
-                // Stop if we reach the card's root or the top of the tree
                 return;
             }
             target = target.parentElement;
@@ -247,7 +241,7 @@ export default function DoctorsPage() {
                     });
                     break;
                 case 'image':
-                    openDialog('imageSource', { field, aspectRatio: 2/3 });
+                    openDialog('imageSource', { field });
                     break;
                 case 'position':
                     openDialog('logoFunction', { field });
@@ -286,11 +280,11 @@ export default function DoctorsPage() {
         if (field === 'image') {
           const targetButton = doc.getElementById(`edit-image`);
           if (targetButton) {
-            targetButton.innerHTML = `<img src="${croppedImageUrl}" alt="Portrait" />`;
+            targetButton.innerHTML = `<img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-cover" />`;
             targetButton.style.padding = '0';
             targetButton.style.backgroundColor = 'transparent';
           }
-        } else { // It's a logo
+        } else {
           const positionContainer = doc.getElementById('position-container');
            if (positionContainer) {
              positionContainer.innerHTML = `<div class="mt-6"><img src="${croppedImageUrl}" alt="Logo" class="h-auto w-full max-w-[400px] object-contain" /></div>`;
@@ -313,7 +307,7 @@ export default function DoctorsPage() {
             const button = doc.getElementById('edit-vita');
             if (button) {
                 const vitaContainer = doc.createElement('div');
-                vitaContainer.className = 'vita-content p-8 w-full max-w-[1000px]';
+                vitaContainer.className = 'vita-content p-8 w-full max-w-[1000px] text-left';
                 vitaContainer.innerHTML = newVita;
                 button.innerHTML = '';
                 button.appendChild(vitaContainer);
@@ -399,7 +393,7 @@ export default function DoctorsPage() {
 
         const flagsHtml = sortedLangs.map(lang => langToFlagHtml[lang] || '').join('');
         
-        const buttonHtml = `<button id="edit-languages" class="lang-button">
+        const buttonHtml = `<button id="edit-languages" class="inline-flex items-center justify-center gap-2 h-8 px-3 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
             <span>Sprachen</span>
         </button>`;
@@ -421,7 +415,6 @@ export default function DoctorsPage() {
     };
     
     useEffect(() => {
-        // Run on mount to apply initial languages
         handleLanguageSave(exampleDoctor.languages || ['de']);
     }, []);
 
@@ -446,13 +439,16 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div id="template-container" className="w-full rounded-lg border-2 border-dashed border-muted p-4">
+                    <div className="w-full rounded-lg border-2 border-dashed border-muted p-4">
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <CardHtmlRenderer html={exampleDoctor.frontSideCode} onClick={handleTemplateClick} />
                             <div className="bg-accent/95 rounded-lg">
                                 <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" onClick={handleTemplateClick} />
                             </div>
                        </div>
+                    </div>
+                    <div className="mt-2 text-center text-sm text-muted-foreground">
+                        Zum Ändern bitte das jeweilige Element anklicken.
                     </div>
 
                     <div className="mt-8 space-y-4">
@@ -465,7 +461,6 @@ export default function DoctorsPage() {
                         {isLoadingDbDoctors && (
                             Array.from({ length: 2 }).map((_, index) => (
                                 <div key={index} className="flex w-full items-center justify-center gap-4">
-                                    <div className="w-36"></div>
                                     <div className="relative flex-1 w-full max-w-[1000px] p-2">
                                         <Skeleton className="w-full aspect-[1000/495] rounded-lg" />
                                     </div>
@@ -475,7 +470,6 @@ export default function DoctorsPage() {
                         {dbError && <p className="text-destructive">Fehler beim Laden der Daten: {dbError.message}</p>}
                         {!isLoadingDbDoctors && dbDoctors?.map(doctor => (
                             <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
-                                <div className="w-36"></div>
                                 <div className="relative flex-1 w-full max-w-[1000px] p-2">
                                     <EditableDoctorCard doctor={doctor} onVitaClick={() => {}} />
                                 </div>
@@ -492,7 +486,6 @@ export default function DoctorsPage() {
                      <div className="mt-8 space-y-12">
                         {DOCTOR_CARDS_INITIAL_DATA.map(doctor => (
                             <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
-                                    <div className="w-36"></div>
                                 <div className="relative flex-1 w-full max-w-[1000px] p-2">
                                         <EditableDoctorCard doctor={doctor} onVitaClick={() => {}} />
                                 </div>
@@ -543,7 +536,8 @@ export default function DoctorsPage() {
                        setDialogState({ type: 'imageLibrary', data: { field: 'position' } });
                     }}
                     onUploadNew={() => {
-                         setDialogState(prev => ({ type: 'imageSource', data: { ...prev.data, field: 'position' } }));
+                         setDialogState(prev => ({ type: null, data: {} }));
+                         fileInputRef.current?.click();
                     }}
                 />
             )}
@@ -593,6 +587,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
-
-    
