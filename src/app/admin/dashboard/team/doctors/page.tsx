@@ -42,8 +42,15 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="w-full rounded-lg border-2 border-dashed border-muted p-4 min-h-[200px]">
-                       {/* Der Vorschau-Bereich ist jetzt leer und bereit für Ihre Anweisungen. */}
+                    <div className="w-full rounded-lg border-2 border-dashed border-muted p-4">
+                       <div className="grid grid-cols-2 gap-2.5">
+                            <div className="aspect-[1000/495] w-full rounded-md bg-muted/50">
+                                {/* Hier kommt die Vorderseite der Karte hinein */}
+                            </div>
+                            <div className="aspect-[1000/495] w-full rounded-md bg-muted/50">
+                                {/* Hier kommt die Rückseite der Karte hinein */}
+                            </div>
+                       </div>
                     </div>
 
                     <div className="mt-8 space-y-4">
