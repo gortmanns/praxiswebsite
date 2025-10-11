@@ -142,7 +142,7 @@ export const LanguageSelectDialog: React.FC<LanguageSelectDialogProps> = ({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Abbrechen
           </Button>
-          <Button onClick={handleSave}>Speichern</Button>
+          <Button onClick={handleSave}>Übernehmen</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

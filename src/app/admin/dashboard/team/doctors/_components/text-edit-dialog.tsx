@@ -52,11 +52,11 @@ export const TextEditDialog: React.FC<TextEditDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-xl">
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
-            Geben Sie den neuen Wert ein und klicken Sie auf Speichern.
+            Geben Sie den neuen Wert ein und klicken Sie auf Übernehmen.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -78,11 +78,9 @@ export const TextEditDialog: React.FC<TextEditDialogProps> = ({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Abbrechen
           </Button>
-          <Button onClick={handleSave}>Speichern</Button>
+          <Button onClick={handleSave}>Übernehmen</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 };
-
-    
