@@ -24,15 +24,13 @@ export function SlezakCard() {
                                 <p class="text-2xl font-bold text-primary">Dr. med.</p>
                                 <h3 class="text-5xl font-bold text-primary my-2">A. Slezak</h3>
                                 <p class="text-xl font-bold">Fachärztin für Neurologie</p>
-                                <div class="mt-6 bg-special-green p-4 rounded-md flex items-center justify-center">
+                                <div class="mt-6 flex items-center justify-start">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 60" class="h-auto" style="height: 6.9rem;" aria-label="Dr. med. Agnieszka Slezak - Fachärztin für Neurologie Logo">
-                                        <text x="50%" y="15" dominant-baseline="middle" text-anchor="middle" style="font-family: Montserrat, sans-serif; font-size: 10px; fill: white;">
-                                            Dr. med.
+                                        <rect width="170" height="60" fill="#358392" rx="6"></rect>
+                                        <text x="50%" y="24" dominant-baseline="middle" text-anchor="middle" style="font-family: Montserrat, sans-serif; font-size: 14px; font-weight: bold; fill: white;">
+                                            Dr. med. Agnieszka Slezak
                                         </text>
-                                        <text x="50%" y="33" dominant-baseline="middle" text-anchor="middle" style="font-family: Montserrat, sans-serif; font-size: 14px; font-weight: bold; fill: white;">
-                                            Agnieszka Slezak
-                                        </text>
-                                        <text x="50%" y="51" dominant-baseline="middle" text-anchor="middle" style="font-family: Montserrat, sans-serif; font-size: 8.5px; fill: white;">
+                                        <text x="50%" y="42" dominant-baseline="middle" text-anchor="middle" style="font-family: Montserrat, sans-serif; font-size: 8.5px; fill: white;">
                                             Fachärztin für Neurologie
                                         </text>
                                     </svg>
