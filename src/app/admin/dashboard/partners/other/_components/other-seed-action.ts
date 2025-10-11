@@ -1,25 +1,27 @@
 
 'use server';
 
-import { initializeApp, getApps, deleteApp } from 'firebase-admin/app';
+import { initializeApp, deleteApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { otherPartnersData } from './other-partners-data';
+import { firebaseConfig } from '@/firebase/config';
 
 export async function seedOtherPartnersData(): Promise<{ success: boolean; message: string; error?: string; }> {
   const appName = `seed-other-partners-${Date.now()}`;
   let adminApp;
 
-  if (!process.env.GCLOUD_PROJECT) {
+  const projectId = firebaseConfig.projectId;
+  if (!projectId) {
     return {
       success: false,
       message: 'Fehler: Google Cloud Projekt-ID nicht konfiguriert.',
-      error: 'GCLOUD_PROJECT environment variable not set.'
+      error: 'Firebase Project ID not found in firebaseConfig.'
     };
   }
 
   try {
     adminApp = initializeApp({
-      projectId: process.env.GCLOUD_PROJECT,
+      projectId: projectId,
     }, appName);
 
     const db = getFirestore(adminApp);
