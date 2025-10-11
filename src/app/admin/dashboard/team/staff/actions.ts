@@ -52,32 +52,21 @@ const staffData = [
     },
 ];
 
-let adminApp: App | null = null;
-
-function initializeAdminApp() {
-    if (!adminApp) {
-        const appName = `firebase-admin-app-${Date.now()}`;
-        adminApp = initializeApp({}, appName);
-    }
-    return adminApp;
-}
-
-async function cleanupAdminApp() {
-    if (adminApp) {
-        await deleteApp(adminApp);
-        adminApp = null;
-    }
-}
 
 export async function seedStaffData() {
+  let app: App | undefined;
   try {
-    const app = initializeAdminApp();
+    // Generate a unique app name for each invocation.
+    const appName = `firebase-admin-seed-${Date.now()}`;
+    // Initialize the app within the function scope.
+    app = initializeApp({}, appName);
+    
     const db = getFirestore(app);
     const staffCollection = db.collection('staff');
 
     const snapshot = await staffCollection.limit(1).get();
     if (!snapshot.empty) {
-      return { success: false, error: 'Die Sammlung ist nicht leer. Das Seeding wurde abgebrochen, um Duplikate zu vermeiden.' };
+      return { success: true, count: 0, message: 'Die Sammlung ist nicht leer. Das Seeding wurde übersprungen.' };
     }
 
     const batch = db.batch();
@@ -95,8 +84,12 @@ export async function seedStaffData() {
     return { success: true, count: staffData.length };
   } catch (error: any) {
     console.error('Error seeding database:', error);
+    // Ensure the error message is a plain string.
     return { success: false, error: error.message || 'Ein unbekannter Fehler ist aufgetreten.' };
   } finally {
-      await cleanupAdminApp();
+    // Always clean up the app instance.
+    if (app) {
+      await deleteApp(app);
+    }
   }
 }
