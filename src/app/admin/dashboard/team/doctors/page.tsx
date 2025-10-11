@@ -41,7 +41,7 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string }> = ({ html
 
     return (
         <div className={className}>
-             <div className="w-[1000px] h-[495px]">
+             <div className="w-full h-full">
                 <div dangerouslySetInnerHTML={sanitizedHtml} />
             </div>
         </div>
@@ -107,7 +107,7 @@ export default function DoctorsPage() {
                 .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
             <button id="edit-vita" class="vita-content-button">
-                <div class="vita-content p-8 w-full max-w-[1000px] text-left">
+                <div class="vita-content p-8 w-full max-w-[1000px] text-left text-background">
                     <h4>Curriculum Vitae</h4>
                 </div>
             </button>
@@ -222,7 +222,7 @@ export default function DoctorsPage() {
                             </div>
                             <div className="relative aspect-[1000/495] w-full transform-origin-top-left overflow-hidden bg-accent/95">
                                  <div className="absolute w-full h-full">
-                                    <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" />
+                                    <CardHtmlRenderer html={exampleDoctor.backSideCode} />
                                  </div>
                             </div>
                        </div>
@@ -352,3 +352,5 @@ export default function DoctorsPage() {
         </div>
     );
 }
+
+    
