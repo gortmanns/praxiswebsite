@@ -3,7 +3,6 @@
 import React from 'react';
 import type { Doctor } from '@/app/admin/dashboard/team/doctors/page';
 import DOMPurify from 'dompurify';
-import { cn } from '@/lib/utils';
 
 interface EditableDoctorCardProps {
     doctor: Doctor;
