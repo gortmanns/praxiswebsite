@@ -105,14 +105,14 @@ export function ReusableCardManager<T extends BaseCardData>({
             
             // Now add the new seed data
             seedData.forEach((item, index) => {
-                const docRef = doc(collectionRef);
-                const dataWithTimestamp = {
+                const newDocRef = doc(collectionRef); // Create a reference with a new ID
+                const dataWithTimestampAndId = {
                     ...item,
+                    id: newDocRef.id, // Explicitly set the new ID
                     order: index + 1,
-                    id: docRef.id,
                     createdAt: serverTimestamp(),
                 };
-                batch.set(docRef, dataWithTimestamp);
+                batch.set(newDocRef, dataWithTimestampAndId);
             });
             await batch.commit();
             setAlertState({ type: 'success', message: `${seedData.length} ${entityName}-Einträge erfolgreich geschrieben.` });
@@ -200,14 +200,15 @@ export function ReusableCardManager<T extends BaseCardData>({
             } else {
                 const highestOrder = dbData.reduce((max, item) => item.order > max ? item.order : max, 0);
                 const collectionRef = collection(firestore, collectionName);
+                const newDocRef = doc(collectionRef); // Create ref with new ID first
                 const newCardData = {
                     ...finalCardData,
+                    id: newDocRef.id, // Assign the new ID to the data
                     order: highestOrder + 1,
                     createdAt: serverTimestamp(),
                     hidden: false,
                 };
-                const newDocRef = await addDoc(collectionRef, newCardData);
-                await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
+                await setDoc(newDocRef, newCardData); // Set the document with its ID
 
                 setAlertState({ type: 'success', message: `Neue ${entityName}-Karte erfolgreich erstellt.` });
             }
@@ -278,7 +279,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                 </div>
                 <div className="mt-2 flex w-full flex-col gap-2">
                     <div className="grid grid-cols-2 gap-2">
-                        <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                         <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
                             <Eye className="mr-2 h-4 w-4" /> Einblenden
                         </Button>
                         <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
@@ -455,3 +456,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
