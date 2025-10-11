@@ -1,36 +1,87 @@
 /**
- * @file Firebase Security Rules for Firestore.
+ * @fileoverview Firestore Security Rules for the application.
  *
- * @Core Philosophy: This ruleset prioritizes ease of prototyping, focusing on secure access control without strict data validation. It assumes an eventual transition to more robust data validation.
+ * Core Philosophy:
+ * This ruleset prioritizes security by enforcing strict access controls on all data.
+ * It provides public read access to the 'doctors' and 'staff' collections.
+ * It enforces owner-only write access. All write operations must be authenticated.
  *
- * @Data Structure: The Firestore database contains a top-level `/doctors` collection.
+ * Data Structure:
+ * The Firestore database contains two top-level collections: 'doctors' and 'staff'.
+ * Each collection contains documents representing doctor and staff member profiles, respectively.
  *
- * @Key Security Decisions:
- *   - All data in the `doctors` collection is considered publicly readable.
- *   - Doctor profiles can be created, updated, and deleted by authenticated users, however owner validation will be enforced based on matching ownership against the request.
+ * Key Security Decisions:
+ * - Public read access is granted to 'doctors' and 'staff' collections to allow listing doctors and staff.
+ * - Write access to collections is restricted to authenticated users who are considered "owners".
+ *   To support this model, the documents in these collections *must* include a field (e.g., 'ownerId')
+ *   that matches the user's `uid`.  These rules enforce that the user can only create, update, or
+ *   delete documents where they are the designated owner.
+ * - The rules explicitly deny any unauthenticated write operations, reinforcing the need for authentication.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Defines the rules for the /doctors collection, allowing public reads and authenticated writes.
+     * @description Grants public read access to the 'doctors' collection and restricts write access to owners.
      * @path /databases/{database}/documents/doctors/{doctorId}
-     * @allow (get, list): Always allows reading doctor profiles.
-     * @allow (create): Allows creating a doctor profile if the request is authenticated.
-     * @allow (update, delete): Allows updating/deleting a doctor profile if the request is authenticated.
-     * @deny (create, update, delete): Denies if the request is unauthenticated.
-     * @principle Allows public read access while restricting write access to authenticated users.
+     * @allow (get, list): Any user can read doctor profiles.
+     * @allow (create): Only an authenticated user can create a doctor profile, and 'ownerId' must match their UID.
+     * @allow (update, delete): Only the owner of the doctor profile can update or delete it.
+     * @deny (create): If the 'ownerId' field does not match the authenticated user's UID.
+     * @deny (update, delete): If the authenticated user is not the owner of the doctor profile, or if the doctor profile does not exist.
+     * @principle Allows public read access while enforcing ownership for data modification.
      */
     match /doctors/{doctorId} {
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+      allow create: if isSignedIn() && request.resource.data.id == request.auth.uid;
+      allow update: if isExistingOwner(resource.data.id);
+      allow delete: if isExistingOwner(resource.data.id);
     }
 
+    /**
+     * @description Grants public read access to the 'staff' collection and restricts write access to owners.
+     * @path /databases/{database}/documents/staff/{staffId}
+     * @allow (get, list): Any user can read staff profiles.
+     * @allow (create): Only an authenticated user can create a staff profile, and 'ownerId' must match their UID.
+     * @allow (update, delete): Only the owner of the staff profile can update or delete it.
+     * @deny (create): If the 'ownerId' field does not match the authenticated user's UID.
+     * @deny (update, delete): If the authenticated user is not the owner of the staff profile, or if the staff profile does not exist.
+     * @principle Allows public read access while enforcing ownership for data modification.
+     */
+    match /staff/{staffId} {
+      allow get, list: if true;
+      allow create: if isSignedIn() && request.resource.data.id == request.auth.uid;
+      allow update: if isExistingOwner(resource.data.id);
+      allow delete: if isExistingOwner(resource.data.id);
+    }
+
+    // --- Helper Functions ---
+
+    /**
+     * @description Checks if the user is signed in.
+     * @return {boolean} True if the user is authenticated, false otherwise.
+     */
     function isSignedIn() {
       return request.auth != null;
+    }
+
+    /**
+     * @description Checks if the user is the owner of the resource based on the provided user ID and ensures the resource exists.
+     * @param {string} userId - The user ID to compare against the resource's owner ID.
+     * @return {boolean} True if the user is the owner and the resource exists, false otherwise.
+     */
+    function isExistingOwner(userId) {
+      return isSignedIn() && isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Checks if the user is the owner based on the provided user ID.
+     * @param {string} userId - The user ID to compare against the authenticated user's UID.
+     * @return {boolean} True if the user is the owner, false otherwise.
+     */
+    function isOwner(userId) {
+      return request.auth.uid == userId;
     }
   }
 }
