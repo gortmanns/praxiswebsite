@@ -6,7 +6,7 @@ import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
 import { Button } from '@/components/ui/button';
 import { useFirestore } from '@/firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { Textarea } from '@/components/ui/textarea';
 
 export interface Doctor {
@@ -22,8 +22,8 @@ export default function DoctorsPage() {
     const firestore = useFirestore();
     const [dbLog, setDbLog] = useState('');
     
-    const handleWriteToDb = async () => {
-        setDbLog('Attempting to write to Firestore...');
+    const handleReadFromDb = async () => {
+        setDbLog('Attempting to read from Firestore...');
         if (!firestore) {
             const errorMsg = 'Firestore instance is not available. Ensure Firebase is initialized correctly.';
             console.error(errorMsg);
@@ -31,23 +31,20 @@ export default function DoctorsPage() {
             return;
         }
 
-        const ortmannsData = DOCTOR_CARDS_INITIAL_DATA.find(d => d.id === 'ortmanns');
-        if (!ortmannsData) {
-            const errorMsg = 'Could not find doctor data for "ortmanns".';
-            console.error(errorMsg);
-            setDbLog(errorMsg);
-            return;
-        }
+        const docRef = doc(firestore, 'doctors', 'ortmanns');
 
         try {
-            const docRef = doc(firestore, 'doctors', ortmannsData.id);
-            await setDoc(docRef, ortmannsData, { merge: true });
-            const successMsg = `SUCCESS: Write operation for document 'doctors/${ortmannsData.id}' completed without errors.`;
-            console.log(successMsg);
-            setDbLog(successMsg);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const successMsg = `SUCCESS: Document data read successfully.\n\nRAW DATA:\n${JSON.stringify(docSnap.data(), null, 2)}`;
+                setDbLog(successMsg);
+            } else {
+                const notFoundMsg = 'No such document!';
+                setDbLog(notFoundMsg);
+            }
         } catch (error: any) {
-            const errorMsg = `FAILED: An error occurred during the write operation.\n\nRAW ERROR OBJECT:\n${JSON.stringify(error, null, 2)}`;
-            console.error(error);
+            const errorMsg = `FAILED: An error occurred during the read operation.\n\nRAW ERROR OBJECT:\n${JSON.stringify(error, null, 2)}`;
             setDbLog(errorMsg);
         }
     };
@@ -60,15 +57,15 @@ export default function DoctorsPage() {
                         <div>
                             <CardTitle className="text-primary">Ärzte verwalten</CardTitle>
                             <CardDescription>
-                                Verwalten Sie die auf der Team-Seite angezeigten Ärzte. Klicken Sie auf den Button, um den Schreibvorgang zu testen.
+                                Verwalten Sie die auf der Team-Seite angezeigten Ärzte. Klicken Sie auf den Button, um den Lesevorgang zu testen.
                             </CardDescription>
                         </div>
                     </div>
                 </CardHeader>
                 <CardContent>
                      <div className="flex flex-col md:flex-row gap-4">
-                        <Button onClick={handleWriteToDb} className="shrink-0">
-                            Ortmanns Card in DB schreiben
+                        <Button onClick={handleReadFromDb} className="shrink-0">
+                            Ortmanns Card aus DB lesen
                         </Button>
                         <Textarea
                             readOnly
