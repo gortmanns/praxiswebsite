@@ -12,6 +12,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import type { OtherPartner as Partner } from '@/docs/backend-types';
+import { ColorPaletteDemo } from '@/app/_components/color-palette-demo';
 
 export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partner) => void }> = ({ cardData, onUpdate }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -85,10 +86,6 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                             </div>
 
                             <div className="grid grid-cols-[1fr_auto] items-center gap-x-4 w-full justify-center">
-                                {/* Horizontal Position Slider (below card) */}
-                                <div className="space-y-2 text-center col-start-1">
-                                    {/* Empty div for spacing, will be filled by card */}
-                                </div>
 
                                 {/* Vertical Position Slider (right of card) */}
                                 <div className="flex flex-row items-center justify-start gap-4 col-start-2 row-start-1">
@@ -156,6 +153,9 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                         </div>
                     </div>
                 </section>
+                <div className="w-full">
+                    <ColorPaletteDemo />
+                </div>
             </div>
             
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
