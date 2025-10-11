@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { OrtmannsCard } from '@/app/team/_components/doctors/ortmanns-card';
 import { SchemmerCard } from '@/app/team/_components/doctors/schemmer-card';
@@ -47,7 +47,7 @@ export default function DoctorsPage() {
         return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
     }, [firestore]);
 
-    const { data: dbDoctors, isLoading: isLoadingDbDoctors } = useCollection<Doctor>(doctorsQuery);
+    const { data: dbDoctors, isLoading: isLoadingDbDoctors, setData: setDbDoctors, refetch: refetchDbDoctors } = useCollection<Doctor>(doctorsQuery);
 
     useEffect(() => {
         if (status) {
@@ -81,6 +81,12 @@ export default function DoctorsPage() {
                 addDoctor(firestore, doctorData, doctorData.id)
             );
             await Promise.all(promises);
+
+            // Manually refetch after saving
+            if (refetchDbDoctors) {
+                await refetchDbDoctors();
+            }
+
             setStatus({
                 type: "success",
                 message: "Alle 5 Ärztekarten wurden erfolgreich in der Datenbank gespeichert.",

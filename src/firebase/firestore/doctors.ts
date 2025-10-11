@@ -18,7 +18,7 @@ export type DoctorData = {
 };
 
 // Create or OVERWRITE a doctor document in Firestore
-export function addDoctor(firestore: Firestore, doctorData: DoctorData, docId: string) {
+export async function addDoctor(firestore: Firestore, doctorData: DoctorData, docId: string): Promise<void> {
     const docRef = doc(firestore, 'doctors', docId);
 
     const finalDoctorData = {
@@ -27,7 +27,9 @@ export function addDoctor(firestore: Firestore, doctorData: DoctorData, docId: s
         updatedAt: serverTimestamp(),
     };
     
-    setDoc(docRef, finalDoctorData).catch(error => {
+    try {
+        await setDoc(docRef, finalDoctorData);
+    } catch (error) {
         const contextualError = new FirestorePermissionError({
             path: docRef.path,
             operation: 'write',
@@ -35,16 +37,20 @@ export function addDoctor(firestore: Firestore, doctorData: DoctorData, docId: s
         });
         console.error("Firestore Error in addDoctor:", error, contextualError.message);
         errorEmitter.emit('permission-error', contextualError);
-    });
+        // Re-throw the original error if you want the caller to handle it
+        throw error;
+    }
 }
 
 // Update an existing doctor document
-export function updateDoctor(firestore: Firestore, id: string, data: Partial<DoctorData>) {
+export async function updateDoctor(firestore: Firestore, id: string, data: Partial<DoctorData>): Promise<void> {
     const doctorRef = doc(firestore, 'doctors', id);
     
     const updateData: { [key: string]: any } = { ...data, updatedAt: serverTimestamp() };
 
-    updateDoc(doctorRef, updateData).catch(error => {
+    try {
+        await updateDoc(doctorRef, updateData);
+    } catch (error) {
         const contextualError = new FirestorePermissionError({
             path: doctorRef.path,
             operation: 'update',
@@ -52,5 +58,7 @@ export function updateDoctor(firestore: Firestore, id: string, data: Partial<Doc
         });
         console.error("Firestore Error in updateDoctor:", error, contextualError.message);
         errorEmitter.emit('permission-error', contextualError);
-    });
+        // Re-throw the original error if you want the caller to handle it
+        throw error;
+    }
 }
