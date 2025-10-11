@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { signOut } from 'firebase/auth';
 import { Home, Calendar, User as UserIcon, LogOut, Users, Settings } from 'lucide-react';
 import {
   SidebarProvider,
@@ -21,7 +20,6 @@ import {
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { useAuth, useUser } from '@/firebase';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,15 +39,11 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { user } = useUser();
-  const auth = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
-    if (auth) {
-      await signOut(auth);
-      router.push('/admin/login');
-    }
+    // Firebase logout logic will be re-added later
+    router.push('/admin/login');
   };
 
   const getInitials = (email: string | null | undefined) => {
@@ -67,6 +61,11 @@ export default function DashboardLayout({
       { href: '/admin/dashboard/team/doctors', label: 'Ärzte' },
       { href: '/admin/dashboard/team/staff', label: 'Praxispersonal' },
   ];
+
+  // Placeholder for user state
+  const user: { email?: string, displayName?: string } | null = null;
+  const userLoading = true;
+
 
   return (
     <SidebarProvider>

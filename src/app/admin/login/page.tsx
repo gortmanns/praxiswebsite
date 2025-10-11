@@ -5,8 +5,6 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useAuth } from '@/firebase';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,7 +23,6 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const [authError, setAuthError] = useState<string | null>(null);
   const router = useRouter();
-  const auth = useAuth();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -37,25 +34,16 @@ export default function LoginPage() {
 
   const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
     setAuthError(null);
-    if (!auth) {
-      setAuthError('Authentifizierungs-Service nicht verfügbar.');
-      return;
-    }
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
-      router.push('/admin/dashboard');
+      // Dummy logic for now
+      if (data.email === 'admin@example.com' && data.password === 'password') {
+          router.push('/admin/dashboard');
+      } else {
+          setAuthError('Ungültiger Benutzername oder falsches Passwort.');
+      }
     } catch (error: any) {
       console.error(error);
-      switch (error.code) {
-        case 'auth/user-not-found':
-        case 'auth/wrong-password':
-        case 'auth/invalid-credential':
-          setAuthError('Ungültiger Benutzername oder falsches Passwort.');
-          break;
-        default:
-          setAuthError('Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.');
-          break;
-      }
+      setAuthError('Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.');
     }
   };
 

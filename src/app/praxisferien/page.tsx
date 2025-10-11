@@ -4,16 +4,15 @@ import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy, Timestamp } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import React, { useMemo } from 'react';
 
-interface HolidayDocument {
-  id: string;
-  name: string;
-  start: Timestamp;
-  end: Timestamp;
-}
+// Temporarily use static data
+const staticHolidays = [
+    { id: '1', name: 'Sommerferien', start: new Date('2024-07-22'), end: new Date('2024-08-04') },
+    { id: '2', name: 'Herbstferien', start: new Date('2024-10-07'), end: new Date('2024-10-13') },
+];
+
 
 interface Holiday {
   id: string;
@@ -27,33 +26,17 @@ function formatDate(date: Date) {
 }
 
 export default function PraxisferienPage() {
-  const firestore = useFirestore();
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
+  const isLoading = false; // Set to false as we are using static data
 
-  const holidaysQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(
-      collection(firestore, 'holidays'),
-      where('end', '>=', now), // Nur Ferien, deren Enddatum heute oder in der Zukunft liegt
-      orderBy('end', 'asc'),   // Sortiere nach dem Enddatum
-      orderBy('start', 'asc')  // Sekundäre Sortierung nach Startdatum
-    );
-  }, [firestore, now]);
-
-  const { data: upcomingHolidayDocs, isLoading } = useCollection<HolidayDocument>(holidaysQuery);
-  
-  // Konvertiere Timestamps und sortiere clientseitig final nach 'start'
+  // Filter and sort static data
   const sortedHolidays: Holiday[] = useMemo(() => {
-    if (!upcomingHolidayDocs) return [];
-    return upcomingHolidayDocs
-      .map(doc => ({
-        ...doc,
-        start: doc.start.toDate(),
-        end: doc.end.toDate(),
-      }))
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+
+    return staticHolidays
+      .filter(holiday => holiday.end >= now)
       .sort((a, b) => a.start.getTime() - b.start.getTime());
-  }, [upcomingHolidayDocs]);
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">

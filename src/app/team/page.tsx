@@ -4,9 +4,9 @@ import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { TeamMemberCard } from './_components/team-member-card';
 import { DoctorCard, type Doctor } from './_components/doctor-card';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import { DOCTOR_CARDS_INITIAL_DATA } from '../admin/dashboard/team/doctors/_data/doctor-cards-data';
+
 
 const garcia = {
     name: 'S. Garcia',
@@ -99,13 +99,8 @@ const otherTeamMembers = [
 ];
 
 export default function TeamPage() {
-  const firestore = useFirestore();
-  const doctorsQuery = useMemoFirebase(() => {
-      if (!firestore) return null;
-      return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
-  }, [firestore]);
-
-  const { data: doctors, isLoading } = useCollection<Doctor>(doctorsQuery);
+  const doctors = DOCTOR_CARDS_INITIAL_DATA.sort((a, b) => a.order - b.order);
+  const isLoading = false;
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
