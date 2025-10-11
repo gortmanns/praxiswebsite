@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -35,12 +36,15 @@ export default function DoctorsPage() {
         if (ortmannsData) {
             try {
                 const docRef = doc(firestore, 'doctors', ortmannsData.id);
+                // We now AWAIT the result of the setDoc operation.
                 await setDoc(docRef, ortmannsData, { merge: true });
                 toast({
                     title: 'Erfolg!',
                     description: 'Daten erfolgreich in die Datenbank geschrieben.',
                 });
             } catch (error: any) {
+                 // We now log the error to the console, which will trigger the Next.js error overlay.
+                 console.error("Fehler beim Schreiben in die Datenbank:", error);
                  toast({
                     variant: 'destructive',
                     title: 'Fehler beim Schreiben in die DB',
