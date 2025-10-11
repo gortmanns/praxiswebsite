@@ -1,8 +1,9 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
+import { collection, query, orderBy, doc, getDoc } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { OrtmannsCard } from '@/app/team/_components/doctors/ortmanns-card';
 import { SchemmerCard } from '@/app/team/_components/doctors/schemmer-card';
@@ -10,7 +11,7 @@ import { RosenovCard } from '@/app/team/_components/doctors/rosenov-card';
 import { HerschelCard } from '@/app/team/_components/doctors/herschel-card';
 import { SlezakCard } from '@/app/team/_components/doctors/slezak-card';
 import { Button } from '@/components/ui/button';
-import { EyeOff, ArrowUp, ArrowDown, Info, Database, AlertCircle, CheckCircle, TriangleAlert } from 'lucide-react';
+import { EyeOff, ArrowUp, ArrowDown, Info, Database, AlertCircle, CheckCircle, TriangleAlert, Binary } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -18,6 +19,7 @@ import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
 import { addDoctor } from '@/firebase/firestore/doctors';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Textarea } from '@/components/ui/textarea';
 
 export interface Doctor {
     id: string;
@@ -40,6 +42,7 @@ export default function DoctorsPage() {
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
     const [status, setStatus] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; message: string } | null>(null);
     const [isSavingToDb, setIsSavingToDb] = useState(false);
+    const [debugData, setDebugData] = useState<string | null>(null);
     const firestore = useFirestore();
 
     const doctorsQuery = useMemoFirebase(() => {
@@ -69,45 +72,26 @@ export default function DoctorsPage() {
         setStatus(null);
     };
 
-    const handleSaveAllToDb = async () => {
+    const handleDebugRead = async () => {
         if (!firestore) {
-            setStatus({ type: 'error', message: 'Firestore-Instanz nicht verfügbar.' });
+            setDebugData("Firestore ist nicht initialisiert.");
             return;
         }
-        setIsSavingToDb(true);
-        setStatus(null);
-        
+        setDebugData("Lese Dokument 'ortmanns' aus der Datenbank...");
         try {
-            const promises = DOCTOR_CARDS_INITIAL_DATA.map(doctorData => 
-                addDoctor(firestore, doctorData, doctorData.id)
-            );
-            
-            // We don't await the promises here because addDoctor is now non-blocking
-            // and handles its own errors. We just fire and forget.
-            await Promise.all(promises);
+            const docRef = doc(firestore, 'doctors', 'ortmanns');
+            const docSnap = await getDoc(docRef);
 
-            setStatus({
-                type: "success",
-                message: "Alle 5 Ärztekarten wurden erfolgreich in die Datenbank gespeichert.",
-            });
-            
-            // Give Firestore a moment to process writes before refetching
-            setTimeout(() => {
-                 if (refetchDbDoctors) {
-                    refetchDbDoctors();
-                }
-            }, 500);
-
-        } catch (error) {
-            // This catch block might not even be hit if addDoctor handles all errors,
-            // but it's good practice to have it.
-            console.error("Unerwarteter Fehler beim Initiieren des Speicherns:", error);
-            setStatus({
-                type: "error",
-                message: "Ein unerwarteter Fehler ist aufgetreten. Details in der Konsole.",
-            });
-        } finally {
-            setIsSavingToDb(false);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const content = `Dokument 'ortmanns' gefunden:\n\n--- FRONT-SEITE CODE ---\n\n${data.frontSideCode}\n\n--- RÜCKSEITE CODE ---\n\n${data.backSideCode}`;
+                setDebugData(content);
+            } else {
+                setDebugData("FEHLER: Dokument 'ortmanns' wurde in der 'doctors'-Sammlung nicht gefunden.");
+            }
+        } catch (error: any) {
+            console.error("Fehler beim Auslesen des Dokuments:", error);
+            setDebugData(`FEHLER BEIM AUSLESEN:\n\n${error.message}\n\nStack: ${error.stack}`);
         }
     };
 
@@ -164,13 +148,25 @@ export default function DoctorsPage() {
                                 Hier können Sie die Profile der Ärzte bearbeiten.
                             </CardDescription>
                         </div>
-                        <Button onClick={handleSaveAllToDb} disabled={isSavingToDb} className="w-full sm:w-auto">
-                            <Database className="mr-2 h-4 w-4" />
-                            {isSavingToDb ? 'Wird gespeichert...' : 'Alle Karten in DB speichern'}
+                        <Button onClick={handleDebugRead} className="w-full sm:w-auto">
+                            <Binary className="mr-2 h-4 w-4" />
+                            Ortmanns Card auslesen
                         </Button>
                     </div>
                 </CardHeader>
                 <CardContent>
+                    {debugData && (
+                        <div className="mb-8">
+                            <h3 className="font-headline text-xl font-bold tracking-tight text-primary mb-4">Debugging-Ausgabe</h3>
+                            <Textarea
+                                readOnly
+                                value={debugData}
+                                className="h-96 w-full font-mono text-xs bg-muted"
+                                placeholder="Hier werden die Rohdaten aus der Datenbank angezeigt..."
+                            />
+                        </div>
+                    )}
+
                     <div className="space-y-4">
                          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                             <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Live-Vorschau & Bearbeitung</h3>
