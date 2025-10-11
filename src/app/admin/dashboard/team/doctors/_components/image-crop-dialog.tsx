@@ -54,7 +54,9 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
     background.crossOrigin = 'Anonymous';
     background.onload = () => {
       // 1. Draw the background card template
-      ctx.drawImage(background, 0, 0, canvasWidth, canvasHeight);
+      if (backgroundImageUrl) {
+        ctx.drawImage(background, 0, 0, canvasWidth, canvasHeight);
+      }
 
       // 2. Draw the cropped logo on top
       const croppedCanvas = cropper.getCroppedCanvas();
@@ -98,12 +100,8 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
     if (backgroundImageUrl) {
         background.src = backgroundImageUrl;
     } else {
-        // If no background, just crop the logo itself
-        const croppedCanvas = cropper.getCroppedCanvas();
-        if (croppedCanvas) {
-            onCropComplete(croppedCanvas.toDataURL('image/jpeg', 0.9));
-        }
-        onClose();
+        // If no background, just run the composition logic which will only draw the logo
+        background.onload(new Event('load'));
     }
   };
 
@@ -114,9 +112,10 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
           <DialogTitle>Logo auf Karte platzieren</DialogTitle>
         </DialogHeader>
         <div 
-          className="my-4 flex-1 flex justify-center items-center relative bg-muted/50 rounded-md bg-no-repeat bg-contain bg-center"
+          className="my-4 flex-1 flex justify-center items-center relative bg-muted/50 rounded-md bg-no-repeat bg-center"
           style={{ 
             backgroundImage: `url(${backgroundImageUrl})`,
+            backgroundSize: 'contain',
             aspectRatio: aspectRatio
           }}
         >
