@@ -63,25 +63,16 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="w-full rounded-lg border-2 border-dashed border-muted p-4">
+                    <div className="w-full rounded-lg border-2 border-dashed border-muted">
                         {ortmannsCardData && (
                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                                {/* Front side preview */}
-                                <div className="relative w-full overflow-hidden" style={{ aspectRatio: 1000 / 495 }}>
-                                    <div
-                                        className="absolute top-0 left-0 h-full w-full"
-                                        style={{ fontSize: 'calc(1/1000*100vw)' }}
-                                    >
+                                <div className="relative aspect-[1000/495] w-full overflow-hidden">
+                                    <div className="absolute top-0 left-0 h-[495px] w-[1000px] origin-top-left scale-[calc(1/1000*100%)]">
                                         <CodeRenderer html={ortmannsCardData.frontSideCode} />
                                     </div>
                                 </div>
-                                
-                                {/* Back side preview */}
-                                <div className="relative w-full overflow-hidden bg-accent/95" style={{ aspectRatio: 1000 / 495 }}>
-                                     <div
-                                        className="absolute top-0 left-0 h-full w-full"
-                                        style={{ fontSize: 'calc(1/1000*100vw)' }}
-                                    >
+                                <div className="relative aspect-[1000/495] w-full overflow-hidden bg-accent/95">
+                                     <div className="absolute top-0 left-0 h-[495px] w-[1000px] origin-top-left scale-[calc(1/1000*100%)]">
                                         <CodeRenderer html={ortmannsCardData.backSideCode} />
                                     </div>
                                 </div>
