@@ -10,7 +10,7 @@
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
+import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc, getDocs } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -96,6 +96,14 @@ export function ReusableCardManager<T extends BaseCardData>({
         try {
             const batch = writeBatch(firestore);
             const collectionRef = collection(firestore, collectionName);
+            
+            // Delete all existing documents in the collection first
+            const existingDocsSnapshot = await getDocs(collectionRef);
+            existingDocsSnapshot.forEach(doc => {
+                batch.delete(doc.ref);
+            });
+            
+            // Now add the new seed data
             seedData.forEach((item, index) => {
                 const docRef = doc(collectionRef);
                 const dataWithTimestamp = {
@@ -337,12 +345,12 @@ export function ReusableCardManager<T extends BaseCardData>({
                         </Alert>
                     )}
                      
-                    {!isLoadingData && dbData?.length === 0 && seedData && (
+                    {seedData && (
                         <Card className="mb-8">
                             <CardHeader>
                                 <CardTitle className="text-primary">Daten-Übertragung</CardTitle>
                                 <CardDescription>
-                                    Die Datenbank-Sammlung `{collectionName}` ist leer. Klicken Sie hier, um die initialen Demodaten zu übertragen.
+                                    Schreiben Sie die initialen Demodaten in die Datenbank. Achtung: Alle bestehenden Daten in der `{collectionName}`-Sammlung werden dabei gelöscht.
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -427,3 +435,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
