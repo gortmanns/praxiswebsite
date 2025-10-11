@@ -125,33 +125,33 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                         </tbody>
                     </table>
                 </div>
-
-                <section className="w-full bg-primary">
-                  <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-                    <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
-                        Live-Vorschau
-                    </h2>
-                    <div className="mt-12 flex flex-wrap justify-center gap-8">
-                        <div key={cardData.id} className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
-                            <Link
-                                href={cardData.websiteUrl || '#'}
-                                target={cardData.openInNewTab ? '_blank' : '_self'}
-                                rel="noopener noreferrer"
-                                className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                                onClick={(e) => e.preventDefault()}
-                            >
-                                <Card className="flex h-full w-full items-center p-6">
-                                <CardContent className="flex w-full items-center justify-center p-0">
-                                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                                        {renderPartnerLogo(cardData)}
-                                    </div>
-                                </CardContent>
-                                </Card>
-                                <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                            </Link>
+                 
+                <section id="partners" className="w-full bg-primary">
+                    <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+                        <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
+                            Live-Vorschau
+                        </h2>
+                        <div className="mt-12 flex flex-wrap justify-center gap-8">
+                                <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                                <Link
+                                    href={cardData.websiteUrl || '#'}
+                                    target={cardData.openInNewTab ? '_blank' : '_self'}
+                                    rel="noopener noreferrer"
+                                    className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                    onClick={(e) => e.preventDefault()}
+                                >
+                                    <Card className="flex h-full w-full items-center p-6">
+                                    <CardContent className="flex w-full items-center justify-center p-0">
+                                        <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                                            {renderPartnerLogo(cardData)}
+                                        </div>
+                                    </CardContent>
+                                    </Card>
+                                    <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                                </Link>
+                                </div>
                         </div>
                     </div>
-                  </div>
                 </section>
             </div>
             
@@ -180,3 +180,5 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
         </>
     );
 };
+
+    
