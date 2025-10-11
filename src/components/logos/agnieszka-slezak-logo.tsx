@@ -11,33 +11,24 @@ export function AgnieszkaSlezakLogo({ className }: { className?: string }) {
     >
       <text
         x="5"
-        y="60"
+        y="70"
         fontFamily="Montserrat, sans-serif"
-        fontSize="38"
+        fontSize="36"
         fontWeight="bold"
         fill="currentColor"
       >
         Dr. med. Agnieszka Slezak
       </text>
       <text
-        x="5"
-        y="95"
+        x="250"
+        y="110"
         fontFamily="Montserrat, sans-serif"
         fontSize="24"
         fontWeight="normal"
         fill="hsl(var(--foreground))"
+        textAnchor="middle"
       >
-        FMH Neurologie
-      </text>
-      <text
-        x="5"
-        y="120"
-        fontFamily="Montserrat, sans-serif"
-        fontSize="18"
-        fontWeight="normal"
-        fill="hsl(var(--muted-foreground))"
-      >
-        Praxis für Neurologie und Schmerztherapie
+        Fachärztin für Neurologie
       </text>
     </svg>
   );
