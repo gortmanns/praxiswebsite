@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useRef, useState } from 'react';
@@ -74,32 +75,34 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
     return (
         <>
             <div className="flex flex-col gap-8 items-start">
-                <div className="w-full space-y-6 rounded-lg border p-6">
-                    <div className="space-y-2">
-                        <Label htmlFor="name">Name (für interne Verwendung)</Label>
-                        <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
-                    </div>
-                    
-                    <div className="space-y-2">
-                        <Label>Logo</Label>
-                        <Button variant="outline" className="w-full justify-start" onClick={() => setDialogState('imageSource')}>
-                            <ImageUp className="mr-2 h-4 w-4" />
-                            Logo einfügen/ändern
-                        </Button>
-                    </div>
+                 <div className="w-full space-y-6 rounded-lg border p-6">
+                    <div className="flex w-full items-end gap-4">
+                        <div className="flex-1 space-y-2">
+                            <Label htmlFor="name">Name (für interne Verwendung)</Label>
+                            <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
+                        </div>
+                        
+                        <div className="space-y-2">
+                             <Label>Logo</Label>
+                             <Button variant="outline" className="w-full justify-start" onClick={() => setDialogState('imageSource')}>
+                                 <ImageUp className="mr-2 h-4 w-4" />
+                                 Logo einfügen/ändern
+                             </Button>
+                        </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="websiteUrl">URL die beim Klick geöffnet werden soll</Label>
-                        <Input id="websiteUrl" value={cardData.websiteUrl} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
-                    </div>
+                        <div className="flex-1 space-y-2">
+                            <Label htmlFor="websiteUrl">URL die beim Klick geöffnet werden soll</Label>
+                            <Input id="websiteUrl" value={cardData.websiteUrl} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
+                        </div>
 
-                    <div className="flex items-center space-x-2">
-                        <Checkbox 
-                            id="openInNewTab" 
-                            checked={cardData.openInNewTab} 
-                            onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
-                        />
-                        <Label htmlFor="openInNewTab" className="cursor-pointer">In neuer Seite öffnen</Label>
+                        <div className="flex items-center space-x-2 pb-2">
+                            <Checkbox 
+                                id="openInNewTab" 
+                                checked={cardData.openInNewTab} 
+                                onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
+                            />
+                            <Label htmlFor="openInNewTab" className="cursor-pointer whitespace-nowrap">In neuer Seite öffnen</Label>
+                        </div>
                     </div>
                 </div>
 
