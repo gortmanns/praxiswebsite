@@ -1,71 +1,29 @@
-'use client';
-
-import React from 'react';
-import { StaffCard as DisplayCard } from './_components/staff-card';
-import { StaffEditor as EditorComponent } from './_components/staff-editor';
-import { ReusableCardManager } from '../../_components/reusable-card-manager';
-import type { StaffMember as CardData } from './_components/staff-editor';
-
-const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
-    name: "Neuer Mitarbeiter",
-    role: "Rolle",
-    role2: "",
-    imageUrl: "/images/team/placeholder.jpg",
-    backsideContent: "<p>Hier klicken, um Text hinzuzufügen.</p>",
-    hidden: false,
-};
-
-const staffSeedData = [
-  {
-    name: 'Manuela Garcia',
-    role: 'Leitende MPA',
-    imageUrl: '/images/team/Garcia.jpg',
-    backsideContent: 'Manuela Garcia ist die gute Seele der Praxis. Sie sorgt dafür, dass alles rund läuft und hat immer ein offenes Ohr für die Anliegen der Patienten.',
-    hidden: false,
-  },
-  {
-    name: 'Jris Aeschlimann',
-    role: 'MPA',
-    imageUrl: '/images/team/Aeschlimann.jpg',
-    backsideContent: '',
-    hidden: false,
-  },
-  {
-    name: 'Janine Huber',
-    role: 'MPA',
-    imageUrl: '/images/team/Huber.jpg',
-    backsideContent: '',
-    hidden: false,
-  },
-  {
-    name: 'Esma Öztürk',
-    role: 'MPA in Ausbildung',
-    imageUrl: '/images/team/Oetztuerk.jpg',
-    backsideContent: '',
-    hidden: false,
-  },
-  {
-    name: 'Elena Sommer',
-    role: 'MPA in Ausbildung',
-    imageUrl: '/images/team/Sommer.jpg',
-    backsideContent: '',
-    hidden: false,
-  },
+export const otherPartnersSeedData = [
+    {
+      name: 'Go-Medical',
+      websiteUrl: 'https://www.go-medical.ch/',
+      logoUrl: '/images/go-medical-logo.png',
+      hint: 'medical services logo',
+      width: 200,
+      height: 60,
+      hidden: false,
+    },
+    {
+      name: 'MCL',
+      websiteUrl: 'https://www.mcl.ch/',
+      logoUrl: '/images/mcl-labor-logo.png',
+      hint: 'laboratory logo',
+      width: 200,
+      height: 60,
+      hidden: false,
+    },
+    {
+      name: 'doxnet',
+      websiteUrl: 'https://www.doxnet.ch/',
+      logoUrl: '/images/doxnet-logo.jpg',
+      hint: 'medical network logo',
+      width: 200,
+      height: 60,
+      hidden: false,
+    },
 ];
-
-
-export default function StaffPage() {
-    
-    return (
-        <ReusableCardManager
-            collectionName="staff"
-            pageTitle="Praxispersonal verwalten"
-            pageDescription="Verwalten Sie das auf der Team-Seite angezeigte Praxispersonal."
-            initialCardState={initialStaffState}
-            DisplayCardComponent={DisplayCard}
-            EditorCardComponent={EditorComponent}
-            entityName="Mitarbeiter"
-            seedData={staffSeedData}
-        />
-    );
-}
