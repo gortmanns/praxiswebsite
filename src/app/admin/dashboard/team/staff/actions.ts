@@ -1,7 +1,7 @@
 
 'use server';
 
-import { initializeApp, getApps, App } from 'firebase-admin/app';
+import { initializeApp, getApps, App, deleteApp } from 'firebase-admin/app';
 import { getFirestore, writeBatch } from 'firebase-admin/firestore';
 
 const staffData = [
@@ -52,17 +52,16 @@ const staffData = [
     },
 ];
 
-let adminApp: App;
-if (!getApps().length) {
-  adminApp = initializeApp();
-} else {
-  adminApp = getApps()[0];
+function getAdminApp(): App {
+    if (getApps().length > 0) {
+        return getApps()[0];
+    }
+    return initializeApp();
 }
 
-const db = getFirestore(adminApp);
-
-
 export async function seedStaffData() {
+  const adminApp = getAdminApp();
+  const db = getFirestore(adminApp);
   const staffCollection = db.collection('staff');
 
   try {
