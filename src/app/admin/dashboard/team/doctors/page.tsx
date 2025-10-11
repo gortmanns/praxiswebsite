@@ -8,7 +8,6 @@ import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, setDoc, doc } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import DOMPurify from 'dompurify';
 import { Button } from '@/components/ui/button';
 import { TextEditDialog } from './_components/text-edit-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
@@ -18,6 +17,8 @@ import { ImageLibraryDialog } from './_components/image-library-dialog';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { LogoFunctionSelectDialog } from './_components/logo-function-select-dialog';
 import { cn } from '@/lib/utils';
+import DOMPurify from 'dompurify';
+
 
 export interface Doctor {
     id: string;
@@ -28,18 +29,7 @@ export interface Doctor {
     [key: string]: any;
 }
 
-const CardHtmlRenderer: React.FC<{ html: string; className?: string }> = ({ html, className }) => {
-    const sanitizedHtml = React.useMemo(() => {
-        if (typeof window !== 'undefined') {
-            const config = {
-                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img", "foreignObject", "button", "span", "div"],
-                ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src', 'preserveAspectRatio', 'type']
-            };
-            return { __html: DOMPurify.sanitize(html, config) };
-        }
-        return { __html: '' };
-    }, [html]);
-
+const CardHtmlRenderer: React.FC<{ html: string; className?: string; onClick?: (e: React.MouseEvent) => void }> = ({ html, className, onClick }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [scale, setScale] = useState(1);
 
@@ -47,24 +37,38 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string }> = ({ html
         const calculateScale = () => {
             if (wrapperRef.current) {
                 const parentWidth = wrapperRef.current.offsetWidth;
-                setScale(parentWidth / 1000);
+                if (parentWidth > 0) {
+                   setScale(parentWidth / 1000);
+                }
             }
         };
 
         calculateScale();
-        window.addEventListener('resize', calculateScale);
+        const handleResize = () => calculateScale();
+        window.addEventListener('resize', handleResize);
 
+        const observer = new MutationObserver(handleResize);
+        const sidebar = document.querySelector('[data-sidebar="sidebar"]');
+        if(sidebar) {
+            observer.observe(sidebar, { attributes: true, attributeFilter: ['style', 'class'] });
+        }
+        
         return () => {
-            window.removeEventListener('resize', calculateScale);
+            window.removeEventListener('resize', handleResize);
+            observer.disconnect();
         };
     }, []);
 
     return (
-        <div ref={wrapperRef} className={cn("relative w-full aspect-[1000/495] overflow-hidden", className)}>
-            <div 
+        <div ref={wrapperRef} className={cn("relative w-full aspect-[1000/495] overflow-hidden", className)} onClick={onClick}>
+             <div 
                 className="absolute top-0 left-0 origin-top-left"
-                style={{ transform: `scale(${scale})`, width: '1000px', height: '495px' }}
-                dangerouslySetInnerHTML={sanitizedHtml} 
+                style={{ 
+                    width: '1000px', 
+                    height: '495px',
+                    transform: `scale(${scale})`,
+                }}
+                dangerouslySetInnerHTML={{ __html: html }}
             />
         </div>
     );
@@ -87,13 +91,38 @@ export default function DoctorsPage() {
             <style>
                 .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; border-radius: 0.25rem; display: block; padding: 0.125rem 0.25rem; margin: -0.125rem -0.25rem; }
                 .template-card button:hover:not(.image-button) { background-color: rgba(0,0,0,0.1); }
+                .template-card .image-button { position: relative; height: 100%; aspect-ratio: 2/3; overflow: hidden; border-radius: 0.375rem; background-color: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1rem; color: #64748b; }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.2); }
-                .template-card .lang-button:hover { background-color: hsla(var(--primary-foreground), 0.1); }
-                .template-card p, .template-card h3 { padding: 0.125rem 0.25rem; }
+                .template-card .lang-button { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; height: 2.5rem; padding: 0 1rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem; }
+                .template-card .lang-button:hover { background-color: hsla(var(--primary), 0.9); }
+                .template-card p, .template-card h3 { padding: 0.125rem 0.25rem; margin: 0; }
+                .template-card .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+                .template-card .text-5xl { font-size: 3rem; line-height: 1; }
+                .template-card .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+                .template-card .text-base { font-size: 1rem; line-height: 1.5rem; }
+                .template-card .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+                .template-card .font-bold { font-weight: 700; }
+                .template-card .text-primary { color: hsl(var(--primary)); }
+                .template-card .my-2 { margin-top: 0.5rem; margin-bottom: 0.5rem; }
+                .template-card .mt-2 { margin-top: 0.5rem; }
+                .template-card .mt-6 { margin-top: 1.5rem; }
+                .template-card .ml-6 { margin-left: 1.5rem; }
+                .template-card .flex { display: flex; }
+                .template-card .flex-col { flex-direction: column; }
+                .template-card .flex-grow { flex-grow: 1; }
+                .template-card .items-start { align-items: flex-start; }
+                .template-card .items-center { align-items: center; }
+                .template-card .justify-center { justify-content: center; }
+                .template-card .relative { position: relative; }
+                .template-card .absolute { position: absolute; }
+                .template-card .bottom-0 { bottom: 0; }
+                .template-card .right-0 { right: 0; }
+                .template-card .h-full { height: 100%; }
+                .template-card .w-full { width: 100%; }
             </style>
             <div class="template-card group relative w-full h-full overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
-                    <button id="edit-image" class="image-button relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted flex flex-col items-center justify-center text-center p-4 text-muted-foreground">
+                    <button id="edit-image" class="image-button">
                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                         <span class="mt-2 text-sm">Zum Ändern klicken</span>
                     </button>
@@ -119,7 +148,7 @@ export default function DoctorsPage() {
                             </div>
                         </div>
                         <div class="absolute bottom-0 right-0">
-                            <button id="edit-languages" class="lang-button inline-flex items-center justify-center gap-2 h-10 px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+                            <button id="edit-languages" class="lang-button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6-6 6"/><path d="m12 4-6 6 6 6"/><path d="m19 12-6-6 6-6"/></svg>
                                 Sprachen
                             </button>
@@ -130,15 +159,16 @@ export default function DoctorsPage() {
         `,
         backSideCode: `
              <style>
+                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: block; }
+                .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
                 .vita-content { color: hsl(var(--background)); }
                 .vita-content p { margin: 0; }
                 .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
-                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: block; }
-                .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
             <button id="edit-vita" class="vita-content-button">
                 <div class="vita-content p-8 w-full h-full text-left">
                     <h4>Curriculum Vitae</h4>
+                    <p>Zum Bearbeiten klicken</p>
                 </div>
             </button>
         `
@@ -182,42 +212,44 @@ export default function DoctorsPage() {
 
     const handleTemplateClick = (e: React.MouseEvent) => {
         let target = e.target as HTMLElement;
-        while (target && target.tagName !== 'BUTTON' && target.parentElement?.id !== 'template-container') {
-            if (target.id.startsWith('edit-')) break;
+        // Traverse up to find a button with an ID
+        while (target && (!target.tagName || target.tagName.toLowerCase() !== 'button' || !target.id.startsWith('edit-'))) {
+            if (target.id === 'template-container') {
+                target = null!;
+                break;
+            }
             target = target.parentElement as HTMLElement;
         }
 
-        if (target && target.id) {
-            const id = target.id;
-            if (id.startsWith('edit-')) {
-                e.stopPropagation();
-                const field = id.replace('edit-', '');
-                switch(field) {
-                    case 'vita':
-                        setDialogState({ type: 'vita', data: { initialValue: '' } });
-                        break;
-                    case 'languages':
-                        setDialogState({ type: 'language', data: { initialLanguages: ['de', 'en'] } });
-                        break;
-                    case 'image':
-                        setDialogState({ type: 'imageSource', data: {} });
-                        break;
-                    case 'position':
-                         setDialogState({ type: 'logoFunction', data: {} });
-                        break;
-                    case 'title':
-                        setDialogState({ type: 'text', data: { title: `Titel bearbeiten`, label: 'Titel', initialValue: 'Titel' } });
-                        break;
-                    case 'name':
-                        setDialogState({ type: 'text', data: { title: `Name bearbeiten`, label: 'Name', initialValue: 'Name' } });
-                        break;
-                    case 'specialty':
-                        setDialogState({ type: 'text', data: { title: `Spezialisierung bearbeiten`, label: 'Spezialisierung', initialValue: 'Spezialisierung' } });
-                        break;
-                    case 'qual1': case 'qual2': case 'qual3': case 'qual4':
-                        setDialogState({ type: 'text', data: { title: `Qualifikation bearbeiten`, label: `Qualifikation`, initialValue: target.textContent || '' } });
-                        break;
-                }
+        if (target && target.id && target.id.startsWith('edit-')) {
+            e.stopPropagation();
+            const field = target.id.replace('edit-', '');
+            const openDialog = (type: any, data: any) => {
+                setDialogState({ type, data });
+            };
+
+            switch(field) {
+                case 'vita':
+                    openDialog('vita', { initialValue: '' });
+                    break;
+                case 'languages':
+                    openDialog('language', { initialLanguages: [] });
+                    break;
+                case 'image':
+                    openDialog('imageSource', {});
+                    break;
+                case 'position':
+                    openDialog('logoFunction', {});
+                    break;
+                case 'title':
+                case 'name':
+                case 'specialty':
+                case 'qual1':
+                case 'qual2':
+                case 'qual3':
+                case 'qual4':
+                     openDialog('text', { title: `Feld bearbeiten`, label: 'Text', initialValue: '' });
+                    break;
             }
         }
     };
@@ -254,11 +286,11 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div id="template-container" className="w-full rounded-lg border-2 border-dashed border-muted p-4" onClick={handleTemplateClick}>
+                    <div id="template-container" className="w-full rounded-lg border-2 border-dashed border-muted p-4">
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <CardHtmlRenderer html={exampleDoctor.frontSideCode} />
+                            <CardHtmlRenderer html={exampleDoctor.frontSideCode} onClick={handleTemplateClick} />
                             <div className="bg-accent/95 rounded-lg">
-                                <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" />
+                                <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" onClick={handleTemplateClick} />
                             </div>
                        </div>
                     </div>
@@ -345,7 +377,7 @@ export default function DoctorsPage() {
                     isOpen={true}
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
                     onSelectFunction={() => {
-                        setDialogState({ type: 'text', data: { title: `Funktion bearbeiten`, label: 'Funktion', initialValue: 'Placeholder' } });
+                        setDialogState({ type: 'text', data: { title: `Funktion bearbeiten`, label: 'Funktion', initialValue: '' } });
                     }}
                     onSelectFromLibrary={() => {
                         setDialogState({ type: 'imageLibrary', data: {} });
@@ -404,5 +436,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
-    
