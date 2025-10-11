@@ -376,7 +376,7 @@ export default function DoctorsPage() {
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
                     title={dialogState.data.title}
                     label={dialogState.data.label}
-                    initialValue={dialogState.data.initialValue}
+                    initialValue={dialogState.data.initialValue || ''}
                     onSave={(newValue) => console.log('Saved:', newValue)}
                 />
             )}
@@ -460,5 +460,7 @@ export default function DoctorsPage() {
         </div>
     );
 }
+
+    
 
     

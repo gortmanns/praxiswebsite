@@ -52,7 +52,7 @@ export const TextEditDialog: React.FC<TextEditDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -61,7 +61,7 @@ export const TextEditDialog: React.FC<TextEditDialogProps> = ({
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="field-value" className="text-right">
+            <Label htmlFor="field-value" className="text-right whitespace-nowrap">
               {label}
             </Label>
             <Input
@@ -84,3 +84,5 @@ export const TextEditDialog: React.FC<TextEditDialogProps> = ({
     </Dialog>
   );
 };
+
+    
