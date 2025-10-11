@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -7,6 +8,7 @@ import DOMPurify from 'dompurify';
 interface EditableDoctorCardProps {
     doctor: Doctor;
     onVitaClick: () => void;
+    isBeingEdited?: boolean;
 }
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
@@ -28,7 +30,7 @@ const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
 };
 
 
-export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onVitaClick }) => {
+export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onVitaClick, isBeingEdited }) => {
     
     return (
         <div 
@@ -42,6 +44,11 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
             >
                 {doctor.backSideCode && <CodeRenderer html={doctor.backSideCode} />}
             </div>
+            {isBeingEdited && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/90">
+                    <span className="text-2xl font-bold text-primary-foreground">In Bearbeitung</span>
+                </div>
+            )}
         </div>
     );
 };

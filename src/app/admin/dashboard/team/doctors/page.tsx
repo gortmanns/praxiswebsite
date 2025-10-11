@@ -18,7 +18,7 @@ import { LogoFunctionSelectDialog } from './_components/logo-function-select-dia
 import { cn } from '@/lib/utils';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
-import { ChevronUp, ChevronDown, Pencil, EyeOff, Eye, Globe, Image as ImageIcon, User, Info, Trash2, Plus } from 'lucide-react';
+import { ChevronUp, ChevronDown, Pencil, EyeOff, Eye, Globe, Image as ImageIcon, User, Info, Trash2, Plus, Save, XCircle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -96,7 +96,7 @@ export default function DoctorsPage() {
         data: any;
     }>({ type: null, data: {} });
 
-    const [activeDoctor, setActiveDoctor] = useState<Doctor | 'template'>('template');
+    const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
     
     const initialExampleDoctorState: Doctor = useMemo(() => ({
         id: "template",
@@ -204,7 +204,8 @@ export default function DoctorsPage() {
         `
     }), []);
 
-    const [exampleDoctor, setExampleDoctor] = useState<Doctor>(initialExampleDoctorState);
+    const [activeDoctor, setActiveDoctor] = useState<Doctor | 'template'>('template');
+    const [editorCardState, setEditorCardState] = useState<Doctor>(initialExampleDoctorState);
     const fileInputRef = useRef<HTMLInputElement>(null);
     
     const projectImages = [
@@ -246,7 +247,7 @@ export default function DoctorsPage() {
     useEffect(() => {
         let currentDoctor: Doctor | null = null;
         if (activeDoctor === 'template') {
-          currentDoctor = exampleDoctor;
+          currentDoctor = editorCardState;
         } else if (typeof activeDoctor === 'object' && dbDoctors) {
           currentDoctor = dbDoctors.find(d => d.id === activeDoctor.id) || null;
         }
@@ -304,7 +305,6 @@ export default function DoctorsPage() {
         const flagsHtml = sortedLangs.map(lang => {
             const flagHtml = langToFlagHtml[lang];
             if (!flagHtml) return '';
-            // Add classes to the SVG string
             return flagHtml.replace('<svg', '<svg class="h-5 w-auto rounded-sm shadow-md"');
         }).join('');
 
@@ -323,16 +323,18 @@ export default function DoctorsPage() {
             langContainer.innerHTML = newHtml;
             const updatedCode = doc.body.innerHTML;
 
-            if (activeDoctor === 'template') {
-                if (exampleDoctor.frontSideCode !== updatedCode) {
-                    setExampleDoctor(prev => ({ ...prev, frontSideCode: updatedCode }));
+             if (editingDoctorId) {
+                if (firestore) {
+                    const docRef = doc(firestore, 'doctors', editingDoctorId);
+                    setDoc(docRef, { frontSideCode: updatedCode }, { merge: true });
                 }
-            } else if (firestore && typeof activeDoctor === 'object') {
-                const docRef = doc(firestore, 'doctors', activeDoctor.id);
-                setDoc(docRef, { frontSideCode: updatedCode }, { merge: true });
+            } else {
+                 if (editorCardState.frontSideCode !== updatedCode) {
+                    setEditorCardState(prev => ({ ...prev, frontSideCode: updatedCode }));
+                }
             }
         }
-    }, [exampleDoctor.languages, activeDoctor, dbDoctors, firestore]);
+    }, [editorCardState.languages, editingDoctorId, dbDoctors, firestore]);
 
     const handleTemplateClick = (e: React.MouseEvent) => {
         let target = e.target as HTMLElement;
@@ -345,7 +347,6 @@ export default function DoctorsPage() {
 
         if (target && target.id && target.id.startsWith('edit-')) {
             e.stopPropagation();
-            setActiveDoctor('template');
             const field = target.id.replace('edit-', '');
             const openDialog = (type: any, data: any) => {
                 setDialogState({ type, data });
@@ -353,11 +354,11 @@ export default function DoctorsPage() {
 
             switch(field) {
                 case 'vita':
-                    openDialog('vita', { initialValue: exampleDoctor.backSideCode.includes("Zum Bearbeiten klicken") ? '' : exampleDoctor.backSideCode });
+                    openDialog('vita', { initialValue: editorCardState.backSideCode.includes("Zum Bearbeiten klicken") ? '' : editorCardState.backSideCode });
                     break;
                 case 'languages':
                      openDialog('language', { 
-                        initialLanguages: exampleDoctor.languages || [] 
+                        initialLanguages: editorCardState.languages || [] 
                     });
                     break;
                 case 'image':
@@ -395,7 +396,7 @@ export default function DoctorsPage() {
     const handleCropComplete = (croppedImageUrl: string) => {
         const field = dialogState.data.field || 'image';
         const parser = new DOMParser();
-        const doc = parser.parseFromString(exampleDoctor.frontSideCode, 'text/html');
+        const doc = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
             
         if (field === 'image') {
             const imageContainer = doc.getElementById('image-container');
@@ -423,14 +424,11 @@ export default function DoctorsPage() {
         
         const updatedHtml = doc.body.innerHTML;
     
-        if (activeDoctor === 'template') {
-            setExampleDoctor(prev => ({
-                ...prev,
-                frontSideCode: updatedHtml,
-            }));
-        } else if (firestore && activeDoctor && typeof activeDoctor === 'object') {
-            const docRef = doc(firestore, 'doctors', activeDoctor.id);
+        if (editingDoctorId && firestore) {
+            const docRef = doc(firestore, 'doctors', editingDoctorId);
             setDoc(docRef, { frontSideCode: updatedHtml }, { merge: true });
+        } else {
+             setEditorCardState(prev => ({ ...prev, frontSideCode: updatedHtml }));
         }
         setDialogState({ type: null, data: {} });
     };
@@ -453,14 +451,11 @@ export default function DoctorsPage() {
 
         contentToSave = wrapInButton(newVita);
 
-        if (activeDoctor === 'template') {
-            setExampleDoctor(prev => ({
-                ...prev,
-                backSideCode: contentToSave,
-            }));
-        } else if (firestore && activeDoctor && typeof activeDoctor === 'object') {
-             const docRef = doc(firestore, 'doctors', activeDoctor.id);
+        if (editingDoctorId && firestore) {
+             const docRef = doc(firestore, 'doctors', editingDoctorId);
              setDoc(docRef, { backSideCode: contentToSave }, { merge: true });
+        } else {
+            setEditorCardState(prev => ({ ...prev, backSideCode: contentToSave }));
         }
          setDialogState({ type: null, data: {} });
     };
@@ -470,11 +465,7 @@ export default function DoctorsPage() {
         if (!field) return;
 
         const parser = new DOMParser();
-        
-        const currentDoctor = activeDoctor === 'template' ? exampleDoctor : dbDoctors?.find(d => d.id === (activeDoctor as Doctor).id);
-        if (!currentDoctor) return;
-
-        const doc = parser.parseFromString(currentDoctor.frontSideCode, 'text/html');
+        const doc = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
         
         if(field === 'position') {
             const container = doc.getElementById('position-container');
@@ -496,21 +487,21 @@ export default function DoctorsPage() {
         }
         
         const updatedHtml = doc.body.innerHTML;
-        if (activeDoctor === 'template') {
-            setExampleDoctor(prev => ({ ...prev, frontSideCode: updatedHtml }));
-        } else if (firestore && activeDoctor && typeof activeDoctor === 'object') {
-            const docRef = doc(firestore, 'doctors', activeDoctor.id);
+        if (editingDoctorId && firestore) {
+            const docRef = doc(firestore, 'doctors', editingDoctorId);
             setDoc(docRef, { frontSideCode: updatedHtml }, { merge: true });
+        } else {
+             setEditorCardState(prev => ({ ...prev, frontSideCode: updatedHtml }));
         }
         setDialogState({ type: null, data: {} });
     };
 
     const handleLanguageSave = (selectedLanguages: string[]) => {
-        if(activeDoctor === 'template') {
-            setExampleDoctor(prev => ({ ...prev, languages: selectedLanguages }));
-        } else if (firestore && activeDoctor && typeof activeDoctor === 'object') {
-            const docRef = doc(firestore, 'doctors', activeDoctor.id);
+        if (editingDoctorId && firestore) {
+            const docRef = doc(firestore, 'doctors', editingDoctorId);
             setDoc(docRef, { languages: selectedLanguages }, { merge: true });
+        } else {
+            setEditorCardState(prev => ({ ...prev, languages: selectedLanguages }));
         }
         
         setDialogState({ type: null, data: {} });
@@ -544,8 +535,8 @@ export default function DoctorsPage() {
     };
 
     const handleEdit = (doctor: Doctor) => {
-        setActiveDoctor(doctor);
-        setExampleDoctor(doctor);
+        setEditingDoctorId(doctor.id);
+        setEditorCardState(doctor);
     };
 
     const handleDelete = async (doctorId: string) => {
@@ -562,14 +553,17 @@ export default function DoctorsPage() {
     };
 
     const handleCreateNew = async () => {
+        setEditingDoctorId(null);
+        setEditorCardState(initialExampleDoctorState);
         if (!firestore || !dbDoctors) return;
 
         const highestOrder = dbDoctors.reduce((max, doc) => doc.order > max ? doc.order : max, 0);
 
-        const newDoctorData = {
-            ...initialExampleDoctorState,
-            id: '', 
-            name: 'Neuer Arzt',
+        const newDoctorData: Omit<Doctor, 'id'> = {
+            name: editorCardState.name === 'Template' ? 'Neuer Arzt' : editorCardState.name,
+            frontSideCode: editorCardState.frontSideCode,
+            backSideCode: editorCardState.backSideCode,
+            languages: editorCardState.languages || [],
             order: highestOrder + 1,
             createdAt: serverTimestamp(),
             hidden: false,
@@ -581,8 +575,25 @@ export default function DoctorsPage() {
         handleEdit({ ...newDoctorData, id: newDocRef.id });
     };
 
+    const handleSaveChanges = () => {
+        setEditingDoctorId(null);
+        setEditorCardState(initialExampleDoctorState);
+    };
+
+    const handleCancelEdit = () => {
+        setEditingDoctorId(null);
+        setEditorCardState(initialExampleDoctorState);
+    };
+
     const visibleDoctors = useMemo(() => dbDoctors?.filter(d => !d.hidden) || [], [dbDoctors]);
     const hiddenDoctors = useMemo(() => dbDoctors?.filter(d => d.hidden) || [], [dbDoctors]);
+
+    useEffect(() => {
+        const currentDoc = dbDoctors?.find(d => d.id === editingDoctorId);
+        if (currentDoc) {
+            setEditorCardState(currentDoc);
+        }
+    }, [editingDoctorId, dbDoctors]);
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -595,18 +606,33 @@ export default function DoctorsPage() {
                                 Verwalten Sie die auf der Team-Seite angezeigten Ärzte. Klicken Sie auf ein Element, um es zu bearbeiten.
                             </CardDescription>
                         </div>
-                         <Button onClick={handleCreateNew}>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Neue Karte hinzufügen
-                        </Button>
+                        <div className="flex gap-2">
+                             {editingDoctorId ? (
+                                <>
+                                    <Button onClick={handleSaveChanges}>
+                                        <Save className="mr-2 h-4 w-4" />
+                                        Änderungen speichern
+                                    </Button>
+                                    <Button variant="outline" onClick={handleCancelEdit}>
+                                        <XCircle className="mr-2 h-4 w-4" />
+                                        Bearbeitung abbrechen
+                                    </Button>
+                                </>
+                            ) : (
+                                <Button onClick={handleCreateNew}>
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Neue Karte hinzufügen
+                                </Button>
+                            )}
+                        </div>
                     </div>
                 </CardHeader>
                 <CardContent>
                     <div className="w-full rounded-lg border-2 border-dashed border-muted p-4">
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <CardHtmlRenderer html={exampleDoctor.frontSideCode} onClick={handleTemplateClick} />
+                            <CardHtmlRenderer html={editorCardState.frontSideCode} onClick={handleTemplateClick} />
                             <div className="bg-accent/95 rounded-lg">
-                                <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" onClick={handleTemplateClick} />
+                                <CardHtmlRenderer html={editorCardState.backSideCode} className="text-background" onClick={handleTemplateClick} />
                             </div>
                        </div>
                         <Alert variant="info" className="mt-4">
@@ -639,28 +665,33 @@ export default function DoctorsPage() {
                         {!isLoadingDbDoctors && visibleDoctors.map((doctor, index) => (
                             <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
                                 <div className="flex w-36 flex-shrink-0 flex-col items-center justify-center gap-2">
-                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'up')} disabled={index === 0}>
+                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'up')} disabled={index === 0 || !!editingDoctorId}>
                                         <ChevronUp className="h-4 w-4" />
                                         <span className="sr-only">Nach oben</span>
                                     </Button>
-                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'down')} disabled={index === visibleDoctors.length - 1}>
+                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'down')} disabled={index === visibleDoctors.length - 1 || !!editingDoctorId}>
                                         <ChevronDown className="h-4 w-4" />
                                         <span className="sr-only">Nach unten</span>
                                     </Button>
-                                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)}>
+                                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)} disabled={!!editingDoctorId}>
                                         <EyeOff className="h-4 w-4" />
                                         <span className="sr-only">Ausblenden</span>
                                     </Button>
-                                     <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)}>
+                                     <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)} disabled={!!editingDoctorId}>
                                         <Pencil className="h-4 w-4" />
                                         <span className="sr-only">Bearbeiten</span>
                                     </Button>
                                 </div>
-                                <div className={cn("relative flex-1 w-full max-w-[1000px] p-2 rounded-lg border-2", activeDoctor === doctor ? 'border-primary' : 'border-transparent')}>
-                                    <EditableDoctorCard doctor={doctor} onVitaClick={() => {
-                                        setActiveDoctor(doctor);
-                                        setDialogState({ type: 'vita', data: { initialValue: doctor.backSideCode }})
-                                    }} />
+                                <div className={cn("relative flex-1 w-full max-w-[1000px] p-2 rounded-lg border-2", editingDoctorId === doctor.id ? 'border-primary' : 'border-transparent')}>
+                                    <EditableDoctorCard 
+                                      doctor={doctor} 
+                                      onVitaClick={() => {
+                                        if (editingDoctorId === doctor.id) {
+                                            setDialogState({ type: 'vita', data: { initialValue: doctor.backSideCode }})
+                                        }
+                                      }}
+                                      isBeingEdited={editingDoctorId === doctor.id}
+                                    />
                                 </div>
                             </div>
                         ))}
@@ -675,21 +706,21 @@ export default function DoctorsPage() {
                                 {hiddenDoctors.map((doctor) => (
                                     <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
                                         <div className="flex w-36 flex-shrink-0 flex-col items-center justify-center gap-2">
-                                            <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)}>
+                                            <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)} disabled={!!editingDoctorId}>
                                                 <Eye className="h-4 w-4" />
                                                 <span className="sr-only">Einblenden</span>
                                             </Button>
-                                            <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)}>
+                                            <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)} disabled={!!editingDoctorId}>
                                                 <Pencil className="h-4 w-4" />
                                                 <span className="sr-only">Bearbeiten</span>
                                             </Button>
-                                             <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name } })}>
+                                             <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name } })} disabled={!!editingDoctorId}>
                                                 <Trash2 className="h-4 w-4" />
                                                 <span className="sr-only">Löschen</span>
                                             </Button>
                                         </div>
-                                        <div className={cn("relative flex-1 w-full max-w-[1000px] p-2 rounded-lg border-2 grayscale", activeDoctor === doctor ? 'border-primary' : 'border-transparent')}>
-                                            <EditableDoctorCard doctor={doctor} onVitaClick={() => {}} />
+                                        <div className={cn("relative flex-1 w-full max-w-[1000px] p-2 rounded-lg border-2 grayscale", editingDoctorId === doctor.id ? 'border-primary' : 'border-transparent')}>
+                                            <EditableDoctorCard doctor={doctor} onVitaClick={() => {}} isBeingEdited={editingDoctorId === doctor.id} />
                                         </div>
                                     </div>
                                 ))}
@@ -724,7 +755,7 @@ export default function DoctorsPage() {
                 <LanguageSelectDialog
                     isOpen={true}
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
-                    initialLanguages={(activeDoctor === 'template' ? exampleDoctor.languages : (typeof activeDoctor === 'object' ? (dbDoctors?.find(d => d.id === activeDoctor.id)?.languages || []) : []))}
+                    initialLanguages={editorCardState.languages || []}
                     onSave={handleLanguageSave}
                 />
             )}
@@ -807,5 +838,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
-    
