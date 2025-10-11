@@ -207,7 +207,6 @@ export default function DoctorsPage() {
         `
     }), []);
 
-    const [activeDoctor, setActiveDoctor] = useState<Doctor | 'template'>('template');
     const [editorCardState, setEditorCardState] = useState<Doctor>(initialExampleDoctorState);
     const fileInputRef = useRef<HTMLInputElement>(null);
     
@@ -306,18 +305,17 @@ export default function DoctorsPage() {
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
             <span>Sprachen</span>
         </button>`;
-
-        const newHtml = `${buttonHtml}${flagsHtml}`;
         
         const parser = new DOMParser();
         const docParser = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
         const langContainer = docParser.getElementById('language-container');
         
-        if (langContainer && langContainer.innerHTML !== newHtml) {
-            langContainer.innerHTML = newHtml;
+        if (langContainer) {
+            langContainer.innerHTML = buttonHtml + flagsHtml;
             const updatedCode = docParser.body.innerHTML;
-
-            setEditorCardState(prev => ({ ...prev, frontSideCode: updatedCode }));
+            if (editorCardState.frontSideCode !== updatedCode) {
+                 setEditorCardState(prev => ({ ...prev, frontSideCode: updatedCode }));
+            }
         }
     }, [editorCardState.languages, editorCardState.frontSideCode]);
 
@@ -327,7 +325,7 @@ export default function DoctorsPage() {
             if (target.classList.contains('template-card') || target.parentElement === null) {
                 return;
             }
-            target = target.parentElement;
+            target = target.parentElement as HTMLElement;
         }
 
         if (target && target.id && target.id.startsWith('edit-')) {
@@ -580,11 +578,11 @@ export default function DoctorsPage() {
                             </CardDescription>
                         </div>
                         <div className="flex gap-2">
-                             {editingDoctorId !== null ? (
+                             {editingDoctorId !== null || editorCardState.id === 'template' ? (
                                 <>
                                     <Button onClick={handleSaveChanges}>
                                         <Save className="mr-2 h-4 w-4" />
-                                        Änderungen speichern
+                                        {editingDoctorId ? 'Änderungen speichern' : 'Neue Karte speichern'}
                                     </Button>
                                     <Button variant="outline" onClick={handleCancelEdit}>
                                         <XCircle className="mr-2 h-4 w-4" />
@@ -638,19 +636,19 @@ export default function DoctorsPage() {
                         {!isLoadingDbDoctors && visibleDoctors.map((doctor, index) => (
                             <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
                                 <div className="flex w-36 flex-shrink-0 flex-col items-center justify-center gap-2">
-                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'up')} disabled={index === 0 || !!editingDoctorId}>
+                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'up')} disabled={index === 0 || !!editingDoctorId && editorCardState.id !== 'template'}>
                                         <ChevronUp className="h-4 w-4" />
                                         <span className="sr-only">Nach oben</span>
                                     </Button>
-                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'down')} disabled={index === visibleDoctors.length - 1 || !!editingDoctorId}>
+                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'down')} disabled={index === visibleDoctors.length - 1 || !!editingDoctorId && editorCardState.id !== 'template'}>
                                         <ChevronDown className="h-4 w-4" />
                                         <span className="sr-only">Nach unten</span>
                                     </Button>
-                                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)} disabled={!!editingDoctorId}>
+                                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)} disabled={!!editingDoctorId && editorCardState.id !== 'template'}>
                                         <EyeOff className="h-4 w-4" />
                                         <span className="sr-only">Ausblenden</span>
                                     </Button>
-                                     <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)} disabled={!!editingDoctorId}>
+                                     <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)} disabled={!!editingDoctorId && editorCardState.id !== 'template'}>
                                         <Pencil className="h-4 w-4" />
                                         <span className="sr-only">Bearbeiten</span>
                                     </Button>
@@ -679,15 +677,15 @@ export default function DoctorsPage() {
                                 {hiddenDoctors.map((doctor) => (
                                     <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
                                         <div className="flex w-36 flex-shrink-0 flex-col items-center justify-center gap-2">
-                                            <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)} disabled={!!editingDoctorId}>
+                                            <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)} disabled={!!editingDoctorId && editorCardState.id !== 'template'}>
                                                 <Eye className="h-4 w-4" />
                                                 <span className="sr-only">Einblenden</span>
                                             </Button>
-                                            <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)} disabled={!!editingDoctorId}>
+                                            <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)} disabled={!!editingDoctorId && editorCardState.id !== 'template'}>
                                                 <Pencil className="h-4 w-4" />
                                                 <span className="sr-only">Bearbeiten</span>
                                             </Button>
-                                             <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name } })} disabled={!!editingDoctorId}>
+                                             <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name } })} disabled={!!editingDoctorId && editorCardState.id !== 'template'}>
                                                 <Trash2 className="h-4 w-4" />
                                                 <span className="sr-only">Löschen</span>
                                             </Button>
@@ -811,3 +809,5 @@ export default function DoctorsPage() {
         </div>
     );
 }
+
+    
