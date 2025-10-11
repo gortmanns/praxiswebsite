@@ -11,6 +11,7 @@ interface EditableDoctorCardProps {
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
+        // This check ensures DOMPurify only runs on the client
         if (typeof window !== 'undefined') {
             const config = {
                 ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img"],

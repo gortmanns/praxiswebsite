@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -48,6 +48,15 @@ export default function DoctorsPage() {
     }, [firestore]);
 
     const { data: dbDoctors, isLoading: isLoadingDbDoctors } = useCollection<Doctor>(doctorsQuery);
+
+    useEffect(() => {
+        if (status) {
+          const timer = setTimeout(() => {
+            setStatus(null);
+          }, 8000);
+          return () => clearTimeout(timer);
+        }
+    }, [status]);
 
 
     const handleEditClick = (doctorId: string, doctorName: string) => {
