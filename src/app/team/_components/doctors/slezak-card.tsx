@@ -1,6 +1,7 @@
 'use client';
 
 import { DoctorCard } from '../doctor-card';
+import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
 
 export function SlezakCard() {
     return (
@@ -12,23 +13,21 @@ export function SlezakCard() {
                 <style>
                     .vita-content { color: hsl(var(--background)); }
                     .vita-content p { margin: 0; }
-                    .slezak-text-special { fill: hsl(var(--primary)); font-family: 'Montserrat', sans-serif; }
-                    .slezak-text-normal { fill: hsl(var(--primary)); font-family: 'Montserrat', sans-serif; font-weight: bold; }
                 </style>
-                <div class="font-headline group relative max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 border-2 border-green-500">
+                <div class="font-headline group relative max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6">
                     <div class="flex h-full w-full items-start">
-                        <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md border-2 border-red-500">
+                        <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
                             <img src="/images/team/Dr.Slezak.jpg" alt="Portrait von A. Slezak" data-ai-hint="woman portrait" class="h-full w-full object-contain" />
                         </div>
-                        <div class="flex-grow flex flex-col justify-center ml-6 h-full relative border-2 border-yellow-400">
-                            <div class="border-2 border-blue-500">
+                        <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
+                            <div>
                                 <p class="text-2xl font-bold text-primary">Dr. med.</p>
                                 <h3 class="text-5xl font-bold text-primary my-2">A. Slezak</h3>
                                 <p class="text-xl font-bold">Fachärztin für Neurologie</p>
-                                <div class="mt-6 flex w-full justify-start border-2 border-purple-500">
+                                <div class="mt-6">
                                     <svg viewBox="0 0 145 55.5" xmlns="http://www.w3.org/2000/svg" class="h-auto" style="height: 6.9rem;" aria-label="Dr. med. Agnieszka Slezak - Fachärztin für Neurologie Logo">
-                                        <text x="0" y="20" class="slezak-text-special" font-size="14" font-weight="bold">Dr. med. Agnieszka Slezak</text>
-                                        <text x="20" y="36" class="slezak-text-normal" font-size="8.5">Fachärztin für Neurologie</text>
+                                        <text x="0" y="20" style="fill: hsl(var(--primary)); font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: bold;">Dr. med. Agnieszka Slezak</text>
+                                        <text x="20" y="36" style="fill: hsl(var(--primary)); font-family: 'Montserrat', sans-serif; font-size: 8.5px;">Fachärztin für Neurologie</text>
                                     </svg>
                                 </div>
                             </div>
