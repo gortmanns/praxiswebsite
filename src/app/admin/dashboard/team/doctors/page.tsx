@@ -1,20 +1,17 @@
-
 'use client';
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
+import { collection, query, orderBy, setDoc, doc } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import DOMPurify from 'dompurify';
-import { User, Languages, Pencil, Image as ImageIcon, ExternalLink, Code2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TextEditDialog } from './_components/text-edit-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
-import { LanguageSelectDialog, availableLanguages } from './_components/language-select-dialog';
-import { LanguageFlags } from './_components/language-flags';
+import { LanguageSelectDialog } from './_components/language-select-dialog';
 import { ImageSourceDialog } from './_components/image-source-dialog';
 import { ImageLibraryDialog } from './_components/image-library-dialog';
 import { ImageCropDialog } from './_components/image-crop-dialog';
@@ -65,7 +62,7 @@ export default function DoctorsPage() {
                 .template-card button:hover:not(.image-button) { background-color: rgba(255,255,255,0.1); }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
-            <div class="template-card group relative w-full h-full overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline" xmlns="http://www.w3.org/1999/xhtml">
+            <div class="template-card group relative w-full h-full overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
                     <button id="edit-image" class="image-button relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted flex flex-col items-center justify-center text-center p-4 text-muted-foreground">
                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -104,7 +101,7 @@ export default function DoctorsPage() {
                 .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; }
                 .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
-            <button id="edit-vita" class="vita-content-button" xmlns="http://www.w3.org/1999/xhtml">
+            <button id="edit-vita" class="vita-content-button">
                 <div class="vita-content p-8 w-full h-full text-left">
                     <h4>Curriculum Vitae</h4>
                 </div>
@@ -112,7 +109,6 @@ export default function DoctorsPage() {
         `
     }), []);
     
-    // This is a placeholder for actual image data fetching
     const projectImages = [
         '/images/luftbild.jpg',
         '/images/VASC-Alliance-Logo.png',
@@ -213,20 +209,16 @@ export default function DoctorsPage() {
                 </CardHeader>
                 <CardContent>
                     <div id="template-container" className="w-full rounded-lg border-2 border-dashed border-muted" onClick={handleTemplateClick}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                            <div className="relative aspect-[1000/495] w-full overflow-hidden">
-                                <svg viewBox="0 0 1000 495" className="w-full h-full">
-                                    <foreignObject width="1000" height="495">
-                                        <CardHtmlRenderer html={exampleDoctor.frontSideCode} />
-                                    </foreignObject>
-                                </svg>
+                                <div className="absolute top-0 left-0 h-[495px] w-[1000px] origin-top-left" style={{ transform: 'scale(calc(100% / 1000px))' }}>
+                                    <CardHtmlRenderer html={exampleDoctor.frontSideCode} />
+                                </div>
                             </div>
                             <div className="relative aspect-[1000/495] w-full overflow-hidden bg-accent/95 rounded-md">
-                                <svg viewBox="0 0 1000 495" className="w-full h-full">
-                                    <foreignObject width="1000" height="495">
-                                        <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" />
-                                    </foreignObject>
-                                </svg>
+                                <div className="absolute top-0 left-0 h-[495px] w-[1000px] origin-top-left" style={{ transform: 'scale(calc(100% / 1000px))' }}>
+                                    <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" />
+                                </div>
                             </div>
                        </div>
                     </div>
@@ -350,8 +342,8 @@ export default function DoctorsPage() {
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
                     images={projectImages}
                     onImageSelect={(imageUrl) => {
-                        setDialogState({ type: null, data: {} }); // Close library
-                        setTimeout(() => { // Open cropper after a tick
+                        setDialogState({ type: null, data: {} });
+                        setTimeout(() => {
                              setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio: 2 / 3 } })
                         }, 100);
                     }}
@@ -372,5 +364,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
-    
