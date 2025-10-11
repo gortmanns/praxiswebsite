@@ -1,3 +1,4 @@
+
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,6 +15,7 @@ interface Partner {
     name: string;
     websiteUrl: string;
     logoUrl: string;
+    openInNewTab?: boolean;
     hint?: string;
     width?: number;
     height?: number;
@@ -80,7 +82,7 @@ export function CooperationPartnersSection() {
                 <div key={partner.id} className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
                   <Link
                     href={partner.websiteUrl || '#'}
-                    target={partner.websiteUrl === '#' ? '_self' : '_blank'}
+                    target={partner.openInNewTab ? '_blank' : '_self'}
                     rel="noopener noreferrer"
                     className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   >
@@ -100,11 +102,10 @@ export function CooperationPartnersSection() {
         <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
           Unsere weiteren Partner
         </h3>
-        <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3 lg:grid-cols-8">
-          <div className="hidden lg:block"></div>
+        <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {isLoadingOther ? (
              Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className="sm:col-span-1 lg:col-span-2">
+              <div key={index} className="lg:col-span-1">
                 <Skeleton className="h-32 w-full rounded-lg" />
               </div>
             ))
@@ -113,9 +114,9 @@ export function CooperationPartnersSection() {
               <Link
                 key={partner.id}
                 href={partner.websiteUrl || '#'}
-                target={partner.websiteUrl === '#' ? '_self' : '_blank'}
+                target={partner.openInNewTab ? '_blank' : '_self'}
                 rel="noopener noreferrer"
-                className="group relative sm:col-span-1 lg:col-span-2 h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                className="group relative lg:col-span-1 h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               >
                 <Card className="flex h-full w-full items-center justify-center p-6">
                   <CardContent className="flex w-full items-center justify-center p-0">
@@ -126,7 +127,6 @@ export function CooperationPartnersSection() {
                         width={partner.width || 200}
                         height={partner.height || 60}
                         className="object-contain"
-                        data-ai-hint={partner.hint}
                       />
                     </div>
                   </CardContent>
@@ -135,9 +135,9 @@ export function CooperationPartnersSection() {
               </Link>
             ))
           )}
-          <div className="hidden lg:block"></div>
         </div>
       </div>
     </section>
   );
 }
+
