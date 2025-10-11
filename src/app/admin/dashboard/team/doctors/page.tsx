@@ -17,6 +17,7 @@ import { LanguageFlags } from './_components/language-flags';
 import { ImageSourceDialog } from './_components/image-source-dialog';
 import { ImageLibraryDialog } from './_components/image-library-dialog';
 import { ImageCropDialog } from './_components/image-crop-dialog';
+import { LogoFunctionSelectDialog } from './_components/logo-function-select-dialog';
 
 export interface Doctor {
     id: string;
@@ -41,9 +42,7 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string }> = ({ html
 
     return (
         <div className={className}>
-             <div className="w-full h-full">
-                <div dangerouslySetInnerHTML={sanitizedHtml} />
-            </div>
+             <div className="w-full h-full text-background" dangerouslySetInnerHTML={sanitizedHtml} />
         </div>
     );
 };
@@ -52,7 +51,7 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string }> = ({ html
 export default function DoctorsPage() {
     const firestore = useFirestore();
     const [dialogState, setDialogState] = useState<{
-        type: 'text' | 'vita' | 'language' | 'imageSource' | 'imageLibrary' | 'imageCrop' | null;
+        type: 'text' | 'vita' | 'language' | 'imageSource' | 'imageLibrary' | 'imageCrop' | 'logoFunction' | null;
         data: any;
     }>({ type: null, data: {} });
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -63,7 +62,7 @@ export default function DoctorsPage() {
         order: 0,
         frontSideCode: `
             <style>
-                .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; border-radius: 0.25rem; }
+                .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; border-radius: 0.25rem; display: block; }
                 .template-card button:hover:not(.image-button) { background-color: rgba(255,255,255,0.1); }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
@@ -75,17 +74,17 @@ export default function DoctorsPage() {
                     </button>
                     <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
                         <div>
-                             <button id="edit-title" class="text-2xl font-bold text-primary p-1 -m-1 block">Titel</button>
-                             <button id="edit-name" class="text-5xl font-bold text-primary my-2 p-1 -m-1 block">Name</button>
-                             <button id="edit-specialty" class="text-xl font-bold p-1 -m-1 block">Spezialisierung</button>
+                             <button id="edit-title" class="text-2xl font-bold text-primary p-1 -m-1">Titel</button>
+                             <button id="edit-name" class="text-5xl font-bold text-primary my-2 p-1 -m-1">Name</button>
+                             <button id="edit-specialty" class="text-xl font-bold p-1 -m-1">Spezialisierung</button>
                             <div class="mt-6 text-xl space-y-1">
-                                <button id="edit-qual1" class="p-1 -m-1 block">Qualifikation 1</button>
-                                <button id="edit-qual2" class="p-1 -m-1 block">Qualifikation 2</button>
-                                <button id="edit-qual3" class="p-1 -m-1 block">Qualifikation 3</button>
-                                <button id="edit-qual4" class="p-1 -m-1 block">Qualifikation 4</button>
+                                <button id="edit-qual1" class="p-1 -m-1">Qualifikation 1</button>
+                                <button id="edit-qual2" class="p-1 -m-1">Qualifikation 2</button>
+                                <button id="edit-qual3" class="p-1 -m-1">Qualifikation 3</button>
+                                <button id="edit-qual4" class="p-1 -m-1">Qualifikation 4</button>
                             </div>
                             <div class="mt-6 text-base">
-                                <button id="edit-position" class="p-1 -m-1 block">Position oder Logo</button>
+                                <button id="edit-position" class="p-1 -m-1">Position oder Logo</button>
                             </div>
                         </div>
                         <div class="absolute bottom-0 right-0">
@@ -107,7 +106,7 @@ export default function DoctorsPage() {
                 .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
             <button id="edit-vita" class="vita-content-button">
-                <div class="vita-content p-8 w-full max-w-[1000px] text-left text-background">
+                <div class="vita-content p-8 w-full max-w-[1000px] text-left">
                     <h4>Curriculum Vitae</h4>
                 </div>
             </button>
@@ -171,6 +170,9 @@ export default function DoctorsPage() {
                         break;
                     case 'image':
                         setDialogState({ type: 'imageSource', data: {} });
+                        break;
+                    case 'position':
+                         setDialogState({ type: 'logoFunction', data: {} });
                         break;
                     default:
                         setDialogState({ type: 'text', data: { title: `Edit ${field}`, label: field, initialValue: 'Placeholder' } });
@@ -304,6 +306,23 @@ export default function DoctorsPage() {
                     onSave={(newLanguages) => console.log('Saved languages:', newLanguages)}
                 />
             )}
+
+            {dialogState.type === 'logoFunction' && (
+                <LogoFunctionSelectDialog
+                    isOpen={true}
+                    onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
+                    onSelectFunction={() => {
+                        setDialogState({ type: 'text', data: { title: `Funktion bearbeiten`, label: 'Funktion', initialValue: 'Placeholder' } });
+                    }}
+                    onSelectFromLibrary={() => {
+                        setDialogState({ type: 'imageLibrary', data: {} });
+                    }}
+                    onUploadNew={() => {
+                        setDialogState({ type: null, data: {} });
+                        fileInputRef.current?.click();
+                    }}
+                />
+            )}
             
             <input
                 type="file"
@@ -352,5 +371,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
-    
