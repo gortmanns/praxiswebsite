@@ -49,8 +49,6 @@ export default function DoctorsPage() {
     
     const ortmannsCardData = DOCTOR_CARDS_INITIAL_DATA.find(d => d.id === 'ortmanns');
 
-    const cardAspectRatio = 1000 / 495;
-
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
             <Card className="w-full">
@@ -69,30 +67,20 @@ export default function DoctorsPage() {
                         {ortmannsCardData && (
                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                                 {/* Front side preview */}
-                                <div style={{ aspectRatio: cardAspectRatio }} className="relative w-full overflow-hidden">
+                                <div className="relative w-full overflow-hidden" style={{ aspectRatio: 1000 / 495 }}>
                                     <div
-                                        style={{
-                                            width: '1000px',
-                                            height: '495px',
-                                            transform: `scale(calc(1 / (1000 / 100%)))`,
-                                            transformOrigin: 'top left',
-                                        }}
-                                        className="absolute"
+                                        className="absolute top-0 left-0 h-full w-full"
+                                        style={{ fontSize: 'calc(1/1000*100vw)' }}
                                     >
                                         <CodeRenderer html={ortmannsCardData.frontSideCode} />
                                     </div>
                                 </div>
                                 
                                 {/* Back side preview */}
-                                <div style={{ aspectRatio: cardAspectRatio }} className="relative w-full overflow-hidden">
+                                <div className="relative w-full overflow-hidden bg-accent/95" style={{ aspectRatio: 1000 / 495 }}>
                                      <div
-                                        style={{
-                                            width: '1000px',
-                                            height: '495px',
-                                            transform: `scale(calc(1 / (1000 / 100%)))`,
-                                            transformOrigin: 'top left',
-                                        }}
-                                        className="absolute bg-accent/95"
+                                        className="absolute top-0 left-0 h-full w-full"
+                                        style={{ fontSize: 'calc(1/1000*100vw)' }}
                                     >
                                         <CodeRenderer html={ortmannsCardData.backSideCode} />
                                     </div>
