@@ -1,71 +1,87 @@
 /**
- * @fileoverview Firestore Security Rules for the application.
+ * @fileoverview Firestore Security Rules for Prototyping.
  *
  * Core Philosophy:
- * This ruleset adopts a public read-only model for all partner and staff/doctor listings,
- * meaning all `get` and `list` operations are allowed for all authenticated and unauthenticated users.
- * Write permissions (create, update, delete) are completely disabled in this prototyping phase,
- * which prioritizes a read-only configuration during initial development and testing.
+ * This ruleset prioritizes rapid prototyping by focusing on authorization and skipping data validation.
+ * It provides secure access control based on the assumption that all data is managed by authenticated users.
  *
  * Data Structure:
- * The Firestore database consists of four top-level collections: `doctors`, `staff`, `medicalPartners`, and `otherPartners`.
- * Each collection stores documents representing entities of the corresponding type (e.g., Doctor, StaffMember).
+ * The database consists of four top-level collections: 'doctors', 'staff', 'medicalPartners', and 'otherPartners'.
+ * There are no user-specific subcollections.
  *
  * Key Security Decisions:
- * - All `list` and `get` operations are permitted for all users on all collections.
- * - All `create`, `update`, and `delete` operations are explicitly denied to ensure data integrity
- *   and prevent unauthorized modifications during the prototyping phase.
+ * - All read access is public.
+ * - All write access is denied by default and requires an authenticated user.
+ * - No data validation is performed in this prototype phase.
+ * - `list` operations are public, assuming that the `hidden` property sufficiently controls visibility.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Grants public read access to the 'doctors' collection. All write operations are denied.
-     * @path /databases/{database}/documents/doctors
+     * @description Grants public read access and authenticated-user-only write access to the 'doctors' collection.
+     * @path /databases/{database}/documents/doctors/{doctorId}
      * @allow (get, list): Any user can read doctor profiles.
-     * @deny (create, update, delete): No user can create, update, or delete doctor profiles.
-     * @principle Permits public reads. Restricts all writes.
+     * @allow (create, update, delete): Only authenticated users can create, update, or delete doctor profiles.
+     * @deny (create, update, delete): Unauthenticated users cannot modify doctor profiles.
+     * @principle Allows public reads, protects writes to authenticated users.
      */
     match /doctors/{doctorId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
 
     /**
-     * @description Grants public read access to the 'staff' collection. All write operations are denied.
-     * @path /databases/{database}/documents/staff
+     * @description Grants public read access and authenticated-user-only write access to the 'staff' collection.
+     * @path /databases/{database}/documents/staff/{staffId}
      * @allow (get, list): Any user can read staff member profiles.
-     * @deny (create, update, delete): No user can create, update, or delete staff member profiles.
-     * @principle Permits public reads. Restricts all writes.
+     * @allow (create, update, delete): Only authenticated users can create, update, or delete staff member profiles.
+     * @deny (create, update, delete): Unauthenticated users cannot modify staff member profiles.
+     * @principle Allows public reads, protects writes to authenticated users.
      */
     match /staff/{staffId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
 
     /**
-     * @description Grants public read access to the 'medicalPartners' collection. All write operations are denied.
-     * @path /databases/{database}/documents/medicalPartners
-     * @allow (get, list): Any user can read medical partner information.
-     * @deny (create, update, delete): No user can create, update, or delete medical partner information.
-     * @principle Permits public reads. Restricts all writes.
+     * @description Grants public read access and authenticated-user-only write access to the 'medicalPartners' collection.
+     * @path /databases/{database}/documents/medicalPartners/{partnerId}
+     * @allow (get, list): Any user can read medical partner profiles.
+     * @allow (create, update, delete): Only authenticated users can create, update, or delete medical partner profiles.
+     * @deny (create, update, delete): Unauthenticated users cannot modify medical partner profiles.
+     * @principle Allows public reads, protects writes to authenticated users.
      */
-    match /medicalPartners/{medicalPartnerId} {
+    match /medicalPartners/{partnerId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
 
     /**
-     * @description Grants public read access to the 'otherPartners' collection. All write operations are denied.
-     * @path /databases/{database}/documents/otherPartners
-     * @allow (get, list): Any user can read other partner information.
-     * @deny (create, update, delete): No user can create, update, or delete other partner information.
-     * @principle Permits public reads. Restricts all writes.
+     * @description Grants public read access and authenticated-user-only write access to the 'otherPartners' collection.
+     * @path /databases/{database}/documents/otherPartners/{partnerId}
+     * @allow (get, list): Any user can read other partner profiles.
+     * @allow (create, update, delete): Only authenticated users can create, update, or delete other partner profiles.
+     * @deny (create, update, delete): Unauthenticated users cannot modify other partner profiles.
+     * @principle Allows public reads, protects writes to authenticated users.
      */
-    match /otherPartners/{otherPartnerId} {
+    match /otherPartners/{partnerId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
+  }
+
+  // Helper function to determine if a user is signed in
+  function isSignedIn() {
+    return request.auth != null;
   }
 }
