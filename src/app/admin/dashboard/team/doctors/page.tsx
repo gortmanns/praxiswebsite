@@ -35,7 +35,7 @@ const CardHtmlRenderer: React.FC<{ html: string }> = ({ html }) => {
         <div className="absolute w-full h-full">
             <svg viewBox="0 0 1000 495" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
                 <foreignObject width="1000" height="495">
-                    <div xmlns="http://www.w3.org/1999/xhtml">
+                    <div xmlns="http://www.w3.org/1999/xhtml" className="text-background">
                         <div dangerouslySetInnerHTML={sanitizedHtml} />
                     </div>
                 </foreignObject>
