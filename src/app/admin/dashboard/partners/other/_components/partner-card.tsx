@@ -5,18 +5,10 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
+import type { OtherPartner } from '@/docs/backend-types';
 
-export interface Partner {
-    id: string;
-    order: number;
-    name: string;
-    websiteUrl: string;
-    logoUrl: string;
-    openInNewTab?: boolean;
-    hidden?: boolean;
-}
 
-export const PartnerCard: React.FC<Partner> = (props) => {
+export const PartnerCard: React.FC<OtherPartner> = (props) => {
     const target = props.openInNewTab ? '_blank' : '_self';
     const rel = props.openInNewTab ? 'noopener noreferrer' : undefined;
 
