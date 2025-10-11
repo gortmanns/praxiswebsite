@@ -66,36 +66,40 @@ export default function DoctorsPage() {
                 .template-card button:hover:not(.image-button) { background-color: rgba(255,255,255,0.1); }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
-            <div class="template-card group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
-                <div class="flex h-full w-full items-start">
-                    <button id="edit-image" class="image-button relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted flex flex-col items-center justify-center text-center p-4 text-muted-foreground">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        <span class="mt-2 text-sm">Zum Ändern klicken</span>
-                    </button>
-                    <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
-                        <div>
-                             <button id="edit-title" class="text-2xl font-bold text-primary p-1 -m-1">Titel</button>
-                             <button id="edit-name" class="text-5xl font-bold text-primary my-2 p-1 -m-1">Name</button>
-                             <button id="edit-specialty" class="text-xl font-bold p-1 -m-1">Spezialisierung</button>
-                            <div class="mt-6 text-xl space-y-1">
-                                <button id="edit-qual1" class="p-1 -m-1">Qualifikation 1</button>
-                                <button id="edit-qual2" class="p-1 -m-1">Qualifikation 2</button>
-                                <button id="edit-qual3" class="p-1 -m-1">Qualifikation 3</button>
-                                <button id="edit-qual4" class="p-1 -m-1">Qualifikation 4</button>
-                            </div>
-                            <div class="mt-6 text-base">
-                                <button id="edit-position" class="p-1 -m-1">Position oder Logo</button>
-                            </div>
-                        </div>
-                        <div class="absolute bottom-0 right-0">
-                           <button id="edit-languages" class="inline-flex items-center justify-center gap-2 h-10 px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6-6 6"/><path d="m12 4-6 6 6 6"/><path d="m19 12-6-6 6-6"/></svg>
-                                Sprachen
+            <svg viewBox="0 0 1000 495" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                <foreignObject width="1000" height="495">
+                    <div class="template-card group relative w-full h-full overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline" xmlns="http://www.w3.org/1999/xhtml">
+                        <div class="flex h-full w-full items-start">
+                            <button id="edit-image" class="image-button relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted flex flex-col items-center justify-center text-center p-4 text-muted-foreground">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <span class="mt-2 text-sm">Zum Ändern klicken</span>
                             </button>
+                            <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
+                                <div>
+                                     <button id="edit-title" class="text-2xl font-bold text-primary p-1 -m-1">Titel</button>
+                                     <button id="edit-name" class="text-5xl font-bold text-primary my-2 p-1 -m-1">Name</button>
+                                     <button id="edit-specialty" class="text-xl font-bold p-1 -m-1">Spezialisierung</button>
+                                    <div class="mt-6 text-xl space-y-1">
+                                        <button id="edit-qual1" class="p-1 -m-1">Qualifikation 1</button>
+                                        <button id="edit-qual2" class="p-1 -m-1">Qualifikation 2</button>
+                                        <button id="edit-qual3" class="p-1 -m-1">Qualifikation 3</button>
+                                        <button id="edit-qual4" class="p-1 -m-1">Qualifikation 4</button>
+                                    </div>
+                                    <div class="mt-6 text-base">
+                                        <button id="edit-position" class="p-1 -m-1">Position oder Logo</button>
+                                    </div>
+                                </div>
+                                <div class="absolute bottom-0 right-0">
+                                   <button id="edit-languages" class="inline-flex items-center justify-center gap-2 h-10 px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6-6 6"/><path d="m12 4-6 6 6 6"/><path d="m19 12-6-6 6-6"/></svg>
+                                        Sprachen
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </foreignObject>
+            </svg>
         `,
         backSideCode: `
              <style>
@@ -105,11 +109,15 @@ export default function DoctorsPage() {
                 .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; }
                 .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
-            <button id="edit-vita" class="vita-content-button">
-                <div class="vita-content p-8 w-full max-w-[1000px] text-left">
-                    <h4>Curriculum Vitae</h4>
-                </div>
-            </button>
+            <svg viewBox="0 0 1000 495" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                <foreignObject width="1000" height="495">
+                    <button id="edit-vita" class="vita-content-button" xmlns="http://www.w3.org/1999/xhtml">
+                        <div class="vita-content p-8 w-full h-full text-left">
+                            <h4>Curriculum Vitae</h4>
+                        </div>
+                    </button>
+                </foreignObject>
+            </svg>
         `
     }), []);
     
@@ -186,7 +194,7 @@ export default function DoctorsPage() {
         if (e.target.files && e.target.files[0]) {
             const reader = new FileReader();
             reader.onload = (event) => {
-                setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string } });
+                setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio: 2 / 3 } });
             };
             reader.readAsDataURL(e.target.files[0]);
         }
@@ -216,8 +224,8 @@ export default function DoctorsPage() {
                 </CardHeader>
                 <CardContent>
                     <div id="template-container" className="w-full rounded-lg border-2 border-dashed border-muted" onClick={handleTemplateClick}>
-                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                           <div className="relative aspect-[1000/495] w-full transform-origin-top-left overflow-hidden bg-muted/50">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                            <div className="relative aspect-[1000/495] w-full transform-origin-top-left overflow-hidden">
                                 <div className="absolute w-full h-full">
                                     <CardHtmlRenderer html={exampleDoctor.frontSideCode} />
                                 </div>
@@ -351,7 +359,7 @@ export default function DoctorsPage() {
                     onImageSelect={(imageUrl) => {
                         setDialogState({ type: null, data: {} }); // Close library
                         setTimeout(() => { // Open cropper after a tick
-                             setDialogState({ type: 'imageCrop', data: { imageUrl } })
+                             setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio: 2 / 3 } })
                         }, 100);
                     }}
                 />
@@ -360,7 +368,7 @@ export default function DoctorsPage() {
             {dialogState.type === 'imageCrop' && (
                 <ImageCropDialog
                     imageUrl={dialogState.data.imageUrl}
-                    aspectRatio={2 / 3}
+                    aspectRatio={dialogState.data.aspectRatio}
                     onCropComplete={(croppedImageUrl) => {
                         console.log('Cropped Image URL:', croppedImageUrl);
                         setDialogState({ type: null, data: {} });
@@ -370,5 +378,5 @@ export default function DoctorsPage() {
             )}
         </div>
     );
-
+ 
     
