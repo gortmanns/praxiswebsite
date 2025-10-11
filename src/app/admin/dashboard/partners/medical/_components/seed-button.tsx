@@ -13,7 +13,7 @@ interface SeedButtonProps {
 
 export function SeedButton({ collectionName }: SeedButtonProps) {
     const [isSeeding, setIsSeeding] = useState(false);
-    const [alertState, setAlertState] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+    const [alertState, setAlertState] = useState<{ type: 'success' | 'error'; message: string, details?: string } | null>(null);
 
     const handleSeed = async () => {
         setIsSeeding(true);
@@ -28,7 +28,7 @@ export function SeedButton({ collectionName }: SeedButtonProps) {
             }
         } catch (err: any) {
             console.error('Seeding failed:', err);
-            setAlertState({ type: 'error', message: err.message || 'Die Daten konnten nicht geschrieben werden.' });
+            setAlertState({ type: 'error', message: 'Die Daten konnten nicht geschrieben werden.', details: err.message });
         } finally {
             setIsSeeding(false);
         }
@@ -48,7 +48,10 @@ export function SeedButton({ collectionName }: SeedButtonProps) {
                 <Alert variant={alertState.type === 'error' ? 'destructive' : 'default'} className="mt-4">
                    {alertState.type === 'success' ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
                    <AlertTitle>{alertState.type === 'success' ? 'Erfolgreich' : 'Fehler'}</AlertTitle>
-                   <AlertDescription>{alertState.message}</AlertDescription>
+                   <AlertDescription>
+                        {alertState.message}
+                        {alertState.details && <pre className="mt-2 whitespace-pre-wrap rounded-md bg-destructive/10 p-2 font-mono text-xs">{alertState.details}</pre>}
+                   </AlertDescription>
                </Alert>
             )}
         </div>
