@@ -9,12 +9,10 @@ import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 export function initializeFirebase() {
   let firebaseApp;
   if (!getApps().length) {
-    // Immer explizit die Konfiguration übergeben, um Mehrdeutigkeiten zu vermeiden.
     firebaseApp = initializeApp(firebaseConfig);
   } else {
     firebaseApp = getApp();
   }
-
   return getSdks(firebaseApp);
 }
 
@@ -23,14 +21,22 @@ export function getSdks(firebaseApp: FirebaseApp) {
   const firestore = getFirestore(firebaseApp);
 
   if (process.env.NODE_ENV === 'development') {
-    try {
-      // WICHTIG: Die Emulatoren werden hier verbunden.
-      // Der try-catch-Block verhindert Abstürze, wenn die Emulatoren beim Hot-Reload nicht sofort verfügbar sind.
-      connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
-      connectFirestoreEmulator(firestore, '127.0.0.1', 8080);
-    } catch (e) {
-        // Dieser Fehler wird erwartet, wenn die Emulatoren nicht laufen. Die App wird die Produktions-DB verwenden.
-        console.error("Fehler bei der Verbindung zu den Firebase-Emulatoren. Laufen sie? Die App wird versuchen, die Produktionsdatenbank zu verwenden.", e);
+    // Check if the emulators are already connected to prevent errors on hot-reloads
+    // @ts-ignore - _client is not publicly typed but allows checking emulator connection.
+    if (!auth.emulatorConfig) {
+      try {
+        connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
+      } catch (e) {
+        console.error("Failed to connect to Auth Emulator.", e);
+      }
+    }
+    // @ts-ignore
+    if (!firestore.emulatorConfig) {
+      try {
+        connectFirestoreEmulator(firestore, '127.0.0.1', 8080);
+      } catch (e) {
+        console.error("Failed to connect to Firestore Emulator.", e);
+      }
     }
   }
 
@@ -40,6 +46,7 @@ export function getSdks(firebaseApp: FirebaseApp) {
     firestore,
   };
 }
+
 
 export * from './provider';
 export * from './client-provider';
