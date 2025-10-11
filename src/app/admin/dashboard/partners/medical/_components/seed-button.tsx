@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -36,7 +37,7 @@ export function SeedButton({ collectionName }: SeedButtonProps) {
         try {
             const result = await seedMedicalPartnersData();
             if (result.success) {
-                setAlertState({ type: 'info', message: 'Datenbank ist bereits befüllt.' });
+                setAlertState({ type: 'info', message: result.message.includes('bereits befüllt') ? 'Datenbank ist bereits befüllt.' : 'Daten erfolgreich geschrieben.' });
             } else {
                 throw new Error(result.error || 'Ein unbekannter Fehler ist aufgetreten.');
             }
