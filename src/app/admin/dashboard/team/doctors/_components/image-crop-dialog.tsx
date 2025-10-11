@@ -47,7 +47,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
           <DialogTitle>Bild zuschneiden</DialogTitle>
         </DialogHeader>
         <div 
-          className="my-4 flex justify-center bg-muted"
+          className="my-4 flex justify-center"
           style={{ height: '600px', maxHeight: '70vh' }}
         >
           <Cropper
@@ -59,7 +59,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
             guides={false}
             viewMode={1}
             autoCropArea={1}
-            background={false}
+            background={true}
             responsive={true}
             checkOrientation={false}
           />

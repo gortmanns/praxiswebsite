@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
@@ -310,23 +309,23 @@ export default function DoctorsPage() {
             const imageContainer = doc.getElementById('image-container');
             if(imageContainer) {
                  imageContainer.innerHTML = `
-                    <button id="edit-image" class="w-full h-full relative">
-                        <div class="absolute inset-0 bg-white"></div>
-                        <img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-contain relative" />
+                    <button id="edit-image" class="w-full h-full relative bg-white">
+                        <img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-cover relative" />
                     </button>`;
             }
         } else {
             const positionContainer = doc.getElementById('position-container');
-            if (positionContainer) {
-                positionContainer.innerHTML = `
-                    <div class="mt-6">
+             if (positionContainer) {
+                const mainDiv = positionContainer.parentElement;
+                if(mainDiv) {
+                    positionContainer.innerHTML = `
                         <button id="edit-position">
-                            <div class="relative">
-                                <div class="absolute inset-0 bg-white"></div>
+                            <div class="relative bg-white">
                                 <img src="${croppedImageUrl}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
                             </div>
-                        </button>
-                    </div>`;
+                        </button>`;
+                    mainDiv.replaceChild(positionContainer, mainDiv.children[4]);
+                }
             }
         }
         
@@ -387,8 +386,12 @@ export default function DoctorsPage() {
         
         if(field === 'position') {
             const container = doc.getElementById('position-container');
-            if (container) {
-                container.innerHTML = `<button id="edit-position" class="w-full text-left"><p class="text-base">${newValue}</p></button>`;
+             if (container) {
+                const mainDiv = container.parentElement;
+                if(mainDiv) {
+                    container.innerHTML = `<button id="edit-position" class="w-full text-left"><p class="text-base">${newValue}</p></button>`;
+                    mainDiv.replaceChild(container, mainDiv.children[4]);
+                }
             }
         } else {
             let button = doc.getElementById(`edit-${field}`);
