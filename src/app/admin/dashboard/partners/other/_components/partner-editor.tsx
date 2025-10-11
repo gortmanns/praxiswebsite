@@ -7,7 +7,6 @@ import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storag
 import { v4 as uuidv4 } from 'uuid';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { PartnerCard, type Partner } from './partner-card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
@@ -20,6 +19,7 @@ import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
+import type { OtherPartner as Partner } from '@/docs/backend-types';
 
 
 const projectImages = [
@@ -134,9 +134,9 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                     </table>
                 </div>
 
-                <div className="relative w-full mt-4">
+                <div className="relative w-full mt-4 h-[450px]">
                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                    <div className="rounded-lg bg-primary p-4 flex items-center justify-center">
+                    <div className="rounded-lg bg-primary p-4 flex items-center justify-center h-full">
                         <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
                             <Link
                                 href={cardData.websiteUrl || '#'}
