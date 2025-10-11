@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
@@ -148,7 +147,7 @@ export default function DoctorsPage() {
                             </div>
                         </div>
                         <div class="absolute bottom-0 right-0">
-                             <button id="edit-languages" class="lang-button inline-flex items-center justify-center gap-2 rounded-md">
+                            <button id="edit-languages" class="lang-button">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>
                             </button>
                         </div>
@@ -158,9 +157,9 @@ export default function DoctorsPage() {
         `,
         backSideCode: `
             <style>
-                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: flex; align-items: flex-start; justify-content: flex-start; }
+                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: block; text-align: left; }
                 .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
-                .vita-content { color: hsl(var(--background)); text-align: left; width: 100%; }
+                .vita-content { color: hsl(var(--background)); }
                 .vita-content p { margin: 0; }
                 .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
             </style>
@@ -213,13 +212,15 @@ export default function DoctorsPage() {
 
     const handleTemplateClick = (e: React.MouseEvent) => {
         let target = e.target as HTMLElement;
-        while (target && (!target.tagName || !target.id.startsWith('edit-'))) {
+        // Traverse up to find the button, but stop if we hit the card's root
+        while (target && !target.id.startsWith('edit-')) {
              if (target.classList.contains('template-card') || target.classList.contains('vita-content-button')) {
                 break;
             }
             target = target.parentElement as HTMLElement;
         }
         
+        // Handle the case where the click is on the vita button itself
         if (target && target.id.startsWith('edit-vita')) {
             target = document.getElementById('edit-vita') as HTMLElement;
         }
@@ -239,10 +240,10 @@ export default function DoctorsPage() {
                     openDialog('language', { initialLanguages: ['de'] });
                     break;
                 case 'image':
-                    openDialog('imageSource', {});
+                    openDialog('imageSource', { field, aspectRatio: 2/3 });
                     break;
                 case 'position':
-                    openDialog('logoFunction', {});
+                    openDialog('logoFunction', { field });
                     break;
                 case 'title':
                 case 'name':
@@ -251,7 +252,7 @@ export default function DoctorsPage() {
                 case 'qual2':
                 case 'qual3':
                 case 'qual4':
-                    openDialog('text', { title: `Feld bearbeiten`, label: 'Text', initialValue: '' });
+                    openDialog('text', { title: `Feld bearbeiten`, label: 'Text', initialValue: '', field });
                     break;
             }
         }
@@ -261,7 +262,8 @@ export default function DoctorsPage() {
         if (e.target.files && e.target.files[0]) {
             const reader = new FileReader();
             reader.onload = (event) => {
-                setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio: 2 / 3 } });
+                const aspectRatio = dialogState.data.aspectRatio || 2/3; // Fallback to default
+                setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio, field: dialogState.data.field } });
             };
             reader.readAsDataURL(e.target.files[0]);
         }
@@ -269,20 +271,24 @@ export default function DoctorsPage() {
     };
 
     const handleCropComplete = (croppedImageUrl: string) => {
+        const field = dialogState.data.field || 'image';
         const parser = new DOMParser();
         const doc = parser.parseFromString(exampleDoctor.frontSideCode, 'text/html');
         
-        const imageButton = doc.getElementById('edit-image');
-        if (imageButton) {
-            imageButton.innerHTML = '';
+        const targetButton = doc.getElementById(`edit-${field}`);
+        if (targetButton) {
+            targetButton.innerHTML = '';
             const img = doc.createElement('img');
             img.src = croppedImageUrl;
-            img.alt = "Portrait";
+            img.alt = "Neues Bild"; // Placeholder alt text
             img.style.width = '100%';
             img.style.height = '100%';
             img.style.objectFit = 'contain';
-            imageButton.appendChild(img);
-            imageButton.style.padding = '0';
+            targetButton.appendChild(img);
+
+            if(field === 'image') {
+              targetButton.style.padding = '0';
+            }
         }
         
         const updatedHtml = doc.body.innerHTML;
@@ -299,8 +305,14 @@ export default function DoctorsPage() {
         const doc = parser.parseFromString(exampleDoctor.backSideCode, 'text/html');
         const button = doc.getElementById('edit-vita');
         if (button) {
-            // Replace only the inner content of the button
-            button.innerHTML = newVita;
+            // Create a new div to hold the vita content
+            const vitaContainer = doc.createElement('div');
+            vitaContainer.className = 'vita-content p-8 w-full max-w-[1000px]';
+            vitaContainer.innerHTML = newVita;
+            
+            // Clear the button and append the new container
+            button.innerHTML = '';
+            button.appendChild(vitaContainer);
         }
         
         const updatedHtml = doc.body.innerHTML;
@@ -309,7 +321,21 @@ export default function DoctorsPage() {
             ...prev,
             backSideCode: updatedHtml,
         }));
-        setDialogState({ type: null, data: {} });
+    };
+
+    const handleTextSave = (newValue: string) => {
+        const field = dialogState.data.field;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(exampleDoctor.frontSideCode, 'text/html');
+        const button = doc.getElementById(`edit-${field}`);
+        if (button) {
+            const p = button.querySelector('p') || button.querySelector('h3');
+             if (p) {
+                p.textContent = newValue;
+            }
+        }
+        const updatedHtml = doc.body.innerHTML;
+        setExampleDoctor(prev => ({ ...prev, frontSideCode: updatedHtml }));
     };
 
     const doctorsQuery = useMemoFirebase(() => {
@@ -397,7 +423,7 @@ export default function DoctorsPage() {
                     title={dialogState.data.title}
                     label={dialogState.data.label}
                     initialValue={dialogState.data.initialValue || ''}
-                    onSave={(newValue) => console.log('Saved:', newValue)}
+                    onSave={handleTextSave}
                 />
             )}
 
@@ -424,13 +450,13 @@ export default function DoctorsPage() {
                     isOpen={true}
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
                     onSelectFunction={() => {
-                        setDialogState({ type: 'text', data: { title: `Funktion bearbeiten`, label: 'Funktion', initialValue: '' } });
+                        setDialogState({ type: 'text', data: { title: `Funktion bearbeiten`, label: 'Funktion', initialValue: '', field: 'position' } });
                     }}
                     onSelectFromLibrary={() => {
-                        setDialogState({ type: 'imageLibrary', data: {} });
+                        setDialogState({ type: 'imageLibrary', data: { field: 'position', aspectRatio: 1600/265 } });
                     }}
                     onUploadNew={() => {
-                        setDialogState({ type: null, data: {} });
+                        setDialogState({ type: null, data: { field: 'position', aspectRatio: 1600/265 } });
                         fileInputRef.current?.click();
                     }}
                 />
@@ -448,10 +474,10 @@ export default function DoctorsPage() {
                     isOpen={true}
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
                     onUpload={() => {
-                        setDialogState({ type: null, data: {} });
+                        setDialogState(prev => ({ type: null, data: { ...prev.data } }));
                         fileInputRef.current?.click();
                     }}
-                    onSelect={() => setDialogState({ type: 'imageLibrary', data: {} })}
+                    onSelect={() => setDialogState(prev => ({ type: 'imageLibrary', data: { ...prev.data } }))}
                 />
             )}
 
@@ -461,9 +487,10 @@ export default function DoctorsPage() {
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
                     images={projectImages}
                     onImageSelect={(imageUrl) => {
+                        const { field, aspectRatio } = dialogState.data;
                         setDialogState({ type: null, data: {} });
                         setTimeout(() => {
-                             setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio: 2 / 3 } })
+                             setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio: aspectRatio || 2/3, field } })
                         }, 100);
                     }}
                 />
@@ -480,7 +507,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
-    
-
-    
