@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, setDoc, doc } from 'firebase/firestore';
+import { collection, query, orderBy, setDoc, doc, deleteDoc, writeBatch } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { TextEditDialog } from './_components/text-edit-dialog';
@@ -19,6 +19,8 @@ import { LogoFunctionSelectDialog } from './_components/logo-function-select-dia
 import { cn } from '@/lib/utils';
 import DOMPurify from 'dompurify';
 import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
+import { ChevronUp, ChevronDown, Pencil, Trash2, User as UserIcon, Globe, Image as ImageIcon } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 
 export interface Doctor {
@@ -81,9 +83,11 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string; onClick?: (
 export default function DoctorsPage() {
     const firestore = useFirestore();
     const [dialogState, setDialogState] = useState<{
-        type: 'text' | 'vita' | 'language' | 'imageSource' | 'imageLibrary' | 'imageCrop' | 'logoFunction' | null;
+        type: 'text' | 'vita' | 'language' | 'imageSource' | 'imageLibrary' | 'imageCrop' | 'logoFunction' | 'deleteConfirm' | null;
         data: any;
     }>({ type: null, data: {} });
+
+    const [activeDoctor, setActiveDoctor] = useState<Doctor | 'template'>('template');
     
     const [exampleDoctor, setExampleDoctor] = useState<Doctor>({
         id: "template",
@@ -94,6 +98,7 @@ export default function DoctorsPage() {
             <style>
                 .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; border-radius: 0.25rem; display: block; padding: 0.125rem 0.25rem; margin: -0.125rem -0.25rem; }
                 .template-card button:hover:not(.image-button) { background-color: rgba(0,0,0,0.1); }
+                .template-card .image-button { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.2); }
                 .template-card .lang-button:hover { background-color: hsla(var(--primary-foreground), 0.1); }
                 .template-card p, .template-card h3 { padding: 0.125rem 0.25rem; margin:0; }
@@ -124,9 +129,9 @@ export default function DoctorsPage() {
             </style>
             <div class="template-card group relative w-full h-full overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
-                    <button id="edit-image" class="relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted flex flex-col items-center justify-center text-center p-4 text-muted-foreground">
-                       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-                        <span class="mt-2 text-sm">Bild ändern</span>
+                    <button id="edit-image" class="image-button relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted p-4 text-muted-foreground">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                       <span class="mt-2 text-sm">Zum Ändern klicken</span>
                     </button>
                     <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
                         <div>
@@ -150,11 +155,6 @@ export default function DoctorsPage() {
                             </div>
                         </div>
                         <div id="language-container" class="absolute bottom-0 right-0 flex items-center gap-2">
-                             <button id="edit-languages" class="inline-flex items-center justify-center gap-2 h-8 px-3 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-                                <span>Sprachen</span>
-                            </button>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>
                         </div>
                     </div>
                 </div>
@@ -165,15 +165,13 @@ export default function DoctorsPage() {
                 .vita-content { color: hsl(var(--background)); }
                 .vita-content p { margin: 0; }
                 .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
-                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: block; }
-                .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
-            </style>
-            <button id="edit-vita" class="vita-content-button">
-                <div class="vita-content p-8 w-full max-w-[1000px] text-left">
+             </style>
+             <div class="vita-content p-8 w-full h-full text-left">
+                <button id="edit-vita" class="w-full h-full text-left">
                     <h4>Curriculum Vitae</h4>
                     <p>Zum Bearbeiten klicken</p>
-                </div>
-            </button>
+                </button>
+            </div>
         `
     });
 
@@ -226,6 +224,7 @@ export default function DoctorsPage() {
 
         if (target && target.id && target.id.startsWith('edit-')) {
             e.stopPropagation();
+            setActiveDoctor('template');
             const field = target.id.replace('edit-', '');
             const openDialog = (type: any, data: any) => {
                 setDialogState({ type, data });
@@ -237,7 +236,7 @@ export default function DoctorsPage() {
                     break;
                 case 'languages':
                      openDialog('language', { 
-                        initialLanguages: exampleDoctor.languages || ['de'] 
+                        initialLanguages: exampleDoctor.languages || [] 
                     });
                     break;
                 case 'image':
@@ -253,7 +252,7 @@ export default function DoctorsPage() {
                 case 'qual2':
                 case 'qual3':
                 case 'qual4':
-                    openDialog('text', { title: `Feld bearbeiten`, label: 'Text', initialValue: '', field });
+                    openDialog('text', { title: `Feld bearbeiten`, label: 'Text', initialValue: target.textContent || '', field });
                     break;
             }
         }
@@ -282,12 +281,11 @@ export default function DoctorsPage() {
           if (targetButton) {
             targetButton.innerHTML = `<img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-cover" />`;
             targetButton.style.padding = '0';
-            targetButton.style.backgroundColor = 'transparent';
           }
         } else {
           const positionContainer = doc.getElementById('position-container');
            if (positionContainer) {
-             positionContainer.innerHTML = `<div class="mt-6"><img src="${croppedImageUrl}" alt="Logo" class="h-auto w-full max-w-[400px] object-contain" /></div>`;
+             positionContainer.innerHTML = `<div class="mt-6"><img src="${croppedImageUrl}" alt="Logo" class="h-auto object-contain" style="max-width: 75%;" /></div>`;
            }
         }
         
@@ -307,10 +305,15 @@ export default function DoctorsPage() {
             const button = doc.getElementById('edit-vita');
             if (button) {
                 const vitaContainer = doc.createElement('div');
-                vitaContainer.className = 'vita-content p-8 w-full max-w-[1000px] text-left';
+                vitaContainer.className = 'vita-content p-8 w-full h-full text-left';
                 vitaContainer.innerHTML = newVita;
-                button.innerHTML = '';
-                button.appendChild(vitaContainer);
+                
+                const newButton = doc.createElement('button');
+                newButton.id = 'edit-vita';
+                newButton.className = 'w-full h-full text-left';
+                newButton.appendChild(vitaContainer);
+
+                button.replaceWith(newButton);
             }
             return {
                 ...prev,
@@ -328,13 +331,9 @@ export default function DoctorsPage() {
         const button = doc.getElementById(`edit-${field}`);
         
         if (button) {
-            if (field === 'position') {
-                 button.innerHTML = `<p class="text-base">${newValue}</p>`;
-            } else {
-                const p = button.querySelector('p') || button.querySelector('h3');
-                if (p) {
-                    p.textContent = newValue;
-                }
+            const p = button.querySelector('p') || button.querySelector('h3');
+            if (p) {
+                p.textContent = newValue;
             }
         }
         const updatedHtml = doc.body.innerHTML;
@@ -343,8 +342,19 @@ export default function DoctorsPage() {
     };
 
     const handleLanguageSave = (selectedLanguages: string[]) => {
-        setExampleDoctor(prev => ({ ...prev, languages: selectedLanguages }));
+        if(activeDoctor === 'template') {
+            setExampleDoctor(prev => ({ ...prev, languages: selectedLanguages }));
+        } else if (firestore && activeDoctor) {
+            const docRef = doc(firestore, 'doctors', activeDoctor.id);
+            setDoc(docRef, { languages: selectedLanguages }, { merge: true });
+        }
         
+        setDialogState({ type: null, data: {} });
+    };
+    
+    useEffect(() => {
+        if(activeDoctor !== 'template') return;
+
         const langToFlagHtml: Record<string, string> = {
             de: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>`,
             en: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="h-5 w-auto rounded-sm shadow-md"><clipPath id="a-lang-en"><path d="M30 15h30v15zv-15z"></path></clipPath><path d="M0 0v30h60V0z" fill="#012169"></path><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"></path><path d="M0 0l60 30m0-30L0 30" clip-path="url(#a-lang-en)" stroke="#C8102E" stroke-width="4"></path><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"></path><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"></path></svg>`,
@@ -381,8 +391,15 @@ export default function DoctorsPage() {
             ur: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#006600" d="M0 0h3v2H0z"/><path fill="#fff" d="M.75 0h.5v2h-.5z"/><circle cx="1.75" cy="1" r=".4" fill="#fff"/><path d="M1.88 1a.3.3 0 100-.6.4.4 0 010 .6z" fill="#006600"/><path d="M2.2 1l-.2-.1.1.2-.1-.2z" fill="#fff"/></svg>`,
         };
 
+        const languages = activeDoctor === 'template' ? exampleDoctor.languages : activeDoctor.languages;
+        
+        if (!languages) {
+            setDialogState({ type: null, data: {} });
+            return;
+        }
+
         const languageOrder = ['de', 'fr', 'it', 'en', 'es', 'pt', 'ru'];
-        const sortedLangs = [...selectedLanguages].sort((a, b) => {
+        const sortedLangs = [...languages].sort((a, b) => {
             const indexA = languageOrder.indexOf(a);
             const indexB = languageOrder.indexOf(b);
             if (indexA !== -1 && indexB !== -1) return indexA - indexB;
@@ -411,12 +428,7 @@ export default function DoctorsPage() {
             ...prev,
             frontSideCode: doc.body.innerHTML,
         }));
-        setDialogState({ type: null, data: {} });
-    };
-    
-    useEffect(() => {
-        handleLanguageSave(exampleDoctor.languages || ['de']);
-    }, []);
+    }, [exampleDoctor.languages, activeDoctor]);
 
     const doctorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
@@ -424,6 +436,41 @@ export default function DoctorsPage() {
     }, [firestore]);
 
     const { data: dbDoctors, isLoading: isLoadingDbDoctors, error: dbError } = useCollection<Doctor>(doctorsQuery);
+
+    const handleMove = async (doctorId: string, currentOrder: number, direction: 'up' | 'down') => {
+        if (!dbDoctors || !firestore) return;
+    
+        const currentIndex = dbDoctors.findIndex(doc => doc.id === doctorId);
+        if (currentIndex === -1) return;
+    
+        let otherIndex = -1;
+        if (direction === 'up') {
+            if (currentIndex === 0) return; // Already at the top
+            otherIndex = currentIndex - 1;
+        } else {
+            if (currentIndex === dbDoctors.length - 1) return; // Already at the bottom
+            otherIndex = currentIndex + 1;
+        }
+    
+        const doctor1 = dbDoctors[currentIndex];
+        const doctor2 = dbDoctors[otherIndex];
+    
+        const batch = writeBatch(firestore);
+    
+        const doc1Ref = doc(firestore, 'doctors', doctor1.id);
+        batch.update(doc1Ref, { order: doctor2.order });
+    
+        const doc2Ref = doc(firestore, 'doctors', doctor2.id);
+        batch.update(doc2Ref, { order: doctor1.order });
+    
+        await batch.commit();
+    };
+
+    const handleDelete = async (doctorId: string) => {
+        if (!firestore) return;
+        await deleteDoc(doc(firestore, "doctors", doctorId));
+        setDialogState({ type: null, data: {} });
+    };
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -446,9 +493,9 @@ export default function DoctorsPage() {
                                 <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" onClick={handleTemplateClick} />
                             </div>
                        </div>
-                    </div>
-                    <div className="mt-2 text-center text-sm text-muted-foreground">
-                        Zum Ändern bitte das jeweilige Element anklicken.
+                        <div className="mt-2 text-center text-sm text-muted-foreground">
+                            Zum Ändern bitte das jeweilige Element anklicken.
+                        </div>
                     </div>
 
                     <div className="mt-8 space-y-4">
@@ -461,6 +508,7 @@ export default function DoctorsPage() {
                         {isLoadingDbDoctors && (
                             Array.from({ length: 2 }).map((_, index) => (
                                 <div key={index} className="flex w-full items-center justify-center gap-4">
+                                    <div className="w-36 flex-shrink-0"></div>
                                     <div className="relative flex-1 w-full max-w-[1000px] p-2">
                                         <Skeleton className="w-full aspect-[1000/495] rounded-lg" />
                                     </div>
@@ -468,10 +516,31 @@ export default function DoctorsPage() {
                             ))
                         )}
                         {dbError && <p className="text-destructive">Fehler beim Laden der Daten: {dbError.message}</p>}
-                        {!isLoadingDbDoctors && dbDoctors?.map(doctor => (
+                        {!isLoadingDbDoctors && dbDoctors?.map((doctor, index) => (
                             <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
+                                <div className="flex w-36 flex-shrink-0 flex-col items-center justify-center gap-2">
+                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, doctor.order, 'up')} disabled={index === 0}>
+                                        <ChevronUp className="h-4 w-4" />
+                                        <span className="sr-only">Nach oben</span>
+                                    </Button>
+                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, doctor.order, 'down')} disabled={index === dbDoctors.length - 1}>
+                                        <ChevronDown className="h-4 w-4" />
+                                        <span className="sr-only">Nach unten</span>
+                                    </Button>
+                                     <Button variant="outline" size="icon" onClick={() => { setActiveDoctor(doctor); setDialogState({ type: 'vita', data: { initialValue: doctor.backSideCode }})}}>
+                                        <Pencil className="h-4 w-4" />
+                                        <span className="sr-only">Bearbeiten</span>
+                                    </Button>
+                                    <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name } })}>
+                                        <Trash2 className="h-4 w-4" />
+                                        <span className="sr-only">Löschen</span>
+                                    </Button>
+                                </div>
                                 <div className="relative flex-1 w-full max-w-[1000px] p-2">
-                                    <EditableDoctorCard doctor={doctor} onVitaClick={() => {}} />
+                                    <EditableDoctorCard doctor={doctor} onVitaClick={() => {
+                                        setActiveDoctor(doctor);
+                                        setDialogState({ type: 'vita', data: { initialValue: doctor.backSideCode }})
+                                    }} />
                                 </div>
                             </div>
                         ))}
@@ -486,6 +555,7 @@ export default function DoctorsPage() {
                      <div className="mt-8 space-y-12">
                         {DOCTOR_CARDS_INITIAL_DATA.map(doctor => (
                             <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
+                                <div className="w-36 flex-shrink-0"></div>
                                 <div className="relative flex-1 w-full max-w-[1000px] p-2">
                                         <EditableDoctorCard doctor={doctor} onVitaClick={() => {}} />
                                 </div>
@@ -520,7 +590,7 @@ export default function DoctorsPage() {
                 <LanguageSelectDialog
                     isOpen={true}
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
-                    initialLanguages={exampleDoctor.languages || ['de']}
+                    initialLanguages={activeDoctor === 'template' ? exampleDoctor.languages || [] : activeDoctor.languages || []}
                     onSave={handleLanguageSave}
                 />
             )}
@@ -536,7 +606,6 @@ export default function DoctorsPage() {
                        setDialogState({ type: 'imageLibrary', data: { field: 'position' } });
                     }}
                     onUploadNew={() => {
-                         setDialogState(prev => ({ type: null, data: {} }));
                          fileInputRef.current?.click();
                     }}
                 />
@@ -583,6 +652,23 @@ export default function DoctorsPage() {
                     onCropComplete={handleCropComplete}
                     onClose={() => setDialogState({ type: null, data: {} })}
                 />
+            )}
+
+            {dialogState.type === 'deleteConfirm' && (
+                 <AlertDialog open onOpenChange={(open) => !open && setDialogState({type: null, data: {}})}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                        <AlertDialogTitle>Sind Sie sicher?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Möchten Sie die Karte für <strong>{dialogState.data.doctorName}</strong> wirklich endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+                        </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                        <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDelete(dialogState.data.doctorId)}>Löschen</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             )}
         </div>
     );
