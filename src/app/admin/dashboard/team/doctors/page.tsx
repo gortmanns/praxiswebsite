@@ -64,7 +64,7 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="p-8 border-dashed border-2 border-muted rounded-lg debug-grid">
+                    <div className="border-dashed border-2 border-muted rounded-lg debug-grid">
                         {ortmannsCardData && (
                             <div className="grid grid-cols-2 gap-2.5">
                                 <div className="relative w-full aspect-[1000/495] overflow-hidden rounded-lg shadow-sm">
