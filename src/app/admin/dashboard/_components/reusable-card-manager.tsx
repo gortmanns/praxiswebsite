@@ -18,6 +18,11 @@ import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Sav
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
+import Link from 'next/link';
+import Image from 'next/image';
+import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
+import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
+
 
 export interface BaseCardData {
     id: string;
@@ -181,31 +186,70 @@ export function ReusableCardManager<T extends BaseCardData>({
     const hiddenItems = useMemo(() => dbData?.filter(d => d.hidden) || [], [dbData]);
 
     const isPartnerManager = collectionName.toLowerCase().includes('partner');
+
+    const renderPartnerLogo = (partner: T) => {
+        if (partner.name === 'orthozentrum-bern') {
+          return <OrthozentrumLogo className="h-full w-full object-contain" />;
+        }
+        if (partner.name === 'Agnieszka Slezak') {
+          return <AgnieszkaSlezakLogo className="h-full w-full object-contain" />;
+        }
+        return (
+            <Image
+              src={partner.logoUrl}
+              alt={`${partner.name} Logo`}
+              width={partner.width || 200}
+              height={partner.height || 60}
+              className="object-contain"
+              data-ai-hint={partner.hint}
+            />
+        );
+      };
     
-    const DisplayWrapper: React.FC<{ item: T, index: number }> = ({ item, index }) => (
-        isPartnerManager ? (
-             <div className="flex flex-col gap-2 p-2">
-                <DisplayCardComponent {...item} />
-                <div className="mt-2 flex w-full flex-col gap-2">
-                    <div className="grid grid-cols-2 gap-2">
-                        <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
-                            <ChevronLeft className="mr-2 h-4 w-4" /> Verschieben
-                        </Button>
-                        <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === visibleItems.length - 1 || isEditing}>
-                            Verschieben <ChevronRight className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                     <div className="grid grid-cols-2 gap-2">
-                        <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                            <EyeOff className="mr-2 h-4 w-4" /> Ausblenden
-                        </Button>
-                        <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
-                            <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                        </Button>
+    const DisplayWrapper: React.FC<{ item: T, index: number }> = ({ item, index }) => {
+        if (isPartnerManager) {
+            return (
+                <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                    <div className="flex flex-col gap-2">
+                        <Link
+                            href={item.websiteUrl || '#'}
+                            target={item.openInNewTab ? '_blank' : '_self'}
+                            rel="noopener noreferrer"
+                            className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                            onClick={(e) => e.preventDefault()} // Prevent navigation in admin UI
+                        >
+                            <Card className="flex h-full w-full items-center p-6">
+                                <CardContent className="flex w-full items-center justify-center p-0">
+                                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                                        {renderPartnerLogo(item)}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </Link>
+                        <div className="mt-2 flex w-full flex-col gap-2">
+                            <div className="grid grid-cols-2 gap-2">
+                                <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
+                                    <ChevronLeft className="mr-2 h-4 w-4" /> Verschieben
+                                </Button>
+                                <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === visibleItems.length - 1 || isEditing}>
+                                    Verschieben <ChevronRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2">
+                                <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                                    <EyeOff className="mr-2 h-4 w-4" /> Ausblenden
+                                </Button>
+                                <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
+                                    <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                                </Button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        ) : (
+            );
+        }
+
+        return (
             <div className="flex w-full flex-col sm:flex-row items-center justify-center gap-4">
                 <div className="flex sm:flex-col w-full sm:w-36 order-2 sm:order-1 flex-shrink-0 items-center justify-center gap-2">
                     <Button variant="outline" size="icon" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
@@ -225,31 +269,51 @@ export function ReusableCardManager<T extends BaseCardData>({
                     <DisplayCardComponent {...item} />
                 </div>
             </div>
-        )
-    );
+        );
+    };
 
-    const HiddenDisplayWrapper: React.FC<{ item: T }> = ({ item }) => (
-         isPartnerManager ? (
-            <div className="flex flex-col gap-2 p-2">
-                <div className="relative">
-                    <div className="absolute inset-0 z-10 bg-black/50 rounded-lg"></div>
-                    <DisplayCardComponent {...item} />
-                </div>
-                <div className="mt-2 flex w-full flex-col gap-2">
-                    <div className="grid grid-cols-2 gap-2">
-                         <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                            <Eye className="mr-2 h-4 w-4" /> Einblenden
-                        </Button>
-                        <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
-                            <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                        </Button>
+    const HiddenDisplayWrapper: React.FC<{ item: T }> = ({ item }) => {
+        if (isPartnerManager) {
+            return (
+                <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                    <div className="flex flex-col gap-2">
+                        <div className="relative">
+                            <div className="absolute inset-0 z-10 bg-black/50 rounded-lg"></div>
+                            <Link
+                                href={item.websiteUrl || '#'}
+                                target={item.openInNewTab ? '_blank' : '_self'}
+                                rel="noopener noreferrer"
+                                className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                onClick={(e) => e.preventDefault()} // Prevent navigation in admin UI
+                            >
+                                <Card className="flex h-full w-full items-center p-6">
+                                    <CardContent className="flex w-full items-center justify-center p-0">
+                                        <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                                            {renderPartnerLogo(item)}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </Link>
+                        </div>
+                        <div className="mt-2 flex w-full flex-col gap-2">
+                            <div className="grid grid-cols-2 gap-2">
+                                <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                                    <Eye className="mr-2 h-4 w-4" /> Einblenden
+                                </Button>
+                                <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
+                                    <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                                </Button>
+                            </div>
+                            <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(item.id, (item as any).name || 'diese Karte')} disabled={isEditing}>
+                                <Trash2 className="mr-2 h-4 w-4" /> Löschen
+                            </Button>
+                        </div>
                     </div>
-                    <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(item.id, (item as any).name || 'diese Karte')} disabled={isEditing}>
-                        <Trash2 className="mr-2 h-4 w-4" /> Löschen
-                    </Button>
                 </div>
-            </div>
-         ) : (
+            );
+        }
+
+        return (
             <div className="flex w-full flex-col sm:flex-row items-center justify-center gap-4">
                 <div className="flex sm:flex-col w-full sm:w-36 order-2 sm:order-1 flex-shrink-0 items-center justify-center gap-2">
                     <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
@@ -266,8 +330,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                     <DisplayCardComponent {...item} />
                 </div>
             </div>
-         )
-    );
+         );
+    };
 
 
     return (
@@ -334,11 +398,11 @@ export function ReusableCardManager<T extends BaseCardData>({
                     </div>
                      <div className={cn(
                         "mt-8",
-                        isPartnerManager ? "rounded-lg bg-primary p-4 flex flex-wrap justify-center gap-4" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
+                        isPartnerManager ? "rounded-lg bg-primary p-4 flex flex-wrap justify-center gap-8" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
                      )}>
                         {isLoadingData && (
                             isPartnerManager ? 
-                                Array.from({ length: 4 }).map((_, index) => <Skeleton key={index} className="h-32 w-full rounded-lg bg-primary-foreground/20" />) :
+                                Array.from({ length: 4 }).map((_, index) => <Skeleton key={index} className="h-32 w-full rounded-lg bg-primary-foreground/20 sm:w-[45%] md:w-[30%] lg:w-[22%]" />) :
                                 Array.from({ length: 2 }).map((_, index) => (
                                     <div key={index} className="flex w-full items-center justify-center gap-4">
                                         <div className="w-36 flex-shrink-0"></div>
@@ -349,7 +413,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 ))
                         )}
                         {dbError && (
-                             <Alert variant="destructive" className={cn(isPartnerManager ? "sm:col-span-2 md:col-span-3 xl:col-span-4" : "lg:col-span-2")}>
+                             <Alert variant="destructive" className={cn(isPartnerManager ? "w-full" : "lg:col-span-2")}>
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertTitle>Datenbankfehler</AlertTitle>
                                 <AlertDescription>
@@ -369,7 +433,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </div>
                             <div className={cn(
                                 "mt-8",
-                                isPartnerManager ? "flex flex-wrap justify-center gap-4" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
+                                isPartnerManager ? "flex flex-wrap justify-center gap-8" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
                             )}>
                                 {hiddenItems.map((item) => (
                                     <HiddenDisplayWrapper key={item.id} item={item} />
@@ -398,3 +462,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
