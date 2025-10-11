@@ -358,7 +358,6 @@ export default function DoctorsPage() {
 
     const handleCropComplete = async (croppedImageUrl: string) => {
         if (!storage) {
-            console.error("Storage service not available");
             toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
             setDialogState({ type: null, data: {} });
             return;
@@ -375,24 +374,28 @@ export default function DoctorsPage() {
             setEditorCardState(prev => {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(prev.frontSideCode, 'text/html');
-                
+                let container: HTMLElement | null = null;
+                let newHtml = '';
+
                 if (field === 'image') {
-                    const imageContainer = doc.getElementById('image-container');
-                    if (imageContainer) {
-                        imageContainer.innerHTML = `
+                    container = doc.getElementById('image-container');
+                    if (container) {
+                         newHtml = `
                             <button id="edit-image" class="image-button-background w-full h-full relative">
                                 <img src="${downloadURL}" alt="Portrait" class="h-full w-full object-cover relative" />
                             </button>`;
+                        container.innerHTML = newHtml;
                     }
                 } else { // 'position' field
-                    const positionContainer = doc.getElementById('position-container');
-                    if (positionContainer) {
-                        positionContainer.innerHTML = `
+                    container = doc.getElementById('position-container');
+                    if (container) {
+                        newHtml = `
                             <button id="edit-position" class="image-button-background">
                                 <div class="relative">
                                     <img src="${downloadURL}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
                                 </div>
                             </button>`;
+                        container.innerHTML = newHtml;
                     }
                 }
                 
@@ -525,29 +528,27 @@ export default function DoctorsPage() {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             
+            // Remove language container content to get rid of button and flags
             const langContainer = doc.getElementById('language-container');
             if (langContainer) {
                 langContainer.innerHTML = '';
             }
             
+            // Replace all edit buttons with their content
             doc.querySelectorAll('button[id^="edit-"]').forEach(button => {
                 const parent = button.parentElement;
                 if (parent) {
                     const contentWrapper = document.createElement('div');
                     
+                    // Transfer all children from button to the new div
                     while (button.firstChild) {
                         contentWrapper.appendChild(button.firstChild);
                     }
                     
-                    for (const attr of Array.from(button.attributes)) {
-                        if (attr.name !== 'id' && attr.name !== 'style') {
-                             contentWrapper.setAttribute(attr.name, attr.value);
-                        }
-                    }
-                     // Restore original classes if needed
-                    const originalClasses = button.className.replace(/image-button-background/g, '').trim();
-                    if(originalClasses) contentWrapper.className = originalClasses;
-
+                    // Copy relevant classes, excluding interaction-specific ones
+                    const classList = Array.from(button.classList).filter(c => !c.startsWith('image-button'));
+                    contentWrapper.className = classList.join(' ');
+                    
                     parent.replaceChild(contentWrapper, button);
                 }
             });
@@ -850,3 +851,4 @@ export default function DoctorsPage() {
     );
 }
 
+    
