@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Calendar, User as UserIcon, LogOut, Users, Settings } from 'lucide-react';
+import { Home, Calendar, User as UserIcon, LogOut, Users, Settings, Handshake } from 'lucide-react';
 import {
   SidebarProvider,
   Sidebar,
@@ -16,7 +16,6 @@ import {
   SidebarInset,
   SidebarMenuSub,
   SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
@@ -67,6 +66,13 @@ export default function DashboardLayout({
       { href: '/admin/dashboard/team/doctors', label: 'Ärzte' },
       { href: '/admin/dashboard/team/staff', label: 'Praxispersonal' },
   ];
+
+  const partnerNavItems = [
+    { href: '/admin/dashboard/partners/medical', label: 'Ärztlich' },
+    { href: '/admin/dashboard/partners/other', label: 'Sonstige' },
+  ];
+
+  const allNavItems = [...navItems, ...teamNavItems, ...partnerNavItems];
 
   return (
     <SidebarProvider>
@@ -125,6 +131,23 @@ export default function DashboardLayout({
                     </SidebarMenuSubItem>
                 ))}
             </SidebarMenuSub>
+            <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Kooperationspartner" className="w-full pointer-events-none">
+                    <Handshake />
+                    <span>Kooperationspartner</span>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuSub>
+                {partnerNavItems.map((item) => (
+                    <SidebarMenuSubItem key={item.href}>
+                        <Link href={item.href} passHref>
+                            <SidebarMenuSubButton isActive={pathname === item.href}>
+                                {item.label}
+                            </SidebarMenuSubButton>
+                        </Link>
+                    </SidebarMenuSubItem>
+                ))}
+            </SidebarMenuSub>
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
@@ -154,7 +177,7 @@ export default function DashboardLayout({
       <SidebarInset>
         <header className="flex h-14 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm">
             <SidebarTrigger className="md:hidden"/>
-            <h1 className="text-lg font-semibold">{[...navItems, ...teamNavItems].find(item => item.href === pathname)?.label || 'Dashboard'}</h1>
+            <h1 className="text-lg font-semibold">{allNavItems.find(item => item.href === pathname)?.label || 'Dashboard'}</h1>
         </header>
         {children}
         <Toaster />
