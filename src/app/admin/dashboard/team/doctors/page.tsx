@@ -5,9 +5,9 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, setDoc, doc, writeBatch, deleteDoc } from 'firebase/firestore';
+import { collection, query, orderBy, setDoc, doc, writeBatch, deleteDoc, addDoc, serverTimestamp } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { TextEditDialog } from './_components/text-edit-dialog';
 import { VitaEditorDialog } from './_components/vita-editor-dialog';
 import { LanguageSelectDialog } from './_components/language-select-dialog';
@@ -16,11 +16,11 @@ import { ImageLibraryDialog } from './_components/image-library-dialog';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { LogoFunctionSelectDialog } from './_components/logo-function-select-dialog';
 import { cn } from '@/lib/utils';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
-import { ChevronUp, ChevronDown, Pencil, EyeOff, Eye, Globe, Image as ImageIcon, User, Info, Trash2 } from 'lucide-react';
+import { ChevronUp, ChevronDown, Pencil, EyeOff, Eye, Globe, Image as ImageIcon, User, Info, Trash2, Plus } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { renderToStaticMarkup } from 'react-dom/server';
 
 
 export interface Doctor {
@@ -31,6 +31,7 @@ export interface Doctor {
     backSideCode: string;
     languages?: string[];
     hidden?: boolean;
+    createdAt?: any;
     [key: string]: any;
 }
 
@@ -90,7 +91,7 @@ export default function DoctorsPage() {
 
     const [activeDoctor, setActiveDoctor] = useState<Doctor | 'template'>('template');
     
-    const [exampleDoctor, setExampleDoctor] = useState<Doctor>({
+    const initialExampleDoctorState: Doctor = useMemo(() => ({
         id: "template",
         name: "Template",
         order: 0,
@@ -136,13 +137,14 @@ export default function DoctorsPage() {
                 .template-card .text-muted-foreground { color: hsl(var(--muted-foreground)); }
                 .template-card .text-center { text-align: center; }
                 .template-card .mt-2 { margin-top: 0.5rem; }
+                .template-card .font-extrabold { font-weight: 800; }
             </style>
              <div class="template-card w-full h-full bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
                     <div id="image-container" class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
-                        <button id="edit-image" class="image-button w-full h-full p-4 flex flex-col items-center justify-center text-muted-foreground bg-muted">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="font-bold"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                            <span class="mt-2 text-sm font-bold">Zum Ändern anklicken</span>
+                         <button id="edit-image" class="w-full h-full flex flex-col items-center justify-center bg-muted text-muted-foreground">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="font-extrabold"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <span class="mt-2 text-sm font-bold">Zum Ändern klicken</span>
                         </button>
                     </div>
                     <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
@@ -162,7 +164,7 @@ export default function DoctorsPage() {
                                 <button id="edit-qual3" class="w-full text-left"><p>Qualifikation 3</p></button>
                                 <button id="edit-qual4" class="w-full text-left"><p>Qualifikation 4</p></button>
                             </div>
-                             <div id="position-container" class="mt-6">
+                            <div id="position-container" class="mt-6">
                                 <button id="edit-position"><div class="w-full text-left"><p class="text-base">Position oder Logo</p></div></button>
                             </div>
                         </div>
@@ -183,17 +185,25 @@ export default function DoctorsPage() {
                 .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }
             </style>
             <div class="w-full h-full">
-                <button id="edit-vita" class="w-full h-full text-left">
-                    <div class="vita-content p-8 w-full h-full">
+                <button id="edit-vita" class="w-full h-full text-left p-8">
+                    <div class="vita-content w-full h-full">
                         <h4>Curriculum Vitae</h4>
                         <p>Zum Bearbeiten klicken</p>
                     </div>
                 </button>
             </div>
         `
-    });
+    }), []);
 
+    const [exampleDoctor, setExampleDoctor] = useState<Doctor>(initialExampleDoctorState);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const doctorsQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
+    }, [firestore]);
+
+    const { data: dbDoctors, isLoading: isLoadingDbDoctors, error: dbError } = useCollection<Doctor>(doctorsQuery);
     
     const projectImages = [
         '/images/luftbild.jpg',
@@ -308,48 +318,36 @@ export default function DoctorsPage() {
         
         const updatedHtml = doc.body.innerHTML;
 
-        setExampleDoctor(prev => ({
-            ...prev,
-            frontSideCode: updatedHtml,
-        }));
+        if (activeDoctor === 'template') {
+            setExampleDoctor(prev => ({
+                ...prev,
+                frontSideCode: updatedHtml,
+            }));
+        } else if (firestore && activeDoctor && typeof activeDoctor === 'object') {
+            const docRef = doc(firestore, 'doctors', activeDoctor.id);
+            setDoc(docRef, { frontSideCode: updatedHtml }, { merge: true });
+        }
         setDialogState({ type: null, data: {} });
     };
 
     const handleVitaSave = (newVita: string) => {
         let contentToSave = newVita;
         
-        // Wrap the content in a button if it's for the template
-        if (activeDoctor === 'template' || (typeof activeDoctor === 'object' && !newVita.includes('<button id="edit-vita"'))) {
+        const wrapInButton = (html: string) => {
+            if (html.trim().startsWith('<button id="edit-vita"')) return html;
+            
             const parser = new DOMParser();
-            const doc = parser.parseFromString(newVita, 'text/html');
-            const button = doc.createElement('button');
-            button.id = 'edit-vita';
-            button.className = 'w-full h-full text-left';
+            const doc = parser.parseFromString(html, 'text/html');
             
-            const style = doc.createElement('style');
-            style.innerHTML = `
-                .vita-content { color: hsl(var(--background)); }
-                .vita-content p { margin: 0; }
-                .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; }
-                .vita-content li { margin-bottom: 0.5em; }
-                .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
-                .vita-content .is-small { font-size: 0.8em; font-weight: normal; }
-                .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }
-            `;
+            // Re-create the structure
+            const style = `<style>.vita-content { color: hsl(var(--background)); } .vita-content p { margin: 0; } .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; } .vita-content li { margin-bottom: 0.5em; } .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; } .vita-content .is-small { font-size: 0.8em; font-weight: normal; } .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }</style>`;
             
-            const contentDiv = doc.createElement('div');
-            contentDiv.className = 'vita-content p-8 w-full h-full';
-            contentDiv.innerHTML = newVita;
-
-            button.appendChild(style);
-            button.appendChild(contentDiv);
-            
-            const wrapperDiv = doc.createElement('div');
-            wrapperDiv.className = "w-full h-full";
-            wrapperDiv.appendChild(button);
-
-            contentToSave = wrapperDiv.innerHTML;
+            const contentDiv = `<div class="vita-content w-full h-full">${html}</div>`;
+            const button = `<button id="edit-vita" class="w-full h-full text-left p-8">${contentDiv}</button>`;
+            return `<div class="w-full h-full">${style}${button}</div>`;
         }
+
+        contentToSave = wrapInButton(newVita);
 
         if (activeDoctor === 'template') {
             setExampleDoctor(prev => ({
@@ -360,31 +358,42 @@ export default function DoctorsPage() {
              const docRef = doc(firestore, 'doctors', activeDoctor.id);
              setDoc(docRef, { backSideCode: contentToSave }, { merge: true });
         }
+         setDialogState({ type: null, data: {} });
     };
-
 
     const handleTextSave = (newValue: string) => {
         const field = dialogState.data.field;
         if (!field) return;
 
         const parser = new DOMParser();
-        const doc = parser.parseFromString(exampleDoctor.frontSideCode, 'text/html');
-        let button = doc.getElementById(`edit-${field}`);
+        
+        const currentDoctor = activeDoctor === 'template' ? exampleDoctor : dbDoctors?.find(d => d.id === (activeDoctor as Doctor).id);
+        if (!currentDoctor) return;
 
+        const doc = parser.parseFromString(currentDoctor.frontSideCode, 'text/html');
+        
         if(field === 'position') {
             const container = doc.getElementById('position-container');
             if (container) {
                 container.innerHTML = `<button id="edit-position" class="w-full text-left"><p class="text-base">${newValue}</p></button>`;
             }
-        } else if (button) {
-            const p = button.querySelector('p') || button.querySelector('h3');
-            if (p) {
-                p.textContent = newValue;
+        } else {
+            let button = doc.getElementById(`edit-${field}`);
+            if (button) {
+                const p = button.querySelector('p') || button.querySelector('h3');
+                if (p) {
+                    p.textContent = newValue;
+                }
             }
         }
         
         const updatedHtml = doc.body.innerHTML;
-        setExampleDoctor(prev => ({ ...prev, frontSideCode: updatedHtml }));
+        if (activeDoctor === 'template') {
+            setExampleDoctor(prev => ({ ...prev, frontSideCode: updatedHtml }));
+        } else if (firestore && activeDoctor && typeof activeDoctor === 'object') {
+            const docRef = doc(firestore, 'doctors', activeDoctor.id);
+            setDoc(docRef, { frontSideCode: updatedHtml }, { merge: true });
+        }
         setDialogState({ type: null, data: {} });
     };
 
@@ -403,8 +412,8 @@ export default function DoctorsPage() {
         let currentDoctor: Doctor | null = null;
         if (activeDoctor === 'template') {
           currentDoctor = exampleDoctor;
-        } else if (typeof activeDoctor === 'object') {
-          currentDoctor = dbDoctors?.find(d => d.id === activeDoctor.id) || null;
+        } else if (typeof activeDoctor === 'object' && dbDoctors) {
+          currentDoctor = dbDoctors.find(d => d.id === activeDoctor.id) || null;
         }
         
         if (!currentDoctor) return;
@@ -423,9 +432,46 @@ export default function DoctorsPage() {
             return a.localeCompare(b);
         });
 
+        const langToFlagHtml: Record<string, string> = {
+            de: renderToStaticMarkup(React.createElement(DeFlag)),
+            en: renderToStaticMarkup(React.createElement(EnFlag)),
+            fr: renderToStaticMarkup(React.createElement(FrFlag)),
+            it: renderToStaticMarkup(React.createElement(ItFlag)),
+            es: renderToStaticMarkup(React.createElement(EsFlag)),
+            pt: renderToStaticMarkup(React.createElement(PtFlag)),
+            ru: renderToStaticMarkup(React.createElement(RuFlag)),
+            sq: renderToStaticMarkup(React.createElement(SqFlag)),
+            ar: renderToStaticMarkup(React.createElement(ArFlag)),
+            bs: renderToStaticMarkup(React.createElement(BsFlag)),
+            zh: renderToStaticMarkup(React.createElement(ZhFlag)),
+            da: renderToStaticMarkup(React.createElement(DaFlag)),
+            fi: renderToStaticMarkup(React.createElement(FiFlag)),
+            el: renderToStaticMarkup(React.createElement(ElFlag)),
+            he: renderToStaticMarkup(React.createElement(HeFlag)),
+            hi: renderToStaticMarkup(React.createElement(HiFlag)),
+            ja: renderToStaticMarkup(React.createElement(JaFlag)),
+            ko: renderToStaticMarkup(React.createElement(KoFlag)),
+            hr: renderToStaticMarkup(React.createElement(HrFlag)),
+            nl: renderToStaticMarkup(React.createElement(NlFlag)),
+            no: renderToStaticMarkup(React.createElement(NoFlag)),
+            fa: renderToStaticMarkup(React.createElement(FaFlag)),
+            pl: renderToStaticMarkup(React.createElement(PlFlag)),
+            pa: renderToStaticMarkup(React.createElement(PaFlag)),
+            ro: renderToStaticMarkup(React.createElement(RoFlag)),
+            sv: renderToStaticMarkup(React.createElement(SvFlag)),
+            sr: renderToStaticMarkup(React.createElement(SrFlag)),
+            ta: renderToStaticMarkup(React.createElement(TaFlag)),
+            cs: renderToStaticMarkup(React.createElement(CsFlag)),
+            tr: renderToStaticMarkup(React.createElement(TrFlag)),
+            uk: renderToStaticMarkup(React.createElement(UkFlag)),
+            hu: renderToStaticMarkup(React.createElement(HuFlag)),
+            ur: renderToStaticMarkup(React.createElement(UrFlag)),
+        };
+
         const flagsHtml = sortedLangs.map(lang => {
-            const FlagComponent = flagComponents[lang];
-            return FlagComponent ? renderToStaticMarkup(React.createElement(FlagComponent, { className: "h-5 w-auto rounded-sm shadow-md" })) : '';
+            const flagSvg = langToFlagHtml[lang] || '';
+            const sizedSvg = flagSvg.replace('<svg', '<svg class="h-5 w-auto rounded-sm shadow-md"');
+            return sizedSvg;
         }).join('');
 
         const buttonHtml = `<button id="edit-languages" style="display: flex; align-items: center; gap: 0.5rem; height: 2rem; padding: 0 0.75rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem;" onmouseover="this.style.backgroundColor='hsl(var(--primary) / 0.9)'" onmouseout="this.style.backgroundColor='hsl(var(--primary))'">
@@ -444,21 +490,15 @@ export default function DoctorsPage() {
             const updatedCode = doc.body.innerHTML;
 
             if (activeDoctor === 'template') {
-                setExampleDoctor(prev => ({ ...prev, frontSideCode: updatedCode }));
+                if (exampleDoctor.frontSideCode !== updatedCode) {
+                    setExampleDoctor(prev => ({ ...prev, frontSideCode: updatedCode }));
+                }
             } else if (firestore && typeof activeDoctor === 'object') {
                 const docRef = doc(firestore, 'doctors', activeDoctor.id);
                 setDoc(docRef, { frontSideCode: updatedCode }, { merge: true });
             }
         }
     }, [exampleDoctor.languages, activeDoctor, dbDoctors, firestore]);
-
-
-    const doctorsQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
-        return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
-    }, [firestore]);
-
-    const { data: dbDoctors, isLoading: isLoadingDbDoctors, error: dbError } = useCollection<Doctor>(doctorsQuery);
 
     const handleMove = async (doctorId: string, direction: 'up' | 'down') => {
         if (!dbDoctors || !firestore) return;
@@ -488,7 +528,7 @@ export default function DoctorsPage() {
     };
 
     const handleEdit = (doctor: Doctor) => {
-        setActiveDoctor('template');
+        setActiveDoctor(doctor);
         setExampleDoctor(doctor);
     };
 
@@ -505,6 +545,26 @@ export default function DoctorsPage() {
         await setDoc(docRef, { hidden: !doctor.hidden }, { merge: true });
     };
 
+    const handleCreateNew = async () => {
+        if (!firestore || !dbDoctors) return;
+
+        const highestOrder = dbDoctors.reduce((max, doc) => doc.order > max ? doc.order : max, 0);
+
+        const newDoctorData = {
+            ...initialExampleDoctorState,
+            id: '', 
+            name: 'Neuer Arzt',
+            order: highestOrder + 1,
+            createdAt: serverTimestamp(),
+            hidden: false,
+        };
+
+        const newDocRef = await addDoc(collection(firestore, 'doctors'), newDoctorData);
+        await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
+
+        handleEdit({ ...newDoctorData, id: newDocRef.id });
+    };
+
     const visibleDoctors = useMemo(() => dbDoctors?.filter(d => !d.hidden) || [], [dbDoctors]);
     const hiddenDoctors = useMemo(() => dbDoctors?.filter(d => d.hidden) || [], [dbDoctors]);
 
@@ -516,9 +576,13 @@ export default function DoctorsPage() {
                         <div>
                             <CardTitle className="text-primary">Ärzte verwalten</CardTitle>
                             <CardDescription>
-                                Verwalten Sie die auf der Team-Seite angezeigten Ärzte.
+                                Verwalten Sie die auf der Team-Seite angezeigten Ärzte. Klicken Sie auf ein Element, um es zu bearbeiten.
                             </CardDescription>
                         </div>
+                         <Button onClick={handleCreateNew}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Neue Karte hinzufügen
+                        </Button>
                     </div>
                 </CardHeader>
                 <CardContent>
@@ -533,7 +597,7 @@ export default function DoctorsPage() {
                             <Info className="h-4 w-4" />
                             <AlertTitle>Hinweis</AlertTitle>
                             <AlertDescription>
-                                Zum Ändern bitte das jeweilige Element anklicken.
+                                Zum Ändern bitte das jeweilige Element anklicken. Änderungen werden direkt auf die ausgewählte Karte angewendet (falls eine ausgewählt ist) oder können als neue Karte gespeichert werden.
                             </AlertDescription>
                         </Alert>
                     </div>
@@ -576,7 +640,7 @@ export default function DoctorsPage() {
                                         <span className="sr-only">Bearbeiten</span>
                                     </Button>
                                 </div>
-                                <div className="relative flex-1 w-full max-w-[1000px] p-2">
+                                <div className={cn("relative flex-1 w-full max-w-[1000px] p-2 rounded-lg border-2", activeDoctor === doctor ? 'border-primary' : 'border-transparent')}>
                                     <EditableDoctorCard doctor={doctor} onVitaClick={() => {
                                         setActiveDoctor(doctor);
                                         setDialogState({ type: 'vita', data: { initialValue: doctor.backSideCode }})
@@ -653,7 +717,7 @@ export default function DoctorsPage() {
                         setDialogState({ type: 'text', data: { title: `Funktion bearbeiten`, label: 'Funktion', initialValue: '', field: 'position' } });
                     }}
                     onSelectFromLibrary={() => {
-                       setDialogState({ type: 'imageLibrary', data: { field: 'position' } });
+                       setDialogState(prev => ({ type: 'imageLibrary', data: { ...prev.data } }));
                     }}
                     onUploadNew={() => {
                          fileInputRef.current?.click();
@@ -723,6 +787,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
-
-    
