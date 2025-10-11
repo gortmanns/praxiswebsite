@@ -247,8 +247,10 @@ export default function DoctorsPage() {
         '/images/leistungen/wundversorgung.jpg',
     ];
 
+    const isEditing = editingDoctorId !== null || isCreatingNew;
+
     useEffect(() => {
-        if (!isCreatingNew && !editingDoctorId) return;
+        if (!isEditing) return;
     
         const langToFlagHtml: Record<string, string> = {
             de: renderToStaticMarkup(React.createElement(DeFlag)), en: renderToStaticMarkup(React.createElement(EnFlag)), fr: renderToStaticMarkup(React.createElement(FrFlag)), it: renderToStaticMarkup(React.createElement(ItFlag)), es: renderToStaticMarkup(React.createElement(EsFlag)), pt: renderToStaticMarkup(React.createElement(PtFlag)), ru: renderToStaticMarkup(React.createElement(RuFlag)), sq: renderToStaticMarkup(React.createElement(SqFlag)), ar: renderToStaticMarkup(React.createElement(ArFlag)), bs: renderToStaticMarkup(React.createElement(BsFlag)), zh: renderToStaticMarkup(React.createElement(ZhFlag)), da: renderToStaticMarkup(React.createElement(DaFlag)), fi: renderToStaticMarkup(React.createElement(FiFlag)), el: renderToStaticMarkup(React.createElement(ElFlag)), he: renderToStaticMarkup(React.createElement(HeFlag)), hi: renderToStaticMarkup(React.createElement(HiFlag)), ja: renderToStaticMarkup(React.createElement(JaFlag)), ko: renderToStaticMarkup(React.createElement(KoFlag)), hr: renderToStaticMarkup(React.createElement(HrFlag)), nl: renderToStaticMarkup(React.createElement(NlFlag)), no: renderToStaticMarkup(React.createElement(NoFlag)), fa: renderToStaticMarkup(React.createElement(FaFlag)), pl: renderToStaticMarkup(React.createElement(PlFlag)), pa: renderToStaticMarkup(React.createElement(PaFlag)), ro: renderToStaticMarkup(React.createElement(RoFlag)), sv: renderToStaticMarkup(React.createElement(SvFlag)), sr: renderToStaticMarkup(React.createElement(SrFlag)), ta: renderToStaticMarkup(React.createElement(TaFlag)), cs: renderToStaticMarkup(React.createElement(CsFlag)), tr: renderToStaticMarkup(React.createElement(TrFlag)), uk: renderToStaticMarkup(React.createElement(UkFlag)), hu: renderToStaticMarkup(React.createElement(HuFlag)), ur: renderToStaticMarkup(React.createElement(UrFlag)),
@@ -287,11 +289,11 @@ export default function DoctorsPage() {
             }
             return prev;
         });
-    }, [editorCardState.languages, isCreatingNew, editingDoctorId]);
+    }, [editorCardState.languages, isEditing]);
 
 
     const handleTemplateClick = (e: React.MouseEvent) => {
-        if (!isCreatingNew && !editingDoctorId) return;
+        if (!isEditing) return;
 
         let target = e.target as HTMLElement;
         while (target && !target.id.startsWith('edit-')) {
@@ -367,22 +369,25 @@ export default function DoctorsPage() {
             setEditorCardState(prev => {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(prev.frontSideCode, 'text/html');
-                let newHtmlContent: string;
-    
+                
                 if (field === 'image') {
-                    newHtmlContent = `<button id="edit-image" class="image-button-background w-full h-full relative">
-                                        <img src="${downloadURL}" alt="Portrait" class="h-full w-full object-cover relative" />
-                                     </button>`;
                     const imageContainer = doc.getElementById('image-container');
-                    if(imageContainer) imageContainer.innerHTML = newHtmlContent;
+                    if (imageContainer) {
+                        imageContainer.innerHTML = `
+                            <button id="edit-image" class="image-button-background w-full h-full relative">
+                                <img src="${downloadURL}" alt="Portrait" class="h-full w-full object-cover relative" />
+                            </button>`;
+                    }
                 } else { // 'position' field
-                    newHtmlContent = `<button id="edit-position" class="image-button-background">
-                                        <div class="relative">
-                                            <img src="${downloadURL}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
-                                        </div>
-                                      </button>`;
                     const positionContainer = doc.getElementById('position-container');
-                    if (positionContainer) positionContainer.innerHTML = newHtmlContent;
+                    if (positionContainer) {
+                        positionContainer.innerHTML = `
+                            <button id="edit-position" class="image-button-background">
+                                <div class="relative">
+                                    <img src="${downloadURL}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
+                                </div>
+                            </button>`;
+                    }
                 }
                 
                 return { ...prev, frontSideCode: doc.body.innerHTML };
@@ -504,12 +509,25 @@ export default function DoctorsPage() {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             
+            // This also removes the language flags
+            const langContainer = doc.getElementById('language-container');
+            if (langContainer) {
+                langContainer.innerHTML = '';
+            }
+            
             doc.querySelectorAll('button[id^="edit-"]').forEach(button => {
                 const parent = button.parentElement;
                 if (parent) {
                     const contentWrapper = document.createElement('div');
+                    // Move all children of the button to the new wrapper
                     while (button.firstChild) {
                         contentWrapper.appendChild(button.firstChild);
+                    }
+                    // Copy attributes from button to wrapper, except for 'id'
+                    for (const attr of Array.from(button.attributes)) {
+                        if (attr.name !== 'id') {
+                            contentWrapper.setAttribute(attr.name, attr.value);
+                        }
                     }
                     parent.replaceChild(contentWrapper, button);
                 }
@@ -562,8 +580,6 @@ export default function DoctorsPage() {
 
     const visibleDoctors = useMemo(() => dbDoctors?.filter(d => !d.hidden) || [], [dbDoctors]);
     const hiddenDoctors = useMemo(() => dbDoctors?.filter(d => d.hidden) || [], [dbDoctors]);
-
-    const isEditing = editingDoctorId !== null || isCreatingNew;
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -799,3 +815,5 @@ export default function DoctorsPage() {
         </div>
     );
 }
+
+    
