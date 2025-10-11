@@ -509,7 +509,6 @@ export default function DoctorsPage() {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             
-            // This also removes the language flags
             const langContainer = doc.getElementById('language-container');
             if (langContainer) {
                 langContainer.innerHTML = '';
@@ -519,11 +518,11 @@ export default function DoctorsPage() {
                 const parent = button.parentElement;
                 if (parent) {
                     const contentWrapper = document.createElement('div');
-                    // Move all children of the button to the new wrapper
+                    
                     while (button.firstChild) {
                         contentWrapper.appendChild(button.firstChild);
                     }
-                    // Copy attributes from button to wrapper, except for 'id'
+                    
                     for (const attr of Array.from(button.attributes)) {
                         if (attr.name !== 'id') {
                             contentWrapper.setAttribute(attr.name, attr.value);
@@ -815,5 +814,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
-    
