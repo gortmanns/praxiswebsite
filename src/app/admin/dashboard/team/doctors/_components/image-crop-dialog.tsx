@@ -68,7 +68,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
           <DialogClose asChild>
             <Button variant="outline">Abbrechen</Button>
           </DialogClose>
-          <Button onClick={handleCrop}>Zuschneiden und Speichern</Button>
+          <Button onClick={handleCrop}>Zuschneiden und übernehmen</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
