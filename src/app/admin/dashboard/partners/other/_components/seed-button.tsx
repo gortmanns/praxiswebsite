@@ -1,59 +1,71 @@
-
 'use client';
 
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
-import { seedOtherPartnersData } from './other-seed-action';
+import React from 'react';
+import { StaffCard as DisplayCard } from './_components/staff-card';
+import { StaffEditor as EditorComponent } from './_components/staff-editor';
+import { ReusableCardManager } from '../../_components/reusable-card-manager';
+import type { StaffMember as CardData } from './_components/staff-editor';
 
-interface SeedButtonProps {
-    collectionName: string;
-}
+const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
+    name: "Neuer Mitarbeiter",
+    role: "Rolle",
+    role2: "",
+    imageUrl: "/images/team/placeholder.jpg",
+    backsideContent: "<p>Hier klicken, um Text hinzuzufügen.</p>",
+    hidden: false,
+};
 
-export function SeedButton({ collectionName }: SeedButtonProps) {
-    const [isSeeding, setIsSeeding] = useState(false);
-    const [alertState, setAlertState] = useState<{ type: 'success' | 'error'; message: string, details?: string } | null>(null);
+const staffSeedData = [
+  {
+    name: 'Manuela Garcia',
+    role: 'Leitende MPA',
+    imageUrl: '/images/team/Garcia.jpg',
+    backsideContent: 'Manuela Garcia ist die gute Seele der Praxis. Sie sorgt dafür, dass alles rund läuft und hat immer ein offenes Ohr für die Anliegen der Patienten.',
+    hidden: false,
+  },
+  {
+    name: 'Jris Aeschlimann',
+    role: 'MPA',
+    imageUrl: '/images/team/Aeschlimann.jpg',
+    backsideContent: '',
+    hidden: false,
+  },
+  {
+    name: 'Janine Huber',
+    role: 'MPA',
+    imageUrl: '/images/team/Huber.jpg',
+    backsideContent: '',
+    hidden: false,
+  },
+  {
+    name: 'Esma Öztürk',
+    role: 'MPA in Ausbildung',
+    imageUrl: '/images/team/Oetztuerk.jpg',
+    backsideContent: '',
+    hidden: false,
+  },
+  {
+    name: 'Elena Sommer',
+    role: 'MPA in Ausbildung',
+    imageUrl: '/images/team/Sommer.jpg',
+    backsideContent: '',
+    hidden: false,
+  },
+];
 
-    const handleSeed = async () => {
-        setIsSeeding(true);
-        setAlertState(null);
-        
-        try {
-            const result = await seedOtherPartnersData();
-            if (result.success) {
-                setAlertState({ type: 'success', message: result.message });
-            } else {
-                throw new Error(result.error || 'Ein unbekannter Fehler ist aufgetreten.');
-            }
-        } catch (err: any) {
-            console.error('Seeding failed:', err);
-            setAlertState({ type: 'error', message: 'Die Daten konnten nicht geschrieben werden.', details: err.message });
-        } finally {
-            setIsSeeding(false);
-        }
-    };
+
+export default function StaffPage() {
     
     return (
-        <div className="flex flex-col gap-4">
-            <p className="text-sm text-muted-foreground">
-                Klicken Sie auf den Button, um die initialen Partnerdaten für `{collectionName}` in die Datenbank zu übertragen.
-            </p>
-            <Button onClick={handleSeed} disabled={isSeeding}>
-                {isSeeding && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {isSeeding ? 'Übertrage Daten...' : 'Partnerdaten in Datenbank schreiben'}
-            </Button>
-
-            {alertState && (
-                <Alert variant={alertState.type === 'error' ? 'destructive' : 'default'} className="mt-4">
-                   {alertState.type === 'success' ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
-                   <AlertTitle>{alertState.type === 'success' ? 'Erfolgreich' : 'Fehler'}</AlertTitle>
-                   <AlertDescription>
-                        {alertState.message}
-                        {alertState.details && <pre className="mt-2 whitespace-pre-wrap rounded-md bg-destructive/10 p-2 font-mono text-xs">{alertState.details}</pre>}
-                   </AlertDescription>
-               </Alert>
-            )}
-        </div>
+        <ReusableCardManager
+            collectionName="staff"
+            pageTitle="Praxispersonal verwalten"
+            pageDescription="Verwalten Sie das auf der Team-Seite angezeigte Praxispersonal."
+            initialCardState={initialStaffState}
+            DisplayCardComponent={DisplayCard}
+            EditorCardComponent={EditorComponent}
+            entityName="Mitarbeiter"
+            seedData={staffSeedData}
+        />
     );
 }

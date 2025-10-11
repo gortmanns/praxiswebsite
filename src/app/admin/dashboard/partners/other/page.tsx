@@ -5,8 +5,6 @@ import { PartnerCard as DisplayCard } from './_components/partner-card';
 import { PartnerEditor as EditorComponent } from './_components/partner-editor';
 import { ReusableCardManager } from '../../_components/reusable-card-manager';
 import type { Partner as CardData } from './_components/partner-card';
-import { SeedButton } from './_components/seed-button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const initialPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     name: "Neuer Partner",
@@ -18,28 +16,49 @@ const initialPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     hidden: false,
 };
 
+const otherPartnersSeedData = [
+    {
+      name: 'Go-Medical',
+      websiteUrl: 'https://www.go-medical.ch/',
+      logoUrl: '/images/go-medical-logo.png',
+      hint: 'medical services logo',
+      width: 200,
+      height: 60,
+      hidden: false,
+    },
+    {
+      name: 'MCL',
+      websiteUrl: 'https://www.mcl.ch/',
+      logoUrl: '/images/mcl-labor-logo.png',
+      hint: 'laboratory logo',
+      width: 200,
+      height: 60,
+      hidden: false,
+    },
+    {
+      name: 'doxnet',
+      websiteUrl: 'https://www.doxnet.ch/',
+      logoUrl: '/images/doxnet-logo.jpg',
+      hint: 'medical network logo',
+      width: 200,
+      height: 60,
+      hidden: false,
+    },
+];
+
 export default function OtherPartnersPage() {
     return (
-        <>
-            <div className="p-4 sm:p-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-primary">Daten-Übertragung</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <SeedButton collectionName='otherPartners' />
-                    </CardContent>
-                </Card>
-            </div>
-            <ReusableCardManager
-                collectionName="otherPartners"
-                pageTitle="Sonstige Kooperationspartner"
-                pageDescription="Verwalten Sie die sonstigen Kooperationspartner, die auf der Startseite angezeigt werden."
-                initialCardState={initialPartnerState}
-                DisplayCardComponent={DisplayCard}
-                EditorCardComponent={EditorComponent}
-                entityName="Partner"
-            />
-        </>
+        <ReusableCardManager
+            collectionName="otherPartners"
+            pageTitle="Sonstige Kooperationspartner"
+            pageDescription="Verwalten Sie die sonstigen Kooperationspartner, die auf der Startseite angezeigt werden."
+            initialCardState={initialPartnerState}
+            DisplayCardComponent={DisplayCard}
+            EditorCardComponent={EditorComponent}
+            entityName="Partner"
+            seedData={otherPartnersSeedData}
+        />
     );
 }
+
+    

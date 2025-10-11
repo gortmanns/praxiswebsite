@@ -8,7 +8,7 @@ import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionRefe
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ChevronUp, ChevronDown, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, CheckCircle } from 'lucide-react';
+import { ChevronUp, ChevronDown, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, CheckCircle, Upload } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -28,6 +28,7 @@ interface ReusableCardManagerProps<T extends BaseCardData> {
     DisplayCardComponent: React.ComponentType<T>;
     EditorCardComponent: React.ComponentType<{ cardData: T; onUpdate: (updatedData: T) => void }>;
     entityName: string;
+    seedData?: Omit<T, 'id' | 'order' | 'createdAt'>[];
 }
 
 export function ReusableCardManager<T extends BaseCardData>({
@@ -37,7 +38,8 @@ export function ReusableCardManager<T extends BaseCardData>({
     initialCardState,
     DisplayCardComponent,
     EditorCardComponent,
-    entityName
+    entityName,
+    seedData,
 }: ReusableCardManagerProps<T>) {
     const firestore = useFirestore();
 
@@ -53,6 +55,8 @@ export function ReusableCardManager<T extends BaseCardData>({
     const [editorCardState, setEditorCardState] = useState<T>(initialCardState as T);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
     const [alertState, setAlertState] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+    const [isSeeding, setIsSeeding] = useState(false);
+
 
     const isEditing = editingCardId !== null || isCreatingNew;
 
@@ -75,6 +79,37 @@ export function ReusableCardManager<T extends BaseCardData>({
         setIsCreatingNew(false);
         setAlertState(null);
     };
+    
+    const handleSeedData = async () => {
+        if (!firestore || !seedData || seedData.length === 0) {
+            setAlertState({ type: 'error', message: 'Keine Seed-Daten verfügbar oder Datenbankverbindung fehlgeschlagen.' });
+            return;
+        }
+        setIsSeeding(true);
+        setAlertState(null);
+        try {
+            const batch = writeBatch(firestore);
+            const collectionRef = collection(firestore, collectionName);
+            seedData.forEach((item, index) => {
+                const docRef = doc(collectionRef);
+                const dataWithTimestamp = {
+                    ...item,
+                    order: index + 1,
+                    id: docRef.id,
+                    createdAt: serverTimestamp(),
+                };
+                batch.set(docRef, dataWithTimestamp);
+            });
+            await batch.commit();
+            setAlertState({ type: 'success', message: `${seedData.length} ${entityName}-Einträge erfolgreich geschrieben.` });
+        } catch (error: any) {
+            console.error('Seeding failed:', error);
+            setAlertState({ type: 'error', message: `Fehler beim Schreiben der Daten: ${error.message}` });
+        } finally {
+            setIsSeeding(false);
+        }
+    };
+
 
     const handleMove = async (cardId: string, direction: 'up' | 'down') => {
         if (!dbData || !firestore) return;
@@ -295,6 +330,24 @@ export function ReusableCardManager<T extends BaseCardData>({
                             <AlertDescription>{alertState.message}</AlertDescription>
                         </Alert>
                     )}
+                     
+                    {!isLoadingData && dbData?.length === 0 && seedData && (
+                        <Card className="mb-8">
+                            <CardHeader>
+                                <CardTitle className="text-primary">Daten-Übertragung</CardTitle>
+                                <CardDescription>
+                                    Die Datenbank-Sammlung `{collectionName}` ist leer. Klicken Sie hier, um die initialen Demodaten zu übertragen.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <Button onClick={handleSeedData} disabled={isSeeding}>
+                                    <Upload className="mr-2 h-4 w-4" />
+                                    {isSeeding ? 'Übertrage Daten...' : `Demodaten für ${entityName} übertragen`}
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    )}
+
 
                     <div className="space-y-4">
                         <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Karten</h3>
@@ -368,3 +421,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    

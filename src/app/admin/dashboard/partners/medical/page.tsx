@@ -5,8 +5,6 @@ import { PartnerCard as DisplayCard } from './_components/partner-card';
 import { PartnerEditor as EditorComponent } from './_components/partner-editor';
 import { ReusableCardManager } from '../../_components/reusable-card-manager';
 import type { Partner as CardData } from './_components/partner-card';
-import { SeedButton } from './_components/seed-button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const initialPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     name: "Neuer Partner",
@@ -18,28 +16,59 @@ const initialPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     hidden: false,
 };
 
+const medicalPartnersSeedData = [
+    {
+      name: 'orthozentrum-bern',
+      websiteUrl: 'https://orthozentrum-bern.ch/',
+      logoUrl: '',
+      hint: 'orthopedics logo',
+      width: 200,
+      height: 60,
+      hidden: false,
+    },
+    {
+      name: 'VASC ALLIANCE',
+      websiteUrl: 'https://www.vasc-alliance.ch/',
+      logoUrl: '/images/VASC-Alliance-Logo.png',
+      hint: 'vascular surgery logo',
+      width: 200,
+      height: 60,
+      hidden: false,
+    },
+    {
+      name: 'Schemmer & Worni',
+      websiteUrl: 'https://schemmer-worni.ch/',
+      logoUrl: '/images/schemmer-worni-logo.png',
+      hint: 'surgery logo',
+      width: 200,
+      height: 60,
+      hidden: false,
+    },
+    {
+      name: 'Agnieszka Slezak',
+      websiteUrl: 'https://neurologie-plus.ch/',
+      logoUrl: '/images/logos/slezak-logo.png',
+      hint: 'neurology logo',
+      width: 200,
+      height: 60,
+      hidden: false,
+  },
+];
+
+
 export default function MedicalPartnersPage() {
     return (
-        <>
-            <div className="p-4 sm:p-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-primary">Daten-Übertragung</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <SeedButton collectionName='medicalPartners' />
-                    </CardContent>
-                </Card>
-            </div>
-            <ReusableCardManager
-                collectionName="medicalPartners"
-                pageTitle="Ärztliche Kooperationspartner"
-                pageDescription="Verwalten Sie die ärztlichen Kooperationspartner, die auf der Startseite angezeigt werden."
-                initialCardState={initialPartnerState}
-                DisplayCardComponent={DisplayCard}
-                EditorCardComponent={EditorComponent}
-                entityName="Partner"
-            />
-        </>
+        <ReusableCardManager
+            collectionName="medicalPartners"
+            pageTitle="Ärztliche Kooperationspartner"
+            pageDescription="Verwalten Sie die ärztlichen Kooperationspartner, die auf der Startseite angezeigt werden."
+            initialCardState={initialPartnerState}
+            DisplayCardComponent={DisplayCard}
+            EditorCardComponent={EditorComponent}
+            entityName="Partner"
+            seedData={medicalPartnersSeedData}
+        />
     );
 }
+
+    
