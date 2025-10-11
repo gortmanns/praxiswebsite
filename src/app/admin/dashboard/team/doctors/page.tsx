@@ -521,22 +521,29 @@ export default function DoctorsPage() {
     const handleSaveChanges = async () => {
         if (!firestore || !dbDoctors) return;
 
-        // Clean up the HTML before saving
-        const parser = new DOMParser();
-        const docParser = parser.parseFromString(editorCardState.frontSideCode, 'text/html');
-        docParser.querySelectorAll('button[id^="edit-"]').forEach(button => {
-            // Replace button with its content
-            const parent = button.parentElement;
-            if (parent) {
-                while(button.firstChild) {
-                    parent.insertBefore(button.firstChild, button);
+        const cleanupHtml = (html: string) => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            doc.querySelectorAll('button[id^="edit-"]').forEach(button => {
+                const parent = button.parentElement;
+                if (parent) {
+                    while (button.firstChild) {
+                        parent.insertBefore(button.firstChild, button);
+                    }
+                    parent.removeChild(button);
                 }
-                parent.removeChild(button);
-            }
-        });
+            });
+            return doc.body.innerHTML;
+        };
         
-        const cleanedFrontSideCode = docParser.body.innerHTML;
-        const finalCardData = { ...editorCardState, frontSideCode: cleanedFrontSideCode };
+        const cleanedFrontSideCode = cleanupHtml(editorCardState.frontSideCode);
+        const cleanedBackSideCode = cleanupHtml(editorCardState.backSideCode);
+
+        const finalCardData = { 
+            ...editorCardState, 
+            frontSideCode: cleanedFrontSideCode,
+            backSideCode: cleanedBackSideCode,
+        };
 
         if (editingDoctorId) {
             // Update existing document
@@ -548,7 +555,7 @@ export default function DoctorsPage() {
             const newDoctorData: Omit<Doctor, 'id'> = {
                 name: editorCardState.name === 'Template' ? 'Neuer Arzt' : editorCardState.name,
                 frontSideCode: finalCardData.frontSideCode,
-                backSideCode: editorCardState.backSideCode,
+                backSideCode: finalCardData.backSideCode,
                 languages: editorCardState.languages || [],
                 order: highestOrder + 1,
                 createdAt: serverTimestamp(),
