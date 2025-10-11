@@ -243,7 +243,7 @@ export default function DoctorsPage() {
                     openDialog('imageSource', { field, aspectRatio: 2/3 });
                     break;
                 case 'position':
-                    openDialog('logoFunction', { field });
+                    openDialog('logoFunction', { field, aspectRatio: 1600/265 });
                     break;
                 case 'title':
                 case 'name':
@@ -305,12 +305,10 @@ export default function DoctorsPage() {
         const doc = parser.parseFromString(exampleDoctor.backSideCode, 'text/html');
         const button = doc.getElementById('edit-vita');
         if (button) {
-            // Create a new div to hold the vita content
             const vitaContainer = doc.createElement('div');
             vitaContainer.className = 'vita-content p-8 w-full max-w-[1000px]';
             vitaContainer.innerHTML = newVita;
             
-            // Clear the button and append the new container
             button.innerHTML = '';
             button.appendChild(vitaContainer);
         }
@@ -336,6 +334,7 @@ export default function DoctorsPage() {
         }
         const updatedHtml = doc.body.innerHTML;
         setExampleDoctor(prev => ({ ...prev, frontSideCode: updatedHtml }));
+        setDialogState({ type: null, data: {} });
     };
 
     const doctorsQuery = useMemoFirebase(() => {
@@ -456,7 +455,7 @@ export default function DoctorsPage() {
                         setDialogState({ type: 'imageLibrary', data: { field: 'position', aspectRatio: 1600/265 } });
                     }}
                     onUploadNew={() => {
-                        setDialogState({ type: null, data: { field: 'position', aspectRatio: 1600/265 } });
+                        setDialogState(prev => ({ type: null, data: { ...prev.data, field: 'position', aspectRatio: 1600/265 } }));
                         fileInputRef.current?.click();
                     }}
                 />
