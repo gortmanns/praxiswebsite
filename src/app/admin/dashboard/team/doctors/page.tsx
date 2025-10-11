@@ -1,14 +1,13 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { doc, getDoc, setDoc, collection, query, orderBy } from 'firebase/firestore';
+import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import DOMPurify from 'dompurify';
 
 export interface Doctor {
     id: string;
@@ -19,24 +18,6 @@ export interface Doctor {
     [key: string]: any;
 }
 
-const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
-    const sanitizedHtml = React.useMemo(() => {
-        if (typeof window !== 'undefined') {
-            const config = {
-                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img", "foreignObject"],
-                ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src', 'preserveAspectRatio']
-            };
-            return { __html: DOMPurify.sanitize(html, config) };
-        }
-        return { __html: '' };
-    }, [html]);
-
-    return (
-        <div className="w-full h-full" dangerouslySetInnerHTML={sanitizedHtml} />
-    );
-};
-
-
 export default function DoctorsPage() {
     const firestore = useFirestore();
 
@@ -46,21 +27,6 @@ export default function DoctorsPage() {
     }, [firestore]);
 
     const { data: dbDoctors, isLoading: isLoadingDbDoctors, error: dbError } = useCollection<Doctor>(doctorsQuery);
-    
-    const ortmannsCardData = DOCTOR_CARDS_INITIAL_DATA.find(d => d.id === 'ortmanns');
-
-    const renderCardPreview = (htmlContent: string) => {
-        const svgContent = `
-            <svg viewBox="0 0 1000 495" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-                <foreignObject width="1000" height="495">
-                    <div xmlns="http://www.w3.org/1999/xhtml">
-                        ${htmlContent}
-                    </div>
-                </foreignObject>
-            </svg>
-        `;
-        return <CodeRenderer html={svgContent} />;
-    };
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -76,17 +42,8 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="w-full rounded-lg border-2 border-dashed border-muted p-4">
-                        {ortmannsCardData && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                                <div className="aspect-[1000/495] w-full">
-                                    {renderCardPreview(ortmannsCardData.frontSideCode)}
-                                </div>
-                                <div className="aspect-[1000/495] w-full">
-                                    {renderCardPreview(ortmannsCardData.backSideCode)}
-                                </div>
-                            </div>
-                        )}
+                    <div className="w-full rounded-lg border-2 border-dashed border-muted p-4 min-h-[200px]">
+                       {/* Der Vorschau-Bereich ist jetzt leer und bereit für Ihre Anweisungen. */}
                     </div>
 
                     <div className="mt-8 space-y-4">
