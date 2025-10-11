@@ -38,8 +38,39 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string }> = ({ html
         return { __html: '' };
     }, [html]);
 
+    const wrapperRef = useRef<HTMLDivElement>(null);
+    const [scale, setScale] = useState(1);
+
+    useEffect(() => {
+        const calculateScale = () => {
+            if (wrapperRef.current) {
+                const parentWidth = wrapperRef.current.offsetWidth;
+                setScale(parentWidth / 1000);
+            }
+        };
+
+        calculateScale();
+        const resizeObserver = new ResizeObserver(calculateScale);
+        if (wrapperRef.current) {
+            resizeObserver.observe(wrapperRef.current);
+        }
+
+        return () => {
+            if (wrapperRef.current) {
+                resizeObserver.unobserve(wrapperRef.current);
+            }
+        };
+    }, []);
+
     return (
-        <div className={className} dangerouslySetInnerHTML={sanitizedHtml} />
+        <div ref={wrapperRef} className="relative w-full aspect-[1000/495] overflow-hidden">
+            <div 
+                className="absolute top-0 left-0 w-[1000px] h-[495px] origin-top-left"
+                style={{ transform: `scale(${scale})` }}
+            >
+                <div className={className} dangerouslySetInnerHTML={sanitizedHtml} />
+            </div>
+        </div>
     );
 };
 
@@ -210,15 +241,9 @@ export default function DoctorsPage() {
                 <CardContent>
                     <div id="template-container" className="w-full rounded-lg border-2 border-dashed border-muted p-4" onClick={handleTemplateClick}>
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                           <div className="relative aspect-[1000/495] w-full overflow-hidden">
-                                <div className="absolute top-0 left-0 h-[495px] w-[1000px] origin-top-left" style={{ transform: 'scale(calc(100% / 1000px))' }}>
-                                    <CardHtmlRenderer html={exampleDoctor.frontSideCode} />
-                                </div>
-                            </div>
-                            <div className="relative aspect-[1000/495] w-full overflow-hidden bg-accent/95 rounded-md">
-                                <div className="absolute top-0 left-0 h-[495px] w-[1000px] origin-top-left" style={{ transform: 'scale(calc(100% / 1000px))' }}>
-                                    <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" />
-                                </div>
+                            <CardHtmlRenderer html={exampleDoctor.frontSideCode} />
+                            <div className="bg-accent/95 rounded-md">
+                                <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" />
                             </div>
                        </div>
                     </div>
