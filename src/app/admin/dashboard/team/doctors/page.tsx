@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
-import { Button } from '@/components/ui/button';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, getDoc, setDoc, collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -17,6 +16,26 @@ export interface Doctor {
     backSideCode: string;
     [key: string]: any;
 }
+
+const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
+    const sanitizedHtml = React.useMemo(() => {
+        // This check ensures DOMPurify only runs on the client
+        if (typeof window !== 'undefined') {
+            const DOMPurify = require('dompurify');
+            const config = {
+                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img"],
+                ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src']
+            };
+            return { __html: DOMPurify.sanitize(html, config) };
+        }
+        return { __html: '' };
+    }, [html]);
+
+    return (
+        <div className="w-full h-full" dangerouslySetInnerHTML={sanitizedHtml} />
+    );
+};
+
 
 export default function DoctorsPage() {
     const firestore = useFirestore();
@@ -45,12 +64,16 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                     <div className="flex justify-center items-center p-8 border-dashed border-2 border-muted rounded-lg">
+                     <div className="p-8 border-dashed border-2 border-muted rounded-lg">
                         {ortmannsCardData && (
-                            <EditableDoctorCard 
-                                doctor={ortmannsCardData} 
-                                onVitaClick={() => {}} 
-                            />
+                            <div className="grid grid-cols-2 gap-2.5">
+                                <div className="relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm">
+                                    <CodeRenderer html={ortmannsCardData.frontSideCode} />
+                                </div>
+                                <div className="relative w-full max-w-[1000px] aspect-[1000/495] overflow-auto rounded-lg shadow-sm bg-accent/95 text-left text-background">
+                                     <CodeRenderer html={ortmannsCardData.backSideCode} />
+                                </div>
+                            </div>
                         )}
                     </div>
 
