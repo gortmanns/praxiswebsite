@@ -6,6 +6,7 @@ import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
 
 interface Partner {
     id: string;
@@ -38,6 +39,28 @@ export function CooperationPartnersSection() {
   const visibleMedicalPartners = medicalPartners?.filter(p => !p.hidden) || [];
   const visibleOtherPartners = otherPartners?.filter(p => !p.hidden) || [];
 
+  const renderPartnerLogo = (partner: Partner) => {
+    if (partner.name === 'orthozentrum-bern') {
+      return <OrthozentrumLogo className="h-24 w-auto" />;
+    }
+    if (partner.name === 'Agnieszka Slezak') {
+      return <AgnieszkaSlezakLogo className="h-24 w-auto text-special-green" />;
+    }
+    return (
+      <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+        <Image
+          src={partner.logoUrl}
+          alt={`${partner.name} Logo`}
+          width={partner.width || 200}
+          height={partner.height || 60}
+          className="object-contain"
+          data-ai-hint={partner.hint}
+        />
+      </div>
+    );
+  };
+
+
   return (
     <section id="partners" className="w-full bg-primary">
       <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
@@ -51,8 +74,7 @@ export function CooperationPartnersSection() {
               <Skeleton key={index} className="h-32 w-full rounded-lg" />
             ))
           ) : (
-            <>
-              {visibleMedicalPartners.map(partner => (
+            visibleMedicalPartners.map(partner => (
                 <Link
                   key={partner.id}
                   href={partner.websiteUrl || '#'}
@@ -62,40 +84,12 @@ export function CooperationPartnersSection() {
                 >
                   <Card className="flex h-full w-full items-center p-6">
                     <CardContent className="flex w-full items-center justify-center p-0">
-                      {partner.name === 'orthozentrum-bern' ? (
-                        <OrthozentrumLogo className="h-24 w-auto" />
-                      ) : (
-                        <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                          <Image
-                            src={partner.logoUrl}
-                            alt={`${partner.name} Logo`}
-                            width={partner.width || 200}
-                            height={partner.height || 60}
-                            className="object-contain"
-                            data-ai-hint={partner.hint}
-                          />
-                        </div>
-                      )}
+                      {renderPartnerLogo(partner)}
                     </CardContent>
                   </Card>
                   <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                 </Link>
-              ))}
-              <Link
-                  key="slezak-as-ortho"
-                  href="https://neurologie-plus.ch/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                >
-                  <Card className="flex h-full w-full items-center p-6">
-                    <CardContent className="flex w-full items-center justify-center p-0">
-                      <img src="/images/logos/slezak-logo.png" alt="Agnieszka Slezak Logo" className="h-24 w-auto text-special-green" />
-                    </CardContent>
-                  </Card>
-                  <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-              </Link>
-            </>
+              ))
           )}
         </div>
 

@@ -47,7 +47,7 @@ const medicalPartnersSeedData = [
     {
       name: 'Agnieszka Slezak',
       websiteUrl: 'https://neurologie-plus.ch/',
-      logoUrl: '/images/logos/slezak-logo.png',
+      logoUrl: '',
       hint: 'neurology logo',
       width: 200,
       height: 60,
