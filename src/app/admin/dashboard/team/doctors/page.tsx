@@ -21,6 +21,7 @@ import DOMPurify from 'dompurify';
 import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
 import { ChevronUp, ChevronDown, Pencil, EyeOff, Globe, Image as ImageIcon, Trash2, User } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 
 export interface Doctor {
@@ -97,12 +98,11 @@ export default function DoctorsPage() {
         frontSideCode: `
             <style>
                 .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; border-radius: 0.25rem; display: block; }
-                .template-card button:hover:not(.image-button) { background-color: rgba(0,0,0,0.1); }
-                .template-card .image-button { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.2); }
                 .template-card p, .template-card h3, .template-card span { margin:0; }
                 .template-card .font-headline { font-family: var(--font-headline); }
                 .template-card .text-card-foreground { color: hsl(var(--card-foreground)); }
+                .template-card .bg-card { background-color: hsl(var(--card)); }
                 .template-card .p-6 { padding: 1.5rem; }
                 .template-card .flex { display: flex; }
                 .template-card .h-full { height: 100%; }
@@ -137,10 +137,12 @@ export default function DoctorsPage() {
             </style>
              <div class="template-card w-full h-full bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
-                    <button id="edit-image" class="image-button relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted text-muted-foreground p-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="font-bold"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        <span class="mt-2 text-sm font-bold">Zum Ändern anklicken</span>
-                    </button>
+                    <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
+                        <button id="edit-image" class="image-button h-full w-full bg-muted text-muted-foreground p-4 flex flex-col items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="font-bold"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <span class="mt-2 text-sm font-bold">Zum Ändern anklicken</span>
+                        </button>
+                    </div>
                     <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
                         <div>
                             <button id="edit-title" class="w-full text-left">
@@ -158,8 +160,8 @@ export default function DoctorsPage() {
                                 <button id="edit-qual3" class="w-full text-left"><p>Qualifikation 3</p></button>
                                 <button id="edit-qual4" class="w-full text-left"><p>Qualifikation 4</p></button>
                             </div>
-                            <div id="position-container" class="mt-6 text-base">
-                                <button id="edit-position" class="w-full text-left"><p>Position oder Logo</p></button>
+                            <div id="position-container" class="mt-6">
+                                <button id="edit-position" class="w-full text-left"><p class="text-base">Position oder Logo</p></button>
                             </div>
                         </div>
                         <div id="language-container" class="absolute bottom-0 right-0 flex items-center gap-2">
@@ -253,7 +255,7 @@ export default function DoctorsPage() {
                     openDialog('imageSource', { field });
                     break;
                 case 'position':
-                    openDialog('logoFunction', { field });
+                     openDialog('logoFunction', { field });
                     break;
                 case 'title':
                 case 'name':
@@ -289,9 +291,11 @@ export default function DoctorsPage() {
         if (field === 'image') {
           const targetButton = doc.getElementById(`edit-image`);
           if (targetButton) {
-            targetButton.innerHTML = `<img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-cover" />`;
-            targetButton.style.padding = '0';
-            targetButton.classList.remove('bg-muted', 'text-muted-foreground', 'p-4');
+            const parent = targetButton.parentElement;
+            if(parent) {
+                targetButton.remove();
+                parent.innerHTML = `<img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-cover" />`;
+            }
           }
         } else {
           const positionContainer = doc.getElementById('position-container');
@@ -315,7 +319,7 @@ export default function DoctorsPage() {
                 ...prev,
                 backSideCode: newVita,
             }));
-        } else if (firestore && activeDoctor) {
+        } else if (firestore && activeDoctor && typeof activeDoctor === 'object') {
              const docRef = doc(firestore, 'doctors', activeDoctor.id);
              setDoc(docRef, { backSideCode: newVita }, { merge: true });
         }
@@ -349,7 +353,7 @@ export default function DoctorsPage() {
     const handleLanguageSave = (selectedLanguages: string[]) => {
         if(activeDoctor === 'template') {
             setExampleDoctor(prev => ({ ...prev, languages: selectedLanguages }));
-        } else if (firestore && activeDoctor) {
+        } else if (firestore && activeDoctor && typeof activeDoctor === 'object') {
             const docRef = doc(firestore, 'doctors', activeDoctor.id);
             setDoc(docRef, { languages: selectedLanguages }, { merge: true });
         }
@@ -361,41 +365,15 @@ export default function DoctorsPage() {
         let currentDoctor = activeDoctor === 'template' ? exampleDoctor : activeDoctor;
         if (!currentDoctor || typeof currentDoctor === 'string') return;
     
-        const langToFlagHtml: Record<string, string> = {
-            de: DeFlag({}).props.dangerouslySetInnerHTML.__html,
-            en: EnFlag({}).props.dangerouslySetInnerHTML.__html,
-            fr: FrFlag({}).props.dangerouslySetInnerHTML.__html,
-            it: ItFlag({}).props.dangerouslySetInnerHTML.__html,
-            es: EsFlag({}).props.dangerouslySetInnerHTML.__html,
-            pt: PtFlag({}).props.dangerouslySetInnerHTML.__html,
-            ru: RuFlag({}).props.dangerouslySetInnerHTML.__html,
-            sq: SqFlag({}).props.dangerouslySetInnerHTML.__html,
-            ar: ArFlag({}).props.dangerouslySetInnerHTML.__html,
-            bs: BsFlag({}).props.dangerouslySetInnerHTML.__html,
-            zh: ZhFlag({}).props.dangerouslySetInnerHTML.__html,
-            da: DaFlag({}).props.dangerouslySetInnerHTML.__html,
-            fi: FiFlag({}).props.dangerouslySetInnerHTML.__html,
-            el: ElFlag({}).props.dangerouslySetInnerHTML.__html,
-            he: HeFlag({}).props.dangerouslySetInnerHTML.__html,
-            hi: HiFlag({}).props.dangerouslySetInnerHTML.__html,
-            ja: JaFlag({}).props.dangerouslySetInnerHTML.__html,
-            ko: KoFlag({}).props.dangerouslySetInnerHTML.__html,
-            hr: HrFlag({}).props.dangerouslySetInnerHTML.__html,
-            nl: NlFlag({}).props.dangerouslySetInnerHTML.__html,
-            no: NoFlag({}).props.dangerouslySetInnerHTML.__html,
-            fa: FaFlag({}).props.dangerouslySetInnerHTML.__html,
-            pl: PlFlag({}).props.dangerouslySetInnerHTML.__html,
-            pa: PaFlag({}).props.dangerouslySetInnerHTML.__html,
-            ro: RoFlag({}).props.dangerouslySetInnerHTML.__html,
-            sv: SvFlag({}).props.dangerouslySetInnerHTML.__html,
-            sr: SrFlag({}).props.dangerouslySetInnerHTML.__html,
-            ta: TaFlag({}).props.dangerouslySetInnerHTML.__html,
-            cs: CsFlag({}).props.dangerouslySetInnerHTML.__html,
-            tr: TrFlag({}).props.dangerouslySetInnerHTML.__html,
-            uk: UkFlag({}).props.dangerouslySetInnerHTML.__html,
-            hu: HuFlag({}).props.dangerouslySetInnerHTML.__html,
-            ur: UrFlag({}).props.dangerouslySetInnerHTML.__html,
-        };
+        const flagComponents: Record<string, React.FC<{ className?: string }>> = { de: DeFlag, en: EnFlag, fr: FrFlag, it: ItFlag, es: EsFlag, pt: PtFlag, ru: RuFlag, sq: SqFlag, ar: ArFlag, bs: BsFlag, zh: ZhFlag, da: DaFlag, fi: FiFlag, el: ElFlag, he: HeFlag, hi: HiFlag, ja: JaFlag, ko: KoFlag, hr: HrFlag, nl: NlFlag, no: NoFlag, fa: FaFlag, pl: PlFlag, pa: PaFlag, ro: RoFlag, sv: SvFlag, sr: SrFlag, ta: TaFlag, cs: CsFlag, tr: TrFlag, uk: UkFlag, hu: HuFlag, ur: UrFlag };
+        
+        const langToFlagHtml: Record<string, string> = {};
+        for(const lang in flagComponents) {
+            const FlagComponent = flagComponents[lang];
+            if (FlagComponent) {
+                langToFlagHtml[lang] = renderToStaticMarkup(<FlagComponent className="h-5 w-auto rounded-sm shadow-md" />);
+            }
+        }
 
         const languages = currentDoctor.languages || [];
         
@@ -425,14 +403,16 @@ export default function DoctorsPage() {
             langContainer.innerHTML = newHtml;
         }
 
+        const updatedCode = doc.body.innerHTML;
+
         if (activeDoctor === 'template') {
             setExampleDoctor(prev => ({
                 ...prev,
-                frontSideCode: doc.body.innerHTML,
+                frontSideCode: updatedCode,
             }));
-        } else if (firestore && activeDoctor) {
+        } else if (firestore && activeDoctor && typeof activeDoctor === 'object' && activeDoctor.frontSideCode !== updatedCode) {
             const docRef = doc(firestore, 'doctors', activeDoctor.id);
-            setDoc(docRef, { frontSideCode: doc.body.innerHTML }, { merge: true });
+            setDoc(docRef, { frontSideCode: updatedCode }, { merge: true });
         }
     }, [exampleDoctor.languages, activeDoctor, firestore]);
 
@@ -546,6 +526,10 @@ export default function DoctorsPage() {
                                         <Pencil className="h-4 w-4" />
                                         <span className="sr-only">Bearbeiten</span>
                                     </Button>
+                                    <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name }})}>
+                                        <Trash2 className="h-4 w-4" />
+                                        <span className="sr-only">Löschen</span>
+                                    </Button>
                                 </div>
                                 <div className="relative flex-1 w-full max-w-[1000px] p-2">
                                     <EditableDoctorCard doctor={doctor} onVitaClick={() => {
@@ -583,7 +567,7 @@ export default function DoctorsPage() {
                 <LanguageSelectDialog
                     isOpen={true}
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
-                    initialLanguages={activeDoctor === 'template' ? (exampleDoctor.languages || []) : (typeof activeDoctor === 'object' && activeDoctor.languages) || []}
+                    initialLanguages={(activeDoctor === 'template' ? exampleDoctor.languages : (typeof activeDoctor === 'object' && activeDoctor.languages)) || []}
                     onSave={handleLanguageSave}
                 />
             )}
@@ -666,3 +650,4 @@ export default function DoctorsPage() {
         </div>
     );
 }
+
