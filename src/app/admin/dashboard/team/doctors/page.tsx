@@ -5,10 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
 import { Button } from '@/components/ui/button';
-import { useFirestore } from '@/firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { doc, getDoc, setDoc, collection, query, orderBy } from 'firebase/firestore';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export interface Doctor {
     id: string;
@@ -22,6 +22,13 @@ export interface Doctor {
 export default function DoctorsPage() {
     const firestore = useFirestore();
     const [dbLog, setDbLog] = useState('');
+
+    const doctorsQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
+    }, [firestore]);
+
+    const { data: dbDoctors, isLoading: isLoadingDbDoctors, error: dbError } = useCollection<Doctor>(doctorsQuery);
     
     const handleWriteToDb = async () => {
         setDbLog('Attempting to write to Firestore...');
@@ -37,7 +44,6 @@ export default function DoctorsPage() {
         try {
             const writePromises = doctorsToWrite.map(doctorData => {
                 const docRef = doc(firestore, 'doctors', doctorData.id);
-                // The data being written must be a plain object.
                 const dataToWrite = {
                     id: doctorData.id,
                     name: doctorData.name,
@@ -84,8 +90,37 @@ export default function DoctorsPage() {
                             className="h-32 w-full font-mono text-xs"
                         />
                     </div>
+
                     <div className="mt-8 space-y-4">
-                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Vorhandene Ärztekarten (Lokale Daten)</h3>
+                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Datenbank Ärztekarten</h3>
+                         <p className="text-sm text-muted-foreground">
+                            Dieser Bereich zeigt die Karten so an, wie sie live aus der Firestore-Datenbank geladen werden.
+                        </p>
+                    </div>
+                     <div className="mt-8 space-y-12">
+                        {isLoadingDbDoctors && (
+                            Array.from({ length: 2 }).map((_, index) => (
+                                <div key={index} className="flex w-full items-center justify-center gap-4">
+                                    <div className="w-36"></div>
+                                    <div className="relative flex-1 w-full max-w-[1000px] p-2">
+                                        <Skeleton className="w-full aspect-[1000/495] rounded-lg" />
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                        {dbError && <p className="text-destructive">Fehler beim Laden der Daten: {dbError.message}</p>}
+                        {!isLoadingDbDoctors && dbDoctors?.map(doctor => (
+                            <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
+                                <div className="w-36"></div>
+                                <div className="relative flex-1 w-full max-w-[1000px] p-2">
+                                    <EditableDoctorCard doctor={doctor} onVitaClick={() => {}} />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="mt-16 space-y-4">
+                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Lokale Ärztekarten (Vergleich)</h3>
                          <p className="text-sm text-muted-foreground">
                             Dieser Bereich zeigt die Karten so an, wie sie aus der lokalen Datei `doctor-cards-data.ts` geladen werden.
                         </p>
