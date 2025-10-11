@@ -25,32 +25,21 @@ export default function DoctorsPage() {
     
     const handleWriteToDb = async () => {
         if (!firestore) {
-            toast({
-                variant: 'destructive',
-                title: 'Fehler',
-                description: 'Firestore ist nicht verfügbar.',
-            });
+            console.error("Firestore ist nicht verfügbar.");
             return;
         }
         const ortmannsData = DOCTOR_CARDS_INITIAL_DATA.find(d => d.id === 'ortmanns');
         if (ortmannsData) {
-            try {
-                const docRef = doc(firestore, 'doctors', ortmannsData.id);
-                // We now AWAIT the result of the setDoc operation.
-                await setDoc(docRef, ortmannsData, { merge: true });
-                toast({
-                    title: 'Erfolg!',
-                    description: 'Daten erfolgreich in die Datenbank geschrieben.',
-                });
-            } catch (error: any) {
-                 // We now log the error to the console, which will trigger the Next.js error overlay.
-                 console.error("Fehler beim Schreiben in die Datenbank:", error);
-                 toast({
-                    variant: 'destructive',
-                    title: 'Fehler beim Schreiben in die DB',
-                    description: error.message,
-                });
-            }
+            const docRef = doc(firestore, 'doctors', ortmannsData.id);
+            // We now AWAIT the result of the setDoc operation.
+            // Any error will be thrown and caught by the Next.js error overlay.
+            await setDoc(docRef, ortmannsData, { merge: true });
+            
+            // This toast will only show if the await above succeeds.
+            toast({
+                title: 'Schreibvorgang erfolgreich!',
+                description: 'Die Daten wurden ohne Fehler an die Datenbank gesendet.',
+            });
         }
     };
 
