@@ -243,6 +243,97 @@ export default function DoctorsPage() {
         '/images/leistungen/wundversorgung.jpg',
     ];
 
+    useEffect(() => {
+        let currentDoctor: Doctor | null = null;
+        if (activeDoctor === 'template') {
+          currentDoctor = exampleDoctor;
+        } else if (typeof activeDoctor === 'object' && dbDoctors) {
+          currentDoctor = dbDoctors.find(d => d.id === activeDoctor.id) || null;
+        }
+        
+        if (!currentDoctor || !currentDoctor.frontSideCode) return;
+        
+        const langToFlagHtml: Record<string, string> = {
+            de: renderToStaticMarkup(React.createElement(DeFlag)),
+            en: renderToStaticMarkup(React.createElement(EnFlag)),
+            fr: renderToStaticMarkup(React.createElement(FrFlag)),
+            it: renderToStaticMarkup(React.createElement(ItFlag)),
+            es: renderToStaticMarkup(React.createElement(EsFlag)),
+            pt: renderToStaticMarkup(React.createElement(PtFlag)),
+            ru: renderToStaticMarkup(React.createElement(RuFlag)),
+            sq: renderToStaticMarkup(React.createElement(SqFlag)),
+            ar: renderToStaticMarkup(React.createElement(ArFlag)),
+            bs: renderToStaticMarkup(React.createElement(BsFlag)),
+            zh: renderToStaticMarkup(React.createElement(ZhFlag)),
+            da: renderToStaticMarkup(React.createElement(DaFlag)),
+            fi: renderToStaticMarkup(React.createElement(FiFlag)),
+            el: renderToStaticMarkup(React.createElement(ElFlag)),
+            he: renderToStaticMarkup(React.createElement(HeFlag)),
+            hi: renderToStaticMarkup(React.createElement(HiFlag)),
+            ja: renderToStaticMarkup(React.createElement(JaFlag)),
+            ko: renderToStaticMarkup(React.createElement(KoFlag)),
+            hr: renderToStaticMarkup(React.createElement(HrFlag)),
+            nl: renderToStaticMarkup(React.createElement(NlFlag)),
+            no: renderToStaticMarkup(React.createElement(NoFlag)),
+            fa: renderToStaticMarkup(React.createElement(FaFlag)),
+            pl: renderToStaticMarkup(React.createElement(PlFlag)),
+            pa: renderToStaticMarkup(React.createElement(PaFlag)),
+            ro: renderToStaticMarkup(React.createElement(RoFlag)),
+            sv: renderToStaticMarkup(React.createElement(SvFlag)),
+            sr: renderToStaticMarkup(React.createElement(SrFlag)),
+            ta: renderToStaticMarkup(React.createElement(TaFlag)),
+            cs: renderToStaticMarkup(React.createElement(CsFlag)),
+            tr: renderToStaticMarkup(React.createElement(TrFlag)),
+            uk: renderToStaticMarkup(React.createElement(UkFlag)),
+            hu: renderToStaticMarkup(React.createElement(HuFlag)),
+            ur: renderToStaticMarkup(React.createElement(UrFlag)),
+        };
+
+        const languages = currentDoctor.languages || [];
+        const languageOrder = ['de', 'fr', 'it', 'en', 'es', 'pt', 'ru'];
+
+        const sortedLangs = [...languages].sort((a, b) => {
+            const indexA = languageOrder.indexOf(a);
+            const indexB = languageOrder.indexOf(b);
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
+            return a.localeCompare(b);
+        });
+
+        const flagsHtml = sortedLangs.map(lang => {
+            const flagHtml = langToFlagHtml[lang];
+            if (!flagHtml) return '';
+            // Add classes to the SVG string
+            return flagHtml.replace('<svg', '<svg class="h-5 w-auto rounded-sm shadow-md"');
+        }).join('');
+
+        const buttonHtml = `<button id="edit-languages" style="display: flex; align-items: center; gap: 0.5rem; height: 2rem; padding: 0 0.75rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem;" onmouseover="this.style.backgroundColor='hsl(var(--primary) / 0.9)'" onmouseout="this.style.backgroundColor='hsl(var(--primary))'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            <span>Sprachen</span>
+        </button>`;
+
+        const newHtml = `${buttonHtml}${flagsHtml}`;
+        
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(currentDoctor.frontSideCode, 'text/html');
+        const langContainer = doc.getElementById('language-container');
+        
+        if (langContainer && langContainer.innerHTML !== newHtml) {
+            langContainer.innerHTML = newHtml;
+            const updatedCode = doc.body.innerHTML;
+
+            if (activeDoctor === 'template') {
+                if (exampleDoctor.frontSideCode !== updatedCode) {
+                    setExampleDoctor(prev => ({ ...prev, frontSideCode: updatedCode }));
+                }
+            } else if (firestore && typeof activeDoctor === 'object') {
+                const docRef = doc(firestore, 'doctors', activeDoctor.id);
+                setDoc(docRef, { frontSideCode: updatedCode }, { merge: true });
+            }
+        }
+    }, [exampleDoctor.languages, activeDoctor, dbDoctors, firestore]);
+
     const handleTemplateClick = (e: React.MouseEvent) => {
         let target = e.target as HTMLElement;
         while (target && !target.id.startsWith('edit-')) {
@@ -320,8 +411,8 @@ export default function DoctorsPage() {
                  const mainDiv = positionContainer.parentElement;
                  if(mainDiv) {
                     positionContainer.innerHTML = `
-                        <button id="edit-position">
-                            <div class="relative image-button-background">
+                        <button id="edit-position" class="image-button-background">
+                            <div class="relative">
                                 <img src="${croppedImageUrl}" alt="Logo" class="h-auto object-contain relative" style="max-width: 75%;" />
                             </div>
                         </button>`;
@@ -425,97 +516,6 @@ export default function DoctorsPage() {
         setDialogState({ type: null, data: {} });
     };
     
-    useEffect(() => {
-        let currentDoctor: Doctor | null = null;
-        if (activeDoctor === 'template') {
-          currentDoctor = exampleDoctor;
-        } else if (typeof activeDoctor === 'object' && dbDoctors) {
-          currentDoctor = dbDoctors.find(d => d.id === activeDoctor.id) || null;
-        }
-        
-        if (!currentDoctor || !currentDoctor.frontSideCode) return;
-        
-        const langToFlagHtml: Record<string, string> = {
-            de: renderToStaticMarkup(React.createElement(DeFlag)),
-            en: renderToStaticMarkup(React.createElement(EnFlag)),
-            fr: renderToStaticMarkup(React.createElement(FrFlag)),
-            it: renderToStaticMarkup(React.createElement(ItFlag)),
-            es: renderToStaticMarkup(React.createElement(EsFlag)),
-            pt: renderToStaticMarkup(React.createElement(PtFlag)),
-            ru: renderToStaticMarkup(React.createElement(RuFlag)),
-            sq: renderToStaticMarkup(React.createElement(SqFlag)),
-            ar: renderToStaticMarkup(React.createElement(ArFlag)),
-            bs: renderToStaticMarkup(React.createElement(BsFlag)),
-            zh: renderToStaticMarkup(React.createElement(ZhFlag)),
-            da: renderToStaticMarkup(React.createElement(DaFlag)),
-            fi: renderToStaticMarkup(React.createElement(FiFlag)),
-            el: renderToStaticMarkup(React.createElement(ElFlag)),
-            he: renderToStaticMarkup(React.createElement(HeFlag)),
-            hi: renderToStaticMarkup(React.createElement(HiFlag)),
-            ja: renderToStaticMarkup(React.createElement(JaFlag)),
-            ko: renderToStaticMarkup(React.createElement(KoFlag)),
-            hr: renderToStaticMarkup(React.createElement(HrFlag)),
-            nl: renderToStaticMarkup(React.createElement(NlFlag)),
-            no: renderToStaticMarkup(React.createElement(NoFlag)),
-            fa: renderToStaticMarkup(React.createElement(FaFlag)),
-            pl: renderToStaticMarkup(React.createElement(PlFlag)),
-            pa: renderToStaticMarkup(React.createElement(PaFlag)),
-            ro: renderToStaticMarkup(React.createElement(RoFlag)),
-            sv: renderToStaticMarkup(React.createElement(SvFlag)),
-            sr: renderToStaticMarkup(React.createElement(SrFlag)),
-            ta: renderToStaticMarkup(React.createElement(TaFlag)),
-            cs: renderToStaticMarkup(React.createElement(CsFlag)),
-            tr: renderToStaticMarkup(React.createElement(TrFlag)),
-            uk: renderToStaticMarkup(React.createElement(UkFlag)),
-            hu: renderToStaticMarkup(React.createElement(HuFlag)),
-            ur: renderToStaticMarkup(React.createElement(UrFlag)),
-        };
-
-        const languages = currentDoctor.languages || [];
-        const languageOrder = ['de', 'fr', 'it', 'en', 'es', 'pt', 'ru'];
-
-        const sortedLangs = [...languages].sort((a, b) => {
-            const indexA = languageOrder.indexOf(a);
-            const indexB = languageOrder.indexOf(b);
-            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-            if (indexA !== -1) return -1;
-            if (indexB !== -1) return 1;
-            return a.localeCompare(b);
-        });
-
-        const flagsHtml = sortedLangs.map(lang => {
-            const flagHtml = langToFlagHtml[lang];
-            if (!flagHtml) return '';
-            // Add classes to the SVG string
-            return flagHtml.replace('<svg', '<svg class="h-5 w-auto rounded-sm shadow-md"');
-        }).join('');
-
-        const buttonHtml = `<button id="edit-languages" style="display: flex; align-items: center; gap: 0.5rem; height: 2rem; padding: 0 0.75rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem;" onmouseover="this.style.backgroundColor='hsl(var(--primary) / 0.9)'" onmouseout="this.style.backgroundColor='hsl(var(--primary))'">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-            <span>Sprachen</span>
-        </button>`;
-
-        const newHtml = `${buttonHtml}${flagsHtml}`;
-        
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(currentDoctor.frontSideCode, 'text/html');
-        const langContainer = doc.getElementById('language-container');
-        
-        if (langContainer && langContainer.innerHTML !== newHtml) {
-            langContainer.innerHTML = newHtml;
-            const updatedCode = doc.body.innerHTML;
-
-            if (activeDoctor === 'template') {
-                if (exampleDoctor.frontSideCode !== updatedCode) {
-                    setExampleDoctor(prev => ({ ...prev, frontSideCode: updatedCode }));
-                }
-            } else if (firestore && typeof activeDoctor === 'object') {
-                const docRef = doc(firestore, 'doctors', activeDoctor.id);
-                setDoc(docRef, { frontSideCode: updatedCode }, { merge: true });
-            }
-        }
-    }, [exampleDoctor.languages, activeDoctor, dbDoctors, firestore]);
-
     const handleMove = async (doctorId: string, direction: 'up' | 'down') => {
         if (!dbDoctors || !firestore) return;
     
