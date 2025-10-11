@@ -4,9 +4,8 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
-import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, setDoc, doc, deleteDoc, writeBatch } from 'firebase/firestore';
+import { collection, query, orderBy, setDoc, doc, writeBatch } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { TextEditDialog } from './_components/text-edit-dialog';
@@ -17,10 +16,10 @@ import { ImageLibraryDialog } from './_components/image-library-dialog';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { LogoFunctionSelectDialog } from './_components/logo-function-select-dialog';
 import { cn } from '@/lib/utils';
-import DOMPurify from 'dompurify';
 import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
-import { ChevronUp, ChevronDown, Pencil, EyeOff, Globe, Image as ImageIcon, Trash2, User } from 'lucide-react';
+import { ChevronUp, ChevronDown, Pencil, EyeOff, Globe, Image as ImageIcon, User, Info } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 
@@ -112,8 +111,6 @@ export default function DoctorsPage() {
                 .template-card .aspect-\\[2\\/3\\] { aspect-ratio: 2 / 3; }
                 .template-card .overflow-hidden { overflow: hidden; }
                 .template-card .rounded-md { border-radius: 0.375rem; }
-                .template-card .bg-muted { background-color: hsl(var(--muted)); }
-                .template-card .text-muted-foreground { color: hsl(var(--muted-foreground)); }
                 .template-card .flex-grow { flex-grow: 1; }
                 .template-card .flex-col { flex-direction: column; }
                 .template-card .justify-center { justify-content: center; }
@@ -134,6 +131,10 @@ export default function DoctorsPage() {
                 .template-card .gap-2 { gap: 0.5rem; }
                 .template-card .object-contain { object-fit: contain; }
                 .template-card .object-cover { object-fit: cover; }
+                 .template-card .bg-muted { background-color: hsl(var(--muted)); }
+                .template-card .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+                .template-card .text-center { text-align: center; }
+                .template-card .mt-2 { margin-top: 0.5rem; }
             </style>
              <div class="template-card w-full h-full bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
@@ -294,7 +295,11 @@ export default function DoctorsPage() {
             const parent = targetButton.parentElement;
             if(parent) {
                 targetButton.remove();
-                parent.innerHTML = `<img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-cover" />`;
+                const img = doc.createElement('img');
+                img.src = croppedImageUrl;
+                img.alt = "Portrait";
+                img.className = "h-full w-full object-cover";
+                parent.appendChild(img);
             }
           }
         } else {
@@ -315,9 +320,21 @@ export default function DoctorsPage() {
 
     const handleVitaSave = (newVita: string) => {
         if (activeDoctor === 'template') {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(newVita, 'text/html');
+            const button = doc.createElement('button');
+            button.id = 'edit-vita';
+            button.className = 'w-full h-full text-left';
+            while(doc.body.firstChild) {
+                button.appendChild(doc.body.firstChild);
+            }
+            const wrapperDiv = doc.createElement('div');
+            wrapperDiv.className = "w-full h-full";
+            wrapperDiv.appendChild(button);
+
             setExampleDoctor(prev => ({
                 ...prev,
-                backSideCode: newVita,
+                backSideCode: wrapperDiv.innerHTML,
             }));
         } else if (firestore && activeDoctor && typeof activeDoctor === 'object') {
              const docRef = doc(firestore, 'doctors', activeDoctor.id);
@@ -362,8 +379,12 @@ export default function DoctorsPage() {
     };
     
     useEffect(() => {
-        let currentDoctor = activeDoctor === 'template' ? exampleDoctor : activeDoctor;
-        if (!currentDoctor || typeof currentDoctor === 'string') return;
+        let currentDoctor = activeDoctor === 'template' ? exampleDoctor : null;
+        if (typeof activeDoctor === 'object') {
+            currentDoctor = activeDoctor;
+        }
+
+        if (!currentDoctor) return;
     
         const flagComponents: Record<string, React.FC<{ className?: string }>> = { de: DeFlag, en: EnFlag, fr: FrFlag, it: ItFlag, es: EsFlag, pt: PtFlag, ru: RuFlag, sq: SqFlag, ar: ArFlag, bs: BsFlag, zh: ZhFlag, da: DaFlag, fi: FiFlag, el: ElFlag, he: HeFlag, hi: HiFlag, ja: JaFlag, ko: KoFlag, hr: HrFlag, nl: NlFlag, no: NoFlag, fa: FaFlag, pl: PlFlag, pa: PaFlag, ro: RoFlag, sv: SvFlag, sr: SrFlag, ta: TaFlag, cs: CsFlag, tr: TrFlag, uk: UkFlag, hu: HuFlag, ur: UrFlag };
         
@@ -371,7 +392,7 @@ export default function DoctorsPage() {
         for(const lang in flagComponents) {
             const FlagComponent = flagComponents[lang];
             if (FlagComponent) {
-                langToFlagHtml[lang] = renderToStaticMarkup(<FlagComponent className="h-5 w-auto rounded-sm shadow-md" />);
+                 langToFlagHtml[lang] = renderToStaticMarkup(React.createElement(FlagComponent, { className: "h-5 w-auto rounded-sm shadow-md" }));
             }
         }
 
@@ -452,12 +473,6 @@ export default function DoctorsPage() {
         await batch.commit();
     };
 
-    const handleDelete = async (doctorId: string) => {
-        if (!firestore) return;
-        await deleteDoc(doc(firestore, "doctors", doctorId));
-        setDialogState({ type: null, data: {} });
-    };
-
     const handleEdit = (doctor: Doctor) => {
         setActiveDoctor('template');
         setExampleDoctor(doctor);
@@ -484,9 +499,13 @@ export default function DoctorsPage() {
                                 <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" onClick={handleTemplateClick} />
                             </div>
                        </div>
-                        <div className="mt-2 text-center text-sm text-muted-foreground">
-                            Zum Ändern bitte das jeweilige Element anklicken.
-                        </div>
+                        <Alert variant="info" className="mt-4">
+                            <Info className="h-4 w-4" />
+                            <AlertTitle>Hinweis</AlertTitle>
+                            <AlertDescription>
+                                Zum Ändern bitte das jeweilige Element anklicken.
+                            </AlertDescription>
+                        </Alert>
                     </div>
 
                     <div className="mt-8 space-y-4">
@@ -525,10 +544,6 @@ export default function DoctorsPage() {
                                      <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)}>
                                         <Pencil className="h-4 w-4" />
                                         <span className="sr-only">Bearbeiten</span>
-                                    </Button>
-                                    <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name }})}>
-                                        <Trash2 className="h-4 w-4" />
-                                        <span className="sr-only">Löschen</span>
                                     </Button>
                                 </div>
                                 <div className="relative flex-1 w-full max-w-[1000px] p-2">
@@ -629,23 +644,6 @@ export default function DoctorsPage() {
                     onCropComplete={handleCropComplete}
                     onClose={() => setDialogState({ type: null, data: {} })}
                 />
-            )}
-
-            {dialogState.type === 'deleteConfirm' && (
-                 <AlertDialog open onOpenChange={(open) => !open && setDialogState({type: null, data: {}})}>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                        <AlertDialogTitle>Sind Sie sicher?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Möchten Sie die Karte für <strong>{dialogState.data.doctorName}</strong> wirklich endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-                        </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                        <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDelete(dialogState.data.doctorId)}>Löschen</AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
             )}
         </div>
     );
