@@ -23,8 +23,8 @@ const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
         if (typeof window !== 'undefined') {
             const config = {
-                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img"],
-                ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src']
+                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img", "foreignObject"],
+                ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src', 'preserveAspectRatio']
             };
             return { __html: DOMPurify.sanitize(html, config) };
         }
@@ -49,6 +49,19 @@ export default function DoctorsPage() {
     
     const ortmannsCardData = DOCTOR_CARDS_INITIAL_DATA.find(d => d.id === 'ortmanns');
 
+    const renderCardPreview = (htmlContent: string) => {
+        const svgContent = `
+            <svg viewBox="0 0 1000 495" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                <foreignObject width="1000" height="495">
+                    <div xmlns="http://www.w3.org/1999/xhtml">
+                        ${htmlContent}
+                    </div>
+                </foreignObject>
+            </svg>
+        `;
+        return <CodeRenderer html={svgContent} />;
+    };
+
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
             <Card className="w-full">
@@ -65,18 +78,14 @@ export default function DoctorsPage() {
                 <CardContent>
                     <div className="w-full rounded-lg border-2 border-dashed border-muted p-4">
                         {ortmannsCardData && (
-                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                                <div className="relative h-[150px]" style={{'--scale-factor': 0.3} as React.CSSProperties}>
-                                    <div className="absolute top-0 left-0 w-[1000px] h-[495px]" style={{ transform: 'scale(var(--scale-factor))', transformOrigin: 'top left' }}>
-                                        <CodeRenderer html={ortmannsCardData.frontSideCode} />
-                                    </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                                <div className="aspect-[1000/495] w-full">
+                                    {renderCardPreview(ortmannsCardData.frontSideCode)}
                                 </div>
-                                <div className="relative h-[150px] bg-accent/95" style={{'--scale-factor': 0.3} as React._Component.CSSProperties}>
-                                     <div className="absolute top-0 left-0 w-[1000px] h-[495px]" style={{ transform: 'scale(var(--scale-factor))', transformOrigin: 'top left' }}>
-                                        <CodeRenderer html={ortmannsCardData.backSideCode} />
-                                    </div>
+                                <div className="aspect-[1000/495] w-full">
+                                    {renderCardPreview(ortmannsCardData.backSideCode)}
                                 </div>
-                           </div>
+                            </div>
                         )}
                     </div>
 
