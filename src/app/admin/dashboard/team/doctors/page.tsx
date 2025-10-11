@@ -8,6 +8,7 @@ import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import DOMPurify from 'dompurify';
 
 export interface Doctor {
     id: string;
@@ -18,8 +19,27 @@ export interface Doctor {
     [key: string]: any;
 }
 
+const CardHtmlRenderer: React.FC<{ html: string }> = ({ html }) => {
+    // This is safe because we trust the source of the HTML (our own admin UI)
+    // In a general-purpose app, you MUST sanitize user-provided HTML.
+    const sanitizedHtml = React.useMemo(() => {
+        if (typeof window !== 'undefined') {
+            const config = {
+                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img", "foreignObject"],
+                ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src', 'preserveAspectRatio']
+            };
+            return { __html: DOMPurify.sanitize(html, config) };
+        }
+        return { __html: '' };
+    }, [html]);
+
+    return <div className="w-full h-full" dangerouslySetInnerHTML={sanitizedHtml} />;
+};
+
+
 export default function DoctorsPage() {
     const firestore = useFirestore();
+    const exampleDoctor = DOCTOR_CARDS_INITIAL_DATA[0];
 
     const doctorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
@@ -27,6 +47,21 @@ export default function DoctorsPage() {
     }, [firestore]);
 
     const { data: dbDoctors, isLoading: isLoadingDbDoctors, error: dbError } = useCollection<Doctor>(doctorsQuery);
+
+    const renderCardContent = (htmlContent: string) => {
+      // The svg acts as a scalable container.
+      // The viewBox is the "artboard" size of the original content.
+      // The foreignObject allows rendering arbitrary HTML inside the SVG.
+      return `
+        <svg viewBox="0 0 1000 495" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <foreignObject width="1000" height="495">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+              ${htmlContent}
+            </div>
+          </foreignObject>
+        </svg>
+      `;
+    };
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -44,14 +79,14 @@ export default function DoctorsPage() {
                 <CardContent>
                     <div className="w-full rounded-lg border-2 border-dashed border-muted p-4">
                        <div className="grid grid-cols-2 gap-2.5">
-                            <div className="relative aspect-[1000/495] w-full rounded-md bg-muted/50">
-                                <div className="absolute inset-0 h-full w-full">
-                                    {/* Hier kommt die Vorderseite der Karte hinein */}
+                            <div className="relative aspect-[1000/495] w-full rounded-md bg-muted/50 overflow-hidden">
+                                <div className="absolute h-full w-full">
+                                    {exampleDoctor && <CardHtmlRenderer html={renderCardContent(exampleDoctor.frontSideCode)} />}
                                 </div>
                             </div>
-                            <div className="relative aspect-[1000/495] w-full rounded-md bg-muted/50">
-                                <div className="absolute inset-0 h-full w-full">
-                                    {/* Hier kommt die Rückseite der Karte hinein */}
+                            <div className="relative aspect-[1000/495] w-full rounded-md bg-muted/50 overflow-hidden">
+                                 <div className="absolute h-full w-full">
+                                    {exampleDoctor && <CardHtmlRenderer html={renderCardContent(exampleDoctor.backSideCode)} />}
                                 </div>
                             </div>
                        </div>
