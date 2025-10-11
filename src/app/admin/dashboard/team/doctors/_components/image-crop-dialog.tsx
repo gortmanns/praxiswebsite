@@ -2,53 +2,36 @@
 'use client';
 
 import 'cropperjs/dist/cropper.css';
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef } from 'react';
 import Cropper, { type ReactCropperElement } from 'react-cropper';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
   DialogClose,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import Image from 'next/image';
 
 interface ImageCropDialogProps {
-  imageUrl: string; // The logo or image to be placed
+  imageUrl: string; // The logo to be cropped
+  backgroundImageUrl: string; // The card template background
   onCropComplete: (croppedImageUrl: string) => void;
   onClose: () => void;
-  aspectRatio: number; // Aspect ratio of the final output (the card)
-  backgroundImageUrl?: string; // The card template background
+  aspectRatio?: number; // Optional, to keep flexibility but allow free cropping by default
 }
 
 export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
   imageUrl,
+  backgroundImageUrl,
   onCropComplete,
   onClose,
-  aspectRatio,
-  backgroundImageUrl,
+  aspectRatio = undefined, // Default to free aspect ratio
 }) => {
   const cropperRef = useRef<ReactCropperElement>(null);
   const finalCanvasRef = useRef<HTMLCanvasElement>(null);
-  const workspaceRef = useRef<HTMLDivElement>(null);
-  const [workspaceSize, setWorkspaceSize] = useState({ width: 0, height: 0 });
-
-  // Update workspace size for responsive rendering
-  useEffect(() => {
-    const updateSize = () => {
-      if (workspaceRef.current) {
-        const { width } = workspaceRef.current.getBoundingClientRect();
-        setWorkspaceSize({ width, height: width / aspectRatio });
-      }
-    };
-    updateSize();
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
-  }, [aspectRatio]);
-
 
   const handleCrop = () => {
     const cropper = cropperRef.current?.cropper;
@@ -56,117 +39,73 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
     
     if (!cropper || !finalCanvas) return;
 
+    // Get the canvas for the user-cropped section of the logo
+    const croppedLogoCanvas = cropper.getCroppedCanvas();
+    if (!croppedLogoCanvas) return;
+
     const ctx = finalCanvas.getContext('2d');
     if (!ctx) return;
-
-    // Use a higher resolution for the final output canvas
-    const outputWidth = 1000;
-    const outputHeight = outputWidth / aspectRatio;
-    finalCanvas.width = outputWidth;
-    finalCanvas.height = outputHeight;
-
-    ctx.clearRect(0, 0, outputWidth, outputHeight);
-
+    
     const background = new window.Image();
     background.crossOrigin = 'Anonymous';
     background.onload = () => {
-      // 1. Draw the background card template first
-      if (backgroundImageUrl) {
-          ctx.drawImage(background, 0, 0, outputWidth, outputHeight);
-      }
+      // Set final canvas to the size of the background card
+      finalCanvas.width = background.width;
+      finalCanvas.height = background.height;
+      ctx.clearRect(0, 0, finalCanvas.width, finalCanvas.height);
 
-      // 2. Draw the cropped foreground image (logo) on top
-      const croppedCanvas = cropper.getCroppedCanvas({
-        // You can set output dimensions for the cropped part if needed
-      });
-      if (croppedCanvas) {
-         // Get data on where the crop box is relative to the cropper's container
-        const cropBoxData = cropper.getCropBoxData();
-        const containerData = cropper.getContainerData();
+      // 1. Draw the background card template
+      ctx.drawImage(background, 0, 0);
 
-        // Calculate the position and size of the cropped image on the final canvas
-        // This scales the position and size from the on-screen workspace to the high-res output canvas
-        const scaleX = outputWidth / containerData.width;
-        const scaleY = outputHeight / containerData.height;
-        
-        const drawX = cropBoxData.left * scaleX;
-        const drawY = cropBoxData.top * scaleY;
-        const drawWidth = cropBoxData.width * scaleX;
-        const drawHeight = cropBoxData.height * scaleY;
+      // 2. Calculate the center position to draw the cropped logo
+      const centerX = (finalCanvas.width - croppedLogoCanvas.width) / 2;
+      const centerY = (finalCanvas.height - croppedLogoCanvas.height) / 2;
 
-        ctx.drawImage(croppedCanvas, drawX, drawY, drawWidth, drawHeight);
-      }
+      // 3. Draw the cropped logo centered on top of the card
+      ctx.drawImage(croppedLogoCanvas, centerX, centerY);
       
-      // 3. Export the combined canvas and call the completion callback
+      // 4. Export the combined canvas and call the completion callback
       const resultDataUrl = finalCanvas.toDataURL('image/jpeg', 0.9);
       onCropComplete(resultDataUrl);
       onClose();
     };
     background.onerror = (e) => {
-        console.error("Failed to load background image.", e);
-        // Fallback: just crop the logo if background fails
-        const croppedCanvas = cropper.getCroppedCanvas();
-        if (croppedCanvas) {
-            onCropComplete(croppedCanvas.toDataURL('image/jpeg', 0.9));
-        }
+        console.error("Failed to load background image for composition.", e);
+        // Fallback: If background fails, just return the cropped logo itself
+        onCropComplete(croppedLogoCanvas.toDataURL('image/jpeg', 0.9));
         onClose();
     };
 
-    if (backgroundImageUrl) {
-        background.src = backgroundImageUrl;
-    } else {
-        // If no background is specified, trigger the drawing logic anyway
-        background.onload(new Event('load'));
-    }
+    background.src = backgroundImageUrl;
   };
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl h-[80vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle>Logo auf Karte platzieren</DialogTitle>
+          <DialogTitle>Logo zuschneiden</DialogTitle>
+          <DialogDescription>
+            Wählen Sie den gewünschten Ausschnitt aus Ihrem Logo. Dieser wird automatisch auf der Karte zentriert.
+          </DialogDescription>
         </DialogHeader>
-        <div ref={workspaceRef} className="my-4 flex-1 flex justify-center items-center bg-muted/30 p-4 relative">
-            {/* The actual workspace with the correct aspect ratio */}
-            <div 
-                className="relative"
-                style={{
-                    width: `${workspaceSize.width}px`,
-                    height: `${workspaceSize.height}px`
-                }}
-            >
-                {/* Layer 1: Background Card Template (Visible) */}
-                {backgroundImageUrl && (
-                    <Image
-                        src={backgroundImageUrl}
-                        alt="Kartenvorlage"
-                        layout="fill"
-                        objectFit="contain"
-                        className="absolute inset-0 z-10 pointer-events-none"
-                    />
-                )}
-                
-                {/* Layer 2: Cropper for the logo */}
-                <div className="absolute inset-0 z-20">
-                    <Cropper
-                        ref={cropperRef}
-                        src={imageUrl}
-                        // --- Critical Cropper Settings ---
-                        style={{ height: '100%', width: '100%' }}
-                        viewMode={2} // Allows cropping area to extend beyond the image
-                        dragMode="move" // Allows moving the image underneath the crop box
-                        background={false} // Makes the cropper area transparent to see the card behind it
-                        responsive={true}
-                        autoCrop={true}
-                        movable={true}
-                        zoomable={true} // Allow scaling the image
-                        cropBoxMovable={true}
-                        cropBoxResizable={true}
-                        checkOrientation={false}
-                        guides={true}
-                    />
-                </div>
-            </div>
+        <div className="my-4 flex-1 flex justify-center items-center bg-muted/30 p-4">
+          <Cropper
+            ref={cropperRef}
+            src={imageUrl}
+            style={{ height: '100%', width: '100%' }}
+            // --- Cropper Settings for free selection ---
+            aspectRatio={aspectRatio} // Let it be free
+            viewMode={1} // Restrict crop box to be within the canvas
+            dragMode="move" // Allows moving the image underneath
+            background={true} // Show the checkered background for transparency
+            responsive={true}
+            autoCrop={true}
+            movable={true}
+            zoomable={true}
+            cropBoxResizable={true}
+            checkOrientation={false}
+            guides={true}
+          />
         </div>
         <canvas ref={finalCanvasRef} className="hidden" />
         <DialogFooter>
