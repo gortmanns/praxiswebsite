@@ -123,10 +123,8 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
 
                 <div className="relative w-full mt-4">
                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                    <div className="rounded-lg bg-primary p-4">
-                        <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%] mx-auto">
-                            <PartnerCard {...cardData} />
-                        </div>
+                    <div className="rounded-lg bg-primary p-4 h-[350px] flex items-center justify-center">
+                        <PartnerCard {...cardData} />
                     </div>
                 </div>
             </div>
@@ -150,3 +148,5 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
         </>
     );
 };
+
+    

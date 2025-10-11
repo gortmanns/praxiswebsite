@@ -380,7 +380,8 @@ export function ReusableCardManager<T extends BaseCardData>({
 
                     {isEditing && (
                         <div 
-                            className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12 bg-muted/50"
+                            className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12"
+                            style={{ backgroundColor: '#f0f2f5' }}
                         >
                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                             <Alert variant="info" className="mt-4">
@@ -465,5 +466,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
 
     
