@@ -1,7 +1,6 @@
 'use client';
 
 import { DoctorCard } from '../doctor-card';
-import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
 
 export function SlezakCard() {
     return (
@@ -25,15 +24,15 @@ export function SlezakCard() {
                                 <h3 class="text-5xl font-bold text-primary my-2">A. Slezak</h3>
                                 <p class="text-xl font-bold">Fachärztin für Neurologie</p>
                                 <div class="mt-6 flex items-center justify-start">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 60" class="h-auto" style="height: 6.9rem;" aria-label="Dr. med. Agnieszka Slezak - Fachärztin für Neurologie Logo">
-                                        <rect width="210" height="60" fill="#358392" rx="6"></rect>
-                                        <text x="50%" y="24" dominant-baseline="middle" text-anchor="middle" style="font-family: Montserrat, sans-serif; font-size: 14px; font-weight: bold; fill: white;">
-                                            Dr. med. Agnieszka Slezak
-                                        </text>
-                                        <text x="50%" y="42" dominant-baseline="middle" text-anchor="middle" style="font-family: Montserrat, sans-serif; font-size: 8.5px; fill: white;">
-                                            Fachärztin für Neurologie
-                                        </text>
-                                    </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" class="h-auto" style="height: 6.9rem;" aria-label="Dr. med. Agnieszka Slezak - Fachärztin für Neurologie Logo">
+                                    <rect width="240" height="60" fill="#212529" rx="6"></rect>
+                                    <text x="50%" y="24" dominant-baseline="middle" text-anchor="middle" style="font-family: Montserrat, sans-serif; font-size: 14px; font-weight: bold; fill: white;">
+                                        Dr. med. Agnieszka Slezak
+                                    </text>
+                                    <text x="50%" y="42" dominant-baseline="middle" text-anchor="middle" style="font-family: Montserrat, sans-serif; font-size: 8.5px; fill: white;">
+                                        Fachärztin für Neurologie
+                                    </text>
+                                </svg>
                                 </div>
                             </div>
                             <div class="absolute bottom-0 right-0 flex items-center gap-2">
