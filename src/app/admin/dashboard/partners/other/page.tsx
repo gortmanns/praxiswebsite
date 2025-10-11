@@ -66,8 +66,8 @@ const otherPartnersData: Omit<Partner, 'id' | 'order'>[] = [
       websiteUrl: 'https://www.mcl.ch/',
       logoUrl: '/images/mcl-labor-logo.png',
       hint: 'laboratory logo',
-      width: 242,
-      height: 73,
+      width: 254,
+      height: 77,
       hidden: false,
     },
     {
@@ -75,8 +75,8 @@ const otherPartnersData: Omit<Partner, 'id' | 'order'>[] = [
       websiteUrl: 'https://www.doxnet.ch/',
       logoUrl: '/images/doxnet-logo.jpg',
       hint: 'medical network logo',
-      width: 200,
-      height: 60,
+      width: 220,
+      height: 66,
       hidden: false,
     },
 ];
