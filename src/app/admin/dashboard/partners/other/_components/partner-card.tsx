@@ -37,6 +37,7 @@ export const PartnerCard: React.FC<Partner> = (props) => {
                             height={props.height || 60}
                             className="object-contain"
                             data-ai-hint={props.hint}
+                            style={props.name === 'Go-Medical' ? { position: 'relative', top: '10px' } : {}}
                         />
                     </div>
                 ) : (
