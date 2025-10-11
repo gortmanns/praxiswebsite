@@ -34,14 +34,21 @@ export default function VisualDesignPage() {
                             <AlertCircle className="h-4 w-4" />
                             <AlertTitle>Warnung</AlertTitle>
                             <AlertDescription>
-                                Etwas ist unerwartet, aber die Aktion wurde nicht unbedingt abgebrochen.
+                                Unerwartetes Ergebnis, aber die Aktion wurde nicht abgebrochen (z.B. suboptimales Bildformat).
+                            </AlertDescription>
+                        </Alert>
+                        <Alert variant="error">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertTitle>Fehlermeldung</AlertTitle>
+                            <AlertDescription>
+                                Ein technischer Fehler ist aufgetreten, die Anwendung kann aber weiterlaufen.
                             </AlertDescription>
                         </Alert>
                         <Alert variant="destructive">
                             <XCircle className="h-4 w-4" />
-                            <AlertTitle>Fehlermeldung</AlertTitle>
+                            <AlertTitle>Kritischer Fehler</AlertTitle>
                             <AlertDescription>
-                                Ein kritischer Fehler ist aufgetreten. Die Aktion konnte nicht ausgeführt werden.
+                                Ein kritischer Fehler ist aufgetreten. Die Aktion wurde abgebrochen.
                             </AlertDescription>
                         </Alert>
                     </div>
