@@ -44,11 +44,15 @@ export default function DoctorsPage() {
                 <CardContent>
                     <div className="w-full rounded-lg border-2 border-dashed border-muted p-4">
                        <div className="grid grid-cols-2 gap-2.5">
-                            <div className="aspect-[1000/495] w-full rounded-md bg-muted/50">
-                                {/* Hier kommt die Vorderseite der Karte hinein */}
+                            <div className="relative aspect-[1000/495] w-full rounded-md bg-muted/50">
+                                <div className="absolute inset-0 h-full w-full">
+                                    {/* Hier kommt die Vorderseite der Karte hinein */}
+                                </div>
                             </div>
-                            <div className="aspect-[1000/495] w-full rounded-md bg-muted/50">
-                                {/* Hier kommt die Rückseite der Karte hinein */}
+                            <div className="relative aspect-[1000/495] w-full rounded-md bg-muted/50">
+                                <div className="absolute inset-0 h-full w-full">
+                                    {/* Hier kommt die Rückseite der Karte hinein */}
+                                </div>
                             </div>
                        </div>
                     </div>
