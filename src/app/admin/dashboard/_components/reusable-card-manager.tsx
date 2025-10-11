@@ -219,11 +219,11 @@ export function ReusableCardManager<T extends BaseCardData>({
                              onClick={(e) => e.preventDefault()} // Prevent navigation in admin UI
                           >
                             <Card className="flex h-full w-full items-center p-6">
-                              <CardContent className="flex w-full items-center justify-center p-0">
-                                 <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                                <CardContent className="flex w-full items-center justify-center p-0">
+                                <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
                                     {renderPartnerLogo(item)}
-                                 </div>
-                              </CardContent>
+                                </div>
+                                </CardContent>
                             </Card>
                             <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                           </Link>
@@ -379,7 +379,10 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                     {isEditing && (
-                        <div className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12 bg-muted">
+                        <div 
+                            className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12"
+                            style={{ backgroundColor: '#f0f2f5' }}
+                        >
                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                             <Alert variant="info" className="mt-4">
                                 <Info className="h-4 w-4" />
@@ -463,3 +466,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
