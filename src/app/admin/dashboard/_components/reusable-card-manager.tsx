@@ -204,7 +204,7 @@ export function ReusableCardManager<T extends BaseCardData>({
               data-ai-hint={partner.hint}
             />
         );
-      };
+    };
     
     const DisplayWrapper: React.FC<{ item: T, index: number }> = ({ item, index }) => {
         if (isPartnerManager) {
@@ -378,7 +378,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                     {isEditing && (
-                        <div className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12">
+                        <div className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12 bg-muted/50">
                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                             <Alert variant="info" className="mt-4">
                                 <Info className="h-4 w-4" />
@@ -462,5 +462,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
