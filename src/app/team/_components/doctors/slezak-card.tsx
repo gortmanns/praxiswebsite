@@ -24,10 +24,10 @@ export function SlezakCard() {
                                 <p class="text-2xl font-bold text-primary">Dr. med.</p>
                                 <h3 class="text-5xl font-bold text-primary my-2">A. Slezak</h3>
                                 <p class="text-xl font-bold">Fachärztin für Neurologie</p>
-                                <div class="mt-6">
+                                <div class="mt-6 bg-special-green p-4 rounded-md">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 50" class="h-auto" style="height: 6.9rem;" aria-label="Dr. med. Agnieszka Slezak - Fachärztin für Neurologie Logo">
-                                        <text x="0" y="20" style="font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: bold; fill: #358392;">Agnieszka Slezak</text>
-                                        <text x="0" y="38" style="font-family: 'Montserrat', sans-serif; font-size: 7.7px; font-weight: normal; fill: #358392;">Fachärztin für Neurologie</text>
+                                        <text x="0" y="20" style="font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: bold; fill: white;">Agnieszka Slezak</text>
+                                        <text x="0" y="38" style="font-family: 'Montserrat', sans-serif; font-size: 7.7px; font-weight: bold; fill: white;">Fachärztin für Neurologie</text>
                                     </svg>
                                 </div>
                             </div>
