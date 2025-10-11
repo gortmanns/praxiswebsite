@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useRef, useState } from 'react';
@@ -7,7 +6,7 @@ import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storag
 import { v4 as uuidv4 } from 'uuid';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { PartnerCard, type Partner } from './partner-card';
+import { PartnerCard } from './partner-card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
@@ -16,16 +15,23 @@ import { ImageSourceDialog } from '@/app/admin/dashboard/team/doctors/_component
 import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_components/image-library-dialog';
 import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/image-crop-dialog';
 
-interface PartnerEditorProps {
-    cardData: Partner;
-    onUpdate: (updatedData: Partner) => void;
+export interface Partner {
+    id: string;
+    order: number;
+    name: string;
+    websiteUrl: string;
+    logoUrl: string;
+    openInNewTab?: boolean;
+    hidden?: boolean;
+    [key: string]: any;
 }
+
 
 const projectImages = [
     '/images/luftbild.jpg', '/images/VASC-Alliance-Logo.png', '/images/schemmer-worni-logo.png', '/images/go-medical-logo.png', '/images/mcl-labor-logo.png', '/images/doxnet-logo.jpg', '/images/logos/slezak-logo.png', '/images/praxiszentrum-logo.png', '/images/praxiszentrum-logo-icon.png', '/images/mehrfacharzt-logo.png', '/images/rtw-bern.jpg', '/images/medphone_logo.png', '/images/toxinfo-logo.svg', '/images/foto-medis.jpg', '/images/team/Ortmanns.jpg', '/images/team/Prof.Schemmer.jpg', '/images/team/Dr.Rosenov.jpg', '/images/team/Dr.Herschel.jpg', '/images/team/Dr.Slezak.jpg', '/images/team/Garcia.jpg', '/images/team/Aeschlimann.jpg', '/images/team/Huber.jpg', '/images/team/Oetztuerk.jpg', '/images/team/Sommer.jpg', '/images/leistungen/audiometrie.jpg', '/images/leistungen/ekg.jpg', '/images/leistungen/labor.jpg', '/images/leistungen/praxisapotheke.jpg', '/images/leistungen/roentgen.jpg', '/images/leistungen/spirometrie.jpg', '/images/leistungen/twint_logo.png', '/images/leistungen/VMU.png', '/images/leistungen/wundversorgung.jpg',
 ];
 
-export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate }) => {
+export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partner) => void }> = ({ cardData, onUpdate }) => {
     const storage = useStorage();
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -67,8 +73,8 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                <div className="space-y-6 rounded-lg border p-6">
+            <div className="flex flex-col gap-8 items-start">
+                <div className="w-full space-y-6 rounded-lg border p-6">
                     <div className="space-y-2">
                         <Label htmlFor="name">Name (für interne Verwendung)</Label>
                         <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
@@ -97,11 +103,11 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                     </div>
                 </div>
 
-                <div className="relative">
+                <div className="relative w-full mt-8">
                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                    <div className="rounded-lg bg-primary p-4 flex flex-wrap justify-center gap-8">
-                        <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
-                             <PartnerCard {...cardData} />
+                    <div className="rounded-lg bg-primary p-4 flex justify-center">
+                       <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                            <PartnerCard {...cardData} />
                         </div>
                     </div>
                 </div>
