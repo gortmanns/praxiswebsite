@@ -1,1 +1,147 @@
-{}
+{
+  "entities": {
+    "DoctorProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "DoctorProfile",
+      "type": "object",
+      "description": "Represents a doctor's profile within the practice.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the doctor profile."
+        },
+        "name": {
+          "type": "string",
+          "description": "The full name of the doctor."
+        },
+        "specialty": {
+          "type": "string",
+          "description": "The doctor's area of specialization."
+        },
+        "biography": {
+          "type": "string",
+          "description": "A brief biography of the doctor."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the doctor's profile image.",
+          "format": "uri"
+        },
+        "contactNumber": {
+          "type": "string",
+          "description": "Contact number for the doctor."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the doctor.",
+          "format": "email"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "specialty",
+        "biography",
+        "imageUrl",
+        "contactNumber",
+        "email"
+      ]
+    },
+    "ContactFormSubmission": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ContactFormSubmission",
+      "type": "object",
+      "description": "Represents a submission from the contact form.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the contact form submission."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the person submitting the form."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the person submitting the form.",
+          "format": "email"
+        },
+        "message": {
+          "type": "string",
+          "description": "The message content from the contact form."
+        },
+        "submissionDate": {
+          "type": "string",
+          "description": "Date and time when the form was submitted.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email",
+        "message",
+        "submissionDate"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/doctor_profiles/{doctorId}",
+        "definition": {
+          "entityName": "DoctorProfile",
+          "schema": {
+            "$ref": "#/backend/entities/DoctorProfile"
+          },
+          "description": "Stores doctor profile information. Accessible to all authenticated users.",
+          "params": [
+            {
+              "name": "doctorId",
+              "description": "The unique identifier for the doctor profile."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/contact_form_submissions/{submissionId}",
+        "definition": {
+          "entityName": "ContactFormSubmission",
+          "schema": {
+            "$ref": "#/backend/entities/ContactFormSubmission"
+          },
+          "description": "Stores contact form submissions. Only accessible to admins.",
+          "params": [
+            {
+              "name": "submissionId",
+              "description": "The unique identifier for the contact form submission."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_admin/{userId}",
+        "definition": {
+          "entityName": "roles_admin",
+          "schema": {
+            "$ref": "#/backend/entities/roles_admin"
+          },
+          "description": "Marks a user as an administrator. The mere existence of a document for a given UID in this collection grants admin access. Content of the document is irrelevant.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to be simple and secure, focusing on authorization independence. Doctor profiles are stored in a top-level collection, accessible to all authenticated users for viewing. Contact form submissions are stored in a separate collection, accessible only to admins (represented by the existence of their UID in `/roles_admin/{uid}`). This segregation ensures that regular users cannot list or access contact form submissions. The design avoids hierarchical authorization dependencies, as the doctor profiles do not rely on any parent document's data for access control. Access control for the `contact_form_submissions` collection is predicated on the existence of a document in the `/roles_admin/{uid}` collection, ensuring that only those with admin roles can read and write the data."
+  }
+}

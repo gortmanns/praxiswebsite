@@ -1,105 +1,79 @@
+/**
+ * @file Firestore Security Rules
+ * @core-philosophy This ruleset enforces a role-based access control model for doctor profiles and contact form submissions.
+ * Doctor profiles are publicly readable but not writable by regular users. Contact form submissions are only accessible to administrators.
+ * @data-structure
+ *   - `/doctor_profiles/{doctorId}`: Stores public information about doctors.
+ *   - `/contact_form_submissions/{submissionId}`: Stores contact form submissions, private to admins.
+ *   - `/roles_admin/{userId}`: Presence of a document grants admin privileges to the user.
+ * @key-security-decisions
+ *   - Doctor profiles are publicly readable, but writes are disallowed to prevent unauthorized modifications.
+ *   - Contact form submissions are only accessible to admins to protect user privacy.
+ *   - Listing of contact form submissions is denied to non-admin users to prevent unauthorized data access.
+ * @denormalization-for-authorization To avoid complex queries, admin status is determined by the presence of a document in `/roles_admin/{userId}`.
+ * This simplifies the security rules for `contact_form_submissions`.
+ * @structural-segregation Publicly readable doctor profiles are stored in a separate collection from private contact form submissions.
+ * This avoids the need for complex read rules based on document properties.
+ */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description This ruleset enforces a user-ownership model for user profiles,
-     *              allows public read access to holidays and doctors, but restricts
-     *              write access to holidays and doctors.
-     * @dataStructure
-     *  - /users/{userId}: Stores public user profile information.
-     *  - /holidays/{holidayId}: Stores the practice's holiday periods.
-     *  - /doctors/{doctorId}: Stores profile information for doctors, including card source code.
-     * @keySecurityDecisions
-     *  - Users can only read and write their own profile data.
-     *  - Listing of users is disallowed.
-     *  - Holidays and doctors are publicly readable.
-     *  - Only authenticated users can create, update, and delete holidays and doctors.
-     *  - No role-based access control is implemented.
+     * @description Grants read access to doctor profiles for all authenticated users, but restricts write access.
+     * @path /doctor_profiles/{doctorId}
+     * @allow (get, list) All authenticated users can view doctor profiles.
+     * @allow (create, update, delete) No one can modify or delete doctor profiles.
+     * @deny (create, update, delete) Attempts to create, update, or delete doctor profiles are denied.
+     * @principle Public read access with no write access.
      */
-
-    /**
-     * @description Manages access to user profile documents, enforcing ownership.
-     * @path /users/{userId}
-     * @allow (create) User with UID 'user_abc' can create their profile at /users/user_abc.
-     * @allow (get) User with UID 'user_abc' can read their profile at /users/user_abc.
-     * @deny (create) User with UID 'user_xyz' cannot create a profile at /users/user_abc.
-     * @deny (update) User with UID 'user_xyz' cannot update the profile at /users/user_abc.
-     * @principle Enforces document ownership for all operations.
-     */
-    match /users/{userId} {
-      // Helper function to check if the request is made by the owner of the user profile.
-      function isOwner(userId) {
-        return request.auth != null && request.auth.uid == userId;
-      }
-
-      // Allow a user to create their own profile if the UID matches the document ID.
-      allow create: if isOwner(userId) && request.resource.data.uid == userId;
-
-      // Allow a user to get their own profile.
-      allow get: if isOwner(userId);
-
-      // Disallow listing all user profiles.
-      allow list: if false;
-
-      // Allow a user to update their own profile. Enforce immutability of the UID.
-      allow update: if isOwner(userId) && resource.data.uid == request.resource.data.uid;
-
-      // Allow a user to delete their own profile.
-      allow delete: if isOwner(userId) && resource != null;
-    }
-
-    /**
-     * @description Manages access to holiday documents, allowing public read access but
-     *              requiring authentication for create, update, and delete operations.
-     * @path /holidays/{holidayId}
-     * @allow (get) Any user (or no user) can read holiday information at /holidays/christmas.
-     * @allow (list) Any user (or no user) can list holidays.
-     * @allow (create) Authenticated user can create a holiday.
-     * @deny (create) Unauthenticated user cannot create a holiday.
-     * @principle Allows public reads but requires authentication for writes.
-     */
-    match /holidays/{holidayId} {
-      // Allow anyone to read holiday information.
+    match /doctor_profiles/{doctorId} {
       allow get, list: if true;
-
-      // Allow only authenticated users to create holidays.
-      allow create: if isSignedIn();
-
-      // Allow only authenticated users to update existing holidays.
-      allow update: if isSignedIn() && resource != null;
-
-      // Allow only authenticated users to delete existing holidays.
-      allow delete: if isSignedIn() && resource != null;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Manages access to doctor documents, allowing public read access but
-     *              requiring authentication for create, update, and delete operations.
-     * @path /doctors/{doctorId}
-     * @allow (get) Any user (or no user) can read doctor information at /doctors/dr_smith.
-     * @allow (list) Any user (or no user) can list doctors.
-     * @allow (create) Authenticated user can create a doctor profile.
-     * @deny (create) Unauthenticated user cannot create a doctor profile.
-     * @principle Allows public reads but requires authentication for writes.
+     * @description Restricts access to contact form submissions to administrators only.
+     * @path /contact_form_submissions/{submissionId}
+     * @allow (get, create, update, delete) Admins can read, create, update, and delete contact form submissions.
+     * @deny (get, create, update, delete) Non-admins cannot access contact form submissions.
+     * @allow list: if isAdmin();
+     * @deny list: if !isAdmin();
+     * @principle Role-based access control, with admin-only access.
      */
-    match /doctors/{doctorId} {
-      // Allow anyone to read doctor information.
-      allow get, list: if true;
-
-      // Allow only authenticated users to create doctor profiles.
-      allow create: if isSignedIn();
-
-      // Allow only authenticated users to update existing doctor profiles.
-      allow update: if isSignedIn() && resource != null;
-
-      // Allow only authenticated users to delete existing doctor profiles.
-      allow delete: if isSignedIn() && resource != null;
+    match /contact_form_submissions/{submissionId} {
+      allow get, create, update, delete: if isAdmin();
+      allow list: if isAdmin();
     }
 
-    // Helper function to check if the user is signed in.
+    /**
+     * @description Grants admin privileges based on the existence of a document in this collection.
+     * @path /roles_admin/{userId}
+     * @allow create: if isOwner(userId);
+     * @allow get: if isAdmin();
+     * @allow list: if false;
+     * @allow update: if false;
+     * @allow delete: if isAdmin();
+     * @principle Role-based access control, with admin-only access.
+     */
+    match /roles_admin/{userId} {
+        allow create: if isSignedIn() && request.auth.uid == userId;
+        allow get: if isAdmin();
+        allow list: if false;
+        allow update: if false;
+        allow delete: if isAdmin();
+    }
+
     function isSignedIn() {
       return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
     }
   }
 }
