@@ -31,9 +31,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
 }) => {
   const cropperRef = useRef<ReactCropperElement>(null);
   const finalCanvasRef = useRef<HTMLCanvasElement>(null);
-  const [logoPosition, setLogoPosition] = useState({ x: 50, y: 50 });
-  const [logoSize, setLogoSize] = useState({ width: 200, height: 100 });
-
+  
   const handleCrop = () => {
     const cropper = cropperRef.current?.cropper;
     const finalCanvas = finalCanvasRef.current;
@@ -58,7 +56,6 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
 
       if (croppedLogoCanvas) {
         // Draw the cropped logo on top of the background
-        // The position and size are taken from the cropper's box data
         const cropBoxData = cropper.getCropBoxData();
         ctx.drawImage(
             croppedLogoCanvas,
@@ -69,12 +66,12 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
         );
       }
       
-      // Export the final composite image
+      // Export the final composite image and call the callback
       onCropComplete(finalCanvas.toDataURL('image/jpeg', 0.9));
       onClose();
     };
-    background.onerror = () => {
-        console.error("Failed to load background image.");
+    background.onerror = (e) => {
+        console.error("Failed to load background image.", e);
         onClose();
     }
     background.src = backgroundImageUrl || ''; // Use the card background
@@ -104,17 +101,17 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
             autoCrop={false} // Don't auto-crop, let user define the logo area
             checkOrientation={false}
             guides={true}
-            // Set the container background to be the card image
-            preview=".img-preview" // Necessary for background image to show
             ready={() => {
               const cropper = cropperRef.current?.cropper;
               if (cropper) {
                 // Set the background of the cropper's container
                 const dragBox = cropper.getDragBox();
-                (dragBox.parentNode as HTMLElement).style.backgroundImage = `url(${backgroundImageUrl})`;
-                (dragBox.parentNode as HTMLElement).style.backgroundSize = 'contain';
-                (dragBox.parentNode as HTMLElement).style.backgroundRepeat = 'no-repeat';
-                (dragBox.parentNode as HTMLElement).style.backgroundPosition = 'center';
+                if (dragBox && dragBox.parentNode) {
+                    (dragBox.parentNode as HTMLElement).style.backgroundImage = `url(${backgroundImageUrl})`;
+                    (dragBox.parentNode as HTMLElement).style.backgroundSize = 'contain';
+                    (dragBox.parentNode as HTMLElement).style.backgroundRepeat = 'no-repeat';
+                    (dragBox.parentNode as HTMLElement).style.backgroundPosition = 'center';
+                }
               }
             }}
           />
