@@ -1,7 +1,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
@@ -9,8 +9,15 @@ import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import DOMPurify from 'dompurify';
-import { User, Languages } from 'lucide-react';
+import { User, Languages, Pencil, Image as ImageIcon, ExternalLink, Code2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { TextEditDialog } from './_components/text-edit-dialog';
+import { VitaEditorDialog } from './_components/vita-editor-dialog';
+import { LanguageSelectDialog, availableLanguages } from './_components/language-select-dialog';
+import { LanguageFlags } from './_components/language-flags';
+import { ImageSourceDialog } from './_components/image-source-dialog';
+import { ImageLibraryDialog } from './_components/image-library-dialog';
+import { ImageCropDialog } from './_components/image-crop-dialog';
 
 export interface Doctor {
     id: string;
@@ -21,12 +28,12 @@ export interface Doctor {
     [key: string]: any;
 }
 
-const CardHtmlRenderer: React.FC<{ html: string }> = ({ html }) => {
+const CardHtmlRenderer: React.FC<{ html: string; className?: string }> = ({ html, className }) => {
     const sanitizedHtml = React.useMemo(() => {
         if (typeof window !== 'undefined') {
             const config = {
-                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img", "foreignObject"],
-                ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src', 'preserveAspectRatio']
+                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img", "foreignObject", "button", "span"],
+                ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src', 'preserveAspectRatio', 'type']
             };
             return { __html: DOMPurify.sanitize(html, config) };
         }
@@ -34,10 +41,10 @@ const CardHtmlRenderer: React.FC<{ html: string }> = ({ html }) => {
     }, [html]);
 
     return (
-        <div className="absolute w-full h-full">
+        <div className={className}>
             <svg viewBox="0 0 1000 495" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
                 <foreignObject width="1000" height="495">
-                    <div xmlns="http://www.w3.org/1999/xhtml" className="text-background">
+                    <div xmlns="http://www.w3.org/1999/xhtml" className="text-background w-[1000px] h-[495px]">
                         <div dangerouslySetInnerHTML={sanitizedHtml} />
                     </div>
                 </foreignObject>
@@ -49,46 +56,46 @@ const CardHtmlRenderer: React.FC<{ html: string }> = ({ html }) => {
 
 export default function DoctorsPage() {
     const firestore = useFirestore();
-    const exampleDoctor = {
+    const [dialogState, setDialogState] = useState<{
+        type: 'text' | 'vita' | 'language' | 'imageSource' | 'imageLibrary' | 'imageCrop' | null;
+        data: any;
+    }>({ type: null, data: {} });
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const exampleDoctor: Doctor = useMemo(() => ({
         id: "template",
         name: "Template",
         order: 0,
         frontSideCode: `
             <style>
-                .vita-content { color: hsl(var(--background)); }
-                .vita-content p { margin: 0; }
-                .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; }
-                .vita-content li { margin-bottom: 0.5em; }
-                .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
-                .vita-content .is-small { font-size: 0.8em; font-weight: normal; }
-                .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }
-                .placeholder-button { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 0.375rem; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); cursor: pointer; }
-                .placeholder-button svg { width: 1rem; height: 1rem; }
+                .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; border-radius: 0.25rem; }
+                .template-card button:hover:not(.image-button) { background-color: rgba(255,255,255,0.1); }
+                .template-card .image-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
-            <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
+            <div class="template-card group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
-                    <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted flex flex-col items-center justify-center text-center p-4 cursor-pointer text-muted-foreground">
+                    <button id="edit-image" class="image-button relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted flex flex-col items-center justify-center text-center p-4 text-muted-foreground">
                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                         <span class="mt-2 text-sm">Zum Ändern klicken</span>
-                    </div>
+                    </button>
                     <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
                         <div>
-                            <p class="text-2xl font-bold text-primary">Titel</p>
-                            <h3 class="text-5xl font-bold text-primary my-2">Name</h3>
-                            <p class="text-xl font-bold">Spezialisierung</p>
+                             <button id="edit-title" class="text-2xl font-bold text-primary p-1 -m-1 block">Titel</button>
+                             <button id="edit-name" class="text-5xl font-bold text-primary my-2 p-1 -m-1 block">Name</button>
+                             <button id="edit-specialty" class="text-xl font-bold p-1 -m-1 block">Spezialisierung</button>
                             <div class="mt-6 text-xl space-y-1">
-                                <p>Qualifikation 1</p>
-                                <p>Qualifikation 2</p>
-                                <p>Qualifikation 3</p>
-                                <p>Qualifikation 4</p>
+                                <button id="edit-qual1" class="p-1 -m-1 block">Qualifikation 1</button>
+                                <button id="edit-qual2" class="p-1 -m-1 block">Qualifikation 2</button>
+                                <button id="edit-qual3" class="p-1 -m-1 block">Qualifikation 3</button>
+                                <button id="edit-qual4" class="p-1 -m-1 block">Qualifikation 4</button>
                             </div>
                             <div class="mt-6 text-base">
-                                <p>Position oder Logo</p>
+                                <button id="edit-position" class="p-1 -m-1 block">Position oder Logo</button>
                             </div>
                         </div>
                         <div class="absolute bottom-0 right-0">
-                           <button class="placeholder-button">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6-6 6"/><path d="m12 4-6 6 6 6"/><path d="m19 12-6-6 6-6"/></svg>
+                           <button id="edit-languages" class="inline-flex items-center justify-center gap-2 h-10 px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6-6 6"/><path d="m12 4-6 6 6 6"/><path d="m19 12-6-6 6-6"/></svg>
                                 Sprachen
                             </button>
                         </div>
@@ -97,15 +104,64 @@ export default function DoctorsPage() {
             </div>
         `,
         backSideCode: `
-            <style>
+             <style>
                 .vita-content { color: hsl(var(--background)); }
                 .vita-content p { margin: 0; }
                 .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
+                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; }
+                .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
-            <div class="vita-content p-8 w-full max-w-[1000px]">
-                <h4>Curriculum Vitae</h4>
-            </div>
+            <button id="edit-vita" class="vita-content-button">
+                <div class="vita-content p-8 w-full max-w-[1000px] text-left">
+                    <h4>Curriculum Vitae</h4>
+                </div>
+            </button>
         `
+    }), []);
+    
+    // This is a placeholder for actual image data fetching
+    const projectImages = [
+        '/images/team/Ortmanns.jpg', '/images/team/Prof.Schemmer.jpg', '/images/team/Dr.Rosenov.jpg', '/images/team/Dr.Herschel.jpg', '/images/team/Dr.Slezak.jpg',
+        '/images/logos/slezak-logo.png', '/images/VASC-Alliance-Logo.png', '/images/schemmer-worni-logo.png'
+    ];
+
+    const handleTemplateClick = (e: React.MouseEvent) => {
+        let target = e.target as HTMLElement;
+        // Traverse up the DOM to find the button if a child was clicked
+        while (target && target.tagName !== 'BUTTON' && target.id !== 'template-container') {
+            target = target.parentElement as HTMLElement;
+        }
+
+        if (target && target.id) {
+            const id = target.id;
+            if (id.startsWith('edit-')) {
+                const field = id.replace('edit-', '');
+                switch(field) {
+                    case 'vita':
+                        setDialogState({ type: 'vita', data: { initialValue: '' } });
+                        break;
+                    case 'languages':
+                        setDialogState({ type: 'language', data: { initialLanguages: ['de', 'en'] } });
+                        break;
+                    case 'image':
+                        setDialogState({ type: 'imageSource', data: {} });
+                        break;
+                    default:
+                        setDialogState({ type: 'text', data: { title: `Edit ${field}`, label: field, initialValue: 'Placeholder' } });
+                        break;
+                }
+            }
+        }
+    };
+    
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string } });
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
     };
 
     const doctorsQuery = useMemoFirebase(() => {
@@ -129,13 +185,13 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="w-full rounded-lg border-2 border-dashed border-muted">
-                       <div className="grid grid-cols-2 gap-2.5">
+                    <div id="template-container" className="w-full rounded-lg border-2 border-dashed border-muted" onClick={handleTemplateClick}>
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                             <div className="relative aspect-[1000/495] w-full overflow-hidden bg-muted/50">
-                                {exampleDoctor && <CardHtmlRenderer html={exampleDoctor.frontSideCode} />}
+                                <CardHtmlRenderer html={exampleDoctor.frontSideCode} className="absolute w-full h-full" />
                             </div>
                             <div className="relative aspect-[1000/495] w-full overflow-hidden bg-accent/95">
-                                {exampleDoctor && <CardHtmlRenderer html={exampleDoctor.backSideCode} />}
+                                 <CardHtmlRenderer html={exampleDoctor.backSideCode} className="absolute w-full h-full" />
                             </div>
                        </div>
                     </div>
@@ -187,6 +243,77 @@ export default function DoctorsPage() {
 
                 </CardContent>
             </Card>
+
+            {dialogState.type === 'text' && (
+                <TextEditDialog
+                    isOpen={true}
+                    onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
+                    title={dialogState.data.title}
+                    label={dialogState.data.label}
+                    initialValue={dialogState.data.initialValue}
+                    onSave={(newValue) => console.log('Saved:', newValue)}
+                />
+            )}
+
+            {dialogState.type === 'vita' && (
+                <VitaEditorDialog
+                    isOpen={true}
+                    onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
+                    initialValue={dialogState.data.initialValue}
+                    onSave={(newValue) => console.log('Saved vita:', newValue)}
+                />
+            )}
+            
+            {dialogState.type === 'language' && (
+                <LanguageSelectDialog
+                    isOpen={true}
+                    onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
+                    initialLanguages={dialogState.data.initialLanguages}
+                    onSave={(newLanguages) => console.log('Saved languages:', newLanguages)}
+                />
+            )}
+            
+            <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileSelect}
+            />
+            {dialogState.type === 'imageSource' && (
+                <ImageSourceDialog
+                    isOpen={true}
+                    onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
+                    onUpload={() => {
+                        setDialogState({ type: null, data: {} });
+                        fileInputRef.current?.click();
+                    }}
+                    onSelect={() => setDialogState({ type: 'imageLibrary', data: {} })}
+                />
+            )}
+
+            {dialogState.type === 'imageLibrary' && (
+                <ImageLibraryDialog
+                    isOpen={true}
+                    onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
+                    images={projectImages}
+                    onImageSelect={(imageUrl) => setDialogState({ type: 'imageCrop', data: { imageUrl } })}
+                />
+            )}
+
+            {dialogState.type === 'imageCrop' && (
+                <ImageCropDialog
+                    imageUrl={dialogState.data.imageUrl}
+                    aspectRatio={2 / 3}
+                    onCropComplete={(croppedImageUrl) => {
+                        console.log('Cropped Image URL:', croppedImageUrl);
+                        setDialogState({ type: null, data: {} });
+                    }}
+                    onClose={() => setDialogState({ type: null, data: {} })}
+                />
+            )}
         </div>
     );
 }
+
+    
