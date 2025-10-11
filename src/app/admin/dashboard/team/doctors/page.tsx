@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { useFirestore } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
-import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 export interface Doctor {
     id: string;
@@ -23,7 +22,7 @@ export default function DoctorsPage() {
     const firestore = useFirestore();
     const { toast } = useToast();
     
-    const handleWriteToDb = () => {
+    const handleWriteToDb = async () => {
         if (!firestore) {
             toast({
                 variant: 'destructive',
@@ -36,10 +35,10 @@ export default function DoctorsPage() {
         if (ortmannsData) {
             try {
                 const docRef = doc(firestore, 'doctors', ortmannsData.id);
-                setDocumentNonBlocking(docRef, ortmannsData, { merge: true });
+                await setDoc(docRef, ortmannsData, { merge: true });
                 toast({
-                    title: 'Erfolg',
-                    description: 'Schreibvorgang für Dr. Ortmanns wurde gestartet.',
+                    title: 'Erfolg!',
+                    description: 'Daten erfolgreich in die Datenbank geschrieben.',
                 });
             } catch (error: any) {
                  toast({
