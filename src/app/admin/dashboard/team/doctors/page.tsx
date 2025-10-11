@@ -93,6 +93,7 @@ export default function DoctorsPage() {
                 .template-card button:hover:not(.image-button) { background-color: rgba(0,0,0,0.1); }
                 .template-card .image-button { position: relative; height: 100%; aspect-ratio: 2/3; overflow: hidden; border-radius: 0.375rem; background-color: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1rem; color: #64748b; }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.2); }
+                .template-card .lang-button-container { display: flex; align-items: center; gap: 0.5rem; }
                 .template-card .lang-button:hover { background-color: hsla(var(--primary-foreground), 0.1); }
                 .template-card p, .template-card h3 { padding: 0.125rem 0.25rem; margin: 0; }
                 .template-card .text-2xl { font-size: 1.5rem; line-height: 2rem; }
@@ -147,8 +148,8 @@ export default function DoctorsPage() {
                                 <button id="edit-position" class="w-full text-left"><p>Position oder Logo</p></button>
                             </div>
                         </div>
-                        <div class="absolute bottom-0 right-0 flex items-center gap-2">
-                             <button id="edit-languages" class="lang-button inline-flex items-center justify-center gap-2 h-8 px-3 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+                        <div id="language-container" class="absolute bottom-0 right-0 flex items-center gap-2">
+                            <button id="edit-languages" class="lang-button inline-flex items-center justify-center gap-2 h-8 px-3 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
                                 Sprachen
                             </button>
@@ -159,8 +160,8 @@ export default function DoctorsPage() {
             </div>
         `,
         backSideCode: `
-            <style>
-                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: block; text-align: left; }
+             <style>
+                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; }
                 .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
                 .vita-content { color: hsl(var(--background)); }
                 .vita-content p { margin: 0; }
@@ -194,7 +195,7 @@ export default function DoctorsPage() {
         '/images/foto-medis.jpg',
         '/images/team/Ortmanns.jpg', 
         '/images/team/Prof.Schemmer.jpg', 
-        '/images/team/Dr.Rosenov.jpg', 
+        '/images/team/Dr.Rosenov.jpg',
         '/images/team/Dr.Herschel.jpg', 
         '/images/team/Dr.Slezak.jpg',
         '/images/team/Garcia.jpg',
@@ -215,16 +216,18 @@ export default function DoctorsPage() {
 
     const handleTemplateClick = (e: React.MouseEvent) => {
         let target = e.target as HTMLElement;
-        // Traverse up to find the button, but stop if we hit the card's root
         while (target && !target.id.startsWith('edit-')) {
-             if (target.classList.contains('template-card') || target.classList.contains('vita-content-button')) {
-                break;
+             if (target.classList.contains('template-card') || target.classList.contains('vita-content-button') || target.id === 'language-container') {
+                if (target.id === 'language-container') {
+                    target = target.querySelector('#edit-languages') as HTMLElement;
+                } else {
+                     break;
+                }
             }
             target = target.parentElement as HTMLElement;
         }
         
-        // Handle the case where the click is on the vita button itself
-        if (target && target.id.startsWith('edit-vita')) {
+        if (target && target.id && target.id === 'edit-vita') {
             target = document.getElementById('edit-vita') as HTMLElement;
         }
 
@@ -237,10 +240,12 @@ export default function DoctorsPage() {
 
             switch(field) {
                 case 'vita':
-                    openDialog('vita', { initialValue: '' });
+                    openDialog('vita', { initialValue: exampleDoctor.backSideCode.includes("Zum Bearbeiten klicken") ? '' : exampleDoctor.backSideCode });
                     break;
                 case 'languages':
-                    openDialog('language', { initialLanguages: ['de'] });
+                     openDialog('language', { 
+                        initialLanguages: dialogState.data.selectedLanguages || ['de'] 
+                    });
                     break;
                 case 'image':
                     openDialog('imageSource', { field, aspectRatio: 2/3 });
@@ -265,7 +270,7 @@ export default function DoctorsPage() {
         if (e.target.files && e.target.files[0]) {
             const reader = new FileReader();
             reader.onload = (event) => {
-                const aspectRatio = dialogState.data.aspectRatio || 2/3; // Fallback to default
+                const aspectRatio = dialogState.data.aspectRatio || 2/3;
                 setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio, field: dialogState.data.field } });
             };
             reader.readAsDataURL(e.target.files[0]);
@@ -283,15 +288,23 @@ export default function DoctorsPage() {
             targetButton.innerHTML = '';
             const img = doc.createElement('img');
             img.src = croppedImageUrl;
-            img.alt = "Neues Bild"; // Placeholder alt text
-            img.style.width = '100%';
-            img.style.height = '100%';
-            img.style.objectFit = 'contain';
-            targetButton.appendChild(img);
-
+            img.alt = "Neues Bild";
+            
             if(field === 'image') {
+              img.style.width = '100%';
+              img.style.height = '100%';
+              img.style.objectFit = 'cover'; // Fill the container
               targetButton.style.padding = '0';
+            } else { // It's a logo
+              img.style.height = 'auto';
+              img.style.width = '75%'; // Max 3/4 width of the text area
+              img.style.objectFit = 'contain';
+              targetButton.style.textAlign = 'left'; // Align logo to the left
+              targetButton.innerHTML = ''; // Clear any placeholder text
+              targetButton.appendChild(img);
             }
+            
+            targetButton.appendChild(img);
         }
         
         const updatedHtml = doc.body.innerHTML;
@@ -322,23 +335,74 @@ export default function DoctorsPage() {
             ...prev,
             backSideCode: updatedHtml,
         }));
-        setDialogState({ type: null, data: {} });
     };
 
     const handleTextSave = (newValue: string) => {
         const field = dialogState.data.field;
+        if (!field) return;
+
         const parser = new DOMParser();
         const doc = parser.parseFromString(exampleDoctor.frontSideCode, 'text/html');
         const button = doc.getElementById(`edit-${field}`);
+        
         if (button) {
-            const p = button.querySelector('p') || button.querySelector('h3');
-             if (p) {
-                p.textContent = newValue;
+            if (field === 'position') {
+                 button.innerHTML = `<p>${newValue}</p>`;
+            } else {
+                const p = button.querySelector('p') || button.querySelector('h3');
+                if (p) {
+                    p.textContent = newValue;
+                }
             }
         }
         const updatedHtml = doc.body.innerHTML;
         setExampleDoctor(prev => ({ ...prev, frontSideCode: updatedHtml }));
         setDialogState({ type: null, data: {} });
+    };
+
+    const handleLanguageSave = (selectedLanguages: string[]) => {
+        setDialogState(prev => ({ ...prev, data: { ...prev.data, selectedLanguages } }));
+        
+        const langToFlagHtml: Record<string, string> = {
+            de: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>`,
+            en: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="h-5 w-auto rounded-sm shadow-md"><clipPath id="a-lang"><path d="M30 15h30v15zv-15z"></path></clipPath><path d="M0 0v30h60V0z" fill="#012169"></path><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"></path><path d="M0 0l60 30m0-30L0 30" clip-path="url(#a-lang)" stroke="#C8102E" stroke-width="4"></path><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"></path><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"></path></svg>`,
+            fr: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#ED2939" d="M0 0h3v2H0z"></path><path fill="#fff" d="M0 0h2v2H0z"></path><path fill="#002395" d="M0 0h1v2H0z"></path></svg>`,
+            it: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#008C45" d="M0 0h1v2H0z"></path><path fill="#F4F5F0" d="M1 0h1v2H1z"></path><path fill="#CD212A" d="M2 0h1v2H2z"></path></svg>`,
+            es: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#c60b1e" d="M0 0h3v2H0z"></path><path fill="#ffc400" d="M0 .5h3v1H0z"></path></svg>`,
+            pt: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="h-5 w-auto rounded-sm shadow-md"><path fill="#006233" d="M0 0h1.2v2H0z"></path><path fill="#D21034" d="M1.2 0H3v2H1.2z"></path></svg>`,
+            ru: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" class="h-5 w-auto rounded-sm shadow-md"><path fill="#fff" d="M0 0h9v3H0z"/><path fill="#d52b1e" d="M0 3h9v3H0z"/><path fill="#0039a6" d="M0 2h9v2H0z"/></svg>`,
+        };
+
+        const languageOrder = ['de', 'fr', 'it', 'en', 'es', 'pt', 'ru'];
+        const sortedLangs = [...selectedLanguages].sort((a, b) => {
+            const indexA = languageOrder.indexOf(a);
+            const indexB = languageOrder.indexOf(b);
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
+            return a.localeCompare(b);
+        });
+
+        const flagsHtml = sortedLangs.map(lang => langToFlagHtml[lang] || '').join('');
+        
+        const buttonHtml = `<button id="edit-languages" class="lang-button inline-flex items-center justify-center gap-2 h-8 px-3 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            Sprachen
+        </button>`;
+
+        const newHtml = `${buttonHtml}${flagsHtml}`;
+        
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(exampleDoctor.frontSideCode, 'text/html');
+        const langContainer = doc.getElementById('language-container');
+        if (langContainer) {
+            langContainer.innerHTML = newHtml;
+        }
+
+        setExampleDoctor(prev => ({
+            ...prev,
+            frontSideCode: doc.body.innerHTML,
+        }));
     };
 
     const doctorsQuery = useMemoFirebase(() => {
@@ -444,7 +508,7 @@ export default function DoctorsPage() {
                     isOpen={true}
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
                     initialLanguages={dialogState.data.initialLanguages}
-                    onSave={(newLanguages) => console.log('Saved languages:', newLanguages)}
+                    onSave={handleLanguageSave}
                 />
             )}
 
@@ -459,8 +523,7 @@ export default function DoctorsPage() {
                         setDialogState({ type: 'imageLibrary', data: { field: 'position', aspectRatio: 1600/265 } });
                     }}
                     onUploadNew={() => {
-                        setDialogState(prev => ({ type: null, data: { ...prev.data, field: 'position', aspectRatio: 1600/265 } }));
-                        fileInputRef.current?.click();
+                        setDialogState(prev => ({ type: 'imageSource', data: { ...prev.data, field: 'position', aspectRatio: 1600/265 } }));
                     }}
                 />
             )}
@@ -477,7 +540,6 @@ export default function DoctorsPage() {
                     isOpen={true}
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
                     onUpload={() => {
-                        setDialogState(prev => ({ type: null, data: { ...prev.data } }));
                         fileInputRef.current?.click();
                     }}
                     onSelect={() => setDialogState(prev => ({ type: 'imageLibrary', data: { ...prev.data } }))}
