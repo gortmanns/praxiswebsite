@@ -1,8 +1,9 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Calendar, User as UserIcon, LogOut, Users, Settings, Handshake } from 'lucide-react';
+import { Home, Calendar, User as UserIcon, LogOut, Users, Settings, Handshake, Palette } from 'lucide-react';
 import {
   SidebarProvider,
   Sidebar,
@@ -61,6 +62,7 @@ export default function DashboardLayout({
     { href: '/admin/dashboard', label: 'Dashboard', icon: Home },
     { href: '/admin/dashboard/banner', label: 'Banner anpassen', icon: Settings },
     { href: '/admin/dashboard/holidays', label: 'Ferientermine', icon: Calendar },
+    { href: '/admin/dashboard/visual-design', label: 'Visual Design', icon: Palette },
   ];
 
   const teamNavItems = [
