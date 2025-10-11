@@ -442,8 +442,7 @@ export default function DoctorsPage() {
         const flagsHtml = sortedLangs.map(lang => {
             const FlagComponent = flagComponents[lang];
             if (!FlagComponent) return '';
-            const flagSvg = renderToStaticMarkup(React.createElement(FlagComponent, { className: "h-5 w-auto rounded-sm shadow-md" }));
-            return flagSvg;
+            return renderToStaticMarkup(React.createElement(FlagComponent, { className: "h-5 w-auto rounded-sm shadow-md" }));
         }).join('');
 
         const buttonHtml = `<button id="edit-languages" style="display: flex; align-items: center; gap: 0.5rem; height: 2rem; padding: 0 0.75rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem;" onmouseover="this.style.backgroundColor='hsl(var(--primary) / 0.9)'" onmouseout="this.style.backgroundColor='hsl(var(--primary))'">
