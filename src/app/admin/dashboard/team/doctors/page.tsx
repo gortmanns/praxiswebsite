@@ -66,13 +66,13 @@ export default function DoctorsPage() {
                     <div className="w-full rounded-lg border-2 border-dashed border-muted p-4">
                         {ortmannsCardData && (
                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                                <div className="relative aspect-[1000/495] w-full overflow-hidden">
-                                    <div className="h-[495px] w-[1000px] origin-top-left scale-[var(--scale-factor)]" style={{ '--scale-factor': 'calc(100% / 1000)' } as React.CSSProperties}>
+                                <div className="relative h-[150px]" style={{'--scale-factor': 0.3} as React.CSSProperties}>
+                                    <div className="absolute top-0 left-0 w-[1000px] h-[495px]" style={{ transform: 'scale(var(--scale-factor))', transformOrigin: 'top left' }}>
                                         <CodeRenderer html={ortmannsCardData.frontSideCode} />
                                     </div>
                                 </div>
-                                <div className="relative aspect-[1000/495] w-full overflow-hidden bg-accent/95">
-                                     <div className="h-[495px] w-[1000px] origin-top-left scale-[var(--scale-factor)]" style={{ '--scale-factor': 'calc(100% / 1000)' } as React.CSSProperties}>
+                                <div className="relative h-[150px] bg-accent/95" style={{'--scale-factor': 0.3} as React._Component.CSSProperties}>
+                                     <div className="absolute top-0 left-0 w-[1000px] h-[495px]" style={{ transform: 'scale(var(--scale-factor))', transformOrigin: 'top left' }}>
                                         <CodeRenderer html={ortmannsCardData.backSideCode} />
                                     </div>
                                 </div>
