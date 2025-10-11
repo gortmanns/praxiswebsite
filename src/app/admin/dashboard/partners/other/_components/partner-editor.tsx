@@ -2,14 +2,10 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
-import { useStorage } from '@/firebase';
-import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
-import { v4 as uuidv4 } from 'uuid';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useToast } from '@/hooks/use-toast';
 import { ImageUp } from 'lucide-react';
 import { ImageSourceDialog } from '@/app/admin/dashboard/team/doctors/_components/image-source-dialog';
 import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_components/image-library-dialog';
@@ -31,8 +27,6 @@ const projectImages = [
 const CARD_BACKGROUND_IMAGE = '/images/partner-card-background.png';
 
 export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partner) => void }> = ({ cardData, onUpdate }) => {
-    const storage = useStorage();
-    const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [dialogState, setDialogState] = useState<'imageSource' | 'imageLibrary' | 'imageCrop' | null>(null);
     const [logoToCrop, setLogoToCrop] = useState<string | null>(null);
@@ -55,26 +49,16 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
     };
 
     const handleCropComplete = async (composedImage: string) => {
-        if (!storage) {
-            toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
-            return setDialogState(null);
-        }
-        const imagePath = `partners/${uuidv4()}.jpg`;
-        const imageRef = storageRef(storage, imagePath);
-        try {
-            // The 'composedImage' is the final image from the crop dialog (card + logo)
-            const snapshot = await uploadString(imageRef, composedImage, 'data_url');
-            const downloadURL = await getDownloadURL(snapshot.ref);
-            onUpdate({ ...cardData, logoUrl: downloadURL }); // Update the card with the new composite image
-        } catch (error) {
-            console.error("Error uploading image: ", error);
-            toast({ variant: 'destructive', title: 'Upload-Fehler', description: 'Das Bild konnte nicht hochgeladen werden.' });
-        }
+        // Update the state immediately with the base64 data URL for live preview
+        onUpdate({ ...cardData, logoUrl: composedImage });
         setDialogState(null);
         setLogoToCrop(null);
     };
 
      const renderPartnerLogo = (partner: Partner) => {
+        if (!partner.logoUrl) {
+            return <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground">Kein Logo</div>;
+        }
         if (partner.name === 'orthozentrum-bern') {
           return <OrthozentrumLogo className="h-full w-full object-contain" />;
         }
@@ -142,7 +126,7 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                     </table>
                 </div>
 
-                <div className="w-full justify-center flex bg-primary p-4">
+                 <div className="w-full flex justify-center bg-[#f0f2f5] p-4">
                     <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
                          <Link
                             href={cardData.websiteUrl || '#'}

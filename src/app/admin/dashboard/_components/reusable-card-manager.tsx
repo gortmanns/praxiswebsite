@@ -9,8 +9,10 @@
 
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirestore, useCollection, useMemoFirebase, useStorage } from '@/firebase';
 import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc, getDocs } from 'firebase/firestore';
+import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -52,6 +54,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     entityName,
 }: ReusableCardManagerProps<T>) {
     const firestore = useFirestore();
+    const storage = useStorage();
     
     const [notification, setNotification] = useState<TimedAlertProps | null>(null);
 
@@ -145,27 +148,36 @@ export function ReusableCardManager<T extends BaseCardData>({
     };
 
     const handleSaveChanges = async () => {
-        if (!firestore || !dbData) {
-            setNotification({ variant: 'destructive', title: 'Fehler', description: 'Datenbankverbindung nicht verfügbar.' });
+        if (!firestore || !dbData || !storage) {
+            setNotification({ variant: 'destructive', title: 'Fehler', description: 'Datenbank- oder Speicherdienst nicht verfügbar.' });
             return;
         }
         setNotification(null);
 
         try {
-            const finalCardData: Partial<T> = { ...editorCardState };
-            delete finalCardData.id;
-            delete finalCardData.createdAt;
+            const mutableCardData: Partial<T> = { ...editorCardState };
+            
+            // Handle image upload if logoUrl is a data URL
+            if (mutableCardData.logoUrl && mutableCardData.logoUrl.startsWith('data:image')) {
+                const imagePath = `${collectionName}/${uuidv4()}.jpg`;
+                const imageRef = storageRef(storage, imagePath);
+                const snapshot = await uploadString(imageRef, mutableCardData.logoUrl, 'data_url');
+                mutableCardData.logoUrl = await getDownloadURL(snapshot.ref);
+            }
+
+            delete mutableCardData.id;
+            delete mutableCardData.createdAt;
 
             if (editingCardId && !isCreatingNew) {
                 const docRef = doc(firestore, collectionName, editingCardId);
-                await setDoc(docRef, finalCardData, { merge: true });
+                await setDoc(docRef, mutableCardData, { merge: true });
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Änderungen erfolgreich gespeichert.' });
             } else {
                 const highestOrder = dbData.reduce((max, item) => item.order > max ? item.order : max, 0);
                 const collectionRef = collection(firestore, collectionName);
                 const newDocRef = doc(collectionRef); 
                 const newCardData = {
-                    ...finalCardData,
+                    ...mutableCardData,
                     id: newDocRef.id, 
                     order: highestOrder + 1,
                     createdAt: serverTimestamp(),
@@ -188,6 +200,9 @@ export function ReusableCardManager<T extends BaseCardData>({
     const isPartnerManager = collectionName.toLowerCase().includes('partner');
 
     const renderPartnerLogo = (partner: T) => {
+        if (!partner.logoUrl) {
+            return <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground">Kein Logo</div>;
+        }
         if (partner.name === 'orthozentrum-bern') {
           return <OrthozentrumLogo className="h-full w-full object-contain" />;
         }
@@ -380,8 +395,7 @@ export function ReusableCardManager<T extends BaseCardData>({
 
                     {isEditing && (
                         <div 
-                            className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12"
-                            style={{ backgroundColor: '#f0f2f5' }}
+                            className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12 bg-[#f0f2f5]"
                         >
                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                             <Alert variant="info" className="mt-4">
