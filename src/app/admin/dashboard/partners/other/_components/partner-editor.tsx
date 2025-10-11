@@ -99,7 +99,11 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
                 <div className="relative">
                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                    <PartnerCard {...cardData} />
+                    <div className="rounded-lg bg-primary p-4 flex flex-wrap justify-center gap-8">
+                        <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                             <PartnerCard {...cardData} />
+                        </div>
+                    </div>
                 </div>
             </div>
             
