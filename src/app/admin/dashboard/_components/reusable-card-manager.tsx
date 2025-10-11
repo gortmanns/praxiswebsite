@@ -211,21 +211,22 @@ export function ReusableCardManager<T extends BaseCardData>({
             return (
                 <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
                     <div className="flex flex-col gap-2">
-                        <Link
+                         <Link
                             href={item.websiteUrl || '#'}
                             target={item.openInNewTab ? '_blank' : '_self'}
                             rel="noopener noreferrer"
                             className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                            onClick={(e) => e.preventDefault()} // Prevent navigation in admin UI
-                        >
+                             onClick={(e) => e.preventDefault()} // Prevent navigation in admin UI
+                          >
                             <Card className="flex h-full w-full items-center p-6">
-                                <CardContent className="flex w-full items-center justify-center p-0">
-                                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                                        {renderPartnerLogo(item)}
-                                    </div>
-                                </CardContent>
+                              <CardContent className="flex w-full items-center justify-center p-0">
+                                 <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                                    {renderPartnerLogo(item)}
+                                 </div>
+                              </CardContent>
                             </Card>
-                        </Link>
+                            <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                          </Link>
                         <div className="mt-2 flex w-full flex-col gap-2">
                             <div className="grid grid-cols-2 gap-2">
                                 <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
@@ -378,7 +379,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                     {isEditing && (
-                        <div className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12 bg-muted/50">
+                        <div className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12 bg-muted">
                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                             <Alert variant="info" className="mt-4">
                                 <Info className="h-4 w-4" />
