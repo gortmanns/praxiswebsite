@@ -44,7 +44,7 @@ export function CooperationPartnersSection() {
       return <OrthozentrumLogo className="h-24 w-auto" />;
     }
     if (partner.name === 'Agnieszka Slezak') {
-      return <AgnieszkaSlezakLogo className="h-24 w-auto text-special-green" />;
+      return <AgnieszkaSlezakLogo className="h-24 w-auto" />;
     }
     return (
       <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
@@ -68,27 +68,30 @@ export function CooperationPartnersSection() {
           Unsere ärztlichen Kooperationspartner
         </h2>
         
-        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 flex flex-wrap justify-center gap-8">
           {isLoadingMedical ? (
             Array.from({ length: 4 }).map((_, index) => (
-              <Skeleton key={index} className="h-32 w-full rounded-lg" />
+              <div key={index} className="w-full basis-full sm:basis-[45%] lg:basis-[22%]">
+                <Skeleton className="h-32 w-full rounded-lg" />
+              </div>
             ))
           ) : (
             visibleMedicalPartners.map(partner => (
-                <Link
-                  key={partner.id}
-                  href={partner.websiteUrl || '#'}
-                  target={partner.websiteUrl === '#' ? '_self' : '_blank'}
-                  rel="noopener noreferrer"
-                  className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                >
-                  <Card className="flex h-full w-full items-center p-6">
-                    <CardContent className="flex w-full items-center justify-center p-0">
-                      {renderPartnerLogo(partner)}
-                    </CardContent>
-                  </Card>
-                  <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                </Link>
+                <div key={partner.id} className="w-full basis-full sm:basis-[45%] lg:basis-[22%]">
+                  <Link
+                    href={partner.websiteUrl || '#'}
+                    target={partner.websiteUrl === '#' ? '_self' : '_blank'}
+                    rel="noopener noreferrer"
+                    className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  >
+                    <Card className="flex h-full w-full items-center p-6">
+                      <CardContent className="flex w-full items-center justify-center p-0">
+                        {renderPartnerLogo(partner)}
+                      </CardContent>
+                    </Card>
+                    <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                  </Link>
+                </div>
               ))
           )}
         </div>
