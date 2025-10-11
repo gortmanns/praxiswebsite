@@ -23,7 +23,7 @@ const alertIcons = {
 };
 
 export const TimedAlert: React.FC<TimedAlertProps> = ({
-  variant = 'info',
+  variant,
   title,
   description,
   duration = 10000, // 10 seconds default
@@ -50,17 +50,13 @@ export const TimedAlert: React.FC<TimedAlertProps> = ({
     return null;
   }
   
-  const finalVariant = variant === 'success' ? 'info' : variant;
   const Icon = alertIcons[variant as keyof typeof alertIcons] || Info;
 
 
   return (
     <Alert
-      variant={finalVariant}
+      variant={variant}
       className={cn(
-        {
-          'border-green-500/50 text-green-800 dark:border-green-600 [&>svg]:text-green-600': variant === 'success',
-        },
         'transition-all duration-300 ease-in-out',
         isVisible ? 'animate-in fade-in' : 'animate-out fade-out',
         className
@@ -73,5 +69,3 @@ export const TimedAlert: React.FC<TimedAlertProps> = ({
     </Alert>
   );
 };
-
-    
