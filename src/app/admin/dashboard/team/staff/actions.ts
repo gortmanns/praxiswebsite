@@ -2,7 +2,7 @@
 'use server';
 
 import { initializeApp, getApps, App, deleteApp } from 'firebase-admin/app';
-import { getFirestore, writeBatch } from 'firebase-admin/firestore';
+import { getFirestore } from 'firebase-admin/firestore';
 
 const staffData = [
     {
@@ -52,19 +52,29 @@ const staffData = [
     },
 ];
 
-function getAdminApp(): App {
-    if (getApps().length > 0) {
-        return getApps()[0];
+let adminApp: App | null = null;
+
+function initializeAdminApp() {
+    if (!adminApp) {
+        const appName = `firebase-admin-app-${Date.now()}`;
+        adminApp = initializeApp({}, appName);
     }
-    return initializeApp();
+    return adminApp;
+}
+
+async function cleanupAdminApp() {
+    if (adminApp) {
+        await deleteApp(adminApp);
+        adminApp = null;
+    }
 }
 
 export async function seedStaffData() {
-  const adminApp = getAdminApp();
-  const db = getFirestore(adminApp);
-  const staffCollection = db.collection('staff');
-
   try {
+    const app = initializeAdminApp();
+    const db = getFirestore(app);
+    const staffCollection = db.collection('staff');
+
     const snapshot = await staffCollection.limit(1).get();
     if (!snapshot.empty) {
       return { success: false, error: 'Die Sammlung ist nicht leer. Das Seeding wurde abgebrochen, um Duplikate zu vermeiden.' };
@@ -86,5 +96,7 @@ export async function seedStaffData() {
   } catch (error: any) {
     console.error('Error seeding database:', error);
     return { success: false, error: error.message || 'Ein unbekannter Fehler ist aufgetreten.' };
+  } finally {
+      await cleanupAdminApp();
   }
 }

@@ -4,13 +4,14 @@
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, setDoc, doc, writeBatch, deleteDoc, addDoc, serverTimestamp, CollectionReference, DocumentData } from 'firebase/firestore';
+import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ChevronUp, ChevronDown, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, CheckCircle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { addDocumentNonBlocking, deleteDocumentNonBlocking, setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 export interface BaseCardData {
     id: string;
@@ -108,7 +109,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         if (!firestore) return;
         setAlertState(null);
         const docRef = doc(firestore, collectionName, card.id);
-        await setDoc(docRef, { hidden: !card.hidden }, { merge: true });
+        setDocumentNonBlocking(docRef, { hidden: !card.hidden }, { merge: true });
     };
 
     const openDeleteConfirmation = (cardId: string, cardName: string) => {
@@ -119,7 +120,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         if (!firestore || !deleteConfirmState.cardId) return;
         try {
             const docRef = doc(firestore, collectionName, deleteConfirmState.cardId);
-            await deleteDoc(docRef);
+            deleteDocumentNonBlocking(docRef);
             setAlertState({ type: 'success', message: 'Karte wurde erfolgreich gelöscht.' });
             setDeleteConfirmState({ isOpen: false });
         } catch (error) {
@@ -141,18 +142,24 @@ export function ReusableCardManager<T extends BaseCardData>({
 
             if (editingCardId && !isCreatingNew) {
                 const docRef = doc(firestore, collectionName, editingCardId);
-                await setDoc(docRef, finalCardData, { merge: true });
+                setDocumentNonBlocking(docRef, finalCardData, { merge: true });
                 setAlertState({ type: 'success', message: 'Änderungen erfolgreich gespeichert.' });
             } else {
                 const highestOrder = dbData.reduce((max, item) => item.order > max ? item.order : max, 0);
+                const collectionRef = collection(firestore, collectionName);
                 const newCardData = {
                     ...finalCardData,
                     order: highestOrder + 1,
                     createdAt: serverTimestamp(),
                     hidden: false,
                 };
-                const newDocRef = await addDoc(collection(firestore, collectionName), newCardData);
-                await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
+                const newDocPromise = addDocumentNonBlocking(collectionRef, newCardData);
+                newDocPromise.then(newDocRef => {
+                    if(newDocRef) {
+                        setDocumentNonBlocking(newDocRef, { id: newDocRef.id }, { merge: true });
+                    }
+                });
+
                 setAlertState({ type: 'success', message: `Neue ${entityName}-Karte erfolgreich erstellt.` });
             }
             handleCancelEdit();
@@ -316,4 +323,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
