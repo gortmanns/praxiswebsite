@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
@@ -19,9 +20,10 @@ import { LogoFunctionSelectDialog } from './_components/logo-function-select-dia
 import { cn } from '@/lib/utils';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
-import { ChevronUp, ChevronDown, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle } from 'lucide-react';
+import { ChevronUp, ChevronDown, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useToast } from '@/hooks/use-toast';
 
 
 export interface Doctor {
@@ -85,6 +87,8 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string; onClick?: (
 export default function DoctorsPage() {
     const firestore = useFirestore();
     const storage = useStorage();
+    const { toast } = useToast();
+
     const doctorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
         return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
@@ -251,32 +255,33 @@ export default function DoctorsPage() {
 
     useEffect(() => {
         if (!isEditing) return;
-    
+
         const langToFlagHtml: Record<string, string> = {
             de: renderToStaticMarkup(React.createElement(DeFlag)), en: renderToStaticMarkup(React.createElement(EnFlag)), fr: renderToStaticMarkup(React.createElement(FrFlag)), it: renderToStaticMarkup(React.createElement(ItFlag)), es: renderToStaticMarkup(React.createElement(EsFlag)), pt: renderToStaticMarkup(React.createElement(PtFlag)), ru: renderToStaticMarkup(React.createElement(RuFlag)), sq: renderToStaticMarkup(React.createElement(SqFlag)), ar: renderToStaticMarkup(React.createElement(ArFlag)), bs: renderToStaticMarkup(React.createElement(BsFlag)), zh: renderToStaticMarkup(React.createElement(ZhFlag)), da: renderToStaticMarkup(React.createElement(DaFlag)), fi: renderToStaticMarkup(React.createElement(FiFlag)), el: renderToStaticMarkup(React.createElement(ElFlag)), he: renderToStaticMarkup(React.createElement(HeFlag)), hi: renderToStaticMarkup(React.createElement(HiFlag)), ja: renderToStaticMarkup(React.createElement(JaFlag)), ko: renderToStaticMarkup(React.createElement(KoFlag)), hr: renderToStaticMarkup(React.createElement(HrFlag)), nl: renderToStaticMarkup(React.createElement(NlFlag)), no: renderToStaticMarkup(React.createElement(NoFlag)), fa: renderToStaticMarkup(React.createElement(FaFlag)), pl: renderToStaticMarkup(React.createElement(PlFlag)), pa: renderToStaticMarkup(React.createElement(PaFlag)), ro: renderToStaticMarkup(React.createElement(RoFlag)), sv: renderToStaticMarkup(React.createElement(SvFlag)), sr: renderToStaticMarkup(React.createElement(SrFlag)), ta: renderToStaticMarkup(React.createElement(TaFlag)), cs: renderToStaticMarkup(React.createElement(CsFlag)), tr: renderToStaticMarkup(React.createElement(TrFlag)), uk: renderToStaticMarkup(React.createElement(UkFlag)), hu: renderToStaticMarkup(React.createElement(HuFlag)), ur: renderToStaticMarkup(React.createElement(UrFlag)),
         };
-    
+
         const languages = editorCardState.languages || [];
-        const languageOrder = ['de', 'fr', 'it', 'en', 'es', 'pt', 'ru'];
-    
+        const languageOrder = ['de', 'fr', 'it', 'en'];
+
         const sortedLangs = [...languages].sort((a, b) => {
             const indexA = languageOrder.indexOf(a);
             const indexB = languageOrder.indexOf(b);
+
             if (indexA !== -1 && indexB !== -1) return indexA - indexB;
             if (indexA !== -1) return -1;
             if (indexB !== -1) return 1;
             return a.localeCompare(b);
         });
-    
+
         const flagsHtml = sortedLangs.map(lang => {
             const flagHtml = langToFlagHtml[lang];
             if (!flagHtml) return '';
             return flagHtml.replace('<svg', '<svg class="h-5 w-auto rounded-sm shadow-md"');
         }).join('');
-    
+
         const buttonHtml = `<button id="edit-languages" style="display: flex; align-items: center; gap: 0.5rem; height: 2rem; padding: 0 0.75rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem;" onmouseover="this.style.backgroundColor='hsl(var(--primary) / 0.9)'" onmouseout="this.style.backgroundColor='hsl(var(--primary))'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg><span>Sprachen</span></button>`;
         const newLangContainerHtml = buttonHtml + flagsHtml;
-    
+
         setEditorCardState(prev => {
             const parser = new DOMParser();
             const doc = parser.parseFromString(prev.frontSideCode, 'text/html');
@@ -354,6 +359,7 @@ export default function DoctorsPage() {
     const handleCropComplete = async (croppedImageUrl: string) => {
         if (!storage) {
             console.error("Storage service not available");
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
             setDialogState({ type: null, data: {} });
             return;
         }
@@ -395,6 +401,7 @@ export default function DoctorsPage() {
         
         } catch (error) {
             console.error("Error uploading image: ", error);
+            toast({ variant: 'destructive', title: 'Upload-Fehler', description: 'Das Bild konnte nicht hochgeladen werden.' });
         }
         
         setDialogState({ type: null, data: {} });
@@ -491,9 +498,15 @@ export default function DoctorsPage() {
 
     const handleDelete = async (doctorId: string) => {
         if (!firestore) return;
-        const docRef = doc(firestore, 'doctors', doctorId);
-        await deleteDoc(docRef);
-        setDialogState({ type: null, data: {} });
+        try {
+            const docRef = doc(firestore, 'doctors', doctorId);
+            await deleteDoc(docRef);
+            toast({ title: 'Erfolgreich', description: 'Karte wurde gelöscht.' });
+            setDialogState({ type: null, data: {} });
+        } catch (error) {
+            console.error("Error deleting document: ", error);
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Karte konnte nicht gelöscht werden.' });
+        }
     };
 
     const handleToggleHidden = async (doctor: Doctor) => {
@@ -503,7 +516,10 @@ export default function DoctorsPage() {
     };
 
     const handleSaveChanges = async () => {
-        if (!firestore || !dbDoctors) return;
+        if (!firestore || !dbDoctors) {
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Datenbankverbindung nicht verfügbar.' });
+            return;
+        }
     
         const cleanupHtml = (html: string) => {
             const parser = new DOMParser();
@@ -524,10 +540,14 @@ export default function DoctorsPage() {
                     }
                     
                     for (const attr of Array.from(button.attributes)) {
-                        if (attr.name !== 'id') {
-                            contentWrapper.setAttribute(attr.name, attr.value);
+                        if (attr.name !== 'id' && attr.name !== 'style') {
+                             contentWrapper.setAttribute(attr.name, attr.value);
                         }
                     }
+                     // Restore original classes if needed
+                    const originalClasses = button.className.replace(/image-button-background/g, '').trim();
+                    if(originalClasses) contentWrapper.className = originalClasses;
+
                     parent.replaceChild(contentWrapper, button);
                 }
             });
@@ -535,34 +555,41 @@ export default function DoctorsPage() {
             return doc.body.innerHTML;
         };
         
-        const cleanedFrontSideCode = cleanupHtml(editorCardState.frontSideCode);
-        const cleanedBackSideCode = cleanupHtml(editorCardState.backSideCode);
-    
-        const finalCardData: Partial<Doctor> = { 
-            ...editorCardState, 
-            frontSideCode: cleanedFrontSideCode,
-            backSideCode: cleanedBackSideCode,
-        };
+        try {
+            const cleanedFrontSideCode = cleanupHtml(editorCardState.frontSideCode);
+            const cleanedBackSideCode = cleanupHtml(editorCardState.backSideCode);
         
-        delete finalCardData.id;
-        delete finalCardData.createdAt;
-
-        if (editingDoctorId && !isCreatingNew) {
-            const docRef = doc(firestore, 'doctors', editingDoctorId);
-            await setDoc(docRef, finalCardData, { merge: true });
-        } else {
-            const highestOrder = dbDoctors.reduce((max, doc) => doc.order > max ? doc.order : max, 0);
-            
-            const newDoctorData: Omit<Doctor, 'id'> = {
-                ...(finalCardData as Omit<Doctor, 'id'>),
-                order: highestOrder + 1,
-                createdAt: serverTimestamp(),
-                hidden: false,
+            const finalCardData: Partial<Doctor> = { 
+                ...editorCardState, 
+                frontSideCode: cleanedFrontSideCode,
+                backSideCode: cleanedBackSideCode,
             };
-            const newDocRef = await addDoc(collection(firestore, 'doctors'), newDoctorData);
-            await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
+            
+            delete finalCardData.id;
+            delete finalCardData.createdAt;
+
+            if (editingDoctorId && !isCreatingNew) {
+                const docRef = doc(firestore, 'doctors', editingDoctorId);
+                await setDoc(docRef, finalCardData, { merge: true });
+                toast({ title: 'Erfolgreich', description: 'Änderungen gespeichert.' });
+            } else {
+                const highestOrder = dbDoctors.reduce((max, doc) => doc.order > max ? doc.order : max, 0);
+                
+                const newDoctorData: Omit<Doctor, 'id'> = {
+                    ...(finalCardData as Omit<Doctor, 'id'>),
+                    order: highestOrder + 1,
+                    createdAt: serverTimestamp(),
+                    hidden: false,
+                };
+                const newDocRef = await addDoc(collection(firestore, 'doctors'), newDoctorData);
+                await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
+                toast({ title: 'Erfolgreich', description: 'Neue Karte erstellt.' });
+            }
+            handleCancelEdit();
+        } catch (error) {
+            console.error("Error saving changes: ", error);
+            toast({ variant: 'destructive', title: 'Speicherfehler', description: 'Die Änderungen konnten nicht gespeichert werden.' });
         }
-        handleCancelEdit();
     };
 
     const handleCreateNew = () => {
@@ -648,7 +675,15 @@ export default function DoctorsPage() {
                                 </div>
                             ))
                         )}
-                        {dbError && <p className="text-destructive">Fehler beim Laden der Daten: {dbError.message}</p>}
+                        {dbError && (
+                             <Alert variant="destructive">
+                                <AlertCircle className="h-4 w-4" />
+                                <AlertTitle>Datenbankfehler</AlertTitle>
+                                <AlertDescription>
+                                    Die Ärztedaten konnten nicht geladen werden: {dbError.message}
+                                </AlertDescription>
+                            </Alert>
+                        )}
                         {!isLoadingDbDoctors && visibleDoctors.map((doctor, index) => (
                             <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
                                 <div className="flex w-36 flex-shrink-0 flex-col items-center justify-center gap-2">
@@ -814,3 +849,5 @@ export default function DoctorsPage() {
         </div>
     );
 }
+
+    
