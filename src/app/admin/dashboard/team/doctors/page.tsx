@@ -208,8 +208,8 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div id="template-container" className="w-full rounded-lg border-2 border-dashed border-muted" onClick={handleTemplateClick}>
-                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                    <div id="template-container" className="w-full rounded-lg border-2 border-dashed border-muted p-4" onClick={handleTemplateClick}>
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                            <div className="relative aspect-[1000/495] w-full overflow-hidden">
                                 <div className="absolute top-0 left-0 h-[495px] w-[1000px] origin-top-left" style={{ transform: 'scale(calc(100% / 1000px))' }}>
                                     <CardHtmlRenderer html={exampleDoctor.frontSideCode} />
