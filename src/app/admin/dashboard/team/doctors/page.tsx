@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
@@ -17,7 +18,7 @@ import { ImageCropDialog } from './_components/image-crop-dialog';
 import { LogoFunctionSelectDialog } from './_components/logo-function-select-dialog';
 import { cn } from '@/lib/utils';
 import DOMPurify from 'dompurify';
-import { DeFlag, EnFlag, FrFlag, ItFlag, EsFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
+import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
 
 
 export interface Doctor {
@@ -248,7 +249,7 @@ export default function DoctorsPage() {
                     openDialog('imageSource', { field, aspectRatio: 2/3 });
                     break;
                 case 'position':
-                    openDialog('logoFunction', { field, aspectRatio: 1600/265 });
+                    openDialog('logoFunction', { field });
                     break;
                 case 'title':
                 case 'name':
@@ -267,8 +268,9 @@ export default function DoctorsPage() {
         if (e.target.files && e.target.files[0]) {
             const reader = new FileReader();
             reader.onload = (event) => {
-                const aspectRatio = dialogState.data.aspectRatio || 2/3;
-                setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio, field: dialogState.data.field } });
+                const { field } = dialogState.data;
+                const aspectRatio = field === 'position' ? 1600/265 : 2/3;
+                setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio, field } });
             };
             reader.readAsDataURL(e.target.files[0]);
         }
@@ -283,12 +285,14 @@ export default function DoctorsPage() {
         const targetButton = doc.getElementById(`edit-${field}`);
         if (targetButton) {
             if (field === 'image') {
-              targetButton.innerHTML = `<img src="${croppedImageUrl}" alt="Neues Bild" style="width: 100%; height: 100%; object-fit: cover;" />`;
+              targetButton.innerHTML = `<img src="${croppedImageUrl}" alt="Neues Bild" />`;
               targetButton.style.padding = '0';
+              targetButton.style.backgroundColor = 'transparent';
             } else { // It's a logo
-              targetButton.innerHTML = `<img src="${croppedImageUrl}" alt="Neues Logo" style="height: auto; width: 75%; max-width: 75%; object-fit: contain; background: transparent;" />`;
+              targetButton.innerHTML = `<img src="${croppedImageUrl}" alt="Neues Logo" style="height: auto; width: 75%; max-width: 75%; object-fit: contain;" />`;
               targetButton.style.textAlign = 'left';
               targetButton.style.justifyContent = 'flex-start';
+              targetButton.style.backgroundColor = 'transparent';
             }
         }
         
@@ -539,11 +543,11 @@ export default function DoctorsPage() {
                         setDialogState({ type: 'text', data: { title: `Funktion bearbeiten`, label: 'Funktion', initialValue: '', field: 'position' } });
                     }}
                     onSelectFromLibrary={() => {
-                        setDialogState({ type: 'imageLibrary', data: { field: 'position', aspectRatio: 1600/265 } });
+                       setDialogState({ type: 'imageLibrary', data: { field: 'position' } });
                     }}
                     onUploadNew={() => {
-                        setDialogState({ type: null, data: {} });
-                        fileInputRef.current?.click();
+                         setDialogState(prev => ({ ...prev, data: { ...prev.data, field: 'position' } }));
+                         fileInputRef.current?.click();
                     }}
                 />
             )}
@@ -572,10 +576,11 @@ export default function DoctorsPage() {
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
                     images={projectImages}
                     onImageSelect={(imageUrl) => {
-                        const { field, aspectRatio } = dialogState.data;
+                        const { field } = dialogState.data;
+                        const aspectRatio = field === 'position' ? 1600/265 : 2/3;
                         setDialogState({ type: null, data: {} });
                         setTimeout(() => {
-                             setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio: aspectRatio || 2/3, field } })
+                             setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio, field } })
                         }, 100);
                     }}
                 />
@@ -592,3 +597,5 @@ export default function DoctorsPage() {
         </div>
     );
 }
+
+    
