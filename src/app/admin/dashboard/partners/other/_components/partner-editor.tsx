@@ -84,27 +84,29 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                                 onValueChange={(value) => handleInputChange('logoScale', value[0])}
                             />
                         </div>
-                         <div className="space-y-2">
-                            <Label htmlFor="logoX">Horizontale Position ({cardData.logoX || 0}px)</Label>
-                            <Slider
-                                id="logoX"
-                                min={-100}
-                                max={100}
-                                step={1}
-                                value={[cardData.logoX || 0]}
-                                onValueChange={(value) => handleInputChange('logoX', value[0])}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="logoY">Vertikale Position ({cardData.logoY || 0}px)</Label>
-                             <Slider
-                                id="logoY"
-                                min={-50}
-                                max={50}
-                                step={1}
-                                value={[cardData.logoY || 0]}
-                                onValueChange={(value) => handleInputChange('logoY', value[0])}
-                            />
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="logoX">Horizontale Position ({cardData.logoX || 0}px)</Label>
+                                <Slider
+                                    id="logoX"
+                                    min={-100}
+                                    max={100}
+                                    step={1}
+                                    value={[cardData.logoX || 0]}
+                                    onValueChange={(value) => handleInputChange('logoX', value[0])}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="logoY">Vertikale Position ({cardData.logoY || 0}px)</Label>
+                                <Slider
+                                    id="logoY"
+                                    min={-50}
+                                    max={50}
+                                    step={1}
+                                    value={[cardData.logoY || 0]}
+                                    onValueChange={(value) => handleInputChange('logoY', value[0])}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
