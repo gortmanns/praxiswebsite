@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
@@ -148,7 +149,7 @@ export default function DoctorsPage() {
              <div class="template-card w-full h-full bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
                     <div id="image-container" class="relative h-full aspect-[2/3] overflow-hidden rounded-md">
-                         <button id="edit-image" class="image-button w-full h-full flex flex-col items-center justify-center text-center p-4 text-muted-foreground bg-muted">
+                        <button id="edit-image" class="image-button w-full h-full flex flex-col items-center justify-center text-center p-4 text-muted-foreground bg-muted">
                             <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="font-extrabold"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                             <span class="mt-2 text-sm font-bold">Zum Ändern klicken</span>
                         </button>
@@ -306,12 +307,22 @@ export default function DoctorsPage() {
         if (field === 'image') {
             const imageContainer = doc.getElementById('image-container');
             if(imageContainer) {
-                 imageContainer.innerHTML = `<button id="edit-image" class="w-full h-full"><img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-cover" /></button>`;
+                 imageContainer.innerHTML = `<button id="edit-image" class="w-full h-full relative">
+                    <div style="position: absolute; inset: 0; background-color: white;"></div>
+                    <img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-contain" style="position: relative; z-index: 1;" />
+                 </button>`;
             }
         } else {
           const positionContainer = doc.getElementById('position-container');
            if (positionContainer) {
-             positionContainer.innerHTML = `<div class="mt-6"><button id="edit-position"><img src="${croppedImageUrl}" alt="Logo" class="h-auto object-contain" style="max-width: 75%;" /></button></div>`;
+             positionContainer.innerHTML = `<div class="mt-6">
+                <button id="edit-position">
+                    <div style="position: relative;">
+                        <div style="position: absolute; inset: 0; background-color: white;"></div>
+                        <img src="${croppedImageUrl}" alt="Logo" class="h-auto object-contain" style="max-width: 75%; position: relative; z-index: 1;" />
+                    </div>
+                </button>
+             </div>`;
            }
         }
         
@@ -430,42 +441,13 @@ export default function DoctorsPage() {
             return a.localeCompare(b);
         });
 
-        const langToFlagHtml: Record<string, string> = {
-            de: renderToStaticMarkup(React.createElement(DeFlag)),
-            en: renderToStaticMarkup(React.createElement(EnFlag)),
-            fr: renderToStaticMarkup(React.createElement(FrFlag)),
-            it: renderToStaticMarkup(React.createElement(ItFlag)),
-            es: renderToStaticMarkup(React.createElement(EsFlag)),
-            pt: renderToStaticMarkup(React.createElement(PtFlag)),
-            ru: renderToStaticMarkup(React.createElement(RuFlag)),
-            sq: renderToStaticMarkup(React.createElement(SqFlag)),
-            ar: renderToStaticMarkup(React.createElement(ArFlag)),
-            bs: renderToStaticMarkup(React.createElement(BsFlag)),
-            zh: renderToStaticMarkup(React.createElement(ZhFlag)),
-            da: renderToStaticMarkup(React.createElement(DaFlag)),
-            fi: renderToStaticMarkup(React.createElement(FiFlag)),
-            el: renderToStaticMarkup(React.createElement(ElFlag)),
-            he: renderToStaticMarkup(React.createElement(HeFlag)),
-            hi: renderToStaticMarkup(React.createElement(HiFlag)),
-            ja: renderToStaticMarkup(React.createElement(JaFlag)),
-            ko: renderToStaticMarkup(React.createElement(KoFlag)),
-            hr: renderToStaticMarkup(React.createElement(HrFlag)),
-            nl: renderToStaticMarkup(React.createElement(NlFlag)),
-            no: renderToStaticMarkup(React.createElement(NoFlag)),
-            fa: renderToStaticMarkup(React.createElement(FaFlag)),
-            pl: renderToStaticMarkup(React.createElement(PlFlag)),
-            pa: renderToStaticMarkup(React.createElement(PaFlag)),
-            ro: renderToStaticMarkup(React.createElement(RoFlag)),
-            sv: renderToStaticMarkup(React.createElement(SvFlag)),
-            sr: renderToStaticMarkup(React.createElement(SrFlag)),
-            ta: renderToStaticMarkup(React.createElement(TaFlag)),
-            cs: renderToStaticMarkup(React.createElement(CsFlag)),
-            tr: renderToStaticMarkup(React.createElement(TrFlag)),
-            uk: renderToStaticMarkup(React.createElement(UkFlag)),
-            hu: renderToStaticMarkup(React.createElement(HuFlag)),
-            ur: renderToStaticMarkup(React.createElement(UrFlag)),
-        };
-
+        const langToFlagHtml: Record<string, string> = {};
+        for (const lang of sortedLangs) {
+            if (flagComponents[lang]) {
+                langToFlagHtml[lang] = renderToStaticMarkup(React.createElement(flagComponents[lang]));
+            }
+        }
+        
         const flagsHtml = sortedLangs.map(lang => {
             const flagSvg = langToFlagHtml[lang] || '';
             const sizedSvg = flagSvg.replace('<svg', '<svg class="h-5 w-auto rounded-sm shadow-md"');
