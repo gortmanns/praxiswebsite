@@ -4,14 +4,13 @@
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc } from 'firebase/firestore';
+import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ChevronUp, ChevronDown, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, CheckCircle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { addDocumentNonBlocking, deleteDocumentNonBlocking, setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 export interface BaseCardData {
     id: string;
@@ -109,7 +108,12 @@ export function ReusableCardManager<T extends BaseCardData>({
         if (!firestore) return;
         setAlertState(null);
         const docRef = doc(firestore, collectionName, card.id);
-        setDocumentNonBlocking(docRef, { hidden: !card.hidden }, { merge: true });
+        try {
+            await setDoc(docRef, { hidden: !card.hidden }, { merge: true });
+        } catch (error: any) {
+            console.error('Error toggling hidden state:', error);
+            setAlertState({ type: 'error', message: `Sichtbarkeit konnte nicht geändert werden: ${error.message}` });
+        }
     };
 
     const openDeleteConfirmation = (cardId: string, cardName: string) => {
@@ -120,7 +124,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         if (!firestore || !deleteConfirmState.cardId) return;
         try {
             const docRef = doc(firestore, collectionName, deleteConfirmState.cardId);
-            deleteDocumentNonBlocking(docRef);
+            await deleteDoc(docRef);
             setAlertState({ type: 'success', message: 'Karte wurde erfolgreich gelöscht.' });
             setDeleteConfirmState({ isOpen: false });
         } catch (error) {
@@ -142,7 +146,7 @@ export function ReusableCardManager<T extends BaseCardData>({
 
             if (editingCardId && !isCreatingNew) {
                 const docRef = doc(firestore, collectionName, editingCardId);
-                setDocumentNonBlocking(docRef, finalCardData, { merge: true });
+                await setDoc(docRef, finalCardData, { merge: true });
                 setAlertState({ type: 'success', message: 'Änderungen erfolgreich gespeichert.' });
             } else {
                 const highestOrder = dbData.reduce((max, item) => item.order > max ? item.order : max, 0);
@@ -153,19 +157,15 @@ export function ReusableCardManager<T extends BaseCardData>({
                     createdAt: serverTimestamp(),
                     hidden: false,
                 };
-                const newDocPromise = addDocumentNonBlocking(collectionRef, newCardData);
-                newDocPromise.then(newDocRef => {
-                    if(newDocRef) {
-                        setDocumentNonBlocking(newDocRef, { id: newDocRef.id }, { merge: true });
-                    }
-                });
+                const newDocRef = await addDoc(collectionRef, newCardData);
+                await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
 
                 setAlertState({ type: 'success', message: `Neue ${entityName}-Karte erfolgreich erstellt.` });
             }
             handleCancelEdit();
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error saving changes: ", error);
-            setAlertState({ type: 'error', message: 'Die Änderungen konnten nicht gespeichert werden.' });
+            setAlertState({ type: 'error', message: `Die Änderungen konnten nicht gespeichert werden: ${error.message}` });
         }
     };
 
@@ -232,19 +232,19 @@ export function ReusableCardManager<T extends BaseCardData>({
                             Klicken Sie auf &quot;Bearbeiten&quot;, um eine Karte in den Bearbeitungsmodus zu laden.
                         </p>
                     </div>
-                     <div className="mt-8 space-y-12">
+                     <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
                         {isLoadingData && (
                             Array.from({ length: 2 }).map((_, index) => (
                                 <div key={index} className="flex w-full items-center justify-center gap-4">
                                     <div className="w-36 flex-shrink-0"></div>
                                     <div className="relative flex-1 w-full max-w-[1000px] p-2">
-                                        <Skeleton className="w-full aspect-[1000/495] rounded-lg" />
+                                        <Skeleton className="w-full aspect-square sm:aspect-[4/5] lg:aspect-auto lg:h-[500px] rounded-lg" />
                                     </div>
                                 </div>
                             ))
                         )}
                         {dbError && (
-                             <Alert variant="destructive">
+                             <Alert variant="destructive" className="lg:col-span-2">
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertTitle>Datenbankfehler</AlertTitle>
                                 <AlertDescription>
@@ -253,8 +253,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </Alert>
                         )}
                         {!isLoadingData && visibleItems.map((item, index) => (
-                            <div key={item.id} className="flex w-full items-center justify-center gap-4">
-                                <div className="flex w-36 flex-shrink-0 flex-col items-center justify-center gap-2">
+                            <div key={item.id} className="flex w-full flex-col sm:flex-row items-center justify-center gap-4">
+                                <div className="flex sm:flex-col w-full sm:w-36 order-2 sm:order-1 flex-shrink-0 items-center justify-center gap-2">
                                     <Button variant="outline" size="icon" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
                                         <ChevronUp className="h-4 w-4" />
                                     </Button>
@@ -268,7 +268,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                         <Pencil className="h-4 w-4" />
                                     </Button>
                                 </div>
-                                <div className={cn("relative flex-1 w-full max-w-[1000px] p-2 rounded-lg border-2 border-transparent")}>
+                                <div className={cn("relative flex-1 w-full max-w-sm sm:max-w-none order-1 sm:order-2")}>
                                     <DisplayCardComponent {...item} />
                                 </div>
                             </div>
@@ -280,10 +280,10 @@ export function ReusableCardManager<T extends BaseCardData>({
                             <div className="mt-16 space-y-4">
                                 <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
                             </div>
-                            <div className="mt-8 space-y-12">
+                            <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
                                 {hiddenItems.map((item) => (
-                                    <div key={item.id} className="flex w-full items-center justify-center gap-4">
-                                        <div className="flex w-36 flex-shrink-0 flex-col items-center justify-center gap-2">
+                                    <div key={item.id} className="flex w-full flex-col sm:flex-row items-center justify-center gap-4">
+                                        <div className="flex sm:flex-col w-full sm:w-36 order-2 sm:order-1 flex-shrink-0 items-center justify-center gap-2">
                                             <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
                                                 <Eye className="h-4 w-4" />
                                             </Button>
@@ -294,7 +294,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                         </div>
-                                        <div className={cn("relative flex-1 w-full max-w-[1000px] p-2 rounded-lg border-2 border-transparent grayscale")}>
+                                        <div className={cn("relative flex-1 w-full max-w-sm sm:max-w-none order-1 sm:order-2 grayscale")}>
                                             <DisplayCardComponent {...item} />
                                         </div>
                                     </div>
@@ -323,3 +323,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    

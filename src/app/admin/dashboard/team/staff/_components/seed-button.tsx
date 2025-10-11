@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, serverTimestamp, writeBatch, doc } from 'firebase/firestore';
+import { collection, serverTimestamp, writeBatch, doc, addDoc, setDoc } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2, Info, CheckCircle, AlertCircle } from 'lucide-react';
@@ -83,20 +83,18 @@ export function SeedButton({ collectionName }: SeedButtonProps) {
         setAlertState(null);
         
         try {
-            const batch = writeBatch(firestore);
+            const collectionRef = collection(firestore, collectionName);
             
-            staffData.forEach(member => {
-                const docId = uuidv4();
-                const docRef = doc(firestore, 'staff', docId);
-                const newMemberData = { 
-                    ...member, 
-                    id: docId,
-                    createdAt: serverTimestamp() 
+            const writePromises = staffData.map(async (member) => {
+                const memberData = {
+                    ...member,
+                    createdAt: serverTimestamp()
                 };
-                batch.set(docRef, newMemberData);
+                const newDocRef = await addDoc(collectionRef, memberData);
+                await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
             });
 
-            await batch.commit();
+            await Promise.all(writePromises);
 
             setSuccess(`${staffData.length} Mitarbeiter-Einträge erfolgreich in die Datenbank geschrieben.`);
         } catch (err: any) {
@@ -167,3 +165,5 @@ export function SeedButton({ collectionName }: SeedButtonProps) {
         </div>
     );
 }
+
+    
