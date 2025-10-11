@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
@@ -16,6 +17,7 @@ import { ImageSourceDialog } from './_components/image-source-dialog';
 import { ImageLibraryDialog } from './_components/image-library-dialog';
 import { ImageCropDialog } from './_components/image-crop-dialog';
 import { LogoFunctionSelectDialog } from './_components/logo-function-select-dialog';
+import { cn } from '@/lib/utils';
 
 export interface Doctor {
     id: string;
@@ -30,7 +32,7 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string }> = ({ html
     const sanitizedHtml = React.useMemo(() => {
         if (typeof window !== 'undefined') {
             const config = {
-                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img", "foreignObject", "button", "span"],
+                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img", "foreignObject", "button", "span", "div"],
                 ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src', 'preserveAspectRatio', 'type']
             };
             return { __html: DOMPurify.sanitize(html, config) };
@@ -50,26 +52,20 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string }> = ({ html
         };
 
         calculateScale();
-        const resizeObserver = new ResizeObserver(calculateScale);
-        if (wrapperRef.current) {
-            resizeObserver.observe(wrapperRef.current);
-        }
+        window.addEventListener('resize', calculateScale);
 
         return () => {
-            if (wrapperRef.current) {
-                resizeObserver.unobserve(wrapperRef.current);
-            }
+            window.removeEventListener('resize', calculateScale);
         };
     }, []);
 
     return (
-        <div ref={wrapperRef} className="relative w-full aspect-[1000/495] overflow-hidden">
+        <div ref={wrapperRef} className={cn("relative w-full aspect-[1000/495] overflow-hidden", className)}>
             <div 
-                className="absolute top-0 left-0 w-[1000px] h-[495px] origin-top-left"
-                style={{ transform: `scale(${scale})` }}
-            >
-                <div className={className} dangerouslySetInnerHTML={sanitizedHtml} />
-            </div>
+                className="absolute top-0 left-0 origin-top-left"
+                style={{ transform: `scale(${scale})`, width: '1000px', height: '495px' }}
+                dangerouslySetInnerHTML={sanitizedHtml} 
+            />
         </div>
     );
 };
@@ -89,9 +85,11 @@ export default function DoctorsPage() {
         order: 0,
         frontSideCode: `
             <style>
-                .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; border-radius: 0.25rem; display: block; }
-                .template-card button:hover:not(.image-button) { background-color: rgba(255,255,255,0.1); }
-                .template-card .image-button:hover { background-color: rgba(0,0,0,0.1); }
+                .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; border-radius: 0.25rem; display: block; padding: 0.125rem 0.25rem; margin: -0.125rem -0.25rem; }
+                .template-card button:hover:not(.image-button) { background-color: rgba(0,0,0,0.1); }
+                .template-card .image-button:hover { background-color: rgba(0,0,0,0.2); }
+                .template-card .lang-button:hover { background-color: hsla(var(--primary-foreground), 0.1); }
+                .template-card p, .template-card h3 { padding: 0.125rem 0.25rem; }
             </style>
             <div class="template-card group relative w-full h-full overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
@@ -101,21 +99,27 @@ export default function DoctorsPage() {
                     </button>
                     <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
                         <div>
-                                <button id="edit-title" class="text-2xl font-bold text-primary p-1 -m-1">Titel</button>
-                                <button id="edit-name" class="text-5xl font-bold text-primary my-2 p-1 -m-1">Name</button>
-                                <button id="edit-specialty" class="text-xl font-bold p-1 -m-1">Spezialisierung</button>
-                            <div class="mt-6 text-xl space-y-1">
-                                <button id="edit-qual1" class="p-1 -m-1">Qualifikation 1</button>
-                                <button id="edit-qual2" class="p-1 -m-1">Qualifikation 2</button>
-                                <button id="edit-qual3" class="p-1 -m-1">Qualifikation 3</button>
-                                <button id="edit-qual4" class="p-1 -m-1">Qualifikation 4</button>
+                            <button id="edit-title" class="w-full text-left">
+                                <p class="text-2xl font-bold text-primary">Titel</p>
+                            </button>
+                            <button id="edit-name" class="w-full text-left">
+                                <h3 class="text-5xl font-bold text-primary my-2">Name</h3>
+                            </button>
+                            <button id="edit-specialty" class="w-full text-left">
+                                <p class="text-xl font-bold">Spezialisierung</p>
+                            </button>
+                            <div class="mt-6 text-xl">
+                                <button id="edit-qual1" class="w-full text-left"><p>Qualifikation 1</p></button>
+                                <button id="edit-qual2" class="w-full text-left"><p>Qualifikation 2</p></button>
+                                <button id="edit-qual3" class="w-full text-left"><p>Qualifikation 3</p></button>
+                                <button id="edit-qual4" class="w-full text-left"><p>Qualifikation 4</p></button>
                             </div>
                             <div class="mt-6 text-base">
-                                <button id="edit-position" class="p-1 -m-1">Position oder Logo</button>
+                                <button id="edit-position" class="w-full text-left"><p>Position oder Logo</p></button>
                             </div>
                         </div>
                         <div class="absolute bottom-0 right-0">
-                            <button id="edit-languages" class="inline-flex items-center justify-center gap-2 h-10 px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+                            <button id="edit-languages" class="lang-button inline-flex items-center justify-center gap-2 h-10 px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6-6 6"/><path d="m12 4-6 6 6 6"/><path d="m19 12-6-6 6-6"/></svg>
                                 Sprachen
                             </button>
@@ -129,7 +133,7 @@ export default function DoctorsPage() {
                 .vita-content { color: hsl(var(--background)); }
                 .vita-content p { margin: 0; }
                 .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
-                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; }
+                .vita-content-button { all: unset; box-sizing: border-box; width: 100%; height: 100%; cursor: pointer; display: block; }
                 .vita-content-button:hover { background-color: rgba(0,0,0,0.1); }
             </style>
             <button id="edit-vita" class="vita-content-button">
@@ -178,13 +182,15 @@ export default function DoctorsPage() {
 
     const handleTemplateClick = (e: React.MouseEvent) => {
         let target = e.target as HTMLElement;
-        while (target && target.tagName !== 'BUTTON' && target.id !== 'template-container') {
+        while (target && target.tagName !== 'BUTTON' && target.parentElement?.id !== 'template-container') {
+            if (target.id.startsWith('edit-')) break;
             target = target.parentElement as HTMLElement;
         }
 
         if (target && target.id) {
             const id = target.id;
             if (id.startsWith('edit-')) {
+                e.stopPropagation();
                 const field = id.replace('edit-', '');
                 switch(field) {
                     case 'vita':
@@ -199,8 +205,17 @@ export default function DoctorsPage() {
                     case 'position':
                          setDialogState({ type: 'logoFunction', data: {} });
                         break;
-                    default:
-                        setDialogState({ type: 'text', data: { title: `Edit ${field}`, label: field, initialValue: 'Placeholder' } });
+                    case 'title':
+                        setDialogState({ type: 'text', data: { title: `Titel bearbeiten`, label: 'Titel', initialValue: 'Titel' } });
+                        break;
+                    case 'name':
+                        setDialogState({ type: 'text', data: { title: `Name bearbeiten`, label: 'Name', initialValue: 'Name' } });
+                        break;
+                    case 'specialty':
+                        setDialogState({ type: 'text', data: { title: `Spezialisierung bearbeiten`, label: 'Spezialisierung', initialValue: 'Spezialisierung' } });
+                        break;
+                    case 'qual1': case 'qual2': case 'qual3': case 'qual4':
+                        setDialogState({ type: 'text', data: { title: `Qualifikation bearbeiten`, label: `Qualifikation`, initialValue: target.textContent || '' } });
                         break;
                 }
             }
@@ -242,7 +257,7 @@ export default function DoctorsPage() {
                     <div id="template-container" className="w-full rounded-lg border-2 border-dashed border-muted p-4" onClick={handleTemplateClick}>
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <CardHtmlRenderer html={exampleDoctor.frontSideCode} />
-                            <div className="bg-accent/95 rounded-md">
+                            <div className="bg-accent/95 rounded-lg">
                                 <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" />
                             </div>
                        </div>
@@ -389,3 +404,5 @@ export default function DoctorsPage() {
         </div>
     );
 }
+
+    
