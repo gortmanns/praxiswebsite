@@ -38,12 +38,18 @@ export default function DoctorsPage() {
 
     const { data: dbDoctors, isLoading: isLoadingDbDoctors, setData: setDbDoctors } = useCollection<Doctor>(doctorsQuery);
 
-    const refetchDbDoctors = async () => {
+    const refetchDbDoctors = useCallback(async () => {
         if (firestore && doctorsQuery) {
-            const freshData = await refetchCollection<Doctor>(doctorsQuery);
-            setDbDoctors(freshData);
+            try {
+                const freshData = await refetchCollection<Doctor>(doctorsQuery);
+                setDbDoctors(freshData);
+            } catch (error) {
+                console.error("Error refetching doctors:", error);
+                setStatus({ type: 'error', message: 'Fehler beim Neuladen der Ärzte aus der Datenbank.' });
+            }
         }
-    };
+    }, [firestore, doctorsQuery, setDbDoctors]);
+
 
     useEffect(() => {
         if (status) {
@@ -57,40 +63,48 @@ export default function DoctorsPage() {
 
     const handleSaveAllToDb = useCallback(async () => {
         if (!firestore) {
-            setStatus({ type: 'error', message: 'Firestore ist nicht initialisiert.' });
+            setDebugData('Firestore ist nicht initialisiert.');
             return;
         }
 
         setIsSavingToDb(true);
-        setStatus({ type: 'info', message: 'Speichere alle Karten in der Datenbank...' });
-        setDebugData(null);
+        setDebugData('Speichere alle 5 Karten in der Datenbank...\n');
 
-        try {
-            const savePromises = DOCTOR_CARDS_INITIAL_DATA.map(doctor => 
-                addDoctor(firestore, {
-                    name: doctor.name,
-                    order: doctor.order,
-                    frontSideCode: doctor.frontSideCode,
-                    backSideCode: doctor.backSideCode,
-                }, doctor.id)
-            );
+        const savePromises = DOCTOR_CARDS_INITIAL_DATA.map(doctor => 
+            addDoctor(firestore, {
+                name: doctor.name,
+                order: doctor.order,
+                frontSideCode: doctor.frontSideCode,
+                backSideCode: doctor.backSideCode,
+            }, doctor.id)
+        );
 
-            await Promise.all(savePromises);
-            
-            setStatus({ type: 'success', message: 'Alle 5 Karten wurden erfolgreich in der Datenbank gespeichert.' });
+        const results = await Promise.allSettled(savePromises);
 
-            // Kurze Verzögerung, um Firestore Zeit zur Konsistenz zu geben, bevor neu geladen wird.
-            setTimeout(() => {
-                refetchDbDoctors();
-            }, 500);
+        let debugOutput = "Ergebnisse der Speichervorgänge:\n\n";
+        results.forEach((result, index) => {
+            const doctorName = DOCTOR_CARDS_INITIAL_DATA[index].name;
+            debugOutput += `--- Karte: ${doctorName} ---\n`;
+            if (result.status === 'fulfilled') {
+                debugOutput += "Status: ERFOLGREICH\n";
+                debugOutput += `Rückgabe: ${JSON.stringify(result.value, null, 2) || 'void (keine Rückgabe)'}\n\n`;
+            } else {
+                debugOutput += "Status: FEHLER\n";
+                debugOutput += `Fehlermeldung: ${result.reason.message}\n`;
+                debugOutput += `Stack: ${result.reason.stack}\n\n`;
+            }
+        });
+        
+        setDebugData(debugOutput);
+        setIsSavingToDb(false);
+        setStatus({type: 'info', message: 'Speichervorgang abgeschlossen. Details im Debug-Fenster.'});
 
-        } catch (error: any) {
-            console.error("Fehler beim Speichern aller Karten:", error);
-            setStatus({ type: 'error', message: `Fehler beim Speichern der Karten: ${error.message}` });
-        } finally {
-            setIsSavingToDb(false);
-        }
-    }, [firestore]);
+        // Warten Sie einen Moment, bevor Sie die Daten neu laden
+        setTimeout(() => {
+            refetchDbDoctors();
+        }, 1000);
+
+    }, [firestore, refetchDbDoctors]);
 
     const handleEditClick = (doctorId: string, doctorName: string) => {
         setEditingDoctorId(doctorId);
@@ -100,30 +114,6 @@ export default function DoctorsPage() {
     const handleCancel = () => {
         setEditingDoctorId(null);
         setStatus(null);
-    };
-
-    const handleDebugRead = async () => {
-        if (!firestore) {
-            setDebugData("Firestore ist nicht initialisiert.");
-            return;
-        }
-        setDebugData("Lese Dokument 'ortmanns' aus der Datenbank...");
-        try {
-            const docRef = doc(firestore, 'doctors', 'ortmanns');
-            // Force a server read to bypass the offline cache
-            const docSnap = await getDoc(docRef, { source: 'server' });
-
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                const content = `Dokument 'ortmanns' gefunden:\n\n--- FRONT-SEITE CODE ---\n\n${data.frontSideCode}\n\n--- RÜCKSEITE CODE ---\n\n${data.backSideCode}`;
-                setDebugData(content);
-            } else {
-                setDebugData("FEHLER: Dokument 'ortmanns' wurde in der 'doctors'-Sammlung nicht gefunden.");
-            }
-        } catch (error: any) {
-            console.error("Fehler beim Auslesen des Dokuments:", error);
-            setDebugData(`FEHLER BEIM AUSLESEN:\n\n${error.message}\n\nStack: ${error.stack}`);
-        }
     };
 
     const getStatusAlert = () => {
@@ -181,10 +171,6 @@ export default function DoctorsPage() {
                             <Button onClick={handleSaveAllToDb} disabled={isSavingToDb} className="w-full sm:w-auto">
                                 <Database className="mr-2 h-4 w-4" />
                                 {isSavingToDb ? 'Wird gespeichert...' : 'Alle Karten in DB speichern'}
-                            </Button>
-                            <Button onClick={handleDebugRead} className="w-full sm:w-auto">
-                                <Binary className="mr-2 h-4 w-4" />
-                                Ortmanns Card auslesen
                             </Button>
                         </div>
                     </div>
