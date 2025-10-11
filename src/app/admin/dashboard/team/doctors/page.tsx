@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { useFirestore, useCollection, useMemoFirebase, useStorage } from '@/firebase';
 import { collection, query, orderBy, setDoc, doc, writeBatch, deleteDoc, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -19,7 +19,7 @@ import { LogoFunctionSelectDialog } from './_components/logo-function-select-dia
 import { cn } from '@/lib/utils';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
-import { ChevronUp, ChevronDown, Pencil, EyeOff, Eye, Globe, Image as ImageIcon, User, Info, Trash2, Plus, Save, XCircle } from 'lucide-react';
+import { ChevronUp, ChevronDown, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -55,17 +55,9 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string; onClick?: (
         window.addEventListener('resize', handleResize);
 
         const sidebar = document.querySelector('[data-sidebar="sidebar"]');
-        if (!sidebar) {
-            const observer = new MutationObserver(handleResize);
-            observer.observe(document.body, { attributes: true, childList: true, subtree: true });
-             return () => {
-                window.removeEventListener('resize', handleResize);
-                observer.disconnect();
-            };
-        }
         
         const observer = new MutationObserver(handleResize);
-        observer.observe(sidebar, { attributes: true, attributeFilter: ['style', 'class', 'data-state'] });
+        observer.observe(document.body, { attributes: true, childList: true, subtree: true });
         
         return () => {
             window.removeEventListener('resize', handleResize);
@@ -93,7 +85,7 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string; onClick?: (
 export default function DoctorsPage() {
     const firestore = useFirestore();
     const storage = useStorage();
-     const doctorsQuery = useMemoFirebase(() => {
+    const doctorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
         return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
     }, [firestore]);
@@ -106,6 +98,7 @@ export default function DoctorsPage() {
     }>({ type: null, data: {} });
 
     const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
+    const [isCreatingNew, setIsCreatingNew] = useState(true);
     
     const initialExampleDoctorState: Doctor = useMemo(() => ({
         id: "template",
@@ -160,8 +153,8 @@ export default function DoctorsPage() {
             </style>
              <div class="template-card w-full h-full bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
-                    <div id="image-container" class="relative h-full aspect-[2/3] overflow-hidden rounded-md shrink-0">
-                        <button id="edit-image" class="image-button w-full h-full bg-muted flex flex-col items-center justify-center text-center p-4 text-muted-foreground">
+                    <div id="image-container" class="relative h-full aspect-[2/3] overflow-hidden rounded-md shrink-0 bg-muted">
+                        <button id="edit-image" class="image-button w-full h-full flex flex-col items-center justify-center text-center p-4 text-muted-foreground">
                             <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="font-extrabold"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                             <span class="mt-2 text-sm font-bold">Zum Ändern klicken</span>
                         </button>
@@ -202,6 +195,7 @@ export default function DoctorsPage() {
                 .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
                 .vita-content .is-small { font-size: 0.8em; font-weight: normal; }
                 .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }
+                .vita-content span[style*="color: var(--color-tiptap-gray)"] { color: hsl(var(--secondary-foreground)); }
             </style>
             <div class="w-full h-full text-left">
                 <button id="edit-vita" class="w-full h-full text-left p-8">
@@ -308,21 +302,18 @@ export default function DoctorsPage() {
             return flagHtml.replace('<svg', '<svg class="h-5 w-auto rounded-sm shadow-md"');
         }).join('');
 
-        const buttonHtml = `<button id="edit-languages" style="display: flex; align-items: center; gap: 0.5rem; height: 2rem; padding: 0 0.75rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem;" onmouseover="this.style.backgroundColor='hsl(var(--primary) / 0.9)'" onmouseout="this.style.backgroundColor='hsl(var(--primary))'">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-            <span>Sprachen</span>
-        </button>`;
+        const buttonHtml = `<button id="edit-languages" style="display: flex; align-items: center; gap: 0.5rem; height: 2rem; padding: 0 0.75rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem;" onmouseover="this.style.backgroundColor='hsl(var(--primary) / 0.9)'" onmouseout="this.style.backgroundColor='hsl(var(--primary))'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg><span>Sprachen</span></button>`;
         
+        const newLangContainerHtml = buttonHtml + flagsHtml;
+
         setEditorCardState(prev => {
             const parser = new DOMParser();
             const doc = parser.parseFromString(prev.frontSideCode, 'text/html');
             const langContainer = doc.getElementById('language-container');
-            if (langContainer) {
-                langContainer.innerHTML = buttonHtml + flagsHtml;
+            if (langContainer && langContainer.innerHTML !== newLangContainerHtml) {
+                langContainer.innerHTML = newLangContainerHtml;
                 const updatedCode = doc.body.innerHTML;
-                if (prev.frontSideCode !== updatedCode) {
-                    return { ...prev, frontSideCode: updatedCode };
-                }
+                return { ...prev, frontSideCode: updatedCode };
             }
             return prev;
         });
@@ -391,15 +382,15 @@ export default function DoctorsPage() {
             setDialogState({ type: null, data: {} });
             return;
         }
-
+    
         const field = dialogState.data.field || 'image';
         const imagePath = `doctors/${uuidv4()}.jpg`;
         const imageRef = storageRef(storage, imagePath);
-
+    
         try {
             const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
             const downloadURL = await getDownloadURL(snapshot.ref);
-
+    
             setEditorCardState(prev => {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(prev.frontSideCode, 'text/html');
@@ -441,9 +432,9 @@ export default function DoctorsPage() {
             if (html.trim().startsWith('<button id="edit-vita"')) return html;
             
             const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
+            parser.parseFromString(html, 'text/html');
             
-            const style = `<style>.vita-content { color: hsl(var(--background)); } .vita-content p { margin: 0; } .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; } .vita-content li { margin-bottom: 0.5em; } .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; } .vita-content .is-small { font-size: 0.8em; font-weight: normal; } .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }</style>`;
+            const style = `<style>.vita-content { color: hsl(var(--background)); } .vita-content p { margin: 0; } .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; } .vita-content li { margin-bottom: 0.5em; } .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; } .vita-content .is-small { font-size: 0.8em; font-weight: normal; } .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); } .vita-content span[style*="color: var(--color-tiptap-gray)"] { color: hsl(var(--secondary-foreground)); }</style>`;
             
             const contentDiv = `<div class="vita-content w-full h-full">${html}</div>`;
             const button = `<button id="edit-vita" class="w-full h-full text-left p-8">${contentDiv}</button>`;
@@ -516,6 +507,7 @@ export default function DoctorsPage() {
 
     const handleEdit = (doctor: Doctor) => {
         setEditingDoctorId(doctor.id);
+        setIsCreatingNew(false);
         setEditorCardState(doctor);
     };
 
@@ -562,13 +554,10 @@ export default function DoctorsPage() {
         delete finalCardData.id;
         delete finalCardData.createdAt;
 
-
-        if (editingDoctorId) {
-            // Update existing document
+        if (editingDoctorId && !isCreatingNew) {
             const docRef = doc(firestore, 'doctors', editingDoctorId);
             await setDoc(docRef, finalCardData, { merge: true });
         } else {
-            // Create new document
             const highestOrder = dbDoctors.reduce((max, doc) => doc.order > max ? doc.order : max, 0);
             
             const newDoctorData: Omit<Doctor, 'id'> = {
@@ -581,35 +570,25 @@ export default function DoctorsPage() {
             const newDocRef = await addDoc(collection(firestore, 'doctors'), newDoctorData);
             await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
         }
-
-        setEditingDoctorId(null);
-        setEditorCardState(initialExampleDoctorState);
+        handleCancelEdit();
     };
 
     const handleCreateNew = () => {
         setEditingDoctorId(null);
+        setIsCreatingNew(true);
         setEditorCardState(initialExampleDoctorState);
     };
 
-
     const handleCancelEdit = () => {
         setEditingDoctorId(null);
+        setIsCreatingNew(true);
         setEditorCardState(initialExampleDoctorState);
     };
 
     const visibleDoctors = useMemo(() => dbDoctors?.filter(d => !d.hidden) || [], [dbDoctors]);
     const hiddenDoctors = useMemo(() => dbDoctors?.filter(d => d.hidden) || [], [dbDoctors]);
 
-    useEffect(() => {
-        if (!editingDoctorId) {
-            setEditorCardState(initialExampleDoctorState);
-        } else {
-            const currentDoc = dbDoctors?.find(d => d.id === editingDoctorId);
-            if (currentDoc) {
-                setEditorCardState(currentDoc);
-            }
-        }
-    }, [editingDoctorId, dbDoctors, initialExampleDoctorState]);
+    const isEditing = editingDoctorId !== null || isCreatingNew;
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -619,19 +598,19 @@ export default function DoctorsPage() {
                         <div>
                             <CardTitle className="text-primary">Ärzte verwalten</CardTitle>
                             <CardDescription>
-                                Verwalten Sie die auf der Team-Seite angezeigten Ärzte. Klicken Sie auf ein Element, um es zu bearbeiten.
+                                {isEditing ? "Bearbeiten oder erstellen Sie eine Karte." : "Verwalten Sie die auf der Team-Seite angezeigten Ärzte."}
                             </CardDescription>
                         </div>
                         <div className="flex gap-2">
-                             {editingDoctorId !== null || editorCardState.id === 'template' ? (
+                             {isEditing ? (
                                 <>
                                     <Button onClick={handleSaveChanges}>
                                         <Save className="mr-2 h-4 w-4" />
-                                        {editingDoctorId ? 'Änderungen speichern' : 'Neue Karte speichern'}
+                                        {isCreatingNew ? 'Neue Karte speichern' : 'Änderungen speichern'}
                                     </Button>
                                     <Button variant="outline" onClick={handleCancelEdit}>
                                         <XCircle className="mr-2 h-4 w-4" />
-                                        Bearbeitung abbrechen
+                                        Abbrechen
                                     </Button>
                                 </>
                             ) : (
@@ -644,26 +623,28 @@ export default function DoctorsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="w-full rounded-lg border-2 border-dashed border-muted p-4">
-                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <CardHtmlRenderer html={editorCardState.frontSideCode} onClick={handleTemplateClick} />
-                            <div className="bg-accent/95 rounded-lg">
-                                <CardHtmlRenderer html={editorCardState.backSideCode} className="text-background" onClick={handleTemplateClick} />
-                            </div>
-                       </div>
-                        <Alert variant="info" className="mt-4">
-                            <Info className="h-4 w-4" />
-                            <AlertTitle>Bearbeitungsmodus</AlertTitle>
-                            <AlertDescription>
-                                {editingDoctorId ? `Sie bearbeiten gerade die Karte von ${editorCardState.name}.` : 'Erstellen Sie eine neue Karte. Klicken Sie auf Elemente, um sie zu bearbeiten.'}
-                            </AlertDescription>
-                        </Alert>
-                    </div>
+                    {isEditing && (
+                        <div className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12">
+                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <CardHtmlRenderer html={editorCardState.frontSideCode} onClick={handleTemplateClick} />
+                                <div className="bg-accent/95 rounded-lg">
+                                    <CardHtmlRenderer html={editorCardState.backSideCode} className="text-background" onClick={handleTemplateClick} />
+                                </div>
+                           </div>
+                            <Alert variant="info" className="mt-4">
+                                <Info className="h-4 w-4" />
+                                <AlertTitle>Bearbeitungsmodus</AlertTitle>
+                                <AlertDescription>
+                                    {isCreatingNew ? 'Erstellen Sie eine neue Karte. Klicken Sie auf Elemente, um sie zu bearbeiten.' : `Sie bearbeiten gerade die Karte von ${editorCardState.name}.`}
+                                </AlertDescription>
+                            </Alert>
+                        </div>
+                    )}
 
-                    <div className="mt-8 space-y-4">
+                    <div className="space-y-4">
                         <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Ärztekarten</h3>
                          <p className="text-sm text-muted-foreground">
-                            Dieser Bereich zeigt die Karten so an, wie sie live aus der Firestore-Datenbank geladen werden.
+                            Klicken Sie auf &quot;Bearbeiten&quot;, um eine Karte in den Bearbeitungsmodus zu laden.
                         </p>
                     </div>
                      <div className="mt-8 space-y-12">
@@ -681,31 +662,23 @@ export default function DoctorsPage() {
                         {!isLoadingDbDoctors && visibleDoctors.map((doctor, index) => (
                             <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
                                 <div className="flex w-36 flex-shrink-0 flex-col items-center justify-center gap-2">
-                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'up')} disabled={index === 0 || !!editingDoctorId || editorCardState.id !== 'template'}>
+                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'up')} disabled={index === 0 || isEditing}>
                                         <ChevronUp className="h-4 w-4" />
-                                        <span className="sr-only">Nach oben</span>
                                     </Button>
-                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'down')} disabled={index === visibleDoctors.length - 1 || !!editingDoctorId || editorCardState.id !== 'template'}>
+                                    <Button variant="outline" size="icon" onClick={() => handleMove(doctor.id, 'down')} disabled={index === visibleDoctors.length - 1 || isEditing}>
                                         <ChevronDown className="h-4 w-4" />
-                                        <span className="sr-only">Nach unten</span>
                                     </Button>
-                                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)} disabled={!!editingDoctorId || editorCardState.id !== 'template'}>
+                                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)} disabled={isEditing}>
                                         <EyeOff className="h-4 w-4" />
-                                        <span className="sr-only">Ausblenden</span>
                                     </Button>
-                                     <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)} disabled={!!editingDoctorId || editorCardState.id !== 'template'}>
+                                     <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)} disabled={isEditing}>
                                         <Pencil className="h-4 w-4" />
-                                        <span className="sr-only">Bearbeiten</span>
                                     </Button>
                                 </div>
-                                <div className={cn("relative flex-1 w-full max-w-[1000px] p-2 rounded-lg border-2", editingDoctorId === doctor.id ? 'border-primary' : 'border-transparent')}>
+                                <div className={cn("relative flex-1 w-full max-w-[1000px] p-2 rounded-lg border-2 border-transparent")}>
                                     <EditableDoctorCard 
                                       doctor={doctor} 
-                                      onVitaClick={() => {
-                                        if (editingDoctorId === doctor.id) {
-                                            setDialogState({ type: 'vita', data: { initialValue: doctor.backSideCode }})
-                                        }
-                                      }}
+                                      onVitaClick={() => {}}
                                       isBeingEdited={editingDoctorId === doctor.id}
                                     />
                                 </div>
@@ -722,20 +695,17 @@ export default function DoctorsPage() {
                                 {hiddenDoctors.map((doctor) => (
                                     <div key={doctor.id} className="flex w-full items-center justify-center gap-4">
                                         <div className="flex w-36 flex-shrink-0 flex-col items-center justify-center gap-2">
-                                            <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)} disabled={!!editingDoctorId || editorCardState.id !== 'template'}>
+                                            <Button variant="outline" size="icon" onClick={() => handleToggleHidden(doctor)} disabled={isEditing}>
                                                 <Eye className="h-4 w-4" />
-                                                <span className="sr-only">Einblenden</span>
                                             </Button>
-                                            <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)} disabled={!!editingDoctorId || editorCardState.id !== 'template'}>
+                                            <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)} disabled={isEditing}>
                                                 <Pencil className="h-4 w-4" />
-                                                <span className="sr-only">Bearbeiten</span>
                                             </Button>
-                                             <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name } })} disabled={!!editingDoctorId || editorCardState.id !== 'template'}>
+                                             <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name } })} disabled={isEditing}>
                                                 <Trash2 className="h-4 w-4" />
-                                                <span className="sr-only">Löschen</span>
                                             </Button>
                                         </div>
-                                        <div className={cn("relative flex-1 w-full max-w-[1000px] p-2 rounded-lg border-2 grayscale", editingDoctorId === doctor.id ? 'border-primary' : 'border-transparent')}>
+                                        <div className={cn("relative flex-1 w-full max-w-[1000px] p-2 rounded-lg border-2 border-transparent grayscale")}>
                                             <EditableDoctorCard doctor={doctor} onVitaClick={() => {}} isBeingEdited={editingDoctorId === doctor.id} />
                                         </div>
                                     </div>
