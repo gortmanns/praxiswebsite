@@ -1,14 +1,7 @@
-// This is a script to seed the initial staff data into Firestore.
-// To run it, use: npm run db:seed:staff
+'use server';
 
-import { initializeApp, cert } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-
-// IMPORTANT: Download your service account key JSON file from
-// Firebase console > Project settings > Service accounts
-// and place it in your project root.
-// Ensure this file is in your .gitignore to avoid committing it.
-import serviceAccount from './serviceAccountKey.json' assert { type: 'json' };
+import { initializeApp, getApps, cert } from 'firebase-admin/app';
+import { getFirestore, writeBatch } from 'firebase-admin/firestore';
 
 const staffData = [
     {
@@ -58,48 +51,40 @@ const staffData = [
     },
 ];
 
-console.log('Initializing Firebase Admin SDK...');
-initializeApp({
-  credential: cert(serviceAccount)
-});
+// Initialize Firebase Admin SDK
+// This is safe to run on the server multiple times.
+if (!getApps().length) {
+    // This will use the service account credentials from the environment variables in production.
+    // In local development, it might require a service account file if GOOGLE_APPLICATION_CREDENTIALS is not set.
+    initializeApp();
+}
 
 const db = getFirestore();
-const staffCollection = db.collection('staff');
 
-async function seedDatabase() {
-    console.log('Starting to seed staff data...');
+export async function seedStaffData() {
+  const staffCollection = db.collection('staff');
+
+  try {
+    const snapshot = await staffCollection.limit(1).get();
+    if (!snapshot.empty) {
+      return { success: false, error: 'Die Sammlung ist nicht leer. Das Seeding wurde abgebrochen, um Duplikate zu vermeiden.' };
+    }
+
     const batch = db.batch();
 
     for (const member of staffData) {
-        const docRef = staffCollection.doc(); // Let Firestore generate the ID
+        const docRef = staffCollection.doc();
         batch.set(docRef, {
             ...member,
-            id: docRef.id, // Add the generated ID to the document data
+            id: docRef.id,
             createdAt: new Date(),
         });
     }
 
-    try {
-        await batch.commit();
-        console.log(`Successfully seeded ${staffData.length} staff members.`);
-    } catch (error) {
-        console.error('Error seeding database:', error);
-        process.exit(1);
-    }
+    await batch.commit();
+    return { success: true, count: staffData.length };
+  } catch (error: any) {
+    console.error('Error seeding database:', error);
+    return { success: false, error: error.message || 'Ein unbekannter Fehler ist aufgetreten.' };
+  }
 }
-
-async function main() {
-    // Check if collection is empty before seeding
-    const snapshot = await staffCollection.limit(1).get();
-    if (!snapshot.empty) {
-        console.log('The "staff" collection is not empty. Aborting seed process to prevent duplicates.');
-        console.log('If you want to re-seed, please clear the collection in the Firebase Console first.');
-        return;
-    }
-    await seedDatabase();
-}
-
-main().catch(error => {
-  console.error("An unexpected error occurred:", error);
-  process.exit(1);
-});
