@@ -3,58 +3,40 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, orderBy } from 'firebase/firestore';
+import { Skeleton } from '@/components/ui/skeleton';
+
+interface Partner {
+    id: string;
+    order: number;
+    name: string;
+    websiteUrl: string;
+    logoUrl: string;
+    hint?: string;
+    width?: number;
+    height?: number;
+    hidden?: boolean;
+}
 
 export function CooperationPartnersSection() {
-  const topPartners = [
-    {
-      name: 'VASC-ALLIANCE',
-      logoUrl: '/images/VASC-Alliance-Logo.png',
-      websiteUrl: 'https://www.vasc-alliance.ch/',
-      hint: 'partner logo',
-      width: 495,
-      height: 165,
-    },
-    {
-      name: 'Schemmer & Worni',
-      logoUrl: '/images/schemmer-worni-logo.png',
-      websiteUrl: 'https://schemmer-worni.ch/de/',
-      hint: 'partner logo',
-      width: 390,
-      height: 130,
-    },
-    {
-      name: 'orthozentrum-bern',
-      websiteUrl: 'https://www.orthozentrum-bern.ch/',
-      hint: 'partner logo',
-    },
-  ];
+  const firestore = useFirestore();
 
-  const otherPartners = [
-    {
-      name: 'go-medical',
-      logoUrl: '/images/go-medical-logo.png',
-      websiteUrl: '#',
-      hint: 'partner logo',
-      width: 390,
-      height: 130,
-    },
-    {
-      name: 'MCL',
-      logoUrl: '/images/mcl-labor-logo.png',
-      websiteUrl: 'https://www.mcl.ch/de-de/',
-      hint: 'partner logo',
-      width: 390,
-      height: 130,
-    },
-    {
-      name: 'doxnet',
-      logoUrl: '/images/doxnet-logo.jpg',
-      websiteUrl: 'https://www.doxnet.ch/',
-      hint: 'partner logo',
-      width: 316,
-      height: 105,
-    },
-  ];
+  const medicalPartnersQuery = useMemoFirebase(() => {
+      if (!firestore) return null;
+      return query(collection(firestore, 'medicalPartners'), orderBy('order', 'asc'));
+  }, [firestore]);
+
+  const otherPartnersQuery = useMemoFirebase(() => {
+      if (!firestore) return null;
+      return query(collection(firestore, 'otherPartners'), orderBy('order', 'asc'));
+  }, [firestore]);
+
+  const { data: medicalPartners, isLoading: isLoadingMedical } = useCollection<Partner>(medicalPartnersQuery);
+  const { data: otherPartners, isLoading: isLoadingOther } = useCollection<Partner>(otherPartnersQuery);
+
+  const visibleMedicalPartners = medicalPartners?.filter(p => !p.hidden) || [];
+  const visibleOtherPartners = otherPartners?.filter(p => !p.hidden) || [];
 
   return (
     <section id="partners" className="w-full bg-primary">
@@ -64,49 +46,57 @@ export function CooperationPartnersSection() {
         </h2>
         
         <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {topPartners.map(partner => (
-            <Link
-              key={partner.name}
-              href={partner.websiteUrl!}
-              target={partner.websiteUrl === '#' ? '_self' : '_blank'}
-              rel="noopener noreferrer"
-              className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            >
-              <Card className="flex h-full w-full items-center p-6">
-                <CardContent className="flex w-full items-center justify-center p-0">
-                  {partner.logoUrl ? (
-                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                      <Image
-                        src={partner.logoUrl}
-                        alt={`${partner.name} Logo`}
-                        width={partner.width}
-                        height={partner.height}
-                        className="object-contain"
-                        data-ai-hint={partner.hint}
-                      />
-                    </div>
-                  ) : partner.name === 'orthozentrum-bern' ? (
-                     <OrthozentrumLogo className="h-24 w-auto" />
-                  ) : null}
-                </CardContent>
-              </Card>
-              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-            </Link>
-          ))}
-           <Link
-              key="slezak-as-ortho"
-              href="https://neurologie-plus.ch/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            >
-              <Card className="flex h-full w-full items-center p-6">
-                <CardContent className="flex w-full items-center justify-center p-0">
-                   <img src="/images/logos/slezak-logo.png" alt="Agnieszka Slezak Logo" className="h-24 w-auto text-special-green" />
-                </CardContent>
-              </Card>
-              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-            </Link>
+          {isLoadingMedical ? (
+            Array.from({ length: 4 }).map((_, index) => (
+              <Skeleton key={index} className="h-32 w-full rounded-lg" />
+            ))
+          ) : (
+            <>
+              {visibleMedicalPartners.map(partner => (
+                <Link
+                  key={partner.id}
+                  href={partner.websiteUrl || '#'}
+                  target={partner.websiteUrl === '#' ? '_self' : '_blank'}
+                  rel="noopener noreferrer"
+                  className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                >
+                  <Card className="flex h-full w-full items-center p-6">
+                    <CardContent className="flex w-full items-center justify-center p-0">
+                      {partner.name === 'orthozentrum-bern' ? (
+                        <OrthozentrumLogo className="h-24 w-auto" />
+                      ) : (
+                        <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                          <Image
+                            src={partner.logoUrl}
+                            alt={`${partner.name} Logo`}
+                            width={partner.width || 200}
+                            height={partner.height || 60}
+                            className="object-contain"
+                            data-ai-hint={partner.hint}
+                          />
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                  <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                </Link>
+              ))}
+              <Link
+                  key="slezak-as-ortho"
+                  href="https://neurologie-plus.ch/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                >
+                  <Card className="flex h-full w-full items-center p-6">
+                    <CardContent className="flex w-full items-center justify-center p-0">
+                      <img src="/images/logos/slezak-logo.png" alt="Agnieszka Slezak Logo" className="h-24 w-auto text-special-green" />
+                    </CardContent>
+                  </Card>
+                  <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+              </Link>
+            </>
+          )}
         </div>
 
 
@@ -115,29 +105,18 @@ export function CooperationPartnersSection() {
         </h3>
         <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3 lg:grid-cols-8">
           <div className="hidden lg:block"></div>
-          {otherPartners.map(partner => (
-            partner.websiteUrl === '#' ? (
-              <div key={partner.name} className="group relative sm:col-span-1 lg:col-span-2 h-32 w-full overflow-hidden rounded-lg shadow-lg">
-                <Card className="flex h-full w-full items-center justify-center p-6">
-                  <CardContent className="flex w-full items-center justify-center p-0">
-                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                      <Image
-                        src={partner.logoUrl!}
-                        alt={`${partner.name} Logo`}
-                        width={partner.width}
-                        height={partner.height}
-                        className="object-contain"
-                        data-ai-hint={partner.hint}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
+          {isLoadingOther ? (
+             Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="sm:col-span-1 lg:col-span-2">
+                <Skeleton className="h-32 w-full rounded-lg" />
               </div>
-            ) : (
+            ))
+          ) : (
+            visibleOtherPartners.map(partner => (
               <Link
-                key={partner.name}
-                href={partner.websiteUrl}
-                target="_blank"
+                key={partner.id}
+                href={partner.websiteUrl || '#'}
+                target={partner.websiteUrl === '#' ? '_self' : '_blank'}
                 rel="noopener noreferrer"
                 className="group relative sm:col-span-1 lg:col-span-2 h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               >
@@ -147,8 +126,8 @@ export function CooperationPartnersSection() {
                       <Image
                         src={partner.logoUrl!}
                         alt={`${partner.name} Logo`}
-                        width={partner.width}
-                        height={partner.height}
+                        width={partner.width || 200}
+                        height={partner.height || 60}
                         className="object-contain"
                         data-ai-hint={partner.hint}
                       />
@@ -157,8 +136,8 @@ export function CooperationPartnersSection() {
                 </Card>
                 <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
               </Link>
-            )
-          ))}
+            ))
+          )}
           <div className="hidden lg:block"></div>
         </div>
       </div>
