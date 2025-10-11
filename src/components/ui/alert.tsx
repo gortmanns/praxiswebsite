@@ -9,12 +9,12 @@ export const alertVariants = cva(
   {
     variants: {
       variant: {
-        info: "border-blue-600 bg-blue-600 text-white [&>svg]:text-white",
+        info: "bg-blue-100 border-blue-200 text-blue-900 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-200 [&>svg]:text-blue-600 dark:[&>svg]:text-blue-400",
         destructive:
-          "border-destructive bg-destructive text-destructive-foreground [&>svg]:text-destructive-foreground",
+          "bg-red-100 border-red-200 text-red-900 dark:bg-red-900/30 dark:border-red-800 dark:text-red-200 [&>svg]:text-red-600 dark:[&>svg]:text-red-400",
         success:
-          "border-green-600 bg-green-600 text-white [&>svg]:text-white",
-        warning: "border-yellow-500 bg-yellow-500 text-white [&>svg]:text-white",
+          "bg-green-100 border-green-200 text-green-900 dark:bg-green-900/30 dark:border-green-800 dark:text-green-200 [&>svg]:text-green-600 dark:[&>svg]:text-green-400",
+        warning: "bg-yellow-100 border-yellow-200 text-yellow-900 dark:bg-yellow-900/30 dark:border-yellow-800 dark:text-yellow-200 [&>svg]:text-yellow-600 dark:[&>svg]:text-yellow-400",
       },
     },
     defaultVariants: {
