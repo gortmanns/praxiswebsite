@@ -43,13 +43,12 @@ export function CooperationPartnersSection() {
 
   const renderPartnerLogo = (partner: Partner) => {
     if (partner.name === 'orthozentrum-bern') {
-      return <OrthozentrumLogo className="h-24 w-auto" />;
+      return <OrthozentrumLogo className="h-full w-full object-contain" />;
     }
     if (partner.name === 'Agnieszka Slezak') {
-      return <AgnieszkaSlezakLogo className="h-24 w-auto" />;
+      return <AgnieszkaSlezakLogo className="h-full w-full object-contain" />;
     }
     return (
-      <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
         <Image
           src={partner.logoUrl}
           alt={`${partner.name} Logo`}
@@ -58,7 +57,6 @@ export function CooperationPartnersSection() {
           className="object-contain"
           data-ai-hint={partner.hint}
         />
-      </div>
     );
   };
 
@@ -88,7 +86,9 @@ export function CooperationPartnersSection() {
                   >
                     <Card className="flex h-full w-full items-center p-6">
                       <CardContent className="flex w-full items-center justify-center p-0">
-                        {renderPartnerLogo(partner)}
+                         <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                            {renderPartnerLogo(partner)}
+                         </div>
                       </CardContent>
                     </Card>
                     <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>

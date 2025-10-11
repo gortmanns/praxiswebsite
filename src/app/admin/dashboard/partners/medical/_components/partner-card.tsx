@@ -28,7 +28,7 @@ export const PartnerCard: React.FC<Partner> = (props) => {
           return <OrthozentrumLogo className="h-full w-full object-contain" />;
         }
         if (partner.name === 'Agnieszka Slezak') {
-            return <AgnieszkaSlezakLogo className="h-full w-full object-contain text-special-green" />;
+            return <AgnieszkaSlezakLogo className="h-full w-full object-contain" />;
         }
         if (props.logoUrl) {
             return (
