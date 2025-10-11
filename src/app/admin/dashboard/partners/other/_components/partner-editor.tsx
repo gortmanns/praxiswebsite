@@ -49,7 +49,6 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
     };
 
     const handleCropComplete = async (composedImage: string) => {
-        // Update the state immediately with the base64 data URL for live preview
         onUpdate({ ...cardData, logoUrl: composedImage });
         setDialogState(null);
         setLogoToCrop(null);
@@ -72,7 +71,6 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
               width={partner.width || 200}
               height={partner.height || 60}
               className="object-contain"
-              data-ai-hint={partner.hint}
             />
         );
     };
@@ -126,13 +124,13 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                     </table>
                 </div>
                  
-                <section id="partners" className="w-full bg-primary">
+                 <section id="partners" className="w-full bg-primary">
                     <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
                         <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
-                            Live-Vorschau
+                        Live-Vorschau
                         </h2>
                         <div className="mt-12 flex flex-wrap justify-center gap-8">
-                                <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                            <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
                                 <Link
                                     href={cardData.websiteUrl || '#'}
                                     target={cardData.openInNewTab ? '_blank' : '_self'}
@@ -149,7 +147,7 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                                     </Card>
                                     <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                                 </Link>
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
