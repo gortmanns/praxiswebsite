@@ -1,6 +1,7 @@
+
 'use server';
 
-import { initializeApp, getApps, cert } from 'firebase-admin/app';
+import { initializeApp, getApps, App } from 'firebase-admin/app';
 import { getFirestore, writeBatch } from 'firebase-admin/firestore';
 
 const staffData = [
@@ -51,15 +52,15 @@ const staffData = [
     },
 ];
 
-// Initialize Firebase Admin SDK
-// This is safe to run on the server multiple times.
+let adminApp: App;
 if (!getApps().length) {
-    // This will use the service account credentials from the environment variables in production.
-    // In local development, it might require a service account file if GOOGLE_APPLICATION_CREDENTIALS is not set.
-    initializeApp();
+  adminApp = initializeApp();
+} else {
+  adminApp = getApps()[0];
 }
 
-const db = getFirestore();
+const db = getFirestore(adminApp);
+
 
 export async function seedStaffData() {
   const staffCollection = db.collection('staff');

@@ -8,10 +8,9 @@ import { collection, query, orderBy, setDoc, doc, writeBatch, deleteDoc, addDoc,
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ChevronUp, ChevronDown, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle } from 'lucide-react';
+import { ChevronUp, ChevronDown, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, CheckCircle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { useToast } from '@/hooks/use-toast';
 
 export interface BaseCardData {
     id: string;
@@ -41,7 +40,6 @@ export function ReusableCardManager<T extends BaseCardData>({
     entityName
 }: ReusableCardManagerProps<T>) {
     const firestore = useFirestore();
-    const { toast } = useToast();
 
     const dataQuery = useMemoFirebase(() => {
         if (!firestore) return null;
@@ -54,6 +52,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     const [isCreatingNew, setIsCreatingNew] = useState(false);
     const [editorCardState, setEditorCardState] = useState<T>(initialCardState as T);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
+    const [alertState, setAlertState] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
     const isEditing = editingCardId !== null || isCreatingNew;
 
@@ -61,21 +60,25 @@ export function ReusableCardManager<T extends BaseCardData>({
         setEditingCardId(card.id);
         setIsCreatingNew(false);
         setEditorCardState(card);
+        setAlertState(null);
     };
 
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
         setEditorCardState(initialCardState as T);
+        setAlertState(null);
     };
 
     const handleCancelEdit = () => {
         setEditingCardId(null);
         setIsCreatingNew(false);
+        setAlertState(null);
     };
 
     const handleMove = async (cardId: string, direction: 'up' | 'down') => {
         if (!dbData || !firestore) return;
+        setAlertState(null);
 
         const visibleItems = dbData.filter(d => !d.hidden);
         const currentIndex = visibleItems.findIndex(item => item.id === cardId);
@@ -103,6 +106,7 @@ export function ReusableCardManager<T extends BaseCardData>({
 
     const handleToggleHidden = async (card: T) => {
         if (!firestore) return;
+        setAlertState(null);
         const docRef = doc(firestore, collectionName, card.id);
         await setDoc(docRef, { hidden: !card.hidden }, { merge: true });
     };
@@ -116,17 +120,17 @@ export function ReusableCardManager<T extends BaseCardData>({
         try {
             const docRef = doc(firestore, collectionName, deleteConfirmState.cardId);
             await deleteDoc(docRef);
-            toast({ title: 'Erfolgreich', description: `Karte wurde gelöscht.` });
+            setAlertState({ type: 'success', message: 'Karte wurde erfolgreich gelöscht.' });
             setDeleteConfirmState({ isOpen: false });
         } catch (error) {
             console.error("Error deleting document: ", error);
-            toast({ variant: 'destructive', title: 'Fehler', description: `Karte konnte nicht gelöscht werden.` });
+            setAlertState({ type: 'error', message: 'Karte konnte nicht gelöscht werden.' });
         }
     };
 
     const handleSaveChanges = async () => {
         if (!firestore || !dbData) {
-            toast({ variant: 'destructive', title: 'Fehler', description: 'Datenbankverbindung nicht verfügbar.' });
+            setAlertState({ type: 'error', message: 'Datenbankverbindung nicht verfügbar.' });
             return;
         }
 
@@ -138,7 +142,7 @@ export function ReusableCardManager<T extends BaseCardData>({
             if (editingCardId && !isCreatingNew) {
                 const docRef = doc(firestore, collectionName, editingCardId);
                 await setDoc(docRef, finalCardData, { merge: true });
-                toast({ title: 'Erfolgreich', description: 'Änderungen gespeichert.' });
+                setAlertState({ type: 'success', message: 'Änderungen erfolgreich gespeichert.' });
             } else {
                 const highestOrder = dbData.reduce((max, item) => item.order > max ? item.order : max, 0);
                 const newCardData = {
@@ -149,12 +153,12 @@ export function ReusableCardManager<T extends BaseCardData>({
                 };
                 const newDocRef = await addDoc(collection(firestore, collectionName), newCardData);
                 await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
-                toast({ title: 'Erfolgreich', description: `Neue ${entityName}-Karte erstellt.` });
+                setAlertState({ type: 'success', message: `Neue ${entityName}-Karte erfolgreich erstellt.` });
             }
             handleCancelEdit();
         } catch (error) {
             console.error("Error saving changes: ", error);
-            toast({ variant: 'destructive', title: 'Speicherfehler', description: 'Die Änderungen konnten nicht gespeichert werden.' });
+            setAlertState({ type: 'error', message: 'Die Änderungen konnten nicht gespeichert werden.' });
         }
     };
 
@@ -205,6 +209,14 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 </AlertDescription>
                             </Alert>
                         </div>
+                    )}
+                    
+                    {alertState && (
+                        <Alert variant={alertState.type === 'error' ? 'destructive' : 'default'} className="mb-8">
+                             {alertState.type === 'success' ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+                            <AlertTitle>{alertState.type === 'success' ? 'Erfolgreich' : 'Fehler'}</AlertTitle>
+                            <AlertDescription>{alertState.message}</AlertDescription>
+                        </Alert>
                     )}
 
                     <div className="space-y-4">

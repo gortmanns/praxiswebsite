@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -7,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2, Info } from 'lucide-react';
 import { seedStaffData } from '../actions';
-import { useToast } from '@/hooks/use-toast';
 
 interface SeedButtonProps {
     collectionName: string;
@@ -15,35 +15,31 @@ interface SeedButtonProps {
 
 export function SeedButton({ collectionName }: SeedButtonProps) {
     const firestore = useFirestore();
-    const { toast } = useToast();
     const [isSeeding, setIsSeeding] = React.useState(false);
+    const [error, setError] = React.useState<string | null>(null);
+    const [success, setSuccess] = React.useState<string | null>(null);
 
     const collectionQuery = useMemoFirebase(() => {
         if (!firestore) return null;
         return collection(firestore, collectionName);
     }, [firestore, collectionName]);
 
-    const { data, isLoading, error } = useCollection(collectionQuery);
+    const { data, isLoading, error: collectionError } = useCollection(collectionQuery);
 
     const handleSeed = async () => {
         setIsSeeding(true);
+        setError(null);
+        setSuccess(null);
         try {
             const result = await seedStaffData();
             if (result.success) {
-                toast({
-                    title: 'Erfolgreich',
-                    description: `${result.count} Mitarbeiter-Einträge wurden in die Datenbank geschrieben.`,
-                });
+                setSuccess(`${result.count} Mitarbeiter-Einträge wurden in die Datenbank geschrieben.`);
             } else {
                 throw new Error(result.error);
             }
         } catch (err: any) {
             console.error('Seeding failed:', err);
-            toast({
-                variant: 'destructive',
-                title: 'Fehler beim Seeding',
-                description: err.message || 'Die Daten konnten nicht geschrieben werden.',
-            });
+            setError(err.message || 'Die Daten konnten nicht geschrieben werden.');
         } finally {
             setIsSeeding(false);
         }
@@ -58,12 +54,12 @@ export function SeedButton({ collectionName }: SeedButtonProps) {
         )
     }
 
-    if (error) {
+    if (collectionError) {
         return (
             <Alert variant="destructive">
                 <AlertTitle>Datenbankfehler</AlertTitle>
                 <AlertDescription>
-                    Die Daten konnten nicht geladen werden: {error.message}
+                    Die Daten konnten nicht geladen werden: {collectionError.message}
                 </AlertDescription>
             </Alert>
         )
@@ -90,6 +86,18 @@ export function SeedButton({ collectionName }: SeedButtonProps) {
                 {isSeeding && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isSeeding ? 'Übertrage Daten...' : 'Personaldaten in Datenbank schreiben'}
             </Button>
+            {error && (
+                 <Alert variant="destructive" className="mt-4">
+                    <AlertTitle>Fehler beim Seeding</AlertTitle>
+                    <AlertDescription>{error}</AlertDescription>
+                </Alert>
+            )}
+            {success && (
+                 <Alert variant="default" className="mt-4">
+                    <AlertTitle>Erfolgreich</AlertTitle>
+                    <AlertDescription>{success}</AlertDescription>
+                </Alert>
+            )}
         </div>
     );
 }
