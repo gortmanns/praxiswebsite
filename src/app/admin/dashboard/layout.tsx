@@ -32,6 +32,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { Toaster } from 'sonner';
+import { useUser, useAuth } from '@/firebase';
+import { signOut } from 'firebase/auth';
 
 export default function DashboardLayout({
   children,
@@ -40,9 +42,13 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const auth = useAuth();
+  const { user, isUserLoading } = useUser();
 
   const handleLogout = async () => {
-    // Firebase logout logic will be re-added later
+    if (auth) {
+      await signOut(auth);
+    }
     router.push('/admin/login');
   };
 
@@ -61,11 +67,6 @@ export default function DashboardLayout({
       { href: '/admin/dashboard/team/doctors', label: 'Ärzte' },
       { href: '/admin/dashboard/team/staff', label: 'Praxispersonal' },
   ];
-
-  // Placeholder for user state
-  const user: { email?: string, displayName?: string } | null = null;
-  const userLoading = true;
-
 
   return (
     <SidebarProvider>

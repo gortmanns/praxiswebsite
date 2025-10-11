@@ -7,6 +7,10 @@ import { Database } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { DOCTOR_CARDS_INITIAL_DATA } from './_data/doctor-cards-data';
+import { useFirestore } from '@/firebase';
+import { doc } from 'firebase/firestore';
+import { setDocumentNonBlocking } from '@/firebase';
+import { useToast } from '@/hooks/use-toast';
 
 export interface Doctor {
     id: string;
@@ -18,6 +22,46 @@ export interface Doctor {
 }
 
 export default function DoctorsPage() {
+    const firestore = useFirestore();
+    const { toast } = useToast();
+
+    const handleWriteToDb = () => {
+        if (!firestore) {
+            toast({
+                variant: 'destructive',
+                title: 'Fehler',
+                description: 'Firestore ist nicht initialisiert.',
+            });
+            return;
+        }
+
+        const ortmannsData = DOCTOR_CARDS_INITIAL_DATA.find(d => d.id === 'ortmanns');
+        if (!ortmannsData) {
+            toast({
+                variant: 'destructive',
+                title: 'Fehler',
+                description: 'Ortmanns Daten nicht gefunden.',
+            });
+            return;
+        }
+
+        try {
+            const docRef = doc(firestore, 'doctors', ortmannsData.id);
+            setDocumentNonBlocking(docRef, ortmannsData, { merge: true });
+            
+            toast({
+                title: 'Schreibvorgang initiiert',
+                description: 'Die Daten für G. Ortmanns werden in die Datenbank geschrieben.',
+            });
+        } catch (error: any) {
+            toast({
+                variant: 'destructive',
+                title: 'Fehler beim Schreiben in die DB',
+                description: error.message,
+            });
+            console.error("Error writing to Firestore: ", error);
+        }
+    };
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -27,9 +71,13 @@ export default function DoctorsPage() {
                         <div>
                             <CardTitle className="text-primary">Ärzte verwalten</CardTitle>
                             <CardDescription>
-                                Die Datenbankverbindung wird neu aufgebaut. Die Bearbeitungsfunktionen sind vorübergehend deaktiviert.
+                                Verwalten Sie die auf der Team-Seite angezeigten Ärzte.
                             </CardDescription>
                         </div>
+                        <Button onClick={handleWriteToDb}>
+                            <Database className="mr-2 h-4 w-4" />
+                            Ortmanns Card in DB schreiben
+                        </Button>
                     </div>
                 </CardHeader>
                 <CardContent>
