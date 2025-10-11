@@ -75,8 +75,8 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
     return (
         <>
             <div className="flex flex-col gap-8 items-start">
-                 <div className="w-full space-y-4 bg-muted/50 p-6">
-                    <table className="w-full border-separate" style={{ borderSpacing: '0 1rem' }}>
+                 <div className="w-full space-y-4">
+                    <table className="w-full border-separate" style={{ borderSpacing: '0 0.5rem' }}>
                         <thead>
                             <tr>
                                 <th className="w-1/3 text-left align-bottom pr-4">
@@ -88,7 +88,7 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                                 <th className="w-1/3 text-left align-bottom px-4">
                                     <Label htmlFor="websiteUrl" className="font-bold">URL für onClick</Label>
                                 </th>
-                                <th className="w-auto text-left align-bottom pl-4">
+                                <th className="w-auto text-left align-bottom pl-4 text-center">
                                     <Label htmlFor="openInNewTab" className="font-bold whitespace-nowrap">In neuer Seite öffnen</Label>
                                 </th>
                             </tr>
@@ -99,7 +99,7 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
                                     <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
                                 </td>
                                 <td className="px-4">
-                                    <Button variant="outline" onClick={() => setDialogState('imageSource')}>
+                                    <Button variant="default" onClick={() => setDialogState('imageSource')}>
                                          <ImageUp className="mr-2 h-4 w-4" />
                                          Logo wählen
                                     </Button>
