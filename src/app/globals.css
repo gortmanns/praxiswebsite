@@ -70,3 +70,9 @@
         animation: marquee 60s linear infinite;
     }
 }
+
+/* Cropper.js override to fix magenta background */
+.cropper-modal {
+  background-color: #000 !important;
+  opacity: 0.5 !important;
+}
