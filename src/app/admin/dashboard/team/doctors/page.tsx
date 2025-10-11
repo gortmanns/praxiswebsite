@@ -9,6 +9,8 @@ import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import DOMPurify from 'dompurify';
+import { User, Languages } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export interface Doctor {
     id: string;
@@ -47,7 +49,64 @@ const CardHtmlRenderer: React.FC<{ html: string }> = ({ html }) => {
 
 export default function DoctorsPage() {
     const firestore = useFirestore();
-    const exampleDoctor = DOCTOR_CARDS_INITIAL_DATA[0];
+    const exampleDoctor = {
+        id: "template",
+        name: "Template",
+        order: 0,
+        frontSideCode: `
+            <style>
+                .vita-content { color: hsl(var(--background)); }
+                .vita-content p { margin: 0; }
+                .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; }
+                .vita-content li { margin-bottom: 0.5em; }
+                .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
+                .vita-content .is-small { font-size: 0.8em; font-weight: normal; }
+                .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }
+                .placeholder-button { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 0.375rem; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); cursor: pointer; }
+                .placeholder-button svg { width: 1rem; height: 1rem; }
+            </style>
+            <div class="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
+                <div class="flex h-full w-full items-start">
+                    <div class="relative h-full aspect-[2/3] overflow-hidden rounded-md bg-muted flex flex-col items-center justify-center text-center p-4 cursor-pointer text-muted-foreground">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span class="mt-2 text-sm">Zum Ändern klicken</span>
+                    </div>
+                    <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
+                        <div>
+                            <p class="text-2xl font-bold text-primary">Titel</p>
+                            <h3 class="text-5xl font-bold text-primary my-2">Name</h3>
+                            <p class="text-xl font-bold">Spezialisierung</p>
+                            <div class="mt-6 text-xl space-y-1">
+                                <p>Qualifikation 1</p>
+                                <p>Qualifikation 2</p>
+                                <p>Qualifikation 3</p>
+                                <p>Qualifikation 4</p>
+                            </div>
+                            <div class="mt-6 text-base">
+                                <p>Position oder Logo</p>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-0 right-0">
+                           <button class="placeholder-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6-6 6"/><path d="m12 4-6 6 6 6"/><path d="m19 12-6-6 6-6"/></svg>
+                                Sprachen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `,
+        backSideCode: `
+            <style>
+                .vita-content { color: hsl(var(--background)); }
+                .vita-content p { margin: 0; }
+                .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
+            </style>
+            <div class="vita-content p-8 w-full max-w-[1000px]">
+                <h4>Curriculum Vitae</h4>
+            </div>
+        `
+    };
 
     const doctorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
