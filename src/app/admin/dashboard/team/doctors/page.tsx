@@ -95,10 +95,11 @@ export default function DoctorsPage() {
                 .template-card button { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; border-radius: 0.25rem; display: block; padding: 0.125rem 0.25rem; margin: -0.125rem -0.25rem; }
                 .template-card button:hover:not(.image-button) { background-color: rgba(0,0,0,0.1); }
                 .template-card .image-button { position: relative; height: 100%; aspect-ratio: 2/3; overflow: hidden; border-radius: 0.375rem; background-color: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1rem; color: #64748b; }
-                .template-card .image-button img { width: 100%; height: 100%; object-fit: cover; }
                 .template-card .image-button:hover { background-color: rgba(0,0,0,0.2); }
+                .template-card .image-button img { width: 100%; height: 100%; object-fit: cover; }
                 .template-card .lang-button-container { display: flex; align-items: center; gap: 0.5rem; }
-                .template-card .lang-button:hover { background-color: hsla(var(--primary-foreground), 0.1); }
+                .template-card .lang-button { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; height: 2rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem; }
+                .template-card .lang-button:hover { background-color: hsl(var(--primary) / 0.9); }
                 .template-card p, .template-card h3 { padding: 0.125rem 0.25rem; margin: 0; }
                 .template-card .text-2xl { font-size: 1.5rem; line-height: 2rem; }
                 .template-card .text-5xl { font-size: 3rem; line-height: 1; }
@@ -128,8 +129,8 @@ export default function DoctorsPage() {
             <div class="template-card group relative w-full h-full overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
                     <button id="edit-image" class="image-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        <span class="mt-2 text-sm">Zum Ändern klicken</span>
+                       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                        <span class="mt-2 text-sm">Bild ändern</span>
                     </button>
                     <div class="flex-grow flex flex-col justify-center ml-6 h-full relative">
                         <div>
@@ -148,14 +149,14 @@ export default function DoctorsPage() {
                                 <button id="edit-qual3" class="w-full text-left"><p>Qualifikation 3</p></button>
                                 <button id="edit-qual4" class="w-full text-left"><p>Qualifikation 4</p></button>
                             </div>
-                            <div class="mt-6 text-base">
+                            <div class="mt-6 text-base" id="position-container">
                                 <button id="edit-position" class="w-full text-left"><p>Position oder Logo</p></button>
                             </div>
                         </div>
                         <div id="language-container" class="absolute bottom-0 right-0 flex items-center gap-2">
-                             <button id="edit-languages" class="lang-button inline-flex items-center justify-center gap-2 h-8 px-3 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+                             <button id="edit-languages" class="lang-button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-                                Sprachen
+                                <span>Sprachen</span>
                             </button>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>
                         </div>
@@ -282,18 +283,18 @@ export default function DoctorsPage() {
         const parser = new DOMParser();
         const doc = parser.parseFromString(exampleDoctor.frontSideCode, 'text/html');
         
-        const targetButton = doc.getElementById(`edit-${field}`);
-        if (targetButton) {
-            if (field === 'image') {
-              targetButton.innerHTML = `<img src="${croppedImageUrl}" alt="Neues Bild" />`;
-              targetButton.style.padding = '0';
-              targetButton.style.backgroundColor = 'transparent';
-            } else { // It's a logo
-              targetButton.innerHTML = `<img src="${croppedImageUrl}" alt="Neues Logo" style="height: auto; width: 75%; max-width: 75%; object-fit: contain;" />`;
-              targetButton.style.textAlign = 'left';
-              targetButton.style.justifyContent = 'flex-start';
-              targetButton.style.backgroundColor = 'transparent';
-            }
+        if (field === 'image') {
+          const targetButton = doc.getElementById(`edit-image`);
+          if (targetButton) {
+            targetButton.innerHTML = `<img src="${croppedImageUrl}" alt="Portrait" />`;
+            targetButton.style.padding = '0';
+            targetButton.style.backgroundColor = 'transparent';
+          }
+        } else { // It's a logo
+          const positionContainer = doc.getElementById('position-container');
+           if (positionContainer) {
+             positionContainer.innerHTML = `<div class="mt-6"><img src="${croppedImageUrl}" alt="Logo" class="h-auto w-full max-w-[400px] object-contain" /></div>`;
+           }
         }
         
         const updatedHtml = doc.body.innerHTML;
@@ -306,26 +307,22 @@ export default function DoctorsPage() {
     };
 
     const handleVitaSave = (newVita: string) => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(exampleDoctor.backSideCode, 'text/html');
-        const button = doc.getElementById('edit-vita');
-        if (button) {
-            // Re-create the inner div with content
-            const vitaContainer = doc.createElement('div');
-            vitaContainer.className = 'vita-content p-8';
-            vitaContainer.innerHTML = newVita;
-            
-            // Clear the button and append the new structure
-            button.innerHTML = '';
-            button.appendChild(vitaContainer);
-        }
-        
-        const updatedHtml = doc.body.innerHTML;
-        
-        setExampleDoctor(prev => ({
-            ...prev,
-            backSideCode: updatedHtml,
-        }));
+        setExampleDoctor(prev => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(prev.backSideCode, 'text/html');
+            const button = doc.getElementById('edit-vita');
+            if (button) {
+                const vitaContainer = doc.createElement('div');
+                vitaContainer.className = 'vita-content p-8 w-full max-w-[1000px]';
+                vitaContainer.innerHTML = newVita;
+                button.innerHTML = '';
+                button.appendChild(vitaContainer);
+            }
+            return {
+                ...prev,
+                backSideCode: doc.body.innerHTML,
+            };
+        });
     };
 
     const handleTextSave = (newValue: string) => {
@@ -402,9 +399,9 @@ export default function DoctorsPage() {
 
         const flagsHtml = sortedLangs.map(lang => langToFlagHtml[lang] || '').join('');
         
-        const buttonHtml = `<button id="edit-languages" class="lang-button inline-flex items-center justify-center gap-2 h-8 px-3 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">
+        const buttonHtml = `<button id="edit-languages" class="lang-button">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-            Sprachen
+            <span>Sprachen</span>
         </button>`;
 
         const newHtml = `${buttonHtml}${flagsHtml}`;
@@ -530,7 +527,7 @@ export default function DoctorsPage() {
                 <LanguageSelectDialog
                     isOpen={true}
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
-                    initialLanguages={dialogState.data.initialLanguages}
+                    initialLanguages={exampleDoctor.languages || ['de']}
                     onSave={handleLanguageSave}
                 />
             )}
@@ -546,8 +543,7 @@ export default function DoctorsPage() {
                        setDialogState({ type: 'imageLibrary', data: { field: 'position' } });
                     }}
                     onUploadNew={() => {
-                         setDialogState(prev => ({ ...prev, data: { ...prev.data, field: 'position' } }));
-                         fileInputRef.current?.click();
+                         setDialogState(prev => ({ type: 'imageSource', data: { ...prev.data, field: 'position' } }));
                     }}
                 />
             )}
@@ -597,5 +593,6 @@ export default function DoctorsPage() {
         </div>
     );
 }
+
 
     
