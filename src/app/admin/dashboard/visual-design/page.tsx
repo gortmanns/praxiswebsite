@@ -18,35 +18,35 @@ export default function VisualDesignPage() {
                     <div className="space-y-4">
                         <Alert variant="info">
                             <Info className="h-4 w-4" />
-                            <AlertTitle>Info-Meldung</AlertTitle>
+                            <AlertTitle className="font-bold">Info-Meldung</AlertTitle>
                             <AlertDescription>
                                 Dies ist eine informative Benachrichtigung.
                             </AlertDescription>
                         </Alert>
                         <Alert variant="success">
                             <CheckCircle className="h-4 w-4" />
-                            <AlertTitle>Erfolgsmeldung</AlertTitle>
+                            <AlertTitle className="font-bold">Erfolgsmeldung</AlertTitle>
                             <AlertDescription>
                                 Die Aktion wurde erfolgreich abgeschlossen.
                             </AlertDescription>
                         </Alert>
                         <Alert variant="warning">
                             <AlertCircle className="h-4 w-4" />
-                            <AlertTitle>Warnung</AlertTitle>
+                            <AlertTitle className="font-bold">Warnung</AlertTitle>
                             <AlertDescription>
                                 Unerwartetes Ergebnis, aber die Aktion wurde nicht abgebrochen (z.B. suboptimales Bildformat).
                             </AlertDescription>
                         </Alert>
                         <Alert variant="error">
                             <AlertCircle className="h-4 w-4" />
-                            <AlertTitle>Fehlermeldung</AlertTitle>
+                            <AlertTitle className="font-bold">Fehlermeldung</AlertTitle>
                             <AlertDescription>
                                 Ein technischer Fehler ist aufgetreten, die Anwendung kann aber weiterlaufen.
                             </AlertDescription>
                         </Alert>
                         <Alert variant="destructive">
                             <XCircle className="h-4 w-4" />
-                            <AlertTitle>Kritischer Fehler</AlertTitle>
+                            <AlertTitle className="font-bold">Kritischer Fehler</AlertTitle>
                             <AlertDescription>
                                 Ein kritischer Fehler ist aufgetreten. Die Aktion wurde abgebrochen.
                             </AlertDescription>

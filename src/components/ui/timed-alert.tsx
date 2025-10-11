@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { Alert, AlertDescription, AlertTitle, alertVariants } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
-import { CheckCircle, AlertCircle, Info } from 'lucide-react';
+import { CheckCircle, AlertCircle, Info, XCircle } from 'lucide-react';
 import type { VariantProps } from 'class-variance-authority';
 
 export interface TimedAlertProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof alertVariants> {
@@ -16,9 +16,10 @@ export interface TimedAlertProps extends React.HTMLAttributes<HTMLDivElement>, V
 
 const alertIcons = {
   info: Info,
-  destructive: AlertCircle,
   success: CheckCircle,
   warning: AlertCircle,
+  error: AlertCircle,
+  destructive: XCircle,
 };
 
 export const TimedAlert: React.FC<TimedAlertProps> = ({
@@ -63,7 +64,7 @@ export const TimedAlert: React.FC<TimedAlertProps> = ({
       {...props}
     >
       <Icon className="h-4 w-4" />
-      <AlertTitle>{title}</AlertTitle>
+      <AlertTitle className="font-bold">{title}</AlertTitle>
       <AlertDescription>{description}</AlertDescription>
     </Alert>
   );
