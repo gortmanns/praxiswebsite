@@ -67,17 +67,11 @@ export default function DoctorsPage() {
                     <div className="w-full border-dashed border-2 border-muted rounded-lg debug-grid">
                         {ortmannsCardData && (
                             <div className="grid grid-cols-2 gap-2.5">
-                                <div className="relative aspect-[1000/495] w-full overflow-hidden">
-                                    <div className="absolute top-0 left-0 origin-top-left" style={{ width: '1000px', height: '495px', transform: 'scale(calc(100% / 1000))' }}>
-                                        <CodeRenderer html={ortmannsCardData.frontSideCode} />
-                                    </div>
+                                <div className="aspect-[1000/495] w-full">
+                                    <CodeRenderer html={ortmannsCardData.frontSideCode} />
                                 </div>
-                                <div className="relative aspect-[1000/495] w-full overflow-hidden bg-accent/95">
-                                    <div className="absolute top-0 left-0 origin-top-left" style={{ width: '1000px', height: '495px', transform: 'scale(calc(100% / 1000))' }}>
-                                        <div className="h-full w-full bg-accent/95 text-left text-background">
-                                            <CodeRenderer html={ortmannsCardData.backSideCode} />
-                                        </div>
-                                    </div>
+                                <div className="aspect-[1000/495] w-full bg-accent/95 text-left text-background">
+                                    <CodeRenderer html={ortmannsCardData.backSideCode} />
                                 </div>
                             </div>
                         )}
