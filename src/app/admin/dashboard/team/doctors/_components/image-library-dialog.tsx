@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -29,15 +28,15 @@ export const ImageLibraryDialog: React.FC<ImageLibraryDialogProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl">
+      <DialogContent className="max-w-6xl">
         <DialogHeader>
           <DialogTitle>Bild aus Bibliothek auswählen</DialogTitle>
           <DialogDescription>
             Wählen Sie eines der bereits verwendeten Bilder aus.
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="h-96 w-full rounded-md border">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 p-4">
+        <ScrollArea className="h-[70vh] w-full rounded-md border">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 p-4">
             {images.map((img, index) => (
                 <div
                     key={index}
@@ -50,8 +49,8 @@ export const ImageLibraryDialog: React.FC<ImageLibraryDialogProps> = ({
                         src={img}
                         alt={`Bibliotheksbild ${index + 1}`}
                         fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
+                        className="object-contain"
+                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
                     />
                 </div>
             ))}

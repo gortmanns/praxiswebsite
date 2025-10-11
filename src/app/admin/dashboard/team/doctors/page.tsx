@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useRef } from 'react';
@@ -42,13 +41,9 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string }> = ({ html
 
     return (
         <div className={className}>
-            <svg viewBox="0 0 1000 495" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
-                <foreignObject width="1000" height="495">
-                    <div xmlns="http://www.w3.org/1999/xhtml" className="text-background w-[1000px] h-[495px]">
-                        <div dangerouslySetInnerHTML={sanitizedHtml} />
-                    </div>
-                </foreignObject>
-            </svg>
+             <div className="w-[1000px] h-[495px]">
+                <div dangerouslySetInnerHTML={sanitizedHtml} />
+            </div>
         </div>
     );
 };
@@ -121,8 +116,39 @@ export default function DoctorsPage() {
     
     // This is a placeholder for actual image data fetching
     const projectImages = [
-        '/images/team/Ortmanns.jpg', '/images/team/Prof.Schemmer.jpg', '/images/team/Dr.Rosenov.jpg', '/images/team/Dr.Herschel.jpg', '/images/team/Dr.Slezak.jpg',
-        '/images/logos/slezak-logo.png', '/images/VASC-Alliance-Logo.png', '/images/schemmer-worni-logo.png'
+        '/images/luftbild.jpg',
+        '/images/VASC-Alliance-Logo.png',
+        '/images/schemmer-worni-logo.png',
+        '/images/go-medical-logo.png',
+        '/images/mcl-labor-logo.png',
+        '/images/doxnet-logo.jpg',
+        '/images/logos/slezak-logo.png',
+        '/images/praxiszentrum-logo.png',
+        '/images/praxiszentrum-logo-icon.png',
+        '/images/mehrfacharzt-logo.png',
+        '/images/rtw-bern.jpg',
+        '/images/medphone_logo.png',
+        '/images/toxinfo-logo.svg',
+        '/images/foto-medis.jpg',
+        '/images/team/Ortmanns.jpg', 
+        '/images/team/Prof.Schemmer.jpg', 
+        '/images/team/Dr.Rosenov.jpg', 
+        '/images/team/Dr.Herschel.jpg', 
+        '/images/team/Dr.Slezak.jpg',
+        '/images/team/Garcia.jpg',
+        '/images/team/Aeschlimann.jpg',
+        '/images/team/Huber.jpg',
+        '/images/team/Oetztuerk.jpg',
+        '/images/team/Sommer.jpg',
+        '/images/leistungen/audiometrie.jpg',
+        '/images/leistungen/ekg.jpg',
+        '/images/leistungen/labor.jpg',
+        '/images/leistungen/praxisapotheke.jpg',
+        '/images/leistungen/roentgen.jpg',
+        '/images/leistungen/spirometrie.jpg',
+        '/images/leistungen/twint_logo.png',
+        '/images/leistungen/VMU.png',
+        '/images/leistungen/wundversorgung.jpg',
     ];
 
     const handleTemplateClick = (e: React.MouseEvent) => {
@@ -162,6 +188,8 @@ export default function DoctorsPage() {
             };
             reader.readAsDataURL(e.target.files[0]);
         }
+        // Reset file input to allow selecting the same file again
+        e.target.value = '';
     };
 
     const doctorsQuery = useMemoFirebase(() => {
@@ -187,11 +215,15 @@ export default function DoctorsPage() {
                 <CardContent>
                     <div id="template-container" className="w-full rounded-lg border-2 border-dashed border-muted" onClick={handleTemplateClick}>
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                            <div className="relative aspect-[1000/495] w-full overflow-hidden bg-muted/50">
-                                <CardHtmlRenderer html={exampleDoctor.frontSideCode} className="absolute w-full h-full" />
+                           <div className="relative aspect-[1000/495] w-full transform-origin-top-left overflow-hidden bg-muted/50">
+                                <div className="absolute w-full h-full">
+                                    <CardHtmlRenderer html={exampleDoctor.frontSideCode} />
+                                </div>
                             </div>
-                            <div className="relative aspect-[1000/495] w-full overflow-hidden bg-accent/95">
-                                 <CardHtmlRenderer html={exampleDoctor.backSideCode} className="absolute w-full h-full" />
+                            <div className="relative aspect-[1000/495] w-full transform-origin-top-left overflow-hidden bg-accent/95">
+                                 <div className="absolute w-full h-full">
+                                    <CardHtmlRenderer html={exampleDoctor.backSideCode} className="text-background" />
+                                 </div>
                             </div>
                        </div>
                     </div>
@@ -297,7 +329,12 @@ export default function DoctorsPage() {
                     isOpen={true}
                     onOpenChange={(isOpen) => !isOpen && setDialogState({ type: null, data: {} })}
                     images={projectImages}
-                    onImageSelect={(imageUrl) => setDialogState({ type: 'imageCrop', data: { imageUrl } })}
+                    onImageSelect={(imageUrl) => {
+                        setDialogState({ type: null, data: {} }); // Close library
+                        setTimeout(() => { // Open cropper after a tick
+                             setDialogState({ type: 'imageCrop', data: { imageUrl } })
+                        }, 100);
+                    }}
                 />
             )}
 
@@ -315,5 +352,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
-    
