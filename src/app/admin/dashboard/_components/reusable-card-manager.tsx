@@ -14,7 +14,7 @@ import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionRefe
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, CheckCircle, Upload } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, Upload } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -225,21 +225,25 @@ export function ReusableCardManager<T extends BaseCardData>({
     
     const DisplayWrapper: React.FC<{ item: T, index: number }> = ({ item, index }) => (
         isPartnerManager ? (
-            <div className="flex flex-col gap-2 p-2">
+             <div className="flex flex-col gap-2 p-2">
                 <DisplayCardComponent {...item} />
-                <div className="flex w-full flex-shrink-0 items-center justify-center gap-2">
-                    <Button variant="outline" size="icon" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
-                        <ChevronLeft className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="icon" onClick={() => handleMove(item.id, 'down')} disabled={index === visibleItems.length - 1 || isEditing}>
-                        <ChevronRight className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                        <EyeOff className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(item)} disabled={isEditing}>
-                        <Pencil className="h-4 w-4" />
-                    </Button>
+                <div className="mt-2 flex w-full flex-col gap-2">
+                    <div className="grid grid-cols-2 gap-2">
+                        <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
+                            <ChevronLeft className="mr-2 h-4 w-4" /> Nach links
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === visibleItems.length - 1 || isEditing}>
+                            Nach rechts <ChevronRight className="ml-2 h-4 w-4" />
+                        </Button>
+                    </div>
+                     <div className="grid grid-cols-2 gap-2">
+                        <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                            <EyeOff className="mr-2 h-4 w-4" /> Ausblenden
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
+                            <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                        </Button>
+                    </div>
                 </div>
             </div>
         ) : (
@@ -272,15 +276,17 @@ export function ReusableCardManager<T extends BaseCardData>({
                     <div className="absolute inset-0 z-10 bg-black/50 rounded-lg"></div>
                     <DisplayCardComponent {...item} />
                 </div>
-                <div className="flex w-full mt-2 flex-shrink-0 items-center justify-center gap-2">
-                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                        <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(item)} disabled={isEditing}>
-                        <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button variant="destructive" size="icon" onClick={() => openDeleteConfirmation(item.id, (item as any).name || 'diese Karte')} disabled={isEditing}>
-                        <Trash2 className="h-4 w-4" />
+                <div className="mt-2 flex w-full flex-col gap-2">
+                    <div className="grid grid-cols-2 gap-2">
+                        <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                            <Eye className="mr-2 h-4 w-4" /> Einblenden
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
+                            <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                        </Button>
+                    </div>
+                    <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(item.id, (item as any).name || 'diese Karte')} disabled={isEditing}>
+                        <Trash2 className="mr-2 h-4 w-4" /> Löschen
                     </Button>
                 </div>
             </div>
@@ -449,5 +455,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
