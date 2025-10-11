@@ -84,11 +84,12 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string; onClick?: (
 
 export default function DoctorsPage() {
     const firestore = useFirestore();
-    const doctorsQuery = useMemoFirebase(() => {
+     const doctorsQuery = useMemoFirebase(() => {
         if (!firestore) return null;
         return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
     }, [firestore]);
     const { data: dbDoctors, isLoading: isLoadingDbDoctors, error: dbError } = useCollection<Doctor>(doctorsQuery);
+
 
     const [dialogState, setDialogState] = useState<{
         type: 'text' | 'vita' | 'language' | 'imageSource' | 'imageLibrary' | 'imageCrop' | 'logoFunction' | 'deleteConfirm' | null;
@@ -139,12 +140,12 @@ export default function DoctorsPage() {
                 .template-card .gap-2 { gap: 0.5rem; }
                 .template-card .object-contain { object-fit: contain; }
                 .template-card .object-cover { object-fit: cover; }
-                .template-card .bg-muted { background-color: hsl(var(--muted)); }
                 .template-card .text-muted-foreground { color: hsl(var(--muted-foreground)); }
                 .template-card .text-center { text-align: center; }
                 .template-card .mt-2 { margin-top: 0.5rem; }
                 .template-card .font-extrabold { font-weight: 800; }
                 .template-card .bg-white { background-color: white; }
+                .template-card .bg-muted { background-color: hsl(var(--muted)); }
             </style>
              <div class="template-card w-full h-full bg-card text-card-foreground p-6 font-headline">
                 <div class="flex h-full w-full items-start">
@@ -303,7 +304,8 @@ export default function DoctorsPage() {
         const field = dialogState.data.field || 'image';
         const parser = new DOMParser();
         const doc = parser.parseFromString(exampleDoctor.frontSideCode, 'text/html');
-        
+        const mainContentDiv = doc.querySelector('.flex-grow');
+    
         if (field === 'image') {
             const imageContainer = doc.getElementById('image-container');
             if(imageContainer) {
@@ -311,7 +313,7 @@ export default function DoctorsPage() {
                     <img src="${croppedImageUrl}" alt="Portrait" class="h-full w-full object-contain relative" />
                  </button>`;
             }
-        } else {
+        } else if (mainContentDiv) {
           const positionContainer = doc.getElementById('position-container');
            if (positionContainer) {
              positionContainer.innerHTML = `<div class="mt-6">
@@ -325,7 +327,7 @@ export default function DoctorsPage() {
         }
         
         const updatedHtml = doc.body.innerHTML;
-
+    
         if (activeDoctor === 'template') {
             setExampleDoctor(prev => ({
                 ...prev,
@@ -423,7 +425,7 @@ export default function DoctorsPage() {
           currentDoctor = dbDoctors.find(d => d.id === activeDoctor.id) || null;
         }
         
-        if (!currentDoctor) return;
+        if (!currentDoctor || !currentDoctor.frontSideCode) return;
         
         const flagComponents: Record<string, React.FC<{ className?: string }>> = { de: DeFlag, en: EnFlag, fr: FrFlag, it: ItFlag, es: EsFlag, pt: PtFlag, ru: RuFlag, sq: SqFlag, ar: ArFlag, bs: BsFlag, zh: ZhFlag, da: DaFlag, fi: FiFlag, el: ElFlag, he: HeFlag, hi: HiFlag, ja: JaFlag, ko: KoFlag, hr: HrFlag, nl: NlFlag, no: NoFlag, fa: FaFlag, pl: PlFlag, pa: PaFlag, ro: RoFlag, sv: SvFlag, sr: SrFlag, ta: TaFlag, cs: CsFlag, tr: TrFlag, uk: UkFlag, hu: HuFlag, ur: UrFlag };
         
@@ -568,7 +570,7 @@ export default function DoctorsPage() {
                             <Info className="h-4 w-4" />
                             <AlertTitle>Hinweis</AlertTitle>
                             <AlertDescription>
-                                Zum Ändern bitte das jeweilige Element anklicken. Änderungen werden direkt auf die ausgewählte Karte angewendet (falls eine ausgewählt ist) oder können als neue Karte gespeichert werden.
+                                Zum Ändern bitte das jeweilige Element anklicken.
                             </AlertDescription>
                         </Alert>
                     </div>
@@ -637,10 +639,6 @@ export default function DoctorsPage() {
                                             <Button variant="outline" size="icon" onClick={() => handleEdit(doctor)}>
                                                 <Pencil className="h-4 w-4" />
                                                 <span className="sr-only">Bearbeiten</span>
-                                            </Button>
-                                             <Button variant="destructive" size="icon" onClick={() => setDialogState({ type: 'deleteConfirm', data: { doctorId: doctor.id, doctorName: doctor.name } })}>
-                                                <Trash2 className="h-4 w-4" />
-                                                <span className="sr-only">Löschen</span>
                                             </Button>
                                         </div>
                                         <div className={cn("relative flex-1 w-full max-w-[1000px] p-2 rounded-lg border-2 grayscale", activeDoctor === doctor ? 'border-primary' : 'border-transparent')}>
