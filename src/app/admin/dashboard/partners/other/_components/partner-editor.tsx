@@ -7,7 +7,7 @@ import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storag
 import { v4 as uuidv4 } from 'uuid';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { PartnerCard } from './partner-card';
+import { PartnerCard, type Partner } from './partner-card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
@@ -15,17 +15,11 @@ import { ImageUp } from 'lucide-react';
 import { ImageSourceDialog } from '@/app/admin/dashboard/team/doctors/_components/image-source-dialog';
 import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_components/image-library-dialog';
 import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/image-crop-dialog';
-
-export interface Partner {
-    id: string;
-    order: number;
-    name: string;
-    websiteUrl: string;
-    logoUrl: string;
-    openInNewTab?: boolean;
-    hidden?: boolean;
-    [key: string]: any;
-}
+import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
+import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Card, CardContent } from '@/components/ui/card';
 
 
 const projectImages = [
@@ -72,10 +66,29 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
         setDialogState(null);
     };
 
+     const renderPartnerLogo = (partner: Partner) => {
+        if (partner.name === 'orthozentrum-bern') {
+          return <OrthozentrumLogo className="h-full w-full object-contain" />;
+        }
+        if (partner.name === 'Agnieszka Slezak') {
+          return <AgnieszkaSlezakLogo className="h-full w-full object-contain" />;
+        }
+        return (
+            <Image
+              src={partner.logoUrl}
+              alt={`${partner.name} Logo`}
+              width={partner.width || 200}
+              height={partner.height || 60}
+              className="object-contain"
+              data-ai-hint={partner.hint}
+            />
+        );
+    };
+
     return (
         <>
             <div className="flex flex-col gap-8 items-start">
-                 <div className="w-full space-y-4">
+                 <div className="w-full space-y-2">
                     <table className="w-full border-separate" style={{ borderSpacing: '0 0.5rem' }}>
                         <thead>
                             <tr>
@@ -123,8 +136,25 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
 
                 <div className="relative w-full mt-4">
                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                    <div className="rounded-lg bg-primary p-4 h-[350px] flex items-center justify-center">
-                        <PartnerCard {...cardData} />
+                    <div className="rounded-lg bg-primary p-4 flex items-center justify-center">
+                        <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                            <Link
+                                href={cardData.websiteUrl || '#'}
+                                target={cardData.openInNewTab ? '_blank' : '_self'}
+                                rel="noopener noreferrer"
+                                className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                onClick={(e) => e.preventDefault()}
+                            >
+                                <Card className="flex h-full w-full items-center p-6">
+                                <CardContent className="flex w-full items-center justify-center p-0">
+                                    <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                                        {renderPartnerLogo(cardData)}
+                                    </div>
+                                </CardContent>
+                                </Card>
+                                <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -148,5 +178,3 @@ export const PartnerEditor: React.FC<{ cardData: Partner; onUpdate: (data: Partn
         </>
     );
 };
-
-    
