@@ -13,7 +13,7 @@ export function SlezakCard() {
                 <style>
                     .vita-content { color: hsl(var(--background)); }
                     .vita-content p { margin: 0; }
-                    .slezak-text-special { fill: #358392; font-family: 'Montserrat', sans-serif; font-weight: bold; }
+                    .slezak-text-special { fill: #358392; font-family: 'Montserrat', sans-serif; }
                     .slezak-text-normal { fill: #358392; font-family: 'Montserrat', sans-serif; font-weight: bold; }
                 </style>
                 <div class="font-headline group relative max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm bg-card text-card-foreground p-6 border-2 border-green-500">
@@ -27,8 +27,8 @@ export function SlezakCard() {
                                 <h3 class="text-5xl font-bold text-primary my-2">A. Slezak</h3>
                                 <p class="text-xl font-bold">Fachärztin für Neurologie</p>
                                 <div class="mt-6 flex w-full justify-start border-2 border-purple-500">
-                                    <svg viewBox="0 0 170 55.5" xmlns="http://www.w3.org/2000/svg" class="h-auto" style="height: 6.9rem;" aria-label="Dr. med. Agnieszka Slezak - Fachärztin für Neurologie Logo">
-                                        <text x="0" y="20" class="slezak-text-special" font-size="14">Dr. med. Agnieszka Slezak</text>
+                                    <svg viewBox="0 0 145 55.5" xmlns="http://www.w3.org/2000/svg" class="h-auto" style="height: 6.9rem;" aria-label="Dr. med. Agnieszka Slezak - Fachärztin für Neurologie Logo">
+                                        <text x="0" y="20" class="slezak-text-special" font-size="14" font-weight="bold">Dr. med. Agnieszka Slezak</text>
                                         <text x="20" y="36" class="slezak-text-normal" font-size="8.5">Fachärztin für Neurologie</text>
                                     </svg>
                                 </div>
