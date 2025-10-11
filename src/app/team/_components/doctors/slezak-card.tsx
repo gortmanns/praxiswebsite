@@ -26,8 +26,8 @@ export function SlezakCard() {
                                 <p class="text-2xl font-bold text-primary">Dr. med.</p>
                                 <h3 class="text-5xl font-bold text-primary my-2">A. Slezak</h3>
                                 <p class="text-xl font-bold">Fachärztin für Neurologie</p>
-                                <div class="mt-6 flex w-full justify-center border-2 border-purple-500">
-                                    <svg viewBox="0 0 170 55.5" xmlns="http://www.w3.org/2000/svg" class="h-auto w-full" style="height: 6.9rem;" aria-label="Dr. med. Agnieszka Slezak - Fachärztin für Neurologie Logo">
+                                <div class="mt-6 flex w-full justify-start border-2 border-purple-500">
+                                    <svg viewBox="0 0 170 55.5" xmlns="http://www.w3.org/2000/svg" class="h-auto" style="height: 6.9rem;" aria-label="Dr. med. Agnieszka Slezak - Fachärztin für Neurologie Logo">
                                         <style>
                                             .slezak-text-special { fill: #358392; font-family: 'Montserrat', sans-serif; font-weight: bold; }
                                             .slezak-text-normal { fill: #358392; font-family: 'Montserrat', sans-serif; font-weight: bold; }
