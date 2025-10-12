@@ -139,11 +139,11 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                                 data-ai-hint="staff portrait preview"
                                             />
                                         ) : (
-                                            <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-200 text-neutral-500">
+                                            <button onClick={() => setDialogState({ type: 'imageSource', data: {} })} className="flex h-full w-full flex-col items-center justify-center bg-neutral-200 text-neutral-500 hover:bg-neutral-300 transition-colors">
                                                 <span className="mb-2 text-base font-semibold">Foto</span>
                                                 <UserIcon className="h-40 w-40 text-black stroke-2" />
                                                 <span className="mt-2 text-base font-semibold">Zum Bearbeiten klicken</span>
-                                            </div>
+                                            </button>
                                         )}
                                     </div>
                                     <div className="flex-grow pt-6 text-center">
