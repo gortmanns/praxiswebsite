@@ -16,6 +16,7 @@ import { ImageSourceDialog } from '@/app/admin/dashboard/team/doctors/_component
 import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_components/image-library-dialog';
 import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/image-crop-dialog';
 import { projectImages } from '@/app/admin/dashboard/partners/project-images';
+import { Checkbox } from '@/components/ui/checkbox';
 
 
 export interface StaffMember {
@@ -27,6 +28,7 @@ export interface StaffMember {
     imageUrl: string;
     backsideContent?: string;
     hidden?: boolean;
+    fullWidth?: boolean;
     createdAt?: any;
     [key: string]: any;
 }
@@ -46,7 +48,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
         data: any;
     }>({ type: null, data: {} });
 
-    const handleInputChange = (field: keyof StaffMember, value: string) => {
+    const handleInputChange = (field: keyof StaffMember, value: string | boolean) => {
         onUpdate({ ...cardData, [field]: value });
     };
 
@@ -116,6 +118,16 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             placeholder="Geben Sie hier den Text für die Rückseite ein (einfaches HTML ist erlaubt)..."
                             rows={6}
                         />
+                    </div>
+                     <div className="flex items-center space-x-2 pt-2">
+                        <Checkbox
+                            id="fullWidth"
+                            checked={cardData.fullWidth}
+                            onCheckedChange={(checked) => handleInputChange('fullWidth', !!checked)}
+                        />
+                        <Label htmlFor="fullWidth" className="cursor-pointer">
+                            Karte über die volle Breite anzeigen
+                        </Label>
                     </div>
                 </div>
 

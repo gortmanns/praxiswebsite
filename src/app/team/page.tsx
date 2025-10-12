@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Header } from '../_components/header';
@@ -29,8 +30,8 @@ export default function TeamPage() {
   const visibleDoctors = doctors?.filter(doc => !doc.hidden) || [];
   const visibleStaff = staff?.filter(member => !member.hidden) || [];
 
-  const leitendeMPA = visibleStaff.find(s => s.role.toLowerCase().includes('leitende'));
-  const otherTeamMembers = visibleStaff.filter(s => !s.role.toLowerCase().includes('leitende'));
+  const fullWidthStaff = visibleStaff.filter(s => s.fullWidth);
+  const gridStaff = visibleStaff.filter(s => !s.fullWidth);
 
 
   return (
@@ -70,20 +71,21 @@ export default function TeamPage() {
               <div className="flex justify-center">
                 <Skeleton className="h-[500px] w-full max-w-sm" />
               </div>
-            ) : leitendeMPA && (
-              <div className="flex justify-center">
-                <div className="w-full max-w-sm">
-                  <TeamMemberCard 
-                    key={leitendeMPA.id}
-                    name={leitendeMPA.name}
-                    role={leitendeMPA.role}
-                    role2={leitendeMPA.role2}
-                    imageUrl={leitendeMPA.imageUrl}
-                    imageHint="staff portrait"
-                    backsideContent={leitendeMPA.backsideContent ? <div dangerouslySetInnerHTML={{ __html: leitendeMPA.backsideContent }} /> : undefined}
-                  />
+            ) : (
+              fullWidthStaff.map(member => (
+                <div key={member.id} className="flex justify-center">
+                  <div className="w-full max-w-sm">
+                    <TeamMemberCard 
+                      name={member.name}
+                      role={member.role}
+                      role2={member.role2}
+                      imageUrl={member.imageUrl}
+                      imageHint="staff portrait"
+                      backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
+                    />
+                  </div>
                 </div>
-              </div>
+              ))
             )}
 
 
@@ -95,7 +97,7 @@ export default function TeamPage() {
                </div>
             ) : (
               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                {otherTeamMembers.map((member) => (
+                {gridStaff.map((member) => (
                   <div key={member.id} className="mx-auto w-full max-w-sm">
                     <TeamMemberCard 
                       name={member.name}

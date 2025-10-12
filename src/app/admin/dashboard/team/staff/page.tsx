@@ -14,6 +14,7 @@ const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     imageUrl: "https://picsum.photos/seed/placeholder/400/600",
     backsideContent: "<p>Hier klicken, um Text hinzuzufügen.</p>",
     hidden: false,
+    fullWidth: false,
 };
 
 export default function StaffPage() {
