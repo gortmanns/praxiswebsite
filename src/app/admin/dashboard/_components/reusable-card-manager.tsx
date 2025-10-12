@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { useState, useMemo, useRef } from 'react';
@@ -326,33 +327,30 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                     {isEditing && (
-                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8 mb-12 min-h-[550px]">
-                            <div className="relative z-20">
-                                <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
-                            </div>
-                            <Alert variant="info" className="mt-8 relative z-20">
-                                <Info className="h-4 w-4" />
-                                <AlertTitle>Bearbeitungsmodus</AlertTitle>
-                                <AlertDescription>
-                                    {isCreatingNew ? `Erstellen Sie eine neue Karte. Passen Sie die Felder nach Bedarf an.` : `Sie bearbeiten gerade die Karte.`}
-                                </AlertDescription>
-                            </Alert>
+                         <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8 mb-12">
+                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                         </div>
                     )}
-                     
+
                     {isEditing && isPartnerManager && (
                          <div
-                            className="absolute inset-x-0 top-0 mt-[280px] rounded-lg bg-primary p-4 flex flex-wrap justify-end gap-8 opacity-100 z-10"
+                            className={cn(
+                                "mt-[-10rem] mb-12",
+                                isPartnerManager ? "rounded-lg bg-primary/20 p-4 flex flex-wrap justify-end gap-8" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
+                            )}
                             style={{
                                 outline: '3px solid #00ff00',
+                                zIndex: 10,
+                                position: 'relative'
                             }}
                         >
-                            <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%] z-50">
+                             <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%] z-50">
                                 <p className="text-sm font-semibold text-primary-foreground mb-2 text-center">Live-Vorschau</p>
                                 <DisplayCardComponent {...editorCardState} />
                             </div>
                         </div>
                     )}
+
 
                     <div className="space-y-4">
                         <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Karten</h3>

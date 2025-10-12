@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { useState, useRef, useMemo, useEffect } from 'react';
@@ -130,12 +131,12 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         if (cardData.imageUrl && newHtml !== cardData.logoHtml) {
             onUpdate({ ...cardData, logoHtml: newHtml });
         }
-    }, [cardData.imageUrl, cardData.name, cardData.logoScale, cardData.logoX, cardData.logoY, cardData, onUpdate]);
+    }, [cardData.imageUrl, cardData.name, cardData.logoScale, cardData.logoX, cardData.logoY, onUpdate]);
 
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start w-full">
+            <div className="w-full">
                 <div className="space-y-6">
                     <div className="space-y-2">
                         <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
@@ -204,9 +205,6 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                         </Button>
                     </div>
                 </div>
-
-                {/* The right column is now only for spacing, the actual preview is rendered from the manager */}
-                <div></div>
 
             </div>
 
