@@ -3,11 +3,14 @@ import React from 'react';
 
 export function TrFlag({ className }: { className?: string }) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" className={cn(className)}>
-      <path fill="#e30a17" d="M0 0h3v2H0z"/>
-      <circle cx="1.125" cy="1" r=".5" fill="#fff"/>
-      <path d="M1.25 1a.4.4 0 100-.8.5.5 0 010 .8z" fill="#fff"/>
-      <path d="M1.375 1l.1-.3.1.3-.2-.2z" fill="#e30a17"/>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 20" className={cn(className)}>
+      <rect width="30" height="20" fill="#E30A17" />
+      <circle cx="10" cy="10" r="5" fill="#FFF" />
+      <circle cx="11.25" cy="10" r="4" fill="#E30A17" />
+      <polygon
+        points="15,10 15.65,11.9 17.6,11.2 16.1,12.8 17.6,14.4 15.65,13.7 15,15.6 14.35,13.7 12.4,14.4 13.9,12.8 12.4,11.2 14.35,11.9"
+        fill="#FFF"
+      />
     </svg>
   );
 }
