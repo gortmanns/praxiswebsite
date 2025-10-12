@@ -12,10 +12,6 @@ import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Sav
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
-import { useElementSize } from '@/hooks/use-element-size';
-import { PartnerCard } from '../partners/_components/partner-card';
-import { DoctorCard } from '../../team/doctors/_components/doctor-editor';
-
 
 export interface BaseCardData {
     id: string;
@@ -31,7 +27,7 @@ interface ReusableCardManagerProps<T extends BaseCardData> {
     pageDescription: string;
     initialCardState: Omit<T, 'id' | 'order' | 'createdAt'>;
     DisplayCardComponent: React.ForwardRefExoticComponent<any & React.RefAttributes<any>>;
-    EditorCardComponent: React.ComponentType<{ cardData: T; onUpdate: (updatedData: T) => void; livePreviewSize: {width: number, height: number} | null; }>;
+    EditorCardComponent: React.ComponentType<{ cardData: T; onUpdate: (updatedData: T) => void; }>;
     entityName: string;
 }
 
@@ -59,8 +55,6 @@ export function ReusableCardManager<T extends BaseCardData>({
     const [isCreatingNew, setIsCreatingNew] = useState(false);
     const [editorCardState, setEditorCardState] = useState<T>({ ...initialCardState, id: '', order: 0 } as T);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
-
-    const [sourceCardRef, sourceCardSize] = useElementSize();
 
     const isEditing = editingCardId !== null || isCreatingNew;
 
@@ -187,14 +181,13 @@ export function ReusableCardManager<T extends BaseCardData>({
 
     const isPartnerManager = collectionName.toLowerCase().includes('partner');
     
-    const DisplayWrapper: React.FC<{ item: T, index: number }> = ({ item, index }) => {
-        const isFirstVisible = index === 0;
+    const DisplayWrapper: React.FC<{ item: T, index: number, isFirstVisible: boolean }> = ({ item, index }) => {
 
         if (isPartnerManager) {
             return (
                 <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
                     <div className="flex flex-col gap-2">
-                        <DisplayCardComponent ref={isFirstVisible ? sourceCardRef : null} {...item} />
+                        <DisplayCardComponent {...item} />
                         <div className="mt-2 flex w-full flex-col gap-2">
                             <div className="grid grid-cols-2 gap-2">
                                 <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
@@ -336,7 +329,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                         <div 
                             className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12 bg-muted/20"
                         >
-                           <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} livePreviewSize={sourceCardSize} />
+                           <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                             <Alert variant="info" className="mt-8">
                                 <Info className="h-4 w-4" />
                                 <AlertTitle>Bearbeitungsmodus</AlertTitle>
@@ -379,7 +372,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </Alert>
                         )}
                         {!isLoadingData && visibleItems.map((item, index) => (
-                            <DisplayWrapper key={item.id} item={item} index={index} />
+                            <DisplayWrapper key={item.id} item={item} index={index} isFirstVisible={index === 0} />
                         ))}
                     </div>
 

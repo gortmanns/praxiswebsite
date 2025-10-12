@@ -39,7 +39,6 @@ export interface Partner {
 interface PartnerEditorProps {
     cardData: Partner;
     onUpdate: (updatedData: Partner) => void;
-    livePreviewSize: { width: number; height: number } | null;
 }
 
 const generateLogoHtml = (imageUrl: string | undefined, name: string, scale: number = 100, x: number = 0, y: number = 0): string => {
@@ -51,7 +50,7 @@ const generateLogoHtml = (imageUrl: string | undefined, name: string, scale: num
 };
 
 
-export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate, livePreviewSize }) => {
+export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate }) => {
     const { toast } = useToast();
     const storage = useStorage();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -141,12 +140,6 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         return { ...cardData, logoHtml: newHtml };
     }, [cardData]);
 
-    const livePreviewStyle: React.CSSProperties = livePreviewSize ? {
-        width: `${livePreviewSize.width}px`,
-        height: `${livePreviewSize.height}px`,
-    } : {};
-
-
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
@@ -172,7 +165,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                         </div>
                     </div>
                      <div className="flex items-center gap-4 pt-4">
-                        <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })}>
+                        <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })} variant="default">
                             <ImageUp className="mr-2 h-4 w-4" /> Logo wählen
                         </Button>
                         <Button variant="secondary" onClick={() => setDialogState({ type: 'htmlEditor', data: {} })}>
@@ -182,7 +175,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
                     <div className="space-y-4 pt-4">
                         <div className="space-y-2">
-                            <Label htmlFor="logoScale">Grösse des Logos: {cardData.logoScale || 100}%</Label>
+                            <Label htmlFor="logoScale" className="text-center">Grösse des Logos: {cardData.logoScale || 100}%</Label>
                             <Slider
                                 id="logoScale"
                                 value={[cardData.logoScale || 100]}
@@ -192,7 +185,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                             />
                         </div>
                          <div className="space-y-2">
-                            <Label htmlFor="logoX">Horizontale Position: {cardData.logoX || 0}px</Label>
+                            <Label htmlFor="logoX" className="text-center">Horizontale Position: {cardData.logoX || 0}px</Label>
                              <Slider
                                 id="logoX"
                                 value={[cardData.logoX || 0]}
@@ -203,7 +196,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="logoY">Vertikale Position: {-(cardData.logoY || 0)}px</Label>
+                            <Label htmlFor="logoY" className="text-center">Vertikale Position: {-(cardData.logoY || 0)}px</Label>
                              <Slider
                                 id="logoY"
                                 value={[-(cardData.logoY || 0)]}
@@ -218,12 +211,8 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 </div>
                 <div className="flex flex-col items-center">
                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                    <div className="relative" style={livePreviewStyle}>
-                         {livePreviewSize ? (
-                            <PartnerCard {...currentCardData} />
-                         ) : (
-                            <Skeleton className="h-32 w-full max-w-[280px]" />
-                         )}
+                    <div className="relative w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                        <PartnerCard {...currentCardData} />
                     </div>
                 </div>
             </div>
