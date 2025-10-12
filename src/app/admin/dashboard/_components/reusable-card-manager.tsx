@@ -314,7 +314,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                         <Save className="mr-2 h-4 w-4" />
                                         {isCreatingNew ? `Neue Karte speichern` : 'Änderungen speichern'}
                                     </Button>
-                                    <Button variant="outline" onClick={handleCancelEdit}>
+                                    <Button variant="destructive" onClick={handleCancelEdit}>
                                         <XCircle className="mr-2 h-4 w-4" />
                                         Abbrechen
                                     </Button>
@@ -340,32 +340,32 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                     {isEditing && (
-                        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8">
-                            {/* Visual Debug Container - RELATIVE anstatt ABSOLUTE */}
-                            <div
-                                className={cn(
-                                    "relative top-0 right-0 bottom-0 left-0 grid grid-cols-8 gap-4 p-0", // p-0 anstatt p-4
-                                    "z-0 col-span-2 row-span-2", // Nimmt den gesamten Platz ein
-                                    "outline-4 outline-dashed outline-lime-500",
-                                    "opacity-0" // Vorerst unsichtbar
-                                )}
-                            >
-                                {/* Visual Debug Placeholders */}
-                                <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-1">Grid 1</div>
-                                <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-2">Grid 2</div>
-                                <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-2">Grid 3</div>
-                                <div className="col-span-2 z-20">
-                                    {/* Dieser Block ist jetzt für die eigentliche Vorschau */}
+                        <div className="relative z-10 mb-12 rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8">
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div
+                                    className={cn(
+                                        "absolute top-0 right-0 bottom-0 left-0 grid grid-cols-8 gap-4 p-4",
+                                        "z-10 col-span-2 row-span-2",
+                                        "outline-4 outline-dashed outline-green-500",
+                                    )}
+                                >
+                                    {/* Visual Debug Placeholders */}
+                                    <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-1">1</div>
+                                    <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-2">2</div>
+                                    <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-2">3</div>
+                                    <div className="col-span-2 z-20">
+                                        {/* Preview Area */}
+                                    </div>
+                                    <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-1">4</div>
                                 </div>
-                                <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-1">Grid 5</div>
+                                <div className="relative z-20 md:col-start-1 md:col-span-1">
+                                    <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                                </div>
+                                <div className="relative z-20 md:col-start-2 md:col-span-1">
+                                    <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
+                                    <DisplayCardComponent {...editorCardState} />
+                                </div>
                             </div>
-                             <div className="relative z-20 md:col-span-1">
-                                <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
-                             </div>
-                             <div className="relative z-20 md:col-span-1">
-                                <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                                <DisplayCardComponent {...editorCardState} />
-                             </div>
                         </div>
                     )}
 
