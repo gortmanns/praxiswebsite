@@ -13,7 +13,7 @@ export function TrFlag({ className }: { className?: string }) {
       <polygon
         points="15,10 15.65,8.1 17.6,8.8 16.1,7.2 17.6,5.6 15.65,6.3 15,4.4 14.35,6.3 12.4,5.6 13.9,7.2 12.4,8.8 14.35,8.1"
         fill="#FFF"
-        transform="translate(1, 1.2)"
+        transform="translate(1, 0.7)"
       />
     </svg>
   );
