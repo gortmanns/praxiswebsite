@@ -17,6 +17,7 @@ import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 export interface BaseCardData {
     id: string;
     order: number;
+    name: string; // Ensure name is part of the base data for filtering
     hidden?: boolean;
     createdAt?: any;
     [key: string]: any;
@@ -81,7 +82,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     const handleMove = async (cardId: string, direction: 'up' | 'down') => {
         if (!dbData || !firestore) return;
 
-        const visibleItems = dbData.filter(d => !d.hidden);
+        const visibleItems = dbData.filter(d => !d.hidden && d.name);
         const currentIndex = visibleItems.findIndex(item => item.id === cardId);
         
         let item1: T, item2: T;
@@ -147,7 +148,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     
         try {
             if (isCreatingNew) {
-                 // Create new card
+                // Create new card
                 const mutableCardData: Partial<T> = { ...editorCardState };
                 delete mutableCardData.id; // Ensure no ID is present on creation
     
@@ -184,9 +185,11 @@ export function ReusableCardManager<T extends BaseCardData>({
         }
     };
     
+    // Filter out "ghost" cards that might have been created without a name.
+    const validDbData = useMemo(() => dbData?.filter(d => d.name) || [], [dbData]);
 
-    const visibleItems = useMemo(() => dbData?.filter(d => !d.hidden) || [], [dbData]);
-    const hiddenItems = useMemo(() => dbData?.filter(d => d.hidden) || [], [dbData]);
+    const visibleItems = useMemo(() => validDbData.filter(d => !d.hidden), [validDbData]);
+    const hiddenItems = useMemo(() => validDbData.filter(d => d.hidden), [validDbData]);
 
     const isPartnerManager = collectionName.toLowerCase().includes('partner');
     
@@ -344,7 +347,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                     "absolute top-0 right-0 bottom-0 left-0 grid grid-cols-8 gap-8 p-4",
                                     "z-0",
                                     "outline-4 outline-dashed outline-lime-500",
-                                    "opacity-0"
+                                    "opacity-0" 
                                 )}
                             >
                                 {/* Visual Debug Placeholders */}
