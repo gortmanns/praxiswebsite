@@ -242,7 +242,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                         onClick={() => handleToggleFullWidth(item)} 
                         disabled={isEditing}
                         title={item.fullWidth ? "Volle Breite deaktivieren" : "Volle Breite aktivieren"}
-                        className={cn(item.fullWidth && "bg-primary/20 hover:bg-primary/30")}
+                        className={cn(item.fullWidth && "bg-primary/50 hover:bg-primary/60 text-primary-foreground")}
                     >
                         <RectangleHorizontal className="mr-2 h-4 w-4" /> Volle Breite
                     </Button>
@@ -261,22 +261,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             <DisplayCardComponent {...item} />
                          </div>
                         <div className="mt-2 flex w-full flex-col gap-2">
-                            <div className="grid grid-cols-2 gap-2">
-                                <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
-                                    <ChevronLeft className="mr-2 h-4 w-4" /> {moveUpLabel}
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === totalVisible - 1 || isEditing}>
-                                    {moveDownLabel} <ChevronRight className="ml-2 h-4 w-4" />
-                                </Button>
-                            </div>
-                            <div className="grid grid-cols-2 gap-2">
-                                <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                                    <EyeOff className="mr-2 h-4 w-4" /> Ausblenden
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
-                                    <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                                </Button>
-                            </div>
+                           {controlButtons}
                         </div>
                     </div>
                 </div>
@@ -380,7 +365,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                         onClick={() => handleToggleFullWidth(item)} 
                         disabled={isEditing}
                         title={item.fullWidth ? "Volle Breite deaktivieren" : "Volle Breite aktivieren"}
-                        className={cn(item.fullWidth && "bg-primary/20 hover:bg-primary/30")}
+                        className={cn(item.fullWidth && "bg-primary/50 hover:bg-primary/60 text-primary-foreground")}
                     >
                         <RectangleHorizontal className="mr-2 h-4 w-4" /> Volle Breite
                     </Button>
@@ -400,17 +385,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             <DisplayCardComponent {...item} />
                         </div>
                         <div className="mt-2 flex w-full flex-col gap-2">
-                            <div className="grid grid-cols-2 gap-2">
-                                <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                                    <Eye className="mr-2 h-4 w-4" /> Einblenden
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
-                                    <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                                </Button>
-                            </div>
-                            <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(item.id, (item as any).name || 'diese Karte')} disabled={isEditing}>
-                                <Trash2 className="mr-2 h-4 w-4" /> Löschen
-                            </Button>
+                            {itemControls}
                         </div>
                     </div>
                 </div>
@@ -634,3 +609,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
