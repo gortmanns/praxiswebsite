@@ -66,7 +66,7 @@ export const LanguageFlags: React.FC<LanguageFlagsProps> = ({ languages }) => {
     <div className="flex items-center gap-2">
       {sortedLanguages.map((lang) => {
         const FlagComponent = flagComponents[lang];
-        return FlagComponent ? <FlagComponent key={lang} className="h-5 w-auto rounded-sm shadow-md" /> : null;
+        return FlagComponent ? <FlagComponent key={lang} className="h-5 w-auto rounded-sm shadow-md border border-border" /> : null;
       })}
     </div>
   );

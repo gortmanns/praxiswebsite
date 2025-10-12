@@ -76,7 +76,7 @@ const LanguageCheckboxItem: React.FC<{ lang: {id: string, name: string}, selecte
                 checked={selected.has(lang.id)}
                 onCheckedChange={(checked) => onCheckedChange(lang.id, !!checked)}
             />
-            {FlagComponent && <FlagComponent className="h-4 w-6 rounded-sm" />}
+            {FlagComponent && <FlagComponent className="h-4 w-6 rounded-sm border border-border" />}
             <Label htmlFor={`lang-${lang.id}`} className="cursor-pointer">
                 {lang.name}
             </Label>
