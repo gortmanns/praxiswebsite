@@ -69,9 +69,9 @@ export default function TeamPage() {
             </div>
             
             <div className="space-y-12">
-              <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-8 border-2 border-red-500">
+              <div className="grid w-full grid-cols-1 justify-center gap-8 sm:grid-cols-2">
                 {fullWidthStaff.map((member, index) => (
-                  <div key={member.id} className={cn("mx-auto flex w-full justify-center border-2 border-yellow-400", fullWidthStaff.length % 2 !== 0 && index === fullWidthStaff.length -1 && "sm:col-span-2")}>
+                  <div key={member.id} className={cn("mx-auto flex w-full justify-center", fullWidthStaff.length % 2 !== 0 && index === fullWidthStaff.length - 1 && "sm:col-span-2")}>
                       <TeamMemberCard 
                         name={member.name}
                         role={member.role}
@@ -84,9 +84,9 @@ export default function TeamPage() {
                   </div>
                 ))}
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 border-2 border-blue-500">
+              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
                   {gridStaff.map((member) => (
-                    <div key={member.id} className="mx-auto flex w-full justify-center border-2 border-green-500">
+                    <div key={member.id} className="mx-auto flex w-full justify-center">
                       <TeamMemberCard 
                         name={member.name}
                         role={member.role}

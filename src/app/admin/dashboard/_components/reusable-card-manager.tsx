@@ -374,7 +374,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                 <div className={cn("mt-8 rounded-lg p-4", !isHidden && 'bg-primary')}>
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
                         {items.map((item, index) => (
-                            <div key={item.id} className="border-2 border-green-500">
+                            <div key={item.id}>
                                 {renderCardWithControls(item, index, isHidden, items.length, false)}
                             </div>
                         ))}
@@ -382,22 +382,22 @@ export function ReusableCardManager<T extends BaseCardData>({
                 </div>
             );
         }
-
+        
         const fullWidthItems = isStaffManager ? items.filter(i => i.fullWidth) : [];
         const gridItems = isStaffManager ? items.filter(i => !i.fullWidth) : items;
 
         return (
              <div className="mt-8 space-y-12">
-                <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-8 border-2 border-red-500">
+                <div className="grid w-full grid-cols-1 justify-center gap-8 sm:grid-cols-2">
                     {fullWidthItems.map((item, index) => (
-                      <div key={item.id} className={cn("mx-auto flex w-full justify-center border-2 border-yellow-400", fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 && "sm:col-span-2")}>
+                      <div key={item.id} className={cn("mx-auto flex w-full justify-center", fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 && "sm:col-span-2")}>
                           {renderCardWithControls(item, index, isHidden, fullWidthItems.length, true)}
                       </div>
                     ))}
                 </div>
-                 <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 border-2 border-blue-500">
+                 <div className="grid grid-cols-1 gap-12 sm:grid-cols-2">
                     {gridItems.map((item, index) => (
-                        <div key={item.id} className="mx-auto flex w-full justify-center border-2 border-green-500">
+                        <div key={item.id} className="mx-auto flex w-full justify-center">
                             {renderCardWithControls(item, index, isHidden, gridItems.length, false)}
                         </div>
                     ))}
