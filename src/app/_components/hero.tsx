@@ -16,7 +16,7 @@ export function Hero() {
         priority
       />
       <div className="absolute bottom-8 left-8">
-        <Button asChild size="lg" className="h-14 gap-3 rounded-full px-8 text-xl shadow-lg">
+        <Button asChild size="lg" className="h-14 gap-3 rounded-full px-8 text-xl shadow-2xl">
           <Link href="/termine">
             <Calendar />
             Termin vereinbaren
@@ -26,5 +26,3 @@ export function Hero() {
     </section>
   );
 }
-
-    
