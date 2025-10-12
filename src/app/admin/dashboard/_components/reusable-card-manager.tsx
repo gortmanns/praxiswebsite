@@ -341,13 +341,13 @@ export function ReusableCardManager<T extends BaseCardData>({
 
                     {isEditing && (
                         <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8">
-                             {/* Visual Debug Container */}
+                            {/* Visual Debug Container - RELATIVE anstatt ABSOLUTE */}
                             <div
                                 className={cn(
-                                    "absolute top-0 right-0 bottom-0 left-0 grid grid-cols-8 gap-8 p-4",
-                                    "z-0",
+                                    "relative top-0 right-0 bottom-0 left-0 grid grid-cols-8 gap-4 p-0", // p-0 anstatt p-4
+                                    "z-0 col-span-2 row-span-2", // Nimmt den gesamten Platz ein
                                     "outline-4 outline-dashed outline-lime-500",
-                                    "opacity-0" 
+                                    "opacity-0" // Vorerst unsichtbar
                                 )}
                             >
                                 {/* Visual Debug Placeholders */}
@@ -355,7 +355,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-2">Grid 2</div>
                                 <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-2">Grid 3</div>
                                 <div className="col-span-2 z-20">
-                                    <DisplayCardComponent {...editorCardState} />
+                                    {/* Dieser Block ist jetzt für die eigentliche Vorschau */}
                                 </div>
                                 <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-1">Grid 5</div>
                             </div>
