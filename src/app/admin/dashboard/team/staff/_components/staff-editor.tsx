@@ -5,7 +5,7 @@ import React, { useState, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { ImageUp, Languages, Pencil, User as UserIcon } from 'lucide-react';
+import { Languages, Pencil, User as UserIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
@@ -112,9 +112,6 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                     </div>
                     <div className="space-y-3 pt-2">
                         <div className="flex items-center gap-4">
-                            <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })}>
-                                <ImageUp className="mr-2 h-4 w-4" /> {isNewCard ? 'Foto wählen' : 'Foto ändern'}
-                            </Button>
                             <Button variant="default" onClick={() => setDialogState({ type: 'language', data: {} })}>
                                 <Languages className="mr-2 h-4 w-4" /> Sprachen
                             </Button>
@@ -231,4 +228,5 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
             )}
         </>
     );
-};
+
+    
