@@ -70,7 +70,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         setEditingCardId(null);
         setIsCreatingNew(true);
         // Reset the editor state to a new, empty card without an ID
-        setEditorCardState({ ...initialCardState, id: '', name: 'Neuer Partner' } as T);
+        setEditorCardState({ ...initialCardState, id: '', name: 'Neue Karte' } as T);
     };
 
     const handleCancelEdit = () => {
@@ -362,7 +362,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                              <div className="relative z-20 md:col-span-1">
                                 <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                              </div>
-                             <div className="relative opacity-0 pointer-events-none md:col-span-1">
+                             <div className="relative z-20 md:col-span-1">
                                 <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                                 <DisplayCardComponent {...editorCardState} />
                              </div>
