@@ -345,7 +345,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                    {isEditing && (
-                        <div className="relative rounded-lg border-2 border-dashed border-primary min-h-[550px] p-10">
+                        <div className="relative rounded-lg border-2 border-dashed border-primary min-h-[420px] p-10">
                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState}>
                                 <div className="pointer-events-none absolute inset-0 z-10">
                                     <div className="grid grid-cols-8 gap-x-2 bg-green-500/20 p-1 border border-green-500 h-full">
