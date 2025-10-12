@@ -49,10 +49,19 @@ export function CooperationPartnersSection() {
     if (partner.name === 'Agnieszka Slezak') {
       return <AgnieszkaSlezakLogo className="h-full w-full object-contain" />;
     }
-     if (partner.name === 'Schemmer & Worni' || partner.name === 'VASC ALLIANCE') {
+
+    let logoUrl = partner.logoUrl;
+    if (partner.name === 'Schemmer & Worni') {
+        logoUrl = '/images/schemmer-worni-logo.png';
+    }
+    if (partner.name === 'VASC ALLIANCE') {
+        logoUrl = '/images/VASC-Alliance-Logo.png';
+    }
+    
+    if (partner.name === 'Schemmer & Worni' || partner.name === 'VASC ALLIANCE') {
         return (
             <Image
-                src={partner.logoUrl}
+                src={logoUrl}
                 alt={`${partner.name} Logo`}
                 fill
                 className="object-contain"
@@ -62,7 +71,7 @@ export function CooperationPartnersSection() {
     }
     return (
         <Image
-          src={partner.logoUrl}
+          src={logoUrl}
           alt={`${partner.name} Logo`}
           width={partner.width || 200}
           height={partner.height || 60}
@@ -111,7 +120,7 @@ export function CooperationPartnersSection() {
           Unsere weiteren Partner
         </h3>
         <div className="mt-12 flex justify-center">
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:w-full">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:w-full">
               {isLoadingOther ? (
                  Array.from({ length: 3 }).map((_, index) => (
                     <div key={index} className="w-full sm:w-auto">
@@ -119,32 +128,39 @@ export function CooperationPartnersSection() {
                     </div>
                 ))
               ) : (
-                visibleOtherPartners.map(partner => (
-                  <div key={partner.id} className="w-full sm:w-auto">
-                    <Link
-                      href={partner.websiteUrl || '#'}
-                      target={partner.openInNewTab ? '_blank' : '_self'}
-                      rel="noopener noreferrer"
-                      className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                    >
-                      <Card className="flex h-full w-full items-center justify-center bg-background p-2">
-                        <div className="relative flex w-full h-full items-center justify-center p-0 overflow-hidden">
-                            <Image
-                              src={partner.logoUrl!}
-                              alt={`${partner.name} Logo`}
-                              fill
-                              className="object-contain"
-                              style={{
-                                  transform: `scale(${ (partner.logoScale || 100) / 100}) translate(${partner.logoX || 0}px, ${partner.logoY || 0}px)`,
-                                  transformOrigin: 'center center',
-                              }}
-                            />
-                        </div>
-                      </Card>
-                      <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                    </Link>
-                  </div>
-                ))
+                visibleOtherPartners.map(partner => {
+                  let logoUrl = partner.logoUrl;
+                  if (partner.name === 'Go-Medical') {
+                      logoUrl = '/images/go-medical-logo.png';
+                  }
+
+                  return (
+                      <div key={partner.id} className="w-full">
+                        <Link
+                          href={partner.websiteUrl || '#'}
+                          target={partner.openInNewTab ? '_blank' : '_self'}
+                          rel="noopener noreferrer"
+                          className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                        >
+                          <Card className="flex h-full w-full items-center justify-center bg-background p-2">
+                            <div className="relative flex w-full h-full items-center justify-center p-0 overflow-hidden">
+                                <Image
+                                  src={logoUrl!}
+                                  alt={`${partner.name} Logo`}
+                                  fill
+                                  className="object-contain"
+                                  style={{
+                                      transform: `scale(${ (partner.logoScale || 100) / 100}) translate(${partner.logoX || 0}px, ${partner.logoY || 0}px)`,
+                                      transformOrigin: 'center center',
+                                  }}
+                                />
+                            </div>
+                          </Card>
+                          <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                        </Link>
+                      </div>
+                  );
+                })
               )}
           </div>
         </div>
