@@ -374,7 +374,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="bg-red-500/20 text-center text-xs text-red-800 pointer-events-auto">
+                                        <div className="bg-red-500/20 text-center text-xs text-red-800 pointer-events-auto flex flex-col justify-end">
                                             {/* Vertical Slider Area */}
                                             <div className="flex flex-row items-center justify-center h-full gap-2">
                                                 <div className="h-4/5 flex justify-center">
@@ -393,6 +393,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                                     <div>{editorCardState.logoY || 0}px</div>
                                                 </div>
                                             </div>
+                                            <div className="w-full mt-4 h-14" />
                                         </div>
                                     </div>
                                 </div>
