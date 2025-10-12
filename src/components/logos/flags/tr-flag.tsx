@@ -1,3 +1,6 @@
+
+'use client';
+
 import { cn } from '@/lib/utils';
 import React from 'react';
 
@@ -8,8 +11,9 @@ export function TrFlag({ className }: { className?: string }) {
       <circle cx="10" cy="10" r="5" fill="#FFF" />
       <circle cx="11.25" cy="10" r="4" fill="#E30A17" />
       <polygon
-        points="15,10 15.65,11.9 17.6,11.2 16.1,12.8 17.6,14.4 15.65,13.7 15,15.6 14.35,13.7 12.4,14.4 13.9,12.8 12.4,11.2 14.35,11.9"
+        points="15,10 15.65,8.1 17.6,8.8 16.1,7.2 17.6,5.6 15.65,6.3 15,4.4 14.35,6.3 12.4,5.6 13.9,7.2 12.4,8.8 14.35,8.1"
         fill="#FFF"
+        transform="translate(1, 1.2)"
       />
     </svg>
   );
