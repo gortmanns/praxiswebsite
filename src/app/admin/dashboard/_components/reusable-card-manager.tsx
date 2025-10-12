@@ -343,15 +343,28 @@ export function ReusableCardManager<T extends BaseCardData>({
                             {/* Editor Form Section */}
                             <div className="relative z-20 mb-6 rounded-lg border-2 border-dashed border-primary bg-muted/20">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="p-4">
+                                    <div className="p-4 md:col-span-1">
                                         <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                                     </div>
-                                    <div className="p-4 bg-primary rounded-r-lg">
+                                    <div className="p-4 bg-primary rounded-r-lg md:col-span-1">
                                         <h3 className="text-xl font-bold text-primary-foreground mb-4">Live Vorschau</h3>
-                                        <DisplayCardComponent {...editorCardState} />
                                     </div>
                                 </div>
                             </div>
+                             {/* Visual Debug and Live Preview Container */}
+                             <div className="relative mb-6">
+                                <div className="grid grid-cols-8 gap-x-2 bg-green-500/20 p-1 border border-green-500">
+                                    <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
+                                    <div className="col-span-2 bg-blue-500/20 text-center text-xs text-blue-800">Editor</div>
+                                    <div className="col-span-2 bg-yellow-500/20 text-center text-xs text-yellow-800">Leer</div>
+                                    <div className="col-span-2 bg-purple-500/20 text-center text-xs text-purple-800">Vorschau</div>
+                                    <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
+                                    {/* The actual card for preview */}
+                                    <div className="col-start-6 col-span-2 mt-2">
+                                        <DisplayCardComponent {...editorCardState} />
+                                    </div>
+                                </div>
+                             </div>
                         </>
                     )}
 
@@ -429,3 +442,5 @@ export function ReusableCardManager<T extends BaseCardData>({
     );
 }
 
+
+    
