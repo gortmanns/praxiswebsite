@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import React, { useState, useRef, useMemo, useEffect } from 'react';
@@ -167,39 +166,8 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                             <Code2 className="mr-2 h-4 w-4" /> HTML bearbeiten
                         </Button>
                     </div>
-                    <div className="space-y-4 pt-4">
-                        <div className="text-center">
-                            <Label htmlFor="logoScale" className="text-sm">Grösse: {cardData.logoScale || 100}%</Label>
-                            <Slider
-                                id="logoScale"
-                                value={[cardData.logoScale || 100]}
-                                onValueChange={(value) => handleSliderChange('logoScale', value)}
-                                max={200}
-                                step={1}
-                            />
-                        </div>
-                        <div className="text-center">
-                            <Label htmlFor="logoX" className="text-sm">Horizontale Position: {cardData.logoX || 0}px</Label>
-                            <Slider
-                                id="logoX"
-                                value={[cardData.logoX || 0]}
-                                onValueChange={(value) => handleSliderChange('logoX', value)}
-                                min={-100}
-                                max={100}
-                                step={1}
-                            />
-                        </div>
-                        <div className="text-center">
-                            <Label htmlFor="logoY" className="text-sm">Vertikale Position: {cardData.logoY || 0}px</Label>
-                            <Slider
-                                id="logoY"
-                                value={[cardData.logoY || 0]}
-                                onValueChange={(value) => handleSliderChange('logoY', value)}
-                                min={-100}
-                                max={100}
-                                step={1}
-                            />
-                        </div>
+                    
+                    <div className="space-y-2 pt-4">
                          <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-full">
                             <RotateCcw className="mr-2 h-4 w-4" />
                             Steuerung zurücksetzen
@@ -253,3 +221,5 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         </>
     );
 };
+
+    
