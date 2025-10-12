@@ -40,54 +40,53 @@ const PartnerLink: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
     </Link>
 );
 
+const debugClass = "border border-red-500 bg-red-500/10 min-h-[1rem]";
+
 const OtherPartnersGrid: React.FC<{ partners: OtherPartner[] }> = ({ partners }) => {
     const count = partners.length;
 
     if (count === 0) return null;
 
-    if (count === 1) {
+    // Fall für 4 oder mehr Partner (Standard-Grid)
+    if (count >= 4) {
         return (
-            <div className="grid grid-cols-8 gap-8">
-                <div className="col-span-3"></div>
-                <div className="col-span-2">
-                    <PartnerLink partner={partners[0]} />
-                </div>
-                <div className="col-span-3"></div>
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                {partners.map(partner => (
+                    <div key={partner.id}>
+                        <PartnerLink partner={partner} />
+                    </div>
+                ))}
             </div>
         );
     }
     
-    if (count === 2) {
-        return (
-            <div className="grid grid-cols-8 gap-8">
-                <div className="col-span-2"></div>
-                <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
-                <div className="col-span-2"><PartnerLink partner={partners[1]} /></div>
-                <div className="col-span-2"></div>
-            </div>
-        );
-    }
-
-    if (count === 3) {
-        return (
-            <div className="grid grid-cols-8 gap-8">
-                <div className="col-span-1"></div>
-                <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
-                <div className="col-span-2"><PartnerLink partner={partners[1]} /></div>
-                <div className="col-span-2"><PartnerLink partner={partners[2]} /></div>
-                <div className="col-span-1"></div>
-            </div>
-        );
-    }
-
-    // Default case for 4 or more partners
+    // Fälle für 1, 2 oder 3 Partner mit 8er-Grid für die Zentrierung
     return (
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {partners.map(partner => (
-                <div key={partner.id}>
-                    <PartnerLink partner={partner} />
-                </div>
-            ))}
+        <div className="grid grid-cols-8 gap-8">
+            {count === 1 && (
+                <>
+                    <div className={cn("col-span-3", debugClass)}></div>
+                    <div className={cn("col-span-2", debugClass)}><PartnerLink partner={partners[0]} /></div>
+                    <div className={cn("col-span-3", debugClass)}></div>
+                </>
+            )}
+            {count === 2 && (
+                <>
+                    <div className={cn("col-span-2", debugClass)}></div>
+                    <div className={cn("col-span-2", debugClass)}><PartnerLink partner={partners[0]} /></div>
+                    <div className={cn("col-span-2", debugClass)}><PartnerLink partner={partners[1]} /></div>
+                    <div className={cn("col-span-2", debugClass)}></div>
+                </>
+            )}
+            {count === 3 && (
+                <>
+                    <div className={cn("col-span-1", debugClass)}></div>
+                    <div className={cn("col-span-2", debugClass)}><PartnerLink partner={partners[0]} /></div>
+                    <div className={cn("col-span-2", debugClass)}><PartnerLink partner={partners[1]} /></div>
+                    <div className={cn("col-span-2", debugClass)}><PartnerLink partner={partners[2]} /></div>
+                    <div className={cn("col-span-1", debugClass)}></div>
+                </>
+            )}
         </div>
     );
 };
