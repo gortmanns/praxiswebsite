@@ -9,7 +9,6 @@ import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { MedicalPartner, OtherPartner } from '@/docs/backend-types';
 import DOMPurify from 'dompurify';
-import { cn } from '@/lib/utils';
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
@@ -40,14 +39,11 @@ const PartnerLink: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
     </Link>
 );
 
-const debugClass = "border border-red-500 bg-red-500/10 min-h-[1rem]";
-
-const OtherPartnersGrid: React.FC<{ partners: OtherPartner[] }> = ({ partners }) => {
+const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
     const count = partners.length;
 
     if (count === 0) return null;
     
-    // Fall für 4 oder mehr Partner (Standard-Grid)
     if (count >= 4) {
         return (
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -60,31 +56,30 @@ const OtherPartnersGrid: React.FC<{ partners: OtherPartner[] }> = ({ partners })
         );
     }
     
-    // Fälle für 1, 2 oder 3 Partner mit 8er-Grid für die Zentrierung
     return (
         <div className="grid grid-cols-8 gap-8">
             {count === 1 && (
                 <>
-                    <div className={cn("col-span-3", debugClass)}></div>
+                    <div className="col-span-3"></div>
                     <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
-                    <div className={cn("col-span-3", debugClass)}></div>
+                    <div className="col-span-3"></div>
                 </>
             )}
             {count === 2 && (
                 <>
-                    <div className={cn("col-span-2", debugClass)}></div>
+                    <div className="col-span-2"></div>
                     <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
                     <div className="col-span-2"><PartnerLink partner={partners[1]} /></div>
-                    <div className={cn("col-span-2", debugClass)}></div>
+                    <div className="col-span-2"></div>
                 </>
             )}
             {count === 3 && (
                 <>
-                    <div className={cn("col-span-1", debugClass)}></div>
+                    <div className="col-span-1"></div>
                     <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
                     <div className="col-span-2"><PartnerLink partner={partners[1]} /></div>
                     <div className="col-span-2"><PartnerLink partner={partners[2]} /></div>
-                    <div className={cn("col-span-1", debugClass)}></div>
+                    <div className="col-span-1"></div>
                 </>
             )}
         </div>
@@ -112,23 +107,21 @@ export function CooperationPartnersSection() {
   const visibleOtherPartners = otherPartners?.filter(p => !p.hidden) || [];
   
   return (
-    <section id="partners" className="w-full bg-red-500">
+    <section id="partners" className="w-full bg-primary">
       <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
           Unsere ärztlichen Kooperationspartner
         </h2>
         
-        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12">
           {isLoadingMedical ? (
-            Array.from({ length: 4 }).map((_, index) => (
-                <Skeleton key={index} className="h-32 w-full rounded-lg" />
-            ))
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                {Array.from({ length: 4 }).map((_, index) => (
+                    <Skeleton key={index} className="h-32 w-full rounded-lg" />
+                ))}
+            </div>
           ) : (
-            visibleMedicalPartners.map(partner => (
-                <div key={partner.id}>
-                  <PartnerLink partner={partner} />
-                </div>
-              ))
+            <PartnerGrid partners={visibleMedicalPartners} />
           )}
         </div>
 
@@ -145,7 +138,7 @@ export function CooperationPartnersSection() {
                             ))}
                         </div>
                     ) : (
-                        <OtherPartnersGrid partners={visibleOtherPartners} />
+                        <PartnerGrid partners={visibleOtherPartners} />
                     )}
                 </div>
             </>
