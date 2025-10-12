@@ -5,7 +5,7 @@ import React, { useState, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Languages, Pencil, User as UserIcon, Info } from 'lucide-react';
+import { Languages, User as UserIcon, Info } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
@@ -113,13 +113,10 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             <Button variant="default" onClick={() => setDialogState({ type: 'language', data: {} })}>
                                 <Languages className="mr-2 h-4 w-4" /> Sprachen
                             </Button>
-                             <Button variant="outline" onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}>
-                                <Pencil className="mr-2 h-4 w-4" /> Rückseite bearbeiten
-                            </Button>
                         </div>
                     </div>
                      <div className="flex-grow flex items-end">
-                        <Alert variant="info" className="mt-8">
+                        <Alert variant="info">
                             <Info className="h-4 w-4" />
                             <AlertTitle>Bearbeitungsmodus</AlertTitle>
                             <AlertDescription>
@@ -147,7 +144,6 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                             />
                                         ) : (
                                             <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-200 text-neutral-500 hover:bg-neutral-300 transition-colors p-4">
-                                                <span className="mb-2 text-base font-semibold">Foto</span>
                                                 <UserIcon className="h-40 w-40 text-black stroke-2" />
                                                 <span className="mt-2 text-base font-semibold text-center">Zum Bearbeiten klicken</span>
                                             </div>
@@ -164,10 +160,10 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 </div>
                             </div>
                         </div>
-                        <div className="relative w-full max-w-[280px] mx-auto h-full rounded-lg bg-accent text-accent-foreground">
-                            <div className="h-full w-full p-6 text-left overflow-auto">
-                                <div className="prose prose-sm dark:prose-invert max-w-none [&_p]:text-white [&_p]:text-left" dangerouslySetInnerHTML={{ __html: cardData.backsideContent || '' }} />
-                            </div>
+                        <div className="relative w-full max-w-[280px] mx-auto h-full rounded-lg bg-accent">
+                            <button onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })} className="h-full w-full p-6 text-left overflow-auto text-accent-foreground">
+                                <div className="prose prose-sm dark:prose-invert max-w-none prose-p:text-left [&_p]:text-white [&_p]:text-left" dangerouslySetInnerHTML={{ __html: cardData.backsideContent || '<p>Text für Rückseite eingeben...</p>' }} />
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -189,10 +185,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                     onOpenChange={() => setDialogState({ type: null, data: {} })}
                     images={projectImages}
                     onImageSelect={(imageUrl) => {
-                        setDialogState({ type: null, data: {} });
-                        setTimeout(() => {
-                             setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio: 2/3 } })
-                        }, 100);
+                        setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio: 2/3 } });
                     }}
                 />
             )}
