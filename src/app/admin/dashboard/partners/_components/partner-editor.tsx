@@ -137,15 +137,14 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
     return (
         <>
-            {/* Editor Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2">
-                <div className="p-4 space-y-6">
+                <div className="space-y-6 p-4">
                     <div className="space-y-2">
                         <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
                         <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
                     </div>
                     <div className="grid grid-cols-[1fr_auto] items-end gap-2">
-                        <div className="space-y-2">
+                         <div className="space-y-2">
                             <Label htmlFor="websiteUrl">Website URL <span className="text-xs text-muted-foreground">(für Verlinkung)</span></Label>
                             <Input id="websiteUrl" value={cardData.websiteUrl || ''} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
                         </div>
@@ -177,8 +176,8 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 </div>
 
                 {/* Blue Preview Area */}
-                 <div className="p-2 bg-primary rounded-r-lg">
-                    <h3 className="text-xl font-bold text-primary-foreground mb-1 text-center">Live Vorschau</h3>
+                 <div className="p-4 bg-primary rounded-r-lg">
+                    <h3 className="text-xl font-bold text-primary-foreground mb-2 text-center">Live Vorschau</h3>
                     <div className="space-y-2 w-[70%] mx-auto">
                         <div className="text-center text-primary-foreground">
                             <label htmlFor="logoScale" className="text-sm">Grösse: {cardData.logoScale || 100}%</label>

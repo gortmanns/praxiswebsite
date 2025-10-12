@@ -339,16 +339,16 @@ export function ReusableCardManager<T extends BaseCardData>({
                         />
                     )}
 
-                    {isEditing && (
-                        <>
-                            {/* Dashed Editor Area */}
-                            <div className="relative z-0 rounded-lg border-2 border-dashed border-primary bg-muted/20 min-h-[500px]">
+                   {isEditing && (
+                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted/20 min-h-[550px]">
+                            {/* Editor UI (Blue Background for preview, etc.) */}
+                            <div className="z-0">
                                 <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                             </div>
 
                             {/* Green Debug and Live Preview Overlay */}
                             <div className="pointer-events-none absolute inset-0 z-10 flex items-end justify-center">
-                                 <div className="w-full max-w-full">
+                                <div className="w-full max-w-full">
                                     <div className="grid grid-cols-8 gap-x-2 bg-green-500/20 p-1 border border-green-500">
                                         <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
                                         <div className="col-span-2 bg-blue-500/20 text-center text-xs text-blue-800">Editor</div>
@@ -356,13 +356,12 @@ export function ReusableCardManager<T extends BaseCardData>({
                                         <div className="col-span-2 bg-purple-500/20 text-center text-xs text-purple-800">Vorschau</div>
                                         <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
                                     </div>
-                                 </div>
+                                </div>
                             </div>
-                        </>
+                        </div>
                     )}
 
-
-                    <div className="space-y-4">
+                    <div className="space-y-4 mt-12">
                         <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Karten</h3>
                          <p className="text-sm text-muted-foreground">
                             Klicken Sie auf &quot;Bearbeiten&quot;, um eine Karte in den Bearbeitungsmodus zu laden.
