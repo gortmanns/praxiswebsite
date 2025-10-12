@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { TeamMemberCard } from '@/app/team/_components/team-member-card';
 import { Button } from '@/components/ui/button';
-import { ImageUp, Languages } from 'lucide-react';
+import { ImageUp, Languages, Pencil } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
@@ -143,8 +143,10 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                     <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
                                 </div>
                              ) : (
-                                <div className="h-full w-full rounded-lg border-2 border-dashed border-muted-foreground/50 bg-muted/50 flex items-center justify-center">
-                                    <span className="text-muted-foreground">Rückseite (leer)</span>
+                                <div className="relative h-full w-full rounded-lg border-2 border-dashed border-muted-foreground/50 bg-muted/50 flex items-center justify-center">
+                                    <button className="absolute top-4 right-4 text-muted-foreground hover:text-primary">
+                                        <Pencil className="h-10 w-10" />
+                                    </button>
                                 </div>
                              )}
                         </div>
