@@ -5,7 +5,7 @@ import React, { useState, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Languages, Pencil, User as UserIcon } from 'lucide-react';
+import { Languages, Pencil, User as UserIcon, Info } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
@@ -19,6 +19,7 @@ import { VitaEditorDialog } from '@/app/admin/dashboard/team/doctors/_components
 import { LanguageFlags } from '@/app/admin/dashboard/team/doctors/_components/language-flags';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 
 export interface StaffMember {
@@ -96,8 +97,8 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                <div className="md:col-span-1 space-y-6 rounded-lg border p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start p-10">
+                <div className="space-y-6">
                     <div className="space-y-2">
                         <Label htmlFor="name">Name</Label>
                         <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
@@ -111,22 +112,29 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                         <Input id="role2" value={cardData.role2 || ''} onChange={(e) => handleInputChange('role2', e.target.value)} />
                     </div>
                     <div className="space-y-3 pt-2">
-                        <div className="flex items-center gap-4">
-                            <Button variant="default" onClick={() => setDialogState({ type: 'language', data: {} })}>
-                                <Languages className="mr-2 h-4 w-4" /> Sprachen
-                            </Button>
-                        </div>
+                        <Button variant="default" onClick={() => setDialogState({ type: 'language', data: {} })}>
+                            <Languages className="mr-2 h-4 w-4" /> Sprachen
+                        </Button>
                     </div>
+                    <Alert variant="info" className="mt-8">
+                        <Info className="h-4 w-4" />
+                        <AlertTitle>Bearbeitungsmodus</AlertTitle>
+                        <AlertDescription>
+                            {isNewCard
+                                ? "Füllen Sie die Felder aus und laden Sie ein Foto hoch. Die Rückseite ist optional."
+                                : 'Die Werte wurden übernommen und können angepasst werden. Klicken Sie auf die Vorschau, um das Foto oder den Text der Rückseite zu ändern.'}
+                        </AlertDescription>
+                    </Alert>
                 </div>
 
-                <div className="md:col-span-1 relative">
+                <div className="relative">
                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="w-full max-w-sm mx-auto">
                             <div className="group relative w-full max-w-sm overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
                                 <div className="flex h-full flex-col p-6">
-                                    <div className={cn("relative w-full overflow-hidden rounded-md aspect-[2/3]")}>
-                                        {hasImage ? (
+                                    <button onClick={() => setDialogState({ type: 'imageSource', data: {} })} className={cn("relative w-full overflow-hidden rounded-md aspect-[2/3]")}>
+                                        {cardData.imageUrl && !cardData.imageUrl.includes('placeholder') ? (
                                             <Image
                                                 src={cardData.imageUrl}
                                                 alt={`Portrait von ${cardData.name}`}
@@ -136,13 +144,13 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                                 data-ai-hint="staff portrait preview"
                                             />
                                         ) : (
-                                            <button onClick={() => setDialogState({ type: 'imageSource', data: {} })} className="flex h-full w-full flex-col items-center justify-center bg-neutral-200 text-neutral-500 hover:bg-neutral-300 transition-colors">
+                                            <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-200 text-neutral-500 hover:bg-neutral-300 transition-colors">
                                                 <span className="mb-2 text-base font-semibold">Foto</span>
                                                 <UserIcon className="h-40 w-40 text-black stroke-2" />
                                                 <span className="mt-2 text-base font-semibold">Zum Bearbeiten klicken</span>
-                                            </button>
+                                            </div>
                                         )}
-                                    </div>
+                                    </button>
                                     <div className="flex-grow pt-6 text-center">
                                         <h4 className="text-xl font-bold text-primary">{cardData.name}</h4>
                                         <p className="mt-2 text-base font-bold text-muted-foreground">{cardData.role}</p>
@@ -159,22 +167,14 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 <div className="h-full w-full p-6 text-accent-foreground text-center text-lg overflow-auto">
                                     <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
                                 </div>
-                             ) : (
-                                <button 
-                                    onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
-                                    className="absolute top-4 right-4 text-white hover:text-white/80"
-                                >
-                                    <Pencil className="h-10 w-10" />
-                                </button>
-                             )}
-                              {cardData.backsideContent && (
-                                <button 
-                                    onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
-                                    className="absolute top-4 right-4 text-white hover:text-white/80"
-                                >
-                                    <Pencil className="h-6 w-6" />
-                                </button>
-                             )}
+                             ) : null}
+
+                            <button 
+                                onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
+                                className="absolute top-4 right-4 text-white hover:text-white/80"
+                            >
+                                <Pencil className="h-10 w-10" />
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -228,7 +228,4 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
             )}
         </>
     );
-
-    
-
-    
+};
