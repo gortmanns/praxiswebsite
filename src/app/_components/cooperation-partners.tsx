@@ -83,12 +83,10 @@ export function CooperationPartnersSection() {
                     rel="noopener noreferrer"
                     className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   >
-                    <Card className="flex h-full w-full items-center justify-center bg-background p-6">
-                      <div className="flex w-full items-center justify-center">
-                         <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
-                            {renderPartnerLogo(partner)}
-                         </div>
-                      </div>
+                    <Card className="flex h-full w-full items-center justify-center bg-background p-2">
+                       <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                          {renderPartnerLogo(partner)}
+                       </div>
                     </Card>
                     <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                   </Link>
@@ -101,39 +99,43 @@ export function CooperationPartnersSection() {
         <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
           Unsere weiteren Partner
         </h3>
-        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {isLoadingOther ? (
-             Array.from({ length: 3 }).map((_, index) => (
-                <Skeleton key={index} className="h-32 w-full rounded-lg" />
-            ))
-          ) : (
-            visibleOtherPartners.map(partner => (
-              <div key={partner.id}>
-                <Link
-                  href={partner.websiteUrl || '#'}
-                  target={partner.openInNewTab ? '_blank' : '_self'}
-                  rel="noopener noreferrer"
-                  className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                >
-                  <Card className="flex h-full w-full items-center justify-center bg-background p-2">
-                    <div className="relative flex w-full h-full items-center justify-center p-0 overflow-hidden">
-                        <Image
-                          src={partner.logoUrl!}
-                          alt={`${partner.name} Logo`}
-                          fill
-                          className="object-contain"
-                          style={{
-                              transform: `scale(${ (partner.logoScale || 100) / 100}) translate(${partner.logoX || 0}px, ${partner.logoY || 0}px)`,
-                              transformOrigin: 'center center',
-                          }}
-                        />
+        <div className="mt-12">
+          <div className="flex flex-wrap justify-center gap-8">
+              {isLoadingOther ? (
+                 Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]">
+                        <Skeleton className="h-32 w-full rounded-lg" />
                     </div>
-                  </Card>
-                  <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                </Link>
-              </div>
-            ))
-          )}
+                ))
+              ) : (
+                visibleOtherPartners.map(partner => (
+                  <div key={partner.id} className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]">
+                    <Link
+                      href={partner.websiteUrl || '#'}
+                      target={partner.openInNewTab ? '_blank' : '_self'}
+                      rel="noopener noreferrer"
+                      className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                    >
+                      <Card className="flex h-full w-full items-center justify-center bg-background p-2">
+                        <div className="relative flex w-full h-full items-center justify-center p-0 overflow-hidden">
+                            <Image
+                              src={partner.logoUrl!}
+                              alt={`${partner.name} Logo`}
+                              fill
+                              className="object-contain"
+                              style={{
+                                  transform: `scale(${ (partner.logoScale || 100) / 100}) translate(${partner.logoX || 0}px, ${partner.logoY || 0}px)`,
+                                  transformOrigin: 'center center',
+                              }}
+                            />
+                        </div>
+                      </Card>
+                      <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                    </Link>
+                  </div>
+                ))
+              )}
+          </div>
         </div>
       </div>
     </section>
