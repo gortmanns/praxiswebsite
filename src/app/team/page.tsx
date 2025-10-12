@@ -67,50 +67,53 @@ export default function TeamPage() {
               </p>
             </div>
             
-            {isLoadingStaff ? (
-              <div className="flex justify-center">
-                <Skeleton className="h-[500px] w-full max-w-sm" />
-              </div>
-            ) : (
-              fullWidthStaff.map(member => (
-                <div key={member.id} className="mx-auto flex w-full justify-center">
-                    <TeamMemberCard 
-                      name={member.name}
-                      role={member.role}
-                      role2={member.role2}
-                      imageUrl={member.imageUrl}
-                      imageHint="staff portrait"
-                      languages={member.languages}
-                      backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
-                    />
+            <div className="space-y-12">
+              {isLoadingStaff ? (
+                <div className="flex justify-center">
+                  <Skeleton className="h-[500px] w-full max-w-sm" />
                 </div>
-              ))
-            )}
-
-
-            {isLoadingStaff ? (
-               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                  {Array.from({ length: 4 }).map((_, index) => (
-                      <Skeleton key={index} className="h-[500px] w-full max-w-sm mx-auto" />
-                  ))}
-               </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                {gridStaff.map((member) => (
-                  <div key={member.id} className="mx-auto flex w-full max-w-sm justify-center">
-                    <TeamMemberCard 
-                      name={member.name}
-                      role={member.role}
-                      role2={member.role2}
-                      imageUrl={member.imageUrl}
-                      imageHint="staff portrait"
-                      languages={member.languages}
-                      backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
-                    />
+              ) : (
+                fullWidthStaff.map(member => (
+                  <div key={member.id} className="mx-auto flex w-full justify-center">
+                      <div className="w-full max-w-sm">
+                          <TeamMemberCard 
+                            name={member.name}
+                            role={member.role}
+                            role2={member.role2}
+                            imageUrl={member.imageUrl}
+                            imageHint="staff portrait"
+                            languages={member.languages}
+                            backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
+                          />
+                      </div>
                   </div>
-                ))}
-              </div>
-            )}
+                ))
+              )}
+
+              {isLoadingStaff ? (
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                        <Skeleton key={index} className="h-[500px] w-full max-w-sm mx-auto" />
+                    ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                  {gridStaff.map((member) => (
+                    <div key={member.id} className="mx-auto flex w-full max-w-sm justify-center">
+                      <TeamMemberCard 
+                        name={member.name}
+                        role={member.role}
+                        role2={member.role2}
+                        imageUrl={member.imageUrl}
+                        imageHint="staff portrait"
+                        languages={member.languages}
+                        backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </main>
