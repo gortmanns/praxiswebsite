@@ -34,7 +34,7 @@ export function useElementSize<T extends HTMLElement = HTMLDivElement>(): [
     handleSize();
 
     // Use ResizeObserver to handle size changes
-    const resizeObserver = new ResizeObserver(() => handleSize());
+    const resizeObserver = new ResizeObserver(handleSize);
     resizeObserver.observe(ref);
 
     // Cleanup observer on component unmount
