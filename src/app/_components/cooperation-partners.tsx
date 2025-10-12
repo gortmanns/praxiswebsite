@@ -44,7 +44,7 @@ const RowGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ pa
     const count = partners.length;
     if (count === 0) return null;
     
-    // For 4 partners, use a standard 4-column grid
+    // For 4 partners, use a standard 4-column grid for responsiveness
     if (count === 4) {
         return (
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -61,27 +61,21 @@ const RowGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ pa
     return (
         <div className="grid grid-cols-8 gap-8">
             {count === 1 && (
-                <>
-                    <div className="col-span-3"></div>
-                    <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
-                    <div className="col-span-3"></div>
-                </>
+                <div className="col-start-3 col-span-4">
+                    <PartnerLink partner={partners[0]} />
+                </div>
             )}
             {count === 2 && (
                 <>
-                    <div className="col-span-2"></div>
-                    <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
-                    <div className="col-span-2"><PartnerLink partner={partners[1]} /></div>
-                    <div className="col-span-2"></div>
+                    <div className="col-start-2 col-span-3"><PartnerLink partner={partners[0]} /></div>
+                    <div className="col-span-3"><PartnerLink partner={partners[1]} /></div>
                 </>
             )}
             {count === 3 && (
                 <>
-                    <div className="col-span-1"></div>
-                    <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
-                    <div className="col-span-2"><PartnerLink partner={partners[1]} /></div>
-                    <div className="col-span-2"><PartnerLink partner={partners[2]} /></div>
-                    <div className="col-span-1"></div>
+                    <div className="col-start-1 col-span-2"><PartnerLink partner={partners[0]} /></div>
+                    <div className="col-start-4 col-span-2"><PartnerLink partner={partners[1]} /></div>
+                    <div className="col-start-7 col-span-2"><PartnerLink partner={partners[2]} /></div>
                 </>
             )}
         </div>
