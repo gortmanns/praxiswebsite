@@ -9,7 +9,7 @@ import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionRefe
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, AspectRatio } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
@@ -79,6 +79,7 @@ export function ReusableCardManager<T extends BaseCardData>({
 
     const isEditing = editingCardId !== null || isCreatingNew;
     const isPartnerManager = collectionName.toLowerCase().includes('partner');
+    const isStaffManager = collectionName === 'staff';
 
     const handleEdit = (card: T) => {
         setEditingCardId(card.id);
@@ -138,6 +139,17 @@ export function ReusableCardManager<T extends BaseCardData>({
         } catch (error: any) {
             console.error('Error toggling hidden state:', error);
             setNotification({ variant: 'destructive', title: 'Fehler', description: `Sichtbarkeit konnte nicht geändert werden: ${error.message}` });
+        }
+    };
+
+    const handleToggleFullWidth = async (card: T) => {
+        if (!firestore) return;
+        const docRef = doc(firestore, collectionName, card.id);
+        try {
+            await setDoc(docRef, { fullWidth: !card.fullWidth }, { merge: true });
+        } catch (error: any) {
+            console.error('Error toggling fullWidth state:', error);
+            setNotification({ variant: 'destructive', title: 'Fehler', description: `Breite konnte nicht geändert werden: ${error.message}` });
         }
     };
 
@@ -255,7 +267,19 @@ export function ReusableCardManager<T extends BaseCardData>({
                     <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
                         <EyeOff className="h-4 w-4" />
                     </Button>
-                        <Button variant="outline" size="icon" onClick={() => handleEdit(item)} disabled={isEditing}>
+                    {isStaffManager && (
+                        <Button 
+                            variant="outline" 
+                            size="icon" 
+                            onClick={() => handleToggleFullWidth(item)} 
+                            disabled={isEditing}
+                            title={item.fullWidth ? "Volle Breite deaktivieren" : "Volle Breite aktivieren"}
+                            className={cn(item.fullWidth && "bg-primary/20")}
+                        >
+                            <AspectRatio className="h-4 w-4" />
+                        </Button>
+                    )}
+                    <Button variant="outline" size="icon" onClick={() => handleEdit(item)} disabled={isEditing}>
                         <Pencil className="h-4 w-4" />
                     </Button>
                 </div>
@@ -367,10 +391,22 @@ export function ReusableCardManager<T extends BaseCardData>({
                     <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
                         <Eye className="h-4 w-4" />
                     </Button>
+                    {isStaffManager && (
+                         <Button 
+                            variant="outline" 
+                            size="icon" 
+                            onClick={() => handleToggleFullWidth(item)} 
+                            disabled={isEditing}
+                            title={item.fullWidth ? "Volle Breite deaktivieren" : "Volle Breite aktivieren"}
+                            className={cn(item.fullWidth && "bg-primary/20")}
+                        >
+                            <AspectRatio className="h-4 w-4" />
+                        </Button>
+                    )}
                     <Button variant="outline" size="icon" onClick={() => handleEdit(item)} disabled={isEditing}>
                         <Pencil className="h-4 w-4" />
                     </Button>
-                        <Button variant="destructive" size="icon" onClick={() => openDeleteConfirmation(item.id, (item as any).name || 'diese Karte')} disabled={isEditing}>
+                    <Button variant="destructive" size="icon" onClick={() => openDeleteConfirmation(item.id, (item as any).name || 'diese Karte')} disabled={isEditing}>
                         <Trash2 className="h-4 w-4" />
                     </Button>
                 </div>
