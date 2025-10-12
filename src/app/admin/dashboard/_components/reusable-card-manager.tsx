@@ -395,8 +395,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                                         <AlertTitle>Bearbeitungsmodus</AlertTitle>
                                         <AlertDescription>
                                             {isCreatingNew
-                                                ? "Sie können jetzt die Einstellungen für die neue Karte festlegen. Das Logo sollte idealerweise in der Grösse [ideale Grösse] und als .jpg oder .png vorliegen. Die Feinjustierung der angezeigten Grösse und Positionierung innerhalb der Karte ist über die Schieberegler möglich."
-                                                : 'Die Werte der zu bearbeitenden Karte wurden übernommen und können nun angepasst werden. Erst mit dem Klicken auf "Änderungen speichern" werden diese in die Datenbank übernommen. Mit Abbrechen wird alles zurückgenommen und die Karte behält ihr ursprüngliches Aussehen.'}
+                                                ? "Sie können jetzt die Einstellungen für die neue Karte festlegen. Das Logo sollte idealerweise in der Grösse 330x130 Pixel und als .jpg oder .png vorliegen. Die Feinjustierung der angezeigten Grösse und Positionierung innerhalb der Karte ist über die Schieberegler möglich."
+                                                : 'Die Werte der zu bearbeitenden Karte wurden übernommen und können nun angepasst werden. Wenn das Logo ersetzt werden soll, dann sollte dieses idealerweise in der Grösse 330x130 Pixel und als .jpg oder .png vorliegen. Erst mit dem Klicken auf "Änderungen speichern" werden diese in die Datenbank übernommen. Mit Abbrechen wird alles zurückgenommen und die Karte behält ihr ursprüngliches Aussehen.'}
                                         </AlertDescription>
                                     </Alert>
                                 )}
@@ -486,6 +486,8 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
 
     
 
