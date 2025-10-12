@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import React, { useState, useMemo, useRef } from 'react';
@@ -357,7 +356,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                         <div className="p-4 bg-primary rounded-r-lg md:col-span-1">
                                             <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
                                             {isPartnerManager && (
-                                                <div className="space-y-4 pt-4 w-[70%] mx-auto">
+                                                <div className="space-y-4 w-[70%] mx-auto">
                                                     <div className="text-center text-primary-foreground">
                                                         <label htmlFor="logoScale" className="text-sm">Grösse: {editorCardState.logoScale || 100}%</label>
                                                         <Slider
@@ -406,21 +405,23 @@ export function ReusableCardManager<T extends BaseCardData>({
                                                 )}
                                             </div>
                                              {isPartnerManager && (
-                                                <div className="col-start-8 col-span-1 flex flex-col items-center justify-center h-full pointer-events-auto z-10 pl-2">
-                                                    <Slider
-                                                        id="logoY"
-                                                        orientation="vertical"
-                                                        value={[editorCardState.logoY || 0]}
-                                                        onValueChange={(value) => handleSliderChange('logoY', value)}
-                                                        min={-100}
-                                                        max={100}
-                                                        step={1}
-                                                        className="h-32"
-                                                    />
-                                                     <div className="text-center text-xs mt-2">
-                                                        <p>Vertikale</p>
-                                                        <p>Position</p>
-                                                        <p>{editorCardState.logoY || 0}px</p>
+                                                <div className="col-start-8 col-span-1 flex items-center justify-start h-full pointer-events-auto z-10 pl-2">
+                                                    <div className="flex flex-col items-center">
+                                                        <Slider
+                                                            id="logoY"
+                                                            orientation="vertical"
+                                                            value={[editorCardState.logoY || 0]}
+                                                            onValueChange={(value) => handleSliderChange('logoY', value)}
+                                                            min={-100}
+                                                            max={100}
+                                                            step={1}
+                                                            className="h-32"
+                                                        />
+                                                        <div className="text-center text-xs mt-2">
+                                                            <p>Vertikale</p>
+                                                            <p>Position</p>
+                                                            <p>{editorCardState.logoY || 0}px</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             )}
@@ -504,5 +505,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
