@@ -4,7 +4,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SeedButton } from './_components/seed-button';
-import { medicalPartnersData, slezakPartner } from './_components/medical-partners-data';
+import { medicalPartnersData } from './_components/medical-partners-data';
 import DOMPurify from 'dompurify';
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
@@ -24,8 +24,6 @@ const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
 
 
 export default function MedicalPartnersPage() {
-    const combinedSeedData = [...medicalPartnersData, slezakPartner];
-
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
             <Card className="w-full">
@@ -39,7 +37,7 @@ export default function MedicalPartnersPage() {
                     <div className="mb-8 rounded-lg bg-primary p-4">
                         <h3 className="mb-4 text-center font-headline text-lg font-bold text-primary-foreground">Vorschau der Seed-Daten</h3>
                         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                            {combinedSeedData.map(partner => (
+                            {medicalPartnersData.map(partner => (
                                 <div key={partner.name} className="h-32 w-full">
                                     <Card className="flex h-full w-full items-center justify-center bg-background p-2">
                                         <CodeRenderer html={partner.logoHtml} />
@@ -51,7 +49,7 @@ export default function MedicalPartnersPage() {
 
                     <SeedButton
                         collectionName="medicalPartners"
-                        seedData={combinedSeedData}
+                        seedData={medicalPartnersData}
                         entityName="Ärztliche Partner"
                     />
                 </CardContent>

@@ -29,18 +29,17 @@ export const medicalPartnersData = [
       logoHtml: '<img src="/images/schemmer-worni-logo.png" alt="Schemmer & Worni Logo" style="object-fit: contain; width: 100%; height: 100%;" data-ai-hint="surgery logo" />',
       hidden: false,
     },
+    {
+      order: 4,
+      name: 'Agnieszka Slezak',
+      websiteUrl: 'https://neurologie-plus.ch/',
+      logoHtml: `
+        <svg viewBox="0 0 500 150" xmlns="http://www.w3.org/2000/svg" class="text-special-green h-full w-full object-contain" aria-label="Agnieszka Slezak Logo">
+          <style>.text-special-green { color: #358392; } .foreground-fill { fill: hsl(var(--foreground)); }</style>
+          <text x="5" y="70" font-family="Montserrat, sans-serif" font-size="36" font-weight="bold" fill="currentColor">Dr. med. Agnieszka Slezak</text>
+          <text x="250" y="110" font-family="Montserrat, sans-serif" font-size="24" font-weight="normal" class="foreground-fill" text-anchor="middle">Fachärztin für Neurologie</text>
+        </svg>
+      `,
+      hidden: false,
+    },
 ];
-
-export const slezakPartner = {
-    order: 4,
-    name: 'Agnieszka Slezak',
-    websiteUrl: 'https://neurologie-plus.ch/',
-    logoHtml: `
-      <svg viewBox="0 0 500 150" xmlns="http://www.w3.org/2000/svg" class="text-special-green h-full w-full object-contain" aria-label="Agnieszka Slezak Logo">
-        <style>.text-special-green { color: #358392; } .foreground-fill { fill: hsl(var(--foreground)); }</style>
-        <text x="5" y="70" font-family="Montserrat, sans-serif" font-size="36" font-weight="bold" fill="currentColor">Dr. med. Agnieszka Slezak</text>
-        <text x="250" y="110" font-family="Montserrat, sans-serif" font-size="24" font-weight="normal" class="foreground-fill" text-anchor="middle">Fachärztin für Neurologie</text>
-      </svg>
-    `,
-    hidden: false,
-};
