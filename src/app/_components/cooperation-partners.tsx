@@ -2,7 +2,7 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
@@ -83,12 +83,12 @@ export function CooperationPartnersSection() {
                     rel="noopener noreferrer"
                     className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   >
-                    <Card className="flex h-full w-full items-center bg-background p-2">
-                      <CardContent className="flex w-full items-center justify-center p-0">
+                    <Card className="flex h-full w-full items-center justify-center bg-background p-6">
+                      <div className="flex w-full items-center justify-center">
                          <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
                             {renderPartnerLogo(partner)}
                          </div>
-                      </CardContent>
+                      </div>
                     </Card>
                     <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                   </Link>
@@ -116,7 +116,7 @@ export function CooperationPartnersSection() {
                   className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   <Card className="flex h-full w-full items-center justify-center bg-background p-2">
-                    <CardContent className="relative flex w-full h-full items-center justify-center p-0 overflow-hidden">
+                    <div className="relative flex w-full h-full items-center justify-center p-0 overflow-hidden">
                         <Image
                           src={partner.logoUrl!}
                           alt={`${partner.name} Logo`}
@@ -127,7 +127,7 @@ export function CooperationPartnersSection() {
                               transformOrigin: 'center center',
                           }}
                         />
-                    </CardContent>
+                    </div>
                   </Card>
                   <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                 </Link>
