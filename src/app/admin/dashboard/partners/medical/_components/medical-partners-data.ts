@@ -35,7 +35,7 @@ export const slezakPartner = {
     order: 4,
     name: 'Agnieszka Slezak',
     websiteUrl: 'https://neurologie-plus.ch/',
-    logoUrl: '/images/logos/slezak-logo.png',
+    logoUrl: '', // Special component is used
     hint: 'neurology logo',
     width: 200,
     height: 60,
