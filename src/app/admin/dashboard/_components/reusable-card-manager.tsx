@@ -585,8 +585,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                         {!isLoadingData && isStaffManager && (
                             <div className='space-y-12'>
                                 {fullWidthVisibleItems.map((item, index) => (
-                                    <div key={item.id} className="flex justify-center">
-                                         <div className="w-full max-w-sm">
+                                    <div key={item.id} className="flex justify-center border-2 border-red-500">
+                                         <div className="w-full max-w-sm border-2 border-blue-500">
                                              <DisplayWrapper item={item} index={index} totalVisible={fullWidthVisibleItems.length} isFullWidth={true} />
                                          </div>
                                     </div>
