@@ -50,6 +50,7 @@ export function CooperationPartnersSection() {
       return <AgnieszkaSlezakLogo className="h-full w-full object-contain" />;
     }
     
+    // Use fill for both to ensure they scale correctly
     if (partner.name === 'Schemmer & Worni' || partner.name === 'VASC ALLIANCE') {
         return (
             <Image
@@ -61,6 +62,8 @@ export function CooperationPartnersSection() {
             />
         );
     }
+
+    // Fallback for any other partner, although the main ones are handled above.
     return (
         <Image
           src={partner.logoUrl}
