@@ -299,7 +299,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         const isLast = index === itemsArray.length - 1;
 
         return (
-             <div className="relative">
+             <div className="relative border-2 border-orange-500 max-w-sm">
                 <div className="absolute top-0 -left-48 z-10 flex h-full w-44 flex-col items-end justify-center pr-4">
                     <div className="flex flex-col gap-2 rounded-md border bg-card p-2 shadow-lg">
                         <div className="grid w-full grid-cols-1 gap-2">
@@ -339,7 +339,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                         </div>
                     </div>
                 </div>
-                <div className={cn("border-2 border-orange-500", isHidden && "grayscale")}>
+                <div className={cn(isHidden && "grayscale")}>
                      <DisplayCardComponent {...item} />
                 </div>
             </div>
@@ -365,10 +365,10 @@ export function ReusableCardManager<T extends BaseCardData>({
 
         if (fullWidth) {
             return (
-                <div className={cn("grid w-full grid-cols-1 gap-8 border-2 border-red-500", items.length > 0 && "sm:grid-cols-2 justify-items-center")}>
+                <div className={cn("grid w-full grid-cols-1 gap-8", items.length > 0 && "sm:grid-cols-2")}>
                     {items.map((item, index) => (
                         <div key={item.id} className={cn("mx-auto flex w-full justify-center border-2 border-yellow-500", items.length % 2 !== 0 && index === items.length - 1 && "sm:col-span-2")}>
-                            {renderCardWithControls(item, index, isHidden, items)}
+                           {renderCardWithControls(item, index, isHidden, items)}
                         </div>
                     ))}
                 </div>
