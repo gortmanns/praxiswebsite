@@ -187,6 +187,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                                 onValueChange={(value) => handleSliderChange('logoScale', value)}
                                 max={200}
                                 step={1}
+                                className="[&>span:first-child]:bg-secondary [&>span>span]:bg-popover [&>span:last-child]:bg-accent"
                             />
                         </div>
                     </div>
