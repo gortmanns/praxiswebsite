@@ -44,7 +44,7 @@ const generateLogoHtml = (imageUrl: string | undefined, name: string, scale: num
     if (!imageUrl) {
         return `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
     }
-    const transformStyle = `transform: scale(${scale / 100}) translateX(${x}px) translateY(${y}px);`;
+    const transformStyle = `transform: scale(${scale / 100}) translate(${x}px, ${y}px);`;
     return `<img src="${imageUrl}" alt="${name || 'Partner Logo'}" style="object-fit: contain; width: 100%; height: 100%; transition: transform 0.2s ease-out; ${transformStyle}" />`;
 };
 
@@ -62,7 +62,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
     const handleInputChange = (field: keyof Partner, value: string | boolean | number) => {
         onUpdate({ ...cardData, [field]: value });
     };
-
+    
     const handleSliderChange = (field: 'logoScale' | 'logoX' | 'logoY', value: number[]) => {
         const singleValue = value[0];
         const newCardData = { ...cardData, [field]: singleValue };
@@ -137,13 +137,11 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
             <div className="space-y-6 rounded-lg border p-6 mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                        <Label htmlFor="name">Name</Label>
-                        <span className="text-xs text-muted-foreground block">(zur internen Verwendung, wird nicht angezeigt)</span>
+                        <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
                         <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="websiteUrl">Website URL</Label>
-                         <span className="text-xs text-muted-foreground block">(für Verlinkung)</span>
+                        <Label htmlFor="websiteUrl">Website URL <span className="text-xs text-muted-foreground">(für Verlinkung)</span></Label>
                         <div className="flex items-center gap-2">
                            <Input id="websiteUrl" value={cardData.websiteUrl || ''} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
                             <div className="flex items-center space-x-2 shrink-0">
@@ -171,25 +169,23 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
             <div>
                 <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                <div className="space-y-4">
-                    <div className="w-full">
-                         <Label className="text-sm text-muted-foreground">Grösse des Logos</Label>
-                         <Slider
-                            value={[cardData.logoScale || 100]}
-                            onValueChange={(value) => handleSliderChange('logoScale', value)}
-                            max={200}
-                            step={1}
-                        />
+                <div className="rounded-lg bg-primary p-8">
+                    <div className="w-full space-y-2">
+                        <div className="text-center text-primary-foreground">
+                            <Label>Grösse des Logos: {cardData.logoScale || 100}%</Label>
+                            <Slider
+                                value={[cardData.logoScale || 100]}
+                                onValueChange={(value) => handleSliderChange('logoScale', value)}
+                                max={200}
+                                step={1}
+                            />
+                        </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <div className="w-full space-y-4">
-                             <div className="rounded-lg bg-primary p-4 flex flex-wrap justify-center gap-8">
-                                <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
-                                    <PartnerCard {...currentCardData} />
-                                </div>
-                            </div>
-                            <div className="w-full sm:w-[calc(45%+2rem)] md:w-[calc(30%+2rem)] lg:w-[calc(22%+2rem)] mx-auto pr-8">
-                                <Label className="text-sm text-muted-foreground">Horizontale Position</Label>
+                     <div className="mt-4 flex items-center justify-center gap-4">
+                        <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%] flex-shrink-0 space-y-2">
+                             <PartnerCard {...currentCardData} />
+                             <div className="text-center text-primary-foreground">
+                                <Label>Horizontale Position: {cardData.logoX || 0}px</Label>
                                 <Slider
                                     value={[cardData.logoX || 0]}
                                     onValueChange={(value) => handleSliderChange('logoX', value)}
@@ -197,10 +193,13 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                                     max={100}
                                     step={1}
                                 />
-                            </div>
+                             </div>
                         </div>
-                        <div className="h-full flex flex-col items-center space-y-2">
-                             <Label className="text-sm text-muted-foreground writing-mode-vertical-rl transform rotate-180">Vertikale Position</Label>
+                        <div className="flex flex-col items-center space-y-2 h-full">
+                            <div className="text-center text-primary-foreground">
+                                <Label>Vertikale Position</Label>
+                                <p className="text-xs">{-(cardData.logoY || 0)}px</p>
+                            </div>
                              <Slider
                                 orientation="vertical"
                                 value={[-(cardData.logoY || 0)]}
@@ -260,3 +259,4 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         </>
     );
 };
+

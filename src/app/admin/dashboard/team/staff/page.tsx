@@ -11,7 +11,7 @@ const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     name: "Neuer Mitarbeiter",
     role: "Rolle",
     role2: "",
-    imageUrl: "/images/team/placeholder.jpg",
+    imageUrl: "https://picsum.photos/seed/placeholder/400/600",
     backsideContent: "<p>Hier klicken, um Text hinzuzufügen.</p>",
     hidden: false,
 };

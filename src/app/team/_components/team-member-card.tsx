@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -12,14 +13,15 @@ interface TeamMemberCardProps {
 
 export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsideContent }: TeamMemberCardProps) {
   return (
-    <div className="group relative w-full overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
-        <div className="p-6">
-            <div className="relative aspect-[2/3] w-full overflow-hidden rounded-md">
+    <div className="group relative w-full overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl aspect-[4/5]">
+        <div className="p-6 h-full flex flex-col">
+            <div className="relative flex-grow w-full overflow-hidden rounded-md">
                 <Image
                     src={imageUrl}
                     alt={`Portrait von ${name}`}
                     fill
-                    className="object-contain"
+                    className="object-cover"
+                    sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw"
                     data-ai-hint={imageHint}
                 />
             </div>
