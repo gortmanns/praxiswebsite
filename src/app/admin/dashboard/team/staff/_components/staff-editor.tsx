@@ -117,11 +117,6 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             </Button>
                         </div>
                     </div>
-                    <div className="space-y-2">
-                         <Button variant="outline" onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}>
-                            <Pencil className="mr-2 h-4 w-4" /> Text der Rückseite bearbeiten
-                        </Button>
-                    </div>
                 </div>
 
                 <div className="md:col-span-1 relative">
@@ -137,13 +132,19 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 languages={cardData.languages}
                             />
                         </div>
-                        <div className="w-full max-w-sm mx-auto">
+                        <div className="relative w-full max-w-sm mx-auto h-full rounded-lg bg-accent">
                             {cardData.backsideContent ? (
-                                <div className="h-full w-full rounded-lg bg-accent p-6 text-accent-foreground text-center text-lg">
+                                <div className="h-full w-full p-6 text-accent-foreground text-center text-lg overflow-auto">
                                     <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
+                                    <button 
+                                        onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
+                                        className="absolute top-4 right-4 text-white hover:text-white/80"
+                                    >
+                                        <Pencil className="h-6 w-6" />
+                                    </button>
                                 </div>
                              ) : (
-                                <div className="relative h-full w-full rounded-lg bg-accent flex items-center justify-center">
+                                <div className="h-full w-full flex items-center justify-center">
                                     <button 
                                         onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
                                         className="absolute top-4 right-4 text-white hover:text-white/80"
