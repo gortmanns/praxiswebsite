@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useRef, useMemo, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
@@ -177,7 +177,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                     </div>
                 </div>
 
-                {/* Right side: Live Preview Area */}
+                {/* Right side: Visual Live Preview Area (blue background) */}
                  <div className="p-10 bg-primary rounded-r-lg flex flex-col z-0">
                     <h3 className="text-xl font-bold text-primary-foreground mb-2 text-center">Live Vorschau</h3>
                     <div className="space-y-2 w-[70%] mx-auto">
@@ -215,7 +215,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
             </div>
 
             <div className="col-start-8 col-span-1 flex items-center justify-start h-full pointer-events-auto z-20 pl-2">
-                <div className="flex items-center gap-2">
+                 <div className="flex items-center gap-2">
                     <Slider
                         id="logoY"
                         orientation="vertical"

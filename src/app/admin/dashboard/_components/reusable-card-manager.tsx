@@ -344,8 +344,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                             {/* Editor UI is now inside EditorCardComponent */}
                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
 
-                             {/* Green Debug/Logic Overlay */}
-                            <div className="pointer-events-none absolute inset-0 z-20 flex items-end">
+                            {/* Green Debug/Logic Overlay */}
+                           <div className="pointer-events-none absolute inset-0 z-10 flex items-end">
                                 <div className="w-full max-w-full">
                                     <div className="grid grid-cols-8 gap-x-2 bg-green-500/20 p-1 border border-green-500">
                                         <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
