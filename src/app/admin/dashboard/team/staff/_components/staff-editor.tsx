@@ -92,8 +92,6 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
         setDialogState({ type: null, data: {} });
     };
 
-    const hasImage = cardData.imageUrl && !cardData.imageUrl.includes('picsum.photos');
-
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start p-10">
@@ -115,9 +113,6 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             <Button variant="default" onClick={() => setDialogState({ type: 'language', data: {} })}>
                                 <Languages className="mr-2 h-4 w-4" /> Sprachen
                             </Button>
-                             <Button variant="outline" onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}>
-                                <Pencil className="mr-2 h-4 w-4" />Text der Rückseite bearbeiten
-                            </Button>
                         </div>
                     </div>
                      <div className="flex-grow flex items-end">
@@ -138,7 +133,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             <div className="group relative w-full overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
                                 <div className="flex h-full flex-col p-6">
                                     <button onClick={() => setDialogState({ type: 'imageSource', data: {} })} className={cn("relative w-full overflow-hidden rounded-md aspect-[2/3]")}>
-                                        {hasImage ? (
+                                        {cardData.imageUrl && !cardData.imageUrl.includes('picsum.photos') ? (
                                             <Image
                                                 src={cardData.imageUrl}
                                                 alt={`Portrait von ${cardData.name}`}
@@ -166,7 +161,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 </div>
                             </div>
                         </div>
-                        <div className="relative w-full max-w-[280px] mx-auto h-full rounded-lg bg-accent">
+                        <div className="relative w-full max-w-[280px] mx-auto h-full rounded-lg bg-accent text-accent-foreground">
                              <button 
                                 onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
                                 className="absolute top-4 right-4 text-white hover:text-white/80"
@@ -174,7 +169,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 <Pencil className="h-10 w-10" />
                             </button>
                             <div className="h-full w-full p-6 text-left overflow-auto">
-                                <div className="prose prose-sm dark:prose-invert text-background max-w-none" dangerouslySetInnerHTML={{ __html: cardData.backsideContent || '' }} />
+                                <div className="prose prose-sm dark:prose-invert text-background max-w-none [&>p]:text-left [&>p]:text-white" dangerouslySetInnerHTML={{ __html: cardData.backsideContent || '' }} />
                             </div>
                         </div>
                     </div>
@@ -231,3 +226,4 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
     );
 
     
+}
