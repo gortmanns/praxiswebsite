@@ -90,7 +90,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
-        setEditorCardState({ ...initialCardState, id: '', name: 'Neue Karte' } as T);
+        setEditorCardState({ ...initialCardState, id: '' } as T);
     };
     
 
@@ -573,16 +573,29 @@ export function ReusableCardManager<T extends BaseCardData>({
                         {!isLoadingData && isPartnerManager && (
                             <PartnerGrid partners={gridVisibleItems} />
                         )}
-                        {!isLoadingData && !isPartnerManager && (
-                            <div className='space-y-12'>
-                                {fullWidthVisibleItems.map((item, index) => (
-                                    <div key={item.id} className="flex justify-center">
-                                         <DisplayWrapper item={item} index={index} totalVisible={fullWidthVisibleItems.length} isFullWidth={true} />
-                                    </div>
-                                ))}
+                        {!isLoadingData && !isStaffManager && !isPartnerManager && (
+                             <div className='space-y-12'>
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                                     {gridVisibleItems.map((item, index) => (
                                         <DisplayWrapper key={item.id} item={item} index={index} totalVisible={gridVisibleItems.length} isFullWidth={false} />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        {!isLoadingData && isStaffManager && (
+                            <div className='space-y-12'>
+                                {fullWidthVisibleItems.map((item, index) => (
+                                    <div key={item.id} className="flex justify-center">
+                                         <div className="w-full max-w-sm">
+                                             <DisplayWrapper item={item} index={index} totalVisible={fullWidthVisibleItems.length} isFullWidth={true} />
+                                         </div>
+                                    </div>
+                                ))}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                                    {gridVisibleItems.map((item, index) => (
+                                       <div key={item.id} className="mx-auto w-full max-w-sm">
+                                            <DisplayWrapper item={item} index={index} totalVisible={gridVisibleItems.length} isFullWidth={false} />
+                                        </div>
                                     ))}
                                 </div>
                             </div>
@@ -602,16 +615,29 @@ export function ReusableCardManager<T extends BaseCardData>({
                                         ))}
                                     </div>
                                 )}
-                                {!isLoadingData && !isPartnerManager && (
+                                 {!isLoadingData && !isStaffManager && !isPartnerManager && (
                                      <div className='space-y-12'>
-                                        {fullWidthHiddenItems.map((item) => (
-                                            <div key={item.id} className="flex justify-center">
-                                                <HiddenDisplayWrapper item={item} isFullWidth={true} />
-                                            </div>
-                                        ))}
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                                             {gridHiddenItems.map((item) => (
                                                 <HiddenDisplayWrapper key={item.id} item={item} isFullWidth={false} />
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                                {!isLoadingData && isStaffManager && (
+                                     <div className='space-y-12'>
+                                        {fullWidthHiddenItems.map((item) => (
+                                            <div key={item.id} className="flex justify-center">
+                                                 <div className="w-full max-w-sm">
+                                                    <HiddenDisplayWrapper item={item} isFullWidth={true} />
+                                                 </div>
+                                            </div>
+                                        ))}
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                                            {gridHiddenItems.map((item) => (
+                                                 <div key={item.id} className="mx-auto w-full max-w-sm">
+                                                    <HiddenDisplayWrapper key={item.id} item={item} isFullWidth={false} />
+                                                 </div>
                                             ))}
                                         </div>
                                     </div>
@@ -640,3 +666,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
