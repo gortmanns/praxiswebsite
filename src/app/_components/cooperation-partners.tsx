@@ -52,9 +52,9 @@ export function CooperationPartnersSection() {
           Unsere ärztlichen Kooperationspartner
         </h2>
         
-        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {isLoadingMedical ? (
-            Array.from({ length: 5 }).map((_, index) => (
+            Array.from({ length: 4 }).map((_, index) => (
                 <Skeleton key={index} className="h-32 w-full rounded-lg" />
             ))
           ) : (
@@ -81,9 +81,9 @@ export function CooperationPartnersSection() {
           Unsere weiteren Partner
         </h3>
         <div className="mt-12 flex justify-center">
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5 lg:w-full">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:w-full">
               {isLoadingOther ? (
-                 Array.from({ length: 5 }).map((_, index) => (
+                 Array.from({ length: 4 }).map((_, index) => (
                     <div key={index} className="w-full sm:w-auto">
                         <Skeleton className="h-32 w-full rounded-lg" />
                     </div>
