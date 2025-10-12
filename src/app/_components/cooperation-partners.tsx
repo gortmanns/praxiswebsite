@@ -49,11 +49,23 @@ export function CooperationPartnersSection() {
     if (partner.name === 'Agnieszka Slezak') {
       return <AgnieszkaSlezakLogo className="h-full w-full object-contain" />;
     }
+     if (partner.name === 'Schemmer & Worni' || partner.name === 'VASC ALLIANCE') {
+        return (
+            <Image
+                src={partner.logoUrl}
+                alt={`${partner.name} Logo`}
+                fill
+                className="object-contain"
+                data-ai-hint={partner.hint}
+            />
+        );
+    }
     return (
         <Image
           src={partner.logoUrl}
           alt={`${partner.name} Logo`}
-          fill
+          width={partner.width || 200}
+          height={partner.height || 60}
           className="object-contain"
           data-ai-hint={partner.hint}
         />
