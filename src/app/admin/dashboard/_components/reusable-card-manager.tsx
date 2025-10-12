@@ -375,22 +375,24 @@ export function ReusableCardManager<T extends BaseCardData>({
                                             </div>
                                         </div>
                                         <div className="bg-red-500/20 text-center text-xs text-red-800 pointer-events-auto flex flex-col justify-end">
-                                            {/* Vertical Slider Area */}
-                                            <div className="flex flex-row items-center justify-center h-full gap-2">
-                                                <div className="h-4/5 flex justify-center">
-                                                    <Slider
-                                                        orientation="vertical"
-                                                        value={[editorCardState.logoY || 0]}
-                                                        onValueChange={(value) => setEditorCardState(prev => ({...prev, logoY: value[0]}))}
-                                                        max={100}
-                                                        min={-100}
-                                                        step={1}
-                                                    />
-                                                </div>
-                                                <div className="text-center text-xs text-white">
-                                                    <div>Vertikale</div>
-                                                    <div>Position</div>
-                                                    <div>{editorCardState.logoY || 0}px</div>
+                                            <div className="h-32">
+                                                {/* Vertical Slider Area */}
+                                                <div className="flex flex-row items-center justify-center h-full gap-2">
+                                                    <div className="h-4/5 flex justify-center">
+                                                        <Slider
+                                                            orientation="vertical"
+                                                            value={[editorCardState.logoY || 0]}
+                                                            onValueChange={(value) => setEditorCardState(prev => ({...prev, logoY: value[0]}))}
+                                                            max={100}
+                                                            min={-100}
+                                                            step={1}
+                                                        />
+                                                    </div>
+                                                    <div className="text-center text-xs text-white">
+                                                        <div>Vertikale</div>
+                                                        <div>Position</div>
+                                                        <div>{editorCardState.logoY || 0}px</div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className="w-full mt-4 h-14" />
