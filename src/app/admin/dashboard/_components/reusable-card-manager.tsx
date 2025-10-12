@@ -299,8 +299,8 @@ export function ReusableCardManager<T extends BaseCardData>({
         const isLast = index === itemsArray.length - 1;
 
         return (
-             <div className="relative border-2 border-orange-500 max-w-sm">
-                <div className="absolute top-0 -left-48 z-10 flex h-full w-44 flex-col items-end justify-center pr-4">
+             <>
+                <div className="absolute top-0 -left-44 z-10 flex h-full w-44 flex-col items-end justify-center pr-4">
                     <div className="flex flex-col gap-2 rounded-md border bg-card p-2 shadow-lg">
                         <div className="grid w-full grid-cols-1 gap-2">
                             <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={isFirst || isEditing} title="Nach oben/links">
@@ -342,7 +342,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                 <div className={cn(isHidden && "grayscale")}>
                      <DisplayCardComponent {...item} />
                 </div>
-            </div>
+            </>
         )
     };
     
@@ -354,7 +354,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                 <div className={cn("mt-8 rounded-lg p-4 border-2 border-blue-500", !isHidden && 'bg-primary')}>
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
                         {items.map((item, index) => (
-                            <div key={item.id}>
+                            <div key={item.id} className="relative">
                                 {renderCardWithControls(item, index, isHidden, items)}
                             </div>
                         ))}
@@ -367,7 +367,7 @@ export function ReusableCardManager<T extends BaseCardData>({
             return (
                 <div className={cn("grid w-full grid-cols-1 gap-8", items.length > 0 && "sm:grid-cols-2")}>
                     {items.map((item, index) => (
-                        <div key={item.id} className={cn("mx-auto flex w-full justify-center border-2 border-yellow-500", items.length % 2 !== 0 && index === items.length - 1 && "sm:col-span-2")}>
+                        <div key={item.id} className={cn("mx-auto flex w-full justify-center border-2 border-yellow-500 relative", items.length % 2 !== 0 && index === items.length - 1 && "sm:col-span-2")}>
                            {renderCardWithControls(item, index, isHidden, items)}
                         </div>
                     ))}
@@ -378,7 +378,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         return (
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 border-2 border-blue-500">
                 {items.map((item, index) => (
-                    <div key={item.id} className="mx-auto flex w-full justify-center border-2 border-green-500">
+                    <div key={item.id} className="mx-auto flex w-full justify-center border-2 border-green-500 relative">
                        {renderCardWithControls(item, index, isHidden, items)}
                     </div>
                 ))}
