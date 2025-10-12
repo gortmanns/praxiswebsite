@@ -21,7 +21,9 @@ const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
                 ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img"],
                 ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src']
             };
-            return { __html: DOMPurify.sanitize(html, config) };
+            // Replace bg-card with bg-background within the HTML string
+            const modifiedHtml = html.replace(/class="([^"]*?)(?:\s+|^)bg-card(?:\s+|$)([^"]*?)"/g, 'class="$1 bg-background $2"');
+            return { __html: DOMPurify.sanitize(modifiedHtml, config) };
         }
         return { __html: '' };
     }, [html]);
