@@ -248,9 +248,10 @@ export function ReusableCardManager<T extends BaseCardData>({
                         onClick={() => handleToggleFullWidth(item)} 
                         disabled={isEditing}
                         title={item.fullWidth ? "Volle Breite deaktivieren" : "Volle Breite aktivieren"}
-                        className={cn(item.fullWidth && "bg-primary/50 hover:bg-primary/60 text-primary-foreground")}
+                        className={cn(item.fullWidth && "bg-primary/80 hover:bg-primary/90 text-primary-foreground")}
                     >
-                        <RectangleHorizontal className="mr-2 h-4 w-4" /> Volle Breite
+                        <RectangleHorizontal className="mr-2 h-4 w-4" />
+                        Volle Breite
                     </Button>
                 )}
                 <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
@@ -371,7 +372,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                         onClick={() => handleToggleFullWidth(item)} 
                         disabled={isEditing}
                         title={item.fullWidth ? "Volle Breite deaktivieren" : "Volle Breite aktivieren"}
-                        className={cn(item.fullWidth && "bg-primary/50 hover:bg-primary/60 text-primary-foreground")}
+                        className={cn(item.fullWidth && "bg-primary/80 hover:bg-primary/90 text-primary-foreground")}
                     >
                         <RectangleHorizontal className="mr-2 h-4 w-4" /> Volle Breite
                     </Button>
