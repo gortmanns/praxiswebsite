@@ -73,7 +73,7 @@ export default function TeamPage() {
               </div>
             ) : (
               fullWidthStaff.map(member => (
-                <div key={member.id} className="mx-auto flex w-full max-w-sm justify-center">
+                <div key={member.id} className="mx-auto flex w-full justify-center">
                     <TeamMemberCard 
                       name={member.name}
                       role={member.role}
