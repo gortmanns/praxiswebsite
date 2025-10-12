@@ -255,7 +255,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         return (
             <div className="flex w-full flex-col sm:flex-row items-center justify-center gap-4">
                 <div className="flex sm:flex-col w-full sm:w-48 order-2 sm:order-1 flex-shrink-0 items-center justify-center gap-2">
-                    <div className="grid grid-cols-2 sm:grid-cols-1 w-full gap-2">
+                    <div className="grid grid-cols-1 w-full gap-2">
                         <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
                             <ChevronLeft className="mr-2 h-4 w-4" /> Nach oben
                         </Button>
@@ -360,7 +360,10 @@ export function ReusableCardManager<T extends BaseCardData>({
     const HiddenDisplayWrapper: React.FC<{ item: T }> = ({ item }) => {
         const itemControls = (
              <div className="mt-2 flex w-full flex-col gap-2">
-                <div className="grid grid-cols-2 gap-2">
+                <div className={cn(
+                    "gap-2",
+                    isStaffManager ? "grid grid-cols-1" : "grid grid-cols-2"
+                )}>
                     <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
                         <Eye className="mr-2 h-4 w-4" /> Einblenden
                     </Button>
