@@ -68,8 +68,8 @@ export function ReusableCardManager<T extends BaseCardData>({
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
-        // Only prepare the state for the editor, don't generate ID or touch the main list
-        setEditorCardState({ ...initialCardState, id: 'new', name: 'Neuer Partner' } as T);
+        // Reset the editor state to a new, empty card without an ID
+        setEditorCardState({ ...initialCardState, id: '', name: 'Neuer Partner' } as T);
     };
 
     const handleCancelEdit = () => {
@@ -146,19 +146,10 @@ export function ReusableCardManager<T extends BaseCardData>({
         setNotification(null);
     
         try {
-            if (editingCardId && !isCreatingNew) {
-                // Update existing card
+            if (isCreatingNew) {
+                 // Create new card
                 const mutableCardData: Partial<T> = { ...editorCardState };
-                delete mutableCardData.createdAt;
-                delete mutableCardData.id;
-    
-                const docRef = doc(firestore, collectionName, editingCardId);
-                await setDoc(docRef, mutableCardData, { merge: true });
-                setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Änderungen erfolgreich gespeichert.' });
-            } else if (isCreatingNew) {
-                // Create new card
-                const mutableCardData: Partial<T> = { ...editorCardState };
-                delete mutableCardData.id; // Remove temporary 'new' id
+                delete mutableCardData.id; // Ensure no ID is present on creation
     
                 const highestOrder = dbData ? dbData.reduce((max, item) => item.order > max ? item.order : max, 0) : 0;
                 
@@ -175,6 +166,16 @@ export function ReusableCardManager<T extends BaseCardData>({
                 await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
     
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: `Neue ${entityName}-Karte erfolgreich erstellt.` });
+            
+            } else if (editingCardId) {
+                // Update existing card
+                const mutableCardData: Partial<T> = { ...editorCardState };
+                delete mutableCardData.createdAt;
+                delete mutableCardData.id;
+    
+                const docRef = doc(firestore, collectionName, editingCardId);
+                await setDoc(docRef, mutableCardData, { merge: true });
+                setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Änderungen erfolgreich gespeichert.' });
             }
             handleCancelEdit();
         } catch (error: any) {
@@ -343,6 +344,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                     "absolute top-0 right-0 bottom-0 left-0 grid grid-cols-8 gap-8 p-4",
                                     "z-0",
                                     "outline-4 outline-dashed outline-lime-500",
+                                    "opacity-0"
                                 )}
                             >
                                 {/* Visual Debug Placeholders */}
