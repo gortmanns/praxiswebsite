@@ -340,11 +340,9 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                    {isEditing && (
-                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted/20 min-h-[550px]">
+                         <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted/20 min-h-[550px] z-0">
                             {/* Editor UI (Blue Background for preview, etc.) */}
-                            <div className="z-0">
-                                <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
-                            </div>
+                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
 
                             {/* Green Debug and Live Preview Overlay */}
                             <div className="pointer-events-none absolute inset-0 z-10 flex items-end justify-center">
@@ -433,3 +431,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    

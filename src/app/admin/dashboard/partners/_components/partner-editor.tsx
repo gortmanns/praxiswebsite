@@ -138,6 +138,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2">
+                {/* Left side: Editor Form */}
                 <div className="space-y-6 p-4">
                     <div className="space-y-2">
                         <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
@@ -175,7 +176,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                     </div>
                 </div>
 
-                {/* Blue Preview Area */}
+                {/* Right side: Live Preview Area */}
                  <div className="p-4 bg-primary rounded-r-lg">
                     <h3 className="text-xl font-bold text-primary-foreground mb-2 text-center">Live Vorschau</h3>
                     <div className="space-y-2 w-[70%] mx-auto">
@@ -193,57 +194,43 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 </div>
             </div>
 
-            {/* Green Overlay - Logical Structure */}
-            <div className="pointer-events-none absolute inset-0 z-10 flex items-end justify-center">
-                 <div className="w-full max-w-full">
-                    <div className="grid grid-cols-8 gap-x-2 bg-green-500/20 p-1 border border-green-500">
-                        <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
-                        <div className="col-span-2 bg-blue-500/20 text-center text-xs text-blue-800">Editor</div>
-                        <div className="col-span-2 bg-yellow-500/20 text-center text-xs text-yellow-800">Leer</div>
-                        <div className="col-span-2 bg-purple-500/20 text-center text-xs text-purple-800">Vorschau</div>
-                        <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
-                        
-                        {/* Live Preview Card */}
-                        <div className="col-start-6 col-span-2 pointer-events-auto z-10">
-                            <PartnerCard {...cardData} />
-                            <div className="mt-2">
-                                <Slider
-                                    id="logoX"
-                                    value={[cardData.logoX || 0]}
-                                    onValueChange={(value) => handleSliderChange('logoX', value)}
-                                    min={-100}
-                                    max={100}
-                                    step={1}
-                                />
-                                <div className="text-center text-xs mt-1">
-                                    <p>Horizontale Position</p>
-                                    <p>{cardData.logoX || 0}px</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Vertical Slider */}
-                        <div className="col-start-8 col-span-1 flex items-center justify-start h-full pointer-events-auto z-10 pl-2">
-                             <div className="flex items-center gap-2">
-                                <Slider
-                                    id="logoY"
-                                    orientation="vertical"
-                                    value={[cardData.logoY || 0]}
-                                    onValueChange={(value) => handleSliderChange('logoY', value)}
-                                    min={-100}
-                                    max={100}
-                                    step={1}
-                                    className="h-32"
-                                />
-                                <div className="text-center text-xs">
-                                  <p>Vertikale</p>
-                                  <p>Position</p>
-                                  <p>{cardData.logoY || 0}px</p>
-                                </div>
-                            </div>
-                        </div>
+            {/* This is the logical container that gets overlayed */}
+            <div className="col-start-6 col-span-2 pointer-events-auto z-20">
+                <PartnerCard {...cardData} />
+                <div className="mt-2">
+                    <Slider
+                        id="logoX"
+                        value={[cardData.logoX || 0]}
+                        onValueChange={(value) => handleSliderChange('logoX', value)}
+                        min={-100}
+                        max={100}
+                        step={1}
+                    />
+                    <div className="text-center text-xs mt-1">
+                        <p>Horizontale Position</p>
+                        <p>{cardData.logoX || 0}px</p>
                     </div>
-                 </div>
+                </div>
+            </div>
+
+            <div className="col-start-8 col-span-1 flex items-center justify-start h-full pointer-events-auto z-20 pl-2">
+                <div className="flex items-center gap-2">
+                    <Slider
+                        id="logoY"
+                        orientation="vertical"
+                        value={[cardData.logoY || 0]}
+                        onValueChange={(value) => handleSliderChange('logoY', value)}
+                        min={-100}
+                        max={100}
+                        step={1}
+                        className="h-32"
+                    />
+                    <div className="text-center text-xs">
+                        <p>Vertikale</p>
+                        <p>Position</p>
+                        <p>{cardData.logoY || 0}px</p>
+                    </div>
+                </div>
             </div>
 
 
@@ -291,3 +278,5 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         </>
     );
 };
+
+    
