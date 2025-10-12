@@ -9,7 +9,7 @@ import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionRefe
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, RectangleHorizontal } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, RectangleHorizontal, ArrowUp, ArrowDown } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
@@ -226,17 +226,19 @@ export function ReusableCardManager<T extends BaseCardData>({
     const fullWidthHiddenItems = isStaffManager ? hiddenItems.filter(item => item.fullWidth) : [];
     const gridHiddenItems = isStaffManager ? hiddenItems.filter(item => !item.fullWidth) : hiddenItems;
     
-    const DisplayWrapper: React.FC<{ item: T, index: number, totalVisible: number }> = ({ item, index, totalVisible }) => {
-        const moveUpLabel = isPartnerManager ? "Links" : "Nach oben";
-        const moveDownLabel = isPartnerManager ? "Rechts" : "Nach unten";
+    const DisplayWrapper: React.FC<{ item: T, index: number, totalVisible: number, isFullWidth: boolean }> = ({ item, index, totalVisible, isFullWidth }) => {
+        const moveUpLabel = isFullWidth ? "Nach oben" : "Nach links";
+        const moveDownLabel = isFullWidth ? "Nach unten" : "Nach rechts";
+        const MoveUpIcon = isFullWidth ? ArrowUp : ChevronLeft;
+        const MoveDownIcon = isFullWidth ? ArrowDown : ChevronRight;
 
         const controlButtons = (
              <div className="grid grid-cols-1 w-full gap-2">
                 <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
-                    <ChevronLeft className="mr-2 h-4 w-4" /> {moveUpLabel}
+                    <MoveUpIcon className="mr-2 h-4 w-4" /> {moveUpLabel}
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === totalVisible - 1 || isEditing}>
-                    {moveDownLabel} <ChevronRight className="ml-2 h-4 w-4" />
+                    {moveDownLabel} <MoveDownIcon className="ml-2 h-4 w-4" />
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
                     <EyeOff className="mr-2 h-4 w-4" /> Ausblenden
@@ -296,7 +298,7 @@ export function ReusableCardManager<T extends BaseCardData>({
             return (
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
                     {partners.map((partner, index) => (
-                        <DisplayWrapper key={partner.id} item={partner} index={baseIndex + index} totalVisible={totalVisible} />
+                        <DisplayWrapper key={partner.id} item={partner} index={baseIndex + index} totalVisible={totalVisible} isFullWidth={false} />
                     ))}
                 </div>
             );
@@ -307,24 +309,24 @@ export function ReusableCardManager<T extends BaseCardData>({
                 {count === 1 && (
                     <>
                         <div className="col-span-3"></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={baseIndex} totalVisible={totalVisible} /></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={baseIndex} totalVisible={totalVisible} isFullWidth={false} /></div>
                         <div className="col-span-3"></div>
                     </>
                 )}
                 {count === 2 && (
                     <>
                         <div className="col-span-2"></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={baseIndex} totalVisible={totalVisible} /></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[1]} index={baseIndex + 1} totalVisible={totalVisible} /></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={baseIndex} totalVisible={totalVisible} isFullWidth={false}/></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[1]} index={baseIndex + 1} totalVisible={totalVisible} isFullWidth={false}/></div>
                         <div className="col-span-2"></div>
                     </>
                 )}
                 {count === 3 && (
                     <>
                         <div className="col-span-1"></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={baseIndex} totalVisible={totalVisible} /></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[1]} index={baseIndex + 1} totalVisible={totalVisible} /></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[2]} index={baseIndex + 2} totalVisible={totalVisible} /></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={baseIndex} totalVisible={totalVisible} isFullWidth={false}/></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[1]} index={baseIndex + 1} totalVisible={totalVisible} isFullWidth={false}/></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[2]} index={baseIndex + 2} totalVisible={totalVisible} isFullWidth={false}/></div>
                         <div className="col-span-1"></div>
                     </>
                 )}
@@ -356,7 +358,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     };
 
 
-    const HiddenDisplayWrapper: React.FC<{ item: T }> = ({ item }) => {
+    const HiddenDisplayWrapper: React.FC<{ item: T, isFullWidth: boolean }> = ({ item, isFullWidth }) => {
         const itemControls = (
             <div className="grid grid-cols-1 w-full gap-2">
                 <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
@@ -577,12 +579,12 @@ export function ReusableCardManager<T extends BaseCardData>({
                             <div className='space-y-12'>
                                 {fullWidthVisibleItems.map((item, index) => (
                                     <div key={item.id} className="flex justify-center">
-                                         <DisplayWrapper item={item} index={index} totalVisible={fullWidthVisibleItems.length} />
+                                         <DisplayWrapper item={item} index={index} totalVisible={fullWidthVisibleItems.length} isFullWidth={true} />
                                     </div>
                                 ))}
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                                     {gridVisibleItems.map((item, index) => (
-                                        <DisplayWrapper key={item.id} item={item} index={index} totalVisible={gridVisibleItems.length} />
+                                        <DisplayWrapper key={item.id} item={item} index={index} totalVisible={gridVisibleItems.length} isFullWidth={false} />
                                     ))}
                                 </div>
                             </div>
@@ -598,7 +600,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 {!isLoadingData && isPartnerManager && (
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                                         {gridHiddenItems.map((item) => (
-                                            <HiddenDisplayWrapper key={item.id} item={item} />
+                                            <HiddenDisplayWrapper key={item.id} item={item} isFullWidth={false} />
                                         ))}
                                     </div>
                                 )}
@@ -606,12 +608,12 @@ export function ReusableCardManager<T extends BaseCardData>({
                                      <div className='space-y-12'>
                                         {fullWidthHiddenItems.map((item) => (
                                             <div key={item.id} className="flex justify-center">
-                                                <HiddenDisplayWrapper item={item} />
+                                                <HiddenDisplayWrapper item={item} isFullWidth={true} />
                                             </div>
                                         ))}
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                                             {gridHiddenItems.map((item) => (
-                                                <HiddenDisplayWrapper key={item.id} item={item} />
+                                                <HiddenDisplayWrapper key={item.id} item={item} isFullWidth={false} />
                                             ))}
                                         </div>
                                     </div>
@@ -640,3 +642,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
