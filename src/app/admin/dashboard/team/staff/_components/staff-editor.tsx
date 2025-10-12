@@ -144,7 +144,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 </div>
                              ) : (
                                 <div className="relative h-full w-full rounded-lg bg-accent flex items-center justify-center">
-                                    <button className="absolute top-4 right-4 text-accent-foreground/50 hover:text-accent-foreground">
+                                    <button className="absolute top-4 right-4 text-white hover:text-white/80">
                                         <Pencil className="h-10 w-10" />
                                     </button>
                                 </div>
