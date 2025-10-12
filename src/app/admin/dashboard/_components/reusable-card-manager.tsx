@@ -289,45 +289,19 @@ export function ReusableCardManager<T extends BaseCardData>({
     };
 
     const PartnerRowGrid: React.FC<{ partners: T[], totalVisible: number, baseIndex: number }> = ({ partners, totalVisible, baseIndex }) => {
-        const count = partners.length;
-        if (count === 0) return null;
-
-        if (count === 4) {
-            return (
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                    {partners.map((partner, index) => (
-                        <DisplayWrapper key={partner.id} item={partner} index={baseIndex + index} totalVisible={totalVisible} isFullWidth={false} />
-                    ))}
-                </div>
-            );
-        }
-        
+        if (!partners || partners.length === 0) return null;
         return (
-            <div className="grid grid-cols-8 gap-8">
-                {count === 1 && (
-                    <>
-                        <div className="col-span-3"></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={baseIndex} totalVisible={totalVisible} isFullWidth={false} /></div>
-                        <div className="col-span-3"></div>
-                    </>
-                )}
-                {count === 2 && (
-                    <>
-                        <div className="col-span-2"></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={baseIndex} totalVisible={totalVisible} isFullWidth={false}/></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[1]} index={baseIndex + 1} totalVisible={totalVisible} isFullWidth={false}/></div>
-                        <div className="col-span-2"></div>
-                    </>
-                )}
-                {count === 3 && (
-                    <>
-                        <div className="col-span-1"></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={baseIndex} totalVisible={totalVisible} isFullWidth={false}/></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[1]} index={baseIndex + 1} totalVisible={totalVisible} isFullWidth={false}/></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[2]} index={baseIndex + 2} totalVisible={totalVisible} isFullWidth={false}/></div>
-                        <div className="col-span-1"></div>
-                    </>
-                )}
+            <div className="flex flex-wrap justify-center gap-8">
+                {partners.map((partner, index) => (
+                    <div key={partner.id} className="w-full sm:w-1/2 lg:w-1/4 lg:basis-1/4 grow-0 shrink-0 px-4">
+                        <DisplayWrapper
+                            item={partner}
+                            index={baseIndex + index}
+                            totalVisible={totalVisible}
+                            isFullWidth={false}
+                        />
+                    </div>
+                ))}
             </div>
         );
     };
@@ -585,8 +559,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                         {!isLoadingData && isStaffManager && (
                             <div className='space-y-12'>
                                 {fullWidthVisibleItems.map((item, index) => (
-                                    <div key={item.id} className="flex justify-center border-2 border-red-500">
-                                         <div className="w-full max-w-sm border-2 border-blue-500">
+                                    <div key={item.id} className="flex justify-center">
+                                         <div className="w-full max-w-sm">
                                              <DisplayWrapper item={item} index={index} totalVisible={fullWidthVisibleItems.length} isFullWidth={true} />
                                          </div>
                                     </div>
@@ -666,3 +640,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
