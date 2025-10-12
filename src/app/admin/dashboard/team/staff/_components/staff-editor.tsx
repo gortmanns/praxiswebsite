@@ -160,11 +160,11 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 </div>
                             </div>
                         </div>
-                        <div className="relative w-full max-w-[280px] mx-auto h-full rounded-lg bg-accent flex items-center justify-center">
-                            <Button
+                        <div className="relative w-full max-w-[280px] mx-auto h-full rounded-lg bg-accent">
+                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-16 w-16 text-accent-foreground/50 hover:text-accent-foreground hover:bg-transparent"
+                                className="absolute top-2 right-2 h-16 w-16 text-white/50 hover:text-white hover:bg-transparent"
                                 onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
                             >
                                 <Pencil className="h-12 w-12" />
@@ -220,5 +220,3 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
         </>
     );
 }
-
-    
