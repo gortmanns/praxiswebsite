@@ -188,7 +188,7 @@ export function ReusableCardManager<T extends BaseCardData>({
             return (
                 <div className="w-full">
                     <div className="flex flex-col gap-2">
-                         <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                         <div className="w-full">
                             <DisplayCardComponent {...item} />
                          </div>
                         <div className="mt-2 flex w-full flex-col gap-2">
@@ -329,20 +329,28 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                     {isEditing && (
-                        <div className="rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8 mb-12">
-                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                             <div className="rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8">
+                                <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                             </div>
+                              <div className="relative">
+                                <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
+                                <DisplayCardComponent {...editorCardState} />
+                             </div>
                         </div>
                     )}
 
                     {isEditing && isPartnerManager && (
-                         <div
-                            className="absolute left-0 right-0 z-50 rounded-lg bg-primary p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8"
-                            style={{ outline: '3px solid limegreen' }}
+                        <div
+                            className={cn(
+                                "absolute left-0 right-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 bg-primary p-4 rounded-lg",
+                                "-z-10 opacity-100"
+                            )}
+                             style={{ outline: '3px solid limegreen' }}
                         >
-                            <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%] z-50">
-                                <p className="text-sm font-semibold text-primary-foreground mb-2 text-center">Live-Vorschau</p>
-                                <DisplayCardComponent {...editorCardState} />
-                            </div>
+                           <div className="lg:col-start-4">
+                             <DisplayCardComponent {...editorCardState} />
+                           </div>
                         </div>
                     )}
 
