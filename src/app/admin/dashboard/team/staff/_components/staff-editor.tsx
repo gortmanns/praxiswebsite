@@ -4,7 +4,6 @@
 import React, { useState, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { TeamMemberCard } from '@/app/team/_components/team-member-card';
 import { Button } from '@/components/ui/button';
 import { ImageUp, Languages, Pencil } from 'lucide-react';
@@ -17,6 +16,7 @@ import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_componen
 import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/image-crop-dialog';
 import { projectImages } from '@/app/admin/dashboard/partners/project-images';
 import { LanguageSelectDialog } from '@/app/admin/dashboard/team/doctors/_components/language-select-dialog';
+import { VitaEditorDialog } from '@/app/admin/dashboard/team/doctors/_components/vita-editor-dialog';
 
 
 export interface StaffMember {
@@ -45,7 +45,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [dialogState, setDialogState] = useState<{
-        type: 'imageSource' | 'imageLibrary' | 'imageCrop' | 'language' | null;
+        type: 'imageSource' | 'imageLibrary' | 'imageCrop' | 'language' | 'vita' | null;
         data: any;
     }>({ type: null, data: {} });
 
@@ -84,11 +84,16 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
         setDialogState({ type: null, data: {} });
     };
 
+    const handleVitaSave = (newVita: string) => {
+        onUpdate({ ...cardData, backsideContent: newVita });
+        setDialogState({ type: null, data: {} });
+    };
+
     const isNewCard = !cardData.id;
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                 <div className="md:col-span-1 space-y-6 rounded-lg border p-6">
                     <div className="space-y-2">
                         <Label htmlFor="name">Name</Label>
@@ -113,18 +118,13 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="backsideContent">Text für Kartenrückseite</Label>
-                        <Textarea
-                            id="backsideContent"
-                            value={cardData.backsideContent || ''}
-                            onChange={(e) => handleInputChange('backsideContent', e.target.value)}
-                            placeholder="Geben Sie hier den Text für die Rückseite ein (einfaches HTML ist erlaubt)..."
-                            rows={6}
-                        />
+                         <Button variant="outline" onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}>
+                            <Pencil className="mr-2 h-4 w-4" /> Text der Rückseite bearbeiten
+                        </Button>
                     </div>
                 </div>
 
-                <div className="md:col-span-2 relative">
+                <div className="md:col-span-1 relative">
                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="w-full max-w-sm mx-auto">
@@ -144,7 +144,10 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 </div>
                              ) : (
                                 <div className="relative h-full w-full rounded-lg bg-accent flex items-center justify-center">
-                                    <button className="absolute top-4 right-4 text-white hover:text-white/80">
+                                    <button 
+                                        onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
+                                        className="absolute top-4 right-4 text-white hover:text-white/80"
+                                    >
                                         <Pencil className="h-10 w-10" />
                                     </button>
                                 </div>
@@ -190,6 +193,14 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                     onOpenChange={() => setDialogState({ type: null, data: {} })} 
                     initialLanguages={cardData.languages || []} 
                     onSave={(langs) => handleInputChange('languages', langs)} 
+                />
+            )}
+            {dialogState.type === 'vita' && (
+                <VitaEditorDialog
+                    isOpen={true}
+                    onOpenChange={() => setDialogState({ type: null, data: {} })}
+                    initialValue={dialogState.data.initialValue || ''}
+                    onSave={handleVitaSave}
                 />
             )}
         </>
