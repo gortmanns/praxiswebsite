@@ -316,8 +316,11 @@ export function ReusableCardManager<T extends BaseCardData>({
                 <div></div>
                 <div className="col-span-2"></div>
                 <div className="col-span-2 pointer-events-auto flex flex-col justify-end h-full">
-                     <div className="space-y-2 w-full mx-auto mb-4 h-full flex flex-col justify-end">
-                       <div className="space-y-2 w-full mx-auto mb-4 h-full flex flex-col justify-end">
+                    <PartnerCard {...editorCardState} />
+                </div>
+                <div className="col-span-2 pointer-events-auto flex flex-col justify-end h-full">
+                    <div className="space-y-2 w-full mx-auto mb-4 h-full flex flex-col justify-end">
+                       <div className="space-y-2 w-full mx-auto mb-4">
                             <div className="text-center text-primary-foreground">
                                 <label htmlFor="logoScale" className="text-sm">Grösse: {editorCardState.logoScale || 100}%</label>
                                 <Slider
@@ -331,9 +334,6 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </div>
                         </div>
                     </div>
-                    <PartnerCard {...editorCardState} />
-                </div>
-                <div className="col-span-2 pointer-events-auto flex flex-col justify-end h-full">
                     <div className="flex flex-col items-center justify-center w-full pointer-events-auto mt-4">
                         <div className="w-full px-2">
                             <Slider
@@ -421,14 +421,9 @@ export function ReusableCardManager<T extends BaseCardData>({
                                         <Info className="h-4 w-4" />
                                         <AlertTitle>Bearbeitungsmodus</AlertTitle>
                                         <AlertDescription>
-                                            {isPartnerManager
-                                                ? (isCreatingNew
-                                                    ? "Sie können jetzt die Einstellungen für die neue Karte festlegen. Das Logo sollte idealerweise in der Grösse 330x130 Pixel und als .jpg oder .png vorliegen. Die Feinjustierung der angezeigten Grösse und Positionierung innerhalb der Karte ist über die Schieberegler möglich."
-                                                    : 'Die Werte der zu bearbeitenden Karte wurden übernommen und können nun angepasst werden. Wenn das Logo ersetzt werden soll, dann sollte dieses idealerweise in der Grösse 330x130 Pixel und als .jpg oder .png vorliegen. Erst mit dem Klicken auf "Änderungen speichern" werden diese in die Datenbank übernommen. Mit Abbrechen wird alles zurückgenommen und die Karte behält ihr ursprüngliches Aussehen.')
-                                                : (isCreatingNew
-                                                    ? "Sie erstellen eine neue Karte. Füllen Sie die Felder aus und speichern Sie."
-                                                    : "Sie bearbeiten eine bestehende Karte. Nehmen Sie Ihre Änderungen vor und speichern Sie.")
-                                            }
+                                            {isCreatingNew
+                                                ? "Sie können jetzt die Einstellungen für die neue Karte festlegen. Das Logo sollte idealerweise in der Grösse 330x130 Pixel und als .jpg oder .png vorliegen. Die Feinjustierung der angezeigten Grösse und Positionierung innerhalb der Karte ist über die Schieberegler möglich."
+                                                : 'Die Werte der zu bearbeitenden Karte wurden übernommen und können nun angepasst werden. Wenn das Logo ersetzt werden soll, dann sollte dieses idealerweise in der Grösse 330x130 Pixel und als .jpg oder .png vorliegen. Erst mit dem Klicken auf "Änderungen speichern" werden diese in die Datenbank übernommen. Mit Abbrechen wird alles zurückgenommen und die Karte behält ihr ursprüngliches Aussehen.'}
                                         </AlertDescription>
                                     </Alert>
                                 )}
@@ -518,7 +513,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
-
-    
