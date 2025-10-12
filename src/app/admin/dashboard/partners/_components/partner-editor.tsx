@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useRef, useEffect, type ReactNode } from 'react';
+import React, { useState, useRef, type ReactNode } from 'react';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
@@ -84,12 +84,10 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 const imageRef = storageRef(storage, imagePath);
             
                 try {
-                    // Upload the original (un-cropped) image data URL
                     const snapshot = await uploadString(imageRef, dataUrl, 'data_url');
                     const downloadURL = await getDownloadURL(snapshot.ref);
                     
-                    // Update state with the new image URL immediately
-                    onUpdate({ ...cardData, imageUrl: downloadURL });
+                    onUpdate({ ...cardData, imageUrl: downloadURL, logoHtml: '' });
                 
                 } catch (error) {
                     console.error("Error uploading image: ", error);
@@ -102,8 +100,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
     };
 
     const handleImageLibrarySelect = (imageUrl: string) => {
-        // Directly update the imageUrl, no cropping.
-        onUpdate({ ...cardData, imageUrl });
+        onUpdate({ ...cardData, imageUrl, logoHtml: '' });
         setDialogState({ type: null, data: {} });
     };
 
@@ -163,7 +160,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 {/* Right side: Visual Live Preview Area */}
                  <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[300px]">
                     <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
-                    <div className="space-y-2 w-[70%] mx-auto">
+                    <div className="space-y-2 w-[70%] mx-auto z-20 relative">
                         <div className="text-center text-primary-foreground">
                             <label htmlFor="logoScale" className="text-sm">Grösse: {cardData.logoScale || 100}%</label>
                             <Slider
@@ -215,3 +212,5 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         </div>
     );
 };
+
+    

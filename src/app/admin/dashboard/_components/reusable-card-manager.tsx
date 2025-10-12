@@ -310,7 +310,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     };
 
     const partnerEditorOverlay = isPartnerManager ? (
-        <div className="pointer-events-none absolute inset-0 z-0">
+        <div className="pointer-events-none absolute inset-0 z-10">
             <div className="grid grid-cols-8 gap-x-2 h-full">
                 <div></div>
                 <div className="col-span-2"></div>
@@ -501,3 +501,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
