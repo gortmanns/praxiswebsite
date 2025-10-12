@@ -89,7 +89,7 @@ export default function TeamPage() {
               )}
 
               {isLoadingStaff ? (
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                     {Array.from({ length: 4 }).map((_, index) => (
                         <div key={index} className="mx-auto flex w-full justify-center">
                             <Skeleton key={index} className="h-[500px] w-full max-w-sm mx-auto" />
@@ -97,7 +97,7 @@ export default function TeamPage() {
                     ))}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                   {gridStaff.map((member) => (
                     <div key={member.id} className="mx-auto flex w-full justify-center">
                       <TeamMemberCard 
