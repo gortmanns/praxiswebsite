@@ -126,19 +126,24 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
 
                 <div className="md:col-span-2 relative">
                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                    <TeamMemberCard
-                        name={cardData.name}
-                        role={cardData.role}
-                        role2={cardData.role2}
-                        imageUrl={cardData.imageUrl}
-                        imageHint="staff portrait preview"
-                        languages={cardData.languages}
-                        backsideContent={
-                            cardData.backsideContent ? (
-                                <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
-                            ) : null
-                        }
-                    />
+                    <div className="grid grid-cols-2">
+                        <div>
+                            <TeamMemberCard
+                                name={cardData.name}
+                                role={cardData.role}
+                                role2={cardData.role2}
+                                imageUrl={cardData.imageUrl}
+                                imageHint="staff portrait preview"
+                                languages={cardData.languages}
+                                backsideContent={
+                                    cardData.backsideContent ? (
+                                        <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
+                                    ) : null
+                                }
+                            />
+                        </div>
+                        <div></div>
+                    </div>
                 </div>
             </div>
 
