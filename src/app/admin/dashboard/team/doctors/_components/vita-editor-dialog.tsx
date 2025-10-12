@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
-import { Bold, Italic, List, Minus, Palette, Code2, Underline as UnderlineIcon, Indent, Outdent } from 'lucide-react';
+import { Bold, Italic, List, Minus, Palette, Code2, Underline as UnderlineIcon, Indent, Outdent, AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
 import { Color } from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import {
@@ -28,6 +28,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import TextAlign from '@tiptap/extension-text-align';
 
 // Custom Indent Extension
 const IndentExtension = Extension.create({
@@ -219,6 +220,38 @@ const MenuBar = ({ editor, isHtmlMode, onHtmlModeToggle }: { editor: Editor | nu
       </Toggle>
 
       <Separator orientation="vertical" className="h-6 mx-1" />
+      
+      {/* Group 2.5: Alignment */}
+       <Toggle
+        size="sm"
+        pressed={editor.isActive({ textAlign: 'left' })}
+        onPressedChange={() => editor.chain().focus().setTextAlign('left').run()}
+        disabled={isHtmlMode}
+        title="Linksbündig"
+      >
+        <AlignLeft className="h-4 w-4" />
+      </Toggle>
+       <Toggle
+        size="sm"
+        pressed={editor.isActive({ textAlign: 'center' })}
+        onPressedChange={() => editor.chain().focus().setTextAlign('center').run()}
+        disabled={isHtmlMode}
+        title="Zentriert"
+      >
+        <AlignCenter className="h-4 w-4" />
+      </Toggle>
+      <Toggle
+        size="sm"
+        pressed={editor.isActive({ textAlign: 'right' })}
+        onPressedChange={() => editor.chain().focus().setTextAlign('right').run()}
+        disabled={isHtmlMode}
+        title="Rechtsbündig"
+      >
+        <AlignRight className="h-4 w-4" />
+      </Toggle>
+
+
+      <Separator orientation="vertical" className="h-6 mx-1" />
 
       {/* Group 3: Structure */}
       <Toggle
@@ -300,6 +333,9 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ isOpen, onOp
       Color.configure({ types: ['textStyle'] }),
       Small,
       IndentExtension,
+      TextAlign.configure({
+        types: ['paragraph', 'heading'],
+      }),
     ],
     content: initialValue,
     editorProps: {

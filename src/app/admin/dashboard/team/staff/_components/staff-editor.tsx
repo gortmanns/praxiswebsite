@@ -68,9 +68,10 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
     };
 
     const handleCropComplete = async (croppedImageUrl: string) => {
+        setDialogState({ type: null, data: {} });
         if (!storage) {
             toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
-            return setDialogState({ type: null, data: {} });
+            return;
         }
 
         const imagePath = `staff/${uuidv4()}.jpg`;
@@ -84,7 +85,6 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
             console.error("Error uploading image: ", error);
             toast({ variant: 'destructive', title: 'Upload-Fehler', description: 'Das Bild konnte nicht hochgeladen werden.' });
         }
-        setDialogState({ type: null, data: {} });
     };
 
     const handleVitaSave = (newVita: string) => {
@@ -168,8 +168,8 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 <Pencil className="h-10 w-10" />
                             </button>
                             {cardData.backsideContent ? (
-                                <div className="h-full w-full p-6 text-accent-foreground text-center text-lg overflow-auto">
-                                    <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
+                                <div className="h-full w-full p-6 text-left overflow-auto">
+                                    <div className="prose prose-sm dark:prose-invert text-background max-w-none" dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
                                 </div>
                              ) : null}
                         </div>
