@@ -2,13 +2,12 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ColorPaletteDemo } from '@/app/_components/color-palette-demo';
 import { CheckCircle, AlertCircle, Info, XCircle } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function VisualDesignPage() {
   return (
     <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
         <div className="w-full">
-            <h2 className="text-2xl font-semibold leading-none tracking-tight mb-4">Überblick über die Design Elemente</h2>
+            <h2 className="font-headline text-2xl font-bold tracking-tight text-primary mb-4">Überblick über die Design Elemente</h2>
             <div className="space-y-4">
                 <Alert variant="info">
                     <Info className="h-4 w-4" />
