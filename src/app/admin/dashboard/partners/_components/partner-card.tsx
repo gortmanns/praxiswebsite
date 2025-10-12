@@ -33,9 +33,10 @@ const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
 };
 
 
-export const PartnerCard: React.FC<Partner> = (props) => {
+export const PartnerCard = React.forwardRef<HTMLAnchorElement, Partner>((props, ref) => {
     return (
         <Link
+            ref={ref}
             href={props.websiteUrl || '#'}
             target={props.openInNewTab ? '_blank' : '_self'}
             rel="noopener noreferrer"
@@ -47,4 +48,6 @@ export const PartnerCard: React.FC<Partner> = (props) => {
             <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
         </Link>
     );
-};
+});
+
+PartnerCard.displayName = 'PartnerCard';

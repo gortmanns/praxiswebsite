@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
@@ -12,6 +12,10 @@ import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Sav
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
+import { useElementSize } from '@/hooks/use-element-size';
+import { PartnerCard } from '../partners/_components/partner-card';
+import { DoctorCard } from '../../team/doctors/_components/doctor-editor';
+
 
 export interface BaseCardData {
     id: string;
@@ -26,8 +30,8 @@ interface ReusableCardManagerProps<T extends BaseCardData> {
     pageTitle: string;
     pageDescription: string;
     initialCardState: Omit<T, 'id' | 'order' | 'createdAt'>;
-    DisplayCardComponent: React.ComponentType<T>;
-    EditorCardComponent: React.ComponentType<{ cardData: T; onUpdate: (updatedData: T) => void }>;
+    DisplayCardComponent: React.ForwardRefExoticComponent<any & React.RefAttributes<any>>;
+    EditorCardComponent: React.ComponentType<{ cardData: T; onUpdate: (updatedData: T) => void; livePreviewSize: {width: number, height: number} | null; }>;
     entityName: string;
 }
 
@@ -56,6 +60,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     const [editorCardState, setEditorCardState] = useState<T>({ ...initialCardState, id: '', order: 0 } as T);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
 
+    const [sourceCardRef, sourceCardSize] = useElementSize();
 
     const isEditing = editingCardId !== null || isCreatingNew;
 
@@ -69,7 +74,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         setEditingCardId(null);
         setIsCreatingNew(true);
         const newCardId = doc(collection(firestore!, collectionName)).id;
-        setEditorCardState({ ...initialCardState, id: newCardId } as T);
+        setEditorCardState({ ...initialCardState, id: newCardId, name: 'Neuer Partner' } as T);
     };
 
     const handleCancelEdit = () => {
@@ -85,7 +90,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         const currentIndex = visibleItems.findIndex(item => item.id === cardId);
         
         let item1: T, item2: T;
-
+        
         if (direction === 'up' && currentIndex > 0) {
             item1 = visibleItems[currentIndex];
             item2 = visibleItems[currentIndex - 1];
@@ -183,11 +188,13 @@ export function ReusableCardManager<T extends BaseCardData>({
     const isPartnerManager = collectionName.toLowerCase().includes('partner');
     
     const DisplayWrapper: React.FC<{ item: T, index: number }> = ({ item, index }) => {
+        const isFirstVisible = index === 0;
+
         if (isPartnerManager) {
             return (
                 <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
                     <div className="flex flex-col gap-2">
-                        <DisplayCardComponent {...item} />
+                        <DisplayCardComponent ref={isFirstVisible ? sourceCardRef : null} {...item} />
                         <div className="mt-2 flex w-full flex-col gap-2">
                             <div className="grid grid-cols-2 gap-2">
                                 <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
@@ -329,7 +336,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                         <div 
                             className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12 bg-muted/20"
                         >
-                           <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                           <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} livePreviewSize={sourceCardSize} />
                             <Alert variant="info" className="mt-8">
                                 <Info className="h-4 w-4" />
                                 <AlertTitle>Bearbeitungsmodus</AlertTitle>

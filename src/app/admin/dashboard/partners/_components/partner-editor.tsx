@@ -18,6 +18,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Code2, ImageUp } from 'lucide-react';
 import { projectImages } from '../project-images';
 import { Slider } from '@/components/ui/slider';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export interface Partner {
     id: string;
@@ -38,6 +39,7 @@ export interface Partner {
 interface PartnerEditorProps {
     cardData: Partner;
     onUpdate: (updatedData: Partner) => void;
+    livePreviewSize: { width: number; height: number } | null;
 }
 
 const generateLogoHtml = (imageUrl: string | undefined, name: string, scale: number = 100, x: number = 0, y: number = 0): string => {
@@ -49,7 +51,7 @@ const generateLogoHtml = (imageUrl: string | undefined, name: string, scale: num
 };
 
 
-export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate }) => {
+export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate, livePreviewSize }) => {
     const { toast } = useToast();
     const storage = useStorage();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -60,7 +62,15 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
     }>({ type: null, data: {} });
 
     const handleInputChange = (field: keyof Partner, value: string | boolean | number) => {
-        onUpdate({ ...cardData, [field]: value });
+        const newCardData = { ...cardData, [field]: value };
+        const newHtml = generateLogoHtml(
+            newCardData.imageUrl,
+            newCardData.name,
+            newCardData.logoScale,
+            newCardData.logoX,
+            newCardData.logoY
+        );
+        onUpdate({ ...newCardData, logoHtml: newHtml });
     };
     
     const handleSliderChange = (field: 'logoScale' | 'logoX' | 'logoY', value: number[]) => {
@@ -116,7 +126,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
     };
     
     const handleHtmlSave = (newHtml: string) => {
-        onUpdate({ ...cardData, logoHtml: newHtml });
+        onUpdate({ ...cardData, logoHtml: newHtml, imageUrl: '' }); // Clear imageUrl if HTML is manually edited
         setDialogState({ type: null, data: {} });
     }
 
@@ -131,11 +141,16 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         return { ...cardData, logoHtml: newHtml };
     }, [cardData]);
 
+    const livePreviewStyle: React.CSSProperties = livePreviewSize ? {
+        width: `${livePreviewSize.width}px`,
+        height: `${livePreviewSize.height}px`,
+    } : {};
+
 
     return (
         <>
-            <div className="space-y-6 rounded-lg border p-6 mb-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div className="space-y-6">
                     <div className="space-y-2">
                         <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
                         <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
@@ -156,60 +171,59 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                             </div>
                         </div>
                     </div>
-                </div>
-                 <div className="flex items-center gap-4 pt-4">
-                    <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })}>
-                        <ImageUp className="mr-2 h-4 w-4" /> Logo wählen
-                    </Button>
-                    <Button variant="secondary" onClick={() => setDialogState({ type: 'htmlEditor', data: {} })}>
-                        <Code2 className="mr-2 h-4 w-4" /> HTML bearbeiten
-                    </Button>
-                </div>
-            </div>
+                     <div className="flex items-center gap-4 pt-4">
+                        <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })}>
+                            <ImageUp className="mr-2 h-4 w-4" /> Logo wählen
+                        </Button>
+                        <Button variant="secondary" onClick={() => setDialogState({ type: 'htmlEditor', data: {} })}>
+                            <Code2 className="mr-2 h-4 w-4" /> HTML bearbeiten
+                        </Button>
+                    </div>
 
-            <div>
-                <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                <div className="rounded-lg bg-primary p-8">
-                    <div className="w-full space-y-2">
-                        <div className="text-center text-primary-foreground">
-                            <Label>Grösse des Logos: {cardData.logoScale || 100}%</Label>
+                    <div className="space-y-4 pt-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="logoScale">Grösse des Logos: {cardData.logoScale || 100}%</Label>
                             <Slider
+                                id="logoScale"
                                 value={[cardData.logoScale || 100]}
                                 onValueChange={(value) => handleSliderChange('logoScale', value)}
                                 max={200}
                                 step={1}
                             />
                         </div>
-                    </div>
-                     <div className="mt-4 flex items-center justify-center gap-4">
-                        <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%] flex-shrink-0 space-y-2">
-                             <PartnerCard {...currentCardData} />
-                             <div className="text-center text-primary-foreground">
-                                <Label>Horizontale Position: {cardData.logoX || 0}px</Label>
-                                <Slider
-                                    value={[cardData.logoX || 0]}
-                                    onValueChange={(value) => handleSliderChange('logoX', value)}
-                                    min={-100}
-                                    max={100}
-                                    step={1}
-                                />
-                             </div>
-                        </div>
-                        <div className="flex flex-col items-center space-y-2 h-full">
-                            <div className="text-center text-primary-foreground">
-                                <Label>Vertikale Position</Label>
-                                <p className="text-xs">{-(cardData.logoY || 0)}px</p>
-                            </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="logoX">Horizontale Position: {cardData.logoX || 0}px</Label>
                              <Slider
-                                orientation="vertical"
+                                id="logoX"
+                                value={[cardData.logoX || 0]}
+                                onValueChange={(value) => handleSliderChange('logoX', value)}
+                                min={-100}
+                                max={100}
+                                step={1}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="logoY">Vertikale Position: {-(cardData.logoY || 0)}px</Label>
+                             <Slider
+                                id="logoY"
                                 value={[-(cardData.logoY || 0)]}
                                 onValueChange={(value) => handleSliderChange('logoY', [-value[0]])}
                                 min={-100}
                                 max={100}
                                 step={1}
-                                className="h-32"
                             />
                         </div>
+                    </div>
+
+                </div>
+                <div className="flex flex-col items-center">
+                    <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
+                    <div className="relative" style={livePreviewStyle}>
+                         {livePreviewSize ? (
+                            <PartnerCard {...currentCardData} />
+                         ) : (
+                            <Skeleton className="h-32 w-full max-w-[280px]" />
+                         )}
                     </div>
                 </div>
             </div>
@@ -259,4 +273,3 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         </>
     );
 };
-
