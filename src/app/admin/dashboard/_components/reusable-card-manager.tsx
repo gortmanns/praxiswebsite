@@ -334,16 +334,6 @@ export function ReusableCardManager<T extends BaseCardData>({
                     </div>
                 </CardHeader>
                 <CardContent>
-                    {notification && (
-                       <TimedAlert
-                           variant={notification.variant}
-                           title={notification.title}
-                           description={notification.description}
-                           onClose={() => setNotification(null)}
-                           className="mb-6"
-                        />
-                    )}
-
                    {isEditing && (
                         <div className="relative rounded-lg border-2 border-dashed border-primary min-h-[420px]">
                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState}>
@@ -403,6 +393,15 @@ export function ReusableCardManager<T extends BaseCardData>({
                         </div>
                     )}
 
+                    {notification && (
+                       <TimedAlert
+                           variant={notification.variant}
+                           title={notification.title}
+                           description={notification.description}
+                           onClose={() => setNotification(null)}
+                           className="my-6"
+                        />
+                    )}
 
                     <div className="space-y-4 mt-12">
                         <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Karten</h3>
@@ -476,3 +475,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
