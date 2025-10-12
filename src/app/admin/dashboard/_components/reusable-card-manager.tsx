@@ -208,14 +208,14 @@ export function ReusableCardManager<T extends BaseCardData>({
     const visibleItems = useMemo(() => validDbData.filter(d => !d.hidden), [validDbData]);
     const hiddenItems = useMemo(() => validDbData.filter(d => d.hidden), [validDbData]);
     
-    const DisplayWrapper: React.FC<{ item: T, index: number, isFirstVisible: boolean }> = ({ item, index }) => {
+    const DisplayWrapper: React.FC<{ item: T, index: number, totalVisible: number }> = ({ item, index, totalVisible }) => {
         const itemControls = (
             <div className="mt-2 flex w-full flex-col gap-2">
                 <div className="grid grid-cols-2 gap-2">
                     <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
                         <ChevronLeft className="mr-2 h-4 w-4" /> Links
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === visibleItems.length - 1 || isEditing}>
+                    <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === totalVisible - 1 || isEditing}>
                         Rechts <ChevronRight className="ml-2 h-4 w-4" />
                     </Button>
                 </div>
@@ -249,7 +249,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                     <Button variant="outline" size="icon" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
                         <ChevronLeft className="h-4 w-4" />
                     </Button>
-                    <Button variant="outline" size="icon" onClick={() => handleMove(item.id, 'down')} disabled={index === visibleItems.length - 1 || isEditing}>
+                    <Button variant="outline" size="icon" onClick={() => handleMove(item.id, 'down')} disabled={index === totalVisible - 1 || isEditing}>
                         <ChevronRight className="h-4 w-4" />
                     </Button>
                     <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
@@ -266,15 +266,15 @@ export function ReusableCardManager<T extends BaseCardData>({
         );
     };
 
-    const PartnerGrid: React.FC<{ partners: T[] }> = ({ partners }) => {
+    const PartnerRowGrid: React.FC<{ partners: T[], totalVisible: number, baseIndex: number }> = ({ partners, totalVisible, baseIndex }) => {
         const count = partners.length;
         if (count === 0) return null;
 
-        if (count >= 4) {
+        if (count === 4) {
             return (
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
                     {partners.map((partner, index) => (
-                        <DisplayWrapper key={partner.id} item={partner} index={index} isFirstVisible={index === 0} />
+                        <DisplayWrapper key={partner.id} item={partner} index={baseIndex + index} totalVisible={totalVisible} />
                     ))}
                 </div>
             );
@@ -285,30 +285,54 @@ export function ReusableCardManager<T extends BaseCardData>({
                 {count === 1 && (
                     <>
                         <div className="col-span-3"></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={0} isFirstVisible={true} /></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={baseIndex} totalVisible={totalVisible} /></div>
                         <div className="col-span-3"></div>
                     </>
                 )}
                 {count === 2 && (
                     <>
                         <div className="col-span-2"></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={0} isFirstVisible={true} /></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[1]} index={1} isFirstVisible={false} /></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={baseIndex} totalVisible={totalVisible} /></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[1]} index={baseIndex + 1} totalVisible={totalVisible} /></div>
                         <div className="col-span-2"></div>
                     </>
                 )}
                 {count === 3 && (
                     <>
                         <div className="col-span-1"></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={0} isFirstVisible={true} /></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[1]} index={1} isFirstVisible={false} /></div>
-                        <div className="col-span-2"><DisplayWrapper item={partners[2]} index={2} isFirstVisible={false} /></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={baseIndex} totalVisible={totalVisible} /></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[1]} index={baseIndex + 1} totalVisible={totalVisible} /></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[2]} index={baseIndex + 2} totalVisible={totalVisible} /></div>
                         <div className="col-span-1"></div>
                     </>
                 )}
             </div>
         );
     };
+
+    const PartnerGrid: React.FC<{ partners: T[] }> = ({ partners }) => {
+        if (!partners || partners.length === 0) return null;
+        const totalVisible = partners.length;
+
+        const chunkedPartners = [];
+        for (let i = 0; i < partners.length; i += 4) {
+            chunkedPartners.push(partners.slice(i, i + 4));
+        }
+
+        return (
+            <div className="space-y-8">
+                {chunkedPartners.map((rowPartners, rowIndex) => (
+                    <PartnerRowGrid 
+                        key={rowIndex} 
+                        partners={rowPartners}
+                        totalVisible={totalVisible}
+                        baseIndex={rowIndex * 4}
+                    />
+                ))}
+            </div>
+        );
+    };
+
 
     const HiddenDisplayWrapper: React.FC<{ item: T }> = ({ item }) => {
         if (isPartnerManager) {
@@ -522,7 +546,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             <PartnerGrid partners={visibleItems} />
                         )}
                         {!isLoadingData && !isPartnerManager && visibleItems.map((item, index) => (
-                            <DisplayWrapper key={item.id} item={item} index={index} isFirstVisible={index === 0} />
+                            <DisplayWrapper key={item.id} item={item} index={index} totalVisible={visibleItems.length} />
                         ))}
                     </div>
 
@@ -562,5 +586,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    

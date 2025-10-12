@@ -39,13 +39,13 @@ const PartnerLink: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
     </Link>
 );
 
-const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
-    const count = partners.length;
 
+const RowGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
+    const count = partners.length;
     if (count === 0) return null;
     
-    // For 4 or more, use a standard 4-column grid
-    if (count >= 4) {
+    // For 4 partners, use a standard 4-column grid
+    if (count === 4) {
         return (
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
                 {partners.map(partner => (
@@ -88,53 +88,22 @@ const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = (
     );
 };
 
+const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
+    if (!partners || partners.length === 0) return null;
 
-const OtherPartnersGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
-    const count = partners.length;
-    if (count === 0) return null;
-
-    if (count >= 4) {
-        return (
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                {partners.map(partner => (
-                    <div key={partner.id}>
-                        <PartnerLink partner={partner} />
-                    </div>
-                ))}
-            </div>
-        );
+    const chunkedPartners = [];
+    for (let i = 0; i < partners.length; i += 4) {
+        chunkedPartners.push(partners.slice(i, i + 4));
     }
 
     return (
-        <div className="grid grid-cols-8 gap-8">
-            {count === 1 && (
-                <>
-                    <div className="col-span-3"></div>
-                    <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
-                    <div className="col-span-3"></div>
-                </>
-            )}
-            {count === 2 && (
-                <>
-                    <div className="col-span-2"></div>
-                    <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
-                    <div className="col-span-2"><PartnerLink partner={partners[1]} /></div>
-                    <div className="col-span-2"></div>
-                </>
-            )}
-            {count === 3 && (
-                <>
-                    <div className="col-span-1"></div>
-                    <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
-                    <div className="col-span-2"><PartnerLink partner={partners[1]} /></div>
-                    <div className="col-span-2"><PartnerLink partner={partners[2]} /></div>
-                    <div className="col-span-1"></div>
-                </>
-            )}
+        <div className="space-y-8">
+            {chunkedPartners.map((rowPartners, index) => (
+                <RowGrid key={index} partners={rowPartners} />
+            ))}
         </div>
     );
 };
-
 
 export function CooperationPartnersSection() {
   const firestore = useFirestore();
@@ -187,7 +156,7 @@ export function CooperationPartnersSection() {
                             ))}
                         </div>
                     ) : (
-                        <OtherPartnersGrid partners={visibleOtherPartners} />
+                        <PartnerGrid partners={visibleOtherPartners} />
                     )}
                 </div>
             </>
