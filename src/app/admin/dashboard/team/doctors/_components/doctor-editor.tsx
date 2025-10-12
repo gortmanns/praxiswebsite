@@ -16,6 +16,10 @@ import { cn } from '@/lib/utils';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
 import { useToast } from '@/hooks/use-toast';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Image as ImageIcon, Languages, Type } from 'lucide-react';
 
 export interface Doctor {
     id: string;
@@ -74,6 +78,19 @@ const CardHtmlRenderer: React.FC<{ html: string; className?: string; onClick?: (
     );
 };
 
+// Helper function to extract text content
+const extractText = (html: string, id: string): string => {
+    if (typeof window === 'undefined') return '';
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const element = doc.getElementById(id);
+    if(element) {
+        const pOrH3 = element.querySelector('p') || element.querySelector('h3');
+        return pOrH3?.textContent || '';
+    }
+    return '';
+};
+
 
 export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }) => {
     const storage = useStorage();
@@ -82,68 +99,36 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
     const [dialogState, setDialogState] = useState<{ type: string | null; data: any }>({ type: null, data: {} });
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const editableCard = useMemo(() => {
+    // Memoize extracted text values
+    const textFields = useMemo(() => ({
+        title: extractText(cardData.frontSideCode, 'edit-title'),
+        name: extractText(cardData.frontSideCode, 'edit-name'),
+        specialty: extractText(cardData.frontSideCode, 'edit-specialty'),
+        qual1: extractText(cardData.frontSideCode, 'edit-qual1'),
+        qual2: extractText(cardData.frontSideCode, 'edit-qual2'),
+        qual3: extractText(cardData.frontSideCode, 'edit-qual3'),
+        qual4: extractText(cardData.frontSideCode, 'edit-qual4'),
+        position: extractText(cardData.frontSideCode, 'edit-position'),
+    }), [cardData.frontSideCode]);
+
+    const handleTextChange = (field: keyof typeof textFields, value: string) => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(cardData.frontSideCode, 'text/html');
-        
-        const langContainer = doc.getElementById('language-container');
-        if (langContainer) {
-            const langToFlagHtml: Record<string, string> = {
-                de: renderToStaticMarkup(React.createElement(DeFlag)), en: renderToStaticMarkup(React.createElement(EnFlag)), fr: renderToStaticMarkup(React.createElement(FrFlag)), it: renderToStaticMarkup(React.createElement(ItFlag)), es: renderToStaticMarkup(React.createElement(EsFlag)), pt: renderToStaticMarkup(React.createElement(PtFlag)), ru: renderToStaticMarkup(React.createElement(RuFlag)), sq: renderToStaticMarkup(React.createElement(SqFlag)), ar: renderToStaticMarkup(React.createElement(ArFlag)), bs: renderToStaticMarkup(React.createElement(BsFlag)), zh: renderToStaticMarkup(React.createElement(ZhFlag)), da: renderToStaticMarkup(React.createElement(DaFlag)), fi: renderToStaticMarkup(React.createElement(FiFlag)), el: renderToStaticMarkup(React.createElement(ElFlag)), he: renderToStaticMarkup(React.createElement(HeFlag)), hi: renderToStaticMarkup(React.createElement(HiFlag)), ja: renderToStaticMarkup(React.createElement(JaFlag)), ko: renderToStaticMarkup(React.createElement(KoFlag)), hr: renderToStaticMarkup(React.createElement(HrFlag)), nl: renderToStaticMarkup(React.createElement(NlFlag)), no: renderToStaticMarkup(React.createElement(NoFlag)), fa: renderToStaticMarkup(React.createElement(FaFlag)), pl: renderToStaticMarkup(React.createElement(PlFlag)), pa: renderToStaticMarkup(React.createElement(PaFlag)), ro: renderToStaticMarkup(React.createElement(RoFlag)), sv: renderToStaticMarkup(React.createElement(SvFlag)), sr: renderToStaticMarkup(React.createElement(SrFlag)), ta: renderToStaticMarkup(React.createElement(TaFlag)), cs: renderToStaticMarkup(React.createElement(CsFlag)), tr: renderToStaticMarkup(React.createElement(TrFlag)), uk: renderToStaticMarkup(React.createElement(UkFlag)), hu: renderToStaticMarkup(React.createElement(HuFlag)), ur: renderToStaticMarkup(React.createElement(UrFlag)),
-            };
-            const languages = cardData.languages || [];
-            const languageOrder = ['de', 'fr', 'it', 'en'];
-            const sortedLangs = [...languages].sort((a, b) => {
-                const indexA = languageOrder.indexOf(a);
-                const indexB = languageOrder.indexOf(b);
-                if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-                if (indexA !== -1) return -1;
-                if (indexB !== -1) return 1;
-                return a.localeCompare(b);
-            });
-            const flagsHtml = sortedLangs.map(lang => langToFlagHtml[lang]?.replace('<svg', '<svg class="h-5 w-auto rounded-sm shadow-md"')).join('') || '';
-            const buttonHtml = `<button id="edit-languages" style="display: flex; align-items: center; gap: 0.5rem; height: 2rem; padding: 0 0.75rem; font-size: 0.875rem; font-weight: 500; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.375rem;" onmouseover="this.style.backgroundColor='hsl(var(--primary) / 0.9)'" onmouseout="this.style.backgroundColor='hsl(var(--primary))'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg><span>Sprachen</span></button>`;
-            langContainer.innerHTML = buttonHtml + flagsHtml;
+        const element = doc.getElementById(`edit-${field}`);
+        if(element) {
+            const pOrH3 = element.querySelector('p') || element.querySelector('h3');
+            if (pOrH3) {
+                pOrH3.textContent = value;
+            } else if (field === 'position') {
+                 element.innerHTML = `<button id="edit-position" class="w-full text-left"><p class="text-base">${value}</p></button>`;
+            }
         }
+        onUpdate({ ...cardData, frontSideCode: doc.body.innerHTML });
+    };
 
-        return { ...cardData, frontSideCode: doc.body.innerHTML };
-    }, [cardData]);
-    
     const projectImages = [
         '/images/luftbild.jpg', '/images/VASC-Alliance-Logo.png', '/images/schemmer-worni-logo.png', '/images/go-medical-logo.png', '/images/mcl-labor-logo.png', '/images/doxnet-logo.jpg', '/images/logos/slezak-logo.png', '/images/praxiszentrum-logo.png', '/images/praxiszentrum-logo-icon.png', '/images/mehrfacharzt-logo.png', '/images/rtw-bern.jpg', '/images/medphone_logo.png', '/images/toxinfo-logo.svg', '/images/foto-medis.jpg', '/images/team/Ortmanns.jpg', '/images/team/Prof.Schemmer.jpg', '/images/team/Dr.Rosenov.jpg', '/images/team/Dr.Herschel.jpg', '/images/team/Dr.Slezak.jpg', '/images/team/Garcia.jpg', '/images/team/Aeschlimann.jpg', '/images/team/Huber.jpg', '/images/team/Oetztuerk.jpg', '/images/team/Sommer.jpg', '/images/leistungen/audiometrie.jpg', '/images/leistungen/ekg.jpg', '/images/leistungen/labor.jpg', '/images/leistungen/praxisapotheke.jpg', '/images/leistungen/roentgen.jpg', '/images/leistungen/spirometrie.jpg', '/images/leistungen/twint_logo.png', '/images/leistungen/VMU.png', '/images/leistungen/wundversorgung.jpg',
     ];
-
-    const handleTemplateClick = (e: React.MouseEvent) => {
-        let target = e.target as HTMLElement;
-        while (target && !target.id?.startsWith('edit-')) {
-            if (target.classList.contains('template-card') || !target.parentElement) return;
-            target = target.parentElement;
-        }
-
-        if (target?.id?.startsWith('edit-')) {
-            e.stopPropagation();
-            const field = target.id.replace('edit-', '');
-            const openDialog = (type: string, data: any) => setDialogState({ type, data });
-
-            switch(field) {
-                case 'vita':
-                    openDialog('vita', { initialValue: cardData.backSideCode.includes("Zum Bearbeiten klicken") ? '' : cardData.backSideCode });
-                    break;
-                case 'languages':
-                    openDialog('language', { initialLanguages: cardData.languages || [] });
-                    break;
-                case 'image':
-                    openDialog('imageSource', { field });
-                    break;
-                case 'position':
-                    openDialog('logoFunction', { field });
-                    break;
-                default: // text fields
-                    openDialog('text', { title: `Feld bearbeiten`, label: 'Text', initialValue: target.textContent || '', field });
-                    break;
-            }
-        }
-    };
     
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files?.[0]) {
@@ -219,30 +204,71 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
     const handleTextSave = (newValue: string) => {
         const { field } = dialogState.data;
         if (!field) return;
-        
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(cardData.frontSideCode, 'text/html');
-        const containerId = field === 'position' ? 'position-container' : `edit-${field}`;
-        const container = doc.getElementById(containerId);
-
-        if (container) {
-            if (field === 'position') {
-                container.innerHTML = `<button id="edit-position" class="w-full text-left"><p class="text-base">${newValue}</p></button>`;
-            } else {
-                const p = container.querySelector('p') || container.querySelector('h3');
-                if (p) p.textContent = newValue;
-            }
-        }
-        onUpdate({ ...cardData, frontSideCode: doc.body.innerHTML });
+        handleTextChange(field, newValue);
         setDialogState({ type: null, data: {} });
     };
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <CardHtmlRenderer html={editableCard.frontSideCode} onClick={handleTemplateClick} />
-                <div className="bg-accent/95 rounded-lg">
-                    <CardHtmlRenderer html={editableCard.backSideCode} className="text-background" onClick={handleTemplateClick} />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <div className="space-y-4 p-4 border rounded-lg">
+                    <div className="space-y-2">
+                        <Label htmlFor="edit-name-input">Name</Label>
+                        <Input id="edit-name-input" value={textFields.name} onChange={(e) => handleTextChange('name', e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="edit-title-input">Titel</Label>
+                        <Input id="edit-title-input" value={textFields.title} onChange={(e) => handleTextChange('title', e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="edit-specialty-input">Spezialisierung</Label>
+                        <Input id="edit-specialty-input" value={textFields.specialty} onChange={(e) => handleTextChange('specialty', e.target.value)} />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="edit-qual1-input">Qualifikation 1</Label>
+                            <Input id="edit-qual1-input" value={textFields.qual1} onChange={(e) => handleTextChange('qual1', e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="edit-qual2-input">Qualifikation 2</Label>
+                            <Input id="edit-qual2-input" value={textFields.qual2} onChange={(e) => handleTextChange('qual2', e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="edit-qual3-input">Qualifikation 3</Label>
+                            <Input id="edit-qual3-input" value={textFields.qual3} onChange={(e) => handleTextChange('qual3', e.target.value)} />
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="edit-qual4-input">Qualifikation 4</Label>
+                            <Input id="edit-qual4-input" value={textFields.qual4} onChange={(e) => handleTextChange('qual4', e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="space-y-3 pt-2">
+                         <Button variant="outline" size="sm" onClick={() => setDialogState({ type: 'imageSource', data: { field: 'image' } })}>
+                            <ImageIcon className="mr-2 h-4 w-4" /> Porträtbild ändern
+                        </Button>
+                         <Button variant="outline" size="sm" onClick={() => setDialogState({ type: 'logoFunction', data: { field: 'position' } })}>
+                            <Type className="mr-2 h-4 w-4" /> Position/Logo ändern
+                        </Button>
+                         <Button variant="outline" size="sm" onClick={() => setDialogState({ type: 'language', data: {} })}>
+                            <Languages className="mr-2 h-4 w-4" /> Sprachen bearbeiten
+                        </Button>
+                         <Button variant="outline" size="sm" onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backSideCode.includes("Zum Bearbeiten klicken") ? '' : cardData.backSideCode } })}>
+                           Text der Rückseite bearbeiten
+                        </Button>
+                    </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                    <div className="flex-1">
+                        <Label className="text-center block mb-2 text-sm font-medium text-muted-foreground">Vorderseite</Label>
+                        <CardHtmlRenderer html={cardData.frontSideCode} />
+                    </div>
+                    <div className="flex-1">
+                        <Label className="text-center block mb-2 text-sm font-medium text-muted-foreground">Rückseite</Label>
+                         <div className="bg-accent/95 rounded-lg">
+                            <CardHtmlRenderer html={cardData.backSideCode} className="text-background" />
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -256,7 +282,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
                 <LanguageSelectDialog isOpen={true} onOpenChange={() => setDialogState({ type: null, data: {} })} initialLanguages={cardData.languages || []} onSave={(langs) => onUpdate({ ...cardData, languages: langs })} />
             )}
             {dialogState.type === 'logoFunction' && (
-                <LogoFunctionSelectDialog isOpen={true} onOpenChange={() => setDialogState({ type: null, data: {} })} onSelectFunction={() => setDialogState({ type: 'text', data: { title: `Funktion bearbeiten`, label: 'Funktion', initialValue: '', field: 'position' } })} onSelectFromLibrary={() => setDialogState(prev => ({ type: 'imageLibrary', data: prev.data }))} onUploadNew={() => fileInputRef.current?.click()} />
+                <LogoFunctionSelectDialog isOpen={true} onOpenChange={() => setDialogState({ type: null, data: {} })} onSelectFunction={() => setDialogState({ type: 'text', data: { title: `Funktion bearbeiten`, label: 'Funktion', initialValue: textFields.position, field: 'position' } })} onSelectFromLibrary={() => setDialogState(prev => ({ type: 'imageLibrary', data: prev.data }))} onUploadNew={() => fileInputRef.current?.click()} />
             )}
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
             {dialogState.type === 'imageSource' && (
@@ -271,3 +297,5 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
         </>
     );
 };
+
+    
