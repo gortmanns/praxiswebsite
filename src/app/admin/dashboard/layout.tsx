@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Calendar, User as UserIcon, LogOut, Users, Settings, Handshake, Palette } from 'lucide-react';
+import { Home, Calendar, User as UserIcon, LogOut, Users, Settings, Handshake, Palette, CreditCard } from 'lucide-react';
 import {
   SidebarProvider,
   Sidebar,
@@ -62,7 +62,6 @@ export default function DashboardLayout({
     { href: '/admin/dashboard', label: 'Dashboard', icon: Home },
     { href: '/admin/dashboard/banner', label: 'Banner anpassen', icon: Settings },
     { href: '/admin/dashboard/holidays', label: 'Ferientermine', icon: Calendar },
-    { href: '/admin/dashboard/visual-design', label: 'Visual Design', icon: Palette },
   ];
 
   const teamNavItems = [
@@ -70,12 +69,14 @@ export default function DashboardLayout({
       { href: '/admin/dashboard/team/staff', label: 'Praxispersonal' },
   ];
 
-  const partnerNavItems = [
-    { href: '/admin/dashboard/partners/medical', label: 'Ärztlich' },
+  const cardPartnerNavItems = [
+    { href: '/admin/dashboard/partners/medical', label: 'Ärzte' },
     { href: '/admin/dashboard/partners/other', label: 'Sonstige' },
   ];
 
-  const allNavItems = [...navItems, ...teamNavItems, ...partnerNavItems];
+  const visualDesignItem = { href: '/admin/dashboard/visual-design', label: 'Visual Design', icon: Palette };
+
+  const allNavItems = [...navItems, ...teamNavItems, ...cardPartnerNavItems, visualDesignItem];
 
   return (
     <SidebarProvider>
@@ -135,13 +136,13 @@ export default function DashboardLayout({
                 ))}
             </SidebarMenuSub>
             <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Kooperationspartner" className="w-full pointer-events-none">
-                    <Handshake />
-                    <span>Kooperationspartner</span>
+                <SidebarMenuButton tooltip="Karten Partner" className="w-full pointer-events-none">
+                    <CreditCard />
+                    <span>Karten Partner</span>
                 </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuSub>
-                {partnerNavItems.map((item) => (
+                {cardPartnerNavItems.map((item) => (
                     <SidebarMenuSubItem key={item.href}>
                         <Link href={item.href} passHref>
                             <SidebarMenuSubButton isActive={pathname === item.href}>
@@ -151,6 +152,17 @@ export default function DashboardLayout({
                     </SidebarMenuSubItem>
                 ))}
             </SidebarMenuSub>
+            <SidebarMenuItem>
+              <Link href={visualDesignItem.href} passHref>
+                  <SidebarMenuButton 
+                      isActive={pathname === visualDesignItem.href}
+                      tooltip={visualDesignItem.label}
+                  >
+                      <visualDesignItem.icon />
+                      <span>{visualDesignItem.label}</span>
+                  </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
