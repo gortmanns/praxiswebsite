@@ -46,8 +46,6 @@ export function CooperationPartnersSection() {
   const visibleMedicalPartners = medicalPartners?.filter(p => !p.hidden) || [];
   const visibleOtherPartners = otherPartners?.filter(p => !p.hidden) || [];
   
-  const numOtherPartners = visibleOtherPartners.length;
-
   return (
     <section id="partners" className="w-full bg-primary">
       <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
@@ -84,14 +82,11 @@ export function CooperationPartnersSection() {
           Unsere weiteren Partner
         </h3>
         <div className="mt-12 flex justify-center">
-            <div className={cn(
-                "grid gap-8",
-                "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-            )}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {isLoadingOther ? (
                  Array.from({ length: 4 }).map((_, index) => (
-                    <div key={index} className="w-full sm:w-auto">
-                        <Skeleton className="h-32 w-full rounded-lg sm:w-64" />
+                    <div key={index} className="w-full sm:w-64">
+                        <Skeleton className="h-32 w-full rounded-lg" />
                     </div>
                 ))
               ) : (
