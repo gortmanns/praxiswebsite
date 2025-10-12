@@ -376,8 +376,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                                         </div>
                                         <div className="bg-red-500/20 text-center text-xs text-red-800 pointer-events-auto">
                                             {/* Vertical Slider Area */}
-                                            <div className="flex flex-col items-center justify-center h-full">
-                                                <div className="h-4/5 w-full flex justify-center">
+                                            <div className="flex flex-row items-center justify-center h-full gap-2">
+                                                <div className="h-4/5 flex justify-center">
                                                     <Slider
                                                         orientation="vertical"
                                                         value={[editorCardState.logoY || 0]}
@@ -387,7 +387,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                                         step={1}
                                                     />
                                                 </div>
-                                                <div className="text-center text-xs mt-2 text-white">
+                                                <div className="text-center text-xs text-white">
                                                     <div>Vertikale</div>
                                                     <div>Position</div>
                                                     <div>{editorCardState.logoY || 0}px</div>
