@@ -113,6 +113,9 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             <Button variant="default" onClick={() => setDialogState({ type: 'language', data: {} })}>
                                 <Languages className="mr-2 h-4 w-4" /> Sprachen
                             </Button>
+                             <Button variant="outline" onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}>
+                                <Pencil className="mr-2 h-4 w-4" /> Rückseite bearbeiten
+                            </Button>
                         </div>
                     </div>
                      <div className="flex-grow flex items-end">
@@ -162,14 +165,8 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             </div>
                         </div>
                         <div className="relative w-full max-w-[280px] mx-auto h-full rounded-lg bg-accent text-accent-foreground">
-                             <button 
-                                onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
-                                className="absolute top-4 right-4 text-white hover:text-white/80"
-                            >
-                                <Pencil className="h-10 w-10" />
-                            </button>
                             <div className="h-full w-full p-6 text-left overflow-auto">
-                                <div className="prose prose-sm dark:prose-invert text-background max-w-none [&>p]:text-left [&>p]:text-white" dangerouslySetInnerHTML={{ __html: cardData.backsideContent || '' }} />
+                                <div className="prose prose-sm dark:prose-invert max-w-none [&_p]:text-white [&_p]:text-left" dangerouslySetInnerHTML={{ __html: cardData.backsideContent || '' }} />
                             </div>
                         </div>
                     </div>
@@ -227,3 +224,5 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
 
     
 }
+
+    
