@@ -74,7 +74,7 @@ export default function TeamPage() {
                 </div>
               ) : (
                 fullWidthStaff.map(member => (
-                  <div key={member.id} className="grid grid-cols-1 place-items-center">
+                  <div key={member.id} className="grid grid-cols-1 place-items-center border-2 border-red-500">
                       <div className="w-full max-w-sm">
                           <TeamMemberCard 
                             name={member.name}
