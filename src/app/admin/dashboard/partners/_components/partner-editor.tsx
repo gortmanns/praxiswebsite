@@ -41,12 +41,15 @@ interface PartnerEditorProps {
     children: ReactNode; // To accept the overlay as a child
 }
 
-const generateLogoHtml = (imageUrl: string | undefined, name: string, scale: number = 100, x: number = 0, y: number = 0): string => {
-    if (!imageUrl) {
-        return `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
+const generateFinalLogoHtml = (partner: Partner): string => {
+    if (partner.imageUrl) {
+        const scale = partner.logoScale || 100;
+        const x = partner.logoX || 0;
+        const y = partner.logoY || 0;
+        const transformStyle = `transform: scale(${scale / 100}) translate(${x}px, ${y}px);`;
+        return `<img src="${partner.imageUrl}" alt="${partner.name || 'Partner Logo'}" style="object-fit: contain; width: 100%; height: 100%; transition: transform 0.2s ease-out; ${transformStyle}" />`;
     }
-    const transformStyle = `transform: scale(${scale / 100}) translate(${x}px, ${y}px);`;
-    return `<img src="${imageUrl}" alt="${name || 'Partner Logo'}" style="object-fit: contain; width: 100%; height: 100%; transition: transform 0.2s ease-out; ${transformStyle}" />`;
+    return partner.logoHtml || `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
 };
 
 
@@ -62,6 +65,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
     const handleInputChange = (field: keyof Partner, value: string | boolean | number) => {
         const newCardData = { ...cardData, [field]: value };
+        // When saving, we'll generate the final HTML. For now, just update the data.
         onUpdate(newCardData);
     };
     
@@ -103,6 +107,8 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
             const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
             const downloadURL = await getDownloadURL(snapshot.ref);
             
+            // Just update the imageUrl. The live preview will use this directly.
+            // The final HTML will be generated on save.
             onUpdate({ 
                 ...cardData, 
                 imageUrl: downloadURL,
@@ -116,24 +122,21 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
     };
     
     const handleHtmlSave = (newHtml: string) => {
-        onUpdate({ ...cardData, logoHtml: newHtml, imageUrl: '', logoScale: 100, logoX: 0, logoY: 0 });
+        // When custom HTML is saved, clear the image-based properties
+        onUpdate({ 
+            ...cardData, 
+            logoHtml: newHtml, 
+            imageUrl: '', 
+            logoScale: 100, 
+            logoX: 0, 
+            logoY: 0 
+        });
         setDialogState({ type: null, data: {} });
     }
 
-    // This effect updates the parent component with the generated HTML whenever dependencies change.
-    useEffect(() => {
-        const newHtml = generateLogoHtml(
-            cardData.imageUrl,
-            cardData.name,
-            cardData.logoScale,
-            cardData.logoX,
-            cardData.logoY
-        );
-        if (cardData.imageUrl && newHtml !== cardData.logoHtml) {
-            onUpdate({ ...cardData, logoHtml: newHtml });
-        }
-    }, [cardData.imageUrl, cardData.name, cardData.logoScale, cardData.logoX, cardData.logoY, onUpdate, cardData, cardData.logoHtml]);
-
+    // Before saving, generate the final HTML if an image URL is present.
+    // This is now implicitly handled by the parent ReusableCardManager which has the latest state.
+    // We just need to make sure the parent has the correct data.
 
     return (
         <div className="relative z-10"> {/* Add relative positioning and z-index here */}

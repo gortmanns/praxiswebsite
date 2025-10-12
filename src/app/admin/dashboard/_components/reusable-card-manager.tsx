@@ -39,6 +39,18 @@ interface ReusableCardManagerProps<T extends BaseCardData> {
     entityName: string;
 }
 
+const generateFinalLogoHtml = (partner: BaseCardData): string => {
+    if (partner.imageUrl) {
+        const scale = partner.logoScale || 100;
+        const x = partner.logoX || 0;
+        const y = partner.logoY || 0;
+        const transformStyle = `transform: scale(${scale / 100}) translate(${x}px, ${y}px);`;
+        return `<img src="${partner.imageUrl}" alt="${partner.name || 'Partner Logo'}" style="object-fit: contain; width: 100%; height: 100%; transition: transform 0.2s ease-out; ${transformStyle}" />`;
+    }
+    return partner.logoHtml || `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
+};
+
+
 export function ReusableCardManager<T extends BaseCardData>({
     collectionName,
     pageTitle,
@@ -152,18 +164,21 @@ export function ReusableCardManager<T extends BaseCardData>({
             return;
         }
         setNotification(null);
+
+        // For partners, generate the final logoHtml before saving.
+        let dataToSave: Partial<T> = { ...editorCardState };
+        if (isPartnerManager) {
+            dataToSave.logoHtml = generateFinalLogoHtml(editorCardState);
+        }
     
         try {
-            // A new card is identified by not having a valid ID from the database
             if (isCreatingNew) {
-                const mutableCardData: Partial<T> = { ...editorCardState };
-                delete (mutableCardData as any).id;
-    
+                delete (dataToSave as any).id;
                 const highestOrder = dbData ? dbData.filter(d=>d.name).reduce((max, item) => item.order > max ? item.order : max, 0) : 0;
                 
                 const newCardData = {
                     ...initialCardState,
-                    ...mutableCardData,
+                    ...dataToSave,
                     order: highestOrder + 1,
                     createdAt: serverTimestamp(),
                     hidden: false,
@@ -175,12 +190,11 @@ export function ReusableCardManager<T extends BaseCardData>({
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: `Neue ${entityName}-Karte erfolgreich erstellt.` });
             
             } else if (editingCardId) {
-                const mutableCardData: Partial<T> = { ...editorCardState };
-                delete mutableCardData.createdAt;
-                delete mutableCardData.id;
+                delete dataToSave.createdAt;
+                delete dataToSave.id;
     
                 const docRef = doc(firestore, collectionName, editingCardId);
-                await setDoc(docRef, mutableCardData, { merge: true });
+                await setDoc(docRef, dataToSave, { merge: true });
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Änderungen erfolgreich gespeichert.' });
             }
             handleCancelEdit();
@@ -488,9 +502,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
-
-    
-
-    
