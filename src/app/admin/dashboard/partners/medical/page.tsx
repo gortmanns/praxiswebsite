@@ -23,8 +23,8 @@ export default function MedicalPartnersPage() {
     return (
         <ReusableCardManager
             collectionName="medicalPartners"
-            pageTitle="Ärztliche Partner verwalten"
-            pageDescription="Verwalten Sie die auf der Startseite angezeigten ärztlichen Kooperationspartner."
+            pageTitle="Kooperationspartner-Karten Ärzte verwalten"
+            pageDescription=""
             initialCardState={initialMedicalPartnerState}
             DisplayCardComponent={DisplayCard}
             EditorCardComponent={EditorComponent}
