@@ -84,7 +84,7 @@ export function CooperationPartnersSection() {
                     className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   >
                     <Card className="flex h-full w-full items-center justify-center bg-background p-2">
-                       <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
+                       <div className="relative flex h-full w-full items-center justify-center overflow-hidden p-0">
                           {renderPartnerLogo(partner)}
                        </div>
                     </Card>
