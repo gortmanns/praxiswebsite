@@ -14,6 +14,11 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
+
+const flagComponents: { [key: string]: React.FC<{ className?: string }> } = {
+  de: DeFlag, en: EnFlag, fr: FrFlag, it: ItFlag, es: EsFlag, pt: PtFlag, ru: RuFlag, sq: SqFlag, ar: ArFlag, bs: BsFlag, zh: ZhFlag, da: DaFlag, fi: FiFlag, el: ElFlag, he: HeFlag, hi: HiFlag, ja: JaFlag, ko: KoFlag, hr: HrFlag, nl: NlFlag, no: NoFlag, fa: FaFlag, pl: PlFlag, pa: PaFlag, ro: RoFlag, sv: SvFlag, sr: SrFlag, ta: TaFlag, cs: CsFlag, tr: TrFlag, uk: UkFlag, hu: HuFlag, ur: UrFlag,
+};
 
 const mainLanguages = [
   { id: 'de', name: 'Deutsch' },
@@ -62,6 +67,24 @@ interface LanguageSelectDialogProps {
   onSave: (selectedLanguages: string[]) => void;
 }
 
+const LanguageCheckboxItem: React.FC<{ lang: {id: string, name: string}, selected: Set<string>, onCheckedChange: (id: string, checked: boolean) => void }> = ({ lang, selected, onCheckedChange }) => {
+    const FlagComponent = flagComponents[lang.id];
+    return (
+        <div className="flex items-center space-x-3">
+            <Checkbox
+                id={`lang-${lang.id}`}
+                checked={selected.has(lang.id)}
+                onCheckedChange={(checked) => onCheckedChange(lang.id, !!checked)}
+            />
+            {FlagComponent && <FlagComponent className="h-4 w-6 rounded-sm" />}
+            <Label htmlFor={`lang-${lang.id}`} className="cursor-pointer">
+                {lang.name}
+            </Label>
+        </div>
+    );
+};
+
+
 export const LanguageSelectDialog: React.FC<LanguageSelectDialogProps> = ({
   isOpen,
   onOpenChange,
@@ -108,16 +131,12 @@ export const LanguageSelectDialog: React.FC<LanguageSelectDialogProps> = ({
         <div className="max-h-[60vh] overflow-y-auto py-4 pr-4">
             <div className="grid grid-cols-2 gap-x-8 gap-y-4">
             {mainLanguages.map((lang) => (
-                <div key={lang.id} className="flex items-center space-x-2">
-                <Checkbox
-                    id={`lang-${lang.id}`}
-                    checked={selected.has(lang.id)}
-                    onCheckedChange={(checked) => handleCheckedChange(lang.id, !!checked)}
+                <LanguageCheckboxItem
+                    key={lang.id}
+                    lang={lang}
+                    selected={selected}
+                    onCheckedChange={handleCheckedChange}
                 />
-                <Label htmlFor={`lang-${lang.id}`} className="cursor-pointer">
-                    {lang.name}
-                </Label>
-                </div>
             ))}
             </div>
 
@@ -125,16 +144,12 @@ export const LanguageSelectDialog: React.FC<LanguageSelectDialogProps> = ({
 
             <div className="grid grid-cols-2 gap-x-8 gap-y-4">
                 {otherLanguages.map((lang) => (
-                    <div key={lang.id} className="flex items-center space-x-2">
-                    <Checkbox
-                        id={`lang-${lang.id}`}
-                        checked={selected.has(lang.id)}
-                        onCheckedChange={(checked) => handleCheckedChange(lang.id, !!checked)}
+                   <LanguageCheckboxItem
+                        key={lang.id}
+                        lang={lang}
+                        selected={selected}
+                        onCheckedChange={handleCheckedChange}
                     />
-                    <Label htmlFor={`lang-${lang.id}`} className="cursor-pointer">
-                        {lang.name}
-                    </Label>
-                    </div>
                 ))}
             </div>
         </div>
