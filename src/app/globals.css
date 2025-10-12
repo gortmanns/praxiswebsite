@@ -84,3 +84,6 @@
   opacity: 0.5 !important;
 }
 
+* {
+  outline: 1px solid red;
+}

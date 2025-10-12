@@ -186,7 +186,7 @@ export function ReusableCardManager<T extends BaseCardData>({
 
         if (isPartnerManager) {
             return (
-                <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                <div className="w-full">
                     <div className="flex flex-col gap-2">
                         <DisplayCardComponent {...item} />
                         <div className="mt-2 flex w-full flex-col gap-2">
@@ -238,7 +238,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     const HiddenDisplayWrapper: React.FC<{ item: T }> = ({ item }) => {
         if (isPartnerManager) {
             return (
-                <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                <div className="w-full">
                     <div className="flex flex-col gap-2">
                         <div className="relative">
                             <div className="absolute inset-0 z-10 bg-black/50 rounded-lg"></div>
@@ -333,22 +333,22 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                     {isEditing && isPartnerManager && (
-                         <div
-                            className={cn(
-                                "mt-[-10rem] mb-12",
-                                isPartnerManager ? "rounded-lg bg-primary/20 p-4 flex flex-wrap justify-end gap-8" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
-                            )}
-                            style={{
-                                outline: '3px solid #00ff00',
-                                zIndex: 10,
-                                position: 'relative'
-                            }}
-                        >
-                             <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%] z-50">
-                                <p className="text-sm font-semibold text-primary-foreground mb-2 text-center">Live-Vorschau</p>
-                                <DisplayCardComponent {...editorCardState} />
+                         <div className="relative mt-[-10rem] mb-12 h-48">
+                            {/* Phantom container for sizing */}
+                            <div 
+                                className="absolute inset-x-0 top-0 rounded-lg bg-primary p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 opacity-100"
+                                style={{
+                                    outline: '3px solid #00ff00',
+                                    zIndex: 10,
+                                }}
+                            >
+                                {/* This is the live preview card, positioned within the phantom grid */}
+                                <div className="z-20 col-start-1 sm:col-start-2 lg:col-start-4">
+                                     <p className="text-sm font-semibold text-primary-foreground mb-2 text-center">Live-Vorschau</p>
+                                     <DisplayCardComponent {...editorCardState} />
+                                </div>
                             </div>
-                        </div>
+                         </div>
                     )}
 
 
@@ -360,11 +360,11 @@ export function ReusableCardManager<T extends BaseCardData>({
                     </div>
                      <div className={cn(
                         "mt-8",
-                        isPartnerManager ? "rounded-lg bg-primary p-4 flex flex-wrap justify-center gap-8" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
+                        isPartnerManager ? "rounded-lg bg-primary p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
                      )}>
                         {isLoadingData && (
                             isPartnerManager ? 
-                                Array.from({ length: 4 }).map((_, index) => <Skeleton key={index} className="h-32 w-full rounded-lg bg-primary-foreground/20 sm:w-[45%] md:w-[30%] lg:w-[22%]" />) :
+                                Array.from({ length: 4 }).map((_, index) => <Skeleton key={index} className="h-32 w-full rounded-lg bg-primary-foreground/20" />) :
                                 Array.from({ length: 2 }).map((_, index) => (
                                     <div key={index} className="flex w-full items-center justify-center gap-4">
                                         <div className="w-36 flex-shrink-0"></div>
@@ -375,7 +375,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 ))
                         )}
                         {dbError && (
-                             <Alert variant="destructive" className={cn(isPartnerManager ? "w-full" : "lg:col-span-2")}>
+                             <Alert variant="destructive" className={cn(isPartnerManager ? "w-full lg:col-span-5" : "lg:col-span-2")}>
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertTitle>Datenbankfehler</AlertTitle>
                                 <AlertDescription>
@@ -395,7 +395,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </div>
                             <div className={cn(
                                 "mt-8",
-                                isPartnerManager ? "flex flex-wrap justify-center gap-8" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
+                                isPartnerManager ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
                             )}>
                                 {hiddenItems.map((item) => (
                                     <HiddenDisplayWrapper key={item.id} item={item} />
