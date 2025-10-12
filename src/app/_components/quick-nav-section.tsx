@@ -1,3 +1,4 @@
+
 'use client';
 import Link from 'next/link';
 import {
@@ -40,7 +41,7 @@ export function QuickNavSection() {
             <Link
               key={item.href}
               href={item.href}
-              className="group relative h-40 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              className="group relative h-40 w-full overflow-hidden rounded-lg shadow-xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
               
               <div
