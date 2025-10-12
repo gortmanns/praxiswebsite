@@ -46,7 +46,7 @@ const OtherPartnersGrid: React.FC<{ partners: OtherPartner[] }> = ({ partners })
     const count = partners.length;
 
     if (count === 0) return null;
-
+    
     // Fall für 4 oder mehr Partner (Standard-Grid)
     if (count >= 4) {
         return (
@@ -66,24 +66,24 @@ const OtherPartnersGrid: React.FC<{ partners: OtherPartner[] }> = ({ partners })
             {count === 1 && (
                 <>
                     <div className={cn("col-span-3", debugClass)}></div>
-                    <div className={cn("col-span-2", debugClass)}><PartnerLink partner={partners[0]} /></div>
+                    <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
                     <div className={cn("col-span-3", debugClass)}></div>
                 </>
             )}
             {count === 2 && (
                 <>
                     <div className={cn("col-span-2", debugClass)}></div>
-                    <div className={cn("col-span-2", debugClass)}><PartnerLink partner={partners[0]} /></div>
-                    <div className={cn("col-span-2", debugClass)}><PartnerLink partner={partners[1]} /></div>
+                    <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
+                    <div className="col-span-2"><PartnerLink partner={partners[1]} /></div>
                     <div className={cn("col-span-2", debugClass)}></div>
                 </>
             )}
             {count === 3 && (
                 <>
                     <div className={cn("col-span-1", debugClass)}></div>
-                    <div className={cn("col-span-2", debugClass)}><PartnerLink partner={partners[0]} /></div>
-                    <div className={cn("col-span-2", debugClass)}><PartnerLink partner={partners[1]} /></div>
-                    <div className={cn("col-span-2", debugClass)}><PartnerLink partner={partners[2]} /></div>
+                    <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
+                    <div className="col-span-2"><PartnerLink partner={partners[1]} /></div>
+                    <div className="col-span-2"><PartnerLink partner={partners[2]} /></div>
                     <div className={cn("col-span-1", debugClass)}></div>
                 </>
             )}
