@@ -593,7 +593,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 ))}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                     {gridVisibleItems.map((item, index) => (
-                                       <div key={item.id} className="mx-auto w-full max-w-sm">
+                                       <div key={item.id} className="mx-auto flex justify-center w-full">
                                             <DisplayWrapper item={item} index={index} totalVisible={gridVisibleItems.length} isFullWidth={false} />
                                         </div>
                                     ))}
@@ -635,7 +635,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                         ))}
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                             {gridHiddenItems.map((item) => (
-                                                 <div key={item.id} className="mx-auto w-full max-w-sm">
+                                                 <div key={item.id} className="mx-auto flex justify-center w-full">
                                                     <HiddenDisplayWrapper key={item.id} item={item} isFullWidth={false} />
                                                  </div>
                                             ))}
@@ -666,5 +666,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    

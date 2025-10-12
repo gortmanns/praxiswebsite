@@ -99,7 +99,7 @@ export default function TeamPage() {
             ) : (
               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
                 {gridStaff.map((member) => (
-                  <div key={member.id} className="mx-auto w-full max-w-sm">
+                  <div key={member.id} className="mx-auto flex justify-center w-full">
                     <TeamMemberCard 
                       name={member.name}
                       role={member.role}
@@ -120,3 +120,4 @@ export default function TeamPage() {
     </div>
   );
 }
+
