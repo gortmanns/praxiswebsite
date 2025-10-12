@@ -9,7 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import { PartnerCard } from './partner-card';
 import { ImageSourceDialog } from '@/app/admin/dashboard/team/doctors/_components/image-source-dialog';
 import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_components/image-library-dialog';
 import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/image-crop-dialog';
@@ -120,17 +119,6 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         setDialogState({ type: null, data: {} });
     }
 
-    const currentCardData = useMemo(() => {
-        const logoHtml = generateLogoHtml(
-            cardData.imageUrl,
-            cardData.name,
-            cardData.logoScale,
-            cardData.logoX,
-            cardData.logoY
-        );
-        return { ...cardData, logoHtml };
-    }, [cardData]);
-
     useEffect(() => {
         const newHtml = generateLogoHtml(
             cardData.imageUrl,
@@ -177,61 +165,48 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                             <Code2 className="mr-2 h-4 w-4" /> HTML bearbeiten
                         </Button>
                     </div>
-                </div>
-
-                <div className="relative">
-                    <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
-                        <p className="text-sm font-semibold text-primary-foreground mb-2 text-center">Live-Vorschau</p>
-                        <div className="space-y-2">
-                            <div className="text-center">
-                                <Label htmlFor="logoScale" className="text-xs text-primary-foreground">Grösse: {cardData.logoScale || 100}%</Label>
-                                <Slider
-                                    id="logoScale"
-                                    value={[cardData.logoScale || 100]}
-                                    onValueChange={(value) => handleSliderChange('logoScale', value)}
-                                    max={200}
-                                    step={1}
-                                />
-                            </div>
-                            <div className="flex items-start gap-2">
-                                <div className="flex-grow space-y-2">
-                                    <PartnerCard {...currentCardData} />
-                                    <div className="text-center">
-                                        <Label htmlFor="logoX" className="text-xs text-primary-foreground">Horizontale Position: {cardData.logoX || 0}px</Label>
-                                        <Slider
-                                            id="logoX"
-                                            value={[cardData.logoX || 0]}
-                                            onValueChange={(value) => handleSliderChange('logoX', value)}
-                                            min={-100}
-                                            max={100}
-                                            step={1}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="flex flex-col items-center h-32 w-12">
-                                    <Label htmlFor="logoY" className="text-xs text-primary-foreground [writing-mode:vertical-rl] rotate-180 mb-2 whitespace-nowrap">
-                                        Vertikale Position
-                                    </Label>
-                                    <Slider
-                                        id="logoY"
-                                        orientation="vertical"
-                                        value={[-(cardData.logoY || 0)]}
-                                        onValueChange={(value) => handleSliderChange('logoY', [-value[0]])}
-                                        min={-100}
-                                        max={100}
-                                        step={1}
-                                        className="h-full"
-                                    />
-                                    <span className="text-xs text-primary-foreground mt-2">{-(cardData.logoY || 0)}px</span>
-                                </div>
-                            </div>
-                            <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-full">
-                                <RotateCcw className="mr-2 h-4 w-4" />
-                                Steuerung zurücksetzen
-                            </Button>
+                    <div className="space-y-4 pt-4">
+                        <div className="text-center">
+                            <Label htmlFor="logoScale" className="text-sm">Grösse: {cardData.logoScale || 100}%</Label>
+                            <Slider
+                                id="logoScale"
+                                value={[cardData.logoScale || 100]}
+                                onValueChange={(value) => handleSliderChange('logoScale', value)}
+                                max={200}
+                                step={1}
+                            />
                         </div>
+                        <div className="text-center">
+                            <Label htmlFor="logoX" className="text-sm">Horizontale Position: {cardData.logoX || 0}px</Label>
+                            <Slider
+                                id="logoX"
+                                value={[cardData.logoX || 0]}
+                                onValueChange={(value) => handleSliderChange('logoX', value)}
+                                min={-100}
+                                max={100}
+                                step={1}
+                            />
+                        </div>
+                        <div className="text-center">
+                            <Label htmlFor="logoY" className="text-sm">Vertikale Position: {cardData.logoY || 0}px</Label>
+                            <Slider
+                                id="logoY"
+                                value={[cardData.logoY || 0]}
+                                onValueChange={(value) => handleSliderChange('logoY', value)}
+                                min={-100}
+                                max={100}
+                                step={1}
+                            />
+                        </div>
+                         <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-full">
+                            <RotateCcw className="mr-2 h-4 w-4" />
+                            Steuerung zurücksetzen
+                        </Button>
                     </div>
                 </div>
+
+                {/* The right column is now only for spacing, the actual preview is rendered from the manager */}
+                <div></div>
 
             </div>
 
