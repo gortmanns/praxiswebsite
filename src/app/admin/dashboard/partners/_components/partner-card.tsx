@@ -22,7 +22,7 @@ export interface Partner {
 }
 
 const generateDynamicLogoHtml = (partner: Partner): string => {
-    // If there is a specific imageUrl, prioritize it to generate the logo.
+    // If there is a specific imageUrl, prioritize it to generate the logo for live preview.
     if (partner.imageUrl) {
         const scale = partner.logoScale || 100;
         const x = partner.logoX || 0;

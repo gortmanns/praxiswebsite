@@ -11,7 +11,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { ImageSourceDialog } from '@/app/admin/dashboard/team/doctors/_components/image-source-dialog';
 import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_components/image-library-dialog';
-import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/image-crop-dialog';
 import { TextEditDialog } from '@/app/admin/dashboard/team/doctors/_components/text-edit-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Code2, ImageUp, RotateCcw } from 'lucide-react';
@@ -41,14 +40,6 @@ interface PartnerEditorProps {
     children: ReactNode; // To accept the overlay as a child
 }
 
-const generateLogoHtml = (imageUrl: string | undefined, name: string, scale: number = 100, x: number = 0, y: number = 0): string => {
-    if (!imageUrl) {
-        return `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
-    }
-    const transformStyle = `transform: scale(${scale / 100}) translate(${x}px, ${y}px);`;
-    return `<img src="${imageUrl}" alt="${name || 'Partner Logo'}" style="object-fit: contain; width: 100%; height: 100%; transition: transform 0.2s ease-out; ${transformStyle}" />`;
-};
-
 
 export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate, children }) => {
     const { toast } = useToast();
@@ -56,7 +47,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [dialogState, setDialogState] = useState<{
-        type: 'imageSource' | 'imageLibrary' | 'imageCrop' | 'htmlEditor' | null;
+        type: 'imageSource' | 'imageLibrary' | 'htmlEditor' | null;
         data: any;
     }>({ type: null, data: {} });
 
@@ -78,65 +69,51 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
             logoY: 0,
         });
     };
-
+    
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files?.[0]) {
             const reader = new FileReader();
-            reader.onload = (event) => {
-                setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio: 16 / 9 } });
+            reader.onload = async (event) => {
+                const dataUrl = event.target?.result as string;
+                if (!storage) {
+                    toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
+                    return;
+                }
+            
+                const imagePath = `partners/${uuidv4()}.jpg`;
+                const imageRef = storageRef(storage, imagePath);
+            
+                try {
+                    // Upload the original (un-cropped) image data URL
+                    const snapshot = await uploadString(imageRef, dataUrl, 'data_url');
+                    const downloadURL = await getDownloadURL(snapshot.ref);
+                    
+                    // Update state with the new image URL immediately
+                    onUpdate({ ...cardData, imageUrl: downloadURL });
+                
+                } catch (error) {
+                    console.error("Error uploading image: ", error);
+                    toast({ variant: 'destructive', title: 'Upload-Fehler', description: 'Das Bild konnte nicht hochgeladen werden.' });
+                }
             };
             reader.readAsDataURL(e.target.files[0]);
         }
-        e.target.value = '';
+        e.target.value = ''; // Reset file input
     };
 
-    const handleCropComplete = async (croppedImageUrl: string) => {
-        if (!storage) {
-            toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
-            return setDialogState({ type: null, data: {} });
-        }
-    
-        const imagePath = `partners/${uuidv4()}.jpg`;
-        const imageRef = storageRef(storage, imagePath);
-    
-        try {
-            const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
-            const downloadURL = await getDownloadURL(snapshot.ref);
-            
-            onUpdate({ 
-                ...cardData, 
-                imageUrl: downloadURL,
-            });
-        
-        } catch (error) {
-            console.error("Error uploading image: ", error);
-            toast({ variant: 'destructive', title: 'Upload-Fehler', description: 'Das Bild konnte nicht hochgeladen werden.' });
-        }
+    const handleImageLibrarySelect = (imageUrl: string) => {
+        // Directly update the imageUrl, no cropping.
+        onUpdate({ ...cardData, imageUrl });
         setDialogState({ type: null, data: {} });
     };
-    
+
     const handleHtmlSave = (newHtml: string) => {
         onUpdate({ ...cardData, logoHtml: newHtml, imageUrl: '', logoScale: 100, logoX: 0, logoY: 0 });
         setDialogState({ type: null, data: {} });
     }
 
-    // This effect updates the parent component with the generated HTML whenever dependencies change.
-    useEffect(() => {
-        const newHtml = generateLogoHtml(
-            cardData.imageUrl,
-            cardData.name,
-            cardData.logoScale,
-            cardData.logoX,
-            cardData.logoY
-        );
-        if (cardData.imageUrl && newHtml !== cardData.logoHtml) {
-            onUpdate({ ...cardData, logoHtml: newHtml });
-        }
-    }, [cardData.imageUrl, cardData.name, cardData.logoScale, cardData.logoX, cardData.logoY, onUpdate, cardData, cardData.logoHtml]);
-
-
     return (
-        <div className="relative z-10"> {/* Add relative positioning and z-index here */}
+        <div className="relative z-10">
             <div className="grid md:grid-cols-2 min-h-full">
                 {/* Left side: Editor Form */}
                 <div className="space-y-6 p-10 z-0">
@@ -175,7 +152,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                     </div>
                 </div>
 
-                {/* Right side: Visual Live Preview Area (blue background) */}
+                {/* Right side: Visual Live Preview Area */}
                  <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[300px]">
                     <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
                     <div className="space-y-2 w-[70%] mx-auto">
@@ -192,12 +169,10 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                         </div>
                     </div>
                     <div className="flex-grow flex items-center justify-center">
-                        {/* The actual PartnerCard is now rendered from the parent via the green overlay */}
                     </div>
                 </div>
             </div>
 
-            {/* Render the overlay child */}
             {children}
 
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
@@ -215,19 +190,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                     isOpen={true}
                     onOpenChange={() => setDialogState({ type: null, data: {} })}
                     images={projectImages}
-                    onImageSelect={(imageUrl) => {
-                        setDialogState({ type: null, data: {} });
-                        setTimeout(() => {
-                             setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio: 16/9 } })
-                        }, 100);
-                    }}
-                />
-            )}
-            {dialogState.type === 'imageCrop' && (
-                <ImageCropDialog
-                    {...dialogState.data}
-                    onCropComplete={handleCropComplete}
-                    onClose={() => setDialogState({ type: null, data: {} })}
+                    onImageSelect={handleImageLibrarySelect}
                 />
             )}
              {dialogState.type === 'htmlEditor' && (

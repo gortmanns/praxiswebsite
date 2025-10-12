@@ -77,6 +77,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
 
     const isEditing = editingCardId !== null || isCreatingNew;
+    const isPartnerManager = collectionName.toLowerCase().includes('partner');
 
     const handleEdit = (card: T) => {
         setEditingCardId(card.id);
@@ -87,7 +88,6 @@ export function ReusableCardManager<T extends BaseCardData>({
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
-        // Explicitly set an empty or null ID for new cards
         setEditorCardState({ ...initialCardState, id: '', name: 'Neue Karte' } as T);
     };
     
@@ -165,7 +165,6 @@ export function ReusableCardManager<T extends BaseCardData>({
         }
         setNotification(null);
 
-        // For partners, generate the final logoHtml before saving.
         let dataToSave: Partial<T> = { ...editorCardState };
         if (isPartnerManager) {
             dataToSave.logoHtml = generateFinalLogoHtml(editorCardState);
@@ -204,13 +203,9 @@ export function ReusableCardManager<T extends BaseCardData>({
         }
     };
     
-    // Filter out items that don't have a name property to prevent "ghost cards"
     const validDbData = useMemo(() => dbData?.filter(d => d.name) || [], [dbData]);
-
     const visibleItems = useMemo(() => validDbData.filter(d => !d.hidden), [validDbData]);
     const hiddenItems = useMemo(() => validDbData.filter(d => d.hidden), [validDbData]);
-
-    const isPartnerManager = collectionName.toLowerCase().includes('partner');
     
     const DisplayWrapper: React.FC<{ item: T, index: number, isFirstVisible: boolean }> = ({ item, index }) => {
 
@@ -314,6 +309,58 @@ export function ReusableCardManager<T extends BaseCardData>({
          );
     };
 
+    const partnerEditorOverlay = isPartnerManager ? (
+        <div className="pointer-events-none absolute inset-0 z-0">
+            <div className="grid grid-cols-8 gap-x-2 h-full">
+                <div></div>
+                <div className="col-span-2"></div>
+                <div className="col-span-2"></div>
+                <div className="col-span-2 pointer-events-auto flex flex-col justify-end h-full">
+                    <PartnerCard {...editorCardState} />
+                    <div className="flex flex-col items-center justify-center w-full pointer-events-auto mt-4">
+                        <div className="w-full px-2">
+                            <Slider
+                                value={[editorCardState.logoX || 0]}
+                                onValueChange={(value) => setEditorCardState(prev => ({...prev, logoX: value[0]}))}
+                                max={100}
+                                min={-100}
+                                step={1}
+                                className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-muted [&>span:first-child>span]:bg-popover"
+                            />
+                        </div>
+                        <div className="text-center text-xs mt-1 text-white">
+                            <div>Horizontale Position</div>
+                            <div>{editorCardState.logoX || 0}px</div>
+                        </div>
+                    </div>
+                </div>
+                <div className="pointer-events-auto flex flex-col justify-end">
+                    <div className="h-32">
+                        <div className="flex flex-row items-center justify-center h-full gap-2">
+                            <div className="h-4/5 flex justify-center">
+                                <Slider
+                                    orientation="vertical"
+                                    value={[editorCardState.logoY || 0]}
+                                    onValueChange={(value) => setEditorCardState(prev => ({...prev, logoY: value[0]}))}
+                                    max={100}
+                                    min={-100}
+                                    step={1}
+                                    className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-muted [&>span:first-child>span]:bg-popover"
+                                />
+                            </div>
+                            <div className="text-center text-xs text-white">
+                                <div>Vertikale</div>
+                                <div>Position</div>
+                                <div>{editorCardState.logoY || 0}px</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="w-full mt-4 h-14" />
+                </div>
+            </div>
+        </div>
+    ) : null;
+
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -349,60 +396,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                    {isEditing && (
                         <div className="relative rounded-lg border-2 border-dashed border-primary min-h-[420px]">
                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState}>
-                                <div className="pointer-events-none absolute inset-0 z-0">
-                                    <div className="grid grid-cols-8 gap-x-2 h-full">
-                                        <div></div>
-                                        <div className="col-span-2"></div>
-                                        <div className="col-span-2">
-                                           
-                                        </div>
-                                        <div className="col-span-2 pointer-events-auto flex flex-col justify-end h-full">
-                                            <PartnerCard {...editorCardState} />
-                                            
-                                            {/* Horizontal Slider Area */}
-                                            <div className="flex flex-col items-center justify-center w-full pointer-events-auto mt-4">
-                                                <div className="w-full px-2">
-                                                    <Slider
-                                                        value={[editorCardState.logoX || 0]}
-                                                        onValueChange={(value) => setEditorCardState(prev => ({...prev, logoX: value[0]}))}
-                                                        max={100}
-                                                        min={-100}
-                                                        step={1}
-                                                        className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-muted [&>span:first-child>span]:bg-popover"
-                                                    />
-                                                </div>
-                                                <div className="text-center text-xs mt-1 text-white">
-                                                    <div>Horizontale Position</div>
-                                                    <div>{editorCardState.logoX || 0}px</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="pointer-events-auto flex flex-col justify-end">
-                                            <div className="h-32">
-                                                {/* Vertical Slider Area */}
-                                                <div className="flex flex-row items-center justify-center h-full gap-2">
-                                                    <div className="h-4/5 flex justify-center">
-                                                        <Slider
-                                                            orientation="vertical"
-                                                            value={[editorCardState.logoY || 0]}
-                                                            onValueChange={(value) => setEditorCardState(prev => ({...prev, logoY: value[0]}))}
-                                                            max={100}
-                                                            min={-100}
-                                                            step={1}
-                                                            className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-muted [&>span:first-child>span]:bg-popover"
-                                                        />
-                                                    </div>
-                                                    <div className="text-center text-xs text-white">
-                                                        <div>Vertikale</div>
-                                                        <div>Position</div>
-                                                        <div>{editorCardState.logoY || 0}px</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="w-full mt-4 h-14" />
-                                        </div>
-                                    </div>
-                                </div>
+                               {partnerEditorOverlay}
                             </EditorCardComponent>
                              <div className="p-10 pt-0">
                                 {isEditing && (
@@ -410,9 +404,14 @@ export function ReusableCardManager<T extends BaseCardData>({
                                         <Info className="h-4 w-4" />
                                         <AlertTitle>Bearbeitungsmodus</AlertTitle>
                                         <AlertDescription>
-                                            {isCreatingNew
-                                                ? "Sie können jetzt die Einstellungen für die neue Karte festlegen. Das Logo sollte idealerweise in der Grösse 330x130 Pixel und als .jpg oder .png vorliegen. Die Feinjustierung der angezeigten Grösse und Positionierung innerhalb der Karte ist über die Schieberegler möglich."
-                                                : 'Die Werte der zu bearbeitenden Karte wurden übernommen und können nun angepasst werden. Wenn das Logo ersetzt werden soll, dann sollte dieses idealerweise in der Grösse 330x130 Pixel und als .jpg oder .png vorliegen. Erst mit dem Klicken auf "Änderungen speichern" werden diese in die Datenbank übernommen. Mit Abbrechen wird alles zurückgenommen und die Karte behält ihr ursprüngliches Aussehen.'}
+                                            {isPartnerManager
+                                                ? (isCreatingNew
+                                                    ? "Sie können jetzt die Einstellungen für die neue Karte festlegen. Die Feinjustierung der angezeigten Grösse und Positionierung innerhalb der Karte ist über die Schieberegler möglich."
+                                                    : 'Die Werte der zu bearbeitenden Karte wurden übernommen und können nun angepasst werden. Erst mit dem Klicken auf "Änderungen speichern" werden diese in die Datenbank übernommen. Mit Abbrechen wird alles zurückgenommen und die Karte behält ihr ursprüngliches Aussehen.')
+                                                : (isCreatingNew
+                                                    ? "Sie erstellen eine neue Karte. Füllen Sie die Felder aus und speichern Sie."
+                                                    : "Sie bearbeiten eine bestehende Karte. Nehmen Sie Ihre Änderungen vor und speichern Sie.")
+                                            }
                                         </AlertDescription>
                                     </Alert>
                                 )}
