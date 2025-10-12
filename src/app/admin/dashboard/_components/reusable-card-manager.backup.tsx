@@ -335,60 +335,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                    {isEditing && (
                         <div className="relative rounded-lg border-2 border-dashed border-primary min-h-[420px]">
                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState}>
-                                <div className="pointer-events-none absolute inset-0 z-0">
-                                    <div className="grid grid-cols-8 gap-x-2 h-full">
-                                        <div></div>
-                                        <div className="col-span-2"></div>
-                                        <div className="col-span-2">
-                                           
-                                        </div>
-                                        <div className="col-span-2 pointer-events-auto flex flex-col justify-end h-full">
-                                            <PartnerCard {...editorCardState} />
-                                            
-                                            {/* Horizontal Slider Area */}
-                                            <div className="flex flex-col items-center justify-center w-full pointer-events-auto mt-4">
-                                                <div className="w-full px-2">
-                                                    <Slider
-                                                        value={[editorCardState.logoX || 0]}
-                                                        onValueChange={(value) => setEditorCardState(prev => ({...prev, logoX: value[0]}))}
-                                                        max={100}
-                                                        min={-100}
-                                                        step={1}
-                                                        className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-muted [&>span:first-child>span]:bg-popover"
-                                                    />
-                                                </div>
-                                                <div className="text-center text-xs mt-1 text-white">
-                                                    <div>Horizontale Position</div>
-                                                    <div>{editorCardState.logoX || 0}px</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="pointer-events-auto flex flex-col justify-end">
-                                            <div className="h-32">
-                                                {/* Vertical Slider Area */}
-                                                <div className="flex flex-row items-center justify-center h-full gap-2">
-                                                    <div className="h-4/5 flex justify-center">
-                                                        <Slider
-                                                            orientation="vertical"
-                                                            value={[editorCardState.logoY || 0]}
-                                                            onValueChange={(value) => setEditorCardState(prev => ({...prev, logoY: value[0]}))}
-                                                            max={100}
-                                                            min={-100}
-                                                            step={1}
-                                                            className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-muted [&>span:first-child>span]:bg-popover"
-                                                        />
-                                                    </div>
-                                                    <div className="text-center text-xs text-white">
-                                                        <div>Vertikale</div>
-                                                        <div>Position</div>
-                                                        <div>{editorCardState.logoY || 0}px</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="w-full mt-4 h-14" />
-                                        </div>
-                                    </div>
-                                </div>
+                                
                             </EditorCardComponent>
                              <div className="p-10 pt-0">
                                 {isEditing && (
@@ -494,3 +441,4 @@ export function ReusableCardManager<T extends BaseCardData>({
     
 
     
+
