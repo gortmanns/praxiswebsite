@@ -68,8 +68,8 @@ export function ReusableCardManager<T extends BaseCardData>({
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
-        const newCardId = doc(collection(firestore!, collectionName)).id;
-        setEditorCardState({ ...initialCardState, id: newCardId, name: 'Neuer Partner' } as T);
+        // Only prepare the state for the editor, don't generate ID or touch the main list
+        setEditorCardState({ ...initialCardState, id: 'new', name: 'Neuer Partner' } as T);
     };
 
     const handleCancelEdit = () => {
@@ -144,30 +144,36 @@ export function ReusableCardManager<T extends BaseCardData>({
             return;
         }
         setNotification(null);
-
+    
         try {
-            const mutableCardData: Partial<T> = { ...editorCardState };
-            delete mutableCardData.createdAt;
-
             if (editingCardId && !isCreatingNew) {
+                // Update existing card
+                const mutableCardData: Partial<T> = { ...editorCardState };
+                delete mutableCardData.createdAt;
+                delete mutableCardData.id;
+    
                 const docRef = doc(firestore, collectionName, editingCardId);
                 await setDoc(docRef, mutableCardData, { merge: true });
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Änderungen erfolgreich gespeichert.' });
-            } else {
+            } else if (isCreatingNew) {
+                // Create new card
+                const mutableCardData: Partial<T> = { ...editorCardState };
+                delete mutableCardData.id; // Remove temporary 'new' id
+    
                 const highestOrder = dbData ? dbData.reduce((max, item) => item.order > max ? item.order : max, 0) : 0;
-                const newDocRef = doc(collection(firestore, collectionName), editorCardState.id);
                 
-                const newCardData: T = {
+                const newCardData = {
                     ...initialCardState,
                     ...mutableCardData,
-                    id: newDocRef.id,
                     order: highestOrder + 1,
                     createdAt: serverTimestamp(),
                     hidden: false,
-                } as T;
-                
-                await setDoc(newDocRef, newCardData);
-
+                };
+    
+                // Add the new document and get its reference to add the ID
+                const newDocRef = await addDoc(collection(firestore, collectionName), newCardData);
+                await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
+    
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: `Neue ${entityName}-Karte erfolgreich erstellt.` });
             }
             handleCancelEdit();
@@ -176,6 +182,7 @@ export function ReusableCardManager<T extends BaseCardData>({
             setNotification({ variant: 'destructive', title: 'Fehler', description: `Die Änderungen konnten nicht gespeichert werden: ${error.message}` });
         }
     };
+    
 
     const visibleItems = useMemo(() => dbData?.filter(d => !d.hidden) || [], [dbData]);
     const hiddenItems = useMemo(() => dbData?.filter(d => d.hidden) || [], [dbData]);
@@ -347,10 +354,10 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 </div>
                                 <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-1">Grid 5</div>
                             </div>
-                             <div className="relative z-20">
+                             <div className="relative z-20 md:col-span-1">
                                 <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                              </div>
-                             <div className="relative opacity-0 pointer-events-none">
+                             <div className="relative opacity-0 pointer-events-none md:col-span-1">
                                 <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                                 <DisplayCardComponent {...editorCardState} />
                              </div>
@@ -429,5 +436,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
