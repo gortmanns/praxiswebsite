@@ -390,6 +390,19 @@ export function ReusableCardManager<T extends BaseCardData>({
                                     </div>
                                 </div>
                             </EditorCardComponent>
+                             <div className="p-10 pt-0">
+                                {isEditing && (
+                                    <Alert variant="info" className="mt-8">
+                                        <Info className="h-4 w-4" />
+                                        <AlertTitle>Bearbeitungsmodus</AlertTitle>
+                                        <AlertDescription>
+                                            {isCreatingNew
+                                                ? "Sie können jetzt die Einstellungen für die neue Karte festlegen. Das Logo sollte idealerweise in der Grösse [ideale Grösse] und als .jpg oder .png vorliegen. Die Feinjustierung der angezeigten Grösse und Positionierung innerhalb der Karte ist über die Schieberegler möglich."
+                                                : 'Die Werte der zu bearbeitenden Karte wurden übernommen und können nun angepasst werden. Erst mit dem Klicken auf "Änderungen speichern" werden diese in die Datenbank übernommen. Mit Abbrechen wird alles zurückgenommen und die Karte behält ihr ursprüngliches Aussehen.'}
+                                        </AlertDescription>
+                                    </Alert>
+                                )}
+                            </div>
                         </div>
                     )}
 
@@ -475,5 +488,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
 
     
