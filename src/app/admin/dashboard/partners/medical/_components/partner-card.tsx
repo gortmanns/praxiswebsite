@@ -52,7 +52,7 @@ export const PartnerCard: React.FC<Partner> = (props) => {
           rel="noopener noreferrer"
           className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
-          <Card className="flex h-full w-full items-center bg-card p-6">
+          <Card className="flex h-full w-full items-center bg-background p-6">
             <CardContent className="flex w-full items-center justify-center p-0">
                 <div className="relative flex h-[77px] w-full items-center justify-center overflow-hidden">
                     {renderPartnerLogo(props)}

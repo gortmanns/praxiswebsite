@@ -19,7 +19,7 @@ const initialDoctorState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
             .template-card p, .template-card h3, .template-card span { margin:0; }
             .template-card .font-headline { font-family: var(--font-headline); }
             .template-card .text-card-foreground { color: hsl(var(--card-foreground)); }
-            .template-card .bg-card { background-color: hsl(var(--card)); }
+            .template-card .bg-background { background-color: hsl(var(--background)); }
             .template-card .p-6 { padding: 1.5rem; }
             .template-card .flex { display: flex; }
             .template-card .h-full { height: 100%; }
@@ -57,7 +57,7 @@ const initialDoctorState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
             .template-card .bg-white { background-color: white; }
             .template-card .shrink-0 { flex-shrink: 0; }
         </style>
-         <div class="template-card w-full h-full bg-card text-card-foreground p-6 font-headline">
+         <div class="template-card w-full h-full bg-background text-card-foreground p-6 font-headline">
             <div class="flex h-full w-full items-start">
                 <div id="image-container" class="relative h-full aspect-[2/3] overflow-hidden rounded-md shrink-0 bg-muted">
                     <button id="edit-image" class="image-button w-full h-full flex flex-col items-center justify-center text-center p-4 text-muted-foreground">

@@ -29,7 +29,7 @@ const DisplayCard: React.FC<CardData> = (props) => {
             className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             onClick={(e) => e.preventDefault()}
         >
-            <Card className="flex h-full w-full items-center justify-center p-2">
+            <Card className="flex h-full w-full items-center justify-center p-2 bg-background">
                 <CardContent className="relative flex w-full h-full items-center justify-center p-0 overflow-hidden">
                    {props.logoUrl ? (
                         <Image
