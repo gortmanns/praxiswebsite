@@ -53,8 +53,7 @@ export function CooperationPartnersSection() {
         <Image
           src={partner.logoUrl}
           alt={`${partner.name} Logo`}
-          width={partner.width || 200}
-          height={partner.height || 60}
+          fill
           className="object-contain"
           data-ai-hint={partner.hint}
         />
@@ -84,7 +83,7 @@ export function CooperationPartnersSection() {
                     className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   >
                     <Card className="flex h-full w-full items-center justify-center bg-background p-2">
-                       <div className="relative flex h-full w-full items-center justify-center overflow-hidden p-0">
+                       <div className="relative flex h-full w-full items-center justify-center overflow-hidden">
                           {renderPartnerLogo(partner)}
                        </div>
                     </Card>
