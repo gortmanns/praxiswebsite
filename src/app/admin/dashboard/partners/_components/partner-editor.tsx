@@ -15,10 +15,11 @@ import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_componen
 import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/image-crop-dialog';
 import { TextEditDialog } from '@/app/admin/dashboard/team/doctors/_components/text-edit-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Code2, ImageUp } from 'lucide-react';
+import { Code2, ImageUp, RotateCcw } from 'lucide-react';
 import { projectImages } from '../project-images';
 import { Slider } from '@/components/ui/slider';
-import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
+
 
 export interface Partner {
     id: string;
@@ -62,27 +63,22 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
     const handleInputChange = (field: keyof Partner, value: string | boolean | number) => {
         const newCardData = { ...cardData, [field]: value };
-        const newHtml = generateLogoHtml(
-            newCardData.imageUrl,
-            newCardData.name,
-            newCardData.logoScale,
-            newCardData.logoX,
-            newCardData.logoY
-        );
-        onUpdate({ ...newCardData, logoHtml: newHtml });
+        // No need to regenerate HTML here, it's done in the useMemo below
+        onUpdate(newCardData);
     };
     
     const handleSliderChange = (field: 'logoScale' | 'logoX' | 'logoY', value: number[]) => {
         const singleValue = value[0];
-        const newCardData = { ...cardData, [field]: singleValue };
-        const newHtml = generateLogoHtml(
-            newCardData.imageUrl,
-            newCardData.name,
-            newCardData.logoScale,
-            newCardData.logoX,
-            newCardData.logoY
-        );
-        onUpdate({ ...newCardData, logoHtml: newHtml });
+        handleInputChange(field, singleValue);
+    };
+
+    const handleResetControls = () => {
+        onUpdate({
+            ...cardData,
+            logoScale: 100,
+            logoX: 0,
+            logoY: 0,
+        });
     };
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,12 +105,9 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
             const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
             const downloadURL = await getDownloadURL(snapshot.ref);
             
-            const newLogoHtml = generateLogoHtml(downloadURL, cardData.name, cardData.logoScale, cardData.logoX, cardData.logoY);
-
             onUpdate({ 
                 ...cardData, 
                 imageUrl: downloadURL,
-                logoHtml: newLogoHtml
             });
         
         } catch (error) {
@@ -125,11 +118,23 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
     };
     
     const handleHtmlSave = (newHtml: string) => {
-        onUpdate({ ...cardData, logoHtml: newHtml, imageUrl: '' }); // Clear imageUrl if HTML is manually edited
+        onUpdate({ ...cardData, logoHtml: newHtml, imageUrl: '', logoScale: 100, logoX: 0, logoY: 0 });
         setDialogState({ type: null, data: {} });
     }
 
     const currentCardData = useMemo(() => {
+        const logoHtml = generateLogoHtml(
+            cardData.imageUrl,
+            cardData.name,
+            cardData.logoScale,
+            cardData.logoX,
+            cardData.logoY
+        );
+        return { ...cardData, logoHtml };
+    }, [cardData]);
+
+    // This effect updates the parent component with the generated HTML whenever dependencies change.
+    useEffect(() => {
         const newHtml = generateLogoHtml(
             cardData.imageUrl,
             cardData.name,
@@ -137,8 +142,11 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
             cardData.logoX,
             cardData.logoY
         );
-        return { ...cardData, logoHtml: newHtml };
-    }, [cardData]);
+        if (newHtml !== cardData.logoHtml) {
+            onUpdate({ ...cardData, logoHtml: newHtml });
+        }
+    }, [cardData.imageUrl, cardData.name, cardData.logoScale, cardData.logoX, cardData.logoY, cardData, onUpdate]);
+
 
     return (
         <>
@@ -173,46 +181,62 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                         </Button>
                     </div>
 
-                    <div className="space-y-4 pt-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="logoScale" className="text-center">Grösse des Logos: {cardData.logoScale || 100}%</Label>
-                            <Slider
-                                id="logoScale"
-                                value={[cardData.logoScale || 100]}
-                                onValueChange={(value) => handleSliderChange('logoScale', value)}
-                                max={200}
-                                step={1}
-                            />
-                        </div>
-                         <div className="space-y-2">
-                            <Label htmlFor="logoX" className="text-center">Horizontale Position: {cardData.logoX || 0}px</Label>
-                             <Slider
-                                id="logoX"
-                                value={[cardData.logoX || 0]}
-                                onValueChange={(value) => handleSliderChange('logoX', value)}
-                                min={-100}
-                                max={100}
-                                step={1}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="logoY" className="text-center">Vertikale Position: {-(cardData.logoY || 0)}px</Label>
-                             <Slider
-                                id="logoY"
-                                value={[-(cardData.logoY || 0)]}
-                                onValueChange={(value) => handleSliderChange('logoY', [-value[0]])}
-                                min={-100}
-                                max={100}
-                                step={1}
-                            />
-                        </div>
-                    </div>
-
                 </div>
-                <div className="flex flex-col items-center">
-                    <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                    <div className="relative w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
-                        <PartnerCard {...currentCardData} />
+
+                <div className="relative min-h-[280px]">
+                    {/* The "ghost" container that dictates the size */}
+                    <div className="absolute inset-x-0 top-0 -z-10 rounded-lg bg-primary p-4 flex flex-wrap justify-center gap-8 opacity-0 pointer-events-none">
+                       <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                            <div className="h-32"></div>
+                       </div>
+                    </div>
+                    
+                    {/* The actual live preview, positioned on top */}
+                    <div className="relative z-10 flex flex-col items-center">
+                        <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
+                        <div className="relative w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                            <div className="w-full">
+                                <PartnerCard {...currentCardData} />
+                            </div>
+                            <div className="mt-4 space-y-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="logoScale" className="text-center text-xs">Grösse: {cardData.logoScale || 100}%</Label>
+                                    <Slider
+                                        id="logoScale"
+                                        value={[cardData.logoScale || 100]}
+                                        onValueChange={(value) => handleSliderChange('logoScale', value)}
+                                        max={200}
+                                        step={1}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="logoX" className="text-center text-xs">Horizontale Position: {cardData.logoX || 0}px</Label>
+                                    <Slider
+                                        id="logoX"
+                                        value={[cardData.logoX || 0]}
+                                        onValueChange={(value) => handleSliderChange('logoX', value)}
+                                        min={-100}
+                                        max={100}
+                                        step={1}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="logoY" className="text-center text-xs">Vertikale Position: {-(cardData.logoY || 0)}px</Label>
+                                    <Slider
+                                        id="logoY"
+                                        value={[-(cardData.logoY || 0)]}
+                                        onValueChange={(value) => handleSliderChange('logoY', [-value[0]])}
+                                        min={-100}
+                                        max={100}
+                                        step={1}
+                                    />
+                                </div>
+                                <Button onClick={handleResetControls} variant="outline" size="sm" className="w-full">
+                                    <RotateCcw className="mr-2 h-4 w-4" />
+                                    Steuerung zurücksetzen
+                                </Button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
