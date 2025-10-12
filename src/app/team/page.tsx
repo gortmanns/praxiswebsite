@@ -68,38 +68,55 @@ export default function TeamPage() {
               </p>
             </div>
             
-            <div className="space-y-12">
-              <div className={cn("grid w-full grid-cols-1 sm:grid-cols-2 gap-8 border-2 border-red-500", fullWidthStaff.length === 1 && "sm:grid-cols-2")}>
-                {fullWidthStaff.map((member, index) => (
-                  <div key={member.id} className={cn("mx-auto flex w-full justify-center border-2 border-yellow-500", fullWidthStaff.length % 2 !== 0 && index === fullWidthStaff.length - 1 && "sm:col-span-2")}>
-                      <TeamMemberCard 
-                        name={member.name}
-                        role={member.role}
-                        role2={member.role2}
-                        imageUrl={member.imageUrl}
-                        imageHint="staff portrait"
-                        languages={member.languages}
-                        backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
-                      />
-                  </div>
-                ))}
-              </div>
-              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 border-2 border-blue-500">
-                  {gridStaff.map((member) => (
-                    <div key={member.id} className="mx-auto flex w-full justify-center border-2 border-green-500">
-                      <TeamMemberCard 
-                        name={member.name}
-                        role={member.role}
-                        role2={member.role2}
-                        imageUrl={member.imageUrl}
-                        imageHint="staff portrait"
-                        languages={member.languages}
-                        backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
-                      />
+            {isLoadingStaff ? (
+                <div className="space-y-12">
+                    <div className="grid w-full grid-cols-1 justify-items-center gap-8 sm:grid-cols-2">
+                        <Skeleton className="h-[550px] w-full max-w-sm" />
+                        <Skeleton className="h-[550px] w-full max-w-sm" />
                     </div>
-                  ))}
-              </div>
-            </div>
+                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                         <Skeleton className="h-[550px] w-full max-w-sm" />
+                         <Skeleton className="h-[550px] w-full max-w-sm" />
+                    </div>
+                </div>
+            ) : (
+                <div className="space-y-12">
+                  {fullWidthStaff.length > 0 && (
+                    <div className={cn("grid w-full grid-cols-1 gap-8", fullWidthStaff.length > 0 && "sm:grid-cols-2 justify-items-center")}>
+                      {fullWidthStaff.map((member, index) => (
+                        <div key={member.id} className={cn("mx-auto flex w-full justify-center", fullWidthStaff.length % 2 !== 0 && index === fullWidthStaff.length - 1 && "sm:col-span-2")}>
+                            <TeamMemberCard 
+                              name={member.name}
+                              role={member.role}
+                              role2={member.role2}
+                              imageUrl={member.imageUrl}
+                              imageHint="staff portrait"
+                              languages={member.languages}
+                              backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
+                            />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {gridStaff.length > 0 && (
+                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                        {gridStaff.map((member) => (
+                          <div key={member.id} className="mx-auto flex w-full justify-center">
+                            <TeamMemberCard 
+                              name={member.name}
+                              role={member.role}
+                              role2={member.role2}
+                              imageUrl={member.imageUrl}
+                              imageHint="staff portrait"
+                              languages={member.languages}
+                              backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
+                            />
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
+            )}
           </div>
         </div>
       </main>

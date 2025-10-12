@@ -224,10 +224,10 @@ export function ReusableCardManager<T extends BaseCardData>({
 
     const fullWidthVisibleItems = useMemo(() => isStaffManager ? visibleItems.filter(i => i.fullWidth) : [], [visibleItems, isStaffManager]);
     const gridVisibleItems = useMemo(() => isStaffManager ? visibleItems.filter(i => !i.fullWidth) : visibleItems, [visibleItems, isStaffManager]);
+    
     const fullWidthHiddenItems = useMemo(() => isStaffManager ? hiddenItems.filter(i => i.fullWidth) : [], [hiddenItems, isStaffManager]);
     const gridHiddenItems = useMemo(() => isStaffManager ? hiddenItems.filter(i => !i.fullWidth) : hiddenItems, [hiddenItems, isStaffManager]);
-    
-    
+
     const partnerEditorOverlay = isPartnerManager && isEditing ? (
         <div className="pointer-events-none absolute inset-0 z-10">
              <div className="flex h-full w-full justify-end">
@@ -294,126 +294,97 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     ) : null;
 
-    const renderCardWithControls = (item: T, index: number, isHidden: boolean, totalVisible: number, isFullWidthLayout: boolean) => {
-        const moveButtons = !isHidden && (
-            <>
-                <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing} title={isFullWidthLayout ? 'Nach oben' : 'Nach links'}>
-                    {isFullWidthLayout ? <ArrowUp className="mr-2 h-4 w-4" /> : <ChevronLeft className="mr-2 h-4 w-4" />}
-                    Verschieben
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === totalVisible - 1 || isEditing} title={isFullWidthLayout ? 'Nach unten' : 'Nach rechts'}>
-                    Verschieben
-                    {isFullWidthLayout ? <ArrowDown className="ml-2 h-4 w-4" /> : <ChevronRight className="ml-2 h-4 w-4" />}
-                </Button>
-            </>
-        );
+    const renderCardWithControls = (item: T, index: number, isHidden: boolean, itemsArray: T[]) => {
+        const isFirst = index === 0;
+        const isLast = index === itemsArray.length - 1;
 
-        const editControls = (
-            <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-1">
-                <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                    {isHidden ? <Eye className="mr-2 h-4 w-4" /> : <EyeOff className="mr-2 h-4 w-4" />}
-                    {isHidden ? 'Einblenden' : 'Ausblenden'}
-                </Button>
-                {isStaffManager && (
-                    <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleToggleFullWidth(item)} 
-                        disabled={isEditing}
-                        title="Volle Breite aktivieren/deaktivieren"
-                        className={cn(item.fullWidth && "bg-primary/90 hover:bg-primary text-primary-foreground")}
-                    >
-                        <RectangleHorizontal className="mr-2 h-4 w-4" />
-                        Volle Breite
-                    </Button>
-                )}
-                <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
-                    <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                </Button>
-                {isHidden && (
-                     <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(item.id, item.name || 'diese Karte')} disabled={isEditing}>
-                        <Trash2 className="mr-2 h-4 w-4" /> Löschen
-                    </Button>
-                )}
+        return (
+            <div className="relative">
+                <div className="absolute top-0 -left-48 z-10 flex h-full w-44 flex-col items-end justify-center pr-4">
+                    <div className="flex flex-col gap-2 rounded-md border bg-card p-2 shadow-lg">
+                        <div className="grid w-full grid-cols-1 gap-2">
+                            <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={isFirst || isEditing} title="Nach oben/links">
+                                {item.fullWidth ? <ArrowUp className="h-4 w-4"/> : <ChevronLeft className="h-4 w-4"/>}
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={isLast || isEditing} title="Nach unten/rechts">
+                                {item.fullWidth ? <ArrowDown className="h-4 w-4"/> : <ChevronRight className="h-4 w-4"/>}
+                            </Button>
+                        </div>
+                        <div className="grid w-full grid-cols-1 gap-2">
+                            <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                                {isHidden ? <Eye className="mr-2 h-4 w-4" /> : <EyeOff className="mr-2 h-4 w-4" />}
+                                {isHidden ? 'Einblenden' : 'Ausblenden'}
+                            </Button>
+                            {isStaffManager && (
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleToggleFullWidth(item)}
+                                    disabled={isEditing}
+                                    title="Volle Breite aktivieren/deaktivieren"
+                                    className={cn(item.fullWidth && "bg-primary/90 hover:bg-primary text-primary-foreground")}
+                                >
+                                    <RectangleHorizontal className="mr-2 h-4 w-4" />
+                                    Volle Breite
+                                </Button>
+                            )}
+                            <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
+                                <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                            </Button>
+                            {isHidden && (
+                                <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(item.id, item.name || 'diese Karte')} disabled={isEditing}>
+                                    <Trash2 className="mr-2 h-4 w-4" /> Löschen
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+                <div className={cn("relative", isHidden && "grayscale")}>
+                     <DisplayCardComponent {...item} />
+                </div>
             </div>
-        );
-
-        const cardDisplay = (
-            <div className={cn("relative", isHidden && "grayscale")}>
-                 <DisplayCardComponent {...item} />
-            </div>
-        );
+        )
+    };
+    
+    const renderItemGroup = (items: T[], isHidden: boolean, fullWidth: boolean) => {
+        if (!items || items.length === 0) return null;
 
         if (isPartnerManager) {
             return (
-                <div className="w-full">
-                    {cardDisplay}
-                    <div className="mt-2 grid grid-cols-2 gap-2">
-                        {moveButtons}
-                        <div className="grid grid-cols-1 gap-2">
-                            {editControls}
-                        </div>
+                <div className={cn("mt-8 rounded-lg p-4", !isHidden && 'bg-primary')}>
+                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                        {items.map((item, index) => (
+                            <div key={item.id}>
+                                {renderCardWithControls(item, index, isHidden, items)}
+                            </div>
+                        ))}
                     </div>
                 </div>
             );
         }
 
-        // Layout for Doctors and Staff
-        return (
-             <div className={cn("flex items-center justify-center gap-4 border-2 border-orange-500", 
-                 isFullWidthLayout ? "flex-col w-full max-w-sm sm:flex-col" : "flex-col sm:flex-row")}>
-                <div className="order-2 flex w-full flex-row flex-wrap justify-center gap-2 sm:order-1 sm:w-48 sm:flex-shrink-0 sm:flex-col">
-                    <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-1">
-                        {moveButtons}
-                    </div>
-                    {editControls}
-                </div>
-                <div className="order-1 w-full flex-1 sm:order-2 sm:max-w-none">
-                     {cardDisplay}
-                </div>
-            </div>
-        );
-    };
-
-    const renderItemsGrid = (items: T[], isHidden: boolean, fullWidthItems: T[], gridItems: T[]) => {
-      if (isPartnerManager) {
-        return (
-            <div className={cn("mt-8 rounded-lg p-4", !isHidden && 'bg-primary')}>
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        if (fullWidth) {
+            return (
+                <div className={cn("grid w-full grid-cols-1 gap-8", items.length > 0 && "sm:grid-cols-2 justify-items-center")}>
                     {items.map((item, index) => (
-                        <div key={item.id}>
-                            {renderCardWithControls(item, index, isHidden, items.length, false)}
+                        <div key={item.id} className={cn("mx-auto flex w-full justify-center", items.length % 2 !== 0 && index === items.length - 1 && "sm:col-span-2")}>
+                            {renderCardWithControls(item, index, isHidden, items)}
                         </div>
                     ))}
                 </div>
+            )
+        }
+        
+        return (
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                {items.map((item, index) => (
+                    <div key={item.id} className="mx-auto flex w-full justify-center">
+                       {renderCardWithControls(item, index, isHidden, items)}
+                    </div>
+                ))}
             </div>
-        );
-      }
-
-      // Logic for staff and doctors
-      return (
-        <div className="mt-8 space-y-12">
-          {fullWidthItems.length > 0 && (
-            <div className={cn("grid w-full grid-cols-1 sm:grid-cols-2 gap-8 border-2 border-red-500", fullWidthItems.length > 0 && "justify-items-center")}>
-              {fullWidthItems.map((item, index) => (
-                <div key={item.id} className={cn("mx-auto flex w-full border-2 border-yellow-500", fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 && "sm:col-span-2 justify-center")}>
-                  {renderCardWithControls(item, index, isHidden, fullWidthItems.length, true)}
-                </div>
-              ))}
-            </div>
-          )}
-          {gridItems.length > 0 && (
-            <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 border-2 border-blue-500">
-              {gridItems.map((item, index) => (
-                <div key={item.id} className="mx-auto flex w-full justify-center border-2 border-green-500">
-                  {renderCardWithControls(item, index, isHidden, gridItems.length, false)}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      );
-    }
+        )
+    };
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -486,12 +457,9 @@ export function ReusableCardManager<T extends BaseCardData>({
                     
                     {isLoadingData && (
                         <div className="mt-8 space-y-12">
-                             <div className="grid grid-cols-1 place-items-center w-full">
-                                <Skeleton className="h-[500px] w-full max-w-sm" />
-                            </div>
-                             <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-                                <Skeleton className="h-[500px] w-full max-w-sm mx-auto" />
-                                <Skeleton className="h-[500px] w-full max-w-sm mx-auto" />
+                            <div className="grid grid-cols-1 gap-12 sm:grid-cols-2">
+                                <Skeleton className="h-[250px] w-full max-w-sm mx-auto" />
+                                <Skeleton className="h-[250px] w-full max-w-sm mx-auto" />
                             </div>
                         </div>
                     )}
@@ -504,15 +472,23 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </AlertDescription>
                         </Alert>
                     )}
-                    {!isLoadingData && renderItemsGrid(visibleItems, false, fullWidthVisibleItems, gridVisibleItems)}
+                    {!isLoadingData && !isEditing && (
+                        <div className="space-y-12 mt-8">
+                            {renderItemGroup(fullWidthVisibleItems, false, true)}
+                            {renderItemGroup(gridVisibleItems, false, false)}
+                        </div>
+                    )}
 
 
-                    {hiddenItems.length > 0 && (
+                    {hiddenItems.length > 0 && !isEditing && (
                         <>
                             <div className="mt-16 space-y-4">
                                 <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
                             </div>
-                           {!isLoadingData && renderItemsGrid(hiddenItems, true, fullWidthHiddenItems, gridHiddenItems)}
+                             <div className="space-y-12 mt-8">
+                                {renderItemGroup(fullWidthHiddenItems, true, true)}
+                                {renderItemGroup(gridHiddenItems, true, false)}
+                            </div>
                         </>
                     )}
 
@@ -536,3 +512,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
