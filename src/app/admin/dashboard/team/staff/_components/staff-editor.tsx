@@ -126,8 +126,8 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
 
                 <div className="md:col-span-2 relative">
                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                    <div className="grid grid-cols-2">
-                        <div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="w-full max-w-sm mx-auto">
                             <TeamMemberCard
                                 name={cardData.name}
                                 role={cardData.role}
@@ -135,14 +135,19 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 imageUrl={cardData.imageUrl}
                                 imageHint="staff portrait preview"
                                 languages={cardData.languages}
-                                backsideContent={
-                                    cardData.backsideContent ? (
-                                        <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
-                                    ) : null
-                                }
                             />
                         </div>
-                        <div></div>
+                        <div className="w-full max-w-sm mx-auto">
+                            {cardData.backsideContent ? (
+                                <div className="h-full w-full rounded-lg bg-accent p-6 text-accent-foreground text-center text-lg">
+                                    <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
+                                </div>
+                             ) : (
+                                <div className="h-full w-full rounded-lg border-2 border-dashed border-muted-foreground/50 bg-muted/50 flex items-center justify-center">
+                                    <span className="text-muted-foreground">Rückseite (leer)</span>
+                                </div>
+                             )}
+                        </div>
                     </div>
                 </div>
             </div>
