@@ -13,14 +13,11 @@ import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Sav
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
-import { Slider } from '@/components/ui/slider';
-import { PartnerCard } from '../partners/_components/partner-card';
-
 
 export interface BaseCardData {
     id: string;
     order: number;
-    name: string; // Ensure name is part of the base data for filtering
+    name: string;
     hidden?: boolean;
     createdAt?: any;
     [key: string]: any;
@@ -41,14 +38,17 @@ interface ReusableCardManagerProps<T extends BaseCardData> {
 }
 
 const generateFinalLogoHtml = (partner: BaseCardData): string => {
-    if (partner.imageUrl) {
-        const scale = partner.logoScale || 100;
-        const x = partner.logoX || 0;
-        const y = partner.logoY || 0;
+    if ('imageUrl' in partner && partner.imageUrl) {
+        const scale = 'logoScale' in partner ? partner.logoScale : 100;
+        const x = 'logoX' in partner ? partner.logoX : 0;
+        const y = 'logoY' in partner ? partner.logoY : 0;
         const transformStyle = `transform: scale(${scale / 100}) translate(${x}px, ${y}px);`;
         return `<img src="${partner.imageUrl}" alt="${partner.name || 'Partner Logo'}" style="object-fit: contain; width: 100%; height: 100%; transition: transform 0.2s ease-out; ${transformStyle}" />`;
     }
-    return partner.logoHtml || `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
+    if ('logoHtml' in partner && partner.logoHtml) {
+        return partner.logoHtml;
+    }
+    return `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
 };
 
 
@@ -180,7 +180,7 @@ export function ReusableCardManager<T extends BaseCardData>({
 
         let dataToSave: Partial<T> = { ...editorCardState };
         if (isPartnerManager) {
-            dataToSave.logoHtml = generateFinalLogoHtml(editorCardState);
+            (dataToSave as any).logoHtml = generateFinalLogoHtml(editorCardState);
         }
     
         try {
@@ -226,190 +226,32 @@ export function ReusableCardManager<T extends BaseCardData>({
     const fullWidthHiddenItems = isStaffManager ? hiddenItems.filter(item => item.fullWidth) : [];
     const gridHiddenItems = isStaffManager ? hiddenItems.filter(item => !item.fullWidth) : hiddenItems;
     
-    const DisplayWrapper: React.FC<{ item: T, index: number, totalVisible: number, isFullWidth: boolean }> = ({ item, index, totalVisible, isFullWidth }) => {
-        const MoveUpIcon = isFullWidth ? ArrowUp : ChevronLeft;
-        const MoveDownIcon = isFullWidth ? ArrowDown : ChevronRight;
-
-        const controlButtons = (
-             <div className="grid grid-cols-1 w-full gap-2">
-                <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
-                    <MoveUpIcon className="mr-2 h-4 w-4" /> Verschieben
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === totalVisible - 1 || isEditing}>
-                    Verschieben <MoveDownIcon className="ml-2 h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                    <EyeOff className="mr-2 h-4 w-4" /> Ausblenden
-                </Button>
-                {isStaffManager && (
-                    <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleToggleFullWidth(item)} 
-                        disabled={isEditing}
-                        title="Volle Breite aktivieren/deaktivieren"
-                        className={cn(item.fullWidth && "bg-primary/90 hover:bg-primary text-primary-foreground")}
-                    >
-                        <RectangleHorizontal className="mr-2 h-4 w-4" />
-                        Volle Breite
-                    </Button>
-                )}
-                <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
-                    <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                </Button>
-            </div>
-        );
-
-        if (isPartnerManager || !isStaffManager) {
-            return (
-                <div className="w-full">
-                    <div className="flex flex-col gap-2">
-                         <div className="w-full">
-                            <DisplayCardComponent {...item} />
-                         </div>
-                        <div className="mt-2 flex w-full flex-col gap-2">
-                           {controlButtons}
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        // For Staff and Doctors
-        return (
-            <div className="flex w-full flex-col sm:flex-row items-center justify-center gap-4">
-                <div className="flex sm:flex-col w-full sm:w-48 order-2 sm:order-1 flex-shrink-0 items-center justify-center gap-2">
-                   {controlButtons}
-                </div>
-                <div className={cn("relative flex-1 w-full max-w-sm order-1 sm:order-2")}>
-                    <DisplayCardComponent {...item} />
-                </div>
-            </div>
-        );
-    };
-
-    const PartnerRowGrid: React.FC<{ partners: T[], totalVisible: number, baseIndex: number }> = ({ partners, totalVisible, baseIndex }) => {
-        if (!partners || partners.length === 0) return null;
-        return (
-            <div className="flex flex-wrap justify-center gap-8">
-                {partners.map((partner, index) => (
-                    <div key={partner.id} className="w-full sm:w-1/2 lg:w-1/4 lg:basis-1/4 grow-0 shrink-0 px-4">
-                        <DisplayWrapper
-                            item={partner}
-                            index={baseIndex + index}
-                            totalVisible={totalVisible}
-                            isFullWidth={false}
-                        />
-                    </div>
-                ))}
-            </div>
-        );
-    };
-
-    const PartnerGrid: React.FC<{ partners: T[] }> = ({ partners }) => {
-        if (!partners || partners.length === 0) return null;
-        const totalVisible = partners.length;
-
-        const chunkedPartners = [];
-        for (let i = 0; i < partners.length; i += 4) {
-            chunkedPartners.push(partners.slice(i, i + 4));
-        }
-
-        return (
-            <div className="space-y-8">
-                {chunkedPartners.map((rowPartners, rowIndex) => (
-                    <PartnerRowGrid 
-                        key={rowIndex} 
-                        partners={rowPartners}
-                        totalVisible={totalVisible}
-                        baseIndex={rowIndex * 4}
-                    />
-                ))}
-            </div>
-        );
-    };
-
-
-    const HiddenDisplayWrapper: React.FC<{ item: T, isFullWidth: boolean }> = ({ item, isFullWidth }) => {
-        const itemControls = (
-             <div className="grid grid-cols-1 w-full gap-2">
-                <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                    <Eye className="mr-2 h-4 w-4" /> Einblenden
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
-                    <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                </Button>
-                {isStaffManager && (
-                    <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleToggleFullWidth(item)} 
-                        disabled={isEditing}
-                        title="Volle Breite aktivieren/deaktivieren"
-                        className={cn(item.fullWidth && "bg-primary/90 hover:bg-primary text-primary-foreground")}
-                    >
-                        <RectangleHorizontal className="mr-2 h-4 w-4" />
-                        Volle Breite
-                    </Button>
-                )}
-                <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(item.id, (item as any).name || 'diese Karte')} disabled={isEditing}>
-                    <Trash2 className="mr-2 h-4 w-4" /> Löschen
-                </Button>
-            </div>
-        );
-        
-        if (isPartnerManager || !isStaffManager) {
-            return (
-                <div className="w-full">
-                    <div className="flex flex-col gap-2">
-                        <div className="relative">
-                            <div className="absolute inset-0 z-10 bg-black/50 rounded-lg"></div>
-                            <DisplayCardComponent {...item} />
-                        </div>
-                        <div className="mt-2 flex w-full flex-col gap-2">
-                            {itemControls}
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        return (
-            <div className="flex w-full flex-col sm:flex-row items-center justify-center gap-4">
-                <div className="flex sm:flex-col w-full sm:w-48 order-2 sm:order-1 flex-shrink-0 items-center justify-center gap-2">
-                   {itemControls}
-                </div>
-                <div className={cn("relative flex-1 w-full max-w-sm order-1 sm:order-2 grayscale")}>
-                    <DisplayCardComponent {...item} />
-                </div>
-            </div>
-         );
-    };
-
-    const partnerEditorOverlay = isPartnerManager ? (
+    const partnerEditorOverlay = isPartnerManager && isEditing ? (
         <div className="pointer-events-none absolute inset-0 z-10">
-            <div className="grid grid-cols-8 gap-x-2 h-full">
-                <div></div>
-                <div className="col-span-2"></div>
-                <div className="col-span-2 pointer-events-auto flex flex-col justify-end h-full">
-                   
-                </div>
-                <div className="col-span-2 pointer-events-auto flex flex-col justify-end h-full">
-                    <div className="space-y-2 w-full mx-auto mb-4">
-                        <div className="text-center text-primary-foreground">
-                            <label htmlFor="logoScale" className="text-sm">Grösse: {editorCardState.logoScale || 100}%</label>
-                            <Slider
-                                id="logoScale"
-                                value={[editorCardState.logoScale || 100]}
-                                onValueChange={(value) => setEditorCardState(prev => ({...prev, logoScale: value[0]}))}
-                                max={200}
-                                step={1}
-                                className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-popover [&>span:first-child>span]:bg-muted"
-                            />
+             <div className="flex h-full w-full justify-end">
+                <div className="flex h-full w-[40%] flex-col justify-end">
+                    {/* Placeholder for preview card */}
+                    <div className="relative">
+                        <div className="pointer-events-auto absolute -top-16 left-0 right-0">
+                             <div className="mx-auto mb-2 w-4/5 space-y-2">
+                                <div className="text-center text-primary-foreground">
+                                    <label htmlFor="logoScale" className="text-sm">Grösse: {editorCardState.logoScale || 100}%</label>
+                                    <Slider
+                                        id="logoScale"
+                                        value={[editorCardState.logoScale || 100]}
+                                        onValueChange={(value) => setEditorCardState(prev => ({...prev, logoScale: value[0]}))}
+                                        max={200}
+                                        step={1}
+                                        className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-popover [&>span:first-child>span]:bg-muted"
+                                    />
+                                </div>
+                            </div>
                         </div>
+                        <DisplayCardComponent {...editorCardState} />
                     </div>
-                     <PartnerCard {...editorCardState} />
-                    <div className="flex flex-col items-center justify-center w-full pointer-events-auto mt-4">
+
+                    {/* Placeholder for sliders */}
+                     <div className="pointer-events-auto mt-4 flex w-full flex-col items-center justify-center">
                         <div className="w-full px-2">
                             <Slider
                                 value={[editorCardState.logoX || 0]}
@@ -420,16 +262,17 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-popover [&>span:first-child>span]:bg-muted"
                             />
                         </div>
-                        <div className="text-center text-xs mt-1 text-white">
+                        <div className="mt-1 text-center text-xs text-white">
                             <div>Horizontale Position</div>
                             <div>{editorCardState.logoX || 0}px</div>
                         </div>
                     </div>
                 </div>
-                <div className="pointer-events-auto flex flex-col justify-end">
+
+                <div className="pointer-events-auto flex h-full w-[10%] flex-col justify-end">
                     <div className="h-32">
-                        <div className="flex flex-row items-center justify-center h-full gap-2">
-                            <div className="h-4/5 flex justify-center">
+                        <div className="flex h-full flex-row items-center justify-center gap-2">
+                            <div className="flex h-4/5 justify-center">
                                 <Slider
                                     orientation="vertical"
                                     value={[-(editorCardState.logoY || 0)]}
@@ -440,19 +283,136 @@ export function ReusableCardManager<T extends BaseCardData>({
                                     className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-popover [&>span:first-child>span]:bg-muted"
                                 />
                             </div>
-                            <div className="text-center text-xs text-white">
+                             <div className="text-center text-xs text-white">
                                 <div>Vertikale</div>
                                 <div>Position</div>
                                 <div>{editorCardState.logoY || 0}px</div>
                             </div>
                         </div>
                     </div>
-                    <div className="w-full mt-4 h-14" />
+                    <div className="h-14 w-full" />
                 </div>
             </div>
         </div>
     ) : null;
 
+    const renderCardWithControls = (item: T, index: number, isHidden: boolean, totalVisible: number, isFullWidthLayout: boolean) => {
+        const moveButtons = !isHidden && (
+            <>
+                <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing} title={isFullWidthLayout ? 'Nach oben' : 'Nach links'}>
+                    {isFullWidthLayout ? <ArrowUp className="mr-2 h-4 w-4" /> : <ChevronLeft className="mr-2 h-4 w-4" />}
+                    Verschieben
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === totalVisible - 1 || isEditing} title={isFullWidthLayout ? 'Nach unten' : 'Nach rechts'}>
+                    Verschieben
+                    {isFullWidthLayout ? <ArrowDown className="ml-2 h-4 w-4" /> : <ChevronRight className="ml-2 h-4 w-4" />}
+                </Button>
+            </>
+        );
+
+        const editControls = (
+            <>
+                <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                    {isHidden ? <Eye className="mr-2 h-4 w-4" /> : <EyeOff className="mr-2 h-4 w-4" />}
+                    {isHidden ? 'Einblenden' : 'Ausblenden'}
+                </Button>
+                {isStaffManager && (
+                    <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleToggleFullWidth(item)} 
+                        disabled={isEditing}
+                        title="Volle Breite aktivieren/deaktivieren"
+                        className={cn(item.fullWidth && "bg-primary/90 hover:bg-primary text-primary-foreground")}
+                    >
+                        <RectangleHorizontal className="mr-2 h-4 w-4" />
+                        Volle Breite
+                    </Button>
+                )}
+                <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
+                    <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                </Button>
+                {isHidden && (
+                     <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(item.id, item.name || 'diese Karte')} disabled={isEditing}>
+                        <Trash2 className="mr-2 h-4 w-4" /> Löschen
+                    </Button>
+                )}
+            </>
+        );
+
+        const cardDisplay = (
+            <div className={cn("relative", isHidden && "grayscale")}>
+                 <DisplayCardComponent {...item} />
+            </div>
+        );
+
+        if (isPartnerManager) {
+            return (
+                <div className="w-full">
+                    {cardDisplay}
+                    <div className="mt-2 grid grid-cols-2 gap-2">
+                        {moveButtons}
+                        {editControls}
+                    </div>
+                </div>
+            );
+        }
+
+        // Layout for Doctors and Staff
+        return (
+             <div className="flex w-full flex-col sm:flex-row items-center justify-center gap-4">
+                <div className="order-2 flex w-full flex-row flex-wrap justify-center gap-2 sm:order-1 sm:w-48 sm:flex-shrink-0 sm:flex-col">
+                    <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-1">
+                        {moveButtons}
+                    </div>
+                     <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-1">
+                        {editControls}
+                    </div>
+                </div>
+                <div className="order-1 w-full flex-1 sm:order-2 sm:max-w-none">
+                     {cardDisplay}
+                </div>
+            </div>
+        );
+    };
+
+    const renderGrid = (items: T[], isHidden: boolean) => {
+        if (isPartnerManager) {
+            return (
+                <div className={cn("mt-8 rounded-lg p-4", !isHidden && 'bg-primary')}>
+                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                        {items.map((item, index) => (
+                            <div key={item.id}>
+                                {renderCardWithControls(item, index, isHidden, items.length, false)}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        const fullWidthItems = isStaffManager ? items.filter(i => i.fullWidth) : [];
+        const gridItems = isStaffManager ? items.filter(i => !i.fullWidth) : items;
+
+        return (
+            <div className="mt-8 space-y-12">
+                {fullWidthItems.map((item, index) => (
+                    <div key={item.id} className="grid grid-cols-1 place-items-center w-full">
+                        <div className="w-full max-w-sm">
+                            {renderCardWithControls(item, index, isHidden, fullWidthItems.length, true)}
+                        </div>
+                    </div>
+                ))}
+                 <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+                    {gridItems.map((item, index) => (
+                        <div key={item.id} className="mx-auto flex w-full max-w-sm justify-center lg:max-w-none">
+                            {renderCardWithControls(item, index, isHidden, gridItems.length, false)}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -522,101 +482,30 @@ export function ReusableCardManager<T extends BaseCardData>({
                             Klicken Sie auf &quot;Bearbeiten&quot;, um eine Karte in den Bearbeitungsmodus zu laden.
                         </p>
                     </div>
-                     <div className={cn( "mt-8", isPartnerManager && "rounded-lg bg-primary p-4" )}>
-                        {isLoadingData && (
-                            isPartnerManager ? 
-                                Array.from({ length: 4 }).map((_, index) => <Skeleton key={index} className="h-32 w-full rounded-lg bg-primary-foreground/20" />) :
-                                Array.from({ length: 2 }).map((_, index) => (
-                                    <div key={index} className="flex w-full items-center justify-center gap-4">
-                                        <div className="w-36 flex-shrink-0"></div>
-                                        <div className="relative flex-1 w-full max-w-sm sm:max-w-none p-2">
-                                            <Skeleton className="w-full aspect-[4/5] rounded-lg" />
-                                        </div>
-                                    </div>
-                                ))
-                        )}
-                        {dbError && (
-                             <Alert variant="destructive" className={cn(isPartnerManager ? "w-full lg:col-span-4" : "lg:col-span-2")}>
-                                <AlertCircle className="h-4 w-4" />
-                                <AlertTitle>Datenbankfehler</AlertTitle>
-                                <AlertDescription>
-                                    Die Daten konnten nicht geladen werden: {dbError.message}
-                                </AlertDescription>
-                            </Alert>
-                        )}
-                        {!isLoadingData && isPartnerManager && (
-                            <PartnerGrid partners={gridVisibleItems} />
-                        )}
-                        {!isLoadingData && !isStaffManager && !isPartnerManager && (
-                             <div className='space-y-12'>
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                                    {gridVisibleItems.map((item, index) => (
-                                        <DisplayWrapper key={item.id} item={item} index={index} totalVisible={gridVisibleItems.length} isFullWidth={false} />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                        {!isLoadingData && isStaffManager && (
-                            <div className='space-y-12'>
-                                {fullWidthVisibleItems.map((item, index) => (
-                                    <div key={item.id} className="flex justify-center">
-                                         <div className="w-full max-w-sm">
-                                             <DisplayWrapper item={item} index={index} totalVisible={fullWidthVisibleItems.length} isFullWidth={true} />
-                                         </div>
-                                    </div>
-                                ))}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                                    {gridVisibleItems.map((item, index) => (
-                                       <div key={item.id} className="mx-auto flex justify-center w-full">
-                                            <DisplayWrapper item={item} index={index} totalVisible={gridVisibleItems.length} isFullWidth={false} />
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                    
+                    {isLoadingData && (
+                        <div className="mt-8">
+                            <Skeleton className="h-64 w-full" />
+                        </div>
+                    )}
+                    {dbError && (
+                         <Alert variant="destructive" className="mt-8">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertTitle>Datenbankfehler</AlertTitle>
+                            <AlertDescription>
+                                Die Daten konnten nicht geladen werden: {dbError.message}
+                            </AlertDescription>
+                        </Alert>
+                    )}
+                    {!isLoadingData && renderGrid(visibleItems, false)}
 
-                    {(gridHiddenItems.length > 0 || fullWidthHiddenItems.length > 0) && (
+
+                    {hiddenItems.length > 0 && (
                         <>
                             <div className="mt-16 space-y-4">
                                 <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
                             </div>
-                            <div className="mt-8">
-                                {!isLoadingData && isPartnerManager && (
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                                        {gridHiddenItems.map((item) => (
-                                            <HiddenDisplayWrapper key={item.id} item={item} isFullWidth={false} />
-                                        ))}
-                                    </div>
-                                )}
-                                 {!isLoadingData && !isStaffManager && !isPartnerManager && (
-                                     <div className='space-y-12'>
-                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                                            {gridHiddenItems.map((item) => (
-                                                <HiddenDisplayWrapper key={item.id} item={item} isFullWidth={false} />
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                                {!isLoadingData && isStaffManager && (
-                                     <div className='space-y-12'>
-                                        {fullWidthHiddenItems.map((item) => (
-                                            <div key={item.id} className="flex justify-center">
-                                                 <div className="w-full max-w-sm">
-                                                    <HiddenDisplayWrapper item={item} isFullWidth={true} />
-                                                 </div>
-                                            </div>
-                                        ))}
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                                            {gridHiddenItems.map((item) => (
-                                                 <div key={item.id} className="mx-auto flex justify-center w-full">
-                                                    <HiddenDisplayWrapper key={item.id} item={item} isFullWidth={false} />
-                                                 </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                           {!isLoadingData && renderGrid(hiddenItems, true)}
                         </>
                     )}
 
