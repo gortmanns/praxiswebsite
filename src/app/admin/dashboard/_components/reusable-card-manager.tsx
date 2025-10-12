@@ -327,28 +327,26 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                     {isEditing && (
-                         <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8 mb-12">
-                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
-                        </div>
-                    )}
-
-                    {isEditing && isPartnerManager && (
-                         <div className="relative mt-[-10rem] mb-12 h-48">
-                            {/* Phantom container for sizing */}
-                            <div 
-                                className="absolute inset-x-0 top-0 rounded-lg bg-primary p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 opacity-100"
-                                style={{
-                                    outline: '3px solid #00ff00',
-                                    zIndex: 10,
-                                }}
-                            >
-                                {/* This is the live preview card, positioned within the phantom grid */}
-                                <div className="z-20 col-start-1 sm:col-start-2 lg:col-start-4">
-                                     <p className="text-sm font-semibold text-primary-foreground mb-2 text-center">Live-Vorschau</p>
-                                     <DisplayCardComponent {...editorCardState} />
+                        <div className="rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8 mb-12">
+                            {isPartnerManager ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    {/* Left: Editor form */}
+                                    <div>
+                                        <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                                    </div>
+                                    {/* Right: Live preview */}
+                                    <div className="relative">
+                                        <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
+                                        <div className="pointer-events-none">
+                                            <DisplayCardComponent {...editorCardState} />
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                         </div>
+                            ) : (
+                                // Default editor for non-partners
+                                <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                            )}
+                        </div>
                     )}
 
 
@@ -364,7 +362,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                      )}>
                         {isLoadingData && (
                             isPartnerManager ? 
-                                Array.from({ length: 4 }).map((_, index) => <Skeleton key={index} className="h-32 w-full rounded-lg bg-primary-foreground/20" />) :
+                                Array.from({ length: 5 }).map((_, index) => <Skeleton key={index} className="h-32 w-full rounded-lg bg-primary-foreground/20" />) :
                                 Array.from({ length: 2 }).map((_, index) => (
                                     <div key={index} className="flex w-full items-center justify-center gap-4">
                                         <div className="w-36 flex-shrink-0"></div>
