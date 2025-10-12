@@ -1,71 +1,128 @@
+
 'use client';
 
-import React from 'react';
-import { StaffCard as DisplayCard } from './_components/staff-card';
-import { StaffEditor as EditorComponent } from './_components/staff-editor';
-import { ReusableCardManager } from '../../_components/reusable-card-manager';
-import type { StaffMember as CardData } from './_components/staff-editor';
+import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Loader2, Info, CheckCircle, AlertCircle } from 'lucide-react';
+import { useFirestore } from '@/firebase';
+import { collection, writeBatch, getDocs, query, orderBy, addDoc, doc } from 'firebase/firestore';
 
-const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
-    name: "Neuer Mitarbeiter",
-    role: "Rolle",
-    role2: "",
-    imageUrl: "/images/team/placeholder.jpg",
-    backsideContent: "<p>Hier klicken, um Text hinzuzufügen.</p>",
-    hidden: false,
-};
+interface SeedButtonProps {
+    collectionName: string;
+    seedData: any[];
+    entityName: string;
+}
 
-const staffSeedData = [
-  {
-    name: 'Manuela Garcia',
-    role: 'Leitende MPA',
-    imageUrl: '/images/team/Garcia.jpg',
-    backsideContent: 'Manuela Garcia ist die gute Seele der Praxis. Sie sorgt dafür, dass alles rund läuft und hat immer ein offenes Ohr für die Anliegen der Patienten.',
-    hidden: false,
-  },
-  {
-    name: 'Jris Aeschlimann',
-    role: 'MPA',
-    imageUrl: '/images/team/Aeschlimann.jpg',
-    backsideContent: '',
-    hidden: false,
-  },
-  {
-    name: 'Janine Huber',
-    role: 'MPA',
-    imageUrl: '/images/team/Huber.jpg',
-    backsideContent: '',
-    hidden: false,
-  },
-  {
-    name: 'Esma Öztürk',
-    role: 'MPA in Ausbildung',
-    imageUrl: '/images/team/Oetztuerk.jpg',
-    backsideContent: '',
-    hidden: false,
-  },
-  {
-    name: 'Elena Sommer',
-    role: 'MPA in Ausbildung',
-    imageUrl: '/images/team/Sommer.jpg',
-    backsideContent: '',
-    hidden: false,
-  },
-];
+export function SeedButton({ collectionName, seedData, entityName }: SeedButtonProps) {
+    const firestore = useFirestore();
+    const [isSeeding, setIsSeeding] = useState(false);
+    const [alertState, setAlertState] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
+    const [initialCheckDone, setInitialCheckDone] = useState(false);
 
+    useEffect(() => {
+        const checkInitialState = async () => {
+            if (!firestore) return;
+            try {
+                const collectionRef = collection(firestore, collectionName);
+                const q = query(collectionRef, orderBy('order', 'asc'));
+                const snapshot = await getDocs(q);
+                if (!snapshot.empty) {
+                    setAlertState({ type: 'info', message: `Datenbank-Sammlung '${collectionName}' ist bereits befüllt.` });
+                }
+            } catch (error: any) {
+                setAlertState({ type: 'error', message: `Fehler beim Prüfen der Datenbank: ${error.message}` });
+            } finally {
+                setInitialCheckDone(true);
+            }
+        };
 
-export default function StaffPage() {
+        checkInitialState();
+    }, [firestore, collectionName]);
+
+    const handleSeed = async () => {
+        if (!firestore) {
+            setAlertState({ type: 'error', message: 'Firestore ist nicht verfügbar.' });
+            return;
+        }
+
+        setIsSeeding(true);
+        setAlertState(null);
+
+        try {
+            const collectionRef = collection(firestore, collectionName);
+            const snapshot = await getDocs(collectionRef);
+            
+            // Delete existing documents
+            if (!snapshot.empty) {
+                const deleteBatch = writeBatch(firestore);
+                snapshot.docs.forEach(doc => {
+                    deleteBatch.delete(doc.ref);
+                });
+                await deleteBatch.commit();
+            }
+
+            // Add new seed data
+            const addBatch = writeBatch(firestore);
+            seedData.forEach(item => {
+                const docRef = doc(collectionRef);
+                const newItem = { ...item, id: docRef.id };
+                addBatch.set(docRef, newItem);
+            });
+            await addBatch.commit();
+            
+            setAlertState({ type: 'success', message: `${entityName} wurden erfolgreich in die Datenbank geschrieben.` });
+        } catch (err: any) {
+            console.error('Seeding failed:', err);
+            setAlertState({ type: 'error', message: `Die Daten konnten nicht geschrieben werden: ${err.message}` });
+        } finally {
+            setIsSeeding(false);
+        }
+    };
+
+    if (!initialCheckDone) {
+        return (
+            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Prüfe Datenbank...</span>
+            </div>
+        );
+    }
     
+    if (alertState && alertState.type !== 'error') {
+        return (
+            <div>
+                 <Alert variant={alertState.type} className="mb-4">
+                    {alertState.type === 'success' ? <CheckCircle className="h-4 w-4" /> : <Info className="h-4 w-4" />}
+                    <AlertTitle>{alertState.type === 'success' ? 'Erfolgreich' : 'Info'}</AlertTitle>
+                    <AlertDescription>{alertState.message}</AlertDescription>
+                </Alert>
+                 <Button onClick={handleSeed} disabled={isSeeding}>
+                    {isSeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    Daten erneut schreiben
+                </Button>
+            </div>
+        );
+    }
+
     return (
-        <ReusableCardManager
-            collectionName="staff"
-            pageTitle="Praxispersonal verwalten"
-            pageDescription="Verwalten Sie das auf der Team-Seite angezeigte Praxispersonal."
-            initialCardState={initialStaffState}
-            DisplayCardComponent={DisplayCard}
-            EditorCardComponent={EditorComponent}
-            entityName="Mitarbeiter"
-            seedData={staffSeedData}
-        />
+        <div className="flex flex-col gap-4">
+            {!alertState && (
+                <p className="text-sm text-muted-foreground">
+                    Klicken Sie auf den Button, um die initialen Daten für '{entityName}' in die Datenbank zu übertragen.
+                </p>
+            )}
+             {alertState && alertState.type === 'error' && (
+                <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Fehler</AlertTitle>
+                    <AlertDescription>{alertState.message}</AlertDescription>
+                </Alert>
+             )}
+            <Button onClick={handleSeed} disabled={isSeeding}>
+                {isSeeding && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isSeeding ? 'Übertrage Daten...' : `Daten für ${entityName} in Datenbank schreiben`}
+            </Button>
+        </div>
     );
 }

@@ -1,27 +1,28 @@
 
 'use client';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
-import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
-import type { OtherPartner as OtherPartnerData } from '@/docs/backend-types';
+import type { MedicalPartner, OtherPartner } from '@/docs/backend-types';
+import DOMPurify from 'dompurify';
 
-interface Partner {
-    id: string;
-    order: number;
-    name: string;
-    websiteUrl: string;
-    logoUrl: string;
-    openInNewTab?: boolean;
-    hint?: string;
-    width?: number;
-    height?: number;
-    hidden?: boolean;
-}
+const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
+    const sanitizedHtml = React.useMemo(() => {
+        if (typeof window !== 'undefined') {
+            const config = {
+                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img"],
+                ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src']
+            };
+            return { __html: DOMPurify.sanitize(html, config) };
+        }
+        return { __html: '' };
+    }, [html]);
+
+    return <div className="relative flex h-full w-full items-center justify-center overflow-hidden" dangerouslySetInnerHTML={sanitizedHtml} />;
+};
+
 
 export function CooperationPartnersSection() {
   const firestore = useFirestore();
@@ -36,46 +37,11 @@ export function CooperationPartnersSection() {
       return query(collection(firestore, 'otherPartners'), orderBy('order', 'asc'));
   }, [firestore]);
 
-  const { data: medicalPartners, isLoading: isLoadingMedical } = useCollection<Partner>(medicalPartnersQuery);
-  const { data: otherPartners, isLoading: isLoadingOther } = useCollection<OtherPartnerData>(otherPartnersQuery);
+  const { data: medicalPartners, isLoading: isLoadingMedical } = useCollection<MedicalPartner>(medicalPartnersQuery);
+  const { data: otherPartners, isLoading: isLoadingOther } = useCollection<OtherPartner>(otherPartnersQuery);
 
   const visibleMedicalPartners = medicalPartners?.filter(p => !p.hidden) || [];
   const visibleOtherPartners = otherPartners?.filter(p => !p.hidden) || [];
-
-  const renderPartnerLogo = (partner: Partner) => {
-    if (partner.name === 'orthozentrum-bern') {
-      return <OrthozentrumLogo className="h-full w-full object-contain" />;
-    }
-    if (partner.name === 'Agnieszka Slezak') {
-      return <AgnieszkaSlezakLogo className="h-full w-full object-contain" />;
-    }
-    
-    // Use fill for both to ensure they scale correctly
-    if (partner.name === 'Schemmer & Worni' || partner.name === 'VASC ALLIANCE') {
-        return (
-            <Image
-                src={partner.logoUrl}
-                alt={`${partner.name} Logo`}
-                fill
-                className="object-contain"
-                data-ai-hint={partner.hint}
-            />
-        );
-    }
-
-    // Fallback for any other partner, although the main ones are handled above.
-    return (
-        <Image
-          src={partner.logoUrl}
-          alt={`${partner.name} Logo`}
-          width={partner.width || 200}
-          height={partner.height || 60}
-          className="object-contain"
-          data-ai-hint={partner.hint}
-        />
-    );
-  };
-
 
   return (
     <section id="partners" className="w-full bg-primary">
@@ -99,9 +65,7 @@ export function CooperationPartnersSection() {
                     className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   >
                     <Card className="flex h-full w-full items-center justify-center bg-background p-2">
-                       <div className="relative flex h-full w-full items-center justify-center overflow-hidden">
-                          {renderPartnerLogo(partner)}
-                       </div>
+                       {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}
                     </Card>
                     <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                   </Link>
@@ -133,18 +97,7 @@ export function CooperationPartnersSection() {
                           className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                         >
                           <Card className="flex h-full w-full items-center justify-center bg-background p-2">
-                            <div className="relative flex w-full h-full items-center justify-center p-0 overflow-hidden">
-                                <Image
-                                  src={partner.logoUrl!}
-                                  alt={`${partner.name} Logo`}
-                                  fill
-                                  className="object-contain"
-                                  style={{
-                                      transform: `scale(${ (partner.logoScale || 100) / 100}) translate(${partner.logoX || 0}px, ${partner.logoY || 0}px)`,
-                                      transformOrigin: 'center center',
-                                  }}
-                                />
-                            </div>
+                             {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}
                           </Card>
                           <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                         </Link>

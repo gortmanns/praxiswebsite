@@ -40,11 +40,11 @@
         "order": { "type": "number" },
         "name": { "type": "string" },
         "websiteUrl": { "type": "string" },
-        "logoUrl": { "type": "string" },
+        "logoHtml": { "type": "string", "description": "The complete HTML string for the logo to be rendered." },
         "openInNewTab": { "type": "boolean" },
         "hidden": { "type": "boolean" }
       },
-      "required": ["id", "order", "name", "websiteUrl", "logoUrl"]
+      "required": ["id", "order", "name", "websiteUrl", "logoHtml"]
     },
     "OtherPartner": {
       "title": "Other Partner",
@@ -55,14 +55,11 @@
         "order": { "type": "number" },
         "name": { "type": "string" },
         "websiteUrl": { "type": "string" },
-        "logoUrl": { "type": "string" },
-        "logoScale": { "type": "number", "description": "Logo size percentage (10-200)." },
-        "logoX": { "type": "number", "description": "Horizontal offset in pixels." },
-        "logoY": { "type": "number", "description": "Vertical offset in pixels." },
+        "logoHtml": { "type": "string", "description": "The complete HTML string for the logo to be rendered." },
         "openInNewTab": { "type": "boolean" },
         "hidden": { "type": "boolean" }
       },
-      "required": ["id", "order", "name", "websiteUrl", "logoUrl"]
+      "required": ["id", "order", "name", "websiteUrl", "logoHtml"]
     }
   },
   "auth": {

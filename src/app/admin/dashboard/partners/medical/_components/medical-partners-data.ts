@@ -3,30 +3,30 @@ export const medicalPartnersData = [
       order: 1,
       name: 'orthozentrum-bern',
       websiteUrl: 'https://orthozentrum-bern.ch/',
-      logoUrl: '', // Special component is used
-      hint: 'orthopedics logo',
-      width: 200,
-      height: 60,
+      logoHtml: `
+        <svg viewBox="0 0 240 55.5" xmlns="http://www.w3.org/2000/svg" class="text-card-foreground h-full w-full object-contain" aria-label="orthozentrum-bern Logo">
+          <g>
+            <path d="M46.7 7.8S44.5 3.9 40 3.9H20.8s-4.4 0-6.7 3.9L4.6 24.4s-2.2 3.9 0 7.7l9.6 16.6s2.2 3.9 6.7 3.9H40s4.4 0 6.7-3.9l9.6-16.6s2.2-3.9 0-7.7L46.7 7.8z" fill="none" stroke="#588791" stroke-width="1.639"></path>
+            <path d="M24 52.4c-1.1-3.4-3.1-8-5.1-11.1-.6-.9-1-1.9-1.2-2.9-.3-1.8.9-3.2 2.9-3.5 6.5-1 13-1 19.5 0 2.2.3 3.4 2 2.9 4-.2.7-.5 1.4-1 2.1-2 3.1-4.1 8-5.2 11.4" fill="none" stroke="#588791" stroke-width="1.639"></path>
+            <path d="M35.4 4.4c.4 3.8 1.7 8 4.1 11.3 1.8 2.4 3.1 2.6 3.7 5.6.5 2.5-.3 6.9-2.3 7.9-2.3 1.2-4.6 1-6.8-.4-1.4-1.2-2.4-1.4-3.6-1.3-1.3 0-2.3.2-3.6 1.3-2.2 1.5-4.4 1.6-6.8.4-2-1-2.8-5.3-2.3-7.9.6-3 1.9-3.2 3.7-5.6 2.4-3.2 3.7-7.4 4.1-11.3" fill="none" stroke="#588791" stroke-width="1.639"></path>
+          </g>
+          <text x="70" y="32" font-family="Montserrat, sans-serif" font-size="16" font-weight="bold" fill="#588791" dominant-baseline="middle">orthozentrum-bern</text>
+        </svg>
+      `,
       hidden: false,
     },
     {
       order: 2,
       name: 'VASC ALLIANCE',
       websiteUrl: 'https://www.vasc-alliance.ch/',
-      logoUrl: '/images/VASC-Alliance-Logo.png',
-      hint: 'vascular surgery logo',
-      width: 200,
-      height: 60,
+      logoHtml: '<img src="/images/VASC-Alliance-Logo.png" alt="VASC ALLIANCE Logo" style="object-fit: contain; width: 100%; height: 100%;" data-ai-hint="vascular surgery logo" />',
       hidden: false,
     },
     {
       order: 3,
       name: 'Schemmer & Worni',
       websiteUrl: 'https://schemmer-worni.ch/',
-      logoUrl: '/images/schemmer-worni-logo.png',
-      hint: 'surgery logo',
-      width: 200,
-      height: 60,
+      logoHtml: '<img src="/images/schemmer-worni-logo.png" alt="Schemmer & Worni Logo" style="object-fit: contain; width: 100%; height: 100%;" data-ai-hint="surgery logo" />',
       hidden: false,
     },
 ];
@@ -35,9 +35,12 @@ export const slezakPartner = {
     order: 4,
     name: 'Agnieszka Slezak',
     websiteUrl: 'https://neurologie-plus.ch/',
-    logoUrl: '', // Special component is used
-    hint: 'neurology logo',
-    width: 200,
-    height: 60,
+    logoHtml: `
+      <svg viewBox="0 0 500 150" xmlns="http://www.w3.org/2000/svg" class="text-special-green h-full w-full object-contain" aria-label="Agnieszka Slezak Logo">
+        <style>.text-special-green { color: #358392; } .foreground-fill { fill: hsl(var(--foreground)); }</style>
+        <text x="5" y="70" font-family="Montserrat, sans-serif" font-size="36" font-weight="bold" fill="currentColor">Dr. med. Agnieszka Slezak</text>
+        <text x="250" y="110" font-family="Montserrat, sans-serif" font-size="24" font-weight="normal" class="foreground-fill" text-anchor="middle">Fachärztin für Neurologie</text>
+      </svg>
+    `,
     hidden: false,
 };
