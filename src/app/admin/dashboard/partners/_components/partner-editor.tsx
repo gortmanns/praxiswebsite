@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
@@ -183,7 +183,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
                 </div>
 
-                <div className="relative min-h-[280px]">
+                <div className="relative min-h-[400px]">
                     {/* The "ghost" container that dictates the size */}
                     <div className="absolute inset-x-0 top-0 -z-10 rounded-lg bg-primary p-4 flex flex-wrap justify-center gap-8 opacity-0 pointer-events-none">
                        <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
