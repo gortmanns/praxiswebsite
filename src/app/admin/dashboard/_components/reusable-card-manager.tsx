@@ -209,6 +209,26 @@ export function ReusableCardManager<T extends BaseCardData>({
     const hiddenItems = useMemo(() => validDbData.filter(d => d.hidden), [validDbData]);
     
     const DisplayWrapper: React.FC<{ item: T, index: number, isFirstVisible: boolean }> = ({ item, index }) => {
+        const itemControls = (
+            <div className="mt-2 flex w-full flex-col gap-2">
+                <div className="grid grid-cols-2 gap-2">
+                    <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
+                        <ChevronLeft className="mr-2 h-4 w-4" /> Links
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === visibleItems.length - 1 || isEditing}>
+                        Rechts <ChevronRight className="ml-2 h-4 w-4" />
+                    </Button>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                    <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                        <EyeOff className="mr-2 h-4 w-4" /> Ausblenden
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
+                        <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                    </Button>
+                </div>
+            </div>
+        );
 
         if (isPartnerManager) {
             return (
@@ -217,24 +237,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                          <div className="w-full">
                             <DisplayCardComponent {...item} />
                          </div>
-                        <div className="mt-2 flex w-full flex-col gap-2">
-                            <div className="grid grid-cols-2 gap-2">
-                                <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
-                                    <ChevronLeft className="mr-2 h-4 w-4" /> Links
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === visibleItems.length - 1 || isEditing}>
-                                    Rechts <ChevronRight className="ml-2 h-4 w-4" />
-                                </Button>
-                            </div>
-                            <div className="grid grid-cols-2 gap-2">
-                                <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                                    <EyeOff className="mr-2 h-4 w-4" /> Ausblenden
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
-                                    <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                                </Button>
-                            </div>
-                        </div>
+                         {itemControls}
                     </div>
                 </div>
             );
@@ -259,6 +262,50 @@ export function ReusableCardManager<T extends BaseCardData>({
                 <div className={cn("relative flex-1 w-full max-w-sm sm:max-w-none order-1 sm:order-2")}>
                     <DisplayCardComponent {...item} />
                 </div>
+            </div>
+        );
+    };
+
+    const PartnerGrid: React.FC<{ partners: T[] }> = ({ partners }) => {
+        const count = partners.length;
+        if (count === 0) return null;
+
+        if (count >= 4) {
+            return (
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                    {partners.map((partner, index) => (
+                        <DisplayWrapper key={partner.id} item={partner} index={index} isFirstVisible={index === 0} />
+                    ))}
+                </div>
+            );
+        }
+        
+        return (
+            <div className="grid grid-cols-8 gap-8">
+                {count === 1 && (
+                    <>
+                        <div className="col-span-3"></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={0} isFirstVisible={true} /></div>
+                        <div className="col-span-3"></div>
+                    </>
+                )}
+                {count === 2 && (
+                    <>
+                        <div className="col-span-2"></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={0} isFirstVisible={true} /></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[1]} index={1} isFirstVisible={false} /></div>
+                        <div className="col-span-2"></div>
+                    </>
+                )}
+                {count === 3 && (
+                    <>
+                        <div className="col-span-1"></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[0]} index={0} isFirstVisible={true} /></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[1]} index={1} isFirstVisible={false} /></div>
+                        <div className="col-span-2"><DisplayWrapper item={partners[2]} index={2} isFirstVisible={false} /></div>
+                        <div className="col-span-1"></div>
+                    </>
+                )}
             </div>
         );
     };
@@ -448,7 +495,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                     </div>
                      <div className={cn(
                         "mt-8",
-                        isPartnerManager ? "rounded-lg bg-primary p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
+                        isPartnerManager ? "rounded-lg bg-primary p-4" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
                      )}>
                         {isLoadingData && (
                             isPartnerManager ? 
@@ -471,7 +518,10 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 </AlertDescription>
                             </Alert>
                         )}
-                        {!isLoadingData && visibleItems.map((item, index) => (
+                        {!isLoadingData && isPartnerManager && (
+                            <PartnerGrid partners={visibleItems} />
+                        )}
+                        {!isLoadingData && !isPartnerManager && visibleItems.map((item, index) => (
                             <DisplayWrapper key={item.id} item={item} index={index} isFirstVisible={index === 0} />
                         ))}
                     </div>
@@ -512,3 +562,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
