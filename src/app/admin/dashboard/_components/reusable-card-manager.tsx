@@ -354,7 +354,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                                         max={100}
                                                         min={-100}
                                                         step={1}
-                                                        className="[&>span:first-child]:bg-muted [&>span:first-child>span]:bg-popover [&>span:last-child]:bg-accent [&>span:last-child]:border-accent"
+                                                        className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-muted [&>span:first-child>span]:bg-popover"
                                                     />
                                                 </div>
                                                 <div className="text-center text-xs mt-1 text-white">
@@ -375,7 +375,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                                             max={100}
                                                             min={-100}
                                                             step={1}
-                                                            className="[&>span:first-child]:bg-muted [&>span:first-child>span]:bg-popover [&>span:last-child]:bg-accent [&>span:last-child]:border-accent"
+                                                            className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-muted [&>span:first-child>span]:bg-popover"
                                                         />
                                                     </div>
                                                     <div className="text-center text-xs text-white">
