@@ -120,9 +120,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                         <Info className="h-4 w-4" />
                         <AlertTitle>Bearbeitungsmodus</AlertTitle>
                         <AlertDescription>
-                            {isNewCard
-                                ? "Füllen Sie die Felder aus und laden Sie ein Foto hoch. Die Rückseite ist optional."
-                                : 'Die Werte wurden übernommen und können angepasst werden. Klicken Sie auf die Vorschau, um das Foto oder den Text der Rückseite zu ändern.'}
+                            Füllen Sie bitte die Felder aus. Das Feld "Zusatzqualifikation" ist optional. Durch Klicken auf den Platzhalter kann ein Foto eingefügt werden, dieses sollte im Format 2:3 sein und die ungefähren Masse 340x510 Px haben (ein genauer Zuschnitt ist beim Hinzufügen noch möglich). Der Text für das SlideOver Element kann mit Klick auf das Stiftymbol bearbeitet werden.
                         </AlertDescription>
                     </Alert>
                 </div>
