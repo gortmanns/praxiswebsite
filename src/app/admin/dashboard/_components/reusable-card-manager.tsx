@@ -69,7 +69,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
-        // Ensure id is not set here to signify a new card
+        // Explicitly set an empty or null ID for new cards
         setEditorCardState({ ...initialCardState, id: '', name: 'Neue Karte' } as T);
     };
     
@@ -148,9 +148,8 @@ export function ReusableCardManager<T extends BaseCardData>({
         setNotification(null);
     
         try {
-            // Check if it's a new card by seeing if an ID is missing
+            // A new card is identified by not having a valid ID from the database
             if (isCreatingNew) {
-                // Create new card
                 const mutableCardData: Partial<T> = { ...editorCardState };
                 delete (mutableCardData as any).id;
     
@@ -340,30 +339,30 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                     {isEditing && (
-                        <div className="relative z-10 mb-12 rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8 space-y-8">
+                        <>
                              {/* Editor Form Section */}
-                            <div className="relative z-20">
-                                <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                            <div className="relative z-20 mb-6 rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                     <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                                </div>
                             </div>
                             
                             {/* Live Preview Section */}
-                            <div className="relative">
-                                 <div 
-                                    className="absolute top-0 right-0 bottom-0 left-0 grid grid-cols-8 grid-rows-1 gap-4 z-10"
-                                >
-                                    <div className="bg-green-500/50 flex items-center justify-center text-black col-span-1">1</div>
-                                    <div className="bg-green-500/50 flex items-center justify-center text-black col-span-2">2</div>
-                                    <div className="bg-green-500/50 flex items-center justify-center text-black col-span-2">3</div>
-                                    <div className="bg-green-500/50 flex items-center justify-center text-black col-span-2 relative">
-                                        <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-white">Vorschau</p>
-                                        <div className="relative z-20 w-full h-full">
+                            <div className="relative z-10 mb-12">
+                                 <div className="absolute top-0 right-0 bottom-0 left-0 grid grid-cols-8 grid-rows-1 gap-4 bg-green-500/50">
+                                    <div className="bg-green-700/50 flex items-center justify-center text-white col-span-1 p-2">Grid Col 1</div>
+                                    <div className="bg-green-700/50 flex items-center justify-center text-white col-span-2 p-2">Grid Col 2</div>
+                                    <div className="bg-green-700/50 flex items-center justify-center text-white col-span-2 p-2">Grid Col 3</div>
+                                    <div className="bg-green-700/50 flex items-center justify-center text-white col-span-2 relative p-2">
+                                        <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-white z-20">Vorschau</p>
+                                        <div className="relative z-10 w-full h-full">
                                             <DisplayCardComponent {...editorCardState} />
                                         </div>
                                     </div>
-                                    <div className="bg-green-500/50 flex items-center justify-center text-black col-span-1">5</div>
+                                    <div className="bg-green-700/50 flex items-center justify-center text-white col-span-1 p-2">Grid Col 5</div>
                                 </div>
                             </div>
-                        </div>
+                        </>
                     )}
 
                     <div className="space-y-4">
@@ -438,4 +437,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
