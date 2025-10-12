@@ -329,31 +329,30 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                     {isEditing && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                             <div className="rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8">
+                        <>
+                         <div
+                            className={cn(
+                                "absolute left-0 right-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 bg-primary p-4 rounded-lg",
+                                "z-0 opacity-100"
+                            )}
+                             style={{ outline: '3px solid limegreen' }}
+                        >
+                           <div className="lg:col-start-4 z-20">
+                             <DisplayCardComponent {...editorCardState} />
+                           </div>
+                        </div>
+
+                        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8">
+                             <div>
                                 <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                              </div>
-                              <div className="relative">
+                              <div className="relative opacity-0">
                                 <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                                 <DisplayCardComponent {...editorCardState} />
                              </div>
                         </div>
+                        </>
                     )}
-
-                    {isEditing && isPartnerManager && (
-                        <div
-                            className={cn(
-                                "absolute left-0 right-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 bg-primary p-4 rounded-lg",
-                                "-z-10 opacity-100"
-                            )}
-                             style={{ outline: '3px solid limegreen' }}
-                        >
-                           <div className="lg:col-start-4">
-                             <DisplayCardComponent {...editorCardState} />
-                           </div>
-                        </div>
-                    )}
-
 
                     <div className="space-y-4">
                         <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Karten</h3>
@@ -363,11 +362,11 @@ export function ReusableCardManager<T extends BaseCardData>({
                     </div>
                      <div className={cn(
                         "mt-8",
-                        isPartnerManager ? "rounded-lg bg-primary p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
+                        isPartnerManager ? "rounded-lg bg-primary p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
                      )}>
                         {isLoadingData && (
                             isPartnerManager ? 
-                                Array.from({ length: 5 }).map((_, index) => <Skeleton key={index} className="h-32 w-full rounded-lg bg-primary-foreground/20" />) :
+                                Array.from({ length: 4 }).map((_, index) => <Skeleton key={index} className="h-32 w-full rounded-lg bg-primary-foreground/20" />) :
                                 Array.from({ length: 2 }).map((_, index) => (
                                     <div key={index} className="flex w-full items-center justify-center gap-4">
                                         <div className="w-36 flex-shrink-0"></div>
@@ -378,7 +377,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 ))
                         )}
                         {dbError && (
-                             <Alert variant="destructive" className={cn(isPartnerManager ? "w-full lg:col-span-5" : "lg:col-span-2")}>
+                             <Alert variant="destructive" className={cn(isPartnerManager ? "w-full lg:col-span-4" : "lg:col-span-2")}>
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertTitle>Datenbankfehler</AlertTitle>
                                 <AlertDescription>
@@ -398,7 +397,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </div>
                             <div className={cn(
                                 "mt-8",
-                                isPartnerManager ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
+                                isPartnerManager ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
                             )}>
                                 {hiddenItems.map((item) => (
                                     <HiddenDisplayWrapper key={item.id} item={item} />
