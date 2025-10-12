@@ -144,20 +144,19 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                         <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
                         <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
                     </div>
-                    <div className="grid grid-cols-1 gap-2">
-                         <div className="space-y-2">
+                    <div className="flex items-end gap-4">
+                        <div className="flex-grow space-y-2">
                             <Label htmlFor="websiteUrl">Website URL <span className="text-xs text-muted-foreground">(für Verlinkung)</span></Label>
                             <Input id="websiteUrl" value={cardData.websiteUrl || ''} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
                         </div>
-                        <div className="flex flex-col items-start justify-end space-y-1 pt-2">
-                            <Label htmlFor="openInNewTab" className="cursor-pointer whitespace-nowrap text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        <div className="flex flex-col items-center space-y-2 pb-1">
+                            <Label htmlFor="openInNewTab" className="whitespace-nowrap text-sm font-medium">
                                 in neuem Tab öffnen
                             </Label>
                             <Checkbox
                                 id="openInNewTab"
                                 checked={cardData.openInNewTab}
                                 onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
-                                className="ml-1"
                             />
                         </div>
                     </div>
