@@ -375,40 +375,45 @@ export function ReusableCardManager<T extends BaseCardData>({
         );
     };
 
-    const renderItems = (items: T[], isHidden: boolean, fullWidthItems: T[], gridItems: T[]) => {
-        if (isPartnerManager) {
-            return (
-                <div className={cn("mt-8 rounded-lg p-4", !isHidden && 'bg-primary')}>
-                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                        {items.map((item, index) => (
-                            <div key={item.id}>
-                                {renderCardWithControls(item, index, isHidden, items.length, false)}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            );
-        }
-        
+    const renderItemsGrid = (items: T[], isHidden: boolean, fullWidthItems: T[], gridItems: T[]) => {
+      if (isPartnerManager) {
         return (
-             <div className="mt-8 space-y-12">
-                <div className={cn("grid w-full grid-cols-1 sm:grid-cols-2 gap-8 border-2 border-red-500", fullWidthItems.length > 0 && "justify-items-center")}>
-                    {fullWidthItems.map((item, index) => (
-                        <div key={item.id} className={cn("mx-auto flex w-full border-2 border-yellow-500", fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 && "sm:col-span-2 justify-center")}>
-                            {renderCardWithControls(item, index, isHidden, fullWidthItems.length, true)}
-                        </div>
-                    ))}
-                </div>
-                <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 border-2 border-blue-500">
-                    {gridItems.map((item, index) => (
-                        <div key={item.id} className="mx-auto flex w-full justify-center border-2 border-green-500">
-                            {renderCardWithControls(item, index, isHidden, gridItems.length, false)}
+            <div className={cn("mt-8 rounded-lg p-4", !isHidden && 'bg-primary')}>
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                    {items.map((item, index) => (
+                        <div key={item.id}>
+                            {renderCardWithControls(item, index, isHidden, items.length, false)}
                         </div>
                     ))}
                 </div>
             </div>
         );
-    };
+      }
+
+      // Logic for staff and doctors
+      return (
+        <div className="mt-8 space-y-12">
+          {fullWidthItems.length > 0 && (
+            <div className={cn("grid w-full grid-cols-1 sm:grid-cols-2 gap-8 border-2 border-red-500", fullWidthItems.length > 0 && "justify-items-center")}>
+              {fullWidthItems.map((item, index) => (
+                <div key={item.id} className={cn("mx-auto flex w-full border-2 border-yellow-500", fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 && "sm:col-span-2 justify-center")}>
+                  {renderCardWithControls(item, index, isHidden, fullWidthItems.length, true)}
+                </div>
+              ))}
+            </div>
+          )}
+          {gridItems.length > 0 && (
+            <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 border-2 border-blue-500">
+              {gridItems.map((item, index) => (
+                <div key={item.id} className="mx-auto flex w-full justify-center border-2 border-green-500">
+                  {renderCardWithControls(item, index, isHidden, gridItems.length, false)}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -499,7 +504,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </AlertDescription>
                         </Alert>
                     )}
-                    {!isLoadingData && renderItems(visibleItems, false, fullWidthVisibleItems, gridVisibleItems)}
+                    {!isLoadingData && renderItemsGrid(visibleItems, false, fullWidthVisibleItems, gridVisibleItems)}
 
 
                     {hiddenItems.length > 0 && (
@@ -507,7 +512,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             <div className="mt-16 space-y-4">
                                 <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
                             </div>
-                           {!isLoadingData && renderItems(hiddenItems, true, fullWidthHiddenItems, gridHiddenItems)}
+                           {!isLoadingData && renderItemsGrid(hiddenItems, true, fullWidthHiddenItems, gridHiddenItems)}
                         </>
                     )}
 
@@ -531,9 +536,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
-
-    
-
-
