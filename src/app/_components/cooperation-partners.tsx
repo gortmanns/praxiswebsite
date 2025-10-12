@@ -46,6 +46,9 @@ export function CooperationPartnersSection() {
   const visibleMedicalPartners = medicalPartners?.filter(p => !p.hidden) || [];
   const visibleOtherPartners = otherPartners?.filter(p => !p.hidden) || [];
   
+  const gridCols = Math.min(visibleOtherPartners.length, 4);
+  const gridStyle = gridCols > 0 ? { gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` } : {};
+
   return (
     <section id="partners" className="w-full bg-primary">
       <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
@@ -81,32 +84,36 @@ export function CooperationPartnersSection() {
         <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
           Unsere weiteren Partner
         </h3>
-        <div className="mt-12 flex flex-wrap justify-center gap-8">
-          {isLoadingOther ? (
-             Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="w-full sm:w-64">
-                    <Skeleton className="h-32 w-full rounded-lg" />
+        <div className="mt-12">
+            {isLoadingOther ? (
+                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                        <div key={index} className="w-full sm:w-64 mx-auto">
+                            <Skeleton className="h-32 w-full rounded-lg" />
+                        </div>
+                    ))}
                 </div>
-            ))
-          ) : (
-            visibleOtherPartners.map(partner => {
-              return (
-                  <div key={partner.id} className="w-full sm:w-64">
-                    <Link
-                      href={partner.websiteUrl || '#'}
-                      target={partner.openInNewTab ? '_blank' : '_self'}
-                      rel="noopener noreferrer"
-                      className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                    >
-                      <Card className="flex h-full w-full items-center justify-center bg-background p-2">
-                         {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}
-                      </Card>
-                      <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                    </Link>
-                  </div>
-              );
-            })
-          )}
+            ) : (
+                <div className="grid gap-8 mx-auto" style={gridStyle}>
+                    {visibleOtherPartners.map(partner => {
+                        return (
+                            <div key={partner.id} className="w-full sm:w-64">
+                                <Link
+                                href={partner.websiteUrl || '#'}
+                                target={partner.openInNewTab ? '_blank' : '_self'}
+                                rel="noopener noreferrer"
+                                className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                >
+                                <Card className="flex h-full w-full items-center justify-center bg-background p-2">
+                                    {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}
+                                </Card>
+                                <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                                </Link>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
         </div>
       </div>
     </section>
