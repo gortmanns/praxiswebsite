@@ -15,7 +15,7 @@ import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_componen
 import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/image-crop-dialog';
 import { TextEditDialog } from '@/app/admin/dashboard/team/doctors/_components/text-edit-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Code2, ImageUp, RotateCcw } from 'lucide-react';
+import { Code2, ImageUp, RotateCcw, Pencil, GripVertical } from 'lucide-react';
 import { projectImages } from '../project-images';
 import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
@@ -63,7 +63,6 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
     const handleInputChange = (field: keyof Partner, value: string | boolean | number) => {
         const newCardData = { ...cardData, [field]: value };
-        // No need to regenerate HTML here, it's done in the useMemo below
         onUpdate(newCardData);
     };
     
@@ -133,7 +132,6 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         return { ...cardData, logoHtml };
     }, [cardData]);
 
-    // This effect updates the parent component with the generated HTML whenever dependencies change.
     useEffect(() => {
         const newHtml = generateLogoHtml(
             cardData.imageUrl,
@@ -142,7 +140,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
             cardData.logoX,
             cardData.logoY
         );
-        if (newHtml !== cardData.logoHtml) {
+        if (cardData.imageUrl && newHtml !== cardData.logoHtml) {
             onUpdate({ ...cardData, logoHtml: newHtml });
         }
     }, [cardData.imageUrl, cardData.name, cardData.logoScale, cardData.logoX, cardData.logoY, cardData, onUpdate]);
@@ -180,67 +178,73 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                             <Code2 className="mr-2 h-4 w-4" /> HTML bearbeiten
                         </Button>
                     </div>
-
                 </div>
-
+                
                 <div className="relative min-h-[400px]">
-                    {/* The "ghost" container that dictates the size */}
-                    <div className="absolute inset-x-0 top-0 -z-10 rounded-lg bg-primary p-4 flex flex-wrap justify-center gap-8 opacity-0 pointer-events-none">
-                       <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
-                            <div className="h-32"></div>
-                       </div>
-                    </div>
-                    
-                    {/* The actual live preview, positioned on top */}
-                    <div className="relative z-10 flex flex-col items-center">
-                        <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                        <div className="relative w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
-                            <div className="w-full">
-                                <PartnerCard {...currentCardData} />
+                    <div className="absolute inset-0 -z-10 pointer-events-none">
+                        <div className="rounded-lg bg-primary p-4 opacity-0">
+                            <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                                <div className="h-32"></div>
                             </div>
-                            <div className="mt-4 space-y-4">
+                        </div>
+                    </div>
+
+                    <div className="absolute inset-0">
+                        <div className="flex justify-center">
+                             <div className="relative w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                                <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                                 <div className="space-y-2">
-                                    <Label htmlFor="logoScale" className="text-center text-xs">Grösse: {cardData.logoScale || 100}%</Label>
-                                    <Slider
-                                        id="logoScale"
-                                        value={[cardData.logoScale || 100]}
-                                        onValueChange={(value) => handleSliderChange('logoScale', value)}
-                                        max={200}
-                                        step={1}
-                                    />
+                                    <div className="text-center">
+                                        <Label htmlFor="logoScale" className="text-xs">Grösse: {cardData.logoScale || 100}%</Label>
+                                        <Slider
+                                            id="logoScale"
+                                            value={[cardData.logoScale || 100]}
+                                            onValueChange={(value) => handleSliderChange('logoScale', value)}
+                                            max={200}
+                                            step={1}
+                                        />
+                                    </div>
+                                    <div className="flex items-start gap-2">
+                                        <div className="flex-grow space-y-2">
+                                            <PartnerCard {...currentCardData} />
+                                            <div className="text-center">
+                                                <Label htmlFor="logoX" className="text-xs">Horizontale Position: {cardData.logoX || 0}px</Label>
+                                                <Slider
+                                                    id="logoX"
+                                                    value={[cardData.logoX || 0]}
+                                                    onValueChange={(value) => handleSliderChange('logoX', value)}
+                                                    min={-100}
+                                                    max={100}
+                                                    step={1}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col items-center h-32 w-12">
+                                            <Label htmlFor="logoY" className="text-xs [writing-mode:vertical-rl] rotate-180 mb-2 whitespace-nowrap">
+                                                Vertikale Position: {-(cardData.logoY || 0)}px
+                                            </Label>
+                                            <Slider
+                                                id="logoY"
+                                                orientation="vertical"
+                                                value={[-(cardData.logoY || 0)]}
+                                                onValueChange={(value) => handleSliderChange('logoY', [-value[0]])}
+                                                min={-100}
+                                                max={100}
+                                                step={1}
+                                                className="h-full"
+                                            />
+                                        </div>
+                                    </div>
+                                    <Button onClick={handleResetControls} variant="outline" size="sm" className="w-full">
+                                        <RotateCcw className="mr-2 h-4 w-4" />
+                                        Steuerung zurücksetzen
+                                    </Button>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="logoX" className="text-center text-xs">Horizontale Position: {cardData.logoX || 0}px</Label>
-                                    <Slider
-                                        id="logoX"
-                                        value={[cardData.logoX || 0]}
-                                        onValueChange={(value) => handleSliderChange('logoX', value)}
-                                        min={-100}
-                                        max={100}
-                                        step={1}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="logoY" className="text-center text-xs">Vertikale Position: {-(cardData.logoY || 0)}px</Label>
-                                    <Slider
-                                        id="logoY"
-                                        value={[-(cardData.logoY || 0)]}
-                                        onValueChange={(value) => handleSliderChange('logoY', [-value[0]])}
-                                        min={-100}
-                                        max={100}
-                                        step={1}
-                                    />
-                                </div>
-                                <Button onClick={handleResetControls} variant="outline" size="sm" className="w-full">
-                                    <RotateCcw className="mr-2 h-4 w-4" />
-                                    Steuerung zurücksetzen
-                                </Button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
 
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
 
@@ -286,3 +290,5 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         </>
     );
 };
+
+    
