@@ -300,12 +300,13 @@ export function ReusableCardManager<T extends BaseCardData>({
         const fullWidthItems = isStaffManager ? items.filter(i => i.fullWidth) : [];
         const gridItems = isStaffManager ? items.filter(i => !i.fullWidth) : items;
 
-        const renderItem = (item: T) => {
+        const renderItem = (item: T, isFullWidth: boolean, isLastOdd: boolean) => {
             const isHuberCard = item.name === 'Huber';
+            const colSpanClass = isFullWidth && isLastOdd ? "sm:col-span-2" : "";
 
             return (
-                <div key={item.id} className={cn("relative mx-auto flex w-full justify-center", item.hidden && "grayscale")}>
-                     {isHuberCard && (
+                <div key={item.id} className={cn("relative mx-auto flex w-full justify-center", colSpanClass, item.hidden && "grayscale")}>
+                    {isHuberCard && (
                         <div className="absolute top-1/2 -translate-y-1/2 right-full mr-5 flex flex-col space-y-2">
                             <Button size="sm" onClick={() => handleMove(item.id, 'up')}>
                                 <ChevronLeft /> Verschieben
@@ -323,17 +324,13 @@ export function ReusableCardManager<T extends BaseCardData>({
         return (
             <div className="space-y-12 mt-8">
                 {fullWidthItems.length > 0 && (
-                     <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8", fullWidthItems.length > 0 && "sm:grid-cols-2")}>
-                        {fullWidthItems.map((item, index) => (
-                            <div key={item.id} className={cn("mx-auto flex w-full justify-center", fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 && "sm:col-span-2")}>
-                                {renderItem(item)}
-                            </div>
-                        ))}
+                     <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8", "sm:grid-cols-2")}>
+                        {fullWidthItems.map((item, index) => renderItem(item, true, fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1))}
                     </div>
                 )}
                 {gridItems.length > 0 && (
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                        {gridItems.map((item) => renderItem(item))}
+                        {gridItems.map((item) => renderItem(item, false, false))}
                     </div>
                 )}
             </div>
