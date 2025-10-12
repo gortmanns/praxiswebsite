@@ -40,7 +40,7 @@ export const DoctorCard: React.FC<Doctor> = (props) => {
     return (
         <div className={cn(
             "group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg border bg-background",
-            "shadow-xl" // EXPERIMENT: Increased shadow to test float effect. Revert 'shadow-xl' to 'shadow-sm' to undo.
+            "shadow-xl"
         )}>
              {frontSideCode && <CodeRenderer html={frontSideCode} />}
             
