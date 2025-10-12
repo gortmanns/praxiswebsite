@@ -69,23 +69,23 @@ export default function TeamPage() {
             
             <div className="space-y-12">
               {isLoadingStaff ? (
-                <div className="flex justify-center">
+                <div className="grid grid-cols-1 place-items-center">
                   <Skeleton className="h-[500px] w-full max-w-sm" />
                 </div>
               ) : (
                 fullWidthStaff.map(member => (
-                  <div key={member.id} className="flex justify-center">
-                    <div className="w-full max-w-sm">
-                      <TeamMemberCard 
-                        name={member.name}
-                        role={member.role}
-                        role2={member.role2}
-                        imageUrl={member.imageUrl}
-                        imageHint="staff portrait"
-                        languages={member.languages}
-                        backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
-                      />
-                    </div>
+                  <div key={member.id} className="grid grid-cols-1 place-items-center">
+                      <div className="w-full max-w-sm">
+                          <TeamMemberCard 
+                            name={member.name}
+                            role={member.role}
+                            role2={member.role2}
+                            imageUrl={member.imageUrl}
+                            imageHint="staff portrait"
+                            languages={member.languages}
+                            backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
+                          />
+                      </div>
                   </div>
                 ))
               )}
