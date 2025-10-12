@@ -137,26 +137,27 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 min-h-full">
                 {/* Left side: Editor Form */}
-                <div className="space-y-6 p-4">
+                <div className="space-y-6 p-4 md:p-10">
                     <div className="space-y-2">
                         <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
                         <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
                     </div>
-                    <div className="grid grid-cols-[1fr_auto] items-end gap-2">
+                    <div className="grid grid-cols-1 gap-2">
                          <div className="space-y-2">
                             <Label htmlFor="websiteUrl">Website URL <span className="text-xs text-muted-foreground">(für Verlinkung)</span></Label>
                             <Input id="websiteUrl" value={cardData.websiteUrl || ''} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
                         </div>
-                        <div className="flex flex-col items-center justify-end space-y-1 pb-2">
+                        <div className="flex flex-col items-start justify-end space-y-1 pt-2">
                             <Label htmlFor="openInNewTab" className="cursor-pointer whitespace-nowrap text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                in neuem Tab
+                                in neuem Tab öffnen
                             </Label>
                             <Checkbox
                                 id="openInNewTab"
                                 checked={cardData.openInNewTab}
                                 onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
+                                className="ml-1"
                             />
                         </div>
                     </div>
@@ -278,5 +279,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         </>
     );
 };
+
+    
 
     
