@@ -37,7 +37,7 @@ export const DoctorCard: React.FC<Doctor> = (props) => {
     const { frontSideCode, backSideCode } = props;
 
     return (
-        <div className="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm">
+        <div className="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border bg-background">
              {frontSideCode && <CodeRenderer html={frontSideCode} />}
             
             <div className="flip-card-back absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
