@@ -304,7 +304,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         return (
             <div className="space-y-12 mt-8">
                 {fullWidthItems.length > 0 && (
-                    <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8", fullWidthItems.length > 0 && "sm:grid-cols-2")}>
+                     <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8", fullWidthItems.length > 0 && "sm:grid-cols-2")}>
                         {fullWidthItems.map((item, index) => (
                             <div key={item.id} className={cn("mx-auto flex w-full justify-center", fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 && "sm:col-span-2")}>
                                 <div className={cn(item.hidden && "grayscale")}>
@@ -317,10 +317,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                 {gridItems.length > 0 && (
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
                         {gridItems.map((item) => (
-                             <div key={item.id} className="mx-auto flex w-full justify-center">
-                                <div className={cn(item.hidden && "grayscale")}>
-                                    <DisplayCardComponent {...item} />
-                                </div>
+                             <div key={item.id} className={cn("mx-auto flex w-full justify-center", item.hidden && "grayscale")}>
+                                <DisplayCardComponent {...item} />
                             </div>
                         ))}
                     </div>
@@ -450,3 +448,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
