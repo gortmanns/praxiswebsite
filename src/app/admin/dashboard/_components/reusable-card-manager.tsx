@@ -1,7 +1,8 @@
 
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
@@ -314,21 +315,24 @@ export function ReusableCardManager<T extends BaseCardData>({
             <div className="grid grid-cols-8 gap-x-2 h-full">
                 <div></div>
                 <div className="col-span-2"></div>
-                <div className="col-span-2"></div>
-                <div className="col-span-2 pointer-events-auto flex flex-col justify-end h-full">
-                    <div className="space-y-2 w-full mx-auto mb-4">
-                        <div className="text-center text-primary-foreground">
-                            <label htmlFor="logoScale" className="text-sm">Grösse: {editorCardState.logoScale || 100}%</label>
-                            <Slider
-                                id="logoScale"
-                                value={[editorCardState.logoScale || 100]}
-                                onValueChange={(value) => setEditorCardState(prev => ({...prev, logoScale: value[0]}))}
-                                max={200}
-                                step={1}
-                                className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-popover [&>span:first-child>span]:bg-muted"
-                            />
+                <div className="col-span-2 pointer-events-auto">
+                    <div className="space-y-2 w-full mx-auto mb-4 h-full flex flex-col justify-end">
+                       <div className="space-y-2 w-full mx-auto mb-4 h-full flex flex-col justify-end">
+                            <div className="text-center text-primary-foreground">
+                                <label htmlFor="logoScale" className="text-sm">Grösse: {editorCardState.logoScale || 100}%</label>
+                                <Slider
+                                    id="logoScale"
+                                    value={[editorCardState.logoScale || 100]}
+                                    onValueChange={(value) => setEditorCardState(prev => ({...prev, logoScale: value[0]}))}
+                                    max={200}
+                                    step={1}
+                                    className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-popover [&>span:first-child>span]:bg-muted"
+                                />
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div className="col-span-2 pointer-events-auto flex flex-col justify-end h-full">
                     <PartnerCard {...editorCardState} />
                     <div className="flex flex-col items-center justify-center w-full pointer-events-auto mt-4">
                         <div className="w-full px-2">
@@ -353,8 +357,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                             <div className="h-4/5 flex justify-center">
                                 <Slider
                                     orientation="vertical"
-                                    value={[editorCardState.logoY || 0]}
-                                    onValueChange={(value) => setEditorCardState(prev => ({...prev, logoY: value[0]}))}
+                                    value={[-(editorCardState.logoY || 0)]}
+                                    onValueChange={(value) => setEditorCardState(prev => ({...prev, logoY: -value[0]}))}
                                     max={100}
                                     min={-100}
                                     step={1}
