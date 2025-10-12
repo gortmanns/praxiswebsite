@@ -9,6 +9,7 @@ import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { StaffMember } from '../admin/dashboard/team/staff/_components/staff-editor';
+import { cn } from '@/lib/utils';
 
 
 export default function TeamPage() {
@@ -68,40 +69,24 @@ export default function TeamPage() {
             </div>
             
             <div className="space-y-12">
-              {isLoadingStaff && !fullWidthStaff.length ? (
-                <div className="w-full grid grid-cols-1 place-items-center">
-                  <Skeleton className="h-[500px] w-full max-w-sm" />
-                </div>
-              ) : (
-                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                    {fullWidthStaff.map(member => (
-                      <div key={member.id} className="sm:col-start-1 sm:col-span-1 mx-auto flex w-full justify-center">
-                           <TeamMemberCard 
-                            name={member.name}
-                            role={member.role}
-                            role2={member.role2}
-                            imageUrl={member.imageUrl}
-                            imageHint="staff portrait"
-                            languages={member.languages}
-                            backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
-                          />
-                      </div>
-                    ))}
-                </div>
-              )}
-
-              {isLoadingStaff ? (
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                    {Array.from({ length: 4 }).map((_, index) => (
-                        <div key={index} className="mx-auto flex w-full justify-center">
-                            <Skeleton key={index} className="h-[500px] w-full max-w-sm mx-auto" />
-                        </div>
-                    ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+              <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-8 border-2 border-red-500">
+                {fullWidthStaff.map((member, index) => (
+                  <div key={member.id} className={cn("mx-auto flex w-full justify-center border-2 border-yellow-400", fullWidthStaff.length % 2 !== 0 && index === fullWidthStaff.length -1 && "sm:col-span-2")}>
+                      <TeamMemberCard 
+                        name={member.name}
+                        role={member.role}
+                        role2={member.role2}
+                        imageUrl={member.imageUrl}
+                        imageHint="staff portrait"
+                        languages={member.languages}
+                        backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
+                      />
+                  </div>
+                ))}
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 border-2 border-blue-500">
                   {gridStaff.map((member) => (
-                    <div key={member.id} className="mx-auto flex w-full justify-center">
+                    <div key={member.id} className="mx-auto flex w-full justify-center border-2 border-green-500">
                       <TeamMemberCard 
                         name={member.name}
                         role={member.role}
@@ -113,8 +98,7 @@ export default function TeamPage() {
                       />
                     </div>
                   ))}
-                </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
@@ -123,3 +107,5 @@ export default function TeamPage() {
     </div>
   );
 }
+
+    

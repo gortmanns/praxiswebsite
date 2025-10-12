@@ -221,12 +221,6 @@ export function ReusableCardManager<T extends BaseCardData>({
     const validDbData = useMemo(() => dbData?.filter(d => d.name) || [], [dbData]);
     const visibleItems = useMemo(() => validDbData.filter(d => !d.hidden), [validDbData]);
     const hiddenItems = useMemo(() => validDbData.filter(d => d.hidden), [validDbData]);
-
-    const fullWidthVisibleItems = isStaffManager ? visibleItems.filter(item => item.fullWidth) : [];
-    const gridVisibleItems = isStaffManager ? visibleItems.filter(item => !item.fullWidth) : visibleItems;
-    
-    const fullWidthHiddenItems = isStaffManager ? hiddenItems.filter(item => item.fullWidth) : [];
-    const gridHiddenItems = isStaffManager ? hiddenItems.filter(item => !item.fullWidth) : hiddenItems;
     
     const partnerEditorOverlay = isPartnerManager && isEditing ? (
         <div className="pointer-events-none absolute inset-0 z-10">
@@ -380,7 +374,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                 <div className={cn("mt-8 rounded-lg p-4", !isHidden && 'bg-primary')}>
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
                         {items.map((item, index) => (
-                            <div key={item.id}>
+                            <div key={item.id} className="border-2 border-green-500">
                                 {renderCardWithControls(item, index, isHidden, items.length, false)}
                             </div>
                         ))}
@@ -394,16 +388,16 @@ export function ReusableCardManager<T extends BaseCardData>({
 
         return (
              <div className="mt-8 space-y-12">
-                <div className="grid grid-cols-1 place-items-center w-full">
+                <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-8 border-2 border-red-500">
                     {fullWidthItems.map((item, index) => (
-                        <div key={item.id} className="w-full max-w-sm">
-                            {renderCardWithControls(item, index, isHidden, fullWidthItems.length, true)}
-                        </div>
+                      <div key={item.id} className={cn("mx-auto flex w-full justify-center border-2 border-yellow-400", fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 && "sm:col-span-2")}>
+                          {renderCardWithControls(item, index, isHidden, fullWidthItems.length, true)}
+                      </div>
                     ))}
                 </div>
-                 <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+                 <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 border-2 border-blue-500">
                     {gridItems.map((item, index) => (
-                        <div key={item.id} className="mx-auto flex w-full max-w-sm justify-center lg:max-w-none">
+                        <div key={item.id} className="mx-auto flex w-full justify-center border-2 border-green-500">
                             {renderCardWithControls(item, index, isHidden, gridItems.length, false)}
                         </div>
                     ))}
@@ -533,5 +527,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
 
     
