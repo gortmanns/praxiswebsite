@@ -12,7 +12,7 @@ interface TeamMemberCardProps {
 
 export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsideContent }: TeamMemberCardProps) {
   return (
-    <div className="group relative w-full overflow-hidden rounded-lg border bg-background text-card-foreground shadow-sm">
+    <div className="group relative w-full overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
         <div className="p-6">
             <div className="relative aspect-[2/3] w-full overflow-hidden rounded-md">
                 <Image
