@@ -89,9 +89,9 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
                 {/* Left side: Editor Form */}
-                <div className="space-y-6 rounded-lg border p-6">
+                <div className="md:col-span-1 space-y-6 rounded-lg border p-6">
                     <div className="space-y-2">
                         <Label htmlFor="name">Name</Label>
                         <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
@@ -101,7 +101,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                         <Input id="role" value={cardData.role} onChange={(e) => handleInputChange('role', e.target.value)} />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="role2">Rolle 2 (optional)</Label>
+                        <Label htmlFor="role2">Zusatzqualifikation (optional)</Label>
                         <Input id="role2" value={cardData.role2 || ''} onChange={(e) => handleInputChange('role2', e.target.value)} />
                     </div>
                     <div className="space-y-3 pt-2">
@@ -137,7 +137,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                 </div>
 
                 {/* Right side: Live Preview */}
-                <div className="relative">
+                <div className="md:col-span-2 relative">
                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                     <TeamMemberCard
                         name={cardData.name}

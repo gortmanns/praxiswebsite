@@ -8,8 +8,8 @@ import { ReusableCardManager } from '../../_components/reusable-card-manager';
 import type { StaffMember as CardData } from './_components/staff-editor';
 
 const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
-    name: "Neuer Mitarbeiter",
-    role: "Rolle",
+    name: "Name",
+    role: "Funktion",
     role2: "",
     imageUrl: "https://picsum.photos/seed/placeholder/400/600",
     backsideContent: "<p>Hier klicken, um Text hinzuzufügen.</p>",
