@@ -353,7 +353,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 </div>
 
                                 {/* Green Debug and Live Preview Overlay */}
-                                <div className="pointer-events-none absolute inset-0 z-10 mt-8 flex items-center justify-center">
+                                <div className="pointer-events-none absolute inset-0 z-10 flex items-end justify-center">
                                      <div className="w-full max-w-full">
                                         <div className="grid grid-cols-8 gap-x-2 bg-green-500/20 p-1 border border-green-500">
                                             <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
@@ -362,10 +362,9 @@ export function ReusableCardManager<T extends BaseCardData>({
                                             <div className="col-span-2 bg-purple-500/20 text-center text-xs text-purple-800">Vorschau</div>
                                             <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
                                             
-                                            <div className="col-start-6 col-span-2 mt-2 pointer-events-auto z-10">
-                                                <DisplayCardComponent {...editorCardState} />
-                                                {isPartnerManager && (
-                                                    <>
+                                            {isPartnerManager && (
+                                                <div className="col-start-6 col-span-2 mt-2 pointer-events-auto z-10">
+                                                    <DisplayCardComponent {...editorCardState} />
                                                     <div className="mt-2">
                                                         <Slider
                                                             id="logoX"
@@ -380,9 +379,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                                                             <p>{editorCardState.logoX || 0}px</p>
                                                         </div>
                                                     </div>
-                                                    </>
-                                                )}
-                                            </div>
+                                                </div>
+                                            )}
                                              {isPartnerManager && (
                                                 <div className="col-start-8 col-span-1 flex items-center justify-start h-full pointer-events-auto z-10 pl-2">
                                                     <div className="flex flex-col items-center">
@@ -403,6 +401,11 @@ export function ReusableCardManager<T extends BaseCardData>({
                                                         </div>
                                                     </div>
                                                 </div>
+                                            )}
+                                            {!isPartnerManager && (
+                                                 <div className="col-start-6 col-span-2 mt-2 pointer-events-auto z-10">
+                                                    <DisplayCardComponent {...editorCardState} />
+                                                 </div>
                                             )}
                                         </div>
                                      </div>
@@ -484,3 +487,4 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
