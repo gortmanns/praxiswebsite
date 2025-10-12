@@ -56,11 +56,6 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         onUpdate(newCardData);
     };
     
-    const handleSliderChange = (field: 'logoScale' | 'logoX' | 'logoY', value: number[]) => {
-        const singleValue = value[0];
-        handleInputChange(field, singleValue);
-    };
-
     const handleResetControls = () => {
         onUpdate({
             ...cardData,
@@ -160,19 +155,6 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 {/* Right side: Visual Live Preview Area */}
                  <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[300px]">
                     <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
-                    <div className="space-y-2 w-[70%] mx-auto z-20 relative">
-                        <div className="text-center text-primary-foreground">
-                            <label htmlFor="logoScale" className="text-sm">Grösse: {cardData.logoScale || 100}%</label>
-                            <Slider
-                                id="logoScale"
-                                value={[cardData.logoScale || 100]}
-                                onValueChange={(value) => handleSliderChange('logoScale', value)}
-                                max={200}
-                                step={1}
-                                className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-muted [&>span:first-child>span]:bg-popover"
-                            />
-                        </div>
-                    </div>
                     <div className="flex-grow flex items-center justify-center">
                     </div>
                 </div>

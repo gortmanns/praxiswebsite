@@ -316,6 +316,19 @@ export function ReusableCardManager<T extends BaseCardData>({
                 <div className="col-span-2"></div>
                 <div className="col-span-2"></div>
                 <div className="col-span-2 pointer-events-auto flex flex-col justify-end h-full">
+                    <div className="space-y-2 w-full mx-auto mb-4">
+                        <div className="text-center text-primary-foreground">
+                            <label htmlFor="logoScale" className="text-sm">Grösse: {editorCardState.logoScale || 100}%</label>
+                            <Slider
+                                id="logoScale"
+                                value={[editorCardState.logoScale || 100]}
+                                onValueChange={(value) => setEditorCardState(prev => ({...prev, logoScale: value[0]}))}
+                                max={200}
+                                step={1}
+                                className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-popover [&>span:first-child>span]:bg-muted"
+                            />
+                        </div>
+                    </div>
                     <PartnerCard {...editorCardState} />
                     <div className="flex flex-col items-center justify-center w-full pointer-events-auto mt-4">
                         <div className="w-full px-2">
@@ -325,7 +338,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 max={100}
                                 min={-100}
                                 step={1}
-                                className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-muted [&>span:first-child>span]:bg-popover"
+                                className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-popover [&>span:first-child>span]:bg-muted"
                             />
                         </div>
                         <div className="text-center text-xs mt-1 text-white">
@@ -345,7 +358,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                     max={100}
                                     min={-100}
                                     step={1}
-                                    className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-muted [&>span:first-child>span]:bg-popover"
+                                    className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-popover [&>span:first-child>span]:bg-muted"
                                 />
                             </div>
                             <div className="text-center text-xs text-white">
