@@ -83,3 +83,11 @@
   background-color: #000 !important;
   opacity: 0.5 !important;
 }
+
+@layer utilities {
+    /* --- TEMPORARY DEBUGGING --- */
+    * {
+        outline: 1px solid red !important;
+    }
+    /* ------------------------- */
+}
