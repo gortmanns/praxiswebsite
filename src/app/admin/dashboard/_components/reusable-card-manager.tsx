@@ -299,30 +299,23 @@ export function ReusableCardManager<T extends BaseCardData>({
 
         const fullWidthItems = isStaffManager ? items.filter(i => i.fullWidth) : [];
         const gridItems = isStaffManager ? items.filter(i => !i.fullWidth) : items;
-
-        const renderItem = (item: T, isFullWidth: boolean) => {
-            const isLastOdd = fullWidthItems.length % 2 !== 0 && fullWidthItems.indexOf(item) === fullWidthItems.length - 1;
-            const colSpanClass = isFullWidth && isLastOdd ? "sm:col-span-2" : "";
-
-            return (
-                <div key={item.id} className={cn("mx-auto flex w-full justify-center", colSpanClass)}>
-                    <div className={cn("relative", item.hidden && "grayscale")}>
-                        <DisplayCardComponent {...item} />
-                    </div>
-                </div>
-            );
-        };
     
         return (
             <div className="space-y-12 mt-8">
                 {fullWidthItems.length > 0 && (
                      <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8", "sm:grid-cols-2")}>
-                        {fullWidthItems.map((item) => renderItem(item, true))}
+                        {fullWidthItems.map((item, index) => {
+                            const isLastOdd = fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1;
+                            const colSpanClass = isLastOdd ? "sm:col-span-2" : "";
+                            return <div key={item.id} className={cn("mx-auto flex w-full justify-center", colSpanClass)}><DisplayCardComponent {...item} /></div>
+                        })}
                     </div>
                 )}
                 {gridItems.length > 0 && (
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                        {gridItems.map((item) => renderItem(item, false))}
+                        {gridItems.map((item) => (
+                           <div key={item.id} className="mx-auto flex w-full justify-center"><DisplayCardComponent {...item} /></div>
+                        ))}
                     </div>
                 )}
             </div>
@@ -450,11 +443,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
-
-    
-
-
 
     
