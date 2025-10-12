@@ -221,6 +221,38 @@ export function ReusableCardManager<T extends BaseCardData>({
     const hiddenItems = useMemo(() => validDbData.filter(d => d.hidden), [validDbData]);
     
     const DisplayWrapper: React.FC<{ item: T, index: number, totalVisible: number }> = ({ item, index, totalVisible }) => {
+        const moveUpLabel = isPartnerManager ? "Links" : "Nach oben";
+        const moveDownLabel = isPartnerManager ? "Rechts" : "Nach unten";
+
+        const controlButtons = (
+             <div className="grid grid-cols-1 w-full gap-2">
+                <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
+                    <ChevronLeft className="mr-2 h-4 w-4" /> {moveUpLabel}
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === totalVisible - 1 || isEditing}>
+                    {moveDownLabel} <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                    <EyeOff className="mr-2 h-4 w-4" /> Ausblenden
+                </Button>
+                {isStaffManager && (
+                    <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleToggleFullWidth(item)} 
+                        disabled={isEditing}
+                        title={item.fullWidth ? "Volle Breite deaktivieren" : "Volle Breite aktivieren"}
+                        className={cn(item.fullWidth && "bg-primary/20 hover:bg-primary/30")}
+                    >
+                        <RectangleHorizontal className="mr-2 h-4 w-4" /> Volle Breite
+                    </Button>
+                )}
+                <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
+                    <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                </Button>
+            </div>
+        );
+
         if (isPartnerManager) {
             return (
                 <div className="w-full">
@@ -231,10 +263,10 @@ export function ReusableCardManager<T extends BaseCardData>({
                         <div className="mt-2 flex w-full flex-col gap-2">
                             <div className="grid grid-cols-2 gap-2">
                                 <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
-                                    <ChevronLeft className="mr-2 h-4 w-4" /> Links
+                                    <ChevronLeft className="mr-2 h-4 w-4" /> {moveUpLabel}
                                 </Button>
                                 <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === totalVisible - 1 || isEditing}>
-                                    Rechts <ChevronRight className="ml-2 h-4 w-4" />
+                                    {moveDownLabel} <ChevronRight className="ml-2 h-4 w-4" />
                                 </Button>
                             </div>
                             <div className="grid grid-cols-2 gap-2">
@@ -255,32 +287,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         return (
             <div className="flex w-full flex-col sm:flex-row items-center justify-center gap-4">
                 <div className="flex sm:flex-col w-full sm:w-48 order-2 sm:order-1 flex-shrink-0 items-center justify-center gap-2">
-                    <div className="grid grid-cols-1 w-full gap-2">
-                        <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
-                            <ChevronLeft className="mr-2 h-4 w-4" /> Nach oben
-                        </Button>
-                        <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === totalVisible - 1 || isEditing}>
-                           <ChevronRight className="mr-2 h-4 w-4" /> Nach unten
-                        </Button>
-                        <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                            <EyeOff className="mr-2 h-4 w-4" /> Ausblenden
-                        </Button>
-                        {isStaffManager && (
-                            <Button 
-                                variant="outline" 
-                                size="sm" 
-                                onClick={() => handleToggleFullWidth(item)} 
-                                disabled={isEditing}
-                                title={item.fullWidth ? "Volle Breite deaktivieren" : "Volle Breite aktivieren"}
-                                className={cn(item.fullWidth && "bg-primary/20 hover:bg-primary/30")}
-                            >
-                                <RectangleHorizontal className="mr-2 h-4 w-4" /> {item.fullWidth ? 'Halbe Breite' : 'Volle Breite'}
-                            </Button>
-                        )}
-                        <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
-                            <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                        </Button>
-                    </div>
+                   {controlButtons}
                 </div>
                 <div className={cn("relative flex-1 w-full max-w-sm sm:max-w-none order-1 sm:order-2")}>
                     <DisplayCardComponent {...item} />
@@ -359,19 +366,14 @@ export function ReusableCardManager<T extends BaseCardData>({
 
     const HiddenDisplayWrapper: React.FC<{ item: T }> = ({ item }) => {
         const itemControls = (
-             <div className="mt-2 flex w-full flex-col gap-2">
-                <div className={cn(
-                    "gap-2",
-                    isStaffManager ? "grid grid-cols-1" : "grid grid-cols-2"
-                )}>
-                    <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                        <Eye className="mr-2 h-4 w-4" /> Einblenden
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
-                        <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                    </Button>
-                </div>
-                 {isStaffManager && (
+            <div className="grid grid-cols-1 w-full gap-2">
+                <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                    <Eye className="mr-2 h-4 w-4" /> Einblenden
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
+                    <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                </Button>
+                {isStaffManager && (
                     <Button 
                         variant="outline" 
                         size="sm" 
@@ -380,7 +382,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                         title={item.fullWidth ? "Volle Breite deaktivieren" : "Volle Breite aktivieren"}
                         className={cn(item.fullWidth && "bg-primary/20 hover:bg-primary/30")}
                     >
-                        <RectangleHorizontal className="mr-2 h-4 w-4" /> {item.fullWidth ? 'Halbe Breite' : 'Volle Breite'}
+                        <RectangleHorizontal className="mr-2 h-4 w-4" /> Volle Breite
                     </Button>
                 )}
                 <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(item.id, (item as any).name || 'diese Karte')} disabled={isEditing}>
@@ -397,7 +399,19 @@ export function ReusableCardManager<T extends BaseCardData>({
                             <div className="absolute inset-0 z-10 bg-black/50 rounded-lg"></div>
                             <DisplayCardComponent {...item} />
                         </div>
-                        {itemControls}
+                        <div className="mt-2 flex w-full flex-col gap-2">
+                            <div className="grid grid-cols-2 gap-2">
+                                <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                                    <Eye className="mr-2 h-4 w-4" /> Einblenden
+                                </Button>
+                                <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
+                                    <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                                </Button>
+                            </div>
+                            <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(item.id, (item as any).name || 'diese Karte')} disabled={isEditing}>
+                                <Trash2 className="mr-2 h-4 w-4" /> Löschen
+                            </Button>
+                        </div>
                     </div>
                 </div>
             );
