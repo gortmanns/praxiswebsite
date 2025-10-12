@@ -340,25 +340,24 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                    {isEditing && (
-                         <div className="relative rounded-lg border-2 border-dashed border-primary min-h-[550px] z-0">
+                        <div className="relative rounded-lg border-2 border-dashed border-primary min-h-[550px] z-0">
+                            {/* Editor UI is now inside EditorCardComponent */}
                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
-                        </div>
-                    )}
-                    
-                    {isEditing && (
-                        <div className="relative pointer-events-none mt-8 flex items-end">
-                            <div className="w-full max-w-full">
-                                <div className="grid grid-cols-8 gap-x-2 bg-green-500/20 p-1 border border-green-500">
-                                    <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
-                                    <div className="col-span-2 bg-blue-500/20 text-center text-xs text-blue-800">Editor</div>
-                                    <div className="col-span-2 bg-yellow-500/20 text-center text-xs text-yellow-800">Leer</div>
-                                    <div className="col-span-2 bg-purple-500/20 text-center text-xs text-purple-800">Vorschau</div>
-                                    <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
+
+                             {/* Green Debug/Logic Overlay */}
+                            <div className="pointer-events-none absolute inset-0 z-20 flex items-end">
+                                <div className="w-full max-w-full">
+                                    <div className="grid grid-cols-8 gap-x-2 bg-green-500/20 p-1 border border-green-500">
+                                        <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
+                                        <div className="col-span-2 bg-blue-500/20 text-center text-xs text-blue-800">Editor</div>
+                                        <div className="col-span-2 bg-yellow-500/20 text-center text-xs text-yellow-800">Leer</div>
+                                        <div className="col-span-2 bg-purple-500/20 text-center text-xs text-purple-800">Vorschau</div>
+                                        <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     )}
-
 
                     <div className="space-y-4 mt-12">
                         <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Karten</h3>
@@ -432,7 +431,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
-
-    

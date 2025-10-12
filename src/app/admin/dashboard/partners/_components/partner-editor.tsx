@@ -137,7 +137,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 min-h-full">
+            <div className="grid md:grid-cols-2 min-h-full">
                 {/* Left side: Editor Form */}
                 <div className="space-y-6 p-4 md:p-10">
                     <div className="space-y-2">
@@ -279,7 +279,3 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         </>
     );
 };
-
-    
-
-    
