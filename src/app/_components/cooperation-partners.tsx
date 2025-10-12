@@ -99,17 +99,17 @@ export function CooperationPartnersSection() {
         <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
           Unsere weiteren Partner
         </h3>
-        <div className="mt-12">
-          <div className="flex flex-wrap justify-center gap-8">
+        <div className="mt-12 flex justify-center">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:w-full">
               {isLoadingOther ? (
                  Array.from({ length: 3 }).map((_, index) => (
-                    <div key={index} className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]">
+                    <div key={index} className="w-full sm:w-auto">
                         <Skeleton className="h-32 w-full rounded-lg" />
                     </div>
                 ))
               ) : (
                 visibleOtherPartners.map(partner => (
-                  <div key={partner.id} className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]">
+                  <div key={partner.id} className="w-full sm:w-auto">
                     <Link
                       href={partner.websiteUrl || '#'}
                       target={partner.openInNewTab ? '_blank' : '_self'}
