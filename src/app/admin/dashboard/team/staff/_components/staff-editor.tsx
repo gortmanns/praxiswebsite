@@ -97,7 +97,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                         <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="role">Rolle</Label>
+                        <Label htmlFor="role">Funktion</Label>
                         <Input id="role" value={cardData.role} onChange={(e) => handleInputChange('role', e.target.value)} />
                     </div>
                     <div className="space-y-2">
@@ -109,7 +109,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })}>
                                 <ImageUp className="mr-2 h-4 w-4" /> {isNewCard ? 'Foto wählen' : 'Foto ändern'}
                             </Button>
-                            <Button variant="outline" onClick={() => setDialogState({ type: 'language', data: {} })}>
+                            <Button onClick={() => setDialogState({ type: 'language', data: {} })}>
                                 <Languages className="mr-2 h-4 w-4" /> Sprachen
                             </Button>
                         </div>
