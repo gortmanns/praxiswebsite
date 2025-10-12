@@ -69,16 +69,14 @@ export function CooperationPartnersSection() {
           Unsere ärztlichen Kooperationspartner
         </h2>
         
-        <div className="mt-12 flex flex-wrap justify-center gap-8">
+        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {isLoadingMedical ? (
             Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
-                <Skeleton className="h-32 w-full rounded-lg" />
-              </div>
+                <Skeleton key={index} className="h-32 w-full rounded-lg" />
             ))
           ) : (
             visibleMedicalPartners.map(partner => (
-                <div key={partner.id} className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                <div key={partner.id}>
                   <Link
                     href={partner.websiteUrl || '#'}
                     target={partner.openInNewTab ? '_blank' : '_self'}
@@ -103,16 +101,14 @@ export function CooperationPartnersSection() {
         <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
           Unsere weiteren Partner
         </h3>
-        <div className="mt-12 flex flex-wrap justify-center gap-8">
+        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {isLoadingOther ? (
              Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
-                <Skeleton className="h-32 w-full rounded-lg" />
-              </div>
+                <Skeleton key={index} className="h-32 w-full rounded-lg" />
             ))
           ) : (
             visibleOtherPartners.map(partner => (
-              <div key={partner.id} className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+              <div key={partner.id}>
                 <Link
                   href={partner.websiteUrl || '#'}
                   target={partner.openInNewTab ? '_blank' : '_self'}
