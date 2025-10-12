@@ -13,7 +13,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { Slider } from '@/components/ui/slider';
-import { PartnerCard } from '../dashboard/partners/_components/partner-card';
+import { PartnerCard } from '../partners/_components/partner-card';
 
 
 export interface BaseCardData {
@@ -341,9 +341,11 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                    {isEditing && (
-                        <div className="relative rounded-lg border-2 border-dashed border-primary min-h-[550px] z-0">
+                        <div className="relative rounded-lg border-2 border-dashed border-primary min-h-[550px]">
                             {/* Editor UI is now inside EditorCardComponent */}
-                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                            <div className="z-0">
+                                <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                            </div>
 
                             {/* Green Debug/Logic Overlay */}
                            <div className="pointer-events-none absolute inset-0 z-10 flex items-end">
@@ -351,9 +353,47 @@ export function ReusableCardManager<T extends BaseCardData>({
                                     <div className="grid grid-cols-8 gap-x-2 bg-green-500/20 p-1 border border-green-500">
                                         <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
                                         <div className="col-span-2 bg-blue-500/20 text-center text-xs text-blue-800">Editor</div>
-                                        <div className="col-span-2 bg-yellow-500/20 text-center text-xs text-yellow-800">Leer</div>
-                                        <div className="col-span-2 bg-purple-500/20 text-center text-xs text-purple-800">Vorschau</div>
-                                        <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
+                                        <div className="col-span-2 bg-yellow-500/20 text-center text-xs text-yellow-800">
+                                            {/* Horizontal Slider Area */}
+                                            <div className="flex flex-col items-center justify-center h-full pointer-events-auto">
+                                                 <div className="w-full px-2">
+                                                    <Slider
+                                                        value={[editorCardState.logoX || 0]}
+                                                        onValueChange={(value) => setEditorCardState(prev => ({...prev, logoX: value[0]}))}
+                                                        max={100}
+                                                        min={-100}
+                                                        step={1}
+                                                    />
+                                                </div>
+                                                <div className="text-center text-xs mt-1 text-white">
+                                                    <div>Horizontale Position</div>
+                                                    <div>{editorCardState.logoX || 0}px</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-start-6 col-span-2 bg-purple-500/20 text-center text-xs text-purple-800 pointer-events-auto">
+                                            <PartnerCard {...editorCardState} />
+                                        </div>
+                                        <div className="bg-red-500/20 text-center text-xs text-red-800 pointer-events-auto">
+                                            {/* Vertical Slider Area */}
+                                            <div className="flex flex-col items-center justify-center h-full">
+                                                <div className="h-4/5 w-full flex justify-center">
+                                                    <Slider
+                                                        orientation="vertical"
+                                                        value={[editorCardState.logoY || 0]}
+                                                        onValueChange={(value) => setEditorCardState(prev => ({...prev, logoY: value[0]}))}
+                                                        max={100}
+                                                        min={-100}
+                                                        step={1}
+                                                    />
+                                                </div>
+                                                <div className="text-center text-xs mt-2 text-white">
+                                                    <div>Vertikale</div>
+                                                    <div>Position</div>
+                                                    <div>{editorCardState.logoY || 0}px</div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -432,4 +472,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-

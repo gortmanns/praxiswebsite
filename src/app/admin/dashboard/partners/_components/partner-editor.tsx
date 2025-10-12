@@ -192,44 +192,8 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                             />
                         </div>
                     </div>
-                </div>
-            </div>
-
-            {/* This is the logical container that gets overlayed */}
-            <div className="col-start-6 col-span-2 pointer-events-auto z-20">
-                <PartnerCard {...cardData} />
-                <div className="mt-2">
-                    <Slider
-                        id="logoX"
-                        value={[cardData.logoX || 0]}
-                        onValueChange={(value) => handleSliderChange('logoX', value)}
-                        min={-100}
-                        max={100}
-                        step={1}
-                    />
-                    <div className="text-center text-xs mt-1">
-                        <p>Horizontale Position</p>
-                        <p>{cardData.logoX || 0}px</p>
-                    </div>
-                </div>
-            </div>
-
-            <div className="col-start-8 col-span-1 flex items-center justify-start h-full pointer-events-auto z-20 pl-2">
-                 <div className="flex items-center gap-2">
-                    <Slider
-                        id="logoY"
-                        orientation="vertical"
-                        value={[cardData.logoY || 0]}
-                        onValueChange={(value) => handleSliderChange('logoY', value)}
-                        min={-100}
-                        max={100}
-                        step={1}
-                        className="h-32"
-                    />
-                    <div className="text-center text-xs">
-                        <p>Vertikale</p>
-                        <p>Position</p>
-                        <p>{cardData.logoY || 0}px</p>
+                    <div className="flex-grow flex items-center justify-center">
+                        {/* Placeholder for PartnerCard, which will be rendered in the overlay */}
                     </div>
                 </div>
             </div>
