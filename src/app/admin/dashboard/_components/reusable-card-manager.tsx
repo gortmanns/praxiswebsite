@@ -227,18 +227,16 @@ export function ReusableCardManager<T extends BaseCardData>({
     const gridHiddenItems = isStaffManager ? hiddenItems.filter(item => !item.fullWidth) : hiddenItems;
     
     const DisplayWrapper: React.FC<{ item: T, index: number, totalVisible: number, isFullWidth: boolean }> = ({ item, index, totalVisible, isFullWidth }) => {
-        const moveUpLabel = isFullWidth ? "Nach oben" : "Nach links";
-        const moveDownLabel = isFullWidth ? "Nach unten" : "Nach rechts";
         const MoveUpIcon = isFullWidth ? ArrowUp : ChevronLeft;
         const MoveDownIcon = isFullWidth ? ArrowDown : ChevronRight;
 
         const controlButtons = (
              <div className="grid grid-cols-1 w-full gap-2">
                 <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
-                    <MoveUpIcon className="mr-2 h-4 w-4" /> {moveUpLabel}
+                    <MoveUpIcon className="mr-2 h-4 w-4" /> Verschieben
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === totalVisible - 1 || isEditing}>
-                    {moveDownLabel} <MoveDownIcon className="ml-2 h-4 w-4" />
+                    Verschieben <MoveDownIcon className="ml-2 h-4 w-4" />
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
                     <EyeOff className="mr-2 h-4 w-4" /> Ausblenden
