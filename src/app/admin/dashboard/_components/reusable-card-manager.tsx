@@ -431,3 +431,4 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+

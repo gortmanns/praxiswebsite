@@ -139,7 +139,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         <>
             <div className="grid md:grid-cols-2 min-h-full">
                 {/* Left side: Editor Form */}
-                <div className="space-y-6 p-4 md:p-10">
+                <div className="space-y-6 p-10 z-0">
                     <div className="space-y-2">
                         <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
                         <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
@@ -178,7 +178,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 </div>
 
                 {/* Right side: Live Preview Area */}
-                 <div className="p-4 bg-primary rounded-r-lg">
+                 <div className="p-10 bg-primary rounded-r-lg flex flex-col z-0">
                     <h3 className="text-xl font-bold text-primary-foreground mb-2 text-center">Live Vorschau</h3>
                     <div className="space-y-2 w-[70%] mx-auto">
                         <div className="text-center text-primary-foreground">
