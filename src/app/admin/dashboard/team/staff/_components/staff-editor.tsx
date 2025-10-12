@@ -18,7 +18,6 @@ import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/
 import { projectImages } from '@/app/admin/dashboard/partners/project-images';
 import { Checkbox } from '@/components/ui/checkbox';
 import { LanguageSelectDialog } from '@/app/admin/dashboard/team/doctors/_components/language-select-dialog';
-import { LanguageFlags } from '@/app/admin/dashboard/team/doctors/_components/language-flags';
 
 
 export interface StaffMember {
@@ -106,7 +105,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                         <Input id="role2" value={cardData.role2 || ''} onChange={(e) => handleInputChange('role2', e.target.value)} />
                     </div>
                     <div className="space-y-3 pt-2">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-4">
                             <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })}>
                                 <ImageUp className="mr-2 h-4 w-4" /> {isNewCard ? 'Foto wählen' : 'Foto ändern'}
                             </Button>
@@ -114,7 +113,6 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 <Languages className="mr-2 h-4 w-4" /> Sprachen
                             </Button>
                         </div>
-                        <LanguageFlags languages={cardData.languages} />
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="backsideContent">Text für Kartenrückseite</Label>
