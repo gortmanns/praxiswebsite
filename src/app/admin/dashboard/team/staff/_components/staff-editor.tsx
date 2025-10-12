@@ -89,8 +89,26 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-                {/* Left side: Editor Form */}
-                <div className="md:col-span-1 space-y-6 rounded-lg border p-6">
+                {/* Left side: Live Preview */}
+                <div className="md:col-span-1 relative">
+                    <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
+                    <TeamMemberCard
+                        name={cardData.name}
+                        role={cardData.role}
+                        role2={cardData.role2}
+                        imageUrl={cardData.imageUrl}
+                        imageHint="staff portrait preview"
+                        languages={cardData.languages}
+                        backsideContent={
+                            cardData.backsideContent ? (
+                                <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
+                            ) : null
+                        }
+                    />
+                </div>
+
+                {/* Right side: Editor Form */}
+                <div className="md:col-span-2 space-y-6 rounded-lg border p-6">
                     <div className="space-y-2">
                         <Label htmlFor="name">Name</Label>
                         <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
@@ -123,24 +141,6 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             rows={6}
                         />
                     </div>
-                </div>
-
-                {/* Right side: Live Preview */}
-                <div className="md:col-span-2 relative">
-                    <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                    <TeamMemberCard
-                        name={cardData.name}
-                        role={cardData.role}
-                        role2={cardData.role2}
-                        imageUrl={cardData.imageUrl}
-                        imageHint="staff portrait preview"
-                        languages={cardData.languages}
-                        backsideContent={
-                            cardData.backsideContent ? (
-                                <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
-                            ) : null
-                        }
-                    />
                 </div>
             </div>
 
