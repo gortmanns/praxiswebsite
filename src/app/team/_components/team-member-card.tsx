@@ -14,8 +14,8 @@ interface TeamMemberCardProps {
 
 export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsideContent }: TeamMemberCardProps) {
   return (
-    <div className="group relative w-full overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl aspect-[4/5]">
-        <div className="p-6 h-full flex flex-col">
+    <div className="group relative w-full max-w-sm overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
+        <div className="p-6">
             <div className={cn("relative w-full overflow-hidden rounded-md aspect-[2/3]")}>
                 <Image
                     src={imageUrl}
@@ -26,7 +26,7 @@ export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, backsid
                     data-ai-hint={imageHint}
                 />
             </div>
-            <div className="pt-6 text-center flex-grow flex flex-col justify-center">
+            <div className="pt-6 text-center">
                 <h4 className="text-xl font-bold text-primary">{name}</h4>
                 <p className="mt-2 text-base font-bold text-muted-foreground">{role}</p>
                 {role2 && <p className="mt-1 text-base text-muted-foreground">{role2}</p>}
