@@ -326,10 +326,21 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                     {isEditing && (
-                        <div 
-                            className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12 bg-muted/20"
-                        >
-                           <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                        <div className="relative rounded-lg border-2 border-dashed border-primary mb-12 bg-muted/20">
+                            {/* This is the new logic to render the phantom container and the editor */}
+                            <div 
+                                className="absolute inset-x-0 top-0 rounded-lg bg-primary p-4 flex flex-wrap justify-center gap-8 opacity-100 z-50"
+                                style={{
+                                    outline: '3px solid #00ff00',
+                                }}
+                            >
+                                {/* The EditorCardComponent is now rendered inside the correctly-sized container */}
+                                <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                            </div>
+                            
+                            {/* Placeholder to maintain space in the layout */}
+                            <div className="h-[500px]" /> 
+
                             <Alert variant="info" className="mt-8">
                                 <Info className="h-4 w-4" />
                                 <AlertTitle>Bearbeitungsmodus</AlertTitle>
