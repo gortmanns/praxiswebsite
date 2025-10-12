@@ -70,7 +70,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         setEditingCardId(null);
         setIsCreatingNew(true);
         // Reset the editor state to a new, empty card without an ID
-        setEditorCardState({ ...initialCardState, id: '', name: 'Neue Karte' } as T);
+        setEditorCardState({ ...initialCardState, name: 'Neue Karte' } as T);
     };
 
     const handleCancelEdit = () => {
@@ -150,7 +150,7 @@ export function ReusableCardManager<T extends BaseCardData>({
             if (isCreatingNew) {
                 // Create new card
                 const mutableCardData: Partial<T> = { ...editorCardState };
-                delete mutableCardData.id; // Ensure no ID is present on creation
+                delete (mutableCardData as any).id;
     
                 const highestOrder = dbData ? dbData.reduce((max, item) => item.order > max ? item.order : max, 0) : 0;
                 
@@ -162,14 +162,12 @@ export function ReusableCardManager<T extends BaseCardData>({
                     hidden: false,
                 };
     
-                // Add the new document and get its reference to add the ID
                 const newDocRef = await addDoc(collection(firestore, collectionName), newCardData);
                 await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
     
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: `Neue ${entityName}-Karte erfolgreich erstellt.` });
             
             } else if (editingCardId) {
-                // Update existing card
                 const mutableCardData: Partial<T> = { ...editorCardState };
                 delete mutableCardData.createdAt;
                 delete mutableCardData.id;
@@ -185,7 +183,6 @@ export function ReusableCardManager<T extends BaseCardData>({
         }
     };
     
-    // Filter out "ghost" cards that might have been created without a name.
     const validDbData = useMemo(() => dbData?.filter(d => d.name) || [], [dbData]);
 
     const visibleItems = useMemo(() => validDbData.filter(d => !d.hidden), [validDbData]);
@@ -341,23 +338,16 @@ export function ReusableCardManager<T extends BaseCardData>({
 
                     {isEditing && (
                         <div className="relative z-10 mb-12 rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8">
+                             <div 
+                                className="absolute top-0 right-0 bottom-0 left-0 grid grid-cols-8 gap-4 p-4 z-10 pointer-events-none"
+                            >
+                                <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-1">1</div>
+                                <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-2">2</div>
+                                <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-2">3</div>
+                                <div className="bg-green-500/50 flex items-center justify-center text-black col-span-2">Vorschau</div>
+                                <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-1">4</div>
+                            </div>
                              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div
-                                    className={cn(
-                                        "absolute top-0 right-0 bottom-0 left-0 grid grid-cols-8 gap-4 p-4",
-                                        "z-10 col-span-2 row-span-2",
-                                        "outline-4 outline-dashed outline-green-500",
-                                    )}
-                                >
-                                    {/* Visual Debug Placeholders */}
-                                    <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-1">1</div>
-                                    <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-2">2</div>
-                                    <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-2">3</div>
-                                    <div className="col-span-2 z-20">
-                                        {/* Preview Area */}
-                                    </div>
-                                    <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-1">4</div>
-                                </div>
                                 <div className="relative z-20 md:col-start-1 md:col-span-1">
                                     <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                                 </div>
@@ -441,5 +431,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
