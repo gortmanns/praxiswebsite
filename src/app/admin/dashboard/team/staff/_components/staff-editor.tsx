@@ -86,6 +86,8 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
         setDialogState({ type: null, data: {} });
     };
 
+    const isNewCard = !cardData.id;
+
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
@@ -103,23 +105,16 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                         <Label htmlFor="role2">Rolle 2 (optional)</Label>
                         <Input id="role2" value={cardData.role2 || ''} onChange={(e) => handleInputChange('role2', e.target.value)} />
                     </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="imageUrl">Bild</Label>
+                    <div className="space-y-3 pt-2">
                         <div className="flex items-center gap-2">
-                            <Input id="imageUrl" value={cardData.imageUrl} onChange={(e) => handleInputChange('imageUrl', e.target.value)} readOnly />
-                             <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })}>
-                                <ImageUp className="mr-2 h-4 w-4" /> Bild ändern
+                            <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })}>
+                                <ImageUp className="mr-2 h-4 w-4" /> {isNewCard ? 'Foto wählen' : 'Foto ändern'}
                             </Button>
-                        </div>
-                    </div>
-                     <div className="space-y-2">
-                        <Label>Sprachen</Label>
-                        <div className="flex items-center gap-4">
                             <Button variant="outline" onClick={() => setDialogState({ type: 'language', data: {} })}>
-                                <Languages className="mr-2 h-4 w-4" /> Sprachen auswählen
+                                <Languages className="mr-2 h-4 w-4" /> Sprachen
                             </Button>
-                            <LanguageFlags languages={cardData.languages} />
                         </div>
+                        <LanguageFlags languages={cardData.languages} />
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="backsideContent">Text für Kartenrückseite</Label>
