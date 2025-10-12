@@ -140,8 +140,9 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                             />
                                         ) : (
                                             <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-200 text-neutral-500">
-                                                <UserIcon className="h-32 w-32 text-black stroke-[1.5]" />
-                                                <span className="mt-2 text-xs font-semibold">Zum Bearbeiten klicken</span>
+                                                <span className="mb-2 text-base font-semibold">Foto</span>
+                                                <UserIcon className="h-40 w-40 text-black stroke-2" />
+                                                <span className="mt-2 text-base font-semibold">Zum Bearbeiten klicken</span>
                                             </div>
                                         )}
                                     </div>
