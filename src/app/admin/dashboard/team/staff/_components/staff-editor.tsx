@@ -139,8 +139,9 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                                 data-ai-hint="staff portrait preview"
                                             />
                                         ) : (
-                                            <div className="flex h-full w-full items-center justify-center bg-neutral-200">
-                                                <UserIcon className="h-24 w-24 text-black stroke-[1.5]" />
+                                            <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-200 text-neutral-500">
+                                                <UserIcon className="h-32 w-32 text-black stroke-[1.5]" />
+                                                <span className="mt-2 text-xs font-semibold">Zum Bearbeiten klicken</span>
                                             </div>
                                         )}
                                     </div>
@@ -229,3 +230,4 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
             )}
         </>
     );
+};
