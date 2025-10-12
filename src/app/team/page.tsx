@@ -74,18 +74,18 @@ export default function TeamPage() {
                 </div>
               ) : (
                 fullWidthStaff.map(member => (
-                  <div key={member.id} className="mx-auto flex w-full justify-center">
-                      <div className="w-full max-w-sm">
-                          <TeamMemberCard 
-                            name={member.name}
-                            role={member.role}
-                            role2={member.role2}
-                            imageUrl={member.imageUrl}
-                            imageHint="staff portrait"
-                            languages={member.languages}
-                            backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
-                          />
-                      </div>
+                  <div key={member.id} className="flex justify-center">
+                    <div className="w-full max-w-sm">
+                      <TeamMemberCard 
+                        name={member.name}
+                        role={member.role}
+                        role2={member.role2}
+                        imageUrl={member.imageUrl}
+                        imageHint="staff portrait"
+                        languages={member.languages}
+                        backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
+                      />
+                    </div>
                   </div>
                 ))
               )}
@@ -99,7 +99,7 @@ export default function TeamPage() {
               ) : (
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
                   {gridStaff.map((member) => (
-                    <div key={member.id} className="mx-auto flex w-full max-w-sm justify-center">
+                    <div key={member.id} className="mx-auto flex w-full justify-center">
                       <TeamMemberCard 
                         name={member.name}
                         role={member.role}
