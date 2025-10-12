@@ -30,7 +30,7 @@ const PartnerLink: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
         href={partner.websiteUrl || '#'}
         target={partner.openInNewTab ? '_blank' : '_self'}
         rel="noopener noreferrer"
-        className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-2xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
     >
         <Card className="flex h-full w-full items-center justify-center bg-background p-2">
             {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}
@@ -157,7 +157,7 @@ export function CooperationPartnersSection() {
   
   return (
     <section id="partners" className="w-full bg-primary">
-      <div className="mx-auto w-full px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full px-4 pt-12 pb-16 sm:px-6 lg:px-8">
         <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
           Unsere ärztlichen Kooperationspartner
         </h2>
