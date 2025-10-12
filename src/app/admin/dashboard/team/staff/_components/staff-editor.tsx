@@ -167,7 +167,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 className="absolute top-2 right-2 h-16 w-16 text-white/50 hover:text-white hover:bg-transparent"
                                 onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
                             >
-                                <Pencil className="h-12 w-12" />
+                                <Pencil className="h-12 w-12 stroke-white stroke-[3]" />
                             </Button>
                         </div>
                     </div>
