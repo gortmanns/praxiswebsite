@@ -360,7 +360,7 @@ export function ReusableCardManager<T extends BaseCardData>({
 
         // Layout for Doctors and Staff
         return (
-             <div className="flex w-full flex-col sm:flex-row items-center justify-center gap-4 max-w-sm border-2 border-orange-500">
+             <div className="flex w-full flex-col sm:flex-row items-center justify-center gap-4 border-2 border-orange-500">
                 <div className="order-2 flex w-full flex-row flex-wrap justify-center gap-2 sm:order-1 sm:w-48 sm:flex-shrink-0 sm:flex-col">
                     <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-1">
                         {moveButtons}
@@ -391,12 +391,9 @@ export function ReusableCardManager<T extends BaseCardData>({
         
         return (
              <div className="mt-8 space-y-12">
-                <div className={cn("grid w-full grid-cols-1 sm:grid-cols-2 gap-8 border-2 border-red-500")}>
+                <div className={cn("grid w-full grid-cols-1 sm:grid-cols-2 gap-8 border-2 border-red-500", fullWidthItems.length === 1 && "sm:grid-cols-2")}>
                     {fullWidthItems.map((item, index) => (
-                        <div key={item.id} className={cn(
-                            "mx-auto flex w-full justify-center border-2 border-yellow-500",
-                            fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 && "sm:col-span-2"
-                        )}>
+                        <div key={item.id} className={cn("mx-auto flex w-full justify-center border-2 border-yellow-500", fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 && "sm:col-span-2")}>
                             {renderCardWithControls(item, index, isHidden, fullWidthItems.length, true)}
                         </div>
                     ))}
@@ -537,3 +534,4 @@ export function ReusableCardManager<T extends BaseCardData>({
     
 
     
+
