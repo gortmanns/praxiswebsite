@@ -17,20 +17,18 @@ export function useElementSize<T extends HTMLElement = HTMLDivElement>(): [
   const [ref, setRef] = useState<T | null>(null);
   const [size, setSize] = useState<ElementSize | null>(null);
 
-  const handleSize = useCallback(() => {
-    if (ref) {
-      setSize({
-        width: ref.offsetWidth,
-        height: ref.offsetHeight,
-      });
-    }
-  }, [ref]);
-
   useLayoutEffect(() => {
     if (!ref) {
       return;
     }
-
+    
+    const handleSize = () => {
+      setSize({
+        width: ref.offsetWidth,
+        height: ref.offsetHeight,
+      });
+    };
+    
     handleSize();
 
     // Use ResizeObserver to handle size changes
@@ -41,7 +39,7 @@ export function useElementSize<T extends HTMLElement = HTMLDivElement>(): [
     return () => {
       resizeObserver.disconnect();
     };
-  }, [ref, handleSize]);
+  }, [ref]);
 
   return [setRef, size];
 }
