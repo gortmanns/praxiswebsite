@@ -13,6 +13,8 @@ import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Sav
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
+import { Slider } from '@/components/ui/slider';
+
 
 export interface BaseCardData {
     id: string;
@@ -230,7 +232,6 @@ export function ReusableCardManager<T extends BaseCardData>({
         <div className="pointer-events-none absolute inset-0 z-10">
              <div className="flex h-full w-full justify-end">
                 <div className="flex h-full w-[40%] flex-col justify-end">
-                    {/* Placeholder for preview card */}
                     <div className="relative">
                         <div className="pointer-events-auto absolute -top-16 left-0 right-0">
                              <div className="mx-auto mb-2 w-4/5 space-y-2">
@@ -249,8 +250,6 @@ export function ReusableCardManager<T extends BaseCardData>({
                         </div>
                         <DisplayCardComponent {...editorCardState} />
                     </div>
-
-                    {/* Placeholder for sliders */}
                      <div className="pointer-events-auto mt-4 flex w-full flex-col items-center justify-center">
                         <div className="w-full px-2">
                             <Slider
@@ -268,7 +267,6 @@ export function ReusableCardManager<T extends BaseCardData>({
                         </div>
                     </div>
                 </div>
-
                 <div className="pointer-events-auto flex h-full w-[10%] flex-col justify-end">
                     <div className="h-32">
                         <div className="flex h-full flex-row items-center justify-center gap-2">
@@ -311,7 +309,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         );
 
         const editControls = (
-            <>
+            <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-1">
                 <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
                     {isHidden ? <Eye className="mr-2 h-4 w-4" /> : <EyeOff className="mr-2 h-4 w-4" />}
                     {isHidden ? 'Einblenden' : 'Ausblenden'}
@@ -337,7 +335,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                         <Trash2 className="mr-2 h-4 w-4" /> Löschen
                     </Button>
                 )}
-            </>
+            </div>
         );
 
         const cardDisplay = (
@@ -352,7 +350,9 @@ export function ReusableCardManager<T extends BaseCardData>({
                     {cardDisplay}
                     <div className="mt-2 grid grid-cols-2 gap-2">
                         {moveButtons}
-                        {editControls}
+                        <div className="grid grid-cols-1 gap-2">
+                            {editControls}
+                        </div>
                     </div>
                 </div>
             );
@@ -365,9 +365,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                     <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-1">
                         {moveButtons}
                     </div>
-                     <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-1">
-                        {editControls}
-                    </div>
+                    {editControls}
                 </div>
                 <div className="order-1 w-full flex-1 sm:order-2 sm:max-w-none">
                      {cardDisplay}
@@ -376,7 +374,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         );
     };
 
-    const renderGrid = (items: T[], isHidden: boolean) => {
+    const renderItems = (items: T[], isHidden: boolean) => {
         if (isPartnerManager) {
             return (
                 <div className={cn("mt-8 rounded-lg p-4", !isHidden && 'bg-primary')}>
@@ -395,14 +393,14 @@ export function ReusableCardManager<T extends BaseCardData>({
         const gridItems = isStaffManager ? items.filter(i => !i.fullWidth) : items;
 
         return (
-            <div className="mt-8 space-y-12">
-                {fullWidthItems.map((item, index) => (
-                    <div key={item.id} className="grid grid-cols-1 place-items-center w-full">
-                        <div className="w-full max-w-sm">
+             <div className="mt-8 space-y-12">
+                <div className="grid grid-cols-1 place-items-center w-full">
+                    {fullWidthItems.map((item, index) => (
+                        <div key={item.id} className="w-full max-w-sm">
                             {renderCardWithControls(item, index, isHidden, fullWidthItems.length, true)}
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
                  <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
                     {gridItems.map((item, index) => (
                         <div key={item.id} className="mx-auto flex w-full max-w-sm justify-center lg:max-w-none">
@@ -411,8 +409,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                     ))}
                 </div>
             </div>
-        );
-    };
+        )
+    }
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -484,8 +482,14 @@ export function ReusableCardManager<T extends BaseCardData>({
                     </div>
                     
                     {isLoadingData && (
-                        <div className="mt-8">
-                            <Skeleton className="h-64 w-full" />
+                        <div className="mt-8 space-y-12">
+                             <div className="grid grid-cols-1 place-items-center w-full">
+                                <Skeleton className="h-[500px] w-full max-w-sm" />
+                            </div>
+                             <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+                                <Skeleton className="h-[500px] w-full max-w-sm mx-auto" />
+                                <Skeleton className="h-[500px] w-full max-w-sm mx-auto" />
+                            </div>
                         </div>
                     )}
                     {dbError && (
@@ -497,7 +501,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </AlertDescription>
                         </Alert>
                     )}
-                    {!isLoadingData && renderGrid(visibleItems, false)}
+                    {!isLoadingData && renderItems(visibleItems, false)}
 
 
                     {hiddenItems.length > 0 && (
@@ -505,7 +509,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             <div className="mt-16 space-y-4">
                                 <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
                             </div>
-                           {!isLoadingData && renderGrid(hiddenItems, true)}
+                           {!isLoadingData && renderItems(hiddenItems, true)}
                         </>
                     )}
 
