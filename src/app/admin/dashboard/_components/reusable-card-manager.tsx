@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React from 'react';
@@ -294,6 +295,52 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     ) : null;
     
+    const renderCardList = (items: T[], isHiddenSection = false) => {
+        if (items.length === 0) return null;
+
+        const fullWidthItems = isStaffManager ? items.filter(i => i.fullWidth) : [];
+        const gridItems = isStaffManager ? items.filter(i => !i.fullWidth) : items;
+
+        return (
+            <div className="space-y-12 mt-8">
+                {fullWidthItems.length > 0 && (
+                     <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8", fullWidthItems.length > 0 && "sm:grid-cols-2")}>
+                        {fullWidthItems.map((item, index) => (
+                            <div key={item.id} className={cn("mx-auto flex w-full justify-center", fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 && "sm:col-span-2")}>
+                                <div className={cn(item.hidden && "grayscale")}>
+                                    <DisplayCardComponent {...item} />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+                {gridItems.length > 0 && (
+                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                        {gridItems.map((item) => (
+                            <div key={item.id} className="relative mx-auto flex w-full justify-center">
+                                {item.name === 'Huber' && (
+                                    <div className="absolute top-1/2 -translate-y-1/2 left-0 -translate-x-full flex flex-col gap-2 p-2 pr-4 z-20">
+                                        <Button size="sm" variant="outline" onClick={() => handleMove(item.id, 'up')}>
+                                            <ArrowUp className="mr-2 h-4 w-4" />
+                                            Nach oben
+                                        </Button>
+                                        <Button size="sm" variant="outline" onClick={() => handleMove(item.id, 'down')}>
+                                            <ArrowDown className="mr-2 h-4 w-4" />
+                                            Nach unten
+                                        </Button>
+                                    </div>
+                                )}
+                                <div className={cn(item.hidden && "grayscale")}>
+                                    <DisplayCardComponent {...item} />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        );
+    };
+
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
             <Card className="w-full">
@@ -356,86 +403,42 @@ export function ReusableCardManager<T extends BaseCardData>({
                         />
                     )}
 
-                    <div className="space-y-4 mt-12">
-                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Karten</h3>
-                         <p className="text-sm text-muted-foreground">
-                            Klicken Sie auf &quot;Bearbeiten&quot;, um eine Karte in den Bearbeitungsmodus zu laden.
-                        </p>
-                    </div>
-                    
-                    {isLoadingData && (
-                        <div className="mt-8 space-y-12">
-                             <div className="grid w-full grid-cols-1 justify-items-center gap-8 sm:grid-cols-2">
-                                <Skeleton className="h-[550px] w-full max-w-sm" />
-                                <Skeleton className="h-[550px] w-full max-w-sm" />
-                            </div>
-                             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                                 <Skeleton className="h-[550px] w-full max-w-sm" />
-                                 <Skeleton className="h-[550px] w-full max-w-sm" />
-                            </div>
-                        </div>
-                    )}
-                    {dbError && (
-                         <Alert variant="destructive" className="mt-8">
-                            <AlertCircle className="h-4 w-4" />
-                            <AlertTitle>Datenbankfehler</AlertTitle>
-                            <AlertDescription>
-                                Die Daten konnten nicht geladen werden: {dbError.message}
-                            </AlertDescription>
-                        </Alert>
-                    )}
-                    {!isLoadingData && !isEditing && (
-                        <div className="space-y-12 mt-8">
-                            {fullWidthVisibleItems.length > 0 && (
-                                <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8", fullWidthVisibleItems.length > 0 && "sm:grid-cols-2")}>
-                                {fullWidthVisibleItems.map((item, index) => (
-                                    <div key={item.id} className={cn("mx-auto flex w-full justify-center", fullWidthVisibleItems.length % 2 !== 0 && index === fullWidthVisibleItems.length - 1 && "sm:col-span-2")}>
-                                        <DisplayCardComponent {...item} />
-                                    </div>
-                                ))}
-                                </div>
-                            )}
-                            {gridVisibleItems.length > 0 && (
-                                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                                {gridVisibleItems.map((item) => (
-                                    <div key={item.id} className="mx-auto flex w-full justify-center">
-                                        <DisplayCardComponent {...item} />
-                                    </div>
-                                ))}
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {hiddenItems.length > 0 && !isEditing && (
+                    {!isEditing && (
                         <>
-                            <div className="mt-16 space-y-4">
-                                <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
+                            <div className="space-y-4 mt-12">
+                                <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Karten</h3>
+                                <p className="text-sm text-muted-foreground">
+                                    Klicken Sie auf &quot;Bearbeiten&quot;, um eine Karte in den Bearbeitungsmodus zu laden.
+                                </p>
                             </div>
-                             <div className="space-y-12 mt-8">
-                                {fullWidthHiddenItems.length > 0 && (
-                                    <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8 sm:grid-cols-2")}>
-                                        {fullWidthHiddenItems.map((item, index) => (
-                                            <div key={item.id} className={cn("mx-auto flex w-full justify-center", fullWidthHiddenItems.length % 2 !== 0 && index === fullWidthHiddenItems.length - 1 && "sm:col-span-2")}>
-                                                <div className={cn(item.hidden && "grayscale")}>
-                                                    <DisplayCardComponent {...item} />
-                                                </div>
-                                            </div>
-                                        ))}
+                            
+                            {isLoadingData && (
+                                <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
+                                    {Array.from({ length: 4 }).map((_, index) => (
+                                        <Skeleton key={index} className="h-[550px] w-full max-w-sm" />
+                                    ))}
+                                </div>
+                            )}
+
+                            {dbError && (
+                                <Alert variant="destructive" className="mt-8">
+                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertTitle>Datenbankfehler</AlertTitle>
+                                    <AlertDescription>
+                                        Die Daten konnten nicht geladen werden: {dbError.message}
+                                    </AlertDescription>
+                                </Alert>
+                            )}
+                            {!isLoadingData && !isEditing && renderCardList(visibleItems)}
+
+                            {hiddenItems.length > 0 && !isEditing && (
+                                <>
+                                    <div className="mt-16 space-y-4">
+                                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
                                     </div>
-                                )}
-                                {gridHiddenItems.length > 0 && (
-                                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                                        {gridHiddenItems.map((item) => (
-                                            <div key={item.id} className="mx-auto flex w-full justify-center">
-                                                <div className={cn(item.hidden && "grayscale")}>
-                                                    <DisplayCardComponent {...item} />
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
+                                    {renderCardList(hiddenItems, true)}
+                                </>
+                            )}
                         </>
                     )}
 
@@ -459,7 +462,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
-
-    
