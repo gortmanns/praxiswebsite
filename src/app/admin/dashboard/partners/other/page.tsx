@@ -25,7 +25,7 @@ export default function OtherPartnersPage() {
         <ReusableCardManager
             collectionName="otherPartners"
             pageTitle="Sonstige Partner verwalten"
-            pageDescription="Verwalten Sie die auf der Startseite angezeigten sonstigen Kooperationspartner."
+            pageDescription="Verwalten Sie die auf der Startseite angezeigten Karten der sonstigen Partner."
             initialCardState={initialOtherPartnerState}
             DisplayCardComponent={DisplayCard}
             EditorCardComponent={EditorComponent}
@@ -33,3 +33,4 @@ export default function OtherPartnersPage() {
         />
     );
 }
+
