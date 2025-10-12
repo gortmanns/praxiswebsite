@@ -13,6 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 interface TextEditDialogProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ interface TextEditDialogProps {
   label: string;
   initialValue: string;
   onSave: (newValue: string) => void;
+  isTextArea?: boolean;
 }
 
 export const TextEditDialog: React.FC<TextEditDialogProps> = ({
@@ -30,6 +32,7 @@ export const TextEditDialog: React.FC<TextEditDialogProps> = ({
   label,
   initialValue,
   onSave,
+  isTextArea = false,
 }) => {
   const [value, setValue] = useState(initialValue);
 
@@ -44,8 +47,9 @@ export const TextEditDialog: React.FC<TextEditDialogProps> = ({
     onOpenChange(false);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !isTextArea && !event.shiftKey) {
+      event.preventDefault();
       handleSave();
     }
   };
@@ -60,18 +64,29 @@ export const TextEditDialog: React.FC<TextEditDialogProps> = ({
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="field-value" className="text-right whitespace-nowrap">
+          <div className={isTextArea ? "grid gap-2" : "grid grid-cols-4 items-center gap-4"}>
+            <Label htmlFor="field-value" className={isTextArea ? "" : "text-right whitespace-nowrap"}>
               {label}
             </Label>
-            <Input
-              id="field-value"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="col-span-3"
-              autoFocus
-            />
+            {isTextArea ? (
+                 <Textarea
+                    id="field-value"
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    className="col-span-3 min-h-[200px] font-mono text-xs"
+                    autoFocus
+                />
+            ) : (
+                <Input
+                id="field-value"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="col-span-3"
+                autoFocus
+                />
+            )}
           </div>
         </div>
         <DialogFooter>

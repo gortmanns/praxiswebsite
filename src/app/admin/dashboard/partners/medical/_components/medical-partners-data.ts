@@ -1,3 +1,4 @@
+
 export const medicalPartnersData = [
     {
       order: 1,
@@ -20,6 +21,7 @@ export const medicalPartnersData = [
       name: 'VASC ALLIANCE',
       websiteUrl: 'https://www.vasc-alliance.ch/',
       logoHtml: '<img src="/images/VASC-Alliance-Logo.png" alt="VASC ALLIANCE Logo" style="object-fit: contain; width: 100%; height: 100%;" data-ai-hint="vascular surgery logo" />',
+      imageUrl: '/images/VASC-Alliance-Logo.png',
       hidden: false,
     },
     {
@@ -27,6 +29,7 @@ export const medicalPartnersData = [
       name: 'Schemmer & Worni',
       websiteUrl: 'https://schemmer-worni.ch/',
       logoHtml: '<img src="/images/schemmer-worni-logo.png" alt="Schemmer & Worni Logo" style="object-fit: contain; width: 100%; height: 100%;" data-ai-hint="surgery logo" />',
+      imageUrl: '/images/schemmer-worni-logo.png',
       hidden: false,
     },
     {

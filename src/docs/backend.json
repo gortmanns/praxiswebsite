@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "Doctor": {
@@ -30,6 +31,38 @@
         "hidden": { "type": "boolean", "description": "Whether the staff member card is hidden." }
       },
       "required": ["id", "order", "name", "role", "imageUrl"]
+    },
+    "MedicalPartner": {
+      "title": "Medical Partner",
+      "description": "Represents a medical cooperation partner.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "order": { "type": "number" },
+        "name": { "type": "string" },
+        "websiteUrl": { "type": "string" },
+        "logoHtml": { "type": "string", "description": "The complete HTML string for the logo to be rendered." },
+        "imageUrl": { "type": "string", "description": "The URL to the raw logo image file for editing purposes." },
+        "openInNewTab": { "type": "boolean" },
+        "hidden": { "type": "boolean" }
+      },
+      "required": ["id", "order", "name", "websiteUrl", "logoHtml"]
+    },
+    "OtherPartner": {
+      "title": "Other Partner",
+      "description": "Represents another (non-medical) cooperation partner.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "order": { "type": "number" },
+        "name": { "type": "string" },
+        "websiteUrl": { "type": "string" },
+        "logoHtml": { "type": "string", "description": "The complete HTML string for the logo to be rendered." },
+        "imageUrl": { "type": "string", "description": "The URL to the raw logo image file for editing purposes." },
+        "openInNewTab": { "type": "boolean" },
+        "hidden": { "type": "boolean" }
+      },
+      "required": ["id", "order", "name", "websiteUrl", "logoHtml"]
     }
   },
   "auth": {
@@ -43,6 +76,14 @@
     "staff": {
       "schema": { "$ref": "#/entities/StaffMember" },
       "description": "Stores practice staff member profiles."
+    },
+    "medicalPartners": {
+      "schema": { "$ref": "#/entities/MedicalPartner" },
+      "description": "Stores medical cooperation partner information."
+    },
+    "otherPartners": {
+      "schema": { "$ref": "#/entities/OtherPartner" },
+      "description": "Stores other cooperation partner information."
     }
   }
 }
