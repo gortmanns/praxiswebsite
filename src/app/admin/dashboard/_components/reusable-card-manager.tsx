@@ -293,6 +293,47 @@ export function ReusableCardManager<T extends BaseCardData>({
             </div>
         </div>
     ) : null;
+    
+    const renderCardWithControls = (item: T, index: number, isHiddenList: boolean) => {
+        const isLastFullWidth = isStaffManager && item.fullWidth && fullWidthVisibleItems.length % 2 !== 0 && index === fullWidthVisibleItems.length - 1;
+        const isEditingThisCard = editingCardId === item.id;
+        const items = isHiddenList ? hiddenItems : visibleItems;
+        const currentIndex = items.findIndex(d => d.id === item.id);
+
+        return (
+            <div key={item.id} className={cn("mx-auto flex w-full justify-center relative", isLastFullWidth && "sm:col-span-2")}>
+                <div className="absolute top-1/2 -translate-y-1/2 right-full mr-5 z-10 flex flex-col gap-2">
+                    <Button variant="outline" size="icon" onClick={() => handleEdit(item)} disabled={isEditing}>
+                        <Pencil className="h-4 w-4" />
+                    </Button>
+                    {isStaffManager && (
+                         <Button variant="outline" size="icon" onClick={() => handleToggleFullWidth(item)} disabled={isEditing}>
+                            <RectangleHorizontal className="h-4 w-4" />
+                        </Button>
+                    )}
+                    <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
+                        {item.hidden ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                    </Button>
+                    <Button variant="destructive" size="icon" onClick={() => openDeleteConfirmation(item.id, item.name)} disabled={isEditing}>
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                    {!isHiddenList && (
+                        <div className="flex flex-col gap-2">
+                             <Button variant="outline" size="icon" onClick={() => handleMove(item.id, 'up')} disabled={isEditing || currentIndex === 0}>
+                                <ArrowUp className="h-4 w-4" />
+                            </Button>
+                             <Button variant="outline" size="icon" onClick={() => handleMove(item.id, 'down')} disabled={isEditing || currentIndex === items.length - 1}>
+                                <ArrowDown className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    )}
+                </div>
+                <div className={cn(isEditingThisCard && "ring-4 ring-primary ring-offset-4 rounded-lg")}>
+                    <DisplayCardComponent {...item} />
+                </div>
+            </div>
+        );
+    };
 
 
     return (
@@ -389,20 +430,12 @@ export function ReusableCardManager<T extends BaseCardData>({
                         <div className="space-y-12 mt-8">
                             {fullWidthVisibleItems.length > 0 && (
                                 <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8", fullWidthVisibleItems.length > 0 && "sm:grid-cols-2")}>
-                                {fullWidthVisibleItems.map((item, index) => (
-                                    <div key={item.id} className={cn("mx-auto flex w-full justify-center", fullWidthVisibleItems.length % 2 !== 0 && index === fullWidthVisibleItems.length - 1 && "sm:col-span-2")}>
-                                        <DisplayCardComponent {...item} />
-                                    </div>
-                                ))}
+                                    {fullWidthVisibleItems.map((item, index) => renderCardWithControls(item, index, false))}
                                 </div>
                             )}
                             {gridVisibleItems.length > 0 && (
                                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                                    {gridVisibleItems.map((item) => (
-                                    <div key={item.id} className="mx-auto flex w-full justify-center">
-                                        <DisplayCardComponent {...item} />
-                                    </div>
-                                    ))}
+                                    {gridVisibleItems.map((item, index) => renderCardWithControls(item, index, false))}
                                 </div>
                             )}
                         </div>
@@ -461,7 +494,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
-
-    
