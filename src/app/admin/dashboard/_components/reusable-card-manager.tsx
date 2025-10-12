@@ -354,7 +354,6 @@ export function ReusableCardManager<T extends BaseCardData>({
                                                         max={100}
                                                         min={-100}
                                                         step={1}
-                                                        className="[&>span:first-child]:bg-secondary [&>span>span]:bg-popover [&>span:last-child]:bg-accent"
                                                     />
                                                 </div>
                                                 <div className="text-center text-xs mt-1 text-white">
@@ -375,7 +374,6 @@ export function ReusableCardManager<T extends BaseCardData>({
                                                             max={100}
                                                             min={-100}
                                                             step={1}
-                                                            className="[&>span:first-child]:bg-secondary [&>span>span]:bg-popover [&>span:last-child]:bg-accent"
                                                         />
                                                     </div>
                                                     <div className="text-center text-xs text-white">
