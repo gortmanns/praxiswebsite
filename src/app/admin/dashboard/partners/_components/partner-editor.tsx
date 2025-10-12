@@ -176,7 +176,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 </div>
 
                 {/* Right side: Visual Live Preview Area (blue background) */}
-                 <div className="p-10 bg-primary rounded-r-lg flex flex-col z-0 min-h-[300px]">
+                 <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[300px]">
                     <h3 className="text-xl font-bold text-primary-foreground mb-2 text-center">Live Vorschau</h3>
                     <div className="space-y-2 w-[70%] mx-auto">
                         <div className="text-center text-primary-foreground">
