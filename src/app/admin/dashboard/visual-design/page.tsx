@@ -3,10 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert } from '@/components/ui/timed-alert';
 import { CheckCircle, AlertCircle, Info, XCircle } from 'lucide-react';
+import { ColorPaletteDemo } from '@/app/_components/color-palette-demo';
 
 export default function VisualDesignPage() {
   return (
-    <div className="flex flex-1 items-start p-4 sm:p-6">
+    <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
         <Card className="w-full">
             <CardHeader>
                 <CardTitle>Visuelles Design</CardTitle>
@@ -71,6 +72,8 @@ export default function VisualDesignPage() {
 
             </CardContent>
         </Card>
+
+        <ColorPaletteDemo />
     </div>
   );
 }
