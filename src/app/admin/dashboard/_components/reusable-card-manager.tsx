@@ -13,6 +13,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { Slider } from '@/components/ui/slider';
+import { PartnerCard } from '../dashboard/partners/_components/partner-card';
 
 
 export interface BaseCardData {
