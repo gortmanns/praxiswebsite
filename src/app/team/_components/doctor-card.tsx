@@ -38,7 +38,10 @@ export const DoctorCard: React.FC<Doctor> = (props) => {
     const { frontSideCode, backSideCode } = props;
 
     return (
-        <div className={cn("group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border bg-background")}>
+        <div className={cn(
+            "group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg border bg-background",
+            "shadow-xl" // EXPERIMENT: Increased shadow to test float effect. Revert 'shadow-xl' to 'shadow-sm' to undo.
+        )}>
              {frontSideCode && <CodeRenderer html={frontSideCode} />}
             
             <div className="flip-card-back absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
