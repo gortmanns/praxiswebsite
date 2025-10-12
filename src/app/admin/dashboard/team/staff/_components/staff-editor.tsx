@@ -5,7 +5,7 @@ import React, { useState, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Languages, User as UserIcon, Info } from 'lucide-react';
+import { Languages, User as UserIcon, Info, Pencil } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
@@ -110,13 +110,13 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             <Input id="role2" value={cardData.role2 || ''} onChange={(e) => handleInputChange('role2', e.target.value)} />
                         </div>
                         <div className="space-y-3 pt-2">
-                            <Button variant="default" onClick={() => setDialogState({ type: 'language', data: {} })}>
+                             <Button variant="default" onClick={() => setDialogState({ type: 'language', data: {} })}>
                                 <Languages className="mr-2 h-4 w-4" /> Sprachen
                             </Button>
                         </div>
                     </div>
                      <div className="flex-grow flex items-end">
-                        <Alert variant="info">
+                        <Alert variant="info" className="mt-8">
                             <Info className="h-4 w-4" />
                             <AlertTitle>Bearbeitungsmodus</AlertTitle>
                             <AlertDescription>
@@ -160,10 +160,15 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 </div>
                             </div>
                         </div>
-                        <div className="relative w-full max-w-[280px] mx-auto h-full rounded-lg bg-accent">
-                            <button onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })} className="h-full w-full p-6 text-left overflow-auto text-accent-foreground">
-                                <div className="prose prose-sm dark:prose-invert max-w-none prose-p:text-left [&_p]:text-white [&_p]:text-left" dangerouslySetInnerHTML={{ __html: cardData.backsideContent || '<p>Text für Rückseite eingeben...</p>' }} />
-                            </button>
+                        <div className="relative w-full max-w-[280px] mx-auto h-full rounded-lg bg-accent flex items-center justify-center">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-16 w-16 text-accent-foreground/50 hover:text-accent-foreground hover:bg-transparent"
+                                onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
+                            >
+                                <Pencil className="h-12 w-12" />
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -214,8 +219,6 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
             )}
         </>
     );
-
-    
 }
 
     
