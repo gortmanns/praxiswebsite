@@ -53,6 +53,7 @@
 @layer base {
   * {
     @apply border-border;
+    outline: 1px solid red;
   }
   body {
     @apply text-foreground;

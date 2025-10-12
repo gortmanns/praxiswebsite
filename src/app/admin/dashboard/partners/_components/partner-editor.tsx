@@ -120,6 +120,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         setDialogState({ type: null, data: {} });
     }
 
+    // This effect updates the parent component with the generated HTML whenever dependencies change.
     useEffect(() => {
         const newHtml = generateLogoHtml(
             cardData.imageUrl,
@@ -131,7 +132,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         if (cardData.imageUrl && newHtml !== cardData.logoHtml) {
             onUpdate({ ...cardData, logoHtml: newHtml });
         }
-    }, [cardData.imageUrl, cardData.name, cardData.logoScale, cardData.logoX, cardData.logoY, onUpdate]);
+    }, [cardData.imageUrl, cardData.name, cardData.logoScale, cardData.logoX, cardData.logoY, onUpdate, cardData, cardData.logoHtml]);
 
 
     return (

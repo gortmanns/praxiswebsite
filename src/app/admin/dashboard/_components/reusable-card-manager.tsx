@@ -188,7 +188,9 @@ export function ReusableCardManager<T extends BaseCardData>({
             return (
                 <div className="w-full">
                     <div className="flex flex-col gap-2">
-                        <DisplayCardComponent {...item} />
+                         <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%]">
+                            <DisplayCardComponent {...item} />
+                         </div>
                         <div className="mt-2 flex w-full flex-col gap-2">
                             <div className="grid grid-cols-2 gap-2">
                                 <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
@@ -328,24 +330,19 @@ export function ReusableCardManager<T extends BaseCardData>({
 
                     {isEditing && (
                         <div className="rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8 mb-12">
-                            {isPartnerManager ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    {/* Left: Editor form */}
-                                    <div>
-                                        <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
-                                    </div>
-                                    {/* Right: Live preview */}
-                                    <div className="relative">
-                                        <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                                        <div className="pointer-events-none">
-                                            <DisplayCardComponent {...editorCardState} />
-                                        </div>
-                                    </div>
-                                </div>
-                            ) : (
-                                // Default editor for non-partners
-                                <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
-                            )}
+                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                        </div>
+                    )}
+
+                    {isEditing && isPartnerManager && (
+                         <div
+                            className="absolute left-0 right-0 z-50 rounded-lg bg-primary p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8"
+                            style={{ outline: '3px solid limegreen' }}
+                        >
+                            <div className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%] z-50">
+                                <p className="text-sm font-semibold text-primary-foreground mb-2 text-center">Live-Vorschau</p>
+                                <DisplayCardComponent {...editorCardState} />
+                            </div>
                         </div>
                     )}
 
