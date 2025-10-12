@@ -335,14 +335,14 @@ export function ReusableCardManager<T extends BaseCardData>({
                    {isEditing && (
                         <div className="relative rounded-lg border-2 border-dashed border-primary min-h-[420px]">
                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState}>
-                                <div className="pointer-events-none absolute inset-0 z-10">
-                                    <div className="grid grid-cols-8 gap-x-2 bg-green-500/20 p-1 border border-green-500 h-full">
-                                        <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
-                                        <div className="col-span-2 bg-blue-500/20 text-center text-xs text-blue-800">Editor</div>
-                                        <div className="col-span-2 bg-yellow-500/20 text-center text-xs text-yellow-800">
+                                <div className="pointer-events-none absolute inset-0 z-0">
+                                    <div className="grid grid-cols-8 gap-x-2 h-full">
+                                        <div></div>
+                                        <div className="col-span-2"></div>
+                                        <div className="col-span-2">
                                            
                                         </div>
-                                        <div className="col-span-2 bg-purple-500/20 text-center text-xs text-purple-800 pointer-events-auto flex flex-col justify-end h-full">
+                                        <div className="col-span-2 pointer-events-auto flex flex-col justify-end h-full">
                                             <PartnerCard {...editorCardState} />
                                             
                                             {/* Horizontal Slider Area */}
@@ -362,7 +362,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="bg-red-500/20 text-center text-xs text-red-800 pointer-events-auto flex flex-col justify-end">
+                                        <div className="pointer-events-auto flex flex-col justify-end">
                                             <div className="h-32">
                                                 {/* Vertical Slider Area */}
                                                 <div className="flex flex-row items-center justify-center h-full gap-2">

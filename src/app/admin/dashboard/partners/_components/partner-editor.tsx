@@ -136,7 +136,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
 
     return (
-        <div className="relative"> {/* Add relative positioning here */}
+        <div className="relative z-10"> {/* Add relative positioning and z-index here */}
             <div className="grid md:grid-cols-2 min-h-full">
                 {/* Left side: Editor Form */}
                 <div className="space-y-6 p-10 z-0">
@@ -177,7 +177,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
                 {/* Right side: Visual Live Preview Area (blue background) */}
                  <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[300px]">
-                    <h3 className="text-xl font-bold text-primary-foreground mb-2 text-center">Live Vorschau</h3>
+                    <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
                     <div className="space-y-2 w-[70%] mx-auto">
                         <div className="text-center text-primary-foreground">
                             <label htmlFor="logoScale" className="text-sm">Grösse: {cardData.logoScale || 100}%</label>
