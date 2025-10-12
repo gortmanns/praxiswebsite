@@ -13,6 +13,7 @@ const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     role2: "",
     imageUrl: "https://picsum.photos/seed/placeholder/400/600",
     backsideContent: "<p>Hier klicken, um Text hinzuzufügen.</p>",
+    languages: ['de'],
     hidden: false,
     fullWidth: false,
 };

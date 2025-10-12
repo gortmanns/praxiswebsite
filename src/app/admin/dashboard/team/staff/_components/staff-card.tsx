@@ -13,6 +13,7 @@ interface StaffMember {
     role2?: string;
     imageUrl: string;
     backsideContent?: string;
+    languages?: string[];
     hidden?: boolean;
 }
 
@@ -30,6 +31,7 @@ export const StaffCard: React.FC<StaffMember> = (props) => {
             role2={props.role2}
             imageUrl={props.imageUrl}
             imageHint="staff portrait"
+            languages={props.languages}
             backsideContent={backsideElement}
         />
     );

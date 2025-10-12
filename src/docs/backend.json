@@ -28,6 +28,7 @@
         "role2": { "type": "string", "description": "An optional secondary role." },
         "imageUrl": { "type": "string", "description": "URL of the staff member's portrait image." },
         "backsideContent": { "type": "string", "description": "HTML or text content for the card's flip side." },
+        "languages": { "type": "array", "items": { "type": "string" }, "description": "Languages spoken by the staff member." },
         "hidden": { "type": "boolean", "description": "Whether the staff member card is hidden." },
         "fullWidth": { "type": "boolean", "description": "Whether the card should span the full width of the grid." }
       },

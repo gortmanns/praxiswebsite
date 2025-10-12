@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { TeamMemberCard } from '@/app/team/_components/team-member-card';
 import { Button } from '@/components/ui/button';
-import { ImageUp, Pencil } from 'lucide-react';
+import { ImageUp, Languages } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
@@ -17,6 +17,8 @@ import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_componen
 import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/image-crop-dialog';
 import { projectImages } from '@/app/admin/dashboard/partners/project-images';
 import { Checkbox } from '@/components/ui/checkbox';
+import { LanguageSelectDialog } from '@/app/admin/dashboard/team/doctors/_components/language-select-dialog';
+import { LanguageFlags } from '@/app/admin/dashboard/team/doctors/_components/language-flags';
 
 
 export interface StaffMember {
@@ -27,6 +29,7 @@ export interface StaffMember {
     role2?: string;
     imageUrl: string;
     backsideContent?: string;
+    languages?: string[];
     hidden?: boolean;
     fullWidth?: boolean;
     createdAt?: any;
@@ -44,11 +47,11 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [dialogState, setDialogState] = useState<{
-        type: 'imageSource' | 'imageLibrary' | 'imageCrop' | null;
+        type: 'imageSource' | 'imageLibrary' | 'imageCrop' | 'language' | null;
         data: any;
     }>({ type: null, data: {} });
 
-    const handleInputChange = (field: keyof StaffMember, value: string | boolean) => {
+    const handleInputChange = (field: keyof StaffMember, value: string | boolean | string[]) => {
         onUpdate({ ...cardData, [field]: value });
     };
 
@@ -109,6 +112,15 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             </Button>
                         </div>
                     </div>
+                     <div className="space-y-2">
+                        <Label>Sprachen</Label>
+                        <div className="flex items-center gap-4">
+                            <Button variant="outline" onClick={() => setDialogState({ type: 'language', data: {} })}>
+                                <Languages className="mr-2 h-4 w-4" /> Sprachen auswählen
+                            </Button>
+                            <LanguageFlags languages={cardData.languages} />
+                        </div>
+                    </div>
                     <div className="space-y-2">
                         <Label htmlFor="backsideContent">Text für Kartenrückseite</Label>
                         <Textarea
@@ -140,6 +152,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                         role2={cardData.role2}
                         imageUrl={cardData.imageUrl}
                         imageHint="staff portrait preview"
+                        languages={cardData.languages}
                         backsideContent={
                             cardData.backsideContent ? (
                                 <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
@@ -177,6 +190,14 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                     {...dialogState.data}
                     onCropComplete={handleCropComplete}
                     onClose={() => setDialogState({ type: null, data: {} })}
+                />
+            )}
+            {dialogState.type === 'language' && (
+                <LanguageSelectDialog 
+                    isOpen={true} 
+                    onOpenChange={() => setDialogState({ type: null, data: {} })} 
+                    initialLanguages={cardData.languages || []} 
+                    onSave={(langs) => handleInputChange('languages', langs)} 
                 />
             )}
         </>

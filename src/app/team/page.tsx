@@ -81,6 +81,7 @@ export default function TeamPage() {
                       role2={member.role2}
                       imageUrl={member.imageUrl}
                       imageHint="staff portrait"
+                      languages={member.languages}
                       backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
                     />
                   </div>
@@ -105,6 +106,7 @@ export default function TeamPage() {
                       role2={member.role2}
                       imageUrl={member.imageUrl}
                       imageHint="staff portrait"
+                      languages={member.languages}
                       backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
                     />
                   </div>
