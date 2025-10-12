@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Code2, ImageUp, RotateCcw } from 'lucide-react';
 import { projectImages } from '../project-images';
 import { Slider } from '@/components/ui/slider';
+import { PartnerCard } from '../_components/partner-card';
 
 
 export interface Partner {
@@ -136,62 +137,114 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
     return (
         <>
+            {/* Editor Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2">
-                <div className="p-4 md:col-span-1">
-                    <div className="space-y-6">
+                <div className="p-4 space-y-6">
+                    <div className="space-y-2">
+                        <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
+                        <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
+                    </div>
+                    <div className="grid grid-cols-[1fr_auto] items-end gap-2">
                         <div className="space-y-2">
-                            <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
-                            <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
+                            <Label htmlFor="websiteUrl">Website URL <span className="text-xs text-muted-foreground">(für Verlinkung)</span></Label>
+                            <Input id="websiteUrl" value={cardData.websiteUrl || ''} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
                         </div>
-                        <div className="grid grid-cols-[1fr_auto] items-end gap-2">
-                            <div className="space-y-2">
-                                <Label htmlFor="websiteUrl">Website URL <span className="text-xs text-muted-foreground">(für Verlinkung)</span></Label>
-                                <Input id="websiteUrl" value={cardData.websiteUrl || ''} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
-                            </div>
-                            <div className="flex flex-col items-center justify-end space-y-2 pb-2">
-                                <Label htmlFor="openInNewTab" className="mb-2 cursor-pointer whitespace-nowrap text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                    in neuem Tab
-                                </Label>
-                                <Checkbox
-                                    id="openInNewTab"
-                                    checked={cardData.openInNewTab}
-                                    onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
-                                />
-                            </div>
+                        <div className="flex flex-col items-center justify-end space-y-1 pb-2">
+                            <Label htmlFor="openInNewTab" className="cursor-pointer whitespace-nowrap text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                in neuem Tab
+                            </Label>
+                            <Checkbox
+                                id="openInNewTab"
+                                checked={cardData.openInNewTab}
+                                onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
+                            />
                         </div>
-                        <div className="flex items-center gap-2 pt-4">
-                            <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })} variant="default">
-                                <ImageUp className="mr-2 h-4 w-4" /> Logo wählen
+                    </div>
+                    <div className="flex items-center gap-2 pt-4">
+                        <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })} variant="default">
+                            <ImageUp className="mr-2 h-4 w-4" /> Logo wählen
+                        </Button>
+                        <Button variant="secondary" onClick={() => setDialogState({ type: 'htmlEditor', data: {} })}>
+                            <Code2 className="mr-2 h-4 w-4" /> HTML bearbeiten
+                        </Button>
+                        <div className="ml-auto">
+                            <Button onClick={handleResetControls} variant="secondary" size="sm">
+                                <RotateCcw className="mr-2 h-4 w-4" />
+                                Normalwerte wiederherstellen
                             </Button>
-                            <Button variant="secondary" onClick={() => setDialogState({ type: 'htmlEditor', data: {} })}>
-                                <Code2 className="mr-2 h-4 w-4" /> HTML bearbeiten
-                            </Button>
-                            <div className="ml-auto">
-                                <Button onClick={handleResetControls} variant="secondary" size="sm">
-                                    <RotateCcw className="mr-2 h-4 w-4" />
-                                    Normalwerte wiederherstellen
-                                </Button>
-                            </div>
                         </div>
                     </div>
                 </div>
-                <div className="p-4 bg-primary rounded-r-lg md:col-span-1">
-                    <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
-                    {true && (
-                        <div className="space-y-2 w-[70%] mx-auto">
-                            <div className="text-center text-primary-foreground">
-                                <label htmlFor="logoScale" className="text-sm">Grösse: {cardData.logoScale || 100}%</label>
+
+                {/* Blue Preview Area */}
+                 <div className="p-2 bg-primary rounded-r-lg">
+                    <h3 className="text-xl font-bold text-primary-foreground mb-1 text-center">Live Vorschau</h3>
+                    <div className="space-y-2 w-[70%] mx-auto">
+                        <div className="text-center text-primary-foreground">
+                            <label htmlFor="logoScale" className="text-sm">Grösse: {cardData.logoScale || 100}%</label>
+                            <Slider
+                                id="logoScale"
+                                value={[cardData.logoScale || 100]}
+                                onValueChange={(value) => handleSliderChange('logoScale', value)}
+                                max={200}
+                                step={1}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Green Overlay - Logical Structure */}
+            <div className="pointer-events-none absolute inset-0 z-10 flex items-end justify-center">
+                 <div className="w-full max-w-full">
+                    <div className="grid grid-cols-8 gap-x-2 bg-green-500/20 p-1 border border-green-500">
+                        <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
+                        <div className="col-span-2 bg-blue-500/20 text-center text-xs text-blue-800">Editor</div>
+                        <div className="col-span-2 bg-yellow-500/20 text-center text-xs text-yellow-800">Leer</div>
+                        <div className="col-span-2 bg-purple-500/20 text-center text-xs text-purple-800">Vorschau</div>
+                        <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
+                        
+                        {/* Live Preview Card */}
+                        <div className="col-start-6 col-span-2 pointer-events-auto z-10">
+                            <PartnerCard {...cardData} />
+                            <div className="mt-2">
                                 <Slider
-                                    id="logoScale"
-                                    value={[cardData.logoScale || 100]}
-                                    onValueChange={(value) => handleSliderChange('logoScale', value)}
-                                    max={200}
+                                    id="logoX"
+                                    value={[cardData.logoX || 0]}
+                                    onValueChange={(value) => handleSliderChange('logoX', value)}
+                                    min={-100}
+                                    max={100}
                                     step={1}
                                 />
+                                <div className="text-center text-xs mt-1">
+                                    <p>Horizontale Position</p>
+                                    <p>{cardData.logoX || 0}px</p>
+                                </div>
                             </div>
                         </div>
-                    )}
-                </div>
+
+                        {/* Vertical Slider */}
+                        <div className="col-start-8 col-span-1 flex items-center justify-start h-full pointer-events-auto z-10 pl-2">
+                             <div className="flex items-center gap-2">
+                                <Slider
+                                    id="logoY"
+                                    orientation="vertical"
+                                    value={[cardData.logoY || 0]}
+                                    onValueChange={(value) => handleSliderChange('logoY', value)}
+                                    min={-100}
+                                    max={100}
+                                    step={1}
+                                    className="h-32"
+                                />
+                                <div className="text-center text-xs">
+                                  <p>Vertikale</p>
+                                  <p>Position</p>
+                                  <p>{cardData.logoY || 0}px</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
             </div>
 
 

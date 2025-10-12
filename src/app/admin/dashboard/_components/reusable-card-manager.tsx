@@ -184,11 +184,6 @@ export function ReusableCardManager<T extends BaseCardData>({
             setNotification({ variant: 'destructive', title: 'Fehler', description: `Die Änderungen konnten nicht gespeichert werden: ${error.message}` });
         }
     };
-
-    const handleSliderChange = (field: 'logoScale' | 'logoX' | 'logoY', value: number[]) => {
-        const singleValue = value[0];
-        setEditorCardState(prev => ({...prev, [field]: singleValue}));
-    };
     
     // Filter out items that don't have a name property to prevent "ghost cards"
     const validDbData = useMemo(() => dbData?.filter(d => d.name) || [], [dbData]);
@@ -348,7 +343,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                         <>
                             <div className="relative mb-6">
                                 {/* Dashed Editor Area */}
-                                <div className="relative z-0 rounded-lg border-2 border-dashed border-primary bg-muted/20">
+                                <div className="relative z-0 rounded-lg border-2 border-dashed border-primary bg-muted/20 min-h-[500px]">
                                     <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                                 </div>
 
@@ -361,52 +356,6 @@ export function ReusableCardManager<T extends BaseCardData>({
                                             <div className="col-span-2 bg-yellow-500/20 text-center text-xs text-yellow-800">Leer</div>
                                             <div className="col-span-2 bg-purple-500/20 text-center text-xs text-purple-800">Vorschau</div>
                                             <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
-                                            
-                                            {isPartnerManager && (
-                                                <div className="col-start-6 col-span-2 mt-2 pointer-events-auto z-10">
-                                                    <DisplayCardComponent {...editorCardState} />
-                                                    <div className="mt-2">
-                                                        <Slider
-                                                            id="logoX"
-                                                            value={[editorCardState.logoX || 0]}
-                                                            onValueChange={(value) => handleSliderChange('logoX', value)}
-                                                            min={-100}
-                                                            max={100}
-                                                            step={1}
-                                                        />
-                                                        <div className="text-center text-xs mt-1">
-                                                            <p>Horizontale Position</p>
-                                                            <p>{editorCardState.logoX || 0}px</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                             {isPartnerManager && (
-                                                <div className="col-start-8 col-span-1 flex items-center justify-start h-full pointer-events-auto z-10 pl-2">
-                                                    <div className="flex flex-col items-center">
-                                                        <Slider
-                                                            id="logoY"
-                                                            orientation="vertical"
-                                                            value={[editorCardState.logoY || 0]}
-                                                            onValueChange={(value) => handleSliderChange('logoY', value)}
-                                                            min={-100}
-                                                            max={100}
-                                                            step={1}
-                                                            className="h-32"
-                                                        />
-                                                        <div className="text-center text-xs mt-2">
-                                                          <p>Vertikale</p>
-                                                          <p>Position</p>
-                                                          <p>{editorCardState.logoY || 0}px</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {!isPartnerManager && (
-                                                 <div className="col-start-6 col-span-2 mt-2 pointer-events-auto z-10">
-                                                    <DisplayCardComponent {...editorCardState} />
-                                                 </div>
-                                            )}
                                         </div>
                                      </div>
                                 </div>
