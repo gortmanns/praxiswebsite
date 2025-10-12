@@ -93,7 +93,9 @@ export default function TeamPage() {
               {isLoadingStaff ? (
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
                     {Array.from({ length: 4 }).map((_, index) => (
-                        <Skeleton key={index} className="h-[500px] w-full max-w-sm mx-auto" />
+                        <div key={index} className="mx-auto flex w-full justify-center">
+                            <Skeleton key={index} className="h-[500px] w-full max-w-sm mx-auto" />
+                        </div>
                     ))}
                 </div>
               ) : (
