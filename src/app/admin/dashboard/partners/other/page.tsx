@@ -2,57 +2,30 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { SeedButton } from '../medical/_components/seed-button';
-import { otherPartnersSeedData } from './_components/other-partners-data';
-import DOMPurify from 'dompurify';
+import { ReusableCardManager } from '../../_components/reusable-card-manager';
+import { PartnerCard as DisplayCard } from '../_components/partner-card';
+import { PartnerEditor as EditorComponent } from '../_components/partner-editor';
+import type { Partner as CardData } from '../_components/partner-editor';
 
-const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
-    const sanitizedHtml = React.useMemo(() => {
-        if (typeof window !== 'undefined') {
-            const config = {
-                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img"],
-                ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src']
-            };
-            return { __html: DOMPurify.sanitize(html, config) };
-        }
-        return { __html: '' };
-    }, [html]);
 
-    return <div className="relative flex h-full w-full items-center justify-center overflow-hidden" dangerouslySetInnerHTML={sanitizedHtml} />;
+const initialOtherPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
+    name: "Neuer Partner",
+    websiteUrl: "https://",
+    logoHtml: `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`,
+    openInNewTab: false,
+    hidden: false,
 };
-
 
 export default function OtherPartnersPage() {
     return (
-        <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
-            <Card className="w-full">
-                <CardHeader>
-                    <CardTitle className="text-primary">Vorschau &amp; Initialisierung: Sonstige Partner</CardTitle>
-                    <CardDescription>
-                       Überprüfen Sie die Darstellung der Partnerlogos. Klicken Sie danach auf den Button, um diese Daten in die Datenbank zu schreiben oder sie zurückzusetzen.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="mb-8 rounded-lg bg-primary p-4">
-                        <h3 className="mb-4 text-center font-headline text-lg font-bold text-primary-foreground">Vorschau der Seed-Daten</h3>
-                        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                             {otherPartnersSeedData.map(partner => (
-                                <div key={partner.name} className="h-32 w-full">
-                                    <Card className="flex h-full w-full items-center justify-center bg-background p-2">
-                                        <CodeRenderer html={partner.logoHtml} />
-                                    </Card>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                    <SeedButton
-                        collectionName="otherPartners"
-                        seedData={otherPartnersSeedData}
-                        entityName="Sonstige Partner"
-                    />
-                </CardContent>
-            </Card>
-        </div>
+        <ReusableCardManager
+            collectionName="otherPartners"
+            pageTitle="Sonstige Partner verwalten"
+            pageDescription="Verwalten Sie die auf der Startseite angezeigten sonstigen Kooperationspartner."
+            initialCardState={initialOtherPartnerState}
+            DisplayCardComponent={DisplayCard}
+            EditorCardComponent={EditorComponent}
+            entityName="Sonstiger Partner"
+        />
     );
 }

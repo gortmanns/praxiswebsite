@@ -1,30 +1,18 @@
 
 'use client';
 
-// WICHTIGER HINWEIS: Bei der Implementierung neuer Sammlungen mit dieser Komponente
-// muss sichergestellt werden, dass die `firestore.rules`-Datei angepasst wird,
-// um authentifizierten Benutzern Lese- und Schreibzugriff (read, write)
-// auf die neue Sammlung (z.B. /neueSammlung/{docId}) zu gewähren.
-// Andernfalls führt dies zu "Missing or insufficient permissions"-Fehlern.
-
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore, useCollection, useMemoFirebase, useStorage } from '@/firebase';
 import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc, getDocs } from 'firebase/firestore';
-import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, Upload, CheckCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
-import Link from 'next/link';
-import Image from 'next/image';
-import { OrthozentrumLogo } from '@/components/logos/orthozentrum-logo';
-import { AgnieszkaSlezakLogo } from '@/components/logos/agnieszka-slezak-logo';
-
 
 export interface BaseCardData {
     id: string;
@@ -54,7 +42,6 @@ export function ReusableCardManager<T extends BaseCardData>({
     entityName,
 }: ReusableCardManagerProps<T>) {
     const firestore = useFirestore();
-    const storage = useStorage();
     
     const [notification, setNotification] = useState<TimedAlertProps | null>(null);
 
@@ -148,7 +135,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     };
 
     const handleSaveChanges = async () => {
-        if (!firestore || !dbData || !storage) {
+        if (!firestore || !dbData) {
             setNotification({ variant: 'destructive', title: 'Fehler', description: 'Datenbank- oder Speicherdienst nicht verfügbar.' });
             return;
         }
@@ -156,15 +143,6 @@ export function ReusableCardManager<T extends BaseCardData>({
 
         try {
             const mutableCardData: Partial<T> = { ...editorCardState };
-            
-            // Handle image upload if logoUrl is a data URL
-            if (mutableCardData.logoUrl && mutableCardData.logoUrl.startsWith('data:image')) {
-                const imagePath = `${collectionName}/${uuidv4()}.jpg`;
-                const imageRef = storageRef(storage, imagePath);
-                const snapshot = await uploadString(imageRef, mutableCardData.logoUrl, 'data_url');
-                mutableCardData.logoUrl = await getDownloadURL(snapshot.ref);
-            }
-
             delete mutableCardData.id;
             delete mutableCardData.createdAt;
 
@@ -175,14 +153,18 @@ export function ReusableCardManager<T extends BaseCardData>({
             } else {
                 const highestOrder = dbData.reduce((max, item) => item.order > max ? item.order : max, 0);
                 const collectionRef = collection(firestore, collectionName);
-                const newDocRef = doc(collectionRef); 
-                const newCardData = {
+                
+                const newDocRef = doc(collectionRef); // Create a new doc with a generated ID
+
+                const newCardData: T = {
+                    ...initialCardState,
                     ...mutableCardData,
-                    id: newDocRef.id, 
+                    id: newDocRef.id,
                     order: highestOrder + 1,
                     createdAt: serverTimestamp(),
                     hidden: false,
-                };
+                } as T;
+                
                 await setDoc(newDocRef, newCardData);
 
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: `Neue ${entityName}-Karte erfolgreich erstellt.` });
@@ -198,28 +180,6 @@ export function ReusableCardManager<T extends BaseCardData>({
     const hiddenItems = useMemo(() => dbData?.filter(d => d.hidden) || [], [dbData]);
 
     const isPartnerManager = collectionName.toLowerCase().includes('partner');
-
-    const renderPartnerLogo = (partner: T) => {
-        if (!partner.logoUrl) {
-            return <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground">Kein Logo</div>;
-        }
-        if (partner.name === 'orthozentrum-bern') {
-          return <OrthozentrumLogo className="h-full w-full object-contain" />;
-        }
-        if (partner.name === 'Agnieszka Slezak') {
-          return <AgnieszkaSlezakLogo className="h-full w-full object-contain" />;
-        }
-        return (
-            <Image
-              src={partner.logoUrl}
-              alt={`${partner.name} Logo`}
-              width={partner.width || 200}
-              height={partner.height || 60}
-              className="object-contain"
-              data-ai-hint={partner.hint}
-            />
-        );
-    };
     
     const DisplayWrapper: React.FC<{ item: T, index: number }> = ({ item, index }) => {
         if (isPartnerManager) {
@@ -373,7 +333,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 <Info className="h-4 w-4" />
                                 <AlertTitle>Bearbeitungsmodus</AlertTitle>
                                 <AlertDescription>
-                                    {isCreatingNew ? `Erstellen Sie eine neue Karte. Klicken Sie auf Elemente, um sie zu bearbeiten.` : `Sie bearbeiten gerade die Karte.`}
+                                    {isCreatingNew ? `Erstellen Sie eine neue Karte. Passen Sie die Felder nach Bedarf an.` : `Sie bearbeiten gerade die Karte.`}
                                 </AlertDescription>
                             </Alert>
                         </div>
