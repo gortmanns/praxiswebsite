@@ -49,19 +49,11 @@ export function CooperationPartnersSection() {
     if (partner.name === 'Agnieszka Slezak') {
       return <AgnieszkaSlezakLogo className="h-full w-full object-contain" />;
     }
-
-    let logoUrl = partner.logoUrl;
-    if (partner.name === 'Schemmer & Worni') {
-        logoUrl = '/images/schemmer-worni-logo.png';
-    }
-    if (partner.name === 'VASC ALLIANCE') {
-        logoUrl = '/images/VASC-Alliance-Logo.png';
-    }
     
     if (partner.name === 'Schemmer & Worni' || partner.name === 'VASC ALLIANCE') {
         return (
             <Image
-                src={logoUrl}
+                src={partner.logoUrl}
                 alt={`${partner.name} Logo`}
                 fill
                 className="object-contain"
@@ -71,7 +63,7 @@ export function CooperationPartnersSection() {
     }
     return (
         <Image
-          src={logoUrl}
+          src={partner.logoUrl}
           alt={`${partner.name} Logo`}
           width={partner.width || 200}
           height={partner.height || 60}
@@ -129,11 +121,6 @@ export function CooperationPartnersSection() {
                 ))
               ) : (
                 visibleOtherPartners.map(partner => {
-                  let logoUrl = partner.logoUrl;
-                  if (partner.name === 'Go-Medical') {
-                      logoUrl = '/images/go-medical-logo.png';
-                  }
-
                   return (
                       <div key={partner.id} className="w-full">
                         <Link
@@ -145,7 +132,7 @@ export function CooperationPartnersSection() {
                           <Card className="flex h-full w-full items-center justify-center bg-background p-2">
                             <div className="relative flex w-full h-full items-center justify-center p-0 overflow-hidden">
                                 <Image
-                                  src={logoUrl!}
+                                  src={partner.logoUrl!}
                                   alt={`${partner.name} Logo`}
                                   fill
                                   className="object-contain"
