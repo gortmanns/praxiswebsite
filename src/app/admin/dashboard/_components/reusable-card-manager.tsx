@@ -305,7 +305,7 @@ export function ReusableCardManager<T extends BaseCardData>({
             const colSpanClass = isFullWidth && isLastOdd ? "sm:col-span-2" : "";
 
             return (
-                <div key={item.id} className={cn("relative mx-auto flex w-full justify-center", colSpanClass, item.hidden && "grayscale")}>
+                <div key={item.id} className={cn("relative mx-auto flex w-full justify-center", colSpanClass)}>
                     {isHuberCard && (
                         <div className="absolute top-1/2 -translate-y-1/2 right-full mr-5 flex flex-col space-y-2">
                             <Button size="sm" onClick={() => handleMove(item.id, 'up')}>
@@ -316,7 +316,9 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </Button>
                         </div>
                     )}
-                    <DisplayCardComponent {...item} />
+                    <div className={cn("relative", item.hidden && "grayscale")}>
+                        <DisplayCardComponent {...item} />
+                    </div>
                 </div>
             );
         };
@@ -462,3 +464,4 @@ export function ReusableCardManager<T extends BaseCardData>({
     
 
     
+
