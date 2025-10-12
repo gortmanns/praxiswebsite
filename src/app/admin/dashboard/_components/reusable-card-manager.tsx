@@ -340,30 +340,21 @@ export function ReusableCardManager<T extends BaseCardData>({
 
                     {isEditing && (
                         <>
-                             {/* Editor Form Section */}
-                            <div className="relative z-20 mb-6 rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8">
+                            {/* Editor Form Section */}
+                            <div className="relative z-20 mb-6 rounded-lg border-2 border-dashed border-primary bg-muted/20">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                     <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
-                                </div>
-                            </div>
-                            
-                            {/* Live Preview Section */}
-                            <div className="relative z-10 mb-12">
-                                 <div className="absolute top-0 right-0 bottom-0 left-0 grid grid-cols-8 grid-rows-1 gap-4 bg-green-500/50">
-                                    <div className="bg-green-700/50 flex items-center justify-center text-white col-span-1 p-2">Grid Col 1</div>
-                                    <div className="bg-green-700/50 flex items-center justify-center text-white col-span-2 p-2">Grid Col 2</div>
-                                    <div className="bg-green-700/50 flex items-center justify-center text-white col-span-2 p-2">Grid Col 3</div>
-                                    <div className="bg-green-700/50 flex items-center justify-center text-white col-span-2 relative p-2">
-                                        <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-white z-20">Vorschau</p>
-                                        <div className="relative z-10 w-full h-full">
-                                            <DisplayCardComponent {...editorCardState} />
-                                        </div>
+                                    <div className="p-4">
+                                        <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                                     </div>
-                                    <div className="bg-green-700/50 flex items-center justify-center text-white col-span-1 p-2">Grid Col 5</div>
+                                    <div className="p-4 bg-primary rounded-r-lg">
+                                        <h3 className="text-xl font-bold text-primary-foreground mb-4">Live Vorschau</h3>
+                                        <DisplayCardComponent {...editorCardState} />
+                                    </div>
                                 </div>
                             </div>
                         </>
                     )}
+
 
                     <div className="space-y-4">
                         <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Karten</h3>
@@ -437,3 +428,4 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
