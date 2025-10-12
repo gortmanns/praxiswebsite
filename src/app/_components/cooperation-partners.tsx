@@ -26,6 +26,72 @@ const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     return <div className="relative flex h-full w-full items-center justify-center overflow-hidden" dangerouslySetInnerHTML={sanitizedHtml} />;
 };
 
+const PartnerLink: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ partner }) => (
+    <Link
+        href={partner.websiteUrl || '#'}
+        target={partner.openInNewTab ? '_blank' : '_self'}
+        rel="noopener noreferrer"
+        className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+    >
+        <Card className="flex h-full w-full items-center justify-center bg-background p-2">
+            {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}
+        </Card>
+        <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+    </Link>
+);
+
+const OtherPartnersGrid: React.FC<{ partners: OtherPartner[] }> = ({ partners }) => {
+    const count = partners.length;
+
+    if (count === 0) return null;
+
+    if (count === 1) {
+        return (
+            <div className="grid grid-cols-8 gap-8">
+                <div className="col-span-3"></div>
+                <div className="col-span-2">
+                    <PartnerLink partner={partners[0]} />
+                </div>
+                <div className="col-span-3"></div>
+            </div>
+        );
+    }
+    
+    if (count === 2) {
+        return (
+            <div className="grid grid-cols-8 gap-8">
+                <div className="col-span-2"></div>
+                <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
+                <div className="col-span-2"><PartnerLink partner={partners[1]} /></div>
+                <div className="col-span-2"></div>
+            </div>
+        );
+    }
+
+    if (count === 3) {
+        return (
+            <div className="grid grid-cols-8 gap-8">
+                <div className="col-span-1"></div>
+                <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
+                <div className="col-span-2"><PartnerLink partner={partners[1]} /></div>
+                <div className="col-span-2"><PartnerLink partner={partners[2]} /></div>
+                <div className="col-span-1"></div>
+            </div>
+        );
+    }
+
+    // Default case for 4 or more partners
+    return (
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {partners.map(partner => (
+                <div key={partner.id}>
+                    <PartnerLink partner={partner} />
+                </div>
+            ))}
+        </div>
+    );
+};
+
 
 export function CooperationPartnersSection() {
   const firestore = useFirestore();
@@ -46,9 +112,6 @@ export function CooperationPartnersSection() {
   const visibleMedicalPartners = medicalPartners?.filter(p => !p.hidden) || [];
   const visibleOtherPartners = otherPartners?.filter(p => !p.hidden) || [];
   
-  const gridCols = Math.min(visibleOtherPartners.length, 4);
-  const gridStyle = gridCols > 0 ? { gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` } : {};
-
   return (
     <section id="partners" className="w-full bg-primary">
       <div className="mx-auto w-full px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
@@ -64,57 +127,30 @@ export function CooperationPartnersSection() {
           ) : (
             visibleMedicalPartners.map(partner => (
                 <div key={partner.id}>
-                  <Link
-                    href={partner.websiteUrl || '#'}
-                    target={partner.openInNewTab ? '_blank' : '_self'}
-                    rel="noopener noreferrer"
-                    className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                  >
-                    <Card className="flex h-full w-full items-center justify-center bg-background p-2">
-                       {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}
-                    </Card>
-                    <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                  </Link>
+                  <PartnerLink partner={partner} />
                 </div>
               ))
           )}
         </div>
 
-
-        <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
-          Unsere weiteren Partner
-        </h3>
-        <div className="mt-12">
-            {isLoadingOther ? (
-                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                    {Array.from({ length: 4 }).map((_, index) => (
-                        <div key={index} className="w-full sm:w-64 mx-auto">
-                            <Skeleton className="h-32 w-full rounded-lg" />
+        {visibleOtherPartners.length > 0 && (
+            <>
+                <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
+                Unsere weiteren Partner
+                </h3>
+                <div className="mt-12">
+                    {isLoadingOther ? (
+                        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                            {Array.from({ length: 4 }).map((_, index) => (
+                                <Skeleton key={index} className="h-32 w-full rounded-lg" />
+                            ))}
                         </div>
-                    ))}
+                    ) : (
+                        <OtherPartnersGrid partners={visibleOtherPartners} />
+                    )}
                 </div>
-            ) : (
-                <div className="grid gap-8 mx-auto" style={gridStyle}>
-                    {visibleOtherPartners.map(partner => {
-                        return (
-                            <div key={partner.id} className="w-full sm:w-64">
-                                <Link
-                                href={partner.websiteUrl || '#'}
-                                target={partner.openInNewTab ? '_blank' : '_self'}
-                                rel="noopener noreferrer"
-                                className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                                >
-                                <Card className="flex h-full w-full items-center justify-center bg-background p-2">
-                                    {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}
-                                </Card>
-                                <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                                </Link>
-                            </div>
-                        );
-                    })}
-                </div>
-            )}
-        </div>
+            </>
+        )}
       </div>
     </section>
   );
