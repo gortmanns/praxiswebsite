@@ -231,7 +231,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         const MoveDownIcon = isFullWidth ? ArrowDown : ChevronRight;
 
         const controlButtons = (
-            <div className="grid grid-cols-1 w-full gap-2">
+             <div className="grid grid-cols-1 w-full gap-2">
                 <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
                     <MoveUpIcon className="mr-2 h-4 w-4" /> Verschieben
                 </Button>
@@ -248,7 +248,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                         onClick={() => handleToggleFullWidth(item)} 
                         disabled={isEditing}
                         title="Volle Breite aktivieren/deaktivieren"
-                        className={cn(item.fullWidth && "bg-primary/80 hover:bg-primary/90 text-primary-foreground")}
+                        className={cn(item.fullWidth && "bg-primary/90 hover:bg-primary text-primary-foreground")}
                     >
                         <RectangleHorizontal className="mr-2 h-4 w-4" />
                         Volle Breite
@@ -281,7 +281,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                 <div className="flex sm:flex-col w-full sm:w-48 order-2 sm:order-1 flex-shrink-0 items-center justify-center gap-2">
                    {controlButtons}
                 </div>
-                <div className={cn("relative flex-1 w-full max-w-sm sm:max-w-none order-1 sm:order-2")}>
+                <div className={cn("relative flex-1 w-full max-w-sm order-1 sm:order-2")}>
                     <DisplayCardComponent {...item} />
                 </div>
             </div>
@@ -372,7 +372,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                         onClick={() => handleToggleFullWidth(item)} 
                         disabled={isEditing}
                         title="Volle Breite aktivieren/deaktivieren"
-                        className={cn(item.fullWidth && "bg-primary/80 hover:bg-primary/90 text-primary-foreground")}
+                        className={cn(item.fullWidth && "bg-primary/90 hover:bg-primary text-primary-foreground")}
                     >
                         <RectangleHorizontal className="mr-2 h-4 w-4" />
                         Volle Breite
@@ -405,7 +405,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                 <div className="flex sm:flex-col w-full sm:w-48 order-2 sm:order-1 flex-shrink-0 items-center justify-center gap-2">
                    {itemControls}
                 </div>
-                <div className={cn("relative flex-1 w-full max-w-sm sm:max-w-none order-1 sm:order-2 grayscale")}>
+                <div className={cn("relative flex-1 w-full max-w-sm order-1 sm:order-2 grayscale")}>
                     <DisplayCardComponent {...item} />
                 </div>
             </div>
@@ -577,9 +577,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             <div className='space-y-12'>
                                 {fullWidthVisibleItems.map((item, index) => (
                                     <div key={item.id} className="flex justify-center">
-                                         <div className="w-full max-w-sm">
-                                            <DisplayWrapper item={item} index={index} totalVisible={fullWidthVisibleItems.length} isFullWidth={true} />
-                                         </div>
+                                         <DisplayWrapper item={item} index={index} totalVisible={fullWidthVisibleItems.length} isFullWidth={true} />
                                     </div>
                                 ))}
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -608,9 +606,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                      <div className='space-y-12'>
                                         {fullWidthHiddenItems.map((item) => (
                                             <div key={item.id} className="flex justify-center">
-                                                <div className="w-full max-w-sm">
-                                                    <HiddenDisplayWrapper item={item} isFullWidth={true} />
-                                                </div>
+                                                <HiddenDisplayWrapper item={item} isFullWidth={true} />
                                             </div>
                                         ))}
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -644,7 +640,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
-
-    
