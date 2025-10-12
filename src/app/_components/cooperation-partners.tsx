@@ -9,6 +9,7 @@ import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { MedicalPartner, OtherPartner } from '@/docs/backend-types';
 import DOMPurify from 'dompurify';
+import { cn } from '@/lib/utils';
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
@@ -44,6 +45,8 @@ export function CooperationPartnersSection() {
 
   const visibleMedicalPartners = medicalPartners?.filter(p => !p.hidden) || [];
   const visibleOtherPartners = otherPartners?.filter(p => !p.hidden) || [];
+  
+  const numOtherPartners = visibleOtherPartners.length;
 
   return (
     <section id="partners" className="w-full bg-primary">
@@ -81,17 +84,20 @@ export function CooperationPartnersSection() {
           Unsere weiteren Partner
         </h3>
         <div className="mt-12 flex justify-center">
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div className={cn(
+                "grid gap-8",
+                "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+            )}>
               {isLoadingOther ? (
                  Array.from({ length: 4 }).map((_, index) => (
                     <div key={index} className="w-full sm:w-auto">
-                        <Skeleton className="h-32 w-full rounded-lg" />
+                        <Skeleton className="h-32 w-full rounded-lg sm:w-64" />
                     </div>
                 ))
               ) : (
                 visibleOtherPartners.map(partner => {
                   return (
-                      <div key={partner.id} className="w-full">
+                      <div key={partner.id} className="w-full sm:w-64">
                         <Link
                           href={partner.websiteUrl || '#'}
                           target={partner.openInNewTab ? '_blank' : '_self'}
