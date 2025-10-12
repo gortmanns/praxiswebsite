@@ -4,9 +4,8 @@
 import React, { useState, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { TeamMemberCard } from '@/app/team/_components/team-member-card';
 import { Button } from '@/components/ui/button';
-import { ImageUp, Languages, Pencil } from 'lucide-react';
+import { ImageUp, Languages, Pencil, User as UserIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
@@ -17,6 +16,9 @@ import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/
 import { projectImages } from '@/app/admin/dashboard/partners/project-images';
 import { LanguageSelectDialog } from '@/app/admin/dashboard/team/doctors/_components/language-select-dialog';
 import { VitaEditorDialog } from '@/app/admin/dashboard/team/doctors/_components/vita-editor-dialog';
+import { LanguageFlags } from '@/app/admin/dashboard/team/doctors/_components/language-flags';
+import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 
 export interface StaffMember {
@@ -90,6 +92,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
     };
 
     const isNewCard = !cardData.id;
+    const hasImage = cardData.imageUrl && !cardData.imageUrl.includes('placeholder');
 
     return (
         <>
@@ -123,35 +126,55 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="w-full max-w-sm mx-auto">
-                            <TeamMemberCard
-                                name={cardData.name}
-                                role={cardData.role}
-                                role2={cardData.role2}
-                                imageUrl={cardData.imageUrl}
-                                imageHint="staff portrait preview"
-                                languages={cardData.languages}
-                            />
+                            <div className="group relative w-full max-w-sm overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
+                                <div className="flex h-full flex-col p-6">
+                                    <div className={cn("relative w-full overflow-hidden rounded-md aspect-[2/3]")}>
+                                        {hasImage ? (
+                                            <Image
+                                                src={cardData.imageUrl}
+                                                alt={`Portrait von ${cardData.name}`}
+                                                fill
+                                                className="object-cover"
+                                                sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw"
+                                                data-ai-hint="staff portrait preview"
+                                            />
+                                        ) : (
+                                            <div className="flex h-full w-full items-center justify-center bg-neutral-200">
+                                                <UserIcon className="h-24 w-24 text-black stroke-[1.5]" />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="flex-grow pt-6 text-center">
+                                        <h4 className="text-xl font-bold text-primary">{cardData.name}</h4>
+                                        <p className="mt-2 text-base font-bold text-muted-foreground">{cardData.role}</p>
+                                        {cardData.role2 && <p className="mt-1 text-base text-muted-foreground">{cardData.role2}</p>}
+                                    </div>
+                                    <div className="flex h-8 items-end justify-end pt-4">
+                                    {cardData.languages && <LanguageFlags languages={cardData.languages} />}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div className="relative w-full max-w-sm mx-auto h-full rounded-lg bg-accent">
                             {cardData.backsideContent ? (
                                 <div className="h-full w-full p-6 text-accent-foreground text-center text-lg overflow-auto">
                                     <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
-                                    <button 
-                                        onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
-                                        className="absolute top-4 right-4 text-white hover:text-white/80"
-                                    >
-                                        <Pencil className="h-6 w-6" />
-                                    </button>
                                 </div>
                              ) : (
-                                <div className="h-full w-full flex items-center justify-center">
-                                    <button 
-                                        onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
-                                        className="absolute top-4 right-4 text-white hover:text-white/80"
-                                    >
-                                        <Pencil className="h-10 w-10" />
-                                    </button>
-                                </div>
+                                <button 
+                                    onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
+                                    className="absolute top-4 right-4 text-white hover:text-white/80"
+                                >
+                                    <Pencil className="h-10 w-10" />
+                                </button>
+                             )}
+                              {cardData.backsideContent && (
+                                <button 
+                                    onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
+                                    className="absolute top-4 right-4 text-white hover:text-white/80"
+                                >
+                                    <Pencil className="h-6 w-6" />
+                                </button>
                              )}
                         </div>
                     </div>
@@ -206,4 +229,3 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
             )}
         </>
     );
-};
