@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, type ReactNode } from 'react';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,7 +17,6 @@ import { useToast } from '@/hooks/use-toast';
 import { Code2, ImageUp, RotateCcw } from 'lucide-react';
 import { projectImages } from '../project-images';
 import { Slider } from '@/components/ui/slider';
-import { PartnerCard } from '../_components/partner-card';
 
 
 export interface Partner {
@@ -39,6 +38,7 @@ export interface Partner {
 interface PartnerEditorProps {
     cardData: Partner;
     onUpdate: (updatedData: Partner) => void;
+    children: ReactNode; // To accept the overlay as a child
 }
 
 const generateLogoHtml = (imageUrl: string | undefined, name: string, scale: number = 100, x: number = 0, y: number = 0): string => {
@@ -50,7 +50,7 @@ const generateLogoHtml = (imageUrl: string | undefined, name: string, scale: num
 };
 
 
-export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate }) => {
+export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate, children }) => {
     const { toast } = useToast();
     const storage = useStorage();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -136,7 +136,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
 
     return (
-        <>
+        <div className="relative"> {/* Add relative positioning here */}
             <div className="grid md:grid-cols-2 min-h-full">
                 {/* Left side: Editor Form */}
                 <div className="space-y-6 p-10 z-0">
@@ -193,11 +193,13 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                         </div>
                     </div>
                     <div className="flex-grow flex items-center justify-center">
-                        {/* Placeholder for PartnerCard, which will be rendered in the overlay */}
+                        {/* The actual PartnerCard is now rendered from the parent via the green overlay */}
                     </div>
                 </div>
             </div>
 
+            {/* Render the overlay child */}
+            {children}
 
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
 
@@ -240,6 +242,6 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                     isTextArea={true}
                 />
             )}
-        </>
+        </div>
     );
 };
