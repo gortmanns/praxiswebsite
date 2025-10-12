@@ -43,6 +43,9 @@
         "websiteUrl": { "type": "string" },
         "logoHtml": { "type": "string", "description": "The complete HTML string for the logo to be rendered." },
         "imageUrl": { "type": "string", "description": "The URL to the raw logo image file for editing purposes." },
+        "logoScale": { "type": "number", "description": "Logo size percentage." },
+        "logoX": { "type": "number", "description": "Logo horizontal offset." },
+        "logoY": { "type": "number", "description": "Logo vertical offset." },
         "openInNewTab": { "type": "boolean" },
         "hidden": { "type": "boolean" }
       },
@@ -59,6 +62,9 @@
         "websiteUrl": { "type": "string" },
         "logoHtml": { "type": "string", "description": "The complete HTML string for the logo to be rendered." },
         "imageUrl": { "type": "string", "description": "The URL to the raw logo image file for editing purposes." },
+        "logoScale": { "type": "number", "description": "Logo size percentage." },
+        "logoX": { "type": "number", "description": "Logo horizontal offset." },
+        "logoY": { "type": "number", "description": "Logo vertical offset." },
         "openInNewTab": { "type": "boolean" },
         "hidden": { "type": "boolean" }
       },

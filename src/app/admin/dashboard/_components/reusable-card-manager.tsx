@@ -3,9 +3,8 @@
 
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useFirestore, useCollection, useMemoFirebase, useStorage } from '@/firebase';
-import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc, getDocs } from 'firebase/firestore';
-import { v4 as uuidv4 } from 'uuid';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -54,7 +53,7 @@ export function ReusableCardManager<T extends BaseCardData>({
 
     const [editingCardId, setEditingCardId] = useState<string | null>(null);
     const [isCreatingNew, setIsCreatingNew] = useState(false);
-    const [editorCardState, setEditorCardState] = useState<T>(initialCardState as T);
+    const [editorCardState, setEditorCardState] = useState<T>({ ...initialCardState, id: '', order: 0 } as T);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
 
 
@@ -69,7 +68,8 @@ export function ReusableCardManager<T extends BaseCardData>({
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
-        setEditorCardState(initialCardState as T);
+        const newCardId = doc(collection(firestore!, collectionName)).id;
+        setEditorCardState({ ...initialCardState, id: newCardId } as T);
     };
 
     const handleCancelEdit = () => {
@@ -83,25 +83,29 @@ export function ReusableCardManager<T extends BaseCardData>({
 
         const visibleItems = dbData.filter(d => !d.hidden);
         const currentIndex = visibleItems.findIndex(item => item.id === cardId);
+        
+        let item1: T, item2: T;
 
         if (direction === 'up' && currentIndex > 0) {
-            const item1 = visibleItems[currentIndex];
-            const item2 = visibleItems[currentIndex - 1];
-            const batch = writeBatch(firestore);
-            const item1Ref = doc(firestore, collectionName, item1.id);
-            const item2Ref = doc(firestore, collectionName, item2.id);
-            batch.update(item1Ref, { order: item2.order });
-            batch.update(item2Ref, { order: item1.order });
-            await batch.commit();
+            item1 = visibleItems[currentIndex];
+            item2 = visibleItems[currentIndex - 1];
         } else if (direction === 'down' && currentIndex < visibleItems.length - 1) {
-            const item1 = visibleItems[currentIndex];
-            const item2 = visibleItems[currentIndex + 1];
+            item1 = visibleItems[currentIndex];
+            item2 = visibleItems[currentIndex + 1];
+        } else {
+            return;
+        }
+
+        try {
             const batch = writeBatch(firestore);
             const item1Ref = doc(firestore, collectionName, item1.id);
             const item2Ref = doc(firestore, collectionName, item2.id);
             batch.update(item1Ref, { order: item2.order });
             batch.update(item2Ref, { order: item1.order });
             await batch.commit();
+        } catch (error: any) {
+            console.error('Error moving item:', error);
+            setNotification({ variant: 'destructive', title: 'Fehler', description: `Position konnte nicht geändert werden: ${error.message}` });
         }
     };
 
@@ -135,15 +139,14 @@ export function ReusableCardManager<T extends BaseCardData>({
     };
 
     const handleSaveChanges = async () => {
-        if (!firestore || !dbData) {
-            setNotification({ variant: 'destructive', title: 'Fehler', description: 'Datenbank- oder Speicherdienst nicht verfügbar.' });
+        if (!firestore) {
+            setNotification({ variant: 'destructive', title: 'Fehler', description: 'Datenbank-Dienst nicht verfügbar.' });
             return;
         }
         setNotification(null);
 
         try {
             const mutableCardData: Partial<T> = { ...editorCardState };
-            delete mutableCardData.id;
             delete mutableCardData.createdAt;
 
             if (editingCardId && !isCreatingNew) {
@@ -151,11 +154,9 @@ export function ReusableCardManager<T extends BaseCardData>({
                 await setDoc(docRef, mutableCardData, { merge: true });
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Änderungen erfolgreich gespeichert.' });
             } else {
-                const highestOrder = dbData.reduce((max, item) => item.order > max ? item.order : max, 0);
-                const collectionRef = collection(firestore, collectionName);
+                const highestOrder = dbData ? dbData.reduce((max, item) => item.order > max ? item.order : max, 0) : 0;
+                const newDocRef = doc(collection(firestore, collectionName), editorCardState.id);
                 
-                const newDocRef = doc(collectionRef); // Create a new doc with a generated ID
-
                 const newCardData: T = {
                     ...initialCardState,
                     ...mutableCardData,
@@ -190,10 +191,10 @@ export function ReusableCardManager<T extends BaseCardData>({
                         <div className="mt-2 flex w-full flex-col gap-2">
                             <div className="grid grid-cols-2 gap-2">
                                 <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={index === 0 || isEditing}>
-                                    <ChevronLeft className="mr-2 h-4 w-4" /> Verschieben
+                                    <ChevronLeft className="mr-2 h-4 w-4" /> Links
                                 </Button>
                                 <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={index === visibleItems.length - 1 || isEditing}>
-                                    Verschieben <ChevronRight className="ml-2 h-4 w-4" />
+                                    Rechts <ChevronRight className="ml-2 h-4 w-4" />
                                 </Button>
                             </div>
                             <div className="grid grid-cols-2 gap-2">
@@ -326,10 +327,10 @@ export function ReusableCardManager<T extends BaseCardData>({
 
                     {isEditing && (
                         <div 
-                            className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12 bg-muted"
+                            className="w-full rounded-lg border-2 border-dashed border-primary p-4 mb-12 bg-muted/20"
                         >
                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
-                            <Alert variant="info" className="mt-4">
+                            <Alert variant="info" className="mt-8">
                                 <Info className="h-4 w-4" />
                                 <AlertTitle>Bearbeitungsmodus</AlertTitle>
                                 <AlertDescription>

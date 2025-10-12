@@ -11,8 +11,12 @@ const initialMedicalPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> =
     name: "Neuer Partner",
     websiteUrl: "https://",
     logoHtml: `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`,
+    imageUrl: "",
     openInNewTab: false,
     hidden: false,
+    logoScale: 100,
+    logoX: 0,
+    logoY: 0,
 };
 
 export default function MedicalPartnersPage() {
