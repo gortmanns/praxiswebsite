@@ -128,11 +128,11 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                 <div className="relative">
                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="w-full max-w-sm mx-auto">
-                            <div className="group relative w-full max-w-sm overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
+                        <div className="w-full max-w-xs mx-auto">
+                            <div className="group relative w-full overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
                                 <div className="flex h-full flex-col p-6">
                                     <button onClick={() => setDialogState({ type: 'imageSource', data: {} })} className={cn("relative w-full overflow-hidden rounded-md aspect-[2/3]")}>
-                                        {cardData.imageUrl && !cardData.imageUrl.includes('placeholder') ? (
+                                        {hasImage ? (
                                             <Image
                                                 src={cardData.imageUrl}
                                                 alt={`Portrait von ${cardData.name}`}
@@ -142,10 +142,10 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                                 data-ai-hint="staff portrait preview"
                                             />
                                         ) : (
-                                            <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-200 text-neutral-500 hover:bg-neutral-300 transition-colors">
+                                            <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-200 text-neutral-500 hover:bg-neutral-300 transition-colors p-4">
                                                 <span className="mb-2 text-base font-semibold">Foto</span>
                                                 <UserIcon className="h-40 w-40 text-black stroke-2" />
-                                                <span className="mt-2 text-base font-semibold">Zum Bearbeiten klicken</span>
+                                                <span className="mt-2 text-base font-semibold text-center">Zum Bearbeiten klicken</span>
                                             </div>
                                         )}
                                     </button>
@@ -160,19 +160,18 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 </div>
                             </div>
                         </div>
-                        <div className="relative w-full max-w-sm mx-auto h-full rounded-lg bg-accent">
-                            {cardData.backsideContent ? (
-                                <div className="h-full w-full p-6 text-accent-foreground text-center text-lg overflow-auto">
-                                    <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
-                                </div>
-                             ) : null}
-
-                            <button 
+                        <div className="relative w-full max-w-xs mx-auto h-full rounded-lg bg-accent">
+                             <button 
                                 onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
                                 className="absolute top-4 right-4 text-white hover:text-white/80"
                             >
                                 <Pencil className="h-10 w-10" />
                             </button>
+                            {cardData.backsideContent ? (
+                                <div className="h-full w-full p-6 text-accent-foreground text-center text-lg overflow-auto">
+                                    <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
+                                </div>
+                             ) : null}
                         </div>
                     </div>
                 </div>
