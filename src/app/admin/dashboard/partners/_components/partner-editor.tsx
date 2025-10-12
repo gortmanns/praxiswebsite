@@ -136,45 +136,64 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
     return (
         <>
-            <div className="w-full">
-                <div className="space-y-6">
-                    <div className="space-y-2">
-                        <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
-                        <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
-                    </div>
-                     <div className="grid grid-cols-[1fr_auto] items-end gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2">
+                <div className="p-4 md:col-span-1">
+                    <div className="space-y-6">
                         <div className="space-y-2">
-                            <Label htmlFor="websiteUrl">Website URL <span className="text-xs text-muted-foreground">(für Verlinkung)</span></Label>
-                            <Input id="websiteUrl" value={cardData.websiteUrl || ''} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
+                            <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
+                            <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
                         </div>
-                        <div className="flex flex-col items-center justify-end space-y-2 pb-2">
-                             <Label htmlFor="openInNewTab" className="mb-2 cursor-pointer whitespace-nowrap text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                in neuem Tab
-                            </Label>
-                            <Checkbox
-                                id="openInNewTab"
-                                checked={cardData.openInNewTab}
-                                onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
-                            />
+                        <div className="grid grid-cols-[1fr_auto] items-end gap-2">
+                            <div className="space-y-2">
+                                <Label htmlFor="websiteUrl">Website URL <span className="text-xs text-muted-foreground">(für Verlinkung)</span></Label>
+                                <Input id="websiteUrl" value={cardData.websiteUrl || ''} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
+                            </div>
+                            <div className="flex flex-col items-center justify-end space-y-2 pb-2">
+                                <Label htmlFor="openInNewTab" className="mb-2 cursor-pointer whitespace-nowrap text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                    in neuem Tab
+                                </Label>
+                                <Checkbox
+                                    id="openInNewTab"
+                                    checked={cardData.openInNewTab}
+                                    onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
+                                />
+                            </div>
                         </div>
-                    </div>
-                     <div className="flex items-center gap-4 pt-4">
-                        <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })} variant="default">
-                            <ImageUp className="mr-2 h-4 w-4" /> Logo wählen
-                        </Button>
-                        <Button variant="secondary" onClick={() => setDialogState({ type: 'htmlEditor', data: {} })}>
-                            <Code2 className="mr-2 h-4 w-4" /> HTML bearbeiten
-                        </Button>
-                         <div className="ml-auto">
-                            <Button onClick={handleResetControls} variant="secondary" size="sm">
-                                <RotateCcw className="mr-2 h-4 w-4" />
-                                Normalwerte wiederherstellen
+                        <div className="flex items-center gap-2 pt-4">
+                            <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })} variant="default">
+                                <ImageUp className="mr-2 h-4 w-4" /> Logo wählen
                             </Button>
+                            <Button variant="secondary" onClick={() => setDialogState({ type: 'htmlEditor', data: {} })}>
+                                <Code2 className="mr-2 h-4 w-4" /> HTML bearbeiten
+                            </Button>
+                            <div className="ml-auto">
+                                <Button onClick={handleResetControls} variant="secondary" size="sm">
+                                    <RotateCcw className="mr-2 h-4 w-4" />
+                                    Normalwerte wiederherstellen
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>
-
+                <div className="p-4 bg-primary rounded-r-lg md:col-span-1">
+                    <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
+                    {true && (
+                        <div className="space-y-2 w-[70%] mx-auto">
+                            <div className="text-center text-primary-foreground">
+                                <label htmlFor="logoScale" className="text-sm">Grösse: {cardData.logoScale || 100}%</label>
+                                <Slider
+                                    id="logoScale"
+                                    value={[cardData.logoScale || 100]}
+                                    onValueChange={(value) => handleSliderChange('logoScale', value)}
+                                    max={200}
+                                    step={1}
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
+
 
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
 

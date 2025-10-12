@@ -349,32 +349,11 @@ export function ReusableCardManager<T extends BaseCardData>({
                             <div className="relative mb-6">
                                 {/* Dashed Editor Area */}
                                 <div className="relative z-0 rounded-lg border-2 border-dashed border-primary bg-muted/20">
-                                    <div className="grid grid-cols-1 md:grid-cols-2">
-                                        <div className="p-4 md:col-span-1">
-                                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
-                                        </div>
-                                        <div className="p-4 bg-primary rounded-r-lg md:col-span-1">
-                                            <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
-                                            {isPartnerManager && (
-                                                <div className="space-y-4 w-[70%] mx-auto">
-                                                    <div className="text-center text-primary-foreground">
-                                                        <label htmlFor="logoScale" className="text-sm">Grösse: {editorCardState.logoScale || 100}%</label>
-                                                        <Slider
-                                                            id="logoScale"
-                                                            value={[editorCardState.logoScale || 100]}
-                                                            onValueChange={(value) => handleSliderChange('logoScale', value)}
-                                                            max={200}
-                                                            step={1}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
+                                    <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                                 </div>
 
                                 {/* Green Debug and Live Preview Overlay */}
-                                <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                                <div className="pointer-events-none absolute inset-0 z-10 mt-8 flex items-center justify-center">
                                      <div className="w-full max-w-full">
                                         <div className="grid grid-cols-8 gap-x-2 bg-green-500/20 p-1 border border-green-500">
                                             <div className="bg-red-500/20 text-center text-xs text-red-800">Rand</div>
@@ -418,9 +397,9 @@ export function ReusableCardManager<T extends BaseCardData>({
                                                             className="h-32"
                                                         />
                                                         <div className="text-center text-xs mt-2">
-                                                            <p>Vertikale</p>
-                                                            <p>Position</p>
-                                                            <p>{editorCardState.logoY || 0}px</p>
+                                                          <p>Vertikale</p>
+                                                          <p>Position</p>
+                                                          <p>{editorCardState.logoY || 0}px</p>
                                                         </div>
                                                     </div>
                                                 </div>
