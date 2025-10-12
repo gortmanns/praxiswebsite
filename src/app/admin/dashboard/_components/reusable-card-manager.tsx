@@ -219,6 +219,12 @@ export function ReusableCardManager<T extends BaseCardData>({
     const validDbData = useMemo(() => dbData?.filter(d => d.name) || [], [dbData]);
     const visibleItems = useMemo(() => validDbData.filter(d => !d.hidden), [validDbData]);
     const hiddenItems = useMemo(() => validDbData.filter(d => d.hidden), [validDbData]);
+
+    const fullWidthVisibleItems = isStaffManager ? visibleItems.filter(item => item.fullWidth) : [];
+    const gridVisibleItems = isStaffManager ? visibleItems.filter(item => !item.fullWidth) : visibleItems;
+    
+    const fullWidthHiddenItems = isStaffManager ? hiddenItems.filter(item => item.fullWidth) : [];
+    const gridHiddenItems = isStaffManager ? hiddenItems.filter(item => !item.fullWidth) : hiddenItems;
     
     const DisplayWrapper: React.FC<{ item: T, index: number, totalVisible: number }> = ({ item, index, totalVisible }) => {
         const moveUpLabel = isPartnerManager ? "Links" : "Nach oben";
@@ -540,10 +546,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             Klicken Sie auf &quot;Bearbeiten&quot;, um eine Karte in den Bearbeitungsmodus zu laden.
                         </p>
                     </div>
-                     <div className={cn(
-                        "mt-8",
-                        isPartnerManager ? "rounded-lg bg-primary p-4" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
-                     )}>
+                     <div className={cn( "mt-8", isPartnerManager && "rounded-lg bg-primary p-4" )}>
                         {isLoadingData && (
                             isPartnerManager ? 
                                 Array.from({ length: 4 }).map((_, index) => <Skeleton key={index} className="h-32 w-full rounded-lg bg-primary-foreground/20" />) :
@@ -566,25 +569,51 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </Alert>
                         )}
                         {!isLoadingData && isPartnerManager && (
-                            <PartnerGrid partners={visibleItems} />
+                            <PartnerGrid partners={gridVisibleItems} />
                         )}
-                        {!isLoadingData && !isPartnerManager && visibleItems.map((item, index) => (
-                            <DisplayWrapper key={item.id} item={item} index={index} totalVisible={visibleItems.length} />
-                        ))}
+                        {!isLoadingData && !isPartnerManager && (
+                            <div className='space-y-12'>
+                                {fullWidthVisibleItems.map((item, index) => (
+                                    <div key={item.id} className="flex justify-center">
+                                         <DisplayWrapper item={item} index={index} totalVisible={fullWidthVisibleItems.length} />
+                                    </div>
+                                ))}
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                                    {gridVisibleItems.map((item, index) => (
+                                        <DisplayWrapper key={item.id} item={item} index={index} totalVisible={gridVisibleItems.length} />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
-                    {hiddenItems.length > 0 && (
+                    {(gridHiddenItems.length > 0 || fullWidthHiddenItems.length > 0) && (
                         <>
                             <div className="mt-16 space-y-4">
                                 <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
                             </div>
-                            <div className={cn(
-                                "mt-8",
-                                isPartnerManager ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" : "grid grid-cols-1 lg:grid-cols-2 gap-12"
-                            )}>
-                                {hiddenItems.map((item) => (
-                                    <HiddenDisplayWrapper key={item.id} item={item} />
-                                ))}
+                            <div className="mt-8">
+                                {!isLoadingData && isPartnerManager && (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                                        {gridHiddenItems.map((item) => (
+                                            <HiddenDisplayWrapper key={item.id} item={item} />
+                                        ))}
+                                    </div>
+                                )}
+                                {!isLoadingData && !isPartnerManager && (
+                                     <div className='space-y-12'>
+                                        {fullWidthHiddenItems.map((item) => (
+                                            <div key={item.id} className="flex justify-center">
+                                                <HiddenDisplayWrapper item={item} />
+                                            </div>
+                                        ))}
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                                            {gridHiddenItems.map((item) => (
+                                                <HiddenDisplayWrapper key={item.id} item={item} />
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </>
                     )}
