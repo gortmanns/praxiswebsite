@@ -116,7 +116,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             <Languages className="mr-2 h-4 w-4" /> Sprachen
                         </Button>
                     </div>
-                    <Alert variant="info" className="mt-8">
+                     <Alert variant="info" className="mt-8">
                         <Info className="h-4 w-4" />
                         <AlertTitle>Bearbeitungsmodus</AlertTitle>
                         <AlertDescription>
@@ -128,7 +128,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                 <div className="relative">
                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="w-full max-w-xs mx-auto">
+                        <div className="w-full max-w-[280px] mx-auto">
                             <div className="group relative w-full overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
                                 <div className="flex h-full flex-col p-6">
                                     <button onClick={() => setDialogState({ type: 'imageSource', data: {} })} className={cn("relative w-full overflow-hidden rounded-md aspect-[2/3]")}>
@@ -160,7 +160,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 </div>
                             </div>
                         </div>
-                        <div className="relative w-full max-w-xs mx-auto h-full rounded-lg bg-accent">
+                        <div className="relative w-full max-w-[280px] mx-auto h-full rounded-lg bg-accent">
                              <button 
                                 onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
                                 className="absolute top-4 right-4 text-white hover:text-white/80"
