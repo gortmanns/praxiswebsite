@@ -16,7 +16,6 @@ import { ImageSourceDialog } from '@/app/admin/dashboard/team/doctors/_component
 import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_components/image-library-dialog';
 import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/image-crop-dialog';
 import { projectImages } from '@/app/admin/dashboard/partners/project-images';
-import { Checkbox } from '@/components/ui/checkbox';
 import { LanguageSelectDialog } from '@/app/admin/dashboard/team/doctors/_components/language-select-dialog';
 
 
@@ -109,7 +108,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })}>
                                 <ImageUp className="mr-2 h-4 w-4" /> {isNewCard ? 'Foto wählen' : 'Foto ändern'}
                             </Button>
-                            <Button onClick={() => setDialogState({ type: 'language', data: {} })}>
+                            <Button variant="default" onClick={() => setDialogState({ type: 'language', data: {} })}>
                                 <Languages className="mr-2 h-4 w-4" /> Sprachen
                             </Button>
                         </div>
@@ -123,16 +122,6 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             placeholder="Geben Sie hier den Text für die Rückseite ein (einfaches HTML ist erlaubt)..."
                             rows={6}
                         />
-                    </div>
-                     <div className="flex items-center space-x-2 pt-2">
-                        <Checkbox
-                            id="fullWidth"
-                            checked={cardData.fullWidth}
-                            onCheckedChange={(checked) => handleInputChange('fullWidth', !!checked)}
-                        />
-                        <Label htmlFor="fullWidth" className="cursor-pointer">
-                            Karte über die volle Breite anzeigen
-                        </Label>
                     </div>
                 </div>
 
