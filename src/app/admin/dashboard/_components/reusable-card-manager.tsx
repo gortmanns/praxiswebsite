@@ -333,19 +333,19 @@ export function ReusableCardManager<T extends BaseCardData>({
                              {/* Visual Debug Container */}
                             <div
                                 className={cn(
-                                    "absolute top-0 right-0 bottom-0 left-0 grid lg:grid-cols-5 gap-8 p-4",
+                                    "absolute top-0 right-0 bottom-0 left-0 grid grid-cols-8 gap-8 p-4",
                                     "z-0",
-                                    "outline-4 outline-dashed outline-lime-500"
+                                    "outline-4 outline-dashed outline-lime-500",
                                 )}
                             >
                                 {/* Visual Debug Placeholders */}
-                                <div className="bg-yellow-500/50 flex items-center justify-center text-black">Grid Col 1</div>
-                                <div className="bg-yellow-500/50 flex items-center justify-center text-black">Grid Col 2</div>
-                                <div className="bg-yellow-500/50 flex items-center justify-center text-black">Grid Col 3</div>
-                                <div className="lg:col-start-4 z-20">
+                                <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-1">Grid 1</div>
+                                <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-2">Grid 2</div>
+                                <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-2">Grid 3</div>
+                                <div className="col-span-2 z-20">
                                     <DisplayCardComponent {...editorCardState} />
                                 </div>
-                                <div className="bg-yellow-500/50 flex items-center justify-center text-black">Grid Col 5</div>
+                                <div className="bg-yellow-500/50 flex items-center justify-center text-black col-span-1">Grid 5</div>
                             </div>
                              <div className="relative z-20">
                                 <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
@@ -429,3 +429,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
