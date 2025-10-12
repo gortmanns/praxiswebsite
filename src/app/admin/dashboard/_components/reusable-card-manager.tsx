@@ -329,34 +329,32 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                     {isEditing && (
-                        <>
-                        <div
-                            className={cn(
-                                "absolute left-0 right-0 grid grid-cols-1 lg:grid-cols-5 gap-8 p-4 rounded-lg",
-                                "z-0",
-                                "outline-4 outline-dashed outline-lime-500"
-                            )}
-                        >
-                            {/* Visual Debug Placeholders */}
-                            <div className="bg-yellow-500/50 flex items-center justify-center text-black">Grid Col 1</div>
-                            <div className="bg-yellow-500/50 flex items-center justify-center text-black">Grid Col 2</div>
-                            <div className="bg-yellow-500/50 flex items-center justify-center text-black">Grid Col 3</div>
-                            <div className="lg:col-start-4 z-20">
-                                <DisplayCardComponent {...editorCardState} />
-                            </div>
-                            <div className="bg-yellow-500/50 flex items-center justify-center text-black">Grid Col 5</div>
-                        </div>
-
                         <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8">
-                             <div>
+                             {/* Visual Debug Container */}
+                            <div
+                                className={cn(
+                                    "absolute top-0 right-0 bottom-0 left-0 grid lg:grid-cols-5 gap-8 p-4",
+                                    "z-0",
+                                    "outline-4 outline-dashed outline-lime-500"
+                                )}
+                            >
+                                {/* Visual Debug Placeholders */}
+                                <div className="bg-yellow-500/50 flex items-center justify-center text-black">Grid Col 1</div>
+                                <div className="bg-yellow-500/50 flex items-center justify-center text-black">Grid Col 2</div>
+                                <div className="bg-yellow-500/50 flex items-center justify-center text-black">Grid Col 3</div>
+                                <div className="lg:col-start-4 z-20">
+                                    <DisplayCardComponent {...editorCardState} />
+                                </div>
+                                <div className="bg-yellow-500/50 flex items-center justify-center text-black">Grid Col 5</div>
+                            </div>
+                             <div className="relative z-20">
                                 <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                              </div>
-                             <div className="relative opacity-0">
+                             <div className="relative opacity-0 pointer-events-none">
                                 <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                                 <DisplayCardComponent {...editorCardState} />
                              </div>
                         </div>
-                        </>
                     )}
 
                     <div className="space-y-4">
