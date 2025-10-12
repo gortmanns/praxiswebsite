@@ -294,17 +294,6 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     ) : null;
     
-    const renderCardWithControls = (item: T) => {
-        const isEditingThisCard = editingCardId === item.id;
-        
-        return (
-            <div className={cn(isEditingThisCard && "ring-4 ring-primary ring-offset-4 rounded-lg")}>
-                <DisplayCardComponent {...item} />
-            </div>
-        );
-    };
-
-
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
             <Card className="w-full">
@@ -399,20 +388,20 @@ export function ReusableCardManager<T extends BaseCardData>({
                         <div className="space-y-12 mt-8">
                             {fullWidthVisibleItems.length > 0 && (
                                 <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8", fullWidthVisibleItems.length > 0 && "sm:grid-cols-2")}>
-                                    {fullWidthVisibleItems.map((item, index) => (
-                                        <div key={item.id} className={cn("mx-auto flex w-full justify-center", fullWidthVisibleItems.length % 2 !== 0 && index === fullWidthVisibleItems.length - 1 && "sm:col-span-2")}>
-                                            {renderCardWithControls(item)}
-                                        </div>
-                                    ))}
+                                {fullWidthVisibleItems.map((item, index) => (
+                                    <div key={item.id} className={cn("mx-auto flex w-full justify-center", fullWidthVisibleItems.length % 2 !== 0 && index === fullWidthVisibleItems.length - 1 && "sm:col-span-2")}>
+                                        <DisplayCardComponent {...item} />
+                                    </div>
+                                ))}
                                 </div>
                             )}
                             {gridVisibleItems.length > 0 && (
                                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                                    {gridVisibleItems.map((item) => (
-                                        <div key={item.id} className="mx-auto flex w-full justify-center">
-                                            {renderCardWithControls(item)}
-                                        </div>
-                                    ))}
+                                {gridVisibleItems.map((item) => (
+                                    <div key={item.id} className="mx-auto flex w-full justify-center">
+                                        <DisplayCardComponent {...item} />
+                                    </div>
+                                ))}
                                 </div>
                             )}
                         </div>
@@ -470,5 +459,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
 
     
