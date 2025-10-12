@@ -366,9 +366,13 @@ export function ReusableCardManager<T extends BaseCardData>({
                     
                     {isLoadingData && (
                         <div className="mt-8 space-y-12">
-                            <div className="grid grid-cols-1 gap-12 sm:grid-cols-2">
-                                <Skeleton className="h-[550px] w-full max-w-sm mx-auto" />
-                                <Skeleton className="h-[550px] w-full max-w-sm mx-auto" />
+                             <div className="grid w-full grid-cols-1 justify-items-center gap-8 sm:grid-cols-2">
+                                <Skeleton className="h-[550px] w-full max-w-sm" />
+                                <Skeleton className="h-[550px] w-full max-w-sm" />
+                            </div>
+                             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                                 <Skeleton className="h-[550px] w-full max-w-sm" />
+                                 <Skeleton className="h-[550px] w-full max-w-sm" />
                             </div>
                         </div>
                     )}
@@ -384,24 +388,20 @@ export function ReusableCardManager<T extends BaseCardData>({
                     {!isLoadingData && !isEditing && (
                         <div className="space-y-12 mt-8">
                             {fullWidthVisibleItems.length > 0 && (
-                                <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8 sm:grid-cols-2")}>
-                                    {fullWidthVisibleItems.map((item, index) => (
-                                        <div key={item.id} className={cn("mx-auto flex w-full justify-center", fullWidthVisibleItems.length % 2 !== 0 && index === fullWidthVisibleItems.length - 1 && "sm:col-span-2")}>
-                                            <div className={cn(item.hidden && "grayscale")}>
-                                                <DisplayCardComponent {...item} />
-                                            </div>
-                                        </div>
-                                    ))}
+                                <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8", fullWidthVisibleItems.length > 0 && "sm:grid-cols-2")}>
+                                {fullWidthVisibleItems.map((item, index) => (
+                                    <div key={item.id} className={cn("mx-auto flex w-full justify-center", fullWidthVisibleItems.length % 2 !== 0 && index === fullWidthVisibleItems.length - 1 && "sm:col-span-2")}>
+                                        <DisplayCardComponent {...item} />
+                                    </div>
+                                ))}
                                 </div>
                             )}
                             {gridVisibleItems.length > 0 && (
                                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
                                     {gridVisibleItems.map((item) => (
-                                        <div key={item.id} className="mx-auto flex w-full justify-center">
-                                            <div className={cn(item.hidden && "grayscale")}>
-                                                <DisplayCardComponent {...item} />
-                                            </div>
-                                        </div>
+                                    <div key={item.id} className="mx-auto flex w-full justify-center">
+                                        <DisplayCardComponent {...item} />
+                                    </div>
                                     ))}
                                 </div>
                             )}
@@ -461,5 +461,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
 
     
