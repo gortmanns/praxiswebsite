@@ -30,7 +30,7 @@ const PartnerLink: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
         href={partner.websiteUrl || '#'}
         target={partner.openInNewTab ? '_blank' : '_self'}
         rel="noopener noreferrer"
-        className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
     >
         <Card className="flex h-full w-full items-center justify-center bg-background p-2">
             {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}
@@ -44,6 +44,7 @@ const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = (
 
     if (count === 0) return null;
     
+    // For 4 or more, use a standard 4-column grid
     if (count >= 4) {
         return (
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -56,6 +57,54 @@ const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = (
         );
     }
     
+    // For 1-3 partners, use an 8-column grid with spacers to center the items
+    return (
+        <div className="grid grid-cols-8 gap-8">
+            {count === 1 && (
+                <>
+                    <div className="col-span-3"></div>
+                    <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
+                    <div className="col-span-3"></div>
+                </>
+            )}
+            {count === 2 && (
+                <>
+                    <div className="col-span-2"></div>
+                    <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
+                    <div className="col-span-2"><PartnerLink partner={partners[1]} /></div>
+                    <div className="col-span-2"></div>
+                </>
+            )}
+            {count === 3 && (
+                <>
+                    <div className="col-span-1"></div>
+                    <div className="col-span-2"><PartnerLink partner={partners[0]} /></div>
+                    <div className="col-span-2"><PartnerLink partner={partners[1]} /></div>
+                    <div className="col-span-2"><PartnerLink partner={partners[2]} /></div>
+                    <div className="col-span-1"></div>
+                </>
+            )}
+        </div>
+    );
+};
+
+
+const OtherPartnersGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
+    const count = partners.length;
+    if (count === 0) return null;
+
+    if (count >= 4) {
+        return (
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                {partners.map(partner => (
+                    <div key={partner.id}>
+                        <PartnerLink partner={partner} />
+                    </div>
+                ))}
+            </div>
+        );
+    }
+
     return (
         <div className="grid grid-cols-8 gap-8">
             {count === 1 && (
@@ -108,7 +157,7 @@ export function CooperationPartnersSection() {
   
   return (
     <section id="partners" className="w-full bg-primary">
-      <div className="mx-auto w-full px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full px-4 py-12 sm:px-6 lg:px-8">
         <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
           Unsere ärztlichen Kooperationspartner
         </h2>
@@ -138,7 +187,7 @@ export function CooperationPartnersSection() {
                             ))}
                         </div>
                     ) : (
-                        <PartnerGrid partners={visibleOtherPartners} />
+                        <OtherPartnersGrid partners={visibleOtherPartners} />
                     )}
                 </div>
             </>
