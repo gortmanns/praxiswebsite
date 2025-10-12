@@ -69,6 +69,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
+        // Ensure id is not set here to signify a new card
         setEditorCardState({ ...initialCardState, id: '', name: 'Neue Karte' } as T);
     };
     
@@ -147,6 +148,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         setNotification(null);
     
         try {
+            // Check if it's a new card by seeing if an ID is missing
             if (isCreatingNew) {
                 // Create new card
                 const mutableCardData: Partial<T> = { ...editorCardState };
@@ -183,6 +185,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         }
     };
     
+    // Filter out items that don't have a name property to prevent "ghost cards"
     const validDbData = useMemo(() => dbData?.filter(d => d.name) || [], [dbData]);
 
     const visibleItems = useMemo(() => validDbData.filter(d => !d.hidden), [validDbData]);
@@ -337,26 +340,27 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
 
                     {isEditing && (
-                        <div className="relative z-10 mb-12 rounded-lg border-2 border-dashed border-primary bg-muted/20">
-                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
-                                <div className="relative z-20 md:col-start-1 md:col-span-1">
-                                    <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
-                                </div>
-                                <div className="relative md:col-start-2 md:col-span-1">
-                                    <div 
-                                        className="absolute top-0 right-0 bottom-0 left-0 grid grid-cols-8 grid-rows-1 gap-4 p-4 z-10 pointer-events-none"
-                                    >
-                                        <div className="bg-green-500/50 flex items-center justify-center text-black col-span-1">1</div>
-                                        <div className="bg-green-500/50 flex items-center justify-center text-black col-span-2">2</div>
-                                        <div className="bg-green-500/50 flex items-center justify-center text-black col-span-2">3</div>
-                                        <div className="bg-green-500/50 flex items-center justify-center text-black col-span-2 relative">
-                                            <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-white">Vorschau</p>
-                                            <div className="relative z-20 w-full h-full opacity-100">
-                                                <DisplayCardComponent {...editorCardState} />
-                                            </div>
+                        <div className="relative z-10 mb-12 rounded-lg border-2 border-dashed border-primary bg-muted/20 p-8 space-y-8">
+                             {/* Editor Form Section */}
+                            <div className="relative z-20">
+                                <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                            </div>
+                            
+                            {/* Live Preview Section */}
+                            <div className="relative">
+                                 <div 
+                                    className="absolute top-0 right-0 bottom-0 left-0 grid grid-cols-8 grid-rows-1 gap-4 z-10"
+                                >
+                                    <div className="bg-green-500/50 flex items-center justify-center text-black col-span-1">1</div>
+                                    <div className="bg-green-500/50 flex items-center justify-center text-black col-span-2">2</div>
+                                    <div className="bg-green-500/50 flex items-center justify-center text-black col-span-2">3</div>
+                                    <div className="bg-green-500/50 flex items-center justify-center text-black col-span-2 relative">
+                                        <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-white">Vorschau</p>
+                                        <div className="relative z-20 w-full h-full">
+                                            <DisplayCardComponent {...editorCardState} />
                                         </div>
-                                        <div className="bg-green-500/50 flex items-center justify-center text-black col-span-1">5</div>
                                     </div>
+                                    <div className="bg-green-500/50 flex items-center justify-center text-black col-span-1">5</div>
                                 </div>
                             </div>
                         </div>
@@ -434,3 +438,4 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
