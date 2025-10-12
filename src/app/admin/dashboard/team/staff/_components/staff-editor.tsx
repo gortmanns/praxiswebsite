@@ -92,37 +92,43 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
         setDialogState({ type: null, data: {} });
     };
 
-    const isNewCard = !cardData.id;
-    const hasImage = cardData.imageUrl && !cardData.imageUrl.includes('placeholder');
+    const hasImage = cardData.imageUrl && !cardData.imageUrl.includes('picsum.photos');
 
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start p-10">
-                <div className="space-y-6">
-                    <div className="space-y-2">
-                        <Label htmlFor="name">Name</Label>
-                        <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
+                <div className="flex flex-col h-full">
+                    <div className="space-y-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="name">Name</Label>
+                            <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="role">Funktion</Label>
+                            <Input id="role" value={cardData.role} onChange={(e) => handleInputChange('role', e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="role2">Zusatzqualifikation (optional)</Label>
+                            <Input id="role2" value={cardData.role2 || ''} onChange={(e) => handleInputChange('role2', e.target.value)} />
+                        </div>
+                        <div className="space-y-3 pt-2">
+                            <Button variant="default" onClick={() => setDialogState({ type: 'language', data: {} })}>
+                                <Languages className="mr-2 h-4 w-4" /> Sprachen
+                            </Button>
+                             <Button variant="outline" onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}>
+                                <Pencil className="mr-2 h-4 w-4" />Text der Rückseite bearbeiten
+                            </Button>
+                        </div>
                     </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="role">Funktion</Label>
-                        <Input id="role" value={cardData.role} onChange={(e) => handleInputChange('role', e.target.value)} />
+                     <div className="flex-grow flex items-end">
+                        <Alert variant="info" className="mt-8">
+                            <Info className="h-4 w-4" />
+                            <AlertTitle>Bearbeitungsmodus</AlertTitle>
+                            <AlertDescription>
+                                Füllen Sie bitte die Felder aus. Das Feld "Zusatzqualifikation" ist optional. Durch Klicken auf den Platzhalter kann ein Foto eingefügt werden, dieses sollte im Format 2:3 sein und die ungefähren Masse 340x510 Px haben (ein genauer Zuschnitt ist beim Hinzufügen noch möglich). Der Text für das SlideOver Element kann mit Klick auf das Stiftymbol bearbeitet werden.
+                            </AlertDescription>
+                        </Alert>
                     </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="role2">Zusatzqualifikation (optional)</Label>
-                        <Input id="role2" value={cardData.role2 || ''} onChange={(e) => handleInputChange('role2', e.target.value)} />
-                    </div>
-                    <div className="space-y-3 pt-2">
-                        <Button variant="default" onClick={() => setDialogState({ type: 'language', data: {} })}>
-                            <Languages className="mr-2 h-4 w-4" /> Sprachen
-                        </Button>
-                    </div>
-                     <Alert variant="info" className="mt-8">
-                        <Info className="h-4 w-4" />
-                        <AlertTitle>Bearbeitungsmodus</AlertTitle>
-                        <AlertDescription>
-                            Füllen Sie bitte die Felder aus. Das Feld "Zusatzqualifikation" ist optional. Durch Klicken auf den Platzhalter kann ein Foto eingefügt werden, dieses sollte im Format 2:3 sein und die ungefähren Masse 340x510 Px haben (ein genauer Zuschnitt ist beim Hinzufügen noch möglich). Der Text für das SlideOver Element kann mit Klick auf das Stiftymbol bearbeitet werden.
-                        </AlertDescription>
-                    </Alert>
                 </div>
 
                 <div className="relative">
@@ -167,11 +173,9 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             >
                                 <Pencil className="h-10 w-10" />
                             </button>
-                            {cardData.backsideContent ? (
-                                <div className="h-full w-full p-6 text-left overflow-auto">
-                                    <div className="prose prose-sm dark:prose-invert text-background max-w-none" dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
-                                </div>
-                             ) : null}
+                            <div className="h-full w-full p-6 text-left overflow-auto">
+                                <div className="prose prose-sm dark:prose-invert text-background max-w-none" dangerouslySetInnerHTML={{ __html: cardData.backsideContent || '' }} />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -225,4 +229,5 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
             )}
         </>
     );
-};
+
+    
