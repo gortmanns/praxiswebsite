@@ -308,9 +308,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                     <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
                         <div>
                             <CardTitle className="text-primary">{pageTitle}</CardTitle>
-                            <CardDescription>
-                                {isEditing ? `Bearbeiten oder erstellen Sie eine ${entityName}-Karte.` : pageDescription}
-                            </CardDescription>
+                            {!isEditing && <CardDescription>{pageDescription}</CardDescription>}
                         </div>
                         <div className="flex gap-2">
                              {isEditing ? (
