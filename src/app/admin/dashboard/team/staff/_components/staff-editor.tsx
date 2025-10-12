@@ -143,8 +143,8 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                     <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
                                 </div>
                              ) : (
-                                <div className="relative h-full w-full rounded-lg border-2 border-dashed border-muted-foreground/50 bg-muted/50 flex items-center justify-center">
-                                    <button className="absolute top-4 right-4 text-muted-foreground hover:text-primary">
+                                <div className="relative h-full w-full rounded-lg bg-accent flex items-center justify-center">
+                                    <button className="absolute top-4 right-4 text-accent-foreground/50 hover:text-accent-foreground">
                                         <Pencil className="h-10 w-10" />
                                     </button>
                                 </div>
