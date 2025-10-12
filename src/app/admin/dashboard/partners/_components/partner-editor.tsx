@@ -144,15 +144,14 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                         <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
                         <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
                     </div>
-                    <div className="flex items-end gap-4">
-                        <div className="flex-grow space-y-2">
-                            <Label htmlFor="websiteUrl">Website URL <span className="text-xs text-muted-foreground">(für Verlinkung)</span></Label>
-                            <Input id="websiteUrl" value={cardData.websiteUrl || ''} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
-                        </div>
-                        <div className="flex flex-col items-center space-y-2 pb-1">
-                            <Label htmlFor="openInNewTab" className="whitespace-nowrap text-sm font-medium">
-                                in neuem Tab öffnen
-                            </Label>
+                    <div className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2">
+                        {/* Row 1: Labels */}
+                        <Label htmlFor="websiteUrl">Website URL <span className="text-xs text-muted-foreground">(für Verlinkung)</span></Label>
+                        <Label htmlFor="openInNewTab" className="text-center">in neuem Tab öffnen</Label>
+
+                        {/* Row 2: Inputs */}
+                        <Input id="websiteUrl" value={cardData.websiteUrl || ''} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
+                        <div className="flex justify-center">
                             <Checkbox
                                 id="openInNewTab"
                                 checked={cardData.openInNewTab}
