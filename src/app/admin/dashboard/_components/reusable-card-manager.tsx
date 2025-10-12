@@ -294,97 +294,6 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     ) : null;
 
-    const renderCardWithControls = (item: T, index: number, isHidden: boolean, itemsArray: T[]) => {
-        const isFirst = index === 0;
-        const isLast = index === itemsArray.length - 1;
-
-        return (
-             <>
-                <div className="absolute top-0 right-full z-10 mr-4 flex h-full flex-col items-end justify-center">
-                    <div className="flex flex-col gap-2 rounded-md border bg-card p-2 shadow-lg">
-                        <div className="grid w-full grid-cols-1 gap-2">
-                            <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'up')} disabled={isFirst || isEditing} title="Nach oben/links">
-                                {item.fullWidth ? <ArrowUp className="h-4 w-4"/> : <ChevronLeft className="h-4 w-4"/>}
-                            </Button>
-                            <Button variant="outline" size="sm" onClick={() => handleMove(item.id, 'down')} disabled={isLast || isEditing} title="Nach unten/rechts">
-                                {item.fullWidth ? <ArrowDown className="h-4 w-4"/> : <ChevronRight className="h-4 w-4"/>}
-                            </Button>
-                        </div>
-                        <div className="grid w-full grid-cols-1 gap-2">
-                            <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)} disabled={isEditing}>
-                                {isHidden ? <Eye className="mr-2 h-4 w-4" /> : <EyeOff className="mr-2 h-4 w-4" />}
-                                {isHidden ? 'Einblenden' : 'Ausblenden'}
-                            </Button>
-                            {isStaffManager && (
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => handleToggleFullWidth(item)}
-                                    disabled={isEditing}
-                                    title="Volle Breite aktivieren/deaktivieren"
-                                    className={cn(item.fullWidth && "bg-primary/90 hover:bg-primary text-primary-foreground")}
-                                >
-                                    <RectangleHorizontal className="mr-2 h-4 w-4" />
-                                    Volle Breite
-                                </Button>
-                            )}
-                            <Button variant="outline" size="sm" onClick={() => handleEdit(item)} disabled={isEditing}>
-                                <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                            </Button>
-                            {isHidden && (
-                                <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(item.id, item.name || 'diese Karte')} disabled={isEditing}>
-                                    <Trash2 className="mr-2 h-4 w-4" /> Löschen
-                                </Button>
-                            )}
-                        </div>
-                    </div>
-                </div>
-                <div className={cn(isHidden && "grayscale")}>
-                     <DisplayCardComponent {...item} />
-                </div>
-            </>
-        )
-    };
-    
-    const renderItemGroup = (items: T[], isHidden: boolean, fullWidth: boolean) => {
-        if (!items || items.length === 0) return null;
-
-        if (isPartnerManager) {
-            return (
-                <div className={cn("mt-8 rounded-lg p-4 border-2 border-blue-500", !isHidden && 'bg-primary')}>
-                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                        {items.map((item, index) => (
-                            <div key={item.id} className="relative mx-auto flex w-full justify-center">
-                                {renderCardWithControls(item, index, isHidden, items)}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            );
-        }
-
-        if (fullWidth) {
-            return (
-                <div className={cn("grid w-full grid-cols-1 gap-8 justify-items-center", items.length > 0 && "sm:grid-cols-2")}>
-                    {items.map((item, index) => (
-                        <div key={item.id} className={cn("relative flex justify-center border-2 border-yellow-500", items.length % 2 !== 0 && index === items.length - 1 && "sm:col-span-2")}>
-                           {renderCardWithControls(item, index, isHidden, items)}
-                        </div>
-                    ))}
-                </div>
-            )
-        }
-        
-        return (
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 border-2 border-blue-500">
-                {items.map((item, index) => (
-                    <div key={item.id} className="relative mx-auto flex w-full justify-center border-2 border-green-500">
-                       {renderCardWithControls(item, index, isHidden, items)}
-                    </div>
-                ))}
-            </div>
-        )
-    };
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
@@ -458,8 +367,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                     {isLoadingData && (
                         <div className="mt-8 space-y-12">
                             <div className="grid grid-cols-1 gap-12 sm:grid-cols-2">
-                                <Skeleton className="h-[250px] w-full max-w-sm mx-auto" />
-                                <Skeleton className="h-[250px] w-full max-w-sm mx-auto" />
+                                <Skeleton className="h-[550px] w-full max-w-sm mx-auto" />
+                                <Skeleton className="h-[550px] w-full max-w-sm mx-auto" />
                             </div>
                         </div>
                     )}
@@ -474,8 +383,28 @@ export function ReusableCardManager<T extends BaseCardData>({
                     )}
                     {!isLoadingData && !isEditing && (
                         <div className="space-y-12 mt-8">
-                            {renderItemGroup(fullWidthVisibleItems, false, true)}
-                            {renderItemGroup(gridVisibleItems, false, false)}
+                            {fullWidthVisibleItems.length > 0 && (
+                                <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8 sm:grid-cols-2")}>
+                                    {fullWidthVisibleItems.map((item, index) => (
+                                        <div key={item.id} className={cn("mx-auto flex w-full justify-center", fullWidthVisibleItems.length % 2 !== 0 && index === fullWidthVisibleItems.length - 1 && "sm:col-span-2")}>
+                                            <div className={cn(item.hidden && "grayscale")}>
+                                                <DisplayCardComponent {...item} />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            {gridVisibleItems.length > 0 && (
+                                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                                    {gridVisibleItems.map((item) => (
+                                        <div key={item.id} className="mx-auto flex w-full justify-center">
+                                            <div className={cn(item.hidden && "grayscale")}>
+                                                <DisplayCardComponent {...item} />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -486,8 +415,28 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
                             </div>
                              <div className="space-y-12 mt-8">
-                                {renderItemGroup(fullWidthHiddenItems, true, true)}
-                                {renderItemGroup(gridHiddenItems, true, false)}
+                                {fullWidthHiddenItems.length > 0 && (
+                                    <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8 sm:grid-cols-2")}>
+                                        {fullWidthHiddenItems.map((item, index) => (
+                                            <div key={item.id} className={cn("mx-auto flex w-full justify-center", fullWidthHiddenItems.length % 2 !== 0 && index === fullWidthHiddenItems.length - 1 && "sm:col-span-2")}>
+                                                <div className={cn(item.hidden && "grayscale")}>
+                                                    <DisplayCardComponent {...item} />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                {gridHiddenItems.length > 0 && (
+                                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                                        {gridHiddenItems.map((item) => (
+                                            <div key={item.id} className="mx-auto flex w-full justify-center">
+                                                <div className={cn(item.hidden && "grayscale")}>
+                                                    <DisplayCardComponent {...item} />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </>
                     )}
@@ -512,7 +461,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
 
     
