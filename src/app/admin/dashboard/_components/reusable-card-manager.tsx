@@ -354,7 +354,7 @@ export function ReusableCardManager<T extends BaseCardData>({
 
         // Layout for Doctors and Staff
         return (
-             <div className="flex w-full flex-col sm:flex-row items-center justify-center gap-4">
+             <div className="flex w-full flex-col sm:flex-row items-center justify-center gap-4 border-2 border-orange-500">
                 <div className="order-2 flex w-full flex-row flex-wrap justify-center gap-2 sm:order-1 sm:w-48 sm:flex-shrink-0 sm:flex-col">
                     <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-1">
                         {moveButtons}
@@ -527,5 +527,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
 
     
