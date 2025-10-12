@@ -300,22 +300,12 @@ export function ReusableCardManager<T extends BaseCardData>({
         const fullWidthItems = isStaffManager ? items.filter(i => i.fullWidth) : [];
         const gridItems = isStaffManager ? items.filter(i => !i.fullWidth) : items;
 
-        const renderItem = (item: T, isFullWidth: boolean, isLastOdd: boolean) => {
-            const isHuberCard = item.name === 'Huber';
+        const renderItem = (item: T, isFullWidth: boolean) => {
+            const isLastOdd = fullWidthItems.length % 2 !== 0 && fullWidthItems.indexOf(item) === fullWidthItems.length - 1;
             const colSpanClass = isFullWidth && isLastOdd ? "sm:col-span-2" : "";
 
             return (
-                <div key={item.id} className={cn("relative mx-auto flex w-full justify-center", colSpanClass)}>
-                    {isHuberCard && (
-                        <div className="absolute top-1/2 -translate-y-1/2 right-full mr-5 flex flex-col space-y-2">
-                            <Button size="sm" onClick={() => handleMove(item.id, 'up')}>
-                                <ChevronLeft /> Verschieben
-                            </Button>
-                            <Button size="sm" onClick={() => handleMove(item.id, 'down')}>
-                                <ChevronRight /> Verschieben
-                            </Button>
-                        </div>
-                    )}
+                <div key={item.id} className={cn("mx-auto flex w-full justify-center", colSpanClass)}>
                     <div className={cn("relative", item.hidden && "grayscale")}>
                         <DisplayCardComponent {...item} />
                     </div>
@@ -327,12 +317,12 @@ export function ReusableCardManager<T extends BaseCardData>({
             <div className="space-y-12 mt-8">
                 {fullWidthItems.length > 0 && (
                      <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8", "sm:grid-cols-2")}>
-                        {fullWidthItems.map((item, index) => renderItem(item, true, fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1))}
+                        {fullWidthItems.map((item) => renderItem(item, true))}
                     </div>
                 )}
                 {gridItems.length > 0 && (
                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                        {gridItems.map((item) => renderItem(item, false, false))}
+                        {gridItems.map((item) => renderItem(item, false))}
                     </div>
                 )}
             </div>
@@ -465,3 +455,6 @@ export function ReusableCardManager<T extends BaseCardData>({
 
     
 
+
+
+    
