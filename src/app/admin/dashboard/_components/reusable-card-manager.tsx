@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect, createRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
@@ -78,6 +78,10 @@ export function ReusableCardManager<T extends BaseCardData>({
     const [editorCardState, setEditorCardState] = useState<T>({ ...initialCardState, id: '', order: 0 } as T);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
 
+    const cardRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
+    const [buttonPositions, setButtonPositions] = useState<Record<string, { top: number; left: number }>>({});
+    const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
+
     const isEditing = editingCardId !== null || isCreatingNew;
     const isPartnerManager = collectionName.toLowerCase().includes('partner');
     const isStaffManager = collectionName === 'staff';
@@ -125,7 +129,6 @@ export function ReusableCardManager<T extends BaseCardData>({
             const item1Ref = doc(firestore, collectionName, item1.id);
             const item2Ref = doc(firestore, collectionName, item2.id);
     
-            // Swap order values
             batch.update(item1Ref, { order: item2.order });
             batch.update(item2Ref, { order: item1.order });
     
@@ -225,6 +228,39 @@ export function ReusableCardManager<T extends BaseCardData>({
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
     const visibleItems = useMemo(() => validDbData.filter(d => !d.hidden), [validDbData]);
     const hiddenItems = useMemo(() => validDbData.filter(d => d.hidden), [validDbData]);
+
+    useEffect(() => {
+        const updatePositions = () => {
+          const newPositions: Record<string, { top: number; left: number }> = {};
+          cardRefs.current.forEach(ref => {
+            if (ref.current) {
+              const rect = ref.current.getBoundingClientRect();
+              const containerRect = ref.current.closest('.relative.w-full')?.getBoundingClientRect();
+              if (containerRect) {
+                 const cardId = ref.current.getAttribute('data-card-id');
+                 if(cardId) {
+                    newPositions[cardId] = {
+                        top: rect.top - containerRect.top,
+                        left: rect.left - containerRect.left,
+                    };
+                 }
+              }
+            }
+          });
+          setButtonPositions(newPositions);
+        };
+    
+        updatePositions();
+        window.addEventListener('resize', updatePositions);
+        const observer = new MutationObserver(updatePositions);
+        observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+    
+        return () => {
+            window.removeEventListener('resize', updatePositions);
+            observer.disconnect();
+        };
+      }, [validDbData, isEditing]);
+    
     
     const partnerEditorOverlay = isPartnerManager && isEditing ? (
         <div className="pointer-events-none absolute inset-0 z-10">
@@ -270,8 +306,10 @@ export function ReusableCardManager<T extends BaseCardData>({
     const renderCardList = (items: T[], isHiddenList: boolean) => {
         if (!items || items.length === 0) return null;
     
-        let gridItems: T[] = [];
+        cardRefs.current = items.map((_, i) => cardRefs.current[i] ?? createRef<HTMLDivElement>());
+
         let fullWidthItems: T[] = [];
+        let gridItems: T[] = [];
     
         if (isStaffManager) {
             fullWidthItems = items.filter(item => (item as any).fullWidth);
@@ -279,26 +317,46 @@ export function ReusableCardManager<T extends BaseCardData>({
         } else {
             gridItems = items;
         }
+
+        const renderItemWithControls = (item: T, index: number, isFullWidth: boolean) => {
+            const itemIndex = validDbData.findIndex(d => d.id === item.id);
+
+            return (
+                <div 
+                    className="flex justify-center w-full"
+                    onMouseEnter={() => !isEditing && setHoveredCardId(item.id)}
+                    onMouseLeave={() => setHoveredCardId(null)}
+                >
+                    <div
+                        ref={cardRefs.current[itemIndex]}
+                        data-card-id={item.id}
+                        className="relative"
+                    >
+                        <DisplayCardComponent {...item} />
+                    </div>
+                </div>
+            );
+        };
     
         return (
             <div className="space-y-16 mt-8">
-                {(fullWidthItems.length > 0) && (
+                {fullWidthItems.length > 0 && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-16">
                         {fullWidthItems.map((item, index) => {
-                             const colSpanClass = fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 ? 'sm:col-span-2' : '';
-                             return (
-                                <div key={item.id} className={cn("flex justify-center", colSpanClass)}>
-                                    <DisplayCardComponent {...item} />
-                                </div>
-                             )
+                            const colSpanClass = fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 ? 'sm:col-span-2' : '';
+                            return (
+                               <div key={item.id} className={cn("w-full", colSpanClass)}>
+                                    {renderItemWithControls(item, index, true)}
+                               </div>
+                            )
                         })}
                     </div>
                 )}
                 {gridItems.length > 0 && (
                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-16">
-                        {gridItems.map((item) => (
-                           <div key={item.id} className="flex justify-center">
-                              <DisplayCardComponent {...item} />
+                        {gridItems.map((item, index) => (
+                           <div key={item.id} className="w-full">
+                                {renderItemWithControls(item, index, false)}
                            </div>
                         ))}
                     </div>
@@ -306,6 +364,66 @@ export function ReusableCardManager<T extends BaseCardData>({
             </div>
         );
     };
+
+    const renderActionButtons = (items: T[], isHiddenList: boolean) => {
+        return items.map((item) => {
+            const pos = buttonPositions[item.id];
+            if (!pos) return null;
+
+            return (
+                <div
+                    key={`buttons-${item.id}`}
+                    className={cn(
+                        "absolute z-20 flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm transition-opacity",
+                        hoveredCardId === item.id ? "opacity-100 flex" : "opacity-0 hidden"
+                    )}
+                    style={{ 
+                        top: pos.top, 
+                        left: pos.left - 100,
+                        width: '90px'
+                    }}
+                    onMouseEnter={() => setHoveredCardId(item.id)}
+                    onMouseLeave={() => setHoveredCardId(null)}
+                >
+                     {!isHiddenList && (
+                         <>
+                            <p className="text-xs font-bold text-center text-foreground">Verschieben</p>
+                            <div className="flex gap-1.5">
+                                <Button size="icon" className="h-7 w-7" onClick={() => handleMove(item.id, 'left')}><ArrowLeft /></Button>
+                                <Button size="icon" className="h-7 w-7" onClick={() => handleMove(item.id, 'right')}><ArrowRight /></Button>
+                            </div>
+                        </>
+                    )}
+                    {isStaffManager && (
+                        <Button 
+                            variant={(item as any).fullWidth ? "default" : "outline"} 
+                            size="sm" 
+                            className="w-full mt-1.5"
+                            onClick={() => handleToggleFullWidth(item)}
+                        >
+                            <RectangleHorizontal className="mr-2" />
+                            Zeile
+                        </Button>
+                    )}
+
+                    <Button variant="outline" size="sm" className="w-full mt-1.5" onClick={() => handleEdit(item)}>
+                        <Pencil className="mr-2" /> Bearbeiten
+                    </Button>
+                    
+                    <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
+                        {isHiddenList ? <Eye className="mr-2" /> : <EyeOff className="mr-2" />}
+                        {isHiddenList ? 'Einblenden' : 'Ausblenden'}
+                    </Button>
+
+                    {isHiddenList && (
+                        <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                            <Trash2 className="mr-2" /> Löschen
+                        </Button>
+                    )}
+                </div>
+            )
+        })
+    }
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:px-6 sm:py-8">
@@ -365,28 +483,33 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 </p>
                             </div>
                             
-                            {isLoadingData && (
-                                <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
-                                    {Array.from({ length: 4 }).map((_, index) => (
-                                        <Skeleton key={index} className="h-[550px] w-full max-w-sm" />
-                                    ))}
-                                </div>
-                            )}
+                            <div className="relative w-full">
+                                {isLoadingData && (
+                                    <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
+                                        {Array.from({ length: 4 }).map((_, index) => (
+                                            <div key={index} className="flex justify-center">
+                                                <Skeleton className="h-[550px] w-full max-w-sm" />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
 
-                            {dbError && (
-                                <Alert variant="destructive" className="mt-8">
-                                    <AlertCircle className="h-4 w-4" />
-                                    <AlertTitle>Datenbankfehler</AlertTitle>
-                                    <AlertDescription>
-                                        Die Daten konnten nicht geladen werden: {dbError.message}
-                                    </AlertDescription>
-                                </Alert>
-                            )}
-                           {!isLoadingData && !isEditing && (
-                                <>
-                                    {renderCardList(visibleItems, false)}
-                                </>
-                           )}
+                                {dbError && (
+                                    <Alert variant="destructive" className="mt-8">
+                                        <AlertCircle className="h-4 w-4" />
+                                        <AlertTitle>Datenbankfehler</AlertTitle>
+                                        <AlertDescription>
+                                            Die Daten konnten nicht geladen werden: {dbError.message}
+                                        </AlertDescription>
+                                    </Alert>
+                                )}
+                                {!isLoadingData && !isEditing && (
+                                    <>
+                                        {renderCardList(visibleItems, false)}
+                                        {renderActionButtons(visibleItems, false)}
+                                    </>
+                                )}
+                            </div>
 
 
                             {hiddenItems.length > 0 && !isEditing && (
@@ -394,7 +517,10 @@ export function ReusableCardManager<T extends BaseCardData>({
                                     <div className="mt-16 space-y-4">
                                         <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
                                     </div>
-                                    {renderCardList(hiddenItems, true)}
+                                    <div className="relative w-full">
+                                        {renderCardList(hiddenItems, true)}
+                                        {renderActionButtons(hiddenItems, true)}
+                                    </div>
                                 </>
                            )}
                         </>
@@ -420,4 +546,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
