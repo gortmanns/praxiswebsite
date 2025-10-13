@@ -9,11 +9,12 @@ import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionRefe
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, RectangleHorizontal } from 'lucide-react';
+import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, ArrowLeft, ArrowRight } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
 
 
 export interface BaseCardData {
@@ -101,7 +102,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         setIsCreatingNew(false);
     };
     
-    const handleMove = async (cardId: string, direction: 'up' | 'down') => {
+    const handleMove = async (cardId: string, direction: 'left' | 'right') => {
         if (!dbData || !firestore) return;
     
         const items = dbData.filter(d => d.name).sort((a, b) => a.order - b.order);
@@ -110,9 +111,9 @@ export function ReusableCardManager<T extends BaseCardData>({
         if (currentIndex === -1) return;
     
         let otherIndex = -1;
-        if (direction === 'up' && currentIndex > 0) {
+        if (direction === 'left' && currentIndex > 0) {
             otherIndex = currentIndex - 1;
-        } else if (direction === 'down' && currentIndex < items.length - 1) {
+        } else if (direction === 'right' && currentIndex < items.length - 1) {
             otherIndex = currentIndex + 1;
         }
     
@@ -295,19 +296,44 @@ export function ReusableCardManager<T extends BaseCardData>({
     
     const renderCardList = (items: T[]) => {
         if (items.length === 0) return null;
-    
-        const allItems = isStaffManager ? items : items;
-    
+
         return (
-            <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 mt-8">
-                {allItems.map((item, index) => {
-                    const isLastOdd = isStaffManager && item.fullWidth && allItems.filter(i => i.fullWidth).length % 2 !== 0 && index === allItems.filter(i => i.fullWidth).length - 1;
-                    
+            <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 mt-12">
+                {items.map((item, index) => {
+                    const colSpanClass = isStaffManager && item.fullWidth ? 'sm:col-span-2' : '';
                     return (
-                        <div key={item.id} className={cn(
-                            "mx-auto flex w-full justify-center",
-                            isStaffManager && item.fullWidth && "sm:col-span-2",
-                        )}>
+                        <div key={item.id} className={cn("relative mx-auto flex w-full justify-center", colSpanClass)}>
+                            <div className="absolute top-1/2 -left-4 z-20 w-32 -translate-y-1/2 transform space-y-2 pl-4">
+                                <div className="flex flex-col items-start gap-1 rounded-md border bg-background/80 p-2 shadow-lg backdrop-blur-sm">
+                                    <Button size="sm" variant="ghost" onClick={() => handleEdit(item)} className="w-full justify-start">
+                                        <Pencil className="mr-2" /> Bearbeiten
+                                    </Button>
+                                    <Button size="sm" variant="ghost" onClick={() => handleToggleHidden(item)} className="w-full justify-start">
+                                        {item.hidden ? <Eye className="mr-2" /> : <EyeOff className="mr-2" />}
+                                        {item.hidden ? 'Einblenden' : 'Ausblenden'}
+                                    </Button>
+                                    <div className="flex w-full items-center justify-between">
+                                         <span className="text-sm font-medium pl-2">Verschieben</span>
+                                         <div className="flex">
+                                            <Button size="icon" variant="ghost" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
+                                            <Button size="icon" variant="ghost" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
+                                         </div>
+                                    </div>
+                                    {isStaffManager && (
+                                        <div className="flex w-full items-center justify-between pl-2">
+                                            <label htmlFor={`fullWidth-${item.id}`} className="text-sm font-medium">Ganze Zeile</label>
+                                            <Switch
+                                                id={`fullWidth-${item.id}`}
+                                                checked={item.fullWidth}
+                                                onCheckedChange={() => handleToggleFullWidth(item)}
+                                            />
+                                        </div>
+                                    )}
+                                    <Button size="sm" variant="destructive" onClick={() => openDeleteConfirmation(item.id, item.name)} className="w-full justify-start mt-2">
+                                        <Trash2 className="mr-2" /> Löschen
+                                    </Button>
+                                </div>
+                            </div>
                             <DisplayCardComponent {...item} />
                         </div>
                     );
