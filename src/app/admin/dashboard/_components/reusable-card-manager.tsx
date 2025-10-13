@@ -268,7 +268,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                 <div className="pointer-events-auto flex h-full w-[10%] flex-col justify-end">
                     <div className="h-32">
                         <div className="flex h-full flex-row items-center justify-center gap-2">
-                            <div className="flex h-4/5 justify-center">
+                            <div className="flex h-full justify-center">
                                 <Slider
                                     orientation="vertical"
                                     value={[-(editorCardState.logoY || 0)]}
@@ -451,6 +451,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
-    
