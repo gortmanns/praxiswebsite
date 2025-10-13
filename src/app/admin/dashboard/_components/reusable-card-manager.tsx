@@ -9,7 +9,7 @@ import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionRefe
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, ArrowLeft, ArrowRight, RectangleHorizontal } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
@@ -294,61 +294,100 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     ) : null;
     
-    const renderCardList = (items: T[], isHiddenList: boolean = false) => {
-        if (items.length === 0) return null;
+    const renderCardList = (items: T[], isHiddenList: boolean) => {
+        if (!items || items.length === 0) return null;
     
-        return (
-            <div className="space-y-12 mt-8">
-                {items.map((item, index) => {
-                    const colSpanClass = isStaffManager && item.fullWidth ? 'sm:col-span-2' : '';
+        // Separate full-width items from grid items for staff manager
+        let fullWidthItems: T[] = [];
+        let gridItems: T[] = [];
     
-                    return (
-                        <div key={item.id} className={cn("relative mx-auto flex w-full justify-center", colSpanClass)}>
-                            <div className="absolute top-1/2 -left-4 z-20 w-40 -translate-y-1/2 transform">
-                                <div className="flex flex-col items-start gap-2 rounded-md border bg-background/80 p-3 shadow-lg backdrop-blur-sm">
-                                    <div className="w-full">
-                                        <span className="text-sm font-medium">Verschieben</span>
-                                        <div className="flex items-center gap-1">
-                                            <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'left')} disabled={index === 0} className="h-8 w-8">
-                                                <ArrowLeft />
-                                            </Button>
-                                            <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1} className="h-8 w-8">
-                                                <ArrowRight />
-                                            </Button>
-                                        </div>
-                                    </div>
-    
-                                    {isStaffManager && (
-                                        <div className="flex w-full items-center justify-between pt-2">
-                                            <label htmlFor={`fullWidth-${item.id}`} className="text-sm font-medium">Ganze Zeile</label>
-                                            <Switch
-                                                id={`fullWidth-${item.id}`}
-                                                checked={!!item.fullWidth}
-                                                onCheckedChange={() => handleToggleFullWidth(item)}
-                                            />
-                                        </div>
-                                    )}
-    
-                                    <Button size="sm" variant="ghost" onClick={() => handleToggleHidden(item)} className="w-full justify-start mt-1">
-                                        {item.hidden ? <Eye className="mr-2" /> : <EyeOff className="mr-2" />}
-                                        {item.hidden ? 'Einblenden' : 'Ausblenden'}
-                                    </Button>
-                                    <Button size="sm" variant="ghost" onClick={() => handleEdit(item)} className="w-full justify-start">
-                                        <Pencil className="mr-2" /> Bearbeiten
-                                    </Button>
-                                    
-                                    {isHiddenList && (
-                                        <Button size="sm" variant="destructive" onClick={() => openDeleteConfirmation(item.id, item.name)} className="w-full justify-start mt-2">
-                                            <Trash2 className="mr-2" /> Löschen
-                                        </Button>
-                                    )}
-                                </div>
+        if (isStaffManager) {
+            items.forEach(item => {
+                if ((item as any).fullWidth) {
+                    fullWidthItems.push(item);
+                } else {
+                    gridItems.push(item);
+                }
+            });
+        } else {
+            gridItems = items;
+        }
+
+        const renderItem = (item: T, index: number, array: T[]) => (
+             <div key={item.id} className="relative w-full">
+                <div className="absolute top-1/2 -left-[180px] z-20 w-40 -translate-y-1/2 transform">
+                    <div className="flex flex-col items-start gap-2 rounded-md border bg-background/90 p-3 shadow-lg backdrop-blur-sm">
+                        <div className="w-full">
+                            <span className="text-sm font-medium text-foreground">Verschieben</span>
+                            <div className="flex items-center gap-1">
+                                <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'left')} disabled={index === 0} className="h-8 w-8">
+                                    <ArrowLeft />
+                                </Button>
+                                <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'right')} disabled={index === array.length - 1} className="h-8 w-8">
+                                    <ArrowRight />
+                                </Button>
                             </div>
-                            <DisplayCardComponent {...item} />
                         </div>
-                    );
-                })}
+
+                        {isStaffManager && (
+                            <Button
+                                size="sm"
+                                variant={item.fullWidth ? 'default' : 'outline'}
+                                onClick={() => handleToggleFullWidth(item)}
+                                className="w-full justify-start mt-1"
+                            >
+                                <RectangleHorizontal className="mr-2"/>
+                                Ganze Zeile
+                            </Button>
+                        )}
+                        
+                        <Button size="sm" variant="ghost" onClick={() => handleEdit(item)} className="w-full justify-start mt-1">
+                            <Pencil className="mr-2" /> Bearbeiten
+                        </Button>
+                        
+                        <Button size="sm" variant="ghost" onClick={() => handleToggleHidden(item)} className="w-full justify-start">
+                            {item.hidden ? <Eye className="mr-2" /> : <EyeOff className="mr-2" />}
+                            {item.hidden ? 'Einblenden' : 'Ausblenden'}
+                        </Button>
+
+                        {isHiddenList && (
+                            <Button size="sm" variant="destructive" onClick={() => openDeleteConfirmation(item.id, item.name)} className="w-full justify-start mt-2">
+                                <Trash2 className="mr-2" /> Löschen
+                            </Button>
+                        )}
+                    </div>
+                </div>
+                <DisplayCardComponent {...item} />
             </div>
+        );
+
+        return (
+            <>
+                {fullWidthItems.length > 0 && (
+                    <div className={cn(
+                        "grid w-full grid-cols-1 justify-items-center gap-x-8 gap-y-16",
+                        fullWidthItems.length > 0 && "sm:grid-cols-2"
+                    )}>
+                        {fullWidthItems.map((item, index) => (
+                            <div key={item.id} className={cn(
+                                "mx-auto flex w-full justify-center",
+                                fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 ? "sm:col-span-2" : ""
+                            )}>
+                                {renderItem(item, items.findIndex(i => i.id === item.id), items)}
+                            </div>
+                        ))}
+                    </div>
+                )}
+                {gridItems.length > 0 && (
+                    <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2">
+                        {gridItems.map((item) => (
+                            <div key={item.id} className="mx-auto flex w-full justify-center">
+                               {renderItem(item, items.findIndex(i => i.id === item.id), items)}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </>
         );
     };
 
@@ -428,51 +467,10 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 </Alert>
                             )}
                            {!isLoadingData && !isEditing && (
-                                <div className={cn(
-                                    "grid grid-cols-1 gap-x-8 gap-y-16",
-                                    isStaffManager && "sm:grid-cols-2" 
-                                )}>
-                                    {visibleItems.map((item, index, array) => {
-                                        const colSpanClass = isStaffManager && item.fullWidth ? 'sm:col-span-2' : '';
-                                        return (
-                                            <div key={item.id} className={cn("relative mx-auto flex w-full justify-center", colSpanClass)}>
-                                                <div className="absolute top-1/2 -left-4 z-20 w-40 -translate-y-1/2 transform">
-                                                    <div className="flex flex-col items-start gap-2 rounded-md border bg-background/90 p-3 shadow-lg backdrop-blur-sm">
-                                                        <div className="w-full">
-                                                            <span className="text-sm font-medium text-foreground">Verschieben</span>
-                                                            <div className="flex items-center gap-1">
-                                                                <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'left')} disabled={index === 0} className="h-8 w-8">
-                                                                    <ArrowLeft />
-                                                                </Button>
-                                                                <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'right')} disabled={index === array.length - 1} className="h-8 w-8">
-                                                                    <ArrowRight />
-                                                                </Button>
-                                                            </div>
-                                                        </div>
-                                                        {isStaffManager && (
-                                                            <div className="flex w-full items-center justify-between pt-2">
-                                                                <label htmlFor={`fullWidth-visible-${item.id}`} className="text-sm font-medium">Ganze Zeile</label>
-                                                                <Switch
-                                                                    id={`fullWidth-visible-${item.id}`}
-                                                                    checked={!!item.fullWidth}
-                                                                    onCheckedChange={() => handleToggleFullWidth(item)}
-                                                                />
-                                                            </div>
-                                                        )}
-                                                        <Button size="sm" variant="ghost" onClick={() => handleEdit(item)} className="w-full justify-start mt-1">
-                                                            <Pencil className="mr-2" /> Bearbeiten
-                                                        </Button>
-                                                        <Button size="sm" variant="ghost" onClick={() => handleToggleHidden(item)} className="w-full justify-start">
-                                                            <EyeOff className="mr-2" /> Ausblenden
-                                                        </Button>
-                                                    </div>
-                                                </div>
-                                                <DisplayCardComponent {...item} />
-                                            </div>
-                                        );
-                                    })}
+                                <div className="space-y-16 mt-8">
+                                    {renderCardList(visibleItems, false)}
                                 </div>
-                            )}
+                           )}
 
 
                             {hiddenItems.length > 0 && !isEditing && (
@@ -480,52 +478,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                                     <div className="mt-16 space-y-4">
                                         <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
                                     </div>
-                                    <div className={cn(
-                                    "grid grid-cols-1 gap-x-8 gap-y-16",
-                                    isStaffManager && "sm:grid-cols-2" 
-                                )}>
-                                        {hiddenItems.map((item, index, array) => {
-                                            const colSpanClass = isStaffManager && item.fullWidth ? 'sm:col-span-2' : '';
-                                            return (
-                                                 <div key={item.id} className={cn("relative mx-auto flex w-full justify-center", colSpanClass)}>
-                                                    <div className="absolute top-1/2 -left-4 z-20 w-40 -translate-y-1/2 transform">
-                                                        <div className="flex flex-col items-start gap-2 rounded-md border bg-background/90 p-3 shadow-lg backdrop-blur-sm">
-                                                             <div className="w-full">
-                                                                <span className="text-sm font-medium text-foreground">Verschieben</span>
-                                                                <div className="flex items-center gap-1">
-                                                                    <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'left')} disabled={index === 0} className="h-8 w-8">
-                                                                        <ArrowLeft />
-                                                                    </Button>
-                                                                    <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'right')} disabled={index === array.length - 1} className="h-8 w-8">
-                                                                        <ArrowRight />
-                                                                    </Button>
-                                                                </div>
-                                                            </div>
-                                                            {isStaffManager && (
-                                                                <div className="flex w-full items-center justify-between pt-2">
-                                                                    <label htmlFor={`fullWidth-hidden-${item.id}`} className="text-sm font-medium">Ganze Zeile</label>
-                                                                    <Switch
-                                                                        id={`fullWidth-hidden-${item.id}`}
-                                                                        checked={!!item.fullWidth}
-                                                                        onCheckedChange={() => handleToggleFullWidth(item)}
-                                                                    />
-                                                                </div>
-                                                            )}
-                                                            <Button size="sm" variant="ghost" onClick={() => handleEdit(item)} className="w-full justify-start mt-1">
-                                                                <Pencil className="mr-2" /> Bearbeiten
-                                                            </Button>
-                                                             <Button size="sm" variant="ghost" onClick={() => handleToggleHidden(item)} className="w-full justify-start">
-                                                                <Eye className="mr-2" /> Einblenden
-                                                            </Button>
-                                                            <Button size="sm" variant="destructive" onClick={() => openDeleteConfirmation(item.id, item.name)} className="w-full justify-start mt-2">
-                                                                <Trash2 className="mr-2" /> Löschen
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                    <DisplayCardComponent {...item} />
-                                                </div>
-                                            );
-                                        })}
+                                    <div className="space-y-16 mt-8">
+                                        {renderCardList(hiddenItems, true)}
                                     </div>
                                 </>
                             )}
@@ -552,3 +506,4 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
