@@ -235,14 +235,6 @@ export function ReusableCardManager<T extends BaseCardData>({
                              <div className="mx-auto mb-2 w-4/5 space-y-2">
                                 <div className="text-center text-primary-foreground">
                                     <label htmlFor="logoScale" className="text-sm">Grösse: {editorCardState.logoScale || 100}%</label>
-                                    <Slider
-                                        id="logoScale"
-                                        value={[editorCardState.logoScale || 100]}
-                                        onValueChange={(value) => setEditorCardState(prev => ({...prev, logoScale: value[0]}))}
-                                        max={200}
-                                        step={1}
-                                        className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-popover [&>span:first-child>span]:bg-muted"
-                                    />
                                 </div>
                             </div>
                         </div>
@@ -250,14 +242,6 @@ export function ReusableCardManager<T extends BaseCardData>({
                     </div>
                      <div className="pointer-events-auto mt-4 flex w-full flex-col items-center justify-center">
                         <div className="w-full px-2">
-                            <Slider
-                                value={[editorCardState.logoX || 0]}
-                                onValueChange={(value) => setEditorCardState(prev => ({...prev, logoX: value[0]}))}
-                                max={100}
-                                min={-100}
-                                step={1}
-                                className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-popover [&>span-first-child>span]:bg-muted"
-                            />
                         </div>
                         <div className="mt-1 text-center text-xs text-white">
                             <div>Horizontale Position</div>
@@ -269,15 +253,6 @@ export function ReusableCardManager<T extends BaseCardData>({
                     <div className="h-32">
                         <div className="flex h-full flex-row items-center justify-center gap-2">
                             <div className="flex h-full justify-center">
-                                <Slider
-                                    orientation="vertical"
-                                    value={[-(editorCardState.logoY || 0)]}
-                                    onValueChange={(value) => setEditorCardState(prev => ({...prev, logoY: -value[0]}))}
-                                    max={100}
-                                    min={-100}
-                                    step={1}
-                                    className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-popover [&>span:first-child>span]:bg-muted"
-                                />
                             </div>
                              <div className="text-center text-xs text-white">
                                 <div>Vertikale</div>
@@ -296,7 +271,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         if (!items || items.length === 0) return null;
     
         const fullWidthItems: T[] = [];
-        const gridItems: T[] = [];
+        let gridItems: T[] = [];
     
         if (isStaffManager) {
             items.forEach(item => {
@@ -314,7 +289,7 @@ export function ReusableCardManager<T extends BaseCardData>({
             const colSpanClass = fullWidth && array.length % 2 !== 0 && index === array.length - 1 ? 'sm:col-span-2' : '';
     
             return (
-                <div key={item.id} className={cn("flex justify-center", colSpanClass)}>
+                 <div key={item.id} className={cn("flex justify-center", colSpanClass)}>
                     <div className="relative">
                         <div className="absolute top-1/2 -left-4 z-20 w-48 -translate-x-full -translate-y-1/2 transform">
                             <div className="flex flex-col items-start gap-2 rounded-md border bg-background/90 p-3 shadow-lg backdrop-blur-sm">
@@ -356,17 +331,24 @@ export function ReusableCardManager<T extends BaseCardData>({
             );
         };
     
+        const renderGrid = (cardItems: T[], useFullWidthLogic: boolean) => (
+            <div className={cn(
+                "grid grid-cols-1 gap-x-8 gap-y-16",
+                useFullWidthLogic ? "sm:grid-cols-2 justify-items-center" : "sm:grid-cols-2"
+            )}>
+                {cardItems.map((item, index) => renderItemWithControls(item, index, cardItems, useFullWidthLogic))}
+            </div>
+        );
+    
         return (
             <div className="space-y-16 mt-8">
-                {fullWidthItems.length > 0 && (
-                    <div className="grid w-full grid-cols-1 justify-items-center gap-x-8 gap-y-16 sm:grid-cols-2">
-                        {fullWidthItems.map((item, index) => renderItemWithControls(item, items.findIndex(i => i.id === item.id), items, true))}
-                    </div>
-                )}
-                {gridItems.length > 0 && (
-                    <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2">
-                        {gridItems.map((item) => renderItemWithControls(item, items.findIndex(i => i.id === item.id), items))}
-                    </div>
+                {isStaffManager ? (
+                    <>
+                        {fullWidthItems.length > 0 && renderGrid(fullWidthItems, true)}
+                        {gridItems.length > 0 && renderGrid(gridItems, false)}
+                    </>
+                ) : (
+                    renderGrid(items, false)
                 )}
             </div>
         );
@@ -485,5 +467,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
