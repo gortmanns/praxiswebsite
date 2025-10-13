@@ -300,43 +300,56 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     ) : null;
 
-    const renderCardGroups = (items: T[], title: string, isHiddenGroup: boolean) => {
-        if (items.length === 0) return null;
+    const renderCardGroups = () => {
+        const activeItems = validDbData.filter(i => !i.hidden);
+        const hiddenItems = validDbData.filter(i => i.hidden);
         
-        // Ensure refs are created for all items
-        items.forEach(item => {
-            if (!cardRefs.current[item.id]) {
-                cardRefs.current[item.id] = createRef<HTMLDivElement>();
-            }
-        });
+        const renderGroup = (items: T[], title: string, isHiddenGroup: boolean) => {
+            if (items.length === 0) return null;
+            
+            // Ensure refs are created for all items
+            items.forEach(item => {
+                if (!cardRefs.current[item.id]) {
+                    cardRefs.current[item.id] = createRef<HTMLDivElement>();
+                }
+            });
+
+            return (
+                <div key={title}>
+                    <div className="space-y-4 mt-12">
+                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
+                        {!isHiddenGroup && (
+                            <p className="text-sm text-muted-foreground">
+                                Die Aktions-Buttons werden links neben den Karten angezeigt.
+                            </p>
+                        )}
+                    </div>
+                    <div id="card-grid-container" className="relative mt-8 grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-8 gap-y-16">
+                        {items.map((item) => (
+                            <div
+                                key={item.id}
+                                ref={cardRefs.current[item.id]}
+                                className={cn(
+                                    "flex justify-center w-full",
+                                    (item as any).fullWidth && "sm:col-span-2"
+                                )}
+                            >
+                                <DisplayCardComponent {...item} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
 
         return (
-            <div>
-                <div className="space-y-4 mt-12">
-                    <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
-                    {!isHiddenGroup && (
-                        <p className="text-sm text-muted-foreground">
-                            Bewegen Sie den Mauszeiger über eine Karte, um die Bearbeitungsoptionen anzuzeigen.
-                        </p>
-                    )}
-                </div>
-                <div className="mt-8 grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-8 gap-y-16">
-                    {items.map((item) => (
-                        <div
-                            key={item.id}
-                            ref={cardRefs.current[item.id]}
-                            className={cn(
-                                "flex justify-center w-full",
-                                (item as any).fullWidth && "sm:col-span-2"
-                            )}
-                        >
-                            <DisplayCardComponent {...item} />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
+            <>
+                {renderGroup(activeItems, "Aktive Karten", false)}
+                {renderGroup(hiddenItems, "Ausgeblendete Karten", true)}
+            </>
+        )
     };
+
 
     return (
         <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:px-6 sm:py-8">
@@ -387,7 +400,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                         />
                     )}
 
-                    <div id="card-grid-container" className="relative">
+                    <div className="relative">
                         {isLoadingData && (
                             <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
                                 {Array.from({ length: 4 }).map((_, index) => (
@@ -408,64 +421,65 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </Alert>
                         )}
                         {!isLoadingData && !isEditing && (
-                            <>
-                                {renderCardGroups(validDbData.filter(i => !i.hidden), "Aktive Karten", false)}
-                                {renderCardGroups(validDbData.filter(i => i.hidden), "Ausgeblendete Karten", true)}
-                            </>
+                           <>
+                             {renderCardGroups()}
+                           
+                              {validDbData.map((item) => {
+                                  const pos = buttonPositions[item.id];
+                                  if (!pos) return null;
+                                  
+                                  const isHiddenList = item.hidden;
+                                  const containerWidth = 110;
+                                  const containerOffset = 15;
+
+                                  return (
+                                      <div
+                                          key={`buttons-${item.id}`}
+                                          className="absolute z-20 flex flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm"
+                                          style={{
+                                              top: pos.top,
+                                              left: pos.left - containerWidth - containerOffset,
+                                              width: `${containerWidth}px`,
+                                          }}
+                                      >
+                                          <p className="text-xs font-bold text-center text-foreground">Verschieben</p>
+                                          <div className="grid grid-cols-2 gap-1 w-full">
+                                              <Button size="icon" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'left')}><ArrowLeft /></Button>
+                                              <Button size="icon" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'right')}><ArrowRight /></Button>
+                                          </div>
+                                          <div className="w-full border-t my-1.5" />
+              
+                                          {isStaffManager && (
+                                              <Button
+                                                  variant={(item as any).fullWidth ? "default" : "outline"}
+                                                  size="sm"
+                                                  className="w-full"
+                                                  onClick={() => handleToggleFullWidth(item)}
+                                              >
+                                                  <RectangleHorizontal className="mr-2" />
+                                                  Zeile
+                                              </Button>
+                                          )}
+              
+                                          <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}>
+                                              <Pencil className="mr-2" /> Bearbeiten
+                                          </Button>
+              
+                                          <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
+                                              {isHiddenList ? <Eye className="mr-2" /> : <EyeOff className="mr-2" />}
+                                              {isHiddenList ? 'Sichtbar' : 'Ausblenden'}
+                                          </Button>
+              
+                                          {isHiddenList && (
+                                              <Button variant="destructive" size="sm" className="w-full mt-1.5" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                                                  <Trash2 className="mr-2" /> Löschen
+                                              </Button>
+                                          )}
+                                      </div>
+                                  );
+                              })}
+                          </>
                         )}
-
-                        {!isEditing && validDbData.map((item) => {
-                            const pos = buttonPositions[item.id];
-                            if (!pos) return null;
-
-                            const isHiddenList = validDbData.find(i => i.id === item.id)?.hidden;
-
-                            return (
-                                <div
-                                    key={`buttons-${item.id}`}
-                                    className="absolute z-20 flex flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm"
-                                    style={{
-                                        top: pos.top,
-                                        left: pos.left - 100, // Position 100px left of the card
-                                        width: '90px'
-                                    }}
-                                >
-                                    <p className="text-xs font-bold text-center text-foreground">Verschieben</p>
-                                    <div className="flex gap-1.5">
-                                        <Button size="icon" className="h-7 w-7" onClick={() => handleMove(item.id, 'left')}><ArrowLeft /></Button>
-                                        <Button size="icon" className="h-7 w-7" onClick={() => handleMove(item.id, 'right')}><ArrowRight /></Button>
-                                    </div>
-                                    <div className="w-full border-t my-1.5" />
-        
-                                    {isStaffManager && (
-                                        <Button
-                                            variant={(item as any).fullWidth ? "default" : "outline"}
-                                            size="sm"
-                                            className="w-full"
-                                            onClick={() => handleToggleFullWidth(item)}
-                                        >
-                                            <RectangleHorizontal className="mr-2" />
-                                            Zeile
-                                        </Button>
-                                    )}
-        
-                                    <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}>
-                                        <Pencil className="mr-2" /> Bearbeiten
-                                    </Button>
-        
-                                    <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
-                                        {isHiddenList ? <Eye className="mr-2" /> : <EyeOff className="mr-2" />}
-                                        {isHiddenList ? 'Sichtbar' : 'Ausblenden'}
-                                    </Button>
-        
-                                    {isHiddenList && (
-                                        <Button variant="destructive" size="sm" className="w-full mt-1.5" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                                            <Trash2 className="mr-2" /> Löschen
-                                        </Button>
-                                    )}
-                                </div>
-                            );
-                        })}
                     </div>
                 </CardContent>
             </Card>
