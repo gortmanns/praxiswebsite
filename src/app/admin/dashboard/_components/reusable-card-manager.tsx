@@ -81,6 +81,7 @@ export function ReusableCardManager<T extends BaseCardData>({
 
     const isEditing = editingCardId !== null || isCreatingNew;
     const isPartnerManager = collectionName.toLowerCase().includes('partner');
+    const isStaffManager = collectionName === 'staff';
 
     const handleEdit = (card: T) => {
         setEditingCardId(card.id);
@@ -295,32 +296,22 @@ export function ReusableCardManager<T extends BaseCardData>({
     const renderCardList = (items: T[]) => {
         if (items.length === 0) return null;
     
-        const isStaffManager = collectionName === 'staff';
-        const fullWidthItems = isStaffManager ? items.filter(i => i.fullWidth) : [];
-        const gridItems = isStaffManager ? items.filter(i => !i.fullWidth) : items;
-    
-        const renderItem = (item: T) => (
-            <div key={item.id} className="mx-auto flex w-full justify-center"><DisplayCardComponent {...item} /></div>
-        );
+        const allItems = isStaffManager ? items : items;
     
         return (
-            <div className="space-y-12 mt-8">
-                {fullWidthItems.length > 0 && (
-                     <div className={cn("grid w-full grid-cols-1 justify-items-center gap-x-8 gap-y-16", "sm:grid-cols-2")}>
-                        {fullWidthItems.map((item, index) => {
-                            const isLastOdd = fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1;
-                            const colSpanClass = isLastOdd ? "sm:col-span-2" : "";
-                            return <div key={item.id} className={cn("flex w-full justify-center", colSpanClass)}>{renderItem(item)}</div>
-                        })}
-                    </div>
-                )}
-                {gridItems.length > 0 && (
-                    <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2">
-                        {gridItems.map((item) => (
-                           <div key={item.id} className="flex w-full justify-center">{renderItem(item)}</div>
-                        ))}
-                    </div>
-                )}
+            <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 mt-8">
+                {allItems.map((item, index) => {
+                    const isLastOdd = isStaffManager && item.fullWidth && allItems.filter(i => i.fullWidth).length % 2 !== 0 && index === allItems.filter(i => i.fullWidth).length - 1;
+                    
+                    return (
+                        <div key={item.id} className={cn(
+                            "mx-auto flex w-full justify-center",
+                            isStaffManager && item.fullWidth && "sm:col-span-2",
+                        )}>
+                            <DisplayCardComponent {...item} />
+                        </div>
+                    );
+                })}
             </div>
         );
     };
