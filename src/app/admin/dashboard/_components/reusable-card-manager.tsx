@@ -13,7 +13,6 @@ import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, ArrowLef
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
-import { Slider } from '@/components/ui/slider';
 
 
 export interface BaseCardData {
@@ -295,10 +294,10 @@ export function ReusableCardManager<T extends BaseCardData>({
     
     const renderCardList = (items: T[], isHiddenList: boolean) => {
         if (!items || items.length === 0) return null;
-
-        let fullWidthItems: T[] = [];
-        let gridItems: T[] = [];
-
+    
+        const fullWidthItems: T[] = [];
+        const gridItems: T[] = [];
+    
         if (isStaffManager) {
             items.forEach(item => {
                 if (item.fullWidth) {
@@ -310,75 +309,66 @@ export function ReusableCardManager<T extends BaseCardData>({
         } else {
             gridItems = items;
         }
-
-        const renderItem = (item: T, index: number, array: T[]) => (
-            <div className="flex w-full justify-center">
-                <div className="relative">
-                    <div className="absolute top-1/2 left-0 z-20 w-48 -translate-y-1/2 -translate-x-full transform pr-4">
-                        <div className="flex flex-col items-start gap-2 rounded-md border bg-background/90 p-3 shadow-lg backdrop-blur-sm">
-                            <div className="w-full">
-                                <span className="text-sm font-medium text-foreground">Verschieben</span>
-                                <div className="flex items-center gap-1">
-                                    <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'left')} disabled={index === 0} className="h-8 w-8">
-                                        <ArrowLeft />
-                                    </Button>
-                                    <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'right')} disabled={index === array.length - 1} className="h-8 w-8">
-                                        <ArrowRight />
-                                    </Button>
+    
+        const renderItemWithControls = (item: T, index: number, array: T[], fullWidth?: boolean) => {
+            const colSpanClass = fullWidth && array.length % 2 !== 0 && index === array.length - 1 ? 'sm:col-span-2' : '';
+    
+            return (
+                <div key={item.id} className={cn("flex justify-center", colSpanClass)}>
+                    <div className="relative">
+                        <div className="absolute top-1/2 -left-4 z-20 w-48 -translate-x-full -translate-y-1/2 transform">
+                            <div className="flex flex-col items-start gap-2 rounded-md border bg-background/90 p-3 shadow-lg backdrop-blur-sm">
+                                <div>
+                                    <span className="text-sm font-medium text-foreground">Verschieben</span>
+                                    <div className="flex items-center gap-1">
+                                        <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'left')} disabled={index === 0} className="h-8 w-8"><ArrowLeft /></Button>
+                                        <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'right')} disabled={index === array.length - 1} className="h-8 w-8"><ArrowRight /></Button>
+                                    </div>
                                 </div>
+    
+                                {isStaffManager && (
+                                    <Button
+                                        size="sm"
+                                        variant={item.fullWidth ? 'default' : 'outline'}
+                                        onClick={() => handleToggleFullWidth(item)}
+                                        className="w-full justify-start mt-1"
+                                    >
+                                        <RectangleHorizontal className="mr-2"/> Ganze Zeile
+                                    </Button>
+                                )}
+                                
+                                <Button size="sm" variant="ghost" onClick={() => handleEdit(item)} className="w-full justify-start mt-1"><Pencil className="mr-2" /> Bearbeiten</Button>
+                                <Button size="sm" variant="ghost" onClick={() => handleToggleHidden(item)} className="w-full justify-start">
+                                    {item.hidden ? <Eye className="mr-2" /> : <EyeOff className="mr-2" />}
+                                    {item.hidden ? 'Einblenden' : 'Ausblenden'}
+                                </Button>
+    
+                                {isHiddenList && (
+                                    <Button size="sm" variant="destructive" onClick={() => openDeleteConfirmation(item.id, item.name)} className="w-full justify-start mt-2">
+                                        <Trash2 className="mr-2" /> Löschen
+                                    </Button>
+                                )}
                             </div>
-    
-                            {isStaffManager && (
-                                <Button
-                                    size="sm"
-                                    variant={item.fullWidth ? 'default' : 'outline'}
-                                    onClick={() => handleToggleFullWidth(item)}
-                                    className="w-full justify-start mt-1"
-                                >
-                                    <RectangleHorizontal className="mr-2"/>
-                                    Ganze Zeile
-                                </Button>
-                            )}
-                            
-                            <Button size="sm" variant="ghost" onClick={() => handleEdit(item)} className="w-full justify-start mt-1">
-                                <Pencil className="mr-2" /> Bearbeiten
-                            </Button>
-                            
-                            <Button size="sm" variant="ghost" onClick={() => handleToggleHidden(item)} className="w-full justify-start">
-                                {item.hidden ? <Eye className="mr-2" /> : <EyeOff className="mr-2" />}
-                                {item.hidden ? 'Einblenden' : 'Ausblenden'}
-                            </Button>
-    
-                            {isHiddenList && (
-                                <Button size="sm" variant="destructive" onClick={() => openDeleteConfirmation(item.id, item.name)} className="w-full justify-start mt-2">
-                                    <Trash2 className="mr-2" /> Löschen
-                                </Button>
-                            )}
                         </div>
+                        <DisplayCardComponent {...item} />
                     </div>
-                    <DisplayCardComponent {...item} />
                 </div>
-            </div>
-        );
-
+            );
+        };
+    
         return (
-            <>
+            <div className="space-y-16 mt-8">
                 {fullWidthItems.length > 0 && (
-                     <div className={cn("grid w-full grid-cols-1 justify-items-center gap-x-8 gap-y-16", fullWidthItems.length > 0 && "sm:grid-cols-2")}>
-                        {fullWidthItems.map((item, index) => {
-                            const colSpanClass = fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 ? "sm:col-span-2" : "";
-                            return <div key={item.id} className={cn("w-full", colSpanClass)}>{renderItem(item, items.findIndex(i => i.id === item.id), items)}</div>
-                        })}
+                    <div className="grid w-full grid-cols-1 justify-items-center gap-x-8 gap-y-16 sm:grid-cols-2">
+                        {fullWidthItems.map((item, index) => renderItemWithControls(item, items.findIndex(i => i.id === item.id), items, true))}
                     </div>
                 )}
                 {gridItems.length > 0 && (
                     <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2">
-                        {gridItems.map((item) => (
-                           <div key={item.id} className="w-full">{renderItem(item, items.findIndex(i => i.id === item.id), items)}</div>
-                        ))}
+                        {gridItems.map((item) => renderItemWithControls(item, items.findIndex(i => i.id === item.id), items))}
                     </div>
                 )}
-            </>
+            </div>
         );
     };
 
@@ -458,9 +448,9 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 </Alert>
                             )}
                            {!isLoadingData && !isEditing && (
-                                <div className="space-y-16 mt-8">
+                                <>
                                     {renderCardList(visibleItems, false)}
-                                </div>
+                                </>
                            )}
 
 
@@ -469,9 +459,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                     <div className="mt-16 space-y-4">
                                         <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
                                     </div>
-                                    <div className="space-y-16 mt-8">
-                                        {renderCardList(hiddenItems, true)}
-                                    </div>
+                                    {renderCardList(hiddenItems, true)}
                                 </>
                             )}
                         </>
