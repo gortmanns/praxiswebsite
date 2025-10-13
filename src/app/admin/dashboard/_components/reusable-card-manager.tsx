@@ -312,51 +312,52 @@ export function ReusableCardManager<T extends BaseCardData>({
         }
 
         const renderItem = (item: T, index: number, array: T[]) => (
-            <div className="relative mx-auto flex w-full justify-center">
-                <div className="absolute top-1/2 -left-4 z-20 w-48 -translate-y-1/2 transform -translate-x-full">
-                    <div className="flex flex-col items-start gap-2 rounded-md border bg-background/90 p-3 shadow-lg backdrop-blur-sm">
-                        
-                        <div className="w-full">
-                            <span className="text-sm font-medium text-foreground">Verschieben</span>
-                            <div className="flex items-center gap-1">
-                                <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'left')} disabled={index === 0} className="h-8 w-8">
-                                    <ArrowLeft />
-                                </Button>
-                                <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'right')} disabled={index === array.length - 1} className="h-8 w-8">
-                                    <ArrowRight />
-                                </Button>
+            <div className="flex w-full justify-center">
+                <div className="relative">
+                    <div className="absolute top-1/2 left-0 z-20 w-48 -translate-y-1/2 -translate-x-full transform pr-4">
+                        <div className="flex flex-col items-start gap-2 rounded-md border bg-background/90 p-3 shadow-lg backdrop-blur-sm">
+                            <div className="w-full">
+                                <span className="text-sm font-medium text-foreground">Verschieben</span>
+                                <div className="flex items-center gap-1">
+                                    <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'left')} disabled={index === 0} className="h-8 w-8">
+                                        <ArrowLeft />
+                                    </Button>
+                                    <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'right')} disabled={index === array.length - 1} className="h-8 w-8">
+                                        <ArrowRight />
+                                    </Button>
+                                </div>
                             </div>
+    
+                            {isStaffManager && (
+                                <Button
+                                    size="sm"
+                                    variant={item.fullWidth ? 'default' : 'outline'}
+                                    onClick={() => handleToggleFullWidth(item)}
+                                    className="w-full justify-start mt-1"
+                                >
+                                    <RectangleHorizontal className="mr-2"/>
+                                    Ganze Zeile
+                                </Button>
+                            )}
+                            
+                            <Button size="sm" variant="ghost" onClick={() => handleEdit(item)} className="w-full justify-start mt-1">
+                                <Pencil className="mr-2" /> Bearbeiten
+                            </Button>
+                            
+                            <Button size="sm" variant="ghost" onClick={() => handleToggleHidden(item)} className="w-full justify-start">
+                                {item.hidden ? <Eye className="mr-2" /> : <EyeOff className="mr-2" />}
+                                {item.hidden ? 'Einblenden' : 'Ausblenden'}
+                            </Button>
+    
+                            {isHiddenList && (
+                                <Button size="sm" variant="destructive" onClick={() => openDeleteConfirmation(item.id, item.name)} className="w-full justify-start mt-2">
+                                    <Trash2 className="mr-2" /> Löschen
+                                </Button>
+                            )}
                         </div>
-
-                        {isStaffManager && (
-                            <Button
-                                size="sm"
-                                variant={item.fullWidth ? 'default' : 'outline'}
-                                onClick={() => handleToggleFullWidth(item)}
-                                className="w-full justify-start mt-1"
-                            >
-                                <RectangleHorizontal className="mr-2"/>
-                                Ganze Zeile
-                            </Button>
-                        )}
-                        
-                        <Button size="sm" variant="ghost" onClick={() => handleEdit(item)} className="w-full justify-start mt-1">
-                            <Pencil className="mr-2" /> Bearbeiten
-                        </Button>
-                        
-                        <Button size="sm" variant="ghost" onClick={() => handleToggleHidden(item)} className="w-full justify-start">
-                            {item.hidden ? <Eye className="mr-2" /> : <EyeOff className="mr-2" />}
-                            {item.hidden ? 'Einblenden' : 'Ausblenden'}
-                        </Button>
-
-                        {isHiddenList && (
-                            <Button size="sm" variant="destructive" onClick={() => openDeleteConfirmation(item.id, item.name)} className="w-full justify-start mt-2">
-                                <Trash2 className="mr-2" /> Löschen
-                            </Button>
-                        )}
                     </div>
+                    <DisplayCardComponent {...item} />
                 </div>
-                <DisplayCardComponent {...item} />
             </div>
         );
 
@@ -496,3 +497,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
