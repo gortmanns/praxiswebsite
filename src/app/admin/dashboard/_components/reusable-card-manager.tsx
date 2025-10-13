@@ -241,7 +241,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                     const rect = ref.current.getBoundingClientRect();
                     newPositions[item.id] = {
                         top: rect.top - gridRect.top,
-                        left: rect.left - gridRect.left,
+                        left: rect.left - gridRect.top,
                     };
                 }
             });
@@ -307,7 +307,6 @@ export function ReusableCardManager<T extends BaseCardData>({
         const renderGroup = (items: T[], title: string, isHiddenGroup: boolean) => {
             if (items.length === 0) return null;
             
-            // Ensure refs are created for all items
             items.forEach(item => {
                 if (!cardRefs.current[item.id]) {
                     cardRefs.current[item.id] = createRef<HTMLDivElement>();
@@ -324,7 +323,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </p>
                         )}
                     </div>
-                    <div id="card-grid-container" className="relative mt-8 grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-8 gap-y-16">
+                    <div id={isHiddenGroup ? `hidden-card-grid-container` : 'card-grid-container'} className="relative mt-8 grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-8 gap-y-16">
                         {items.map((item) => (
                             <div
                                 key={item.id}
@@ -501,4 +500,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
