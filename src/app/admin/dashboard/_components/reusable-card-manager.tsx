@@ -241,7 +241,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                     const rect = ref.current.getBoundingClientRect();
                     newPositions[item.id] = {
                         top: rect.top - gridRect.top,
-                        left: rect.left - gridRect.top,
+                        left: rect.left - gridRect.left,
                     };
                 }
             });
@@ -249,13 +249,27 @@ export function ReusableCardManager<T extends BaseCardData>({
         };
         
         updatePositions();
+        
+        // Use a more robust way to track layout changes
+        const resizeObserver = new ResizeObserver(updatePositions);
+        const mutationObserver = new MutationObserver(updatePositions);
+
+        const gridElement = document.getElementById('card-grid-container');
+        if (gridElement) {
+            resizeObserver.observe(gridElement);
+            mutationObserver.observe(gridElement, { childList: true, subtree: true, attributes: true });
+        }
+        
         window.addEventListener('resize', updatePositions);
-        const observer = new MutationObserver(updatePositions);
-        observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+        window.addEventListener('scroll', updatePositions, true); // Listen on capture phase for scroll
 
         return () => {
+            if (gridElement) {
+                resizeObserver.unobserve(gridElement);
+                mutationObserver.disconnect();
+            }
             window.removeEventListener('resize', updatePositions);
-            observer.disconnect();
+            window.removeEventListener('scroll', updatePositions, true);
         };
     }, [validDbData, isEditing, isLoadingData]);
 
