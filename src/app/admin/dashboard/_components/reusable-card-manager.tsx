@@ -300,25 +300,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         const gridItems = isStaffManager ? items.filter(i => !i.fullWidth) : items;
     
         const renderItem = (item: T) => (
-            <div key={item.id} className="relative group">
-                <div className="absolute top-2 -right-8 z-20 flex flex-col gap-1 rounded-md border bg-card p-1 opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-                    <Button size="sm" variant="ghost" onClick={() => handleEdit(item)}>
-                        <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={() => handleToggleHidden(item)}>
-                        {item.hidden ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-                    </Button>
-                    {isStaffManager && (
-                        <Button size="sm" variant="ghost" onClick={() => handleToggleFullWidth(item)}>
-                            <RectangleHorizontal className="h-4 w-4" />
-                        </Button>
-                    )}
-                    <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                        <Trash2 className="h-4 w-4" />
-                    </Button>
-                </div>
-                <div className="mx-auto flex w-full justify-center"><DisplayCardComponent {...item} /></div>
-            </div>
+            <div key={item.id} className="mx-auto flex w-full justify-center"><DisplayCardComponent {...item} /></div>
         );
     
         return (
