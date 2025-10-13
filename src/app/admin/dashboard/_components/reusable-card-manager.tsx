@@ -267,10 +267,10 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     ) : null;
     
-    const renderCardList = (items: T[], isHiddenList: boolean) => {
+     const renderCardList = (items: T[], isHiddenList: boolean) => {
         if (!items || items.length === 0) return null;
     
-        const fullWidthItems: T[] = [];
+        let fullWidthItems: T[] = [];
         let gridItems: T[] = [];
     
         if (isStaffManager) {
@@ -284,72 +284,66 @@ export function ReusableCardManager<T extends BaseCardData>({
         } else {
             gridItems = items;
         }
-    
-        const renderItemWithControls = (item: T, index: number, array: T[], fullWidth?: boolean) => {
-            const colSpanClass = fullWidth && array.length % 2 !== 0 && index === array.length - 1 ? 'sm:col-span-2' : '';
-    
+
+        const renderItemWithControls = (item: T, index: number, array: T[], useFullWidthClass: boolean) => {
+            const colSpanClass = useFullWidthClass && array.length % 2 !== 0 && index === array.length - 1 ? 'sm:col-span-2' : '';
+        
             return (
-                 <div key={item.id} className={cn("flex justify-center", colSpanClass)}>
-                    <div className="relative">
-                        <div className="absolute top-1/2 -left-4 z-20 w-48 -translate-x-full -translate-y-1/2 transform">
-                            <div className="flex flex-col items-start gap-2 rounded-md border bg-background/90 p-3 shadow-lg backdrop-blur-sm">
-                                <div>
-                                    <span className="text-sm font-medium text-foreground">Verschieben</span>
-                                    <div className="flex items-center gap-1">
-                                        <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'left')} disabled={index === 0} className="h-8 w-8"><ArrowLeft /></Button>
-                                        <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'right')} disabled={index === array.length - 1} className="h-8 w-8"><ArrowRight /></Button>
-                                    </div>
+                <div key={item.id} className={cn("flex justify-center items-center relative", colSpanClass)}>
+                    <div className="absolute top-1/2 -left-4 z-20 w-48 -translate-x-full -translate-y-1/2 transform">
+                        <div className="flex flex-col items-start gap-2 rounded-md border bg-background/90 p-3 shadow-lg backdrop-blur-sm">
+                            <div>
+                                <span className="text-sm font-medium text-foreground">Verschieben</span>
+                                <div className="flex items-center gap-1">
+                                    <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'left')} disabled={index === 0} className="h-8 w-8"><ArrowLeft /></Button>
+                                    <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'right')} disabled={index === array.length - 1} className="h-8 w-8"><ArrowRight /></Button>
                                 </div>
-    
-                                {isStaffManager && (
-                                    <Button
-                                        size="sm"
-                                        variant={item.fullWidth ? 'default' : 'outline'}
-                                        onClick={() => handleToggleFullWidth(item)}
-                                        className="w-full justify-start mt-1"
-                                    >
-                                        <RectangleHorizontal className="mr-2"/> Ganze Zeile
-                                    </Button>
-                                )}
-                                
-                                <Button size="sm" variant="ghost" onClick={() => handleEdit(item)} className="w-full justify-start mt-1"><Pencil className="mr-2" /> Bearbeiten</Button>
-                                <Button size="sm" variant="ghost" onClick={() => handleToggleHidden(item)} className="w-full justify-start">
-                                    {item.hidden ? <Eye className="mr-2" /> : <EyeOff className="mr-2" />}
-                                    {item.hidden ? 'Einblenden' : 'Ausblenden'}
-                                </Button>
-    
-                                {isHiddenList && (
-                                    <Button size="sm" variant="destructive" onClick={() => openDeleteConfirmation(item.id, item.name)} className="w-full justify-start mt-2">
-                                        <Trash2 className="mr-2" /> Löschen
-                                    </Button>
-                                )}
                             </div>
+        
+                            {isStaffManager && (
+                                 <Button
+                                    variant={item.fullWidth ? 'default' : 'outline'}
+                                    onClick={() => handleToggleFullWidth(item)}
+                                    className="w-full justify-start mt-1"
+                                    size="sm"
+                                >
+                                    <RectangleHorizontal className="mr-2"/> Ganze Zeile
+                                </Button>
+                            )}
+                            
+                            <Button size="sm" variant="ghost" onClick={() => handleEdit(item)} className="w-full justify-start mt-1"><Pencil className="mr-2" /> Bearbeiten</Button>
+                            <Button size="sm" variant="ghost" onClick={() => handleToggleHidden(item)} className="w-full justify-start">
+                                {item.hidden ? <Eye className="mr-2" /> : <EyeOff className="mr-2" />}
+                                {item.hidden ? 'Einblenden' : 'Ausblenden'}
+                            </Button>
+        
+                            {isHiddenList && (
+                                <Button size="sm" variant="destructive" onClick={() => openDeleteConfirmation(item.id, item.name)} className="w-full justify-start mt-2">
+                                    <Trash2 className="mr-2" /> Löschen
+                                </Button>
+                            )}
                         </div>
+                    </div>
+                     <div className="relative">
                         <DisplayCardComponent {...item} />
                     </div>
                 </div>
             );
         };
     
-        const renderGrid = (cardItems: T[], useFullWidthLogic: boolean) => (
-            <div className={cn(
+        const renderGrid = (cardItems: T[], useFullWidthClass: boolean) => (
+             <div className={cn(
                 "grid grid-cols-1 gap-x-8 gap-y-16",
-                useFullWidthLogic ? "sm:grid-cols-2 justify-items-center" : "sm:grid-cols-2"
+                "sm:grid-cols-2" // Always 2 columns for sm and up
             )}>
-                {cardItems.map((item, index) => renderItemWithControls(item, index, cardItems, useFullWidthLogic))}
+                {cardItems.map((item, index) => renderItemWithControls(item, index, cardItems, useFullWidthClass))}
             </div>
         );
     
         return (
             <div className="space-y-16 mt-8">
-                {isStaffManager ? (
-                    <>
-                        {fullWidthItems.length > 0 && renderGrid(fullWidthItems, true)}
-                        {gridItems.length > 0 && renderGrid(gridItems, false)}
-                    </>
-                ) : (
-                    renderGrid(items, false)
-                )}
+                {fullWidthItems.length > 0 && renderGrid(fullWidthItems, true)}
+                {gridItems.length > 0 && renderGrid(gridItems, false)}
             </div>
         );
     };
