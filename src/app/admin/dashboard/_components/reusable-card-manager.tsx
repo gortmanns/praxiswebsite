@@ -9,11 +9,13 @@ import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionRefe
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ChevronLeft, ChevronRight, Pencil, EyeOff, Eye, Info, Trash2, Plus, Save, XCircle, AlertCircle, RectangleHorizontal, ArrowUp, ArrowDown } from 'lucide-react';
+import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, RectangleHorizontal, ArrowLeft, ArrowRight } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 
 export interface BaseCardData {
@@ -101,37 +103,42 @@ export function ReusableCardManager<T extends BaseCardData>({
         setIsCreatingNew(false);
     };
     
-
-    const handleMove = async (cardId: string, direction: 'up' | 'down') => {
+    const handleMove = async (cardId: string, direction: 'left' | 'right') => {
         if (!dbData || !firestore) return;
-
-        const visibleItems = dbData.filter(d => !d.hidden && d.name);
-        const currentIndex = visibleItems.findIndex(item => item.id === cardId);
-        
-        let item1: T, item2: T;
-        
-        if (direction === 'up' && currentIndex > 0) {
-            item1 = visibleItems[currentIndex];
-            item2 = visibleItems[currentIndex - 1];
-        } else if (direction === 'down' && currentIndex < visibleItems.length - 1) {
-            item1 = visibleItems[currentIndex];
-            item2 = visibleItems[currentIndex + 1];
-        } else {
-            return;
+    
+        const items = dbData.filter(d => d.name).sort((a, b) => a.order - b.order);
+        const currentIndex = items.findIndex(item => item.id === cardId);
+    
+        if (currentIndex === -1) return;
+    
+        let otherIndex = -1;
+        if (direction === 'left' && currentIndex > 0) {
+            otherIndex = currentIndex - 1;
+        } else if (direction === 'right' && currentIndex < items.length - 1) {
+            otherIndex = currentIndex + 1;
         }
-
+    
+        if (otherIndex === -1) return;
+    
+        const item1 = items[currentIndex];
+        const item2 = items[otherIndex];
+    
         try {
             const batch = writeBatch(firestore);
             const item1Ref = doc(firestore, collectionName, item1.id);
             const item2Ref = doc(firestore, collectionName, item2.id);
+    
+            // Swap order values
             batch.update(item1Ref, { order: item2.order });
             batch.update(item2Ref, { order: item1.order });
+    
             await batch.commit();
         } catch (error: any) {
             console.error('Error moving item:', error);
             setNotification({ variant: 'destructive', title: 'Fehler', description: `Position konnte nicht geändert werden: ${error.message}` });
         }
     };
+
 
     const handleToggleHidden = async (card: T) => {
         if (!firestore) return;
@@ -145,7 +152,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     };
 
     const handleToggleFullWidth = async (card: T) => {
-        if (!firestore) return;
+        if (!firestore || !isStaffManager) return;
         const docRef = doc(firestore, collectionName, card.id);
         try {
             await setDoc(docRef, { fullWidth: !card.fullWidth }, { merge: true });
@@ -218,7 +225,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         }
     };
     
-    const validDbData = useMemo(() => dbData?.filter(d => d.name) || [], [dbData]);
+    const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
     const visibleItems = useMemo(() => validDbData.filter(d => !d.hidden), [validDbData]);
     const hiddenItems = useMemo(() => validDbData.filter(d => d.hidden), [validDbData]);
 
@@ -294,8 +301,48 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     ) : null;
     
-    const renderCardList = (items: T[], isHiddenSection = false) => {
+    const renderCardList = (items: T[]) => {
         if (items.length === 0) return null;
+    
+        const renderItem = (item: T, index: number, array: T[]) => {
+            const isFirst = index === 0;
+            const isLast = index === array.length - 1;
+            
+            return (
+                <div key={item.id} className="relative group">
+                    <div className="absolute top-1/2 -left-12 z-20 -translate-y-1/2 transform opacity-0 transition-opacity group-hover:opacity-100">
+                        <div className="flex flex-col gap-1 rounded-md border bg-card p-1 shadow-lg">
+                            <Button size="sm" variant="ghost" onClick={() => handleEdit(item)}>
+                                <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => handleToggleHidden(item)}>
+                                {item.hidden ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => handleMove(item.id, 'left')} disabled={isFirst}>
+                                <ArrowLeft className="h-4 w-4" />
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => handleMove(item.id, 'right')} disabled={isLast}>
+                                <ArrowRight className="h-4 w-4" />
+                            </Button>
+                            {isStaffManager && (
+                                <div className="p-2 flex flex-col items-center gap-1">
+                                    <Label htmlFor={`fullwidth-switch-${item.id}`} className="text-xs">Ganze Zeile</Label>
+                                    <Switch
+                                        id={`fullwidth-switch-${item.id}`}
+                                        checked={!!item.fullWidth}
+                                        onCheckedChange={() => handleToggleFullWidth(item)}
+                                    />
+                                </div>
+                            )}
+                             <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    </div>
+                     <div className="mx-auto flex w-full justify-center"><DisplayCardComponent {...item} /></div>
+                </div>
+            );
+        };
 
         const fullWidthItems = isStaffManager ? items.filter(i => i.fullWidth) : [];
         const gridItems = isStaffManager ? items.filter(i => !i.fullWidth) : items;
@@ -303,18 +350,18 @@ export function ReusableCardManager<T extends BaseCardData>({
         return (
             <div className="space-y-12 mt-8">
                 {fullWidthItems.length > 0 && (
-                     <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8", "sm:grid-cols-2")}>
-                        {fullWidthItems.map((item, index) => {
-                            const isLastOdd = fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1;
+                     <div className={cn("grid w-full grid-cols-1 justify-items-center gap-x-8 gap-y-16", "sm:grid-cols-2")}>
+                        {fullWidthItems.map((item, index, arr) => {
+                            const isLastOdd = arr.length % 2 !== 0 && index === arr.length - 1;
                             const colSpanClass = isLastOdd ? "sm:col-span-2" : "";
-                            return <div key={item.id} className={cn("mx-auto flex w-full justify-center", colSpanClass)}><DisplayCardComponent {...item} /></div>
+                            return <div key={item.id} className={cn("flex w-full justify-center", colSpanClass)}>{renderItem(item, index, arr)}</div>
                         })}
                     </div>
                 )}
                 {gridItems.length > 0 && (
-                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                        {gridItems.map((item) => (
-                           <div key={item.id} className="mx-auto flex w-full justify-center"><DisplayCardComponent {...item} /></div>
+                    <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2">
+                        {gridItems.map((item, index, arr) => (
+                           <div key={item.id} className="flex w-full justify-center">{renderItem(item, index, arr)}</div>
                         ))}
                     </div>
                 )}
@@ -323,7 +370,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     };
 
     return (
-        <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:p-6">
+        <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:px-6 sm:py-8">
             <Card className="w-full">
                 <CardHeader>
                     <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
@@ -376,7 +423,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             <div className="space-y-4 mt-12">
                                 <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Karten</h3>
                                 <p className="text-sm text-muted-foreground">
-                                    Klicken Sie auf &quot;Bearbeiten&quot;, um eine Karte in den Bearbeitungsmodus zu laden.
+                                    Bewegen Sie den Mauszeiger über eine Karte, um die Bearbeitungsoptionen anzuzeigen.
                                 </p>
                             </div>
                             
@@ -404,7 +451,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                     <div className="mt-16 space-y-4">
                                         <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
                                     </div>
-                                    {renderCardList(hiddenItems, true)}
+                                    {renderCardList(hiddenItems)}
                                 </>
                             )}
                         </>
@@ -430,3 +477,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
