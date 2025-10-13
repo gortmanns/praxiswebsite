@@ -14,7 +14,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { Slider } from '@/components/ui/slider';
-import { Switch } from '@/components/ui/switch';
 
 
 export interface BaseCardData {
@@ -23,7 +22,7 @@ export interface BaseCardData {
     name: string;
     hidden?: boolean;
     createdAt?: any;
-    [key: string]: any;
+    [key:string]: any;
 }
 
 interface ReusableCardManagerProps<T extends BaseCardData> {
@@ -296,14 +295,13 @@ export function ReusableCardManager<T extends BaseCardData>({
     
     const renderCardList = (items: T[], isHiddenList: boolean) => {
         if (!items || items.length === 0) return null;
-    
-        // Separate full-width items from grid items for staff manager
+
         let fullWidthItems: T[] = [];
         let gridItems: T[] = [];
-    
+
         if (isStaffManager) {
             items.forEach(item => {
-                if ((item as any).fullWidth) {
+                if (item.fullWidth) {
                     fullWidthItems.push(item);
                 } else {
                     gridItems.push(item);
@@ -314,9 +312,10 @@ export function ReusableCardManager<T extends BaseCardData>({
         }
 
         const renderItem = (item: T, index: number, array: T[]) => (
-             <div key={item.id} className="relative w-full">
-                <div className="absolute top-1/2 -left-[180px] z-20 w-40 -translate-y-1/2 transform">
+            <div className="relative mx-auto flex w-full justify-center">
+                <div className="absolute top-1/2 -left-4 z-20 w-48 -translate-y-1/2 transform -translate-x-full">
                     <div className="flex flex-col items-start gap-2 rounded-md border bg-background/90 p-3 shadow-lg backdrop-blur-sm">
+                        
                         <div className="w-full">
                             <span className="text-sm font-medium text-foreground">Verschieben</span>
                             <div className="flex items-center gap-1">
@@ -364,26 +363,17 @@ export function ReusableCardManager<T extends BaseCardData>({
         return (
             <>
                 {fullWidthItems.length > 0 && (
-                    <div className={cn(
-                        "grid w-full grid-cols-1 justify-items-center gap-x-8 gap-y-16",
-                        fullWidthItems.length > 0 && "sm:grid-cols-2"
-                    )}>
-                        {fullWidthItems.map((item, index) => (
-                            <div key={item.id} className={cn(
-                                "mx-auto flex w-full justify-center",
-                                fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 ? "sm:col-span-2" : ""
-                            )}>
-                                {renderItem(item, items.findIndex(i => i.id === item.id), items)}
-                            </div>
-                        ))}
+                     <div className={cn("grid w-full grid-cols-1 justify-items-center gap-x-8 gap-y-16", fullWidthItems.length > 0 && "sm:grid-cols-2")}>
+                        {fullWidthItems.map((item, index) => {
+                            const colSpanClass = fullWidthItems.length % 2 !== 0 && index === fullWidthItems.length - 1 ? "sm:col-span-2" : "";
+                            return <div key={item.id} className={cn("w-full", colSpanClass)}>{renderItem(item, items.findIndex(i => i.id === item.id), items)}</div>
+                        })}
                     </div>
                 )}
                 {gridItems.length > 0 && (
                     <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2">
                         {gridItems.map((item) => (
-                            <div key={item.id} className="mx-auto flex w-full justify-center">
-                               {renderItem(item, items.findIndex(i => i.id === item.id), items)}
-                            </div>
+                           <div key={item.id} className="w-full">{renderItem(item, items.findIndex(i => i.id === item.id), items)}</div>
                         ))}
                     </div>
                 )}
@@ -506,4 +496,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
