@@ -20,7 +20,6 @@ export interface BaseCardData {
     order: number;
     name: string;
     hidden?: boolean;
-    createdAt?: any;
     [key:string]: any;
 }
 
@@ -80,8 +79,7 @@ export function ReusableCardManager<T extends BaseCardData>({
 
     const cardRefs = useRef<Record<string, React.RefObject<HTMLDivElement>>>({});
     const [buttonPositions, setButtonPositions] = useState<Record<string, { top: number; left: number }>>({});
-    const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
-
+    
     const isEditing = editingCardId !== null || isCreatingNew;
     const isPartnerManager = collectionName.toLowerCase().includes('partner');
     const isStaffManager = collectionName === 'staff';
@@ -226,15 +224,13 @@ export function ReusableCardManager<T extends BaseCardData>({
     };
     
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
-    const visibleItems = useMemo(() => validDbData.filter(d => !d.hidden), [validDbData]);
-    const hiddenItems = useMemo(() => validDbData.filter(d => d.hidden), [validDbData]);
 
      useEffect(() => {
         if (isEditing || isLoadingData) return;
 
         const updatePositions = () => {
             const newPositions: Record<string, { top: number; left: number }> = {};
-            const grid = document.getElementById('card-grid');
+            const grid = document.getElementById('card-grid-container');
             if (!grid) return;
 
             const gridRect = grid.getBoundingClientRect();
@@ -262,8 +258,7 @@ export function ReusableCardManager<T extends BaseCardData>({
             observer.disconnect();
         };
     }, [validDbData, isEditing, isLoadingData]);
-    
-    
+
     const partnerEditorOverlay = isPartnerManager && isEditing ? (
         <div className="pointer-events-none absolute inset-0 z-10">
              <div className="flex h-full w-full justify-end">
@@ -304,86 +299,41 @@ export function ReusableCardManager<T extends BaseCardData>({
             </div>
         </div>
     ) : null;
-    
-    const renderCardList = (items: T[], isHiddenList: boolean) => {
+
+    const renderCardGroups = (items: T[], title: string, isHiddenGroup: boolean) => {
+        if (items.length === 0) return null;
+        
         // Ensure refs are created for all items
         items.forEach(item => {
             if (!cardRefs.current[item.id]) {
                 cardRefs.current[item.id] = createRef<HTMLDivElement>();
             }
         });
-        
+
         return (
-            <div id="card-grid" className="relative mt-8 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-16">
-                {items.map((item) => (
-                    <div
-                        key={item.id}
-                        ref={cardRefs.current[item.id]}
-                        className={cn(
-                            "flex justify-center",
-                            (item as any).fullWidth && "sm:col-span-2"
-                        )}
-                        onMouseEnter={() => !isEditing && setHoveredCardId(item.id)}
-                        onMouseLeave={() => setHoveredCardId(null)}
-                    >
-                         <DisplayCardComponent {...item} />
-                    </div>
-                ))}
-                {!isEditing && items.map((item) => {
-                     const pos = buttonPositions[item.id];
-                     if (!pos) return null;
- 
-                     return (
-                         <div
-                             key={`buttons-${item.id}`}
-                             className={cn(
-                                 "absolute z-20 flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm transition-opacity",
-                                 hoveredCardId === item.id ? "opacity-100 flex" : "opacity-0 hidden"
-                             )}
-                             style={{
-                                 top: pos.top,
-                                 left: pos.left - 100, // Position 100px left of the card
-                                 width: '90px'
-                             }}
-                             onMouseEnter={() => setHoveredCardId(item.id)}
-                             onMouseLeave={() => setHoveredCardId(null)}
-                         >
-                            <p className="text-xs font-bold text-center text-foreground">Verschieben</p>
-                            <div className="flex gap-1.5">
-                                <Button size="icon" className="h-7 w-7" onClick={() => handleMove(item.id, 'left')}><ArrowLeft /></Button>
-                                <Button size="icon" className="h-7 w-7" onClick={() => handleMove(item.id, 'right')}><ArrowRight /></Button>
-                            </div>
-                            <div className="w-full border-t my-1.5" />
- 
-                             {isStaffManager && (
-                                 <Button
-                                     variant={(item as any).fullWidth ? "default" : "outline"}
-                                     size="sm"
-                                     className="w-full"
-                                     onClick={() => handleToggleFullWidth(item)}
-                                 >
-                                     <RectangleHorizontal className="mr-2" />
-                                     Zeile
-                                 </Button>
-                             )}
- 
-                             <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}>
-                                 <Pencil className="mr-2" /> Bearbeiten
-                             </Button>
- 
-                             <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
-                                 {isHiddenList ? <Eye className="mr-2" /> : <EyeOff className="mr-2" />}
-                                 {isHiddenList ? 'Sichtbar' : 'Ausblenden'}
-                             </Button>
- 
-                             {isHiddenList && (
-                                 <Button variant="destructive" size="sm" className="w-full mt-1.5" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                                     <Trash2 className="mr-2" /> Löschen
-                                 </Button>
-                             )}
-                         </div>
-                     );
-                })}
+            <div>
+                <div className="space-y-4 mt-12">
+                    <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
+                    {!isHiddenGroup && (
+                        <p className="text-sm text-muted-foreground">
+                            Bewegen Sie den Mauszeiger über eine Karte, um die Bearbeitungsoptionen anzuzeigen.
+                        </p>
+                    )}
+                </div>
+                <div className="mt-8 grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-8 gap-y-16">
+                    {items.map((item) => (
+                        <div
+                            key={item.id}
+                            ref={cardRefs.current[item.id]}
+                            className={cn(
+                                "flex justify-center w-full",
+                                (item as any).fullWidth && "sm:col-span-2"
+                            )}
+                        >
+                            <DisplayCardComponent {...item} />
+                        </div>
+                    ))}
+                </div>
             </div>
         );
     };
@@ -437,52 +387,86 @@ export function ReusableCardManager<T extends BaseCardData>({
                         />
                     )}
 
-                    {!isEditing && (
-                        <>
-                            <div className="space-y-4 mt-12">
-                                <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Karten</h3>
-                                <p className="text-sm text-muted-foreground">
-                                    Bewegen Sie den Mauszeiger über eine Karte, um die Bearbeitungsoptionen anzuzeigen.
-                                </p>
+                    <div id="card-grid-container" className="relative">
+                        {isLoadingData && (
+                            <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
+                                {Array.from({ length: 4 }).map((_, index) => (
+                                    <div key={index} className="flex justify-center">
+                                        <Skeleton className="h-[550px] w-full max-w-sm" />
+                                    </div>
+                                ))}
                             </div>
-                            
-                            <div className="w-full">
-                                {isLoadingData && (
-                                    <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
-                                        {Array.from({ length: 4 }).map((_, index) => (
-                                            <div key={index} className="flex justify-center">
-                                                <Skeleton className="h-[550px] w-full max-w-sm" />
-                                            </div>
-                                        ))}
+                        )}
+
+                        {dbError && (
+                            <Alert variant="destructive" className="mt-8">
+                                <AlertCircle className="h-4 w-4" />
+                                <AlertTitle>Datenbankfehler</AlertTitle>
+                                <AlertDescription>
+                                    Die Daten konnten nicht geladen werden: {dbError.message}
+                                </AlertDescription>
+                            </Alert>
+                        )}
+                        {!isLoadingData && !isEditing && (
+                            <>
+                                {renderCardGroups(validDbData.filter(i => !i.hidden), "Aktive Karten", false)}
+                                {renderCardGroups(validDbData.filter(i => i.hidden), "Ausgeblendete Karten", true)}
+                            </>
+                        )}
+
+                        {!isEditing && validDbData.map((item) => {
+                            const pos = buttonPositions[item.id];
+                            if (!pos) return null;
+
+                            const isHiddenList = validDbData.find(i => i.id === item.id)?.hidden;
+
+                            return (
+                                <div
+                                    key={`buttons-${item.id}`}
+                                    className="absolute z-20 flex flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm"
+                                    style={{
+                                        top: pos.top,
+                                        left: pos.left - 100, // Position 100px left of the card
+                                        width: '90px'
+                                    }}
+                                >
+                                    <p className="text-xs font-bold text-center text-foreground">Verschieben</p>
+                                    <div className="flex gap-1.5">
+                                        <Button size="icon" className="h-7 w-7" onClick={() => handleMove(item.id, 'left')}><ArrowLeft /></Button>
+                                        <Button size="icon" className="h-7 w-7" onClick={() => handleMove(item.id, 'right')}><ArrowRight /></Button>
                                     </div>
-                                )}
-
-                                {dbError && (
-                                    <Alert variant="destructive" className="mt-8">
-                                        <AlertCircle className="h-4 w-4" />
-                                        <AlertTitle>Datenbankfehler</AlertTitle>
-                                        <AlertDescription>
-                                            Die Daten konnten nicht geladen werden: {dbError.message}
-                                        </AlertDescription>
-                                    </Alert>
-                                )}
-                                {!isLoadingData && !isEditing && renderCardList(visibleItems, false)}
-                            </div>
-
-
-                            {hiddenItems.length > 0 && !isEditing && (
-                                <>
-                                    <div className="mt-16 space-y-4">
-                                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
-                                    </div>
-                                    <div className="w-full">
-                                        {renderCardList(hiddenItems, true)}
-                                    </div>
-                                </>
-                           )}
-                        </>
-                    )}
-
+                                    <div className="w-full border-t my-1.5" />
+        
+                                    {isStaffManager && (
+                                        <Button
+                                            variant={(item as any).fullWidth ? "default" : "outline"}
+                                            size="sm"
+                                            className="w-full"
+                                            onClick={() => handleToggleFullWidth(item)}
+                                        >
+                                            <RectangleHorizontal className="mr-2" />
+                                            Zeile
+                                        </Button>
+                                    )}
+        
+                                    <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}>
+                                        <Pencil className="mr-2" /> Bearbeiten
+                                    </Button>
+        
+                                    <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
+                                        {isHiddenList ? <Eye className="mr-2" /> : <EyeOff className="mr-2" />}
+                                        {isHiddenList ? 'Sichtbar' : 'Ausblenden'}
+                                    </Button>
+        
+                                    {isHiddenList && (
+                                        <Button variant="destructive" size="sm" className="w-full mt-1.5" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                                            <Trash2 className="mr-2" /> Löschen
+                                        </Button>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
                 </CardContent>
             </Card>
 
@@ -503,3 +487,4 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
