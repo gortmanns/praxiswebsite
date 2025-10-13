@@ -232,16 +232,26 @@ export function ReusableCardManager<T extends BaseCardData>({
             const newPositions: Record<string, { top: number; left: number }> = {};
             const grid = document.getElementById('card-grid-container');
             if (!grid) return;
-
+        
             const gridRect = grid.getBoundingClientRect();
-
+            
             validDbData.forEach(item => {
+                if (item.hidden) return;
+        
                 const ref = cardRefs.current[item.id];
                 if (ref?.current) {
+                    const buttonContainerRef = document.getElementById(`buttons-${item.id}`);
+                    if (!buttonContainerRef) return;
+        
                     const rect = ref.current.getBoundingClientRect();
+                    const buttonContainerHeight = buttonContainerRef.offsetHeight;
+                    
+                    const containerWidth = 110;
+                    const containerOffset = 15;
+                    
                     newPositions[item.id] = {
-                        top: rect.top - gridRect.top,
-                        left: rect.left - gridRect.left,
+                        top: (rect.top - gridRect.top) + (rect.height / 2) - (buttonContainerHeight / 2),
+                        left: (rect.left - gridRect.left) - containerWidth - containerOffset,
                     };
                 }
             });
@@ -250,7 +260,6 @@ export function ReusableCardManager<T extends BaseCardData>({
         
         updatePositions();
         
-        // Use a more robust way to track layout changes
         const resizeObserver = new ResizeObserver(updatePositions);
         const mutationObserver = new MutationObserver(updatePositions);
 
@@ -261,7 +270,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         }
         
         window.addEventListener('resize', updatePositions);
-        window.addEventListener('scroll', updatePositions, true); // Listen on capture phase for scroll
+        window.addEventListener('scroll', updatePositions, true);
 
         return () => {
             if (gridElement) {
@@ -337,7 +346,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </p>
                         )}
                     </div>
-                    <div id={isHiddenGroup ? `hidden-card-grid-container` : 'card-grid-container'} className="relative mt-8 grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-8 gap-y-16">
+                    <div id={isHiddenGroup ? undefined : 'card-grid-container'} className="relative mt-8 grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-8 gap-y-16">
                         {items.map((item) => (
                             <div
                                 key={item.id}
@@ -437,28 +446,25 @@ export function ReusableCardManager<T extends BaseCardData>({
                            <>
                              {renderCardGroups()}
                            
-                              {validDbData.map((item) => {
+                              {validDbData.filter(i => !i.hidden).map((item) => {
                                   const pos = buttonPositions[item.id];
                                   if (!pos) return null;
-                                  
-                                  const isHiddenList = item.hidden;
-                                  const containerWidth = 110;
-                                  const containerOffset = 15;
 
                                   return (
                                       <div
+                                          id={`buttons-${item.id}`}
                                           key={`buttons-${item.id}`}
                                           className="absolute z-20 flex flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm"
                                           style={{
                                               top: pos.top,
-                                              left: pos.left - containerWidth - containerOffset,
-                                              width: `${containerWidth}px`,
+                                              left: pos.left,
+                                              width: `110px`,
                                           }}
                                       >
                                           <p className="text-xs font-bold text-center text-foreground">Verschieben</p>
                                           <div className="grid grid-cols-2 gap-1 w-full">
-                                              <Button size="icon" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'left')}><ArrowLeft /></Button>
-                                              <Button size="icon" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'right')}><ArrowRight /></Button>
+                                              <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'left')}><ArrowLeft /></Button>
+                                              <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'right')}><ArrowRight /></Button>
                                           </div>
                                           <div className="w-full border-t my-1.5" />
               
@@ -479,15 +485,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                                           </Button>
               
                                           <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
-                                              {isHiddenList ? <Eye className="mr-2" /> : <EyeOff className="mr-2" />}
-                                              {isHiddenList ? 'Sichtbar' : 'Ausblenden'}
+                                              <EyeOff className="mr-2" /> Ausblenden
                                           </Button>
-              
-                                          {isHiddenList && (
-                                              <Button variant="destructive" size="sm" className="w-full mt-1.5" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                                                  <Trash2 className="mr-2" /> Löschen
-                                              </Button>
-                                          )}
                                       </div>
                                   );
                               })}
