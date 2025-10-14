@@ -89,8 +89,8 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
         blue: 'bg-blue-500 border-blue-600 text-white',
     };
 
-    return (
-         <div className={cn("relative w-full border", small ? "rounded-md" : "rounded-lg mt-8", bannerClasses[color])}>
+    const containerDiv = (
+        <div className={cn("relative w-full border", small ? "rounded-md" : "rounded-lg mt-8", bannerClasses[color])}>
             <div className={cn("flex w-full items-center overflow-hidden", small ? "h-12" : "h-12")}>
                 <div className="marquee-preview flex min-w-full shrink-0 items-center justify-around">
                     {Array.from({ length: 10 }).map((_, i) => (
@@ -106,6 +106,12 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
             </div>
         </div>
     );
+
+    if (small) {
+        return <div className="w-full">{containerDiv}</div>
+    }
+
+    return containerDiv;
 };
 
 const SeparatorSelect = ({ value, onValueChange }: { value?: SeparatorStyle, onValueChange: (value: SeparatorStyle) => void }) => {
@@ -325,9 +331,7 @@ export default function BannerPage() {
                                     {infoBanners.map(banner => (
                                         <TableRow key={banner.id} className={cn(isEditing && currentEditorBanner.id === banner.id && "bg-muted/50")}>
                                             <TableCell>
-                                                <div className="w-full">
-                                                    <BannerPreview text={banner.text} color="blue" separatorStyle={banner.separatorStyle} small />
-                                                </div>
+                                                <BannerPreview text={banner.text} color="blue" separatorStyle={banner.separatorStyle} small />
                                             </TableCell>
                                             <TableCell className="whitespace-nowrap">{banner.start ? format(banner.start, 'dd.MM.yy', { locale: de }) : ''} - {banner.end ? format(banner.end, 'dd.MM.yy', { locale: de }) : ''}</TableCell>
                                             <TableCell className="text-right">
@@ -381,4 +385,3 @@ export default function BannerPage() {
     );
 }
 
-    
