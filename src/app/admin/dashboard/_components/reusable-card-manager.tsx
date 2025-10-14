@@ -275,10 +275,10 @@ export function ReusableCardManager<T extends BaseCardData>({
                     <p className="text-sm text-muted-foreground">{description}</p>
                     <div className="relative grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-24 gap-y-16 mt-8">
                         {items.map((item) => (
-                             <div key={item.id} className={cn("relative w-full max-w-sm", (item as any).fullWidth && "sm:col-span-2 sm:max-w-none")}>
+                             <div key={item.id} className={cn("relative w-full max-w-sm", (item as any).fullWidth && "sm:col-span-2 justify-self-center")}>
                                 <div
                                     id={`buttons-${item.id}`}
-                                    className="absolute z-20 flex flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm top-1/2 -translate-y-1/2 right-full mr-4 w-[110px]"
+                                    className="absolute z-20 flex flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm top-1/2 -translate-y-1/2 left-full ml-4 w-[110px]"
                                 >
                                     <p className="text-xs font-bold text-center text-foreground">Verschieben</p>
                                     <div className="grid grid-cols-2 gap-1 w-full">
@@ -327,7 +327,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     
         return (
             <>
-                {renderGrid(activeItems, 'Aktive Karten', 'Die Aktions-Buttons werden links neben den Karten angezeigt.')}
+                {renderGrid(activeItems, 'Aktive Karten', 'Die Aktions-Buttons werden rechts neben den Karten angezeigt.')}
                 {renderGrid(hiddenItems, 'Ausgeblendete Karten', 'Diese Karten sind auf der Webseite nicht sichtbar.')}
             </>
         );
