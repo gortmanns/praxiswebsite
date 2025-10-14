@@ -10,16 +10,24 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { format, differenceInDays, isWithinInterval } from 'date-fns';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { Calendar as CalendarIcon, Save, AlertCircle, Info, Diamond, X } from 'lucide-react';
+import { Calendar as CalendarIcon, Save, AlertCircle, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, setDoc, serverTimestamp, collection, query, where, orderBy, Timestamp } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
+
+const FilledDiamond = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <path d="M8 0L16 8L8 16L0 8L8 0Z" />
+    </svg>
+);
+
+type SeparatorStyle = 'diamonds' | 'spaces' | 'equals' | 'dashes' | 'plus' | 'asterisks';
 
 interface Holiday {
   id: string;
@@ -36,7 +44,9 @@ interface BannerSettings {
     blueBannerText: string;
     blueBannerStart?: Date;
     blueBannerEnd?: Date;
-    separatorStyle?: 'diamonds' | 'spaces' | 'equals' | 'dashes' | 'plus' | 'asterisks';
+    blueBannerSeparatorStyle?: SeparatorStyle;
+    yellowBannerSeparatorStyle?: SeparatorStyle;
+    redBannerSeparatorStyle?: SeparatorStyle;
 }
 
 const initialSettings: BannerSettings = {
@@ -47,10 +57,12 @@ const initialSettings: BannerSettings = {
     blueBannerText: 'Wichtige Information: ',
     blueBannerStart: undefined,
     blueBannerEnd: undefined,
-    separatorStyle: 'diamonds',
+    blueBannerSeparatorStyle: 'diamonds',
+    yellowBannerSeparatorStyle: 'diamonds',
+    redBannerSeparatorStyle: 'diamonds',
 };
 
-const SeparatorPreview = ({ style }: { style: BannerSettings['separatorStyle'] }) => {
+const SeparatorPreview = ({ style }: { style?: SeparatorStyle }) => {
     const separatorClasses = "mx-6 shrink-0";
     switch (style) {
         case 'spaces':
@@ -67,15 +79,15 @@ const SeparatorPreview = ({ style }: { style: BannerSettings['separatorStyle'] }
         default:
             return (
                 <div className={cn("flex items-center justify-center gap-2", separatorClasses)}>
-                    <Diamond className="h-3 w-3" />
-                    <Diamond className="h-3 w-3" />
-                    <Diamond className="h-3 w-3" />
+                    <FilledDiamond className="h-3 w-3" />
+                    <FilledDiamond className="h-3 w-3" />
+                    <FilledDiamond className="h-3 w-3" />
                 </div>
             );
     }
 };
 
-const BannerPreview = ({ text, color, separatorStyle }: { text: string; color: 'yellow' | 'red' | 'blue'; separatorStyle?: BannerSettings['separatorStyle'] }) => {
+const BannerPreview = ({ text, color, separatorStyle }: { text: string; color: 'yellow' | 'red' | 'blue'; separatorStyle?: SeparatorStyle }) => {
     const bannerClasses = {
         yellow: 'bg-yellow-400 border-yellow-500 text-yellow-900',
         red: 'bg-red-500 border-red-600 text-white',
@@ -83,7 +95,7 @@ const BannerPreview = ({ text, color, separatorStyle }: { text: string; color: '
     };
 
     return (
-         <div className={cn("relative w-full border rounded-lg mt-4", bannerClasses[color])}>
+         <div className={cn("relative w-full border rounded-lg mt-8", bannerClasses[color])}>
             <div className="flex h-12 w-full items-center overflow-hidden">
                 <div className="marquee flex min-w-full shrink-0 items-center justify-around">
                     {Array.from({ length: 10 }).map((_, i) => (
@@ -98,6 +110,31 @@ const BannerPreview = ({ text, color, separatorStyle }: { text: string; color: '
                 </div>
             </div>
         </div>
+    );
+};
+
+const SeparatorSelect = ({ value, onValueChange }: { value?: SeparatorStyle, onValueChange: (value: SeparatorStyle) => void }) => {
+    const options: { value: SeparatorStyle, label: React.ReactNode }[] = [
+        { value: 'diamonds', label: <div className="flex items-center gap-2"><FilledDiamond className="h-3 w-3" /><FilledDiamond className="h-3 w-3" /><FilledDiamond className="h-3 w-3" /></div> },
+        { value: 'spaces', label: <div className="font-mono text-sm tracking-widest">· · ·</div> },
+        { value: 'equals', label: <div className="font-mono text-xl">= = =</div> },
+        { value: 'dashes', label: <div className="font-mono text-xl">— — —</div> },
+        { value: 'plus', label: <div className="font-mono text-xl">+ + +</div> },
+        { value: 'asterisks', label: <div className="font-mono text-xl">* * *</div> },
+    ];
+    return (
+        <Select value={value || 'diamonds'} onValueChange={onValueChange}>
+            <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Stil wählen..." />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectGroup>
+                    {options.map(opt => (
+                        <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                    ))}
+                </SelectGroup>
+            </SelectContent>
+        </Select>
     );
 };
 
@@ -311,7 +348,14 @@ export default function BannerPage() {
                                 </Popover>
                             </div>
                         </div>
-                        <BannerPreview text={settings.blueBannerText} color="blue" separatorStyle={settings.separatorStyle} />
+                        <div className="space-y-2">
+                            <Label>Trennzeichen-Stil</Label>
+                            <SeparatorSelect 
+                                value={settings.blueBannerSeparatorStyle} 
+                                onValueChange={(value) => handleInputChange('blueBannerSeparatorStyle', value)} 
+                            />
+                        </div>
+                        <BannerPreview text={settings.blueBannerText} color="blue" separatorStyle={settings.blueBannerSeparatorStyle} />
                     </CardContent>
                 </Card>
 
@@ -341,7 +385,14 @@ export default function BannerPage() {
                             />
                              <p className="text-xs text-muted-foreground">Platzhalter: `{'`{start}`'}` und `{'`{end}`'}` werden automatisch ersetzt.</p>
                         </div>
-                        <BannerPreview text={previewTexts.yellow} color="yellow" separatorStyle={settings.separatorStyle} />
+                        <div className="space-y-2">
+                            <Label>Trennzeichen-Stil</Label>
+                            <SeparatorSelect 
+                                value={settings.yellowBannerSeparatorStyle} 
+                                onValueChange={(value) => handleInputChange('yellowBannerSeparatorStyle', value)} 
+                            />
+                        </div>
+                        <BannerPreview text={previewTexts.yellow} color="yellow" separatorStyle={settings.yellowBannerSeparatorStyle} />
                     </CardContent>
                 </Card>
 
@@ -362,37 +413,17 @@ export default function BannerPage() {
                             />
                              <p className="text-xs text-muted-foreground">Platzhalter: `{'`{start}`'}` und `{'`{end}`'}` werden automatisch ersetzt.</p>
                         </div>
-                        <BannerPreview text={previewTexts.red} color="red" separatorStyle={settings.separatorStyle} />
-                    </CardContent>
-                </Card>
-                
-                {/* Separator Style */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Laufband-Trennzeichen</CardTitle>
-                        <CardDescription>Wählen Sie das Trennzeichen, das im Laufband zwischen den Texten angezeigt wird.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="max-w-xs">
-                             <Select
-                                value={settings.separatorStyle || 'diamonds'}
-                                onValueChange={(value: BannerSettings['separatorStyle']) => handleInputChange('separatorStyle', value)}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Stil wählen..." />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="diamonds">Drei Rauten</SelectItem>
-                                    <SelectItem value="spaces">Nur Leerzeichen</SelectItem>
-                                    <SelectItem value="equals">Gleichheitszeichen</SelectItem>
-                                    <SelectItem value="dashes">Lange Spiegelstriche</SelectItem>
-                                    <SelectItem value="plus">Pluszeichen</SelectItem>
-                                    <SelectItem value="asterisks">Sternchen</SelectItem>
-                                </SelectContent>
-                            </Select>
+                        <div className="space-y-2">
+                            <Label>Trennzeichen-Stil</Label>
+                            <SeparatorSelect 
+                                value={settings.redBannerSeparatorStyle} 
+                                onValueChange={(value) => handleInputChange('redBannerSeparatorStyle', value)} 
+                            />
                         </div>
+                        <BannerPreview text={previewTexts.red} color="red" separatorStyle={settings.redBannerSeparatorStyle} />
                     </CardContent>
                 </Card>
+
             </div>
         </div>
     );

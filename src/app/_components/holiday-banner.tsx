@@ -1,13 +1,21 @@
 
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, collection, query, where, orderBy, Timestamp } from 'firebase/firestore';
 import { format, differenceInDays, isWithinInterval } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
-import { X, Info, Diamond } from 'lucide-react';
+import { X, Info } from 'lucide-react';
+
+const FilledDiamond = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <path d="M8 0L16 8L8 16L0 8L8 0Z" />
+    </svg>
+);
+
+type SeparatorStyle = 'diamonds' | 'spaces' | 'equals' | 'dashes' | 'plus' | 'asterisks';
 
 interface Holiday {
   id: string;
@@ -24,12 +32,15 @@ interface BannerSettings {
     blueBannerText: string;
     blueBannerStart?: Date;
     blueBannerEnd?: Date;
-    separatorStyle?: 'diamonds' | 'spaces' | 'equals' | 'dashes' | 'plus' | 'asterisks';
+    blueBannerSeparatorStyle?: SeparatorStyle;
+    yellowBannerSeparatorStyle?: SeparatorStyle;
+    redBannerSeparatorStyle?: SeparatorStyle;
 }
 
 interface BannerInfo {
   text: string;
   color: 'yellow' | 'red' | 'blue';
+  separatorStyle: SeparatorStyle;
 }
 
 function getActiveBanner(holidays: Holiday[], settings: BannerSettings | null): BannerInfo | null {
@@ -40,7 +51,7 @@ function getActiveBanner(holidays: Holiday[], settings: BannerSettings | null): 
   // Check for Blue Banner first
   if (settings.isBlueBannerActive && settings.blueBannerStart && settings.blueBannerEnd) {
     if (isWithinInterval(now, { start: settings.blueBannerStart, end: settings.blueBannerEnd })) {
-      return { text: settings.blueBannerText, color: 'blue' };
+      return { text: settings.blueBannerText, color: 'blue', separatorStyle: settings.blueBannerSeparatorStyle || 'diamonds' };
     }
   }
   
@@ -54,7 +65,7 @@ function getActiveBanner(holidays: Holiday[], settings: BannerSettings | null): 
     const text = settings.redBannerText
       .replace('{start}', format(currentHoliday.start, 'd. MMMM', { locale: de }))
       .replace('{end}', format(currentHoliday.end, 'd. MMMM yyyy', { locale: de }));
-    return { text, color: 'red' };
+    return { text, color: 'red', separatorStyle: settings.redBannerSeparatorStyle || 'diamonds' };
   }
 
   // Yellow Banner (before holidays)
@@ -64,14 +75,14 @@ function getActiveBanner(holidays: Holiday[], settings: BannerSettings | null): 
       const text = settings.yellowBannerText
         .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
         .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de }));
-      return { text, color: 'yellow' };
+      return { text, color: 'yellow', separatorStyle: settings.yellowBannerSeparatorStyle || 'diamonds' };
     }
   }
 
   return null;
 }
 
-const Separator = ({ style }: { style: BannerSettings['separatorStyle'] }) => {
+const Separator = ({ style }: { style: SeparatorStyle }) => {
     const separatorClasses = "mx-6 shrink-0";
     switch (style) {
         case 'spaces':
@@ -88,9 +99,9 @@ const Separator = ({ style }: { style: BannerSettings['separatorStyle'] }) => {
         default:
             return (
                 <div className={cn("flex items-center justify-center gap-2", separatorClasses)}>
-                    <Diamond className="h-3 w-3" />
-                    <Diamond className="h-3 w-3" />
-                    <Diamond className="h-3 w-3" />
+                    <FilledDiamond className="h-3 w-3" />
+                    <FilledDiamond className="h-3 w-3" />
+                    <FilledDiamond className="h-3 w-3" />
                 </div>
             );
     }
@@ -156,8 +167,6 @@ export function HolidayBanner() {
         red: 'bg-red-500 border-red-600 text-white',
         blue: 'bg-blue-500 border-blue-600 text-white',
     };
-    
-    const separatorStyle = settings?.separatorStyle || 'diamonds';
 
     return (
         <div className={cn("relative w-full border-b", bannerClasses[bannerInfo.color])}>
@@ -169,7 +178,7 @@ export function HolidayBanner() {
                                 <Info className="mr-3 h-5 w-5 shrink-0" />
                                 <p className="whitespace-nowrap text-sm font-semibold">{bannerInfo.text}</p>
                             </div>
-                            <Separator style={separatorStyle} />
+                            <Separator style={bannerInfo.separatorStyle} />
                         </React.Fragment>
                     ))}
                 </div>
