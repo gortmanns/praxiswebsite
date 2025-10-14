@@ -1,8 +1,7 @@
 
 'use client';
 
-import React from 'react';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -90,7 +89,7 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
         blue: 'bg-blue-500 border-blue-600 text-white',
     };
     
-    const fontSizeClass = color === 'blue' && small ? 'text-xl' : 'text-sm';
+    const fontSizeClass = small ? 'text-sm' : 'text-base';
     const marqueeRef = useRef<HTMLDivElement>(null);
     const [animationDuration, setAnimationDuration] = useState('60s');
 
@@ -381,7 +380,7 @@ export default function BannerPage() {
                             <p className="text-muted-foreground text-sm">Wird eine bestimmte Anzahl Tage vor den Praxisferien angezeigt.</p>
                         </div>
                         <div className="space-y-4 bg-background p-6 rounded-b-lg">
-                            <div className="flex items-start gap-4">
+                           <div className="flex items-start gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="preHolidayDays">Wie viele Tage vorher anzeigen?</Label>
                                     <Input id="preHolidayDays" type="number" className="w-24" value={bannerSettings.preHolidayDays} onChange={(e) => handleBannerSettingsChange('preHolidayDays', parseInt(e.target.value, 10))} />
