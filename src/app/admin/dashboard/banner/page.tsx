@@ -88,11 +88,16 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
         red: 'bg-red-500 border-red-600 text-white',
         blue: 'bg-blue-500 border-blue-600 text-white',
     };
+    
+    const animationDuration = color === 'blue' && small ? '50s' : '60s';
 
     const containerDiv = (
         <div className={cn("relative w-full border", small ? "rounded-md" : "rounded-lg mt-8", bannerClasses[color])}>
             <div className={cn("flex w-full items-center overflow-hidden h-12")}>
-                <div className="flex min-w-full shrink-0 items-center justify-around marquee-preview">
+                <div 
+                    className="flex min-w-full shrink-0 items-center justify-around marquee-preview"
+                    style={{ animationDuration }}
+                >
                     {Array.from({ length: 10 }).map((_, i) => (
                         <React.Fragment key={i}>
                             <div className="flex shrink-0 items-center">
