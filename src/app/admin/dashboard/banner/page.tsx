@@ -356,12 +356,12 @@ export default function BannerPage() {
                     </div>
 
                     <div className="border-2 border-accent rounded-lg"><div className="p-6"><h3 className="text-yellow-500 font-bold text-lg">Vorankündigungs-Banner (Gelb)</h3><p className="text-muted-foreground text-sm">Wird eine bestimmte Anzahl Tage vor den Praxisferien angezeigt.</p></div><div className="space-y-4 bg-background p-6 rounded-b-lg">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                        <div className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="preHolidayDays">Wie viele Tage vorher anzeigen?</Label>
                                 <Input id="preHolidayDays" type="number" className="w-24" value={bannerSettings.preHolidayDays} onChange={(e) => handleBannerSettingsChange('preHolidayDays', parseInt(e.target.value, 10))} />
                             </div>
-                             <Alert variant="info" className="mt-2">
+                            <Alert variant="info">
                                 <Info className="h-4 w-4" />
                                 <AlertTitle className="font-bold">Anzeigedauer</AlertTitle>
                                 <AlertDescription>
