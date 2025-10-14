@@ -83,6 +83,21 @@
             "end": { "type": "string", "format": "date-time", "description": "End date of the holiday." }
         },
         "required": ["id", "name", "start", "end"]
+    },
+    "BannerSettings": {
+      "title": "Banner Settings",
+      "description": "Stores all settings for the holiday and info banners.",
+      "type": "object",
+      "properties": {
+        "preHolidayDays": { "type": "number", "description": "How many days before a holiday the announcement banner should appear." },
+        "yellowBannerText": { "type": "string", "description": "Text for the holiday announcement (yellow) banner." },
+        "redBannerText": { "type": "string", "description": "Text for the during-holiday (red) banner." },
+        "isBlueBannerActive": { "type": "boolean", "description": "Globally enables or disables the custom blue banner." },
+        "blueBannerText": { "type": "string", "description": "Text for the custom info (blue) banner." },
+        "blueBannerStart": { "type": "string", "format": "date-time", "description": "Start date for the blue banner." },
+        "blueBannerEnd": { "type": "string", "format": "date-time", "description": "End date for the blue banner." }
+      },
+      "required": ["preHolidayDays", "yellowBannerText", "redBannerText"]
     }
   },
   "auth": {
@@ -108,8 +123,10 @@
     "holidays": {
         "schema": { "$ref": "#/entities/Holiday" },
         "description": "Stores practice holiday periods."
+    },
+    "settings/banners": {
+        "schema": { "$ref": "#/entities/BannerSettings" },
+        "description": "A single document that stores all banner settings."
     }
   }
 }
-
-    
