@@ -7,7 +7,6 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -51,7 +50,6 @@ interface BannerSettings {
 interface InfoBanner {
     id: string;
     text: string;
-    isActive: boolean;
     start?: Timestamp | Date;
     end?: Timestamp | Date;
     separatorStyle?: SeparatorStyle;
@@ -59,15 +57,14 @@ interface InfoBanner {
 
 const initialBannerSettings: BannerSettings = {
     preHolidayDays: 14,
-    yellowBannerText: 'Die <Name nächste Ferien> stehen bevor. In der Zeit vom <erster Ferientag> bis und mit <letzer Ferientag> bleibt das Praxiszentrum geschlossen. Bitte überprüfen Sie Ihren Medikamentenvorrat und beziehen Sie allenfalls nötigen Nachschub rechtzeitig.',
-    redBannerText: 'Ferienhalber bleibt das Praxiszentrum in der Zeit vom <erster Ferientag> bis und mit <letzter Ferientag> geschlossen. Die Notfall-Notrufnummern finden sie rechts oben im Menü unter dem Punkt "NOTFALL". Ab dem <letzter Ferientag +1> stehen wieder wie gewohnt zur Verfügung.',
+    yellowBannerText: 'Die {name} stehen bevor. In der Zeit vom {start} bis und mit {end} bleibt das Praxiszentrum geschlossen. Bitte überprüfen Sie Ihren Medikamentenvorrat und beziehen Sie allenfalls nötigen Nachschub rechtzeitig.',
+    redBannerText: 'Ferienhalber bleibt das Praxiszentrum in der Zeit vom {start} bis und mit {end} geschlossen. Die Notfall-Notrufnummern finden sie rechts oben im Menü unter dem Punkt "NOTFALL". Ab dem {next_day} stehen wieder wie gewohnt zur Verfügung.',
     yellowBannerSeparatorStyle: 'diamonds',
     redBannerSeparatorStyle: 'diamonds',
 };
 
 const initialInfoBannerState: Omit<InfoBanner, 'id'> = {
     text: '',
-    isActive: true,
     start: new Date(),
     end: addDays(new Date(), 7),
     separatorStyle: 'diamonds',
@@ -85,7 +82,7 @@ const SeparatorPreview = ({ style }: { style?: SeparatorStyle }) => {
     }
 };
 
-const BannerPreview = ({ text, color, separatorStyle }: { text: string; color: 'yellow' | 'red' | 'blue'; separatorStyle?: SeparatorStyle }) => {
+const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; color: 'yellow' | 'red' | 'blue'; separatorStyle?: SeparatorStyle; small?: boolean }) => {
     const bannerClasses = {
         yellow: 'bg-yellow-400 border-yellow-500 text-yellow-900',
         red: 'bg-red-500 border-red-600 text-white',
@@ -93,14 +90,14 @@ const BannerPreview = ({ text, color, separatorStyle }: { text: string; color: '
     };
 
     return (
-         <div className={cn("relative w-full border rounded-lg mt-8", bannerClasses[color])}>
-            <div className="flex h-12 w-full items-center overflow-hidden">
-                <div className="marquee flex min-w-full shrink-0 items-center justify-around">
+         <div className={cn("relative w-full border", small ? "rounded-md" : "rounded-lg mt-8", bannerClasses[color])}>
+            <div className={cn("flex w-full items-center overflow-hidden", small ? "h-8" : "h-12")}>
+                <div className="marquee-preview flex min-w-full shrink-0 items-center justify-around">
                     {Array.from({ length: 10 }).map((_, i) => (
                         <React.Fragment key={i}>
                             <div className="flex shrink-0 items-center">
-                                <Info className="mr-3 h-5 w-5 shrink-0" />
-                                <p className="whitespace-nowrap text-sm font-semibold">{text}</p>
+                                <Info className={cn("shrink-0", small ? "mr-2 h-4 w-4" : "mr-3 h-5 w-5")} />
+                                <p className={cn("whitespace-nowrap font-semibold", small ? "text-xs" : "text-sm")}>{text}</p>
                             </div>
                             <SeparatorPreview style={separatorStyle} />
                         </React.Fragment>
@@ -179,8 +176,8 @@ export default function BannerPage() {
         if (upcomingHoliday) {
             const nextDay = addDays(upcomingHoliday.end, 1);
             return {
-                yellow: bannerSettings.yellowBannerText.replace('<Name nächste Ferien>', upcomingHoliday.name).replace('<erster Ferientag>', format(upcomingHoliday.start, 'd. MMMM', { locale: de })).replace('<letzer Ferientag>', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })),
-                red: bannerSettings.redBannerText.replace('<erster Ferientag>', format(upcomingHoliday.start, 'd. MMMM', { locale: de })).replace('<letzter Ferientag>', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })).replace('<letzter Ferientag +1>', format(nextDay, 'd. MMMM', { locale: de })),
+                yellow: bannerSettings.yellowBannerText.replace('{name}', upcomingHoliday.name).replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de })).replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })),
+                red: bannerSettings.redBannerText.replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de })).replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })).replace('{next_day}', format(nextDay, 'd. MMMM', { locale: de })),
             };
         }
         return { yellow: defaultText, red: defaultText };
@@ -279,7 +276,7 @@ export default function BannerPage() {
                             <div className="flex justify-between items-start">
                                 <div>
                                     <h3 className="text-blue-500 font-bold text-lg">Info-Banner (Blau)</h3>
-                                    <p className="text-muted-foreground text-sm">Für benutzerdefinierte Ankündigungen. Aktive Banner werden im angegebenen Zeitraum angezeigt.</p>
+                                    <p className="text-muted-foreground text-sm">Für benutzerdefinierte Ankündigungen. Banner werden im angegebenen Zeitraum angezeigt.</p>
                                 </div>
                                 {!isEditing && <Button onClick={handleNewInfoBanner}><Plus className="mr-2 h-4 w-4" />Neues Info-Banner</Button>}
                             </div>
@@ -302,8 +299,7 @@ export default function BannerPage() {
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between pt-2">
-                                    <div className="flex items-center space-x-2"><Switch id="isBlueBannerActive" checked={currentEditorBanner.isActive} onCheckedChange={(checked) => handleInfoBannerInputChange('isActive', checked)} /><Label htmlFor="isBlueBannerActive">Aktiv</Label></div>
-                                    <div className="flex items-end gap-4">
+                                     <div className="flex items-end gap-4">
                                         <div className="space-y-2"><Label>Trennzeichen-Stil</Label><SeparatorSelect value={currentEditorBanner.separatorStyle} onValueChange={(value) => handleInfoBannerInputChange('separatorStyle', value)} /></div>
                                         <div className="flex gap-2">
                                             <Button variant="outline" onClick={handleCancelEdit}><XCircle className="mr-2 h-4 w-4" />Abbrechen</Button>
@@ -317,13 +313,14 @@ export default function BannerPage() {
 
                         <div className="bg-background p-6 rounded-b-lg">
                             <Table>
-                                <TableHeader><TableRow><TableHead>Status</TableHead><TableHead>Text</TableHead><TableHead>Zeitraum</TableHead><TableHead className="text-right">Aktionen</TableHead></TableRow></TableHeader>
+                                <TableHeader><TableRow><TableHead className="w-[50%]">Vorschau</TableHead><TableHead>Zeitraum</TableHead><TableHead className="text-right">Aktionen</TableHead></TableRow></TableHeader>
                                 <TableBody>
                                     {infoBanners.map(banner => (
                                         <TableRow key={banner.id} className={cn(isEditing && currentEditorBanner.id === banner.id && "bg-muted/50")}>
-                                            <TableCell><div className={cn("w-3 h-3 rounded-full", banner.isActive ? "bg-green-500" : "bg-gray-400")}></div></TableCell>
-                                            <TableCell className="max-w-xs truncate">{banner.text}</TableCell>
-                                            <TableCell>{banner.start ? format(banner.start, 'dd.MM.yy', { locale: de }) : ''} - {banner.end ? format(banner.end, 'dd.MM.yy', { locale: de }) : ''}</TableCell>
+                                            <TableCell>
+                                                <BannerPreview text={banner.text} color="blue" separatorStyle={banner.separatorStyle} small />
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap">{banner.start ? format(banner.start, 'dd.MM.yy', { locale: de }) : ''} - {banner.end ? format(banner.end, 'dd.MM.yy', { locale: de }) : ''}</TableCell>
                                             <TableCell className="text-right">
                                                 <div className="relative">
                                                      {isEditing && currentEditorBanner.id === banner.id && (
@@ -345,9 +342,9 @@ export default function BannerPage() {
                         </div>
                     </div>
 
-                    <div className="border-2 border-accent rounded-lg"><div className="p-6"><h3 className="text-yellow-500 font-bold text-lg">Vorankündigungs-Banner (Gelb)</h3><p className="text-muted-foreground text-sm">Wird eine bestimmte Anzahl Tage vor den Praxisferien angezeigt.</p></div><div className="space-y-4 bg-background p-6 rounded-b-lg"><div className="space-y-2"><Label htmlFor="preHolidayDays">Wie viele Tage vorher anzeigen?</Label><Input id="preHolidayDays" type="number" className="w-24" value={bannerSettings.preHolidayDays} onChange={(e) => handleBannerSettingsChange('preHolidayDays', parseInt(e.target.value, 10))} /></div><div className="space-y-2"><Label htmlFor="yellowBannerText">Bannertext</Label><Textarea id="yellowBannerText" value={bannerSettings.yellowBannerText} onChange={(e) => handleBannerSettingsChange('yellowBannerText', e.target.value)} rows={4} /></div><div className="flex items-end gap-4 pt-2"><div className="space-y-2"><Label>Trennzeichen-Stil</Label><SeparatorSelect value={bannerSettings.yellowBannerSeparatorStyle} onValueChange={(value) => handleBannerSettingsChange('yellowBannerSeparatorStyle', value)} /></div><div className="flex items-end gap-2"><Button variant="secondary" onClick={() => handleBannerSettingsChange('yellowBannerText', initialBannerSettings.yellowBannerText)}><RotateCcw className="mr-2 h-4 w-4" />Standardtext</Button><Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="cursor-help"><Info className="h-4 w-4" /></Button></TooltipTrigger><TooltipContent><p>{initialBannerSettings.yellowBannerText.replace('<Name nächste Ferien>', 'Name nächste Ferien').replace('<erster Ferientag>', 'erster Ferientag').replace('<letzer Ferientag>', 'letzer Ferientag')}</p></TooltipContent></Tooltip></div><Button onClick={handleSaveBannerSettings}><Save className="mr-2 h-4 w-4" />Speichern</Button></div><BannerPreview text={previewTexts.yellow} color="yellow" separatorStyle={bannerSettings.yellowBannerSeparatorStyle} /></div></div>
+                    <div className="border-2 border-accent rounded-lg"><div className="p-6"><h3 className="text-yellow-500 font-bold text-lg">Vorankündigungs-Banner (Gelb)</h3><p className="text-muted-foreground text-sm">Wird eine bestimmte Anzahl Tage vor den Praxisferien angezeigt.</p></div><div className="space-y-4 bg-background p-6 rounded-b-lg"><div className="space-y-2"><Label htmlFor="preHolidayDays">Wie viele Tage vorher anzeigen?</Label><Input id="preHolidayDays" type="number" className="w-24" value={bannerSettings.preHolidayDays} onChange={(e) => handleBannerSettingsChange('preHolidayDays', parseInt(e.target.value, 10))} /></div><div className="space-y-2"><Label htmlFor="yellowBannerText">Bannertext</Label><Textarea id="yellowBannerText" value={bannerSettings.yellowBannerText} onChange={(e) => handleBannerSettingsChange('yellowBannerText', e.target.value)} rows={4} /></div><div className="flex items-end gap-4 pt-2"><div className="space-y-2"><Label>Trennzeichen-Stil</Label><SeparatorSelect value={bannerSettings.yellowBannerSeparatorStyle} onValueChange={(value) => handleBannerSettingsChange('yellowBannerSeparatorStyle', value)} /></div><div className="flex items-end gap-2"><Button variant="secondary" onClick={() => handleBannerSettingsChange('yellowBannerText', initialBannerSettings.yellowBannerText)}><RotateCcw className="mr-2 h-4 w-4" />Standardtext</Button><Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="cursor-help"><Info className="h-4 w-4" /></Button></TooltipTrigger><TooltipContent><p>{initialBannerSettings.yellowBannerText.replace('{name}', 'Name nächste Ferien').replace('{start}', 'erster Ferientag').replace('{end}', 'letzer Ferientag')}</p></TooltipContent></Tooltip></div><Button onClick={handleSaveBannerSettings}><Save className="mr-2 h-4 w-4" />Speichern</Button></div><BannerPreview text={previewTexts.yellow} color="yellow" separatorStyle={bannerSettings.yellowBannerSeparatorStyle} /></div></div>
 
-                    <div className="border-2 border-accent rounded-lg"><div className="p-6"><h3 className="text-red-500 font-bold text-lg">Ferien-Banner (Rot)</h3><p className="text-muted-foreground text-sm">Wird während der Praxisferien angezeigt.</p></div><div className="space-y-4 bg-background p-6 rounded-b-lg"><div className="space-y-2"><Label htmlFor="redBannerText">Bannertext</Label><Textarea id="redBannerText" value={bannerSettings.redBannerText} onChange={(e) => handleBannerSettingsChange('redBannerText', e.target.value)} rows={4} /></div><div className="flex items-end gap-4 pt-2"><div className="space-y-2"><Label>Trennzeichen-Stil</Label><SeparatorSelect value={bannerSettings.redBannerSeparatorStyle} onValueChange={(value) => handleBannerSettingsChange('redBannerSeparatorStyle', value)} /></div><div className="flex items-end gap-2"><Button variant="secondary" onClick={() => handleBannerSettingsChange('redBannerText', initialBannerSettings.redBannerText)}><RotateCcw className="mr-2 h-4 w-4" />Standardtext</Button><Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="cursor-help"><Info className="h-4 w-4" /></Button></TooltipTrigger><TooltipContent><p>{initialBannerSettings.redBannerText.replace('<erster Ferientag>', 'erster Ferientag').replace('<letzter Ferientag>', 'letzter Ferientag').replace('<letzter Ferientag +1>', 'letzter Ferientag +1')}</p></TooltipContent></Tooltip></div><Button onClick={handleSaveBannerSettings}><Save className="mr-2 h-4 w-4" />Speichern</Button></div><BannerPreview text={previewTexts.red} color="red" separatorStyle={bannerSettings.redBannerSeparatorStyle} /></div></div>
+                    <div className="border-2 border-accent rounded-lg"><div className="p-6"><h3 className="text-red-500 font-bold text-lg">Ferien-Banner (Rot)</h3><p className="text-muted-foreground text-sm">Wird während der Praxisferien angezeigt.</p></div><div className="space-y-4 bg-background p-6 rounded-b-lg"><div className="space-y-2"><Label htmlFor="redBannerText">Bannertext</Label><Textarea id="redBannerText" value={bannerSettings.redBannerText} onChange={(e) => handleBannerSettingsChange('redBannerText', e.target.value)} rows={4} /></div><div className="flex items-end gap-4 pt-2"><div className="space-y-2"><Label>Trennzeichen-Stil</Label><SeparatorSelect value={bannerSettings.redBannerSeparatorStyle} onValueChange={(value) => handleBannerSettingsChange('redBannerSeparatorStyle', value)} /></div><div className="flex items-end gap-2"><Button variant="secondary" onClick={() => handleBannerSettingsChange('redBannerText', initialBannerSettings.redBannerText)}><RotateCcw className="mr-2 h-4 w-4" />Standardtext</Button><Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="cursor-help"><Info className="h-4 w-4" /></Button></TooltipTrigger><TooltipContent><p>{initialBannerSettings.redBannerText.replace('{start}', 'erster Ferientag').replace('{end}', 'letzter Ferientag').replace('{next_day}', 'letzter Ferientag +1')}</p></TooltipContent></Tooltip></div><Button onClick={handleSaveBannerSettings}><Save className="mr-2 h-4 w-4" />Speichern</Button></div><BannerPreview text={previewTexts.red} color="red" separatorStyle={bannerSettings.redBannerSeparatorStyle} /></div></div>
                 </div>
             </div>
              <AlertDialog open={deleteConfirm.isOpen} onOpenChange={(isOpen) => !isOpen && setDeleteConfirm({ isOpen: false })}>
@@ -362,6 +359,15 @@ export default function BannerPage() {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+            <style jsx global>{`
+                @keyframes marquee-preview {
+                    from { transform: translateX(0); }
+                    to { transform: translateX(-50%); }
+                }
+                .marquee-preview {
+                    animation: marquee-preview 60s linear infinite;
+                }
+            `}</style>
         </TooltipProvider>
     );
 }

@@ -91,12 +91,11 @@
       "properties": {
         "id": { "type": "string" },
         "text": { "type": "string" },
-        "isActive": { "type": "boolean" },
         "start": { "type": "string", "format": "date-time" },
         "end": { "type": "string", "format": "date-time" },
         "separatorStyle": { "type": "string", "enum": ["diamonds", "spaces", "equals", "dashes", "plus", "asterisks"] }
       },
-      "required": ["id", "text", "isActive"]
+      "required": ["id", "text"]
     },
     "BannerSettings": {
       "title": "Banner Settings",

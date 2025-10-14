@@ -35,7 +35,6 @@ interface HolidayBannerSettings {
 interface InfoBanner {
     id: string;
     text: string;
-    isActive: boolean;
     start?: Timestamp;
     end?: Timestamp;
     separatorStyle?: SeparatorStyle;
@@ -53,7 +52,6 @@ function getActiveBanner(holidays: Holiday[], holidaySettings: HolidayBannerSett
   // Check for active Blue Banner first
   if (infoBanners) {
       const activeInfoBanner = infoBanners.find(b => 
-          b.isActive && 
           b.start && 
           b.end && 
           isWithinInterval(now, { start: b.start.toDate(), end: b.end.toDate() })
@@ -112,7 +110,7 @@ export function HolidayBanner() {
     const holidaySettingsDocRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'banners') : null, [firestore]);
     const { data: holidaySettingsData } = useDoc<HolidayBannerSettings>(holidaySettingsDocRef);
     
-    const infoBannersQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'infoBanners'), where('isActive', '==', true)) : null, [firestore]);
+    const infoBannersQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'infoBanners')) : null, [firestore]);
     const { data: infoBannersData } = useCollection<InfoBanner>(infoBannersQuery);
 
     const holidaysQuery = useMemoFirebase(() => {
