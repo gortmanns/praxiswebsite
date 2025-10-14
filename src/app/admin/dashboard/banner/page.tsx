@@ -156,7 +156,7 @@ export default function BannerPage() {
                                 onChange={(e) => handleInputChange('yellowBannerText', e.target.value)}
                                 rows={4}
                             />
-                             <p className="text-xs text-muted-foreground">Platzhalter: `{start}` und `{end}` werden automatisch ersetzt.</p>
+                             <p className="text-xs text-muted-foreground">Platzhalter: `{'`{start}`'}` und `{'`{end}`'}` werden automatisch ersetzt.</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -176,7 +176,7 @@ export default function BannerPage() {
                                 onChange={(e) => handleInputChange('redBannerText', e.target.value)}
                                 rows={4}
                             />
-                             <p className="text-xs text-muted-foreground">Platzhalter: `{start}` und `{end}` werden automatisch ersetzt.</p>
+                             <p className="text-xs text-muted-foreground">Platzhalter: `{'`{start}`'}` und `{'`{end}`'}` werden automatisch ersetzt.</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -261,4 +261,5 @@ export default function BannerPage() {
             </div>
         </div>
     );
-}
+
+    
