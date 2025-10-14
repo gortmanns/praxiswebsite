@@ -71,14 +71,14 @@ const initialInfoBannerState: Omit<InfoBanner, 'id'> = {
 };
 
 const SeparatorPreview = ({ style }: { style?: SeparatorStyle }) => {
-    const separatorClasses = "mx-6 shrink-0";
+    const separatorClasses = "mx-3 sm:mx-6 shrink-0";
     switch (style) {
-        case 'spaces': return <div className="w-12 shrink-0" />;
-        case 'equals': return <div className={cn(separatorClasses, "text-2xl font-mono")}>= = =</div>;
-        case 'dashes': return <div className={cn(separatorClasses, "text-2xl font-mono")}>— — —</div>;
-        case 'plus': return <div className={cn(separatorClasses, "text-2xl font-mono")}>+ + +</div>;
-        case 'asterisks': return <div className={cn(separatorClasses, "text-2xl font-mono")}>* * *</div>;
-        case 'diamonds': default: return <div className={cn("flex items-center justify-center gap-2", separatorClasses)}><FilledDiamond className="h-3 w-3" /><FilledDiamond className="h-3 w-3" /><FilledDiamond className="h-3 w-3" /></div>;
+        case 'spaces': return <div className="w-6 sm:w-12 shrink-0" />;
+        case 'equals': return <div className={cn(separatorClasses, "text-lg sm:text-2xl font-mono")}>= = =</div>;
+        case 'dashes': return <div className={cn(separatorClasses, "text-lg sm:text-2xl font-mono")}>— — —</div>;
+        case 'plus': return <div className={cn(separatorClasses, "text-lg sm:text-2xl font-mono")}>+ + +</div>;
+        case 'asterisks': return <div className={cn(separatorClasses, "text-lg sm:text-2xl font-mono")}>* * *</div>;
+        case 'diamonds': default: return <div className={cn("flex items-center justify-center gap-1 sm:gap-2", separatorClasses)}><FilledDiamond className="h-2 w-2 sm:h-3 sm:w-3" /><FilledDiamond className="h-2 w-2 sm:h-3 sm:w-3" /><FilledDiamond className="h-2 w-2 sm:h-3 sm:w-3" /></div>;
     }
 };
 
@@ -91,13 +91,13 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
 
     return (
          <div className={cn("relative w-full border", small ? "rounded-md" : "rounded-lg mt-8", bannerClasses[color])}>
-            <div className={cn("flex w-full items-center overflow-hidden", small ? "h-8" : "h-12")}>
+            <div className={cn("flex w-full items-center overflow-hidden", small ? "h-12" : "h-12")}>
                 <div className="marquee-preview flex min-w-full shrink-0 items-center justify-around">
                     {Array.from({ length: 10 }).map((_, i) => (
                         <React.Fragment key={i}>
                             <div className="flex shrink-0 items-center">
-                                <Info className={cn("shrink-0", small ? "mr-2 h-4 w-4" : "mr-3 h-5 w-5")} />
-                                <p className={cn("whitespace-nowrap font-semibold", small ? "text-xs" : "text-sm")}>{text}</p>
+                                <Info className={cn("shrink-0", small ? "mr-2 h-5 w-5" : "mr-3 h-5 w-5")} />
+                                <p className={cn("whitespace-nowrap font-semibold", small ? "text-sm" : "text-sm")}>{text}</p>
                             </div>
                             <SeparatorPreview style={separatorStyle} />
                         </React.Fragment>
@@ -232,8 +232,8 @@ export default function BannerPage() {
                 await setDoc(docRef, dataToSave, { merge: true });
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Info-Banner wurde aktualisiert.' });
             } else {
-                const docRef = await addDoc(collection(firestore, 'infoBanners'), dataToSave);
-                await setDoc(docRef, { id: docRef.id }, { merge: true });
+                const newDocRef = await addDoc(collection(firestore, 'infoBanners'), dataToSave);
+                await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Neues Info-Banner wurde erstellt.' });
             }
             handleCancelEdit();
@@ -320,12 +320,14 @@ export default function BannerPage() {
 
                         <div className="bg-background p-6 rounded-b-lg">
                             <Table>
-                                <TableHeader><TableRow><TableHead className="w-[50%]">Vorschau</TableHead><TableHead>Zeitraum</TableHead><TableHead className="text-right">Aktionen</TableHead></TableRow></TableHeader>
+                                <TableHeader><TableRow><TableHead>Vorschau</TableHead><TableHead className="w-[150px]">Zeitraum</TableHead><TableHead className="text-right w-[110px]">Aktionen</TableHead></TableRow></TableHeader>
                                 <TableBody>
                                     {infoBanners.map(banner => (
                                         <TableRow key={banner.id} className={cn(isEditing && currentEditorBanner.id === banner.id && "bg-muted/50")}>
-                                            <TableCell className="w-full">
-                                                <BannerPreview text={banner.text} color="blue" separatorStyle={banner.separatorStyle} small />
+                                            <TableCell>
+                                                <div className="w-full">
+                                                    <BannerPreview text={banner.text} color="blue" separatorStyle={banner.separatorStyle} small />
+                                                </div>
                                             </TableCell>
                                             <TableCell className="whitespace-nowrap">{banner.start ? format(banner.start, 'dd.MM.yy', { locale: de }) : ''} - {banner.end ? format(banner.end, 'dd.MM.yy', { locale: de }) : ''}</TableCell>
                                             <TableCell className="text-right">
