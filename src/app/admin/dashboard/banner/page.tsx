@@ -282,7 +282,7 @@ export default function BannerPage() {
                         <CardTitle className="text-blue-500">Info-Banner (Blau)</CardTitle>
                         <CardDescription>Für benutzerdefinierte Ankündigungen. Wird nur im angegebenen Zeitraum angezeigt.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-4 bg-muted p-6 rounded-lg">
                          <div className="flex items-center space-x-2">
                             <Switch
                                 id="isBlueBannerActive"
@@ -365,7 +365,7 @@ export default function BannerPage() {
                         <CardTitle className="text-yellow-500">Vorankündigungs-Banner (Gelb)</CardTitle>
                         <CardDescription>Wird eine bestimmte Anzahl Tage vor den Praxisferien angezeigt.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-4 bg-muted p-6 rounded-lg">
                         <div className="space-y-2">
                             <Label htmlFor="preHolidayDays">Wie viele Tage vorher anzeigen?</Label>
                             <Input
@@ -402,7 +402,7 @@ export default function BannerPage() {
                         <CardTitle className="text-red-500">Ferien-Banner (Rot)</CardTitle>
                         <CardDescription>Wird während der Praxisferien angezeigt.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-4 bg-muted p-6 rounded-lg">
                        <div className="space-y-2">
                             <Label htmlFor="redBannerText">Bannertext</Label>
                             <Textarea
@@ -428,3 +428,5 @@ export default function BannerPage() {
         </div>
     );
 }
+
+    
