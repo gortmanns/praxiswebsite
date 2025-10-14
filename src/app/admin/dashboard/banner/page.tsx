@@ -385,7 +385,7 @@ export default function BannerPage() {
                                 onChange={(e) => handleInputChange('yellowBannerText', e.target.value)}
                                 rows={4}
                             />
-                             <p className="text-xs text-muted-foreground">Platzhalter: `{'`{start}`'}` und `{'`{end}`'}` werden automatisch ersetzt.</p>
+                             <p className="text-xs text-muted-foreground">Platzhalter: `&#123;start&#125;` und `&#123;end&#125;` werden automatisch ersetzt.</p>
                         </div>
                         <div className="flex items-end gap-4">
                             <div className="space-y-2">
@@ -419,7 +419,7 @@ export default function BannerPage() {
                                 onChange={(e) => handleInputChange('redBannerText', e.target.value)}
                                 rows={4}
                             />
-                             <p className="text-xs text-muted-foreground">Platzhalter: `{'`{start}`'}` und `{'`{end}`'}` werden automatisch ersetzt.</p>
+                             <p className="text-xs text-muted-foreground">Platzhalter: `&#123;start&#125;` und `&#123;end&#125;` werden automatisch ersetzt.</p>
                         </div>
                          <div className="flex items-end gap-4">
                             <div className="space-y-2">
@@ -442,3 +442,5 @@ export default function BannerPage() {
         </div>
     );
 }
+
+    
