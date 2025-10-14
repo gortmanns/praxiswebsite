@@ -326,50 +326,59 @@ export function ReusableCardManager<T extends BaseCardData>({
     const renderCardGroups = () => {
         const activeItems = validDbData.filter(i => !i.hidden);
         const hiddenItems = validDbData.filter(i => i.hidden);
-        
-        const renderGroup = (items: T[], title: string, isHiddenGroup: boolean) => {
-            if (items.length === 0) return null;
-            
-            items.forEach(item => {
-                if (!cardRefs.current[item.id]) {
-                    cardRefs.current[item.id] = createRef<HTMLDivElement>();
-                }
-            });
-
-            return (
-                <div key={title}>
-                    <div className="space-y-4 mt-12">
-                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
-                        {!isHiddenGroup && (
-                            <p className="text-sm text-muted-foreground">
-                                Die Aktions-Buttons werden links neben den Karten angezeigt.
-                            </p>
-                        )}
-                    </div>
-                    <div id={isHiddenGroup ? undefined : 'card-grid-container'} className="relative mt-8 grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-8 gap-y-16">
-                        {items.map((item) => (
-                            <div
-                                key={item.id}
-                                ref={cardRefs.current[item.id]}
-                                className={cn(
-                                    "flex justify-center w-full",
-                                    (item as any).fullWidth && "sm:col-span-2"
-                                )}
-                            >
-                                <DisplayCardComponent {...item} />
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            );
-        };
-
+    
+        activeItems.forEach(item => {
+            if (!cardRefs.current[item.id]) cardRefs.current[item.id] = createRef<HTMLDivElement>();
+        });
+        hiddenItems.forEach(item => {
+            if (!cardRefs.current[item.id]) cardRefs.current[item.id] = createRef<HTMLDivElement>();
+        });
+    
         return (
             <>
-                {renderGroup(activeItems, "Aktive Karten", false)}
-                {renderGroup(hiddenItems, "Ausgeblendete Karten", true)}
+                {activeItems.length > 0 && (
+                    <div className="space-y-4 mt-12">
+                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Karten</h3>
+                        <p className="text-sm text-muted-foreground">Die Aktions-Buttons werden links neben den Karten angezeigt.</p>
+                        <div id="card-grid-container" className="relative mt-8 grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-8 gap-y-16">
+                            {activeItems.map((item) => (
+                                <div key={item.id} ref={cardRefs.current[item.id]} className={cn("flex justify-center w-full", (item as any).fullWidth && "sm:col-span-2")}>
+                                    <DisplayCardComponent {...item} />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+                
+                {hiddenItems.length > 0 && (
+                     <div className="space-y-4 mt-12">
+                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
+                        <div className="relative mt-8 grid grid-cols-1 justify-items-center sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-16">
+                            {hiddenItems.map((item) => (
+                                <div key={item.id} className="relative group">
+                                     <div ref={cardRefs.current[item.id]} className={cn("flex justify-center w-full", (item as any).fullWidth && "sm:col-span-2")}>
+                                        <DisplayCardComponent {...item} />
+                                    </div>
+                                    <div className="absolute inset-0 bg-background/70 backdrop-blur-sm flex items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex flex-col gap-2">
+                                            <Button variant="outline" size="sm" onClick={() => handleEdit(item)}>
+                                                <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                                            </Button>
+                                            <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)}>
+                                                <Eye className="mr-2 h-4 w-4" /> Einblenden
+                                            </Button>
+                                             <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                                                <Trash2 className="mr-2 h-4 w-4" /> Löschen
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </>
-        )
+        );
     };
 
 
@@ -487,6 +496,9 @@ export function ReusableCardManager<T extends BaseCardData>({
                                           <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
                                               <EyeOff className="mr-2" /> Ausblenden
                                           </Button>
+                                           <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                                              <Trash2 className="mr-2" /> Löschen
+                                          </Button>
                                       </div>
                                   );
                               })}
@@ -513,3 +525,5 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
+
+    
