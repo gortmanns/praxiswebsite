@@ -230,14 +230,12 @@ export function ReusableCardManager<T extends BaseCardData>({
 
         const updatePositions = () => {
             const newPositions: Record<string, { top: number; left: number }> = {};
-            const grid = document.getElementById('card-grid-container');
-            if (!grid) return;
+            const container = document.getElementById('card-manager-container');
+            if (!container) return;
         
-            const gridRect = grid.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
             
             validDbData.forEach(item => {
-                if (item.hidden) return;
-        
                 const ref = cardRefs.current[item.id];
                 if (ref?.current) {
                     const buttonContainerRef = document.getElementById(`buttons-${item.id}`);
@@ -250,8 +248,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                     const containerOffset = 15;
                     
                     newPositions[item.id] = {
-                        top: (rect.top - gridRect.top) + (rect.height / 2) - (buttonContainerHeight / 2),
-                        left: (rect.left - gridRect.left) - containerWidth - containerOffset,
+                        top: (rect.top - containerRect.top) + (rect.height / 2) - (buttonContainerHeight / 2),
+                        left: (rect.left - containerRect.left) - containerWidth - containerOffset,
                     };
                 }
             });
@@ -263,7 +261,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         const resizeObserver = new ResizeObserver(updatePositions);
         const mutationObserver = new MutationObserver(updatePositions);
 
-        const gridElement = document.getElementById('card-grid-container');
+        const gridElement = document.getElementById('card-manager-container');
         if (gridElement) {
             resizeObserver.observe(gridElement);
             mutationObserver.observe(gridElement, { childList: true, subtree: true, attributes: true });
@@ -327,63 +325,39 @@ export function ReusableCardManager<T extends BaseCardData>({
         const activeItems = validDbData.filter(i => !i.hidden);
         const hiddenItems = validDbData.filter(i => i.hidden);
     
-        activeItems.forEach(item => {
-            if (!cardRefs.current[item.id]) cardRefs.current[item.id] = createRef<HTMLDivElement>();
+        [...activeItems, ...hiddenItems].forEach(item => {
+            if (!cardRefs.current[item.id]) {
+                cardRefs.current[item.id] = createRef<HTMLDivElement>();
+            }
         });
-        hiddenItems.forEach(item => {
-            if (!cardRefs.current[item.id]) cardRefs.current[item.id] = createRef<HTMLDivElement>();
-        });
+    
+        const renderGrid = (items: T[], title: string, description: string) => {
+            if (items.length === 0) return null;
+            return (
+                <div className="space-y-4 mt-12">
+                    <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
+                    <p className="text-sm text-muted-foreground">{description}</p>
+                    <div className="relative mt-8 grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-8 gap-y-16">
+                        {items.map((item) => (
+                            <div key={item.id} ref={cardRefs.current[item.id]} className={cn("flex justify-center w-full", (item as any).fullWidth && "sm:col-span-2")}>
+                                <DisplayCardComponent {...item} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
     
         return (
             <>
-                {activeItems.length > 0 && (
-                    <div className="space-y-4 mt-12">
-                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Aktive Karten</h3>
-                        <p className="text-sm text-muted-foreground">Die Aktions-Buttons werden links neben den Karten angezeigt.</p>
-                        <div id="card-grid-container" className="relative mt-8 grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-8 gap-y-16">
-                            {activeItems.map((item) => (
-                                <div key={item.id} ref={cardRefs.current[item.id]} className={cn("flex justify-center w-full", (item as any).fullWidth && "sm:col-span-2")}>
-                                    <DisplayCardComponent {...item} />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-                
-                {hiddenItems.length > 0 && (
-                     <div className="space-y-4 mt-12">
-                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">Ausgeblendete Karten</h3>
-                        <div className="relative mt-8 grid grid-cols-1 justify-items-center sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-16">
-                            {hiddenItems.map((item) => (
-                                <div key={item.id} className="relative group">
-                                     <div ref={cardRefs.current[item.id]} className={cn("flex justify-center w-full", (item as any).fullWidth && "sm:col-span-2")}>
-                                        <DisplayCardComponent {...item} />
-                                    </div>
-                                    <div className="absolute inset-0 bg-background/70 backdrop-blur-sm flex items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <div className="flex flex-col gap-2">
-                                            <Button variant="outline" size="sm" onClick={() => handleEdit(item)}>
-                                                <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                                            </Button>
-                                            <Button variant="outline" size="sm" onClick={() => handleToggleHidden(item)}>
-                                                <Eye className="mr-2 h-4 w-4" /> Einblenden
-                                            </Button>
-                                             <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                                                <Trash2 className="mr-2 h-4 w-4" /> Löschen
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
+                {renderGrid(activeItems, 'Aktive Karten', 'Die Aktions-Buttons werden links neben den Karten angezeigt.')}
+                {renderGrid(hiddenItems, 'Ausgeblendete Karten', 'Diese Karten sind auf der Webseite nicht sichtbar.')}
             </>
         );
     };
 
-
     return (
-        <div className="flex flex-1 flex-col items-start gap-8 p-4 sm:px-6 sm:py-8">
+        <div id="card-manager-container" className="flex flex-1 flex-col items-start gap-8 p-4 sm:px-6 sm:py-8 relative">
             <Card className="w-full">
                 <CardHeader>
                     <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
@@ -451,62 +425,70 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 </AlertDescription>
                             </Alert>
                         )}
-                        {!isLoadingData && !isEditing && (
+                         {!isLoadingData && !isEditing && (
                            <>
                              {renderCardGroups()}
-                           
-                              {validDbData.filter(i => !i.hidden).map((item) => {
-                                  const pos = buttonPositions[item.id];
-                                  if (!pos) return null;
-
-                                  return (
-                                      <div
-                                          id={`buttons-${item.id}`}
-                                          key={`buttons-${item.id}`}
-                                          className="absolute z-20 flex flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm"
-                                          style={{
-                                              top: pos.top,
-                                              left: pos.left,
-                                              width: `110px`,
-                                          }}
-                                      >
-                                          <p className="text-xs font-bold text-center text-foreground">Verschieben</p>
-                                          <div className="grid grid-cols-2 gap-1 w-full">
-                                              <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'left')}><ArrowLeft /></Button>
-                                              <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'right')}><ArrowRight /></Button>
-                                          </div>
-                                          <div className="w-full border-t my-1.5" />
-              
-                                          {isStaffManager && (
-                                              <Button
-                                                  variant={(item as any).fullWidth ? "default" : "outline"}
-                                                  size="sm"
-                                                  className="w-full"
-                                                  onClick={() => handleToggleFullWidth(item)}
-                                              >
-                                                  <RectangleHorizontal className="mr-2" />
-                                                  Zeile
-                                              </Button>
-                                          )}
-              
-                                          <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}>
-                                              <Pencil className="mr-2" /> Bearbeiten
-                                          </Button>
-              
-                                          <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
-                                              <EyeOff className="mr-2" /> Ausblenden
-                                          </Button>
-                                           <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                                              <Trash2 className="mr-2" /> Löschen
-                                          </Button>
-                                      </div>
-                                  );
-                              })}
-                          </>
+                           </>
                         )}
                     </div>
                 </CardContent>
             </Card>
+
+             {!isLoadingData && !isEditing && validDbData.map((item) => {
+                  const pos = buttonPositions[item.id];
+                  if (!pos) return null;
+
+                  return (
+                      <div
+                          id={`buttons-${item.id}`}
+                          key={`buttons-${item.id}`}
+                          className="absolute z-20 flex flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm"
+                          style={{
+                              top: pos.top,
+                              left: pos.left,
+                              width: `110px`,
+                          }}
+                      >
+                          <p className="text-xs font-bold text-center text-foreground">Verschieben</p>
+                          <div className="grid grid-cols-2 gap-1 w-full">
+                              <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'left')}><ArrowLeft /></Button>
+                              <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'right')}><ArrowRight /></Button>
+                          </div>
+                          <div className="w-full border-t my-1.5" />
+
+                          {isStaffManager && (
+                              <Button
+                                  variant={(item as any).fullWidth ? "default" : "outline"}
+                                  size="sm"
+                                  className="w-full"
+                                  onClick={() => handleToggleFullWidth(item)}
+                              >
+                                  <RectangleHorizontal className="mr-2" />
+                                  Zeile
+                              </Button>
+                          )}
+
+                          <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}>
+                              <Pencil className="mr-2" /> Bearbeiten
+                          </Button>
+                          
+                           {item.hidden ? (
+                                <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
+                                    <Eye className="mr-2" /> Einblenden
+                                </Button>
+                            ) : (
+                                <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
+                                    <EyeOff className="mr-2" /> Ausblenden
+                                </Button>
+                            )}
+
+                           <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                              <Trash2 className="mr-2" /> Löschen
+                          </Button>
+                      </div>
+                  );
+              })}
+
 
             <AlertDialog open={deleteConfirmState.isOpen} onOpenChange={(isOpen) => !isOpen && setDeleteConfirmState({ isOpen: false })}>
                 <AlertDialogContent>
@@ -525,5 +507,3 @@ export function ReusableCardManager<T extends BaseCardData>({
         </div>
     );
 }
-
-    
