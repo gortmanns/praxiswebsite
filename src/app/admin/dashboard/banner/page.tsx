@@ -20,6 +20,8 @@ import { doc, setDoc, serverTimestamp, collection, query, where, orderBy, Timest
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+
 
 const FilledDiamond = (props: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" {...props}>
@@ -253,200 +255,225 @@ export default function BannerPage() {
     }
 
     return (
-        <div className="flex flex-1 flex-col items-start gap-6 p-4 sm:p-6">
-            <div className="flex items-center justify-between w-full">
-                <div>
-                    <h1 className="font-headline text-2xl font-bold tracking-tight text-primary">Banner anpassen</h1>
-                    <p className="text-muted-foreground">Hier können Sie den Text und die Anzeige der Banner steuern.</p>
+        <TooltipProvider>
+            <div className="flex flex-1 flex-col items-start gap-6 p-4 sm:p-6">
+                <div className="flex items-center justify-between w-full">
+                    <div>
+                        <h1 className="font-headline text-2xl font-bold tracking-tight text-primary">Banner anpassen</h1>
+                        <p className="text-muted-foreground">Hier können Sie den Text und die Anzeige der Banner steuern.</p>
+                    </div>
+                </div>
+
+                {notification && (
+                    <TimedAlert
+                        variant={notification.variant}
+                        title={notification.title}
+                        description={notification.description}
+                        onClose={() => setNotification(null)}
+                        className="w-full"
+                    />
+                )}
+
+                <div className="w-full space-y-6">
+                    {/* Blue Banner */}
+                    <div className="border-2 border-accent rounded-lg">
+                        <div className="p-6">
+                            <h3 className="text-blue-500 font-bold text-lg">Info-Banner (Blau)</h3>
+                            <p className="text-muted-foreground text-sm">Für benutzerdefinierte Ankündigungen. Wird nur im angegebenen Zeitraum angezeigt.</p>
+                        </div>
+                        <div className="space-y-4 bg-background p-6 rounded-b-lg">
+                            <div className="flex items-center space-x-2">
+                                <Switch
+                                    id="isBlueBannerActive"
+                                    checked={settings.isBlueBannerActive}
+                                    onCheckedChange={(checked) => handleInputChange('isBlueBannerActive', checked)}
+                                />
+                                <Label htmlFor="isBlueBannerActive">Blaues Banner aktiv</Label>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="blueBannerText">Bannertext</Label>
+                                <Textarea
+                                    id="blueBannerText"
+                                    value={settings.blueBannerText}
+                                    onChange={(e) => handleInputChange('blueBannerText', e.target.value)}
+                                    rows={4}
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="blueBannerStart">Startdatum</Label>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                        <Button
+                                            variant={'outline'}
+                                            className={cn('w-full justify-start text-left font-normal', !settings.blueBannerStart && 'text-muted-foreground')}
+                                        >
+                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                            {settings.blueBannerStart ? format(settings.blueBannerStart, 'd. MMM yyyy', { locale: de }) : <span>Datum wählen</span>}
+                                        </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0">
+                                        <Calendar
+                                            mode="single"
+                                            selected={settings.blueBannerStart}
+                                            onSelect={(date) => handleInputChange('blueBannerStart', date)}
+                                            initialFocus
+                                            locale={de}
+                                        />
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="blueBannerEnd">Enddatum</Label>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                        <Button
+                                            variant={'outline'}
+                                            className={cn('w-full justify-start text-left font-normal', !settings.blueBannerEnd && 'text-muted-foreground')}
+                                        >
+                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                            {settings.blueBannerEnd ? format(settings.blueBannerEnd, 'd. MMM yyyy', { locale: de }) : <span>Datum wählen</span>}
+                                        </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0">
+                                        <Calendar
+                                            mode="single"
+                                            selected={settings.blueBannerEnd}
+                                            onSelect={(date) => handleInputChange('blueBannerEnd', date)}
+                                            initialFocus
+                                            locale={de}
+                                        />
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
+                            </div>
+                            <div className="flex items-end gap-4 pt-2">
+                                <div className="space-y-2">
+                                    <Label>Trennzeichen-Stil</Label>
+                                    <SeparatorSelect 
+                                        value={settings.blueBannerSeparatorStyle} 
+                                        onValueChange={(value) => handleInputChange('blueBannerSeparatorStyle', value)} 
+                                    />
+                                </div>
+                                <Button onClick={handleSave}>
+                                    <Save className="mr-2 h-4 w-4" />
+                                    Speichern
+                                </Button>
+                            </div>
+                            <BannerPreview text={settings.blueBannerText} color="blue" separatorStyle={settings.blueBannerSeparatorStyle} />
+                        </div>
+                    </div>
+
+                    {/* Yellow Banner */}
+                    <div className="border-2 border-accent rounded-lg">
+                        <div className="p-6">
+                            <h3 className="text-yellow-500 font-bold text-lg">Vorankündigungs-Banner (Gelb)</h3>
+                            <p className="text-muted-foreground text-sm">Wird eine bestimmte Anzahl Tage vor den Praxisferien angezeigt.</p>
+                        </div>
+                        <div className="space-y-4 bg-background p-6 rounded-b-lg">
+                            <div className="space-y-2">
+                                <Label htmlFor="preHolidayDays">Wie viele Tage vorher anzeigen?</Label>
+                                <Input
+                                    id="preHolidayDays"
+                                    type="number"
+                                    className="w-24"
+                                    value={settings.preHolidayDays}
+                                    onChange={(e) => handleInputChange('preHolidayDays', parseInt(e.target.value, 10))}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="yellowBannerText">Bannertext</Label>
+                                <Textarea
+                                    id="yellowBannerText"
+                                    value={settings.yellowBannerText}
+                                    onChange={(e) => handleInputChange('yellowBannerText', e.target.value)}
+                                    rows={4}
+                                />
+                            </div>
+                            <div className="flex items-end gap-4 pt-2">
+                                <div className="space-y-2">
+                                    <Label>Trennzeichen-Stil</Label>
+                                    <SeparatorSelect 
+                                        value={settings.yellowBannerSeparatorStyle} 
+                                        onValueChange={(value) => handleInputChange('yellowBannerSeparatorStyle', value)} 
+                                    />
+                                </div>
+                                <div className="flex items-end gap-2">
+                                    <Button variant="secondary" onClick={() => handleInputChange('yellowBannerText', initialSettings.yellowBannerText)}>
+                                        <RotateCcw className="mr-2 h-4 w-4" />
+                                        Standardtext
+                                    </Button>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button variant="ghost" size="icon" className="cursor-help">
+                                                <Info className="h-4 w-4" />
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>{initialSettings.yellowBannerText}</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </div>
+                                <Button onClick={handleSave}>
+                                    <Save className="mr-2 h-4 w-4" />
+                                    Speichern
+                                </Button>
+                            </div>
+                            <BannerPreview text={previewTexts.yellow} color="yellow" separatorStyle={settings.yellowBannerSeparatorStyle} />
+                        </div>
+                    </div>
+
+                    {/* Red Banner */}
+                    <div className="border-2 border-accent rounded-lg">
+                        <div className="p-6">
+                            <h3 className="text-red-500 font-bold text-lg">Ferien-Banner (Rot)</h3>
+                            <p className="text-muted-foreground text-sm">Wird während der Praxisferien angezeigt.</p>
+                        </div>
+                        <div className="space-y-4 bg-background p-6 rounded-b-lg">
+                        <div className="space-y-2">
+                                <Label htmlFor="redBannerText">Bannertext</Label>
+                                <Textarea
+                                    id="redBannerText"
+                                    value={settings.redBannerText}
+                                    onChange={(e) => handleInputChange('redBannerText', e.target.value)}
+                                    rows={4}
+                                />
+                            </div>
+                            <div className="flex items-end gap-4 pt-2">
+                                <div className="space-y-2">
+                                    <Label>Trennzeichen-Stil</Label>
+                                    <SeparatorSelect 
+                                        value={settings.redBannerSeparatorStyle} 
+                                        onValueChange={(value) => handleInputChange('redBannerSeparatorStyle', value)} 
+                                    />
+                                </div>
+                                <div className="flex items-end gap-2">
+                                    <Button variant="secondary" onClick={() => handleInputChange('redBannerText', initialSettings.redBannerText)}>
+                                        <RotateCcw className="mr-2 h-4 w-4" />
+                                        Standardtext
+                                    </Button>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button variant="ghost" size="icon" className="cursor-help">
+                                                <Info className="h-4 w-4" />
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>{initialSettings.redBannerText}</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </div>
+                                <Button onClick={handleSave}>
+                                    <Save className="mr-2 h-4 w-4" />
+                                    Speichern
+                                </Button>
+                            </div>
+                            <BannerPreview text={previewTexts.red} color="red" separatorStyle={settings.redBannerSeparatorStyle} />
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            {notification && (
-                <TimedAlert
-                    variant={notification.variant}
-                    title={notification.title}
-                    description={notification.description}
-                    onClose={() => setNotification(null)}
-                    className="w-full"
-                />
-            )}
-
-            <div className="w-full space-y-6">
-                 {/* Blue Banner */}
-                 <div className="border-2 border-accent rounded-lg">
-                    <div className="p-6">
-                        <h3 className="text-blue-500 font-bold text-lg">Info-Banner (Blau)</h3>
-                        <p className="text-muted-foreground text-sm">Für benutzerdefinierte Ankündigungen. Wird nur im angegebenen Zeitraum angezeigt.</p>
-                    </div>
-                    <div className="space-y-4 bg-background p-6 rounded-b-lg">
-                         <div className="flex items-center space-x-2">
-                            <Switch
-                                id="isBlueBannerActive"
-                                checked={settings.isBlueBannerActive}
-                                onCheckedChange={(checked) => handleInputChange('isBlueBannerActive', checked)}
-                            />
-                            <Label htmlFor="isBlueBannerActive">Blaues Banner aktiv</Label>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="blueBannerText">Bannertext</Label>
-                            <Textarea
-                                id="blueBannerText"
-                                value={settings.blueBannerText}
-                                onChange={(e) => handleInputChange('blueBannerText', e.target.value)}
-                                rows={4}
-                            />
-                        </div>
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="blueBannerStart">Startdatum</Label>
-                                 <Popover>
-                                    <PopoverTrigger asChild>
-                                    <Button
-                                        variant={'outline'}
-                                        className={cn('w-full justify-start text-left font-normal', !settings.blueBannerStart && 'text-muted-foreground')}
-                                    >
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {settings.blueBannerStart ? format(settings.blueBannerStart, 'd. MMM yyyy', { locale: de }) : <span>Datum wählen</span>}
-                                    </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0">
-                                    <Calendar
-                                        mode="single"
-                                        selected={settings.blueBannerStart}
-                                        onSelect={(date) => handleInputChange('blueBannerStart', date)}
-                                        initialFocus
-                                        locale={de}
-                                    />
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="blueBannerEnd">Enddatum</Label>
-                                 <Popover>
-                                    <PopoverTrigger asChild>
-                                    <Button
-                                        variant={'outline'}
-                                        className={cn('w-full justify-start text-left font-normal', !settings.blueBannerEnd && 'text-muted-foreground')}
-                                    >
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {settings.blueBannerEnd ? format(settings.blueBannerEnd, 'd. MMM yyyy', { locale: de }) : <span>Datum wählen</span>}
-                                    </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0">
-                                    <Calendar
-                                        mode="single"
-                                        selected={settings.blueBannerEnd}
-                                        onSelect={(date) => handleInputChange('blueBannerEnd', date)}
-                                        initialFocus
-                                        locale={de}
-                                    />
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-                        </div>
-                        <div className="flex items-end gap-4 pt-2">
-                            <div className="space-y-2">
-                                <Label>Trennzeichen-Stil</Label>
-                                <SeparatorSelect 
-                                    value={settings.blueBannerSeparatorStyle} 
-                                    onValueChange={(value) => handleInputChange('blueBannerSeparatorStyle', value)} 
-                                />
-                            </div>
-                             <Button onClick={handleSave}>
-                                <Save className="mr-2 h-4 w-4" />
-                                Speichern
-                            </Button>
-                        </div>
-                        <BannerPreview text={settings.blueBannerText} color="blue" separatorStyle={settings.blueBannerSeparatorStyle} />
-                    </div>
-                </div>
-
-                {/* Yellow Banner */}
-                <div className="border-2 border-accent rounded-lg">
-                    <div className="p-6">
-                        <h3 className="text-yellow-500 font-bold text-lg">Vorankündigungs-Banner (Gelb)</h3>
-                        <p className="text-muted-foreground text-sm">Wird eine bestimmte Anzahl Tage vor den Praxisferien angezeigt.</p>
-                    </div>
-                    <div className="space-y-4 bg-background p-6 rounded-b-lg">
-                        <div className="space-y-2">
-                            <Label htmlFor="preHolidayDays">Wie viele Tage vorher anzeigen?</Label>
-                            <Input
-                                id="preHolidayDays"
-                                type="number"
-                                className="w-24"
-                                value={settings.preHolidayDays}
-                                onChange={(e) => handleInputChange('preHolidayDays', parseInt(e.target.value, 10))}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="yellowBannerText">Bannertext</Label>
-                            <Textarea
-                                id="yellowBannerText"
-                                value={settings.yellowBannerText}
-                                onChange={(e) => handleInputChange('yellowBannerText', e.target.value)}
-                                rows={4}
-                            />
-                        </div>
-                        <div className="flex items-end gap-4 pt-2">
-                            <div className="space-y-2">
-                                <Label>Trennzeichen-Stil</Label>
-                                <SeparatorSelect 
-                                    value={settings.yellowBannerSeparatorStyle} 
-                                    onValueChange={(value) => handleInputChange('yellowBannerSeparatorStyle', value)} 
-                                />
-                            </div>
-                             <Button variant="secondary" onClick={() => handleInputChange('yellowBannerText', initialSettings.yellowBannerText)}>
-                                <RotateCcw className="mr-2 h-4 w-4" />
-                                Standardtext
-                            </Button>
-                            <Button onClick={handleSave}>
-                                <Save className="mr-2 h-4 w-4" />
-                                Speichern
-                            </Button>
-                        </div>
-                        <BannerPreview text={previewTexts.yellow} color="yellow" separatorStyle={settings.yellowBannerSeparatorStyle} />
-                    </div>
-                </div>
-
-                {/* Red Banner */}
-                <div className="border-2 border-accent rounded-lg">
-                    <div className="p-6">
-                        <h3 className="text-red-500 font-bold text-lg">Ferien-Banner (Rot)</h3>
-                        <p className="text-muted-foreground text-sm">Wird während der Praxisferien angezeigt.</p>
-                    </div>
-                    <div className="space-y-4 bg-background p-6 rounded-b-lg">
-                       <div className="space-y-2">
-                            <Label htmlFor="redBannerText">Bannertext</Label>
-                            <Textarea
-                                id="redBannerText"
-                                value={settings.redBannerText}
-                                onChange={(e) => handleInputChange('redBannerText', e.target.value)}
-                                rows={4}
-                            />
-                        </div>
-                         <div className="flex items-end gap-4 pt-2">
-                            <div className="space-y-2">
-                                <Label>Trennzeichen-Stil</Label>
-                                <SeparatorSelect 
-                                    value={settings.redBannerSeparatorStyle} 
-                                    onValueChange={(value) => handleInputChange('redBannerSeparatorStyle', value)} 
-                                />
-                            </div>
-                            <Button variant="secondary" onClick={() => handleInputChange('redBannerText', initialSettings.redBannerText)}>
-                                <RotateCcw className="mr-2 h-4 w-4" />
-                                Standardtext
-                            </Button>
-                             <Button onClick={handleSave}>
-                                <Save className="mr-2 h-4 w-4" />
-                                Speichern
-                            </Button>
-                        </div>
-                        <BannerPreview text={previewTexts.red} color="red" separatorStyle={settings.redBannerSeparatorStyle} />
-                    </div>
-                </div>
-
-            </div>
-        </div>
+        </TooltipProvider>
     );
 }
 
