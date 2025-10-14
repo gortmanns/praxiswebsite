@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import { useState, useMemo, useRef, useEffect, createRef } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
@@ -77,10 +77,6 @@ export function ReusableCardManager<T extends BaseCardData>({
     const [editorCardState, setEditorCardState] = useState<T>({ ...initialCardState, id: '', order: 0 } as T);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
 
-    const gridRef = useRef<HTMLDivElement>(null);
-    const cardRefs = useRef<Record<string, React.RefObject<HTMLDivElement>>>({});
-    const [buttonPositions, setButtonPositions] = useState<Record<string, { top: number; left: number }>>({});
-    
     const isEditing = editingCardId !== null || isCreatingNew;
     const isPartnerManager = collectionName.toLowerCase().includes('partner');
     const isStaffManager = collectionName === 'staff';
@@ -226,59 +222,6 @@ export function ReusableCardManager<T extends BaseCardData>({
     
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
-     useEffect(() => {
-        if (isEditing || isLoadingData || !gridRef.current) return;
-
-        const updatePositions = () => {
-            const newPositions: Record<string, { top: number; left: number }> = {};
-            const gridRect = gridRef.current?.getBoundingClientRect();
-            if (!gridRect) return;
-            
-            validDbData.forEach(item => {
-                const ref = cardRefs.current[item.id];
-                if (ref?.current) {
-                    const rect = ref.current.getBoundingClientRect();
-                    const buttonContainerRef = document.getElementById(`buttons-${item.id}`);
-                    if (!buttonContainerRef) return;
-        
-                    const buttonContainerHeight = buttonContainerRef.offsetHeight;
-                    
-                    const containerWidth = 110;
-                    const containerOffset = 15;
-                    
-                    newPositions[item.id] = {
-                        top: (rect.top - gridRect.top) + (rect.height / 2) - (buttonContainerHeight / 2),
-                        left: (rect.left - gridRect.left) - containerWidth - containerOffset,
-                    };
-                }
-            });
-            setButtonPositions(newPositions);
-        };
-        
-        updatePositions();
-        
-        const resizeObserver = new ResizeObserver(updatePositions);
-        const mutationObserver = new MutationObserver(updatePositions);
-
-        const gridElement = gridRef.current;
-        if (gridElement) {
-            resizeObserver.observe(gridElement);
-            mutationObserver.observe(gridElement, { childList: true, subtree: true, attributes: true, characterData: true });
-        }
-        
-        window.addEventListener('resize', updatePositions);
-        window.addEventListener('scroll', updatePositions, true);
-
-        return () => {
-            if (gridElement) {
-                resizeObserver.unobserve(gridElement);
-                mutationObserver.disconnect();
-            }
-            window.removeEventListener('resize', updatePositions);
-            window.removeEventListener('scroll', updatePositions, true);
-        };
-    }, [validDbData, isEditing, isLoadingData]);
-
     const partnerEditorOverlay = isPartnerManager && isEditing ? (
         <div className="pointer-events-none absolute inset-0 z-10">
              <div className="flex h-full w-full justify-end">
@@ -324,21 +267,56 @@ export function ReusableCardManager<T extends BaseCardData>({
         const activeItems = validDbData.filter(i => !i.hidden);
         const hiddenItems = validDbData.filter(i => i.hidden);
     
-        [...activeItems, ...hiddenItems].forEach(item => {
-            if (!cardRefs.current[item.id]) {
-                cardRefs.current[item.id] = createRef<HTMLDivElement>();
-            }
-        });
-    
         const renderGrid = (items: T[], title: string, description: string) => {
             if (items.length === 0) return null;
             return (
                 <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
-                    <div className="relative mt-8 grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-8 gap-y-16">
+                    <div className="relative grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-24 gap-y-16 mt-8">
                         {items.map((item) => (
-                             <div key={item.id} ref={cardRefs.current[item.id]} className={cn("flex justify-center w-full", (item as any).fullWidth && "sm:col-span-2")}>
+                             <div key={item.id} className={cn("relative flex justify-center w-full", (item as any).fullWidth && "sm:col-span-2")}>
+                                <div
+                                    id={`buttons-${item.id}`}
+                                    className="absolute z-20 flex flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm top-1/2 -translate-y-1/2 left-0 -translate-x-[calc(100%+15px)] w-[110px]"
+                                >
+                                    <p className="text-xs font-bold text-center text-foreground">Verschieben</p>
+                                    <div className="grid grid-cols-2 gap-1 w-full">
+                                        <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'left')}><ArrowLeft /></Button>
+                                        <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'right')}><ArrowRight /></Button>
+                                    </div>
+                                    <div className="w-full border-t my-1.5" />
+
+                                    {isStaffManager && (
+                                        <Button
+                                            variant={(item as any).fullWidth ? "default" : "outline"}
+                                            size="sm"
+                                            className="w-full"
+                                            onClick={() => handleToggleFullWidth(item)}
+                                        >
+                                            <RectangleHorizontal className="mr-2" />
+                                            Zeile
+                                        </Button>
+                                    )}
+
+                                    <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}>
+                                        <Pencil className="mr-2" /> Bearbeiten
+                                    </Button>
+                                    
+                                    {item.hidden ? (
+                                        <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
+                                            <Eye className="mr-2" /> Einblenden
+                                        </Button>
+                                    ) : (
+                                        <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
+                                            <EyeOff className="mr-2" /> Ausblenden
+                                        </Button>
+                                    )}
+
+                                    <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                                        <Trash2 className="mr-2" /> Löschen
+                                    </Button>
+                                </div>
                                 <DisplayCardComponent {...item} />
                             </div>
                         ))}
@@ -356,7 +334,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     };
 
     return (
-        <div id="card-manager-container" className="flex flex-1 flex-col items-start gap-8 p-4 sm:px-6 sm:py-8 relative">
+        <div id="card-manager-container" className="flex flex-1 flex-col items-start gap-8 p-4 sm:px-6 sm:py-8">
             <Card className="w-full">
                 <CardHeader>
                     <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
@@ -404,7 +382,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                         />
                     )}
 
-                    <div className="relative" ref={gridRef}>
+                    <div className="relative">
                         {isLoadingData && (
                             <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
                                 {Array.from({ length: 4 }).map((_, index) => (
@@ -425,64 +403,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                             </Alert>
                         )}
                          {!isLoadingData && !isEditing && (
-                           <>
-                             {renderCardGroups()}
-                           </>
+                           renderCardGroups()
                         )}
-                        {!isLoadingData && !isEditing && validDbData.map((item) => {
-                            const pos = buttonPositions[item.id];
-                            if (!pos) return null;
-
-                            return (
-                                <div
-                                    id={`buttons-${item.id}`}
-                                    key={`buttons-${item.id}`}
-                                    className="absolute z-20 flex flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm"
-                                    style={{
-                                        top: pos.top,
-                                        left: pos.left,
-                                        width: `110px`,
-                                    }}
-                                >
-                                    <p className="text-xs font-bold text-center text-foreground">Verschieben</p>
-                                    <div className="grid grid-cols-2 gap-1 w-full">
-                                        <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'left')}><ArrowLeft /></Button>
-                                        <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'right')}><ArrowRight /></Button>
-                                    </div>
-                                    <div className="w-full border-t my-1.5" />
-
-                                    {isStaffManager && (
-                                        <Button
-                                            variant={(item as any).fullWidth ? "default" : "outline"}
-                                            size="sm"
-                                            className="w-full"
-                                            onClick={() => handleToggleFullWidth(item)}
-                                        >
-                                            <RectangleHorizontal className="mr-2" />
-                                            Zeile
-                                        </Button>
-                                    )}
-
-                                    <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}>
-                                        <Pencil className="mr-2" /> Bearbeiten
-                                    </Button>
-                                    
-                                    {item.hidden ? (
-                                        <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
-                                            <Eye className="mr-2" /> Einblenden
-                                        </Button>
-                                    ) : (
-                                        <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
-                                            <EyeOff className="mr-2" /> Ausblenden
-                                        </Button>
-                                    )}
-
-                                    <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                                        <Trash2 className="mr-2" /> Löschen
-                                    </Button>
-                                </div>
-                            );
-                        })}
                     </div>
                 </CardContent>
             </Card>
