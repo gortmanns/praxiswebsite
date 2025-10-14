@@ -278,7 +278,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                              <div key={item.id} className={cn("relative w-full max-w-sm", (item as any).fullWidth && "sm:col-span-2 justify-self-center")}>
                                 <div
                                     id={`buttons-${item.id}`}
-                                    className="absolute z-20 flex flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm top-1/2 -translate-y-1/2 left-full ml-4 w-[110px]"
+                                    className="absolute z-20 flex flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm top-1/2 -translate-y-1/2 left-full ml-4 w-[125px]"
                                 >
                                     <p className="text-xs font-bold text-center text-foreground">Verschieben</p>
                                     <div className="grid grid-cols-2 gap-1 w-full">
