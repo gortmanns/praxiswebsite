@@ -259,10 +259,6 @@ export default function BannerPage() {
                     <h1 className="font-headline text-2xl font-bold tracking-tight text-primary">Banner anpassen</h1>
                     <p className="text-muted-foreground">Hier können Sie den Text und die Anzeige der Banner steuern.</p>
                 </div>
-                <Button onClick={handleSave}>
-                    <Save className="mr-2" />
-                    Einstellungen speichern
-                </Button>
             </div>
 
             {notification && (
@@ -277,12 +273,12 @@ export default function BannerPage() {
 
             <div className="w-full space-y-6">
                  {/* Blue Banner */}
-                 <Card>
-                    <CardHeader>
-                        <CardTitle className="text-blue-500">Info-Banner (Blau)</CardTitle>
-                        <CardDescription>Für benutzerdefinierte Ankündigungen. Wird nur im angegebenen Zeitraum angezeigt.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4 bg-muted p-6 rounded-lg">
+                 <div className="border-2 border-accent rounded-lg">
+                    <div className="p-6">
+                        <h3 className="text-blue-500 font-bold text-lg">Info-Banner (Blau)</h3>
+                        <p className="text-muted-foreground text-sm">Für benutzerdefinierte Ankündigungen. Wird nur im angegebenen Zeitraum angezeigt.</p>
+                    </div>
+                    <div className="space-y-4 bg-background p-6 rounded-b-lg">
                          <div className="flex items-center space-x-2">
                             <Switch
                                 id="isBlueBannerActive"
@@ -348,24 +344,30 @@ export default function BannerPage() {
                                 </Popover>
                             </div>
                         </div>
-                        <div className="space-y-2">
-                            <Label>Trennzeichen-Stil</Label>
-                            <SeparatorSelect 
-                                value={settings.blueBannerSeparatorStyle} 
-                                onValueChange={(value) => handleInputChange('blueBannerSeparatorStyle', value)} 
-                            />
+                        <div className="flex items-end gap-4">
+                            <div className="space-y-2">
+                                <Label>Trennzeichen-Stil</Label>
+                                <SeparatorSelect 
+                                    value={settings.blueBannerSeparatorStyle} 
+                                    onValueChange={(value) => handleInputChange('blueBannerSeparatorStyle', value)} 
+                                />
+                            </div>
+                             <Button onClick={handleSave}>
+                                <Save className="mr-2" />
+                                Speichern
+                            </Button>
                         </div>
                         <BannerPreview text={settings.blueBannerText} color="blue" separatorStyle={settings.blueBannerSeparatorStyle} />
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
 
                 {/* Yellow Banner */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-yellow-500">Vorankündigungs-Banner (Gelb)</CardTitle>
-                        <CardDescription>Wird eine bestimmte Anzahl Tage vor den Praxisferien angezeigt.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4 bg-muted p-6 rounded-lg">
+                <div className="border-2 border-accent rounded-lg">
+                    <div className="p-6">
+                        <h3 className="text-yellow-500 font-bold text-lg">Vorankündigungs-Banner (Gelb)</h3>
+                        <p className="text-muted-foreground text-sm">Wird eine bestimmte Anzahl Tage vor den Praxisferien angezeigt.</p>
+                    </div>
+                    <div className="space-y-4 bg-background p-6 rounded-b-lg">
                         <div className="space-y-2">
                             <Label htmlFor="preHolidayDays">Wie viele Tage vorher anzeigen?</Label>
                             <Input
@@ -385,24 +387,30 @@ export default function BannerPage() {
                             />
                              <p className="text-xs text-muted-foreground">Platzhalter: `{'`{start}`'}` und `{'`{end}`'}` werden automatisch ersetzt.</p>
                         </div>
-                        <div className="space-y-2">
-                            <Label>Trennzeichen-Stil</Label>
-                            <SeparatorSelect 
-                                value={settings.yellowBannerSeparatorStyle} 
-                                onValueChange={(value) => handleInputChange('yellowBannerSeparatorStyle', value)} 
-                            />
+                        <div className="flex items-end gap-4">
+                            <div className="space-y-2">
+                                <Label>Trennzeichen-Stil</Label>
+                                <SeparatorSelect 
+                                    value={settings.yellowBannerSeparatorStyle} 
+                                    onValueChange={(value) => handleInputChange('yellowBannerSeparatorStyle', value)} 
+                                />
+                            </div>
+                            <Button onClick={handleSave}>
+                                <Save className="mr-2" />
+                                Speichern
+                            </Button>
                         </div>
                         <BannerPreview text={previewTexts.yellow} color="yellow" separatorStyle={settings.yellowBannerSeparatorStyle} />
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
 
                 {/* Red Banner */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-red-500">Ferien-Banner (Rot)</CardTitle>
-                        <CardDescription>Wird während der Praxisferien angezeigt.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4 bg-muted p-6 rounded-lg">
+                <div className="border-2 border-accent rounded-lg">
+                    <div className="p-6">
+                        <h3 className="text-red-500 font-bold text-lg">Ferien-Banner (Rot)</h3>
+                        <p className="text-muted-foreground text-sm">Wird während der Praxisferien angezeigt.</p>
+                    </div>
+                    <div className="space-y-4 bg-background p-6 rounded-b-lg">
                        <div className="space-y-2">
                             <Label htmlFor="redBannerText">Bannertext</Label>
                             <Textarea
@@ -413,20 +421,24 @@ export default function BannerPage() {
                             />
                              <p className="text-xs text-muted-foreground">Platzhalter: `{'`{start}`'}` und `{'`{end}`'}` werden automatisch ersetzt.</p>
                         </div>
-                        <div className="space-y-2">
-                            <Label>Trennzeichen-Stil</Label>
-                            <SeparatorSelect 
-                                value={settings.redBannerSeparatorStyle} 
-                                onValueChange={(value) => handleInputChange('redBannerSeparatorStyle', value)} 
-                            />
+                         <div className="flex items-end gap-4">
+                            <div className="space-y-2">
+                                <Label>Trennzeichen-Stil</Label>
+                                <SeparatorSelect 
+                                    value={settings.redBannerSeparatorStyle} 
+                                    onValueChange={(value) => handleInputChange('redBannerSeparatorStyle', value)} 
+                                />
+                            </div>
+                             <Button onClick={handleSave}>
+                                <Save className="mr-2" />
+                                Speichern
+                            </Button>
                         </div>
                         <BannerPreview text={previewTexts.red} color="red" separatorStyle={settings.redBannerSeparatorStyle} />
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
 
             </div>
         </div>
     );
 }
-
-    
