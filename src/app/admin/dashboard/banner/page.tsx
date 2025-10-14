@@ -90,14 +90,14 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
     };
 
     const containerDiv = (
-         <div className={cn("relative w-full border", small ? "rounded-md" : "rounded-lg mt-8", bannerClasses[color])}>
+        <div className={cn("relative w-full border", small ? "rounded-md" : "rounded-lg mt-8", bannerClasses[color])}>
             <div className={cn("flex w-full items-center overflow-hidden h-12")}>
-                <div className="marquee-preview flex min-w-full shrink-0 items-center justify-around">
+                <div className="flex min-w-full shrink-0 items-center justify-around marquee-preview">
                     {Array.from({ length: 10 }).map((_, i) => (
                         <React.Fragment key={i}>
                             <div className="flex shrink-0 items-center">
-                                <Info className={cn("shrink-0", "mr-3 h-5 w-5")} />
-                                <p className={cn("whitespace-nowrap font-semibold text-sm")}>{text}</p>
+                                <Info className="mr-3 h-5 w-5 shrink-0" />
+                                <p className="whitespace-nowrap text-sm font-semibold">{text}</p>
                             </div>
                             <SeparatorPreview style={separatorStyle} />
                         </React.Fragment>
@@ -108,11 +108,12 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
     );
 
     if (small) {
-        return <div className="w-full">{containerDiv}</div>
+        return <div className="w-full">{containerDiv}</div>;
     }
 
     return containerDiv;
 };
+
 
 const SeparatorSelect = ({ value, onValueChange }: { value?: SeparatorStyle, onValueChange: (value: SeparatorStyle) => void }) => {
     const options: { value: SeparatorStyle, label: React.ReactNode }[] = [
@@ -329,8 +330,8 @@ export default function BannerPage() {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead className="w-full">Vorschau</TableHead>
-                                        <TableHead className="w-[150px]">Zeitraum</TableHead>
-                                        <TableHead className="text-right w-[110px]">Aktionen</TableHead>
+                                        <TableHead className="whitespace-nowrap">Zeitraum</TableHead>
+                                        <TableHead className="text-right">Aktionen</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -350,8 +351,8 @@ export default function BannerPage() {
                                                         </div>
                                                     )}
                                                     <div className="flex gap-2 justify-end">
-                                                        <Button variant="outline" size="sm" onClick={() => handleEditInfoBanner(banner)}><Pencil className="h-4 w-4" /></Button>
-                                                        <Button variant="destructive" size="sm" onClick={() => openDeleteConfirmation(banner.id, banner.text)}><Trash2 className="h-4 w-4" /></Button>
+                                                        <Button variant="outline" size="icon" onClick={() => handleEditInfoBanner(banner)}><Pencil className="h-4 w-4" /></Button>
+                                                        <Button variant="destructive" size="icon" onClick={() => openDeleteConfirmation(banner.id, banner.text)}><Trash2 className="h-4 w-4" /></Button>
                                                     </div>
                                                 </div>
                                             </TableCell>
