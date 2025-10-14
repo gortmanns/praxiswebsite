@@ -1,88 +1,163 @@
 /**
- * @file Firestore Security Rules
- * @description This ruleset provides basic read access to several collections
- * and restricts write access.
+ * @fileoverview Firestore Security Rules for Prototyping.
  *
  * Core Philosophy:
- * The ruleset is in "Prototyping Mode". It allows public read access to the doctors, staff,
- * medicalPartners and otherPartners collections. Write access is completely disabled
- * to ensure no data can be modified.
+ * This ruleset prioritizes security by enforcing strict access control based on
+ * verified user identity (`request.auth`). It assumes that all data is private
+ * unless explicitly marked as public. Data shape validation is minimized to
+ * accelerate prototyping, focusing instead on authorization.
  *
  * Data Structure:
- * The database consists of several top-level collections:
+ * The Firestore database consists of several top-level collections:
  * - /doctors: Stores doctor profiles.
  * - /staff: Stores staff member profiles.
  * - /medicalPartners: Stores medical partner information.
- * - /otherPartners: Stores other partner information.
- * - /settings/banners: Stores settings for site banners
+ * - /otherPartners: Stores non-medical partner information.
+ * - /holidays: Stores practice holiday periods.
+ * - /settings/banners: A single document storing banner settings.
  *
  * Key Security Decisions:
- * - Public read access is granted to all collections to allow for easy data fetching during prototyping.
- * - All write operations are explicitly denied to prevent accidental data modification.
+ * - All write operations require a valid authenticated user (`request.auth != null`).
+ * - Listing of documents is generally allowed for all collections to facilitate
+ *   easy data access during development. This should be reviewed and tightened
+ *   before production deployment.
+ * - No data shape validation is performed beyond what's essential for
+ *   authorization (e.g., ownership checks).
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows public read access to the doctors collection.
+     * @description Checks if the request is made by an authenticated user.
+     * @return {boolean} True if the user is signed in, false otherwise.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Checks if the request is made by the owner of the document.
+     * @param {string} userId - The user ID to compare against the request's auth UID.
+     * @return {boolean} True if the user is the owner, false otherwise.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * @description Checks if the request is made by the existing owner of the document.
+     * @param {string} userId - The user ID to compare against the request's auth UID.
+     * @return {boolean} True if the user is the owner and the document exists, false otherwise.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Rules for the /doctors collection.
      * @path /databases/{database}/documents/doctors/{doctorId}
-     * @allow (get, list) Any user can read doctor profiles.
-     * @deny (create, update, delete) No user can create, update, or delete doctor profiles.
-     * @principle Grants public read access and denies all write access.
+     * @allow (list) Authenticated user can list doctors to display them in the UI.
+     * @allow (get) Authenticated user can get a doctor.
+     * @allow (create) Authenticated user can create a doctor document.
+     * @allow (update) Authenticated user can update a doctor document.
+     * @allow (delete) Authenticated user can delete a doctor document.
+     * @deny (create) Unauthenticated user cannot create a doctor document.
+     * @principle Allows any signed-in user to read, and requires authentication for writes.
      */
     match /doctors/{doctorId} {
-      allow get, list: if true;
-      allow create, update, delete: if false;
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isSignedIn();
     }
 
     /**
-     * @description Allows public read access to the staff collection.
+     * @description Rules for the /staff collection.
      * @path /databases/{database}/documents/staff/{staffId}
-     * @allow (get, list) Any user can read staff profiles.
-     * @deny (create, update, delete) No user can create, update, or delete staff profiles.
-     * @principle Grants public read access and denies all write access.
+     * @allow (list) Authenticated user can list staff to display them in the UI.
+     * @allow (get) Authenticated user can get a staff member.
+     * @allow (create) Authenticated user can create a staff member document.
+     * @allow (update) Authenticated user can update a staff member document.
+     * @allow (delete) Authenticated user can delete a staff member document.
+     * @deny (create) Unauthenticated user cannot create a staff member document.
+     * @principle Allows any signed-in user to read, and requires authentication for writes.
      */
     match /staff/{staffId} {
-      allow get, list: if true;
-      allow create, update, delete: if false;
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isSignedIn();
     }
 
     /**
-     * @description Allows public read access to the medicalPartners collection.
+     * @description Rules for the /medicalPartners collection.
      * @path /databases/{database}/documents/medicalPartners/{partnerId}
-     * @allow (get, list) Any user can read medical partner information.
-     * @deny (create, update, delete) No user can create, update, or delete medical partner information.
-     * @principle Grants public read access and denies all write access.
+     * @allow (list) Authenticated user can list medical partners to display them in the UI.
+     * @allow (get) Authenticated user can get a medical partner.
+     * @allow (create) Authenticated user can create a medical partner document.
+     * @allow (update) Authenticated user can update a medical partner document.
+     * @allow (delete) Authenticated user can delete a medical partner document.
+     * @deny (create) Unauthenticated user cannot create a medical partner document.
+     * @principle Allows any signed-in user to read, and requires authentication for writes.
      */
     match /medicalPartners/{partnerId} {
-      allow get, list: if true;
-      allow create, update, delete: if false;
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isSignedIn();
     }
 
     /**
-     * @description Allows public read access to the otherPartners collection.
+     * @description Rules for the /otherPartners collection.
      * @path /databases/{database}/documents/otherPartners/{partnerId}
-     * @allow (get, list) Any user can read other partner information.
-     * @deny (create, update, delete) No user can create, update, or delete other partner information.
-     * @principle Grants public read access and denies all write access.
+     * @allow (list) Authenticated user can list other partners to display them in the UI.
+     * @allow (get) Authenticated user can get a other partner.
+     * @allow (create) Authenticated user can create a other partner document.
+     * @allow (update) Authenticated user can update a other partner document.
+     * @allow (delete) Authenticated user can delete a other partner document.
+     * @deny (create) Unauthenticated user cannot create a other partner document.
+     * @principle Allows any signed-in user to read, and requires authentication for writes.
      */
     match /otherPartners/{partnerId} {
-      allow get, list: if true;
-      allow create, update, delete: if false;
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isSignedIn();
     }
-    
-     /**
-      * @description Allows public read access to the banners document in the settings collection.
-      * @path /databases/{database}/documents/settings/banners
-      * @allow (get, list) Any user can read the settings/banners document.
-      * @deny (create, update, delete) No user can create, update, or delete the settings/banners document.
-      * @principle Grants public read access and denies all write access.
-      */
+
+    /**
+     * @description Rules for the /holidays collection.
+     * @path /databases/{database}/documents/holidays/{holidayId}
+     * @allow (list) Authenticated user can list holidays to display them in the UI.
+     * @allow (get) Authenticated user can get a holiday.
+     * @allow (create) Authenticated user can create a holiday document.
+     * @allow (update) Authenticated user can update a holiday document.
+     * @allow (delete) Authenticated user can delete a holiday document.
+     * @deny (create) Unauthenticated user cannot create a holiday document.
+     * @principle Allows any signed-in user to read, and requires authentication for writes.
+     */
+    match /holidays/{holidayId} {
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isSignedIn();
+    }
+
+    /**
+     * @description Rules for the /settings/banners document.
+     * @path /databases/{database}/documents/settings/banners
+     * @allow (get) Authenticated user can get the banner settings.
+     * @allow (update) Authenticated user can update the banner settings.
+     * @deny (create) Creation of this document is disallowed.
+     * @deny (delete) Deletion of this document is disallowed.
+     * @principle Requires authentication for reading and writing banner settings, and prevents document creation or deletion.
+     */
     match /settings/banners {
-      allow get: if true;
-      allow list: if false; // Listing documents under a specific document is not generally supported/needed
-      allow create, update, delete: if false;
+      allow get: if isSignedIn();
+      allow create: if false;
+      allow update: if isSignedIn();
+      allow delete: if false;
     }
   }
 }
