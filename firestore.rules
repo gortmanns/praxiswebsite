@@ -1,139 +1,103 @@
 /**
- * @file Firestore Security Rules
- * @description This ruleset secures the practice data stored in Firestore, including doctor profiles,
- * staff information, partner details, holiday schedules, and banner settings. It employs a strict
- * read-only policy for all data, ensuring that only authenticated users can access the information,
- * but does not restrict the data itself, in line with prototyping goals.
+ * @fileoverview Firestore Security Rules for the practice data model.
+ *
+ * Core Philosophy:
+ * This ruleset is designed for the prototyping phase and prioritizes security by default,
+ * restricting all access unless explicitly allowed. It assumes an administrative backend
+ * will manage the data, so it generally denies direct client writes. Read access is generally
+ * public to facilitate data consumption, but can be restricted on a per-collection basis.
  *
  * Data Structure:
- * - /doctors: Collection of doctor profiles.
- * - /staff: Collection of staff member profiles.
- * - /medicalPartners: Collection of medical partner information.
- * - /otherPartners: Collection of other partner information.
- * - /holidays: Collection of holiday periods.
- * - /settings/banners: Document containing all banner-related settings.
+ * The Firestore database contains several top-level collections: `doctors`, `staff`,
+ * `medicalPartners`, `otherPartners`, and `holidays`.  A single document at `settings/banners`
+ * stores global banner settings.
  *
  * Key Security Decisions:
- * - Read-Only Access: All collections are configured to allow read-only access (get, list) to any authenticated user.
- *   Write access (create, update, delete) is explicitly denied.
- * - No User-Specific Data: This ruleset assumes no user-specific data or ownership. If user-specific data is introduced,
- *   the rules will need to be modified to enforce ownership or role-based access control.
+ * - No user listing is allowed to prevent information disclosure.
+ * - All write access is denied by default, assuming an administrative backend.
+ * - Read access is public by default for most collections to facilitate rapid prototyping,
+ *   but this can be overridden as needed.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows any authenticated user to read doctor profiles. Writes are not allowed.
+     * @description Controls access to the 'doctors' collection.
      * @path /doctors/{doctorId}
-     * @allow (get, list): An authenticated user can retrieve or list doctor profiles.
-     * @deny (create, update, delete): No user can create, update, or delete doctor profiles.
-     * @principle Enforces read-only access for doctors collection.
+     * @allow get, list: Any user can read doctor profiles.
+     * @allow create, update, delete: No direct client writes allowed.
+     * @deny create, update, delete: All clients are denied from creating, updating, or deleting doctors.
+     * @principle Public read access, admin-only writes.
      */
     match /doctors/{doctorId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+      allow get, list: if true;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows any authenticated user to read staff member profiles. Writes are not allowed.
+     * @description Controls access to the 'staff' collection.
      * @path /staff/{staffId}
-     * @allow (get, list): An authenticated user can retrieve or list staff profiles.
-     * @deny (create, update, delete): No user can create, update, or delete staff profiles.
-     * @principle Enforces read-only access for staff collection.
+     * @allow get, list: Any user can read staff profiles.
+     * @allow create, update, delete: No direct client writes allowed.
+     * @deny create, update, delete: All clients are denied from creating, updating, or deleting staff members.
+     * @principle Public read access, admin-only writes.
      */
     match /staff/{staffId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+      allow get, list: if true;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows any authenticated user to read medical partner information. Writes are not allowed.
-     * @path /medicalPartners/{partnerId}
-     * @allow (get, list): An authenticated user can retrieve or list medical partner information.
-     * @deny (create, update, delete): No user can create, update, or delete medical partner information.
-     * @principle Enforces read-only access for medicalPartners collection.
+     * @description Controls access to the 'medicalPartners' collection.
+     * @path /medicalPartners/{medicalPartnerId}
+     * @allow get, list: Any user can read medical partner profiles.
+     * @allow create, update, delete: No direct client writes allowed.
+     * @deny create, update, delete: All clients are denied from creating, updating, or deleting medical partners.
+     * @principle Public read access, admin-only writes.
      */
-    match /medicalPartners/{partnerId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+    match /medicalPartners/{medicalPartnerId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows any authenticated user to read other partner information. Writes are not allowed.
-     * @path /otherPartners/{partnerId}
-     * @allow (get, list): An authenticated user can retrieve or list other partner information.
-     * @deny (create, update, delete): No user can create, update, or delete other partner information.
-     * @principle Enforces read-only access for otherPartners collection.
+     * @description Controls access to the 'otherPartners' collection.
+     * @path /otherPartners/{otherPartnerId}
+     * @allow get, list: Any user can read other partner profiles.
+     * @allow create, update, delete: No direct client writes allowed.
+     * @deny create, update, delete: All clients are denied from creating, updating, or deleting other partners.
+     * @principle Public read access, admin-only writes.
      */
-    match /otherPartners/{partnerId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+    match /otherPartners/{otherPartnerId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows any authenticated user to read holiday information. Writes are not allowed.
+     * @description Controls access to the 'holidays' collection.
      * @path /holidays/{holidayId}
-     * @allow (get, list): An authenticated user can retrieve or list holiday information.
-     * @deny (create, update, delete): No user can create, update, or delete holiday information.
-     * @principle Enforces read-only access for holidays collection.
+     * @allow get, list: Any user can read holiday information.
+     * @allow create, update, delete: No direct client writes allowed.
+     * @deny create, update, delete: All clients are denied from creating, updating, or deleting holidays.
+     * @principle Public read access, admin-only writes.
      */
     match /holidays/{holidayId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+        allow get, list: if true;
+        allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows any authenticated user to read banner settings. Writes are not allowed.
+     * @description Controls access to the 'banners' document within the 'settings' collection.
      * @path /settings/banners
-     * @allow (get): An authenticated user can retrieve the banner settings.
-     * @deny (list): Listing documents in the `settings` collection is not permitted.
-     * @deny (create, update, delete): No user can create, update, or delete banner settings.
-     * @principle Enforces read-only access for the banners document.
+     * @allow get: Any user can read the banner settings.
+     * @allow create, update, delete: No direct client writes allowed.
+     * @deny create, update, delete: All clients are denied from creating, updating, or deleting banner settings.
+     * @principle Public read access, admin-only writes.
      */
     match /settings/banners {
-      allow get: if isSignedIn();
-      allow list: if false;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+        allow get: if true;
+        allow create, update, delete: if false;
     }
-    /**
-     * @description Allows any authenticated user to read infoBanners. Writes are not allowed.
-     * @path /infoBanners/{infoBannerId}
-     * @allow (get, list): An authenticated user can retrieve or list infoBanners information.
-     * @deny (create, update, delete): No user can create, update, or delete infoBanners information.
-     * @principle Enforces read-only access for infoBanners collection.
-     */
-    match /infoBanners/{infoBannerId} {
-        allow get: if isSignedIn();
-        allow list: if isSignedIn();
-        allow create: if false;
-        allow update: if false;
-        allow delete: if false;
-    }
-
-
   }
-
-  // Helper function to determine if a user is signed in
-  function isSignedIn() {
-    return request.auth != null;
-  }
-
 }
