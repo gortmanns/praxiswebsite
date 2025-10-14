@@ -1,7 +1,8 @@
 
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -89,15 +90,25 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
         blue: 'bg-blue-500 border-blue-600 text-white',
     };
     
-    const animationDuration = color === 'blue' && small ? '72s' : '60s';
-    const fontSizeClass = color === 'blue' && small ? 'text-xl' : 'text-base';
+    const fontSizeClass = color === 'blue' && small ? 'text-xl' : 'text-sm';
+    const marqueeRef = useRef<HTMLDivElement>(null);
+    const [animationDuration, setAnimationDuration] = useState('60s');
 
+    useEffect(() => {
+        if (marqueeRef.current) {
+            const contentWidth = marqueeRef.current.scrollWidth / 2; // We have 2 copies of the content
+            const speed = 50; // pixels per second
+            const duration = contentWidth / speed;
+            setAnimationDuration(`${duration}s`);
+        }
+    }, [text, separatorStyle]);
 
-    const containerDiv = (
+    return (
         <div className={cn("relative w-full border", small ? "rounded-md" : "rounded-lg mt-8", bannerClasses[color])}>
             <div className={cn("flex w-full items-center overflow-hidden h-12")}>
                 <div 
                     className="flex min-w-full shrink-0 items-center justify-around marquee-preview"
+                    ref={marqueeRef}
                     style={{ animationDuration }}
                 >
                     {Array.from({ length: 10 }).map((_, i) => (
@@ -113,12 +124,6 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
             </div>
         </div>
     );
-
-    if (small) {
-        return <div className="w-full">{containerDiv}</div>;
-    }
-
-    return containerDiv;
 };
 
 
@@ -337,7 +342,7 @@ export default function BannerPage() {
                                     <TableRow>
                                         <TableHead className="w-full">Vorschau</TableHead>
                                         <TableHead className="whitespace-nowrap">Zeitraum</TableHead>
-                                        <TableHead className="text-right">Aktionen</TableHead>
+                                        <TableHead className="text-right whitespace-nowrap">Aktionen</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -480,7 +485,7 @@ export default function BannerPage() {
                     to { transform: translateX(-50%); }
                 }
                 .marquee-preview {
-                    animation: marquee-preview 60s linear infinite;
+                    animation: marquee-preview linear infinite;
                 }
             `}</style>
         </TooltipProvider>

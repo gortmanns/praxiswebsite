@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, collection, query, where, orderBy, Timestamp } from 'firebase/firestore';
 import { format, differenceInDays, isWithinInterval, addDays } from 'date-fns';
@@ -129,6 +129,18 @@ export function HolidayBanner() {
     
     useEffect(() => { if(bannerInfo) { setIsVisible(true); } }, [bannerInfo]);
 
+    const marqueeRef = useRef<HTMLDivElement>(null);
+    const [animationDuration, setAnimationDuration] = useState('60s');
+
+    useEffect(() => {
+        if (marqueeRef.current) {
+            const contentWidth = marqueeRef.current.scrollWidth / 2; // We have 2 copies of the content
+            const speed = 50; // pixels per second
+            const duration = contentWidth / speed;
+            setAnimationDuration(`${duration}s`);
+        }
+    }, [bannerInfo?.text, bannerInfo?.separatorStyle]);
+
     if (!bannerInfo || !isVisible) return null;
 
     const bannerClasses = {
@@ -140,7 +152,11 @@ export function HolidayBanner() {
     return (
         <div className={cn("relative w-full border-b", bannerClasses[bannerInfo.color])}>
             <div className="flex h-12 w-full items-center overflow-hidden">
-                <div className="marquee flex min-w-full shrink-0 items-center justify-around">
+                <div 
+                    className="marquee flex min-w-full shrink-0 items-center justify-around"
+                    ref={marqueeRef}
+                    style={{ animationDuration }}
+                >
                     {Array.from({ length: 10 }).map((_, i) => (
                         <React.Fragment key={i}>
                             <div className="flex shrink-0 items-center">
