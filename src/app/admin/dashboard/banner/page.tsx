@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { format, addDays } from 'date-fns';
+import { format, addDays, isWithinInterval } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { Calendar as CalendarIcon, Save, AlertCircle, Info, RotateCcw, Plus, Trash2, Pencil, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -176,12 +176,19 @@ export default function BannerPage() {
         if (upcomingHoliday) {
             const nextDay = addDays(upcomingHoliday.end, 1);
             return {
-                yellow: bannerSettings.yellowBannerText.replace('{name}', upcomingHoliday.name).replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de })).replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })),
-                red: bannerSettings.redBannerText.replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de })).replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })).replace('{next_day}', format(nextDay, 'd. MMMM', { locale: de })),
+                yellow: bannerSettings.yellowBannerText
+                    .replace('{name}', upcomingHoliday.name)
+                    .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
+                    .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })),
+                red: bannerSettings.redBannerText
+                    .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
+                    .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de }))
+                    .replace('{next_day}', format(nextDay, 'd. MMMM', { locale: de })),
             };
         }
         return { yellow: defaultText, red: defaultText };
     }, [upcomingHoliday, bannerSettings.yellowBannerText, bannerSettings.redBannerText]);
+
 
     const handleBannerSettingsChange = (field: keyof BannerSettings, value: any) => setBannerSettings(prev => ({ ...prev, [field]: value }));
     const handleInfoBannerInputChange = (field: keyof InfoBanner, value: any) => setCurrentEditorBanner(prev => ({ ...prev, [field]: value }));
@@ -317,7 +324,7 @@ export default function BannerPage() {
                                 <TableBody>
                                     {infoBanners.map(banner => (
                                         <TableRow key={banner.id} className={cn(isEditing && currentEditorBanner.id === banner.id && "bg-muted/50")}>
-                                            <TableCell>
+                                            <TableCell className="w-full">
                                                 <BannerPreview text={banner.text} color="blue" separatorStyle={banner.separatorStyle} small />
                                             </TableCell>
                                             <TableCell className="whitespace-nowrap">{banner.start ? format(banner.start, 'dd.MM.yy', { locale: de }) : ''} - {banner.end ? format(banner.end, 'dd.MM.yy', { locale: de }) : ''}</TableCell>
@@ -371,3 +378,5 @@ export default function BannerPage() {
         </TooltipProvider>
     );
 }
+
+    
