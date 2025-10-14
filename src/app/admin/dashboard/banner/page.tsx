@@ -189,13 +189,13 @@ export default function BannerPage() {
             const nextDay = addDays(upcomingHoliday.end, 1);
             return {
                 yellow: settings.yellowBannerText
-                    .replace('{name}', upcomingHoliday.name)
-                    .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
-                    .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })),
+                    .replace('<Name nächste Ferien>', upcomingHoliday.name)
+                    .replace('<erster Ferientag>', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
+                    .replace('<letzer Ferientag>', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })),
                 red: settings.redBannerText
-                    .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
-                    .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de }))
-                    .replace('{next_day}', format(nextDay, 'd. MMMM', { locale: de })),
+                    .replace('<erster Ferientag>', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
+                    .replace('<letzter Ferientag>', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de }))
+                    .replace('<letzter Ferientag +1>', format(nextDay, 'd. MMMM', { locale: de })),
             };
         }
         return { yellow: defaultText, red: defaultText };
@@ -414,7 +414,7 @@ export default function BannerPage() {
                                             </Button>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                            <p>{initialSettings.yellowBannerText.replace('{name}', 'Name nächste Ferien').replace('{start}', 'erster Ferientag').replace('{end}', 'letzer Ferientag')}</p>
+                                            <p>{initialSettings.yellowBannerText.replace('<Name nächste Ferien>', 'Name nächste Ferien').replace('<erster Ferientag>', 'erster Ferientag').replace('<letzer Ferientag>', 'letzer Ferientag')}</p>
                                         </TooltipContent>
                                     </Tooltip>
                                 </div>
@@ -463,7 +463,7 @@ export default function BannerPage() {
                                             </Button>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                            <p>{initialSettings.redBannerText.replace('{start}', 'erster Ferientag').replace('{end}', 'letzter Ferientag').replace('{next_day}', 'letzter Ferientag +1')}</p>
+                                            <p>{initialSettings.redBannerText.replace('<erster Ferientag>', 'erster Ferientag').replace('<letzter Ferientag>', 'letzter Ferientag').replace('<letzter Ferientag +1>', 'letzter Ferientag +1')}</p>
                                         </TooltipContent>
                                     </Tooltip>
                                 </div>
@@ -480,5 +480,3 @@ export default function BannerPage() {
         </TooltipProvider>
     );
 }
-
-    
