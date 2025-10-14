@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Header } from '../_components/header';
@@ -6,12 +7,8 @@ import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { Skeleton } from '@/components/ui/skeleton';
 import React, { useMemo } from 'react';
-
-// Temporarily use static data
-const staticHolidays = [
-    { id: '1', name: 'Sommerferien', start: new Date('2024-07-22'), end: new Date('2024-08-04') },
-    { id: '2', name: 'Herbstferien', start: new Date('2024-10-07'), end: new Date('2024-10-13') },
-];
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, where, orderBy, Timestamp } from 'firebase/firestore';
 
 
 interface Holiday {
@@ -26,17 +23,32 @@ function formatDate(date: Date) {
 }
 
 export default function PraxisferienPage() {
-  const isLoading = false; // Set to false as we are using static data
-
-  // Filter and sort static data
-  const sortedHolidays: Holiday[] = useMemo(() => {
+  const firestore = useFirestore();
+  
+  const holidaysQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
     const now = new Date();
     now.setHours(0, 0, 0, 0);
+    return query(
+        collection(firestore, 'holidays'), 
+        where('end', '>=', Timestamp.fromDate(now)),
+        orderBy('end', 'asc')
+    );
+  }, [firestore]);
 
-    return staticHolidays
-      .filter(holiday => holiday.end >= now)
+  const { data: holidaysData, isLoading } = useCollection<{ name: string; start: Timestamp; end: Timestamp; }>(holidaysQuery);
+
+  const sortedHolidays: Holiday[] = useMemo(() => {
+    if (!holidaysData) return [];
+    return holidaysData
+      .map(holiday => ({
+        ...holiday,
+        start: holiday.start.toDate(),
+        end: holiday.end.toDate(),
+      }))
       .sort((a, b) => a.start.getTime() - b.start.getTime());
-  }, []);
+  }, [holidaysData]);
+
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -85,3 +97,5 @@ export default function PraxisferienPage() {
     </div>
   );
 }
+
+    

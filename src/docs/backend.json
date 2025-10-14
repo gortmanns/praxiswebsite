@@ -71,6 +71,18 @@
         "hidden": { "type": "boolean" }
       },
       "required": ["id", "order", "name", "websiteUrl", "logoHtml"]
+    },
+    "Holiday": {
+        "title": "Holiday",
+        "description": "Represents a practice holiday period.",
+        "type": "object",
+        "properties": {
+            "id": { "type": "string", "description": "Unique identifier for the holiday period." },
+            "name": { "type": "string", "description": "Name of the holiday (e.g., Summer Break)." },
+            "start": { "type": "string", "format": "date-time", "description": "Start date of the holiday." },
+            "end": { "type": "string", "format": "date-time", "description": "End date of the holiday." }
+        },
+        "required": ["id", "name", "start", "end"]
     }
   },
   "auth": {
@@ -92,6 +104,12 @@
     "otherPartners": {
       "schema": { "$ref": "#/entities/OtherPartner" },
       "description": "Stores other cooperation partner information."
+    },
+    "holidays": {
+        "schema": { "$ref": "#/entities/Holiday" },
+        "description": "Stores practice holiday periods."
     }
   }
 }
+
+    
