@@ -275,49 +275,51 @@ export function ReusableCardManager<T extends BaseCardData>({
                     <p className="text-sm text-muted-foreground">{description}</p>
                     <div className="relative grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-24 gap-y-16 mt-8">
                         {items.map((item) => (
-                             <div key={item.id} className={cn("relative flex justify-center w-full", (item as any).fullWidth && "sm:col-span-2")}>
-                                <div
-                                    id={`buttons-${item.id}`}
-                                    className="absolute z-20 flex flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm top-1/2 -translate-y-1/2 left-0 -translate-x-[calc(100%+15px)] w-[110px]"
-                                >
-                                    <p className="text-xs font-bold text-center text-foreground">Verschieben</p>
-                                    <div className="grid grid-cols-2 gap-1 w-full">
-                                        <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'left')}><ArrowLeft /></Button>
-                                        <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'right')}><ArrowRight /></Button>
+                             <div key={item.id} className={cn("flex justify-center w-full", (item as any).fullWidth && "sm:col-span-2")}>
+                                <div className="relative w-fit h-fit">
+                                    <div
+                                        id={`buttons-${item.id}`}
+                                        className="absolute z-20 flex flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm top-1/2 -translate-y-1/2 left-0 -translate-x-[calc(100%+15px)] w-[110px]"
+                                    >
+                                        <p className="text-xs font-bold text-center text-foreground">Verschieben</p>
+                                        <div className="grid grid-cols-2 gap-1 w-full">
+                                            <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'left')}><ArrowLeft /></Button>
+                                            <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'right')}><ArrowRight /></Button>
+                                        </div>
+                                        <div className="w-full border-t my-1.5" />
+
+                                        {isStaffManager && (
+                                            <Button
+                                                variant={(item as any).fullWidth ? "default" : "outline"}
+                                                size="sm"
+                                                className="w-full"
+                                                onClick={() => handleToggleFullWidth(item)}
+                                            >
+                                                <RectangleHorizontal className="mr-2" />
+                                                Zeile
+                                            </Button>
+                                        )}
+
+                                        <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}>
+                                            <Pencil className="mr-2" /> Bearbeiten
+                                        </Button>
+                                        
+                                        {item.hidden ? (
+                                            <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
+                                                <Eye className="mr-2" /> Einblenden
+                                            </Button>
+                                        ) : (
+                                            <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
+                                                <EyeOff className="mr-2" /> Ausblenden
+                                            </Button>
+                                        )}
+
+                                        <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                                            <Trash2 className="mr-2" /> Löschen
+                                        </Button>
                                     </div>
-                                    <div className="w-full border-t my-1.5" />
-
-                                    {isStaffManager && (
-                                        <Button
-                                            variant={(item as any).fullWidth ? "default" : "outline"}
-                                            size="sm"
-                                            className="w-full"
-                                            onClick={() => handleToggleFullWidth(item)}
-                                        >
-                                            <RectangleHorizontal className="mr-2" />
-                                            Zeile
-                                        </Button>
-                                    )}
-
-                                    <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}>
-                                        <Pencil className="mr-2" /> Bearbeiten
-                                    </Button>
-                                    
-                                    {item.hidden ? (
-                                        <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
-                                            <Eye className="mr-2" /> Einblenden
-                                        </Button>
-                                    ) : (
-                                        <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
-                                            <EyeOff className="mr-2" /> Ausblenden
-                                        </Button>
-                                    )}
-
-                                    <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                                        <Trash2 className="mr-2" /> Löschen
-                                    </Button>
+                                    <DisplayCardComponent {...item} />
                                 </div>
-                                <DisplayCardComponent {...item} />
                             </div>
                         ))}
                     </div>
