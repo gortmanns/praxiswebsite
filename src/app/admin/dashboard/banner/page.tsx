@@ -13,7 +13,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { Calendar as CalendarIcon, Save, AlertCircle, Info } from 'lucide-react';
+import { Calendar as CalendarIcon, Save, AlertCircle, Info, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, setDoc, serverTimestamp, collection, query, where, orderBy, Timestamp } from 'firebase/firestore';
@@ -296,7 +296,7 @@ export default function BannerPage() {
                                 rows={4}
                             />
                         </div>
-                         <div className="grid grid-cols-2 gap-4">
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="blueBannerStart">Startdatum</Label>
                                  <Popover>
@@ -344,7 +344,7 @@ export default function BannerPage() {
                                 </Popover>
                             </div>
                         </div>
-                        <div className="flex items-end gap-4">
+                        <div className="flex items-end gap-4 pt-2">
                             <div className="space-y-2">
                                 <Label>Trennzeichen-Stil</Label>
                                 <SeparatorSelect 
@@ -353,7 +353,7 @@ export default function BannerPage() {
                                 />
                             </div>
                              <Button onClick={handleSave}>
-                                <Save className="mr-2" />
+                                <Save className="mr-2 h-4 w-4" />
                                 Speichern
                             </Button>
                         </div>
@@ -373,6 +373,7 @@ export default function BannerPage() {
                             <Input
                                 id="preHolidayDays"
                                 type="number"
+                                className="w-24"
                                 value={settings.preHolidayDays}
                                 onChange={(e) => handleInputChange('preHolidayDays', parseInt(e.target.value, 10))}
                             />
@@ -385,9 +386,8 @@ export default function BannerPage() {
                                 onChange={(e) => handleInputChange('yellowBannerText', e.target.value)}
                                 rows={4}
                             />
-                             <p className="text-xs text-muted-foreground">Platzhalter: `&#123;start&#125;` und `&#123;end&#125;` werden automatisch ersetzt.</p>
                         </div>
-                        <div className="flex items-end gap-4">
+                        <div className="flex items-end gap-4 pt-2">
                             <div className="space-y-2">
                                 <Label>Trennzeichen-Stil</Label>
                                 <SeparatorSelect 
@@ -395,8 +395,12 @@ export default function BannerPage() {
                                     onValueChange={(value) => handleInputChange('yellowBannerSeparatorStyle', value)} 
                                 />
                             </div>
+                             <Button variant="secondary" onClick={() => handleInputChange('yellowBannerText', initialSettings.yellowBannerText)}>
+                                <RotateCcw className="mr-2 h-4 w-4" />
+                                Standardtext
+                            </Button>
                             <Button onClick={handleSave}>
-                                <Save className="mr-2" />
+                                <Save className="mr-2 h-4 w-4" />
                                 Speichern
                             </Button>
                         </div>
@@ -419,9 +423,8 @@ export default function BannerPage() {
                                 onChange={(e) => handleInputChange('redBannerText', e.target.value)}
                                 rows={4}
                             />
-                             <p className="text-xs text-muted-foreground">Platzhalter: `&#123;start&#125;` und `&#123;end&#125;` werden automatisch ersetzt.</p>
                         </div>
-                         <div className="flex items-end gap-4">
+                         <div className="flex items-end gap-4 pt-2">
                             <div className="space-y-2">
                                 <Label>Trennzeichen-Stil</Label>
                                 <SeparatorSelect 
@@ -429,8 +432,12 @@ export default function BannerPage() {
                                     onValueChange={(value) => handleInputChange('redBannerSeparatorStyle', value)} 
                                 />
                             </div>
+                            <Button variant="secondary" onClick={() => handleInputChange('redBannerText', initialSettings.redBannerText)}>
+                                <RotateCcw className="mr-2 h-4 w-4" />
+                                Standardtext
+                            </Button>
                              <Button onClick={handleSave}>
-                                <Save className="mr-2" />
+                                <Save className="mr-2 h-4 w-4" />
                                 Speichern
                             </Button>
                         </div>
