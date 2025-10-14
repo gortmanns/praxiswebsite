@@ -84,19 +84,30 @@
         },
         "required": ["id", "name", "start", "end"]
     },
+    "InfoBanner": {
+      "title": "Info Banner",
+      "description": "Represents a single custom blue info banner.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "text": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "start": { "type": "string", "format": "date-time" },
+        "end": { "type": "string", "format": "date-time" },
+        "separatorStyle": { "type": "string", "enum": ["diamonds", "spaces", "equals", "dashes", "plus", "asterisks"] }
+      },
+      "required": ["id", "text", "isActive"]
+    },
     "BannerSettings": {
       "title": "Banner Settings",
-      "description": "Stores all settings for the holiday and info banners.",
+      "description": "Stores all settings for the holiday banners.",
       "type": "object",
       "properties": {
         "preHolidayDays": { "type": "number", "description": "How many days before a holiday the announcement banner should appear." },
         "yellowBannerText": { "type": "string", "description": "Text for the holiday announcement (yellow) banner." },
         "redBannerText": { "type": "string", "description": "Text for the during-holiday (red) banner." },
-        "isBlueBannerActive": { "type": "boolean", "description": "Globally enables or disables the custom blue banner." },
-        "blueBannerText": { "type": "string", "description": "Text for the custom info (blue) banner." },
-        "blueBannerStart": { "type": "string", "format": "date-time", "description": "Start date for the blue banner." },
-        "blueBannerEnd": { "type": "string", "format": "date-time", "description": "End date for the blue banner." },
-        "separatorStyle": { "type": "string", "enum": ["diamonds", "spaces", "equals", "dashes", "plus", "asterisks"], "description": "The visual separator style for the marquee banner." }
+        "yellowBannerSeparatorStyle": { "type": "string", "enum": ["diamonds", "spaces", "equals", "dashes", "plus", "asterisks"] },
+        "redBannerSeparatorStyle": { "type": "string", "enum": ["diamonds", "spaces", "equals", "dashes", "plus", "asterisks"] }
       },
       "required": ["preHolidayDays", "yellowBannerText", "redBannerText"]
     }
@@ -125,11 +136,13 @@
         "schema": { "$ref": "#/entities/Holiday" },
         "description": "Stores practice holiday periods."
     },
+    "infoBanners": {
+      "schema": { "$ref": "#/entities/InfoBanner" },
+      "description": "Stores multiple custom info banners (blue)."
+    },
     "settings/banners": {
         "schema": { "$ref": "#/entities/BannerSettings" },
-        "description": "A single document that stores all banner settings."
+        "description": "A single document that stores all settings for the yellow and red holiday banners."
     }
   }
 }
-
-    

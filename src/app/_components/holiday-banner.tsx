@@ -24,17 +24,21 @@ interface Holiday {
   end: Date;
 }
 
-interface BannerSettings {
+interface HolidayBannerSettings {
     preHolidayDays: number;
     yellowBannerText: string;
     redBannerText: string;
-    isBlueBannerActive: boolean;
-    blueBannerText: string;
-    blueBannerStart?: Date;
-    blueBannerEnd?: Date;
-    blueBannerSeparatorStyle?: SeparatorStyle;
     yellowBannerSeparatorStyle?: SeparatorStyle;
     redBannerSeparatorStyle?: SeparatorStyle;
+}
+
+interface InfoBanner {
+    id: string;
+    text: string;
+    isActive: boolean;
+    start?: Timestamp;
+    end?: Timestamp;
+    separatorStyle?: SeparatorStyle;
 }
 
 interface BannerInfo {
@@ -43,19 +47,23 @@ interface BannerInfo {
   separatorStyle: SeparatorStyle;
 }
 
-function getActiveBanner(holidays: Holiday[], settings: BannerSettings | null): BannerInfo | null {
+function getActiveBanner(holidays: Holiday[], holidaySettings: HolidayBannerSettings | null, infoBanners: InfoBanner[] | null): BannerInfo | null {
   const now = new Date();
   
-  if (!settings) return null;
-
-  // Check for Blue Banner first
-  if (settings.isBlueBannerActive && settings.blueBannerStart && settings.blueBannerEnd) {
-    if (isWithinInterval(now, { start: settings.blueBannerStart, end: settings.blueBannerEnd })) {
-      return { text: settings.blueBannerText, color: 'blue', separatorStyle: settings.blueBannerSeparatorStyle || 'diamonds' };
-    }
+  // Check for active Blue Banner first
+  if (infoBanners) {
+      const activeInfoBanner = infoBanners.find(b => 
+          b.isActive && 
+          b.start && 
+          b.end && 
+          isWithinInterval(now, { start: b.start.toDate(), end: b.end.toDate() })
+      );
+      if (activeInfoBanner) {
+          return { text: activeInfoBanner.text, color: 'blue', separatorStyle: activeInfoBanner.separatorStyle || 'diamonds' };
+      }
   }
   
-  if (!holidays || holidays.length === 0) return null;
+  if (!holidays || holidays.length === 0 || !holidaySettings) return null;
 
   const upcomingHoliday = holidays.find(h => h.start > now);
   const currentHoliday = holidays.find(h => isWithinInterval(now, { start: h.start, end: h.end }));
@@ -63,22 +71,22 @@ function getActiveBanner(holidays: Holiday[], settings: BannerSettings | null): 
 
   // Red Banner (during holidays)
   if (currentHoliday && nextDayAfterHoliday) {
-    const text = settings.redBannerText
+    const text = holidaySettings.redBannerText
       .replace('{start}', format(currentHoliday.start, 'd. MMMM', { locale: de }))
       .replace('{end}', format(currentHoliday.end, 'd. MMMM yyyy', { locale: de }))
       .replace('{next_day}', format(nextDayAfterHoliday, 'd. MMMM', { locale: de }));
-    return { text, color: 'red', separatorStyle: settings.redBannerSeparatorStyle || 'diamonds' };
+    return { text, color: 'red', separatorStyle: holidaySettings.redBannerSeparatorStyle || 'diamonds' };
   }
 
   // Yellow Banner (before holidays)
   if (upcomingHoliday) {
     const daysUntilStart = differenceInDays(upcomingHoliday.start, now);
-    if (daysUntilStart >= 0 && daysUntilStart <= settings.preHolidayDays) {
-      const text = settings.yellowBannerText
+    if (daysUntilStart >= 0 && daysUntilStart <= holidaySettings.preHolidayDays) {
+      const text = holidaySettings.yellowBannerText
         .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
         .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de }))
         .replace('{name}', upcomingHoliday.name);
-      return { text, color: 'yellow', separatorStyle: settings.yellowBannerSeparatorStyle || 'diamonds' };
+      return { text, color: 'yellow', separatorStyle: holidaySettings.yellowBannerSeparatorStyle || 'diamonds' };
     }
   }
 
@@ -88,25 +96,12 @@ function getActiveBanner(holidays: Holiday[], settings: BannerSettings | null): 
 const Separator = ({ style }: { style: SeparatorStyle }) => {
     const separatorClasses = "mx-6 shrink-0";
     switch (style) {
-        case 'spaces':
-            return <div className="w-12 shrink-0" />;
-        case 'equals':
-            return <div className={cn(separatorClasses, "text-2xl font-mono")}>= = =</div>;
-        case 'dashes':
-            return <div className={cn(separatorClasses, "text-2xl font-mono")}>— — —</div>;
-        case 'plus':
-            return <div className={cn(separatorClasses, "text-2xl font-mono")}>+ + +</div>;
-        case 'asterisks':
-            return <div className={cn(separatorClasses, "text-2xl font-mono")}>* * *</div>;
-        case 'diamonds':
-        default:
-            return (
-                <div className={cn("flex items-center justify-center gap-2", separatorClasses)}>
-                    <FilledDiamond className="h-3 w-3" />
-                    <FilledDiamond className="h-3 w-3" />
-                    <FilledDiamond className="h-3 w-3" />
-                </div>
-            );
+        case 'spaces': return <div className="w-12 shrink-0" />;
+        case 'equals': return <div className={cn(separatorClasses, "text-2xl font-mono")}>= = =</div>;
+        case 'dashes': return <div className={cn(separatorClasses, "text-2xl font-mono")}>— — —</div>;
+        case 'plus': return <div className={cn(separatorClasses, "text-2xl font-mono")}>+ + +</div>;
+        case 'asterisks': return <div className={cn(separatorClasses, "text-2xl font-mono")}>* * *</div>;
+        case 'diamonds': default: return <div className={cn("flex items-center justify-center gap-2", separatorClasses)}><FilledDiamond className="h-3 w-3" /><FilledDiamond className="h-3 w-3" /><FilledDiamond className="h-3 w-3" /></div>;
     }
 };
 
@@ -114,56 +109,29 @@ export function HolidayBanner() {
     const [isVisible, setIsVisible] = useState(true);
     const firestore = useFirestore();
 
-    const settingsDocRef = useMemoFirebase(() => {
-        if (!firestore) return null;
-        return doc(firestore, 'settings', 'banners');
-    }, [firestore]);
+    const holidaySettingsDocRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'banners') : null, [firestore]);
+    const { data: holidaySettingsData } = useDoc<HolidayBannerSettings>(holidaySettingsDocRef);
+    
+    const infoBannersQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'infoBanners'), where('isActive', '==', true)) : null, [firestore]);
+    const { data: infoBannersData } = useCollection<InfoBanner>(infoBannersQuery);
 
     const holidaysQuery = useMemoFirebase(() => {
         if (!firestore) return null;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        return query(
-            collection(firestore, 'holidays'),
-            where('end', '>=', Timestamp.fromDate(today)),
-            orderBy('end', 'asc')
-        );
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        return query(collection(firestore, 'holidays'), where('end', '>=', Timestamp.fromDate(today)), orderBy('end', 'asc'));
     }, [firestore]);
-
-    const { data: settingsData } = useDoc<any>(settingsDocRef);
     const { data: holidaysData } = useCollection<any>(holidaysQuery);
 
     const holidays: Holiday[] = useMemo(() => {
         if (!holidaysData) return [];
-        return holidaysData
-            .map(h => ({
-                ...h,
-                start: h.start.toDate(),
-                end: h.end.toDate(),
-            }))
-            .sort((a, b) => a.start.getTime() - b.start.getTime());
+        return holidaysData.map(h => ({ ...h, start: h.start.toDate(), end: h.end.toDate() })).sort((a, b) => a.start.getTime() - b.start.getTime());
     }, [holidaysData]);
-
-    const settings: BannerSettings | null = useMemo(() => {
-        if (!settingsData) return null;
-        return {
-            ...settingsData,
-            blueBannerStart: settingsData.blueBannerStart?.toDate(),
-            blueBannerEnd: settingsData.blueBannerEnd?.toDate(),
-        };
-    }, [settingsData]);
     
-    const bannerInfo = getActiveBanner(holidays, settings);
+    const bannerInfo = getActiveBanner(holidays, holidaySettingsData, infoBannersData);
     
-    useEffect(() => {
-        if(bannerInfo) {
-            setIsVisible(true);
-        }
-    }, [bannerInfo]);
+    useEffect(() => { if(bannerInfo) { setIsVisible(true); } }, [bannerInfo]);
 
-    if (!bannerInfo || !isVisible) {
-        return null;
-    }
+    if (!bannerInfo || !isVisible) return null;
 
     const bannerClasses = {
         yellow: 'bg-yellow-400 border-yellow-500 text-yellow-900',
@@ -186,14 +154,7 @@ export function HolidayBanner() {
                     ))}
                 </div>
             </div>
-            <button
-                onClick={() => setIsVisible(false)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-black/10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                aria-label="Banner schliessen"
-            >
-                <X className="h-5 w-5" />
-            </button>
+            <button onClick={() => setIsVisible(false)} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-black/10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-label="Banner schliessen"><X className="h-5 w-5" /></button>
         </div>
     );
 }
-
