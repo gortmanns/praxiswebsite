@@ -89,7 +89,9 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
         blue: 'bg-blue-500 border-blue-600 text-white',
     };
     
-    const animationDuration = color === 'blue' && small ? '50s' : '60s';
+    const animationDuration = color === 'blue' && small ? '72s' : '60s';
+    const fontSizeClass = color === 'blue' && small ? 'text-xl' : 'text-base';
+
 
     const containerDiv = (
         <div className={cn("relative w-full border", small ? "rounded-md" : "rounded-lg mt-8", bannerClasses[color])}>
@@ -102,7 +104,7 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
                         <React.Fragment key={i}>
                             <div className="flex shrink-0 items-center">
                                 <Info className="mr-3 h-5 w-5 shrink-0" />
-                                <p className="whitespace-nowrap text-sm font-semibold">{text}</p>
+                                <p className={cn("whitespace-nowrap font-semibold", fontSizeClass)}>{text}</p>
                             </div>
                             <SeparatorPreview style={separatorStyle} />
                         </React.Fragment>
@@ -186,7 +188,6 @@ export default function BannerPage() {
     const previewTexts = useMemo(() => {
         const defaultText = "Dies ist eine Demonstration der Banner-Komponente";
         if (upcomingHoliday) {
-            const nextDay = addDays(upcomingHoliday.end, 1);
             return {
                 yellow: bannerSettings.yellowBannerText
                     .replace('{name}', upcomingHoliday.name)
