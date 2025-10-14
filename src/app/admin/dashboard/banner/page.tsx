@@ -11,7 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { format } from 'date-fns';
+import { format, addDays } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { Calendar as CalendarIcon, Save, AlertCircle, Info, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -53,8 +53,8 @@ interface BannerSettings {
 
 const initialSettings: BannerSettings = {
     preHolidayDays: 14,
-    yellowBannerText: 'Die Praxisferien stehen bevor. In der Zeit vom {start} bis und mit {end} bleibt das Praxiszentrum geschlossen. Bitte überprüfen Sie Ihren Medikamentenvorrat und beziehen Sie allenfalls nötigen Nachschub rechtzeitig.',
-    redBannerText: 'Ferienhalber bleibt das Praxiszentrum in der Zeit vom {start} bis und mit {end} geschlossen. Die Notfall-Notrufnummern finden sie rechts oben im Menü unter dem Punkt "NOTFALL". Ab dem {next_day} stehen wieder wie gewohnt zur Verfügung.',
+    yellowBannerText: 'Die <Name nächste Ferien> stehen bevor. In der Zeit vom <erster Ferientag> bis und mit <letzer Ferientag> bleibt das Praxiszentrum geschlossen. Bitte überprüfen Sie Ihren Medikamentenvorrat und beziehen Sie allenfalls nötigen Nachschub rechtzeitig.',
+    redBannerText: 'Ferienhalber bleibt das Praxiszentrum in der Zeit vom <erster Ferientag> bis und mit <letzter Ferientag> geschlossen. Die Notfall-Notrufnummern finden sie rechts oben im Menü unter dem Punkt "NOTFALL". Ab dem <letzter Ferientag +1> stehen wieder wie gewohnt zur Verfügung.',
     isBlueBannerActive: false,
     blueBannerText: 'Wichtige Information: ',
     blueBannerStart: undefined,
@@ -171,6 +171,7 @@ export default function BannerPage() {
         return holidaysData
             .map(h => ({
                 ...h,
+                id: h.id,
                 start: h.start.toDate(),
                 end: h.end.toDate(),
             }))
@@ -185,22 +186,21 @@ export default function BannerPage() {
     const previewTexts = useMemo(() => {
         const defaultText = "Dies ist eine Demonstration der Banner-Komponente";
         if (upcomingHoliday) {
-            const nextDay = new Date(upcomingHoliday.end);
-            nextDay.setDate(nextDay.getDate() + 1);
+            const nextDay = addDays(upcomingHoliday.end, 1);
 
             return {
-                yellow: settings.yellowBannerText
+                yellow: initialSettings.yellowBannerText
                     .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
                     .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de }))
                     .replace('{name}', upcomingHoliday.name),
-                red: settings.redBannerText
+                red: initialSettings.redBannerText
                     .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
                     .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de }))
                     .replace('{next_day}', format(nextDay, 'd. MMMM', { locale: de })),
             };
         }
         return { yellow: defaultText, red: defaultText };
-    }, [upcomingHoliday, settings.yellowBannerText, settings.redBannerText]);
+    }, [upcomingHoliday]);
 
 
     useEffect(() => {
@@ -261,25 +261,25 @@ export default function BannerPage() {
 
     return (
         <TooltipProvider>
-            <div className="flex flex-1 flex-col items-start gap-6 p-4 sm:p-6">
-                <div className="flex items-center justify-between w-full">
-                    <div>
-                        <h1 className="font-headline text-2xl font-bold tracking-tight text-primary">Banner anpassen</h1>
-                        <p className="text-muted-foreground">Hier können Sie den Text und die Anzeige der Banner steuern.</p>
-                    </div>
+            <div className="flex flex-1 flex-col items-center gap-6 p-4 sm:p-6">
+                <div className="w-full max-w-5xl">
+                    <h1 className="font-headline text-2xl font-bold tracking-tight text-primary">Banner anpassen</h1>
+                    <p className="text-muted-foreground">Hier können Sie den Text und die Anzeige der Banner steuern.</p>
                 </div>
 
                 {notification && (
-                    <TimedAlert
-                        variant={notification.variant}
-                        title={notification.title}
-                        description={notification.description}
-                        onClose={() => setNotification(null)}
-                        className="w-full"
-                    />
+                    <div className="w-full max-w-5xl">
+                        <TimedAlert
+                            variant={notification.variant}
+                            title={notification.title}
+                            description={notification.description}
+                            onClose={() => setNotification(null)}
+                            className="w-full"
+                        />
+                    </div>
                 )}
 
-                <div className="w-full space-y-6">
+                <div className="w-full max-w-5xl space-y-6">
                     {/* Blue Banner */}
                     <div className="border-2 border-accent rounded-lg">
                         <div className="p-6">
@@ -481,5 +481,3 @@ export default function BannerPage() {
         </TooltipProvider>
     );
 }
-
-    
