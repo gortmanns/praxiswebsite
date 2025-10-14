@@ -53,8 +53,8 @@ interface BannerSettings {
 
 const initialSettings: BannerSettings = {
     preHolidayDays: 14,
-    yellowBannerText: 'Unsere Praxis bleibt vom {start} bis und mit {end} geschlossen.',
-    redBannerText: 'Unsere Praxis ist im Moment geschlossen.',
+    yellowBannerText: 'Die Praxisferien stehen bevor. In der Zeit vom {start} bis und mit {end} bleibt das Praxiszentrum geschlossen. Bitte überprüfen Sie Ihren Medikamentenvorrat und beziehen Sie allenfalls nötigen Nachschub rechtzeitig.',
+    redBannerText: 'Ferienhalber bleibt das Praxiszentrum in der Zeit vom {start} bis und mit {end} geschlossen. Die Notfall-Notrufnummern finden sie rechts oben im Menü unter dem Punkt "NOTFALL". Ab dem {next_day} stehen wieder wie gewohnt zur Verfügung.',
     isBlueBannerActive: false,
     blueBannerText: 'Wichtige Information: ',
     blueBannerStart: undefined,
@@ -117,22 +117,22 @@ const BannerPreview = ({ text, color, separatorStyle }: { text: string; color: '
 
 const SeparatorSelect = ({ value, onValueChange }: { value?: SeparatorStyle, onValueChange: (value: SeparatorStyle) => void }) => {
     const options: { value: SeparatorStyle, label: React.ReactNode }[] = [
-        { value: 'diamonds', label: <div className="flex items-center gap-2"><FilledDiamond className="h-3 w-3" /><FilledDiamond className="h-3 w-3" /><FilledDiamond className="h-3 w-3" /></div> },
-        { value: 'spaces', label: <div className="font-mono text-sm tracking-widest">· · ·</div> },
-        { value: 'equals', label: <div className="font-mono text-xl">= = =</div> },
-        { value: 'dashes', label: <div className="font-mono text-xl">— — —</div> },
-        { value: 'plus', label: <div className="font-mono text-xl">+ + +</div> },
-        { value: 'asterisks', label: <div className="font-mono text-xl">* * *</div> },
+        { value: 'diamonds', label: <div className="flex items-center justify-center h-full w-full gap-2"><FilledDiamond className="h-3 w-3" /><FilledDiamond className="h-3 w-3" /><FilledDiamond className="h-3 w-3" /></div> },
+        { value: 'spaces', label: <div className="font-mono text-sm tracking-widest h-full w-full flex items-center justify-center">· · ·</div> },
+        { value: 'equals', label: <div className="font-mono text-xl h-full w-full flex items-center justify-center">= = =</div> },
+        { value: 'dashes', label: <div className="font-mono text-xl h-full w-full flex items-center justify-center">— — —</div> },
+        { value: 'plus', label: <div className="font-mono text-xl h-full w-full flex items-center justify-center">+ + +</div> },
+        { value: 'asterisks', label: <div className="font-mono text-xl h-full w-full flex items-center justify-center">* * *</div> },
     ];
     return (
         <Select value={value || 'diamonds'} onValueChange={onValueChange}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Stil wählen..." />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
                     {options.map(opt => (
-                        <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                        <SelectItem key={opt.value} value={opt.value} className="h-8">{opt.label}</SelectItem>
                     ))}
                 </SelectGroup>
             </SelectContent>
@@ -185,13 +185,18 @@ export default function BannerPage() {
     const previewTexts = useMemo(() => {
         const defaultText = "Dies ist eine Demonstration der Banner-Komponente";
         if (upcomingHoliday) {
+            const nextDay = new Date(upcomingHoliday.end);
+            nextDay.setDate(nextDay.getDate() + 1);
+
             return {
                 yellow: settings.yellowBannerText
                     .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
-                    .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })),
+                    .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de }))
+                    .replace('{name}', upcomingHoliday.name),
                 red: settings.redBannerText
                     .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
-                    .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })),
+                    .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de }))
+                    .replace('{next_day}', format(nextDay, 'd. MMMM', { locale: de })),
             };
         }
         return { yellow: defaultText, red: defaultText };
@@ -410,7 +415,7 @@ export default function BannerPage() {
                                             </Button>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                            <p>{initialSettings.yellowBannerText}</p>
+                                            <p>{initialSettings.yellowBannerText.replace('{name}', 'Name nächste Ferien').replace('{start}', 'erster Ferientag').replace('{end}', 'letzer Ferientag')}</p>
                                         </TooltipContent>
                                     </Tooltip>
                                 </div>
@@ -459,7 +464,7 @@ export default function BannerPage() {
                                             </Button>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                            <p>{initialSettings.redBannerText}</p>
+                                            <p>{initialSettings.redBannerText.replace('{start}', 'erster Ferientag').replace('{end}', 'letzter Ferientag').replace('{next_day}', 'letzter Ferientag +1')}</p>
                                         </TooltipContent>
                                     </Tooltip>
                                 </div>

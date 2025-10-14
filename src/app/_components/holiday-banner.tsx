@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, collection, query, where, orderBy, Timestamp } from 'firebase/firestore';
-import { format, differenceInDays, isWithinInterval } from 'date-fns';
+import { format, differenceInDays, isWithinInterval, addDays } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { X, Info } from 'lucide-react';
@@ -59,12 +59,14 @@ function getActiveBanner(holidays: Holiday[], settings: BannerSettings | null): 
 
   const upcomingHoliday = holidays.find(h => h.start > now);
   const currentHoliday = holidays.find(h => isWithinInterval(now, { start: h.start, end: h.end }));
+  const nextDayAfterHoliday = currentHoliday ? addDays(currentHoliday.end, 1) : null;
 
   // Red Banner (during holidays)
-  if (currentHoliday) {
+  if (currentHoliday && nextDayAfterHoliday) {
     const text = settings.redBannerText
       .replace('{start}', format(currentHoliday.start, 'd. MMMM', { locale: de }))
-      .replace('{end}', format(currentHoliday.end, 'd. MMMM yyyy', { locale: de }));
+      .replace('{end}', format(currentHoliday.end, 'd. MMMM yyyy', { locale: de }))
+      .replace('{next_day}', format(nextDayAfterHoliday, 'd. MMMM', { locale: de }));
     return { text, color: 'red', separatorStyle: settings.redBannerSeparatorStyle || 'diamonds' };
   }
 
@@ -74,7 +76,8 @@ function getActiveBanner(holidays: Holiday[], settings: BannerSettings | null): 
     if (daysUntilStart >= 0 && daysUntilStart <= settings.preHolidayDays) {
       const text = settings.yellowBannerText
         .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
-        .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de }));
+        .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de }))
+        .replace('{name}', upcomingHoliday.name);
       return { text, color: 'yellow', separatorStyle: settings.yellowBannerSeparatorStyle || 'diamonds' };
     }
   }
@@ -193,3 +196,4 @@ export function HolidayBanner() {
         </div>
     );
 }
+
