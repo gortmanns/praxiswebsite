@@ -131,14 +131,6 @@ export default function HolidaysPage() {
                     <div className="rounded-lg border bg-muted p-4">
                         <h3 className="text-lg font-semibold mb-4">Neuen Ferientermin erstellen</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Bezeichnung</label>
-                                <Input
-                                placeholder="z.B. Sommerferien"
-                                value={newName}
-                                onChange={(e) => setNewName(e.target.value)}
-                                />
-                            </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                      <label className="text-sm font-medium">Von</label>
@@ -186,6 +178,14 @@ export default function HolidaysPage() {
                                         </PopoverContent>
                                     </Popover>
                                 </div>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Bezeichnung</label>
+                                <Input
+                                placeholder="z.B. Sommerferien"
+                                value={newName}
+                                onChange={(e) => setNewName(e.target.value)}
+                                />
                             </div>
                             <div className="flex gap-2">
                                 <Button onClick={handleAddHoliday} className="w-full">Speichern</Button>
