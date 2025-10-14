@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "Doctor": {
@@ -27,7 +28,9 @@
         "role2": { "type": "string", "description": "An optional secondary role." },
         "imageUrl": { "type": "string", "description": "URL of the staff member's portrait image." },
         "backsideContent": { "type": "string", "description": "HTML or text content for the card's flip side." },
-        "hidden": { "type": "boolean", "description": "Whether the staff member card is hidden." }
+        "languages": { "type": "array", "items": { "type": "string" }, "description": "Languages spoken by the staff member." },
+        "hidden": { "type": "boolean", "description": "Whether the staff member card is hidden." },
+        "fullWidth": { "type": "boolean", "description": "Whether the card should span the full width of the grid." }
       },
       "required": ["id", "order", "name", "role", "imageUrl"]
     },
@@ -41,6 +44,10 @@
         "name": { "type": "string" },
         "websiteUrl": { "type": "string" },
         "logoHtml": { "type": "string", "description": "The complete HTML string for the logo to be rendered." },
+        "imageUrl": { "type": "string", "description": "The URL to the raw logo image file for editing purposes." },
+        "logoScale": { "type": "number", "description": "Logo size percentage." },
+        "logoX": { "type": "number", "description": "Logo horizontal offset." },
+        "logoY": { "type": "number", "description": "Logo vertical offset." },
         "openInNewTab": { "type": "boolean" },
         "hidden": { "type": "boolean" }
       },
@@ -56,10 +63,42 @@
         "name": { "type": "string" },
         "websiteUrl": { "type": "string" },
         "logoHtml": { "type": "string", "description": "The complete HTML string for the logo to be rendered." },
+        "imageUrl": { "type": "string", "description": "The URL to the raw logo image file for editing purposes." },
+        "logoScale": { "type": "number", "description": "Logo size percentage." },
+        "logoX": { "type": "number", "description": "Logo horizontal offset." },
+        "logoY": { "type": "number", "description": "Logo vertical offset." },
         "openInNewTab": { "type": "boolean" },
         "hidden": { "type": "boolean" }
       },
       "required": ["id", "order", "name", "websiteUrl", "logoHtml"]
+    },
+    "Holiday": {
+        "title": "Holiday",
+        "description": "Represents a practice holiday period.",
+        "type": "object",
+        "properties": {
+            "id": { "type": "string", "description": "Unique identifier for the holiday period." },
+            "name": { "type": "string", "description": "Name of the holiday (e.g., Summer Break)." },
+            "start": { "type": "string", "format": "date-time", "description": "Start date of the holiday." },
+            "end": { "type": "string", "format": "date-time", "description": "End date of the holiday." }
+        },
+        "required": ["id", "name", "start", "end"]
+    },
+    "BannerSettings": {
+      "title": "Banner Settings",
+      "description": "Stores all settings for the holiday and info banners.",
+      "type": "object",
+      "properties": {
+        "preHolidayDays": { "type": "number", "description": "How many days before a holiday the announcement banner should appear." },
+        "yellowBannerText": { "type": "string", "description": "Text for the holiday announcement (yellow) banner." },
+        "redBannerText": { "type": "string", "description": "Text for the during-holiday (red) banner." },
+        "isBlueBannerActive": { "type": "boolean", "description": "Globally enables or disables the custom blue banner." },
+        "blueBannerText": { "type": "string", "description": "Text for the custom info (blue) banner." },
+        "blueBannerStart": { "type": "string", "format": "date-time", "description": "Start date for the blue banner." },
+        "blueBannerEnd": { "type": "string", "format": "date-time", "description": "End date for the blue banner." },
+        "separatorStyle": { "type": "string", "enum": ["diamonds", "spaces", "equals", "dashes", "plus", "asterisks"], "description": "The visual separator style for the marquee banner." }
+      },
+      "required": ["preHolidayDays", "yellowBannerText", "redBannerText"]
     }
   },
   "auth": {
@@ -81,6 +120,14 @@
     "otherPartners": {
       "schema": { "$ref": "#/entities/OtherPartner" },
       "description": "Stores other cooperation partner information."
+    },
+    "holidays": {
+        "schema": { "$ref": "#/entities/Holiday" },
+        "description": "Stores practice holiday periods."
+    },
+    "settings/banners": {
+        "schema": { "$ref": "#/entities/BannerSettings" },
+        "description": "A single document that stores all banner settings."
     }
   }
 }

@@ -7,7 +7,7 @@ import { doc, collection, query, where, orderBy, Timestamp } from 'firebase/fire
 import { format, differenceInDays, isWithinInterval } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
-import { X, Info } from 'lucide-react';
+import { X, Info, Diamond } from 'lucide-react';
 
 interface Holiday {
   id: string;
@@ -24,6 +24,7 @@ interface BannerSettings {
     blueBannerText: string;
     blueBannerStart?: Date;
     blueBannerEnd?: Date;
+    separatorStyle?: 'diamonds' | 'spaces' | 'equals' | 'dashes' | 'plus' | 'asterisks';
 }
 
 interface BannerInfo {
@@ -69,6 +70,31 @@ function getActiveBanner(holidays: Holiday[], settings: BannerSettings | null): 
 
   return null;
 }
+
+const Separator = ({ style }: { style: BannerSettings['separatorStyle'] }) => {
+    const separatorClasses = "mx-6 shrink-0";
+    switch (style) {
+        case 'spaces':
+            return <div className="w-12 shrink-0" />;
+        case 'equals':
+            return <div className={cn(separatorClasses, "text-2xl font-mono")}>= = =</div>;
+        case 'dashes':
+            return <div className={cn(separatorClasses, "text-2xl font-mono")}>— — —</div>;
+        case 'plus':
+            return <div className={cn(separatorClasses, "text-2xl font-mono")}>+ + +</div>;
+        case 'asterisks':
+            return <div className={cn(separatorClasses, "text-2xl font-mono")}>* * *</div>;
+        case 'diamonds':
+        default:
+            return (
+                <div className={cn("flex items-center justify-center gap-2", separatorClasses)}>
+                    <Diamond className="h-3 w-3" />
+                    <Diamond className="h-3 w-3" />
+                    <Diamond className="h-3 w-3" />
+                </div>
+            );
+    }
+};
 
 export function HolidayBanner() {
     const [isVisible, setIsVisible] = useState(true);
@@ -116,7 +142,6 @@ export function HolidayBanner() {
     const bannerInfo = getActiveBanner(holidays, settings);
     
     useEffect(() => {
-        // When bannerInfo changes, make it visible
         if(bannerInfo) {
             setIsVisible(true);
         }
@@ -131,12 +156,23 @@ export function HolidayBanner() {
         red: 'bg-red-500 border-red-600 text-white',
         blue: 'bg-blue-500 border-blue-600 text-white',
     };
+    
+    const separatorStyle = settings?.separatorStyle || 'diamonds';
 
     return (
-        <div className={cn("relative w-full border-b p-3", bannerClasses[bannerInfo.color])}>
-            <div className="container mx-auto flex items-center justify-center text-center text-sm font-semibold">
-                <Info className="mr-3 h-5 w-5 flex-shrink-0" />
-                <p>{bannerInfo.text}</p>
+        <div className={cn("relative w-full border-b", bannerClasses[bannerInfo.color])}>
+            <div className="flex h-12 w-full items-center overflow-hidden">
+                <div className="marquee flex min-w-full shrink-0 items-center justify-around">
+                    {Array.from({ length: 10 }).map((_, i) => (
+                        <React.Fragment key={i}>
+                            <div className="flex shrink-0 items-center">
+                                <Info className="mr-3 h-5 w-5 shrink-0" />
+                                <p className="whitespace-nowrap text-sm font-semibold">{bannerInfo.text}</p>
+                            </div>
+                            <Separator style={separatorStyle} />
+                        </React.Fragment>
+                    ))}
+                </div>
             </div>
             <button
                 onClick={() => setIsVisible(false)}

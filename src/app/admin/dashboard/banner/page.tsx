@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,15 +10,23 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { format } from 'date-fns';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { format, differenceInDays, isWithinInterval } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { Calendar as CalendarIcon, Save, AlertCircle } from 'lucide-react';
+import { Calendar as CalendarIcon, Save, AlertCircle, Info, Diamond, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
+import { doc, setDoc, serverTimestamp, collection, query, where, orderBy, Timestamp } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
+
+interface Holiday {
+  id: string;
+  name: string;
+  start: Date;
+  end: Date;
+}
 
 interface BannerSettings {
     preHolidayDays: number;
@@ -28,6 +36,7 @@ interface BannerSettings {
     blueBannerText: string;
     blueBannerStart?: Date;
     blueBannerEnd?: Date;
+    separatorStyle?: 'diamonds' | 'spaces' | 'equals' | 'dashes' | 'plus' | 'asterisks';
 }
 
 const initialSettings: BannerSettings = {
@@ -38,19 +47,117 @@ const initialSettings: BannerSettings = {
     blueBannerText: 'Wichtige Information: ',
     blueBannerStart: undefined,
     blueBannerEnd: undefined,
+    separatorStyle: 'diamonds',
 };
+
+const SeparatorPreview = ({ style }: { style: BannerSettings['separatorStyle'] }) => {
+    const separatorClasses = "mx-6 shrink-0";
+    switch (style) {
+        case 'spaces':
+            return <div className="w-12 shrink-0" />;
+        case 'equals':
+            return <div className={cn(separatorClasses, "text-2xl font-mono")}>= = =</div>;
+        case 'dashes':
+            return <div className={cn(separatorClasses, "text-2xl font-mono")}>— — —</div>;
+        case 'plus':
+            return <div className={cn(separatorClasses, "text-2xl font-mono")}>+ + +</div>;
+        case 'asterisks':
+            return <div className={cn(separatorClasses, "text-2xl font-mono")}>* * *</div>;
+        case 'diamonds':
+        default:
+            return (
+                <div className={cn("flex items-center justify-center gap-2", separatorClasses)}>
+                    <Diamond className="h-3 w-3" />
+                    <Diamond className="h-3 w-3" />
+                    <Diamond className="h-3 w-3" />
+                </div>
+            );
+    }
+};
+
+const BannerPreview = ({ text, color, separatorStyle, repetitions = 2 }: { text: string; color: 'yellow' | 'red' | 'blue'; separatorStyle?: BannerSettings['separatorStyle']; repetitions?: number }) => {
+    const bannerClasses = {
+        yellow: 'bg-yellow-400 border-yellow-500 text-yellow-900',
+        red: 'bg-red-500 border-red-600 text-white',
+        blue: 'bg-blue-500 border-blue-600 text-white',
+    };
+
+    return (
+         <div className={cn("relative w-full border rounded-lg mt-4", bannerClasses[color])}>
+            <div className="flex h-12 w-full items-center overflow-hidden">
+                <div className="flex min-w-full shrink-0 items-center">
+                    {Array.from({ length: repetitions }).map((_, i) => (
+                        <React.Fragment key={i}>
+                            <div className="flex shrink-0 items-center pl-6">
+                                <Info className="mr-3 h-5 w-5 shrink-0" />
+                                <p className="whitespace-nowrap text-sm font-semibold">{text}</p>
+                            </div>
+                            <SeparatorPreview style={separatorStyle} />
+                        </React.Fragment>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
 
 export default function BannerPage() {
     const firestore = useFirestore();
+    
     const settingsDocRef = useMemoFirebase(() => {
         if (!firestore) return null;
         return doc(firestore, 'settings', 'banners');
     }, [firestore]);
 
-    const { data: dbData, isLoading, error: dbError } = useDoc(settingsDocRef);
-    
+    const holidaysQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return query(
+            collection(firestore, 'holidays'),
+            where('end', '>=', Timestamp.fromDate(today)),
+            orderBy('end', 'asc')
+        );
+    }, [firestore]);
+
+    const { data: dbData, isLoading, error: dbError } = useDoc<any>(settingsDocRef);
+    const { data: holidaysData, isLoading: isLoadingHolidays } = useCollection<any>(holidaysQuery);
+
     const [settings, setSettings] = useState<BannerSettings>(initialSettings);
     const [notification, setNotification] = useState<TimedAlertProps | null>(null);
+
+    const holidays: Holiday[] = useMemo(() => {
+        if (!holidaysData) return [];
+        return holidaysData
+            .map(h => ({
+                ...h,
+                start: h.start.toDate(),
+                end: h.end.toDate(),
+            }))
+            .sort((a, b) => a.start.getTime() - b.start.getTime());
+    }, [holidaysData]);
+
+    const upcomingHoliday = useMemo(() => {
+        if (!holidays) return null;
+        return holidays.find(h => h.start > new Date());
+    }, [holidays]);
+
+    const previewTexts = useMemo(() => {
+        const defaultText = "Dies ist eine Demonstration der Banner-Komponente";
+        if (upcomingHoliday) {
+            return {
+                yellow: settings.yellowBannerText
+                    .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
+                    .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })),
+                red: settings.redBannerText
+                    .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
+                    .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })),
+            };
+        }
+        return { yellow: defaultText, red: defaultText };
+    }, [upcomingHoliday, settings.yellowBannerText, settings.redBannerText]);
+
 
     useEffect(() => {
         if (dbData) {
@@ -78,7 +185,7 @@ export default function BannerPage() {
         }
     };
     
-    if (isLoading) {
+    if (isLoading || isLoadingHolidays) {
         return (
             <div className="flex flex-1 items-start p-4 sm:p-6">
                 <Card className="w-full">
@@ -136,7 +243,7 @@ export default function BannerPage() {
                  <Card>
                     <CardHeader>
                         <CardTitle className="text-blue-500">Info-Banner (Blau)</CardTitle>
-                        <CardDescription>Für benutzerdefinierte Ankündigungen.</CardDescription>
+                        <CardDescription>Für benutzerdefinierte Ankündigungen. Wird nur im angegebenen Zeitraum angezeigt.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                          <div className="flex items-center space-x-2">
@@ -154,7 +261,6 @@ export default function BannerPage() {
                                 value={settings.blueBannerText}
                                 onChange={(e) => handleInputChange('blueBannerText', e.target.value)}
                                 rows={4}
-                                disabled={!settings.isBlueBannerActive}
                             />
                         </div>
                          <div className="grid grid-cols-2 gap-4">
@@ -165,7 +271,6 @@ export default function BannerPage() {
                                     <Button
                                         variant={'outline'}
                                         className={cn('w-full justify-start text-left font-normal', !settings.blueBannerStart && 'text-muted-foreground')}
-                                        disabled={!settings.isBlueBannerActive}
                                     >
                                         <CalendarIcon className="mr-2 h-4 w-4" />
                                         {settings.blueBannerStart ? format(settings.blueBannerStart, 'd. MMM yyyy', { locale: de }) : <span>Datum wählen</span>}
@@ -189,7 +294,6 @@ export default function BannerPage() {
                                     <Button
                                         variant={'outline'}
                                         className={cn('w-full justify-start text-left font-normal', !settings.blueBannerEnd && 'text-muted-foreground')}
-                                        disabled={!settings.isBlueBannerActive}
                                     >
                                         <CalendarIcon className="mr-2 h-4 w-4" />
                                         {settings.blueBannerEnd ? format(settings.blueBannerEnd, 'd. MMM yyyy', { locale: de }) : <span>Datum wählen</span>}
@@ -207,6 +311,7 @@ export default function BannerPage() {
                                 </Popover>
                             </div>
                         </div>
+                        <BannerPreview text={settings.blueBannerText} color="blue" separatorStyle={settings.separatorStyle} />
                     </CardContent>
                 </Card>
 
@@ -214,7 +319,7 @@ export default function BannerPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-yellow-500">Vorankündigungs-Banner (Gelb)</CardTitle>
-                        <CardDescription>Wird vor den Praxisferien angezeigt.</CardDescription>
+                        <CardDescription>Wird eine bestimmte Anzahl Tage vor den Praxisferien angezeigt.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
@@ -236,6 +341,7 @@ export default function BannerPage() {
                             />
                              <p className="text-xs text-muted-foreground">Platzhalter: `{'`{start}`'}` und `{'`{end}`'}` werden automatisch ersetzt.</p>
                         </div>
+                        <BannerPreview text={previewTexts.yellow} color="yellow" separatorStyle={settings.separatorStyle} />
                     </CardContent>
                 </Card>
 
@@ -255,6 +361,35 @@ export default function BannerPage() {
                                 rows={4}
                             />
                              <p className="text-xs text-muted-foreground">Platzhalter: `{'`{start}`'}` und `{'`{end}`'}` werden automatisch ersetzt.</p>
+                        </div>
+                        <BannerPreview text={previewTexts.red} color="red" separatorStyle={settings.separatorStyle} />
+                    </CardContent>
+                </Card>
+                
+                {/* Separator Style */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Laufband-Trennzeichen</CardTitle>
+                        <CardDescription>Wählen Sie das Trennzeichen, das im Laufband zwischen den Texten angezeigt wird.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="max-w-xs">
+                             <Select
+                                value={settings.separatorStyle || 'diamonds'}
+                                onValueChange={(value: BannerSettings['separatorStyle']) => handleInputChange('separatorStyle', value)}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Stil wählen..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="diamonds">Drei Rauten</SelectItem>
+                                    <SelectItem value="spaces">Nur Leerzeichen</SelectItem>
+                                    <SelectItem value="equals">Gleichheitszeichen</SelectItem>
+                                    <SelectItem value="dashes">Lange Spiegelstriche</SelectItem>
+                                    <SelectItem value="plus">Pluszeichen</SelectItem>
+                                    <SelectItem value="asterisks">Sternchen</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </CardContent>
                 </Card>
