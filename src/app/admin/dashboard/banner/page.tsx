@@ -131,58 +131,9 @@ export default function BannerPage() {
                 />
             )}
 
-            <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Yellow Banner */}
-                <Card className="lg:col-span-1">
-                    <CardHeader>
-                        <CardTitle className="text-yellow-500">Vorankündigungs-Banner (Gelb)</CardTitle>
-                        <CardDescription>Wird vor den Praxisferien angezeigt.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="preHolidayDays">Wie viele Tage vorher anzeigen?</Label>
-                            <Input
-                                id="preHolidayDays"
-                                type="number"
-                                value={settings.preHolidayDays}
-                                onChange={(e) => handleInputChange('preHolidayDays', parseInt(e.target.value, 10))}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="yellowBannerText">Bannertext</Label>
-                            <Textarea
-                                id="yellowBannerText"
-                                value={settings.yellowBannerText}
-                                onChange={(e) => handleInputChange('yellowBannerText', e.target.value)}
-                                rows={4}
-                            />
-                             <p className="text-xs text-muted-foreground">Platzhalter: `{'`{start}`'}` und `{'`{end}`'}` werden automatisch ersetzt.</p>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                {/* Red Banner */}
-                <Card className="lg:col-span-1">
-                    <CardHeader>
-                        <CardTitle className="text-red-500">Ferien-Banner (Rot)</CardTitle>
-                        <CardDescription>Wird während der Praxisferien angezeigt.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                       <div className="space-y-2">
-                            <Label htmlFor="redBannerText">Bannertext</Label>
-                            <Textarea
-                                id="redBannerText"
-                                value={settings.redBannerText}
-                                onChange={(e) => handleInputChange('redBannerText', e.target.value)}
-                                rows={4}
-                            />
-                             <p className="text-xs text-muted-foreground">Platzhalter: `{'`{start}`'}` und `{'`{end}`'}` werden automatisch ersetzt.</p>
-                        </div>
-                    </CardContent>
-                </Card>
-                
-                {/* Blue Banner */}
-                <Card className="lg:col-span-1">
+            <div className="w-full space-y-6">
+                 {/* Blue Banner */}
+                 <Card>
                     <CardHeader>
                         <CardTitle className="text-blue-500">Info-Banner (Blau)</CardTitle>
                         <CardDescription>Für benutzerdefinierte Ankündigungen.</CardDescription>
@@ -258,8 +209,56 @@ export default function BannerPage() {
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* Yellow Banner */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-yellow-500">Vorankündigungs-Banner (Gelb)</CardTitle>
+                        <CardDescription>Wird vor den Praxisferien angezeigt.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="preHolidayDays">Wie viele Tage vorher anzeigen?</Label>
+                            <Input
+                                id="preHolidayDays"
+                                type="number"
+                                value={settings.preHolidayDays}
+                                onChange={(e) => handleInputChange('preHolidayDays', parseInt(e.target.value, 10))}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="yellowBannerText">Bannertext</Label>
+                            <Textarea
+                                id="yellowBannerText"
+                                value={settings.yellowBannerText}
+                                onChange={(e) => handleInputChange('yellowBannerText', e.target.value)}
+                                rows={4}
+                            />
+                             <p className="text-xs text-muted-foreground">Platzhalter: `{'`{start}`'}` und `{'`{end}`'}` werden automatisch ersetzt.</p>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Red Banner */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-red-500">Ferien-Banner (Rot)</CardTitle>
+                        <CardDescription>Wird während der Praxisferien angezeigt.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                       <div className="space-y-2">
+                            <Label htmlFor="redBannerText">Bannertext</Label>
+                            <Textarea
+                                id="redBannerText"
+                                value={settings.redBannerText}
+                                onChange={(e) => handleInputChange('redBannerText', e.target.value)}
+                                rows={4}
+                            />
+                             <p className="text-xs text-muted-foreground">Platzhalter: `{'`{start}`'}` und `{'`{end}`'}` werden automatisch ersetzt.</p>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );
-
-    
+}
