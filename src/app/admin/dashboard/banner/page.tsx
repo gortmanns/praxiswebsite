@@ -75,7 +75,7 @@ const SeparatorPreview = ({ style }: { style: BannerSettings['separatorStyle'] }
     }
 };
 
-const BannerPreview = ({ text, color, separatorStyle, repetitions = 2 }: { text: string; color: 'yellow' | 'red' | 'blue'; separatorStyle?: BannerSettings['separatorStyle']; repetitions?: number }) => {
+const BannerPreview = ({ text, color, separatorStyle }: { text: string; color: 'yellow' | 'red' | 'blue'; separatorStyle?: BannerSettings['separatorStyle'] }) => {
     const bannerClasses = {
         yellow: 'bg-yellow-400 border-yellow-500 text-yellow-900',
         red: 'bg-red-500 border-red-600 text-white',
@@ -85,10 +85,10 @@ const BannerPreview = ({ text, color, separatorStyle, repetitions = 2 }: { text:
     return (
          <div className={cn("relative w-full border rounded-lg mt-4", bannerClasses[color])}>
             <div className="flex h-12 w-full items-center overflow-hidden">
-                <div className="flex min-w-full shrink-0 items-center">
-                    {Array.from({ length: repetitions }).map((_, i) => (
+                <div className="marquee flex min-w-full shrink-0 items-center justify-around">
+                    {Array.from({ length: 10 }).map((_, i) => (
                         <React.Fragment key={i}>
-                            <div className="flex shrink-0 items-center pl-6">
+                            <div className="flex shrink-0 items-center">
                                 <Info className="mr-3 h-5 w-5 shrink-0" />
                                 <p className="whitespace-nowrap text-sm font-semibold">{text}</p>
                             </div>
