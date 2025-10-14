@@ -187,20 +187,19 @@ export default function BannerPage() {
         const defaultText = "Dies ist eine Demonstration der Banner-Komponente";
         if (upcomingHoliday) {
             const nextDay = addDays(upcomingHoliday.end, 1);
-
             return {
-                yellow: initialSettings.yellowBannerText
+                yellow: settings.yellowBannerText
+                    .replace('{name}', upcomingHoliday.name)
                     .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
-                    .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de }))
-                    .replace('{name}', upcomingHoliday.name),
-                red: initialSettings.redBannerText
+                    .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })),
+                red: settings.redBannerText
                     .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
                     .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de }))
                     .replace('{next_day}', format(nextDay, 'd. MMMM', { locale: de })),
             };
         }
         return { yellow: defaultText, red: defaultText };
-    }, [upcomingHoliday]);
+    }, [upcomingHoliday, settings.yellowBannerText, settings.redBannerText]);
 
 
     useEffect(() => {
@@ -481,3 +480,5 @@ export default function BannerPage() {
         </TooltipProvider>
     );
 }
+
+    
