@@ -40,7 +40,7 @@ interface Holiday {
   end: Date;
 }
 
-interface HolidayBannerSettings {
+interface BannerSettings {
     preHolidayDays: number;
     yellowBannerText: string;
     redBannerText: string;
@@ -52,12 +52,12 @@ interface InfoBanner {
     id: string;
     text: string;
     isActive: boolean;
-    start?: Date;
-    end?: Date;
+    start?: Timestamp | Date;
+    end?: Timestamp | Date;
     separatorStyle?: SeparatorStyle;
 }
 
-const initialHolidaySettings: HolidayBannerSettings = {
+const initialBannerSettings: BannerSettings = {
     preHolidayDays: 14,
     yellowBannerText: 'Die <Name nächste Ferien> stehen bevor. In der Zeit vom <erster Ferientag> bis und mit <letzer Ferientag> bleibt das Praxiszentrum geschlossen. Bitte überprüfen Sie Ihren Medikamentenvorrat und beziehen Sie allenfalls nötigen Nachschub rechtzeitig.',
     redBannerText: 'Ferienhalber bleibt das Praxiszentrum in der Zeit vom <erster Ferientag> bis und mit <letzter Ferientag> geschlossen. Die Notfall-Notrufnummern finden sie rechts oben im Menü unter dem Punkt "NOTFALL". Ab dem <letzter Ferientag +1> stehen wieder wie gewohnt zur Verfügung.',
@@ -132,19 +132,16 @@ const SeparatorSelect = ({ value, onValueChange }: { value?: SeparatorStyle, onV
 export default function BannerPage() {
     const firestore = useFirestore();
     
-    // Holiday Banner Settings
-    const holidaySettingsDocRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'banners') : null, [firestore]);
-    const { data: dbHolidaySettings, isLoading: isLoadingHolidaySettings, error: dbHolidayError } = useDoc<any>(holidaySettingsDocRef);
-    const [holidaySettings, setHolidaySettings] = useState<HolidayBannerSettings>(initialHolidaySettings);
+    const settingsDocRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'banners') : null, [firestore]);
+    const { data: dbSettings, isLoading: isLoadingSettings, error: dbSettingsError } = useDoc<BannerSettings>(settingsDocRef);
+    const [bannerSettings, setBannerSettings] = useState<BannerSettings>(initialBannerSettings);
 
-    // Info Banners (Blue)
     const infoBannersQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'infoBanners'), orderBy('start', 'desc')) : null, [firestore]);
-    const { data: infoBanners, isLoading: isLoadingInfoBanners, error: dbInfoBannerError } = useCollection<InfoBanner>(infoBannersQuery);
+    const { data: infoBannersData, isLoading: isLoadingInfoBanners, error: dbInfoBannerError } = useCollection<InfoBanner>(infoBannersQuery);
 
     const [isEditing, setIsEditing] = useState(false);
     const [currentEditorBanner, setCurrentEditorBanner] = useState<Partial<InfoBanner>>(initialInfoBannerState);
 
-    // Holidays data for previews
     const holidaysQuery = useMemoFirebase(() => {
         if (!firestore) return null;
         const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -155,17 +152,25 @@ export default function BannerPage() {
     const [notification, setNotification] = useState<TimedAlertProps | null>(null);
     const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; bannerId?: string; bannerText?: string }>({ isOpen: false });
 
-    // --- Effects to load data ---
     useEffect(() => {
-        if (dbHolidaySettings) {
-            setHolidaySettings({ ...initialHolidaySettings, ...dbHolidaySettings });
+        if (dbSettings) {
+            setBannerSettings({ ...initialBannerSettings, ...dbSettings });
         }
-    }, [dbHolidaySettings]);
+    }, [dbSettings]);
 
     const holidays: Holiday[] = useMemo(() => {
         if (!holidaysData) return [];
         return holidaysData.map(h => ({ ...h, id: h.id, start: h.start.toDate(), end: h.end.toDate() })).sort((a, b) => a.start.getTime() - b.start.getTime());
     }, [holidaysData]);
+    
+    const infoBanners: InfoBanner[] = useMemo(() => {
+        if (!infoBannersData) return [];
+        return infoBannersData.map(banner => ({
+            ...banner,
+            start: banner.start instanceof Timestamp ? banner.start.toDate() : banner.start,
+            end: banner.end instanceof Timestamp ? banner.end.toDate() : banner.end,
+        }));
+    }, [infoBannersData]);
 
     const upcomingHoliday = useMemo(() => holidays.find(h => h.start > new Date()), [holidays]);
 
@@ -174,23 +179,22 @@ export default function BannerPage() {
         if (upcomingHoliday) {
             const nextDay = addDays(upcomingHoliday.end, 1);
             return {
-                yellow: holidaySettings.yellowBannerText.replace('<Name nächste Ferien>', upcomingHoliday.name).replace('<erster Ferientag>', format(upcomingHoliday.start, 'd. MMMM', { locale: de })).replace('<letzer Ferientag>', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })),
-                red: holidaySettings.redBannerText.replace('<erster Ferientag>', format(upcomingHoliday.start, 'd. MMMM', { locale: de })).replace('<letzter Ferientag>', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })).replace('<letzter Ferientag +1>', format(nextDay, 'd. MMMM', { locale: de })),
+                yellow: bannerSettings.yellowBannerText.replace('<Name nächste Ferien>', upcomingHoliday.name).replace('<erster Ferientag>', format(upcomingHoliday.start, 'd. MMMM', { locale: de })).replace('<letzer Ferientag>', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })),
+                red: bannerSettings.redBannerText.replace('<erster Ferientag>', format(upcomingHoliday.start, 'd. MMMM', { locale: de })).replace('<letzter Ferientag>', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })).replace('<letzter Ferientag +1>', format(nextDay, 'd. MMMM', { locale: de })),
             };
         }
         return { yellow: defaultText, red: defaultText };
-    }, [upcomingHoliday, holidaySettings.yellowBannerText, holidaySettings.redBannerText]);
+    }, [upcomingHoliday, bannerSettings.yellowBannerText, bannerSettings.redBannerText]);
 
-    // --- Handlers ---
-    const handleHolidayInputChange = (field: keyof HolidayBannerSettings, value: any) => setHolidaySettings(prev => ({ ...prev, [field]: value }));
+    const handleBannerSettingsChange = (field: keyof BannerSettings, value: any) => setBannerSettings(prev => ({ ...prev, [field]: value }));
     const handleInfoBannerInputChange = (field: keyof InfoBanner, value: any) => setCurrentEditorBanner(prev => ({ ...prev, [field]: value }));
 
-    const handleSaveHolidaySettings = async () => {
-        if (!holidaySettingsDocRef) return;
+    const handleSaveBannerSettings = async () => {
+        if (!settingsDocRef) return;
         setNotification(null);
         try {
-            await setDoc(holidaySettingsDocRef, { ...holidaySettings, updatedAt: serverTimestamp() }, { merge: true });
-            setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Die Ferien-Banner Einstellungen wurden gespeichert.' });
+            await setDoc(settingsDocRef, { ...bannerSettings, updatedAt: serverTimestamp() }, { merge: true });
+            setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Die Banner Einstellungen wurden gespeichert.' });
         } catch (e: any) { setNotification({ variant: 'destructive', title: 'Fehler', description: `Speichern fehlgeschlagen: ${e.message}` }); }
     };
     
@@ -202,8 +206,8 @@ export default function BannerPage() {
     const handleEditInfoBanner = (banner: InfoBanner) => {
         setCurrentEditorBanner({
             ...banner,
-            start: banner.start ? banner.start.toDate() : undefined,
-            end: banner.end ? banner.end.toDate() : undefined
+            start: banner.start,
+            end: banner.end
         });
         setIsEditing(true);
     };
@@ -219,11 +223,11 @@ export default function BannerPage() {
         const dataToSave = { ...currentEditorBanner, updatedAt: serverTimestamp() };
         
         try {
-            if (currentEditorBanner.id) { // Editing existing
+            if (currentEditorBanner.id) {
                 const docRef = doc(firestore, 'infoBanners', currentEditorBanner.id);
                 await setDoc(docRef, dataToSave, { merge: true });
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Info-Banner wurde aktualisiert.' });
-            } else { // Creating new
+            } else {
                 const docRef = await addDoc(collection(firestore, 'infoBanners'), dataToSave);
                 await setDoc(docRef, { id: docRef.id }, { merge: true });
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Neues Info-Banner wurde erstellt.' });
@@ -250,12 +254,11 @@ export default function BannerPage() {
         }
     };
 
-    // --- Render ---
-    if (isLoadingHolidaySettings || isLoadingHolidays || isLoadingInfoBanners) {
+    if (isLoadingSettings || isLoadingHolidays || isLoadingInfoBanners) {
         return ( <div className="flex flex-1 items-start p-4 sm:p-6"><Card className="w-full"><CardHeader><Skeleton className="h-8 w-1/2" /><Skeleton className="h-5 w-3/4" /></CardHeader><CardContent className="space-y-8"><Skeleton className="h-64 w-full" /><Skeleton className="h-48 w-full" /><Skeleton className="h-48 w-full" /></CardContent></Card></div>)
     }
 
-    const dbError = dbHolidayError || dbInfoBannerError;
+    const dbError = dbSettingsError || dbInfoBannerError;
     if (dbError) {
         return (<div className="flex flex-1 items-start p-4 sm:p-6"><Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertTitle>Datenbankfehler</AlertTitle><AlertDescription>{dbError.message}</AlertDescription></Alert></div>)
     }
@@ -271,7 +274,6 @@ export default function BannerPage() {
                 {notification && (<div className="w-full max-w-5xl"><TimedAlert variant={notification.variant} title={notification.title} description={notification.description} onClose={() => setNotification(null)} className="w-full"/></div>)}
 
                 <div className="w-full max-w-5xl space-y-6">
-                    {/* Blue Banner Section */}
                     <div className="border-2 border-accent rounded-lg">
                         <div className="p-6">
                             <div className="flex justify-between items-start">
@@ -292,11 +294,11 @@ export default function BannerPage() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label>Startdatum</Label>
-                                        <Popover><PopoverTrigger asChild><Button variant={'outline'} className={cn('w-full justify-start text-left font-normal', !currentEditorBanner.start && 'text-muted-foreground')}><CalendarIcon className="mr-2 h-4 w-4" />{currentEditorBanner.start ? format(currentEditorBanner.start, 'd. MMM yyyy', { locale: de }) : <span>Datum wählen</span>}</Button></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={currentEditorBanner.start} onSelect={(date) => handleInfoBannerInputChange('start', date)} initialFocus locale={de} /></PopoverContent></Popover>
+                                        <Popover><PopoverTrigger asChild><Button variant={'outline'} className={cn('w-full justify-start text-left font-normal', !currentEditorBanner.start && 'text-muted-foreground')}><CalendarIcon className="mr-2 h-4 w-4" />{currentEditorBanner.start ? format(currentEditorBanner.start, 'd. MMM yyyy', { locale: de }) : <span>Datum wählen</span>}</Button></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={currentEditorBanner.start instanceof Date ? currentEditorBanner.start : undefined} onSelect={(date) => handleInfoBannerInputChange('start', date)} initialFocus locale={de} /></PopoverContent></Popover>
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Enddatum</Label>
-                                        <Popover><PopoverTrigger asChild><Button variant={'outline'} className={cn('w-full justify-start text-left font-normal', !currentEditorBanner.end && 'text-muted-foreground')}><CalendarIcon className="mr-2 h-4 w-4" />{currentEditorBanner.end ? format(currentEditorBanner.end, 'd. MMM yyyy', { locale: de }) : <span>Datum wählen</span>}</Button></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={currentEditorBanner.end} onSelect={(date) => handleInfoBannerInputChange('end', date)} initialFocus locale={de} /></PopoverContent></Popover>
+                                        <Popover><PopoverTrigger asChild><Button variant={'outline'} className={cn('w-full justify-start text-left font-normal', !currentEditorBanner.end && 'text-muted-foreground')}><CalendarIcon className="mr-2 h-4 w-4" />{currentEditorBanner.end ? format(currentEditorBanner.end, 'd. MMM yyyy', { locale: de }) : <span>Datum wählen</span>}</Button></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={currentEditorBanner.end instanceof Date ? currentEditorBanner.end : undefined} onSelect={(date) => handleInfoBannerInputChange('end', date)} initialFocus locale={de} /></PopoverContent></Popover>
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between pt-2">
@@ -317,7 +319,7 @@ export default function BannerPage() {
                             <Table>
                                 <TableHeader><TableRow><TableHead>Status</TableHead><TableHead>Text</TableHead><TableHead>Zeitraum</TableHead><TableHead className="text-right">Aktionen</TableHead></TableRow></TableHeader>
                                 <TableBody>
-                                    {infoBanners?.map(banner => (
+                                    {infoBanners.map(banner => (
                                         <TableRow key={banner.id} className={cn(isEditing && currentEditorBanner.id === banner.id && "bg-muted/50")}>
                                             <TableCell><div className={cn("w-3 h-3 rounded-full", banner.isActive ? "bg-green-500" : "bg-gray-400")}></div></TableCell>
                                             <TableCell className="max-w-xs truncate">{banner.text}</TableCell>
@@ -343,11 +345,9 @@ export default function BannerPage() {
                         </div>
                     </div>
 
-                    {/* Yellow Banner */}
-                    <div className="border-2 border-accent rounded-lg"><div className="p-6"><h3 className="text-yellow-500 font-bold text-lg">Vorankündigungs-Banner (Gelb)</h3><p className="text-muted-foreground text-sm">Wird eine bestimmte Anzahl Tage vor den Praxisferien angezeigt.</p></div><div className="space-y-4 bg-background p-6 rounded-b-lg"><div className="space-y-2"><Label htmlFor="preHolidayDays">Wie viele Tage vorher anzeigen?</Label><Input id="preHolidayDays" type="number" className="w-24" value={holidaySettings.preHolidayDays} onChange={(e) => handleHolidayInputChange('preHolidayDays', parseInt(e.target.value, 10))} /></div><div className="space-y-2"><Label htmlFor="yellowBannerText">Bannertext</Label><Textarea id="yellowBannerText" value={holidaySettings.yellowBannerText} onChange={(e) => handleHolidayInputChange('yellowBannerText', e.target.value)} rows={4} /></div><div className="flex items-end gap-4 pt-2"><div className="space-y-2"><Label>Trennzeichen-Stil</Label><SeparatorSelect value={holidaySettings.yellowBannerSeparatorStyle} onValueChange={(value) => handleHolidayInputChange('yellowBannerSeparatorStyle', value)} /></div><div className="flex items-end gap-2"><Button variant="secondary" onClick={() => handleHolidayInputChange('yellowBannerText', initialHolidaySettings.yellowBannerText)}><RotateCcw className="mr-2 h-4 w-4" />Standardtext</Button><Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="cursor-help"><Info className="h-4 w-4" /></Button></TooltipTrigger><TooltipContent><p>{initialHolidaySettings.yellowBannerText.replace('<Name nächste Ferien>', 'Name nächste Ferien').replace('<erster Ferientag>', 'erster Ferientag').replace('<letzer Ferientag>', 'letzer Ferientag')}</p></TooltipContent></Tooltip></div><Button onClick={handleSaveHolidaySettings}><Save className="mr-2 h-4 w-4" />Speichern</Button></div><BannerPreview text={previewTexts.yellow} color="yellow" separatorStyle={holidaySettings.yellowBannerSeparatorStyle} /></div></div>
+                    <div className="border-2 border-accent rounded-lg"><div className="p-6"><h3 className="text-yellow-500 font-bold text-lg">Vorankündigungs-Banner (Gelb)</h3><p className="text-muted-foreground text-sm">Wird eine bestimmte Anzahl Tage vor den Praxisferien angezeigt.</p></div><div className="space-y-4 bg-background p-6 rounded-b-lg"><div className="space-y-2"><Label htmlFor="preHolidayDays">Wie viele Tage vorher anzeigen?</Label><Input id="preHolidayDays" type="number" className="w-24" value={bannerSettings.preHolidayDays} onChange={(e) => handleBannerSettingsChange('preHolidayDays', parseInt(e.target.value, 10))} /></div><div className="space-y-2"><Label htmlFor="yellowBannerText">Bannertext</Label><Textarea id="yellowBannerText" value={bannerSettings.yellowBannerText} onChange={(e) => handleBannerSettingsChange('yellowBannerText', e.target.value)} rows={4} /></div><div className="flex items-end gap-4 pt-2"><div className="space-y-2"><Label>Trennzeichen-Stil</Label><SeparatorSelect value={bannerSettings.yellowBannerSeparatorStyle} onValueChange={(value) => handleBannerSettingsChange('yellowBannerSeparatorStyle', value)} /></div><div className="flex items-end gap-2"><Button variant="secondary" onClick={() => handleBannerSettingsChange('yellowBannerText', initialBannerSettings.yellowBannerText)}><RotateCcw className="mr-2 h-4 w-4" />Standardtext</Button><Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="cursor-help"><Info className="h-4 w-4" /></Button></TooltipTrigger><TooltipContent><p>{initialBannerSettings.yellowBannerText.replace('<Name nächste Ferien>', 'Name nächste Ferien').replace('<erster Ferientag>', 'erster Ferientag').replace('<letzer Ferientag>', 'letzer Ferientag')}</p></TooltipContent></Tooltip></div><Button onClick={handleSaveBannerSettings}><Save className="mr-2 h-4 w-4" />Speichern</Button></div><BannerPreview text={previewTexts.yellow} color="yellow" separatorStyle={bannerSettings.yellowBannerSeparatorStyle} /></div></div>
 
-                    {/* Red Banner */}
-                    <div className="border-2 border-accent rounded-lg"><div className="p-6"><h3 className="text-red-500 font-bold text-lg">Ferien-Banner (Rot)</h3><p className="text-muted-foreground text-sm">Wird während der Praxisferien angezeigt.</p></div><div className="space-y-4 bg-background p-6 rounded-b-lg"><div className="space-y-2"><Label htmlFor="redBannerText">Bannertext</Label><Textarea id="redBannerText" value={holidaySettings.redBannerText} onChange={(e) => handleHolidayInputChange('redBannerText', e.target.value)} rows={4} /></div><div className="flex items-end gap-4 pt-2"><div className="space-y-2"><Label>Trennzeichen-Stil</Label><SeparatorSelect value={holidaySettings.redBannerSeparatorStyle} onValueChange={(value) => handleHolidayInputChange('redBannerSeparatorStyle', value)} /></div><div className="flex items-end gap-2"><Button variant="secondary" onClick={() => handleHolidayInputChange('redBannerText', initialHolidaySettings.redBannerText)}><RotateCcw className="mr-2 h-4 w-4" />Standardtext</Button><Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="cursor-help"><Info className="h-4 w-4" /></Button></TooltipTrigger><TooltipContent><p>{initialHolidaySettings.redBannerText.replace('<erster Ferientag>', 'erster Ferientag').replace('<letzter Ferientag>', 'letzter Ferientag').replace('<letzter Ferientag +1>', 'letzter Ferientag +1')}</p></TooltipContent></Tooltip></div><Button onClick={handleSaveHolidaySettings}><Save className="mr-2 h-4 w-4" />Speichern</Button></div><BannerPreview text={previewTexts.red} color="red" separatorStyle={holidaySettings.redBannerSeparatorStyle} /></div></div>
+                    <div className="border-2 border-accent rounded-lg"><div className="p-6"><h3 className="text-red-500 font-bold text-lg">Ferien-Banner (Rot)</h3><p className="text-muted-foreground text-sm">Wird während der Praxisferien angezeigt.</p></div><div className="space-y-4 bg-background p-6 rounded-b-lg"><div className="space-y-2"><Label htmlFor="redBannerText">Bannertext</Label><Textarea id="redBannerText" value={bannerSettings.redBannerText} onChange={(e) => handleBannerSettingsChange('redBannerText', e.target.value)} rows={4} /></div><div className="flex items-end gap-4 pt-2"><div className="space-y-2"><Label>Trennzeichen-Stil</Label><SeparatorSelect value={bannerSettings.redBannerSeparatorStyle} onValueChange={(value) => handleBannerSettingsChange('redBannerSeparatorStyle', value)} /></div><div className="flex items-end gap-2"><Button variant="secondary" onClick={() => handleBannerSettingsChange('redBannerText', initialBannerSettings.redBannerText)}><RotateCcw className="mr-2 h-4 w-4" />Standardtext</Button><Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="cursor-help"><Info className="h-4 w-4" /></Button></TooltipTrigger><TooltipContent><p>{initialBannerSettings.redBannerText.replace('<erster Ferientag>', 'erster Ferientag').replace('<letzter Ferientag>', 'letzter Ferientag').replace('<letzter Ferientag +1>', 'letzter Ferientag +1')}</p></TooltipContent></Tooltip></div><Button onClick={handleSaveBannerSettings}><Save className="mr-2 h-4 w-4" />Speichern</Button></div><BannerPreview text={previewTexts.red} color="red" separatorStyle={bannerSettings.redBannerSeparatorStyle} /></div></div>
                 </div>
             </div>
              <AlertDialog open={deleteConfirm.isOpen} onOpenChange={(isOpen) => !isOpen && setDeleteConfirm({ isOpen: false })}>
