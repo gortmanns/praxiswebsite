@@ -11,12 +11,10 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { format, addDays, subDays } from 'date-fns';
+import { format, addDays } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { Calendar as CalendarIcon, Save, AlertCircle, Info, RotateCcw, Plus, Trash2, Pencil, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
-import { doc, setDoc, serverTimestamp, collection, query, where, orderBy, Timestamp, addDoc, deleteDoc } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
@@ -36,13 +34,6 @@ const FilledDiamond = (props: React.SVGProps<SVGSVGElement>) => (
 
 type SeparatorStyle = 'diamonds' | 'spaces' | 'equals' | 'dashes' | 'plus' | 'asterisks';
 
-interface Holiday {
-  id: string;
-  name: string;
-  start: Date;
-  end: Date;
-}
-
 interface BannerSettings {
     preHolidayDays: number;
     yellowBannerText: string;
@@ -54,8 +45,8 @@ interface BannerSettings {
 interface InfoBanner {
     id: string;
     text: string;
-    start?: Timestamp | Date;
-    end?: Timestamp | Date;
+    start?: Date;
+    end?: Date;
     separatorStyle?: SeparatorStyle;
 }
 
@@ -154,92 +145,26 @@ const PlaceholderAlert = () => (
 );
 
 function BannerManager() {
-    const firestore = useFirestore();
-    
     const [bannerSettings, setBannerSettings] = useState<BannerSettings>(initialBannerSettings);
-    
     const [isEditing, setIsEditing] = useState(false);
     const [currentEditorBanner, setCurrentEditorBanner] = useState<Partial<InfoBanner>>(initialInfoBannerState);
 
     const [notification, setNotification] = useState<TimedAlertProps | null>(null);
     const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; bannerId?: string; bannerText?: string }>({ isOpen: false });
 
-    // Correctly memoized data fetching hooks
-    const settingsDocRef = useMemoFirebase(() => {
-        if (!firestore) return null;
-        return doc(firestore, 'settings', 'banners');
-    }, [firestore]);
-    const { data: dbSettings, isLoading: isLoadingSettings, error: dbSettingsError } = useDoc<BannerSettings>(settingsDocRef as any);
-    
-    const infoBannersQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
-        return query(collection(firestore, 'infoBanners'), orderBy('start', 'desc'));
-    }, [firestore]);
-    const { data: infoBannersData, isLoading: isLoadingInfoBanners, error: dbInfoBannerError } = useCollection<InfoBanner>(infoBannersQuery as any);
-
-    const holidaysQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
-        const today = new Date(); today.setHours(0, 0, 0, 0);
-        return query(collection(firestore, 'holidays'), where('end', '>=', Timestamp.fromDate(today)), orderBy('end', 'asc'));
-    }, [firestore]);
-    const { data: holidaysData, isLoading: isLoadingHolidays, error: dbHolidaysError } = useCollection<any>(holidaysQuery as any);
-
-    useEffect(() => {
-        if (dbSettings) {
-            setBannerSettings({ ...initialBannerSettings, ...dbSettings });
-        }
-    }, [dbSettings]);
-
-    const holidays: Holiday[] = useMemo(() => {
-        if (!holidaysData) return [];
-        return holidaysData.map(h => ({ ...h, id: h.id, start: h.start.toDate(), end: h.end.toDate() })).sort((a, b) => a.start.getTime() - b.start.getTime());
-    }, [holidaysData]);
-    
-    const infoBanners: InfoBanner[] = useMemo(() => {
-        if (!infoBannersData) return [];
-        return infoBannersData.map(banner => ({
-            ...banner,
-            start: banner.start instanceof Timestamp ? banner.start.toDate() : banner.start,
-            end: banner.end instanceof Timestamp ? banner.end.toDate() : banner.end,
-        }));
-    }, [infoBannersData]);
-
-    const upcomingHoliday = useMemo(() => holidays.find(h => h.start > new Date()), [holidays]);
-
-    const processPlaceholders = (text: string, holiday: Holiday): string => {
-        return text
-            .replace(/{name}/g, holiday.name)
-            .replace(/{start}/g, format(holiday.start, 'd. MMMM', { locale: de }))
-            .replace(/{start-1}/g, format(subDays(holiday.start, 1), 'd. MMMM', { locale: de }))
-            .replace(/{ende}/g, format(holiday.end, 'd. MMMM yyyy', { locale: de }))
-            .replace(/{ende\+1}/g, format(addDays(holiday.end, 1), 'd. MMMM', { locale: de }))
-            .replace(/{ende\+2}/g, format(addDays(holiday.end, 2), 'd. MMMM', { locale: de }))
-            .replace(/{ende\+3}/g, format(addDays(holiday.end, 3), 'd. MMMM', { locale: de }));
+    // Placeholder data
+    const infoBanners: InfoBanner[] = [];
+    const previewTexts = {
+        yellow: "Vorschau des gelben Banners...",
+        red: "Vorschau des roten Banners...",
     };
 
-    const previewTexts = useMemo(() => {
-        const defaultText = "Dies ist eine Demonstration der Banner-Komponente";
-        if (upcomingHoliday) {
-            return {
-                yellow: processPlaceholders(bannerSettings.yellowBannerText, upcomingHoliday),
-                red: processPlaceholders(bannerSettings.redBannerText, upcomingHoliday),
-            };
-        }
-        return { yellow: defaultText, red: defaultText };
-    }, [upcomingHoliday, bannerSettings.yellowBannerText, bannerSettings.redBannerText]);
-
+    const handleDisabledClick = () => {
+        setNotification({ variant: 'warning', title: 'Funktion deaktiviert', description: 'Die Datenbankverbindung wurde entfernt. Speichern und Löschen sind deaktiviert.' });
+    };
 
     const handleBannerSettingsChange = (field: keyof BannerSettings, value: any) => setBannerSettings(prev => ({ ...prev, [field]: value }));
     const handleInfoBannerInputChange = (field: keyof InfoBanner, value: any) => setCurrentEditorBanner(prev => ({ ...prev, [field]: value }));
-
-    const handleSaveBannerSettings = async () => {
-        if (!settingsDocRef) return;
-        setNotification(null);
-        try {
-            await setDoc(settingsDocRef, { ...bannerSettings, updatedAt: serverTimestamp() }, { merge: true });
-            setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Die Banner Einstellungen wurden gespeichert.' });
-        } catch (e: any) { setNotification({ variant: 'destructive', title: 'Fehler', description: `Speichern fehlgeschlagen: ${e.message}` }); }
-    };
     
     const handleNewInfoBanner = () => {
         setCurrentEditorBanner({ ...initialInfoBannerState });
@@ -259,57 +184,6 @@ function BannerManager() {
         setIsEditing(false);
         setCurrentEditorBanner(initialInfoBannerState);
     };
-
-    const handleSaveInfoBanner = async () => {
-        if (!firestore) return;
-        setNotification(null);
-        const dataToSave = { ...currentEditorBanner, updatedAt: serverTimestamp() };
-        
-        try {
-            if (currentEditorBanner.id) {
-                const docRef = doc(firestore, 'infoBanners', currentEditorBanner.id);
-                await setDoc(docRef, dataToSave, { merge: true });
-                setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Info-Banner wurde aktualisiert.' });
-            } else {
-                const { id, ...rest } = dataToSave;
-                const newDocRef = await addDoc(collection(firestore, 'infoBanners'), rest);
-                await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
-                setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Neues Info-Banner wurde erstellt.' });
-            }
-            handleCancelEdit();
-        } catch (e: any) {
-            setNotification({ variant: 'destructive', title: 'Fehler', description: `Speichern fehlgeschlagen: ${e.message}` });
-        }
-    };
-    
-    const openDeleteConfirmation = (bannerId: string, bannerText: string) => {
-        setDeleteConfirm({ isOpen: true, bannerId, bannerText });
-    };
-
-    const handleDeleteInfoBanner = async () => {
-        if (!firestore || !deleteConfirm.bannerId) return;
-        try {
-            await deleteDoc(doc(firestore, 'infoBanners', deleteConfirm.bannerId));
-            setNotification({ title: 'Erfolgreich', description: 'Info-Banner wurde gelöscht.', variant: 'success' });
-        } catch (e: any) {
-            setNotification({ variant: 'destructive', title: 'Fehler', description: `Löschen fehlgeschlagen: ${e.message}` });
-        } finally {
-            setDeleteConfirm({ isOpen: false });
-        }
-    };
-    
-    const isLoading = isLoadingSettings || isLoadingHolidays || isLoadingInfoBanners;
-    const dbError = dbSettingsError || dbInfoBannerError || dbHolidaysError;
-
-    if (isLoading) {
-        return ( <div className="flex flex-1 items-start p-4 sm:p-6"><Card className="w-full"><CardHeader><Skeleton className="h-8 w-1/2" /><Skeleton className="h-5 w-3/4" /></CardHeader><CardContent className="space-y-8"><Skeleton className="h-64 w-full" /><Skeleton className="h-48 w-full" /><Skeleton className="h-48 w-full" /></CardContent></Card></div>)
-    }
-
-    if (dbError) {
-        // The error boundary will catch and display the contextual error.
-        // We can render a simple fallback UI here.
-        return (<div className="flex flex-1 items-start p-4 sm:p-6"><Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertTitle>Datenbankfehler</AlertTitle><AlertDescription>Die Bannerdaten konnten nicht geladen werden. Der Fehler wurde zur Analyse gemeldet.</AlertDescription></Alert></div>)
-    }
 
     return (
         <>
@@ -354,7 +228,7 @@ function BannerManager() {
                                         <div className="space-y-2"><Label>Trennzeichen-Stil</Label><SeparatorSelect value={currentEditorBanner.separatorStyle} onValueChange={(value) => handleInfoBannerInputChange('separatorStyle', value)} /></div>
                                         <div className="flex gap-2">
                                             <Button variant="outline" onClick={handleCancelEdit}><XCircle className="mr-2 h-4 w-4" />Abbrechen</Button>
-                                            <Button onClick={handleSaveInfoBanner}><Save className="mr-2 h-4 w-4" />Speichern</Button>
+                                            <Button onClick={handleDisabledClick}><Save className="mr-2 h-4 w-4" />Speichern</Button>
                                         </div>
                                     </div>
                                 </div>
@@ -372,32 +246,13 @@ function BannerManager() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {infoBanners.map(banner => (
-                                        <TableRow key={banner.id} className={cn(isEditing && currentEditorBanner.id === banner.id && "bg-muted/50")}>
-                                            <TableCell className="min-w-[300px] sm:min-w-[400px]">
-                                                <BannerPreview text={banner.text} color="blue" separatorStyle={banner.separatorStyle} small />
-                                            </TableCell>
-                                            <TableCell className="whitespace-nowrap">
-                                                {banner.start ? format(banner.start, 'dd.MM.yy', { locale: de }) : ''} - {banner.end ? format(banner.end, 'dd.MM.yy', { locale: de }) : ''}
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                <div className="relative">
-                                                     {isEditing && currentEditorBanner.id === banner.id && (
-                                                        <div className="absolute inset-0 bg-background/80 flex items-center justify-center rounded-md z-10">
-                                                            <span className="text-sm font-bold text-foreground">In Bearbeitung</span>
-                                                        </div>
-                                                    )}
-                                                    <div className="flex gap-2 justify-end">
-                                                        <Button variant="outline" size="icon" onClick={() => handleEditInfoBanner(banner)}><Pencil className="h-4 w-4" /></Button>
-                                                        <Button variant="destructive" size="icon" onClick={() => openDeleteConfirmation(banner.id, banner.text)}><Trash2 className="h-4 w-4" /></Button>
-                                                    </div>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+                                    <TableRow>
+                                        <TableCell colSpan={3} className="text-center text-muted-foreground py-8">
+                                            Datenbankverbindung entfernt. Banner können nicht angezeigt werden.
+                                        </TableCell>
+                                    </TableRow>
                                 </TableBody>
                             </Table>
-                            {(!infoBanners || infoBanners.length === 0) && <p className="text-center text-muted-foreground py-4">Keine Info-Banner vorhanden.</p>}
                         </div>
                     </div>
 
@@ -440,7 +295,7 @@ function BannerManager() {
                                 <div className="flex-1 min-w-[300px]">
                                     <PlaceholderAlert />
                                 </div>
-                                <Button onClick={handleSaveBannerSettings}>
+                                <Button onClick={handleDisabledClick}>
                                     <Save className="mr-2 h-4 w-4" />
                                     Speichern
                                 </Button>
@@ -474,7 +329,7 @@ function BannerManager() {
                                 <div className="flex-1 min-w-[300px]">
                                     <PlaceholderAlert />
                                 </div>
-                                <Button onClick={handleSaveBannerSettings}>
+                                <Button onClick={handleDisabledClick}>
                                     <Save className="mr-2 h-4 w-4" />
                                     Speichern
                                 </Button>
@@ -492,7 +347,7 @@ function BannerManager() {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteInfoBanner} className={cn(buttonVariants({ variant: "destructive" }))}>Löschen</AlertDialogAction>
+                        <AlertDialogAction onClick={handleDisabledClick} className={cn(buttonVariants({ variant: "destructive" }))}>Löschen</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
@@ -513,5 +368,3 @@ function BannerManager() {
 export default function BannerPage() {
     return <BannerManager />;
 }
-
-    
