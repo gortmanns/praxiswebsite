@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Header } from '../_components/header';
@@ -27,8 +28,7 @@ export default function TeamPage() {
   const { data: doctors, isLoading: isLoadingDoctors } = useCollection<Doctor>(doctorsQuery);
   const { data: staff, isLoading: isLoadingStaff } = useCollection<StaffMember>(staffQuery);
 
-  const fullWidthStaff = staff?.filter(s => s.fullWidth) || [];
-  const gridStaff = staff?.filter(s => !s.fullWidth) || [];
+  const staffMembers = staff || [];
 
 
   return (
@@ -73,42 +73,24 @@ export default function TeamPage() {
                         <Skeleton className="h-[550px] w-full max-w-sm" />
                     </div>
                 </div>
-            ) : staff && staff.length > 0 ? (
-                <div className="space-y-12">
-                  {fullWidthStaff.length > 0 && (
-                    <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8", fullWidthStaff.length > 0 && "sm:grid-cols-2")}>
-                      {fullWidthStaff.map((member, index) => (
-                        <div key={member.id} className={cn("mx-auto flex w-full justify-center", fullWidthStaff.length % 2 !== 0 && index === fullWidthStaff.length - 1 && "sm:col-span-2")}>
-                           <TeamMemberCard 
-                            name={member.name}
-                            role={member.role}
-                            role2={member.role2}
-                            imageUrl={member.imageUrl}
-                            imageHint="staff portrait"
-                            languages={member.languages}
-                            backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
-                           />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {gridStaff.length > 0 && (
-                    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                        {gridStaff.map((member) => (
-                          <div key={member.id} className="mx-auto flex w-full justify-center">
-                            <TeamMemberCard 
-                              name={member.name}
-                              role={member.role}
-                              role2={member.role2}
-                              imageUrl={member.imageUrl}
-                              imageHint="staff portrait"
-                              languages={member.languages}
-                              backsideContent={member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined}
-                            />
-                          </div>
-                        ))}
-                    </div>
-                  )}
+            ) : staffMembers.length > 0 ? (
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                    {staffMembers.map((member) => {
+                        const backside = member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined;
+                        return (
+                            <div key={member.id} className={cn("flex justify-center", member.fullWidth && "sm:col-span-2")}>
+                                <TeamMemberCard 
+                                    name={member.name}
+                                    role={member.role}
+                                    role2={member.role2}
+                                    imageUrl={member.imageUrl}
+                                    imageHint="staff portrait"
+                                    languages={member.languages}
+                                    backsideContent={backside}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
             ) : (
                  <p className="text-center text-muted-foreground">Informationen zum Praxispersonal werden in Kürze hier angezeigt.</p>
