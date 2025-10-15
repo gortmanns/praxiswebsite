@@ -4,10 +4,10 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, collection, query, where, orderBy, Timestamp } from 'firebase/firestore';
-import { format, differenceInDays, isWithinInterval, addDays } from 'date-fns';
+import { format, differenceInDays, isWithinInterval, addDays, subDays } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
-import { X, Info } from 'lucide-react';
+import { X } from 'lucide-react';
 
 const FilledDiamond = (props: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" {...props}>
@@ -24,7 +24,7 @@ interface Holiday {
   end: Date;
 }
 
-interface HolidayBannerSettings {
+interface BannerSettings {
     preHolidayDays: number;
     yellowBannerText: string;
     redBannerText: string;
@@ -46,10 +46,42 @@ interface BannerInfo {
   separatorStyle: SeparatorStyle;
 }
 
-function getActiveBanner(holidays: Holiday[], holidaySettings: HolidayBannerSettings | null, infoBanners: InfoBanner[] | null): BannerInfo | null {
+function processPlaceholders(text: string, holiday: Holiday): string {
+    return text
+        .replace(/{name}/g, holiday.name)
+        .replace(/{start}/g, format(holiday.start, 'd. MMMM', { locale: de }))
+        .replace(/{start-1}/g, format(subDays(holiday.start, 1), 'd. MMMM', { locale: de }))
+        .replace(/{ende}/g, format(holiday.end, 'd. MMMM yyyy', { locale: de }))
+        .replace(/{ende\+1}/g, format(addDays(holiday.end, 1), 'd. MMMM', { locale: de }))
+        .replace(/{ende\+2}/g, format(addDays(holiday.end, 2), 'd. MMMM', { locale: de }))
+        .replace(/{ende\+3}/g, format(addDays(holiday.end, 3), 'd. MMMM', { locale: de }));
+};
+
+
+function getActiveBanner(holidays: Holiday[], holidaySettings: BannerSettings | null, infoBanners: InfoBanner[] | null): BannerInfo | null {
   const now = new Date();
   
-  // Check for active Blue Banner first
+  if (holidays && holidays.length > 0 && holidaySettings) {
+    const upcomingHoliday = holidays.find(h => h.start > now);
+    const currentHoliday = holidays.find(h => isWithinInterval(now, { start: h.start, end: h.end }));
+
+    // Priority 1: Red Banner (during holidays)
+    if (currentHoliday) {
+      const text = processPlaceholders(holidaySettings.redBannerText, currentHoliday);
+      return { text, color: 'red', separatorStyle: holidaySettings.redBannerSeparatorStyle || 'diamonds' };
+    }
+
+    // Priority 2: Yellow Banner (before holidays)
+    if (upcomingHoliday) {
+      const daysUntilStart = differenceInDays(upcomingHoliday.start, now);
+      if (daysUntilStart >= 0 && daysUntilStart <= holidaySettings.preHolidayDays) {
+        const text = processPlaceholders(holidaySettings.yellowBannerText, upcomingHoliday);
+        return { text, color: 'yellow', separatorStyle: holidaySettings.yellowBannerSeparatorStyle || 'diamonds' };
+      }
+    }
+  }
+
+  // Priority 3: Blue Banner (if no holiday banner is active)
   if (infoBanners) {
       const activeInfoBanner = infoBanners.find(b => 
           b.start && 
@@ -59,33 +91,6 @@ function getActiveBanner(holidays: Holiday[], holidaySettings: HolidayBannerSett
       if (activeInfoBanner) {
           return { text: activeInfoBanner.text, color: 'blue', separatorStyle: activeInfoBanner.separatorStyle || 'diamonds' };
       }
-  }
-  
-  if (!holidays || holidays.length === 0 || !holidaySettings) return null;
-
-  const upcomingHoliday = holidays.find(h => h.start > now);
-  const currentHoliday = holidays.find(h => isWithinInterval(now, { start: h.start, end: h.end }));
-  const nextDayAfterHoliday = currentHoliday ? addDays(currentHoliday.end, 1) : null;
-
-  // Red Banner (during holidays)
-  if (currentHoliday && nextDayAfterHoliday) {
-    const text = holidaySettings.redBannerText
-      .replace('{start}', format(currentHoliday.start, 'd. MMMM', { locale: de }))
-      .replace('{end}', format(currentHoliday.end, 'd. MMMM yyyy', { locale: de }))
-      .replace('{next_day}', format(nextDayAfterHoliday, 'd. MMMM', { locale: de }));
-    return { text, color: 'red', separatorStyle: holidaySettings.redBannerSeparatorStyle || 'diamonds' };
-  }
-
-  // Yellow Banner (before holidays)
-  if (upcomingHoliday) {
-    const daysUntilStart = differenceInDays(upcomingHoliday.start, now);
-    if (daysUntilStart >= 0 && daysUntilStart <= holidaySettings.preHolidayDays) {
-      const text = holidaySettings.yellowBannerText
-        .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
-        .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de }))
-        .replace('{name}', upcomingHoliday.name);
-      return { text, color: 'yellow', separatorStyle: holidaySettings.yellowBannerSeparatorStyle || 'diamonds' };
-    }
   }
 
   return null;
@@ -108,7 +113,7 @@ export function HolidayBanner() {
     const firestore = useFirestore();
 
     const holidaySettingsDocRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'banners') : null, [firestore]);
-    const { data: holidaySettingsData } = useDoc<HolidayBannerSettings>(holidaySettingsDocRef);
+    const { data: holidaySettingsData } = useDoc<BannerSettings>(holidaySettingsDocRef);
     
     const infoBannersQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'infoBanners')) : null, [firestore]);
     const { data: infoBannersData } = useCollection<InfoBanner>(infoBannersQuery);
@@ -134,9 +139,8 @@ export function HolidayBanner() {
 
     useEffect(() => {
         if (marqueeRef.current) {
-            // The content is duplicated for seamless looping, so we measure half of the scrollWidth.
             const contentWidth = marqueeRef.current.scrollWidth / 2;
-            const speed = 50; // pixels per second
+            const speed = 50; 
             const duration = contentWidth / speed;
             setAnimationDuration(`${duration}s`);
         }
@@ -156,11 +160,11 @@ export function HolidayBanner() {
                 <div 
                     className="marquee flex min-w-full shrink-0 items-center justify-around"
                     ref={marqueeRef}
-                    style={{ animationDuration }}
+                    style={{ '--animation-duration': animationDuration } as React.CSSProperties}
                 >
                     {Array.from({ length: 10 }).map((_, i) => (
                         <React.Fragment key={i}>
-                            <p className="whitespace-nowrap text-sm font-semibold">{bannerInfo.text}</p>
+                            <p className="whitespace-nowrap text-lg font-semibold">{bannerInfo.text}</p>
                             <Separator style={bannerInfo.separatorStyle} />
                         </React.Fragment>
                     ))}

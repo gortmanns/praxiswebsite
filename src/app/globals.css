@@ -74,7 +74,8 @@
     }
 
     .marquee {
-        animation: marquee 60s linear infinite;
+        animation: marquee linear infinite;
+        animation-duration: var(--animation-duration, 60s);
     }
 }
 
