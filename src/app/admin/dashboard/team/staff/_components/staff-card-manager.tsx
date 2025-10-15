@@ -227,22 +227,23 @@ export function StaffCardManager<T extends BaseCardData>({
                     <p className="text-sm text-muted-foreground">{description}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-16 mt-8">
                        {items.map((item, index) => (
-                           <div 
-                               key={item.id} 
-                               className={cn(
-                                   "relative flex justify-center", 
-                                   item.fullWidth && "sm:col-span-2"
+                            <div
+                                key={item.id}
+                                className={cn(
+                                    "relative flex justify-center",
+                                    item.fullWidth && "sm:col-span-2"
                                 )}
-                           >
-                                <div 
+                            >
+                                <div
                                     id={`buttons-${item.id}`}
-                                    className="absolute right-full top-0 mr-2 flex h-full flex-col items-center justify-center gap-2"
+                                    className="absolute top-1/2 -translate-y-1/2 flex flex-col items-center justify-center gap-2"
+                                    style={{ right: 'calc(100% + 15px)' }}
                                 >
                                     <div className="flex flex-col gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
                                         <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
                                         <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
                                     </div>
-                                     <div className="flex flex-col gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
+                                    <div className="flex flex-col gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
                                         <Button variant="outline" size="icon" onClick={() => handleEdit(item)}><Pencil /></Button>
                                         <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)}>
                                             {item.hidden ? <Eye /> : <EyeOff />}
