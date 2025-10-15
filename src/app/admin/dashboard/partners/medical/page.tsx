@@ -16,12 +16,11 @@ import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { PartnerCard as DisplayCard } from '../_components/partner-card';
 import { PartnerEditor as EditorComponent } from '../_components/partner-editor';
 import type { Partner as CardData } from '../_components/partner-editor';
-import { Slider } from '@/components/ui/slider';
 
 const initialMedicalPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     name: "Neuer Partner",
     websiteUrl: "https://",
-    logoHtml: `<div style="width: 100%; height: 100%; display: flex; align-items-center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`,
+    logoHtml: `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`,
     imageUrl: "",
     openInNewTab: true,
     hidden: false,
@@ -182,11 +181,6 @@ function MedicalPartnersPageManager() {
         }
         return `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
     };
-
-    const handleSliderChange = (field: 'logoScale' | 'logoX' | 'logoY', value: number[]) => {
-        const singleValue = value[0];
-        setEditorCardState(prev => ({...prev, [field]: singleValue }));
-    };
     
     const handleMove = async (cardId: string, direction: 'left' | 'right') => {
         if (!dbData || !firestore) return;
@@ -300,49 +294,12 @@ function MedicalPartnersPageManager() {
     const partnerEditorOverlay = isEditing ? (
         <div className="pointer-events-none absolute inset-0 z-20 bg-green-500/50">
            <div className="grid h-full w-full grid-cols-8 items-end gap-x-4 pb-4">
-                <div className="col-start-5 col-span-2 flex flex-col items-center justify-end gap-y-2">
-                    <div className="pointer-events-auto w-full max-w-xs space-y-2">
-                        <div className="text-center text-primary-foreground">
-                            <label htmlFor="logoScale" className="text-sm">Grösse: {editorCardState.logoScale || 100}%</label>
-                            <Slider
-                                id="logoScale"
-                                value={[editorCardState.logoScale || 100]}
-                                onValueChange={(value) => handleSliderChange('logoScale', value)}
-                                max={200} step={1}
-                                className="[&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20"
-                            />
-                        </div>
-                    </div>
-                    <div className="w-full max-w-xs">
+                <div className="col-start-6 col-span-2 flex flex-col items-center justify-end">
+                     <div className="w-full">
                         <DisplayCard {...editorCardState} />
                     </div>
-                    <div className="pointer-events-auto mt-2 w-full max-w-xs space-y-2">
-                         <div className="text-center text-primary-foreground">
-                            <label htmlFor="logoX" className="text-sm">Horizontale Position: {editorCardState.logoX || 0}px</label>
-                            <Slider
-                                id="logoX"
-                                value={[editorCardState.logoX || 0]}
-                                onValueChange={(value) => handleSliderChange('logoX', value)}
-                                min={-100} max={100} step={1}
-                                className="[&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20"
-                            />
-                        </div>
-                    </div>
                 </div>
-                 <div className="col-start-7 col-span-1 flex h-full items-center">
-                    <div className="pointer-events-auto h-32 w-full space-y-2">
-                        <div className="text-center text-primary-foreground">
-                            <label htmlFor="logoY" className="text-sm">Vertikale Position: {editorCardState.logoY || 0}px</label>
-                            <Slider
-                                id="logoY"
-                                value={[editorCardState.logoY || 0]}
-                                onValueChange={(value) => handleSliderChange('logoY', value)}
-                                min={-100} max={100} step={1}
-                                orientation="vertical"
-                                className="mx-auto h-24 [&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20"
-                            />
-                        </div>
-                    </div>
+                 <div className="col-start-8 col-span-1 flex h-full flex-col justify-end pb-4">
                 </div>
            </div>
         </div>

@@ -51,13 +51,11 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
     }>({ type: null, data: {} });
 
     const handleInputChange = (field: keyof Partner, value: string | boolean | number) => {
-        const newCardData = { ...cardData, [field]: value };
-        onUpdate(newCardData);
+        onUpdate({ ...cardData, [field]: value });
     };
 
     const handleSliderChange = (field: 'logoScale' | 'logoX' | 'logoY', value: number[]) => {
-        const singleValue = value[0];
-        handleInputChange(field, singleValue);
+        onUpdate({ ...cardData, [field]: value[0] });
     };
     
     const handleResetControls = () => {
@@ -152,13 +150,13 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 </div>
 
                 {/* Right side: Visual Live Preview Area */}
-                 <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-20 min-h-[420px]">
+                 <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[420px]">
                     <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
                     <div className="flex-grow flex items-center justify-center">
                          {children}
                     </div>
                     <div className="space-y-4 pt-4 border-t border-primary-foreground/20">
-                        <div className="text-center text-primary-foreground space-y-2">
+                        <div className="pointer-events-auto w-full space-y-2 text-center text-primary-foreground">
                             <div className="text-sm">Grösse: {cardData.logoScale || 100}%</div>
                             <Slider
                                 id="logoScale"
@@ -169,7 +167,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                                 className="[&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20"
                             />
                         </div>
-                         <div className="text-center text-primary-foreground space-y-2">
+                         <div className="pointer-events-auto w-full space-y-2 text-center text-primary-foreground">
                             <div className="text-sm flex items-center justify-center gap-2"><MoveHorizontal/> Horizontale Position: {cardData.logoX || 0}px</div>
                             <Slider
                                 id="logoX"
@@ -181,7 +179,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                                 className="[&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20"
                             />
                         </div>
-                         <div className="text-center text-primary-foreground space-y-2">
+                         <div className="pointer-events-auto w-full space-y-2 text-center text-primary-foreground">
                             <div className="text-sm flex items-center justify-center gap-2"><MoveVertical/> Vertikale Position: {cardData.logoY || 0}px</div>
                             <Slider
                                 id="logoY"
@@ -193,7 +191,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                                 className="[&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20"
                             />
                         </div>
-                        <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-full">
+                        <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-full pointer-events-auto">
                             <RotateCcw className="mr-2 h-4 w-4" />
                             Zurücksetzen
                         </Button>
