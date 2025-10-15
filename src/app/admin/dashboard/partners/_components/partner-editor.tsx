@@ -119,7 +119,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
     return (
         <div className="relative">
-            <div className="grid md:grid-cols-2 min-h-[450px]">
+            <div className="grid md:grid-cols-2 h-[450px]">
                 {/* Left side: Editor Form */}
                 <div className="space-y-6 p-10 rounded-l-lg bg-muted z-20">
                     <div className="space-y-2">
@@ -156,8 +156,11 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
                 {/* Right side: Visual Live Preview Area */}
                  <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[450px] grid grid-cols-4 gap-4">
-                    <div className="col-span-1 border-2 border-pink-500">
-                        {/* Empty left column */}
+                    <div className="col-span-1 border-2 border-pink-500 flex flex-col items-center justify-end pb-2">
+                         <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-full pointer-events-auto flex flex-col h-auto p-2 gap-1">
+                            <RotateCcw className="h-4 w-4" />
+                            <span>Zurück</span>
+                        </Button>
                     </div>
                     <div className="col-span-2 border-2 border-yellow-300 flex flex-col items-center py-4">
                         <div className='w-full max-w-xs space-y-4'>
@@ -175,10 +178,6 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                                     <MoveHorizontal/> <span>Horizontale Position: {cardData.logoX || 0}px</span>
                                 </div>
                             </div>
-                             <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-full pointer-events-auto">
-                                <RotateCcw className="mr-2 h-4 w-4" />
-                                Zurücksetzen
-                            </Button>
                         </div>
                     </div>
                      <div className="col-span-1 border-2 border-purple-500 flex justify-center items-center py-4">
