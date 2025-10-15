@@ -1,135 +1,94 @@
 /**
- * @fileoverview Firestore Security Rules for Prototyping.
+ * @fileoverview Firestore Security Rules for the application.
  *
  * Core Philosophy:
- * This ruleset provides highly secure, yet permissive, access control for prototyping.
- * It focuses on preventing unauthorized access while minimizing data shape validation.
- * All write operations require a valid user. Data structure validation is omitted to allow rapid iteration.
+ * This ruleset enforces open read access to all collections, allowing anyone to view the data.
+ * Write access to all collections is completely denied, ensuring that only authorized backend processes can modify the data.
  *
  * Data Structure:
- * The Firestore database contains collections for doctors, staff, medical partners, other partners, holidays,
- * and banner settings.
+ * The Firestore database consists of several top-level collections: 'doctors', 'staff', 'medicalPartners',
+ * 'otherPartners', 'holidays', and a 'settings' collection with a 'banners' document.
  *
  * Key Security Decisions:
- * - All write operations are only allowed for authenticated users.
- * - List operations are open for all collections to allow easy data discovery in the prototype.
- * - Schema validation is relaxed to facilitate rapid prototyping.
- * - Missing ownership checks will be noted with `// TODO` comments.
+ * - All data is publicly readable, including all collections and documents.
+ * - No user-based authorization is implemented for data writes. All write access is denied.
+ * - The 'settings/banners' document is treated the same as other collections, with public read access and denied write access.
+ *
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows any authenticated user to manage doctor profiles.
+     * @description Allows anyone to read doctor profiles. Denies all writes.
      * @path /doctors/{doctorId}
-     * @allow (create) User with valid auth can create a new doctor profile.
-     * @deny (create) Unauthenticated user attempts to create a doctor profile.
-     * @allow (get) Any user can retrieve doctor profile.
-     * @allow (list) Any user can list doctor profiles.
-     * @allow (update) User with valid auth can update any doctor profile.
-     * @allow (delete) User with valid auth can delete any doctor profile.
-     * @principle Allows authenticated users to manage doctor profiles.
+     * @allow (get, list) Anyone can read.
+     * @deny (create, update, delete) No one can write.
+     * @principle Allows public read access, denies all write access.
      */
     match /doctors/{doctorId} {
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows any authenticated user to manage staff member profiles.
-     * @path /staff/{staffId}
-     * @allow (create) User with valid auth can create a new staff member profile.
-     * @deny (create) Unauthenticated user attempts to create a staff member profile.
-     * @allow (get) Any user can retrieve staff member profile.
-     * @allow (list) Any user can list staff member profiles.
-     * @allow (update) User with valid auth can update any staff member profile.
-     * @allow (delete) User with valid auth can delete any staff member profile.
-     * @principle Allows authenticated users to manage staff member profiles.
+     * @description Allows anyone to read staff member profiles. Denies all writes.
+     * @path /staff/{staffMemberId}
+     * @allow (get, list) Anyone can read.
+     * @deny (create, update, delete) No one can write.
+     * @principle Allows public read access, denies all write access.
      */
-    match /staff/{staffId} {
+    match /staff/{staffMemberId} {
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows any authenticated user to manage medical partner profiles.
+     * @description Allows anyone to read medical partner information. Denies all writes.
      * @path /medicalPartners/{partnerId}
-     * @allow (create) User with valid auth can create a new medical partner profile.
-     * @deny (create) Unauthenticated user attempts to create a medical partner profile.
-     * @allow (get) Any user can retrieve medical partner profile.
-     * @allow (list) Any user can list medical partner profiles.
-     * @allow (update) User with valid auth can update any medical partner profile.
-     * @allow (delete) User with valid auth can delete any medical partner profile.
-     * @principle Allows authenticated users to manage medical partner profiles.
+     * @allow (get, list) Anyone can read.
+     * @deny (create, update, delete) No one can write.
+     * @principle Allows public read access, denies all write access.
      */
     match /medicalPartners/{partnerId} {
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows any authenticated user to manage other partner profiles.
+     * @description Allows anyone to read other partner information. Denies all writes.
      * @path /otherPartners/{partnerId}
-     * @allow (create) User with valid auth can create a new other partner profile.
-     * @deny (create) Unauthenticated user attempts to create a other partner profile.
-     * @allow (get) Any user can retrieve other partner profile.
-     * @allow (list) Any user can list other partner profiles.
-     * @allow (update) User with valid auth can update any other partner profile.
-     * @allow (delete) User with valid auth can delete any other partner profile.
-     * @principle Allows authenticated users to manage other partner profiles.
+     * @allow (get, list) Anyone can read.
+     * @deny (create, update, delete) No one can write.
+     * @principle Allows public read access, denies all write access.
      */
     match /otherPartners/{partnerId} {
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows any authenticated user to manage holiday periods.
+     * @description Allows anyone to read holiday information. Denies all writes.
      * @path /holidays/{holidayId}
-     * @allow (create) User with valid auth can create a new holiday period.
-     * @deny (create) Unauthenticated user attempts to create a holiday period.
-     * @allow (get) Any user can retrieve holiday period.
-     * @allow (list) Any user can list holiday periods.
-     * @allow (update) User with valid auth can update any holiday period.
-     * @allow (delete) User with valid auth can delete any holiday period.
-     * @principle Allows authenticated users to manage holiday periods.
+     * @allow (get, list) Anyone can read.
+     * @deny (create, update, delete) No one can write.
+     * @principle Allows public read access, denies all write access.
      */
     match /holidays/{holidayId} {
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Allows any authenticated user to manage the banner settings.
+     * @description Allows anyone to read banner settings. Denies all writes.
      * @path /settings/banners
-     * @allow (create) User with valid auth can create the banner settings.
-     * @deny (create) Unauthenticated user attempts to create the banner settings.
-     * @allow (get) Any user can retrieve the banner settings.
-     * @allow (list) Any user can list the banner settings.
-     * @allow (update) User with valid auth can update the banner settings.
-     * @allow (delete) User with valid auth can delete the banner settings.
-     * @principle Allows authenticated users to manage banner settings.
+     * @allow (get, list) Anyone can read.
+     * @deny (create, update, delete) No one can write.
+     * @principle Allows public read access, denies all write access.
      */
     match /settings/banners {
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+      allow create, update, delete: if false;
     }
   }
-}
-
-function isSignedIn() {
-  return request.auth != null;
 }
