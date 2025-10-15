@@ -167,13 +167,13 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                             <h3 className="text-xl font-bold text-primary-foreground text-center">Live Vorschau</h3>
                             <div className="space-y-2">
                                 <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2">Grösse: {cardData.logoScale || 100}%</div>
-                                <Slider id="logoScale" value={[cardData.logoScale || 100]} onValueChange={(value) => handleSliderChange('logoScale', value)} max={200} step={1} className="w-full [&_[role=slider]]:bg-white [&>span:first-child]:bg-accent [&>span:first-child>span]:bg-popover" />
+                                <Slider id="logoScale" value={[cardData.logoScale || 100]} onValueChange={(value) => handleSliderChange('logoScale', value)} max={200} step={1} className="w-full [&_[role=slider]]:bg-white [&>span:first-child]:bg-accent [&>span:first-child>span]:bg-muted" />
                             </div>
                         </div>
 
                         <div className="mt-auto w-full max-w-xs space-y-4">
                              <div className="space-y-2">
-                                <Slider id="logoX" value={[cardData.logoX || 0]} onValueChange={(value) => handleSliderChange('logoX', value)} min={-100} max={100} step={1} className="w-full [&_[role=slider]]:bg-white [&>span:first-child]:bg-accent [&>span:first-child>span]:bg-popover" />
+                                <Slider id="logoX" value={[cardData.logoX || 0]} onValueChange={(value) => handleSliderChange('logoX', value)} min={-100} max={100} step={1} className="w-full [&_[role=slider]]:bg-white [&>span:first-child]:bg-accent [&>span:first-child>span]:bg-muted" />
                                 <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2">
                                     <MoveHorizontal/> <span>Horizontale Position: {cardData.logoX || 0}px</span>
                                 </div>
@@ -190,7 +190,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                                 min={-100}
                                 max={100}
                                 step={1}
-                                className="h-[200px] [&_[role=slider]]:bg-white [&>span:first-child]:bg-accent [&>span:first-child>span]:bg-popover"
+                                className="h-[200px] [&_[role=slider]]:bg-white [&>span:first-child]:bg-accent [&>span:first-child>span]:bg-muted"
                                 inverted
                             />
                              <div className="text-center text-primary-foreground text-sm flex flex-col items-center justify-center gap-2">
