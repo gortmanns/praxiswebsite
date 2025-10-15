@@ -22,7 +22,7 @@ import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
-import { StaffCard as DisplayCard } from './_components/staff-card';
+import { StaffCard } from './_components/staff-card';
 import { StaffEditor } from './_components/staff-editor';
 import type { StaffMember as CardData } from './_components/staff-editor';
 
@@ -208,7 +208,7 @@ export default function StaffPageManager() {
     
         const renderGrid = (items: CardData[], title: string, description: string, isHiddenGrid: boolean) => {
              if (!isLoadingData && items.length === 0 && !isEditing) {
-                if (isHiddenGrid) return null; // Don't show hidden section if empty
+                if (isHiddenGrid) return null;
                 return (
                    <div className="space-y-4 mt-12">
                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
@@ -263,7 +263,7 @@ export default function StaffPageManager() {
                                     </div>
                                 </div>
                                 <div className={cn("w-full max-w-sm", isHiddenGrid && "grayscale")}>
-                                  <DisplayCard {...item} />
+                                  <StaffCard {...item} />
                                 </div>
                             </div>
                         </div>
@@ -320,7 +320,7 @@ export default function StaffPageManager() {
                                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                                     <div className="grid grid-cols-1 gap-4 place-items-center">
                                         <div className="relative flex items-center justify-center w-full max-w-sm">
-                                            <DisplayCard {...editorCardState} />
+                                            <StaffCard {...editorCardState} />
                                         </div>
                                     </div>
                                 </div>
