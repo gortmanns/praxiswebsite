@@ -7,6 +7,7 @@ import type { MedicalPartner, OtherPartner } from '@/docs/backend-types';
 import DOMPurify from 'dompurify';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, where } from 'firebase/firestore';
+import { cn } from '@/lib/utils';
 
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
@@ -42,10 +43,25 @@ const PartnerLink: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
 const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
     if (!partners || partners.length === 0) return null;
 
+    const count = partners.length;
+    const isSingleRow = count < 4;
+
+    const getGridClass = () => {
+        if (isSingleRow) {
+            switch (count) {
+                case 1: return 'md:grid-cols-1';
+                case 2: return 'md:grid-cols-2';
+                case 3: return 'md:grid-cols-3';
+                default: return 'md:grid-cols-4';
+            }
+        }
+        return 'md:grid-cols-4';
+    };
+
     return (
-        <div className="flex flex-wrap justify-center gap-8">
+        <div className={cn("grid grid-cols-1 sm:grid-cols-2 gap-8 justify-center", getGridClass())}>
             {partners.map(partner => (
-                <div key={partner.id} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 max-w-[280px] flex-shrink-0">
+                <div key={partner.id} className="w-full max-w-[280px] mx-auto">
                     <PartnerLink partner={partner} />
                 </div>
             ))}
