@@ -7,8 +7,9 @@ import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { MedicalPartner, OtherPartner } from '@/docs/backend-types';
 import DOMPurify from 'dompurify';
-import { medicalPartnersData } from '@/app/admin/dashboard/partners/medical/_components/medical-partners-data';
-import { otherPartnersSeedData } from '@/app/admin/dashboard/partners/other/_components/other-partners-data';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, orderBy, where } from 'firebase/firestore';
+
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
@@ -44,7 +45,6 @@ const RowGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ pa
     const count = partners.length;
     if (count === 0) return null;
     
-    // For 4 partners, use a standard 4-column grid for responsiveness
     if (count === 4) {
         return (
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -57,7 +57,6 @@ const RowGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ pa
         );
     }
     
-    // For 1-3 partners, use an 8-column grid with spacers to center the items
     return (
         <div className="grid grid-cols-8 gap-8">
             {count === 1 && (
@@ -100,26 +99,20 @@ const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = (
 };
 
 export function CooperationPartnersSection() {
-  const [isLoadingMedical, setIsLoadingMedical] = React.useState(true);
-  const [isLoadingOther, setIsLoadingOther] = React.useState(true);
+  const firestore = useFirestore();
 
-  const [medicalPartners, setMedicalPartners] = React.useState<any[]>([]);
-  const [otherPartners, setOtherPartners] = React.useState<any[]>([]);
+  const medicalPartnersQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'medicalPartners'), where('hidden', '==', false), orderBy('order', 'asc'));
+  }, [firestore]);
 
-  React.useEffect(() => {
-    // Simulate fetching data
-    setTimeout(() => {
-      setMedicalPartners(medicalPartnersData.map(p => ({...p, id: p.name })));
-      setIsLoadingMedical(false);
-    }, 500);
-     setTimeout(() => {
-      setOtherPartners(otherPartnersSeedData.map(p => ({...p, id: p.name })));
-      setIsLoadingOther(false);
-    }, 500);
-  }, []);
-
-  const visibleMedicalPartners = medicalPartners?.filter(p => !p.hidden) || [];
-  const visibleOtherPartners = otherPartners?.filter(p => !p.hidden) || [];
+  const otherPartnersQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'otherPartners'), where('hidden', '==', false), orderBy('order', 'asc'));
+  }, [firestore]);
+  
+  const { data: medicalPartners, isLoading: isLoadingMedical } = useCollection<MedicalPartner>(medicalPartnersQuery);
+  const { data: otherPartners, isLoading: isLoadingOther } = useCollection<OtherPartner>(otherPartnersQuery);
   
   return (
     <section id="partners" className="w-full bg-primary">
@@ -136,11 +129,11 @@ export function CooperationPartnersSection() {
                 ))}
             </div>
           ) : (
-            <PartnerGrid partners={visibleMedicalPartners} />
+            <PartnerGrid partners={medicalPartners || []} />
           )}
         </div>
 
-        {visibleOtherPartners.length > 0 && (
+        {(otherPartners && otherPartners.length > 0) && (
             <>
                 <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
                 Unsere weiteren Partner
@@ -153,7 +146,7 @@ export function CooperationPartnersSection() {
                             ))}
                         </div>
                     ) : (
-                        <PartnerGrid partners={visibleOtherPartners} />
+                        <PartnerGrid partners={otherPartners || []} />
                     )}
                 </div>
             </>
