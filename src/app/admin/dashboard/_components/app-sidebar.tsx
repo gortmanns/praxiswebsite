@@ -1,8 +1,9 @@
+
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Home, Calendar, Users, Settings, Palette, CreditCard } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Home, Calendar, Users, Settings, Palette, CreditCard, LogOut } from 'lucide-react';
 import {
   Sidebar,
   SidebarHeader,
@@ -26,10 +27,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useAuth } from '@/firebase';
+import { signOut } from 'firebase/auth';
 
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const auth = useAuth();
+  const router = useRouter();
   
   const navItems = [
     { href: '/admin/dashboard', label: 'Dashboard', icon: Home },
@@ -49,6 +54,10 @@ export function AppSidebar() {
 
   const visualDesignItem = { href: '/admin/dashboard/visual-design', label: 'Visual Design', icon: Palette };
 
+  const handleLogout = async () => {
+    await signOut(auth);
+    router.push('/admin/login');
+  };
 
   return (
       <Sidebar>
@@ -150,6 +159,11 @@ export function AppSidebar() {
             </DropdownMenuTrigger>
             <DropdownMenuContent side="right" align="start">
                 <DropdownMenuLabel>Mein Konto</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Abmelden</span>
+                </DropdownMenuItem>
             </DropdownMenuContent>
            </DropdownMenu>
         </SidebarFooter>
