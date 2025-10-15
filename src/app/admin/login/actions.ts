@@ -3,10 +3,10 @@
 
 import { z } from 'zod';
 import { getSession } from '@/lib/session';
-import { getAuth, signInWithEmailAndPassword, AuthErrorCodes } from 'firebase/auth';
+import { signInWithEmailAndPassword, AuthErrorCodes } from 'firebase/auth';
 import { initializeFirebaseServer } from '@/firebase/server-init';
 
-// Initialize Firebase on the server
+// Initialize Firebase on the server and get the auth instance
 const { auth } = initializeFirebaseServer();
 
 const loginSchema = z.object({
@@ -30,6 +30,7 @@ export async function login(credentials: unknown): Promise<LoginResult> {
   const { username, password } = result.data;
 
   try {
+    // Use the server-side auth instance
     const userCredential = await signInWithEmailAndPassword(auth, username, password);
     const user = userCredential.user;
 
@@ -39,14 +40,15 @@ export async function login(credentials: unknown): Promise<LoginResult> {
         
         session.isLoggedIn = true;
         session.username = user.email || 'Admin';
-        session.idToken = idToken; // Store the token
+        session.idToken = idToken;
         
         await session.save();
         
         return { success: true };
     }
-    // This case should theoretically not be reached if signInWithEmailAndPassword succeeds
-    return { success: false, error: 'Benutzer nicht gefunden nach erfolgreichem Login.' };
+    
+    // This case should not be reached if signInWithEmailAndPassword succeeds
+    return { success: false, error: 'Benutzer nach erfolgreichem Login nicht gefunden.' };
 
   } catch (error: any) {
     let errorMessage = 'Ein unbekannter Fehler ist aufgetreten.';
@@ -60,7 +62,7 @@ export async function login(credentials: unknown): Promise<LoginResult> {
             errorMessage = 'Zu viele fehlgeschlagene Anmeldeversuche. Bitte versuchen Sie es später erneut.';
             break;
         default:
-             errorMessage = `Login fehlgeschlagen: ${error.message}`;
+             errorMessage = `Login fehlgeschlagen: ${error.message} (Code: ${error.code})`;
             break;
     }
      return { success: false, error: errorMessage };
