@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { format, addDays } from 'date-fns';
+import { format, addDays, subDays } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { Calendar as CalendarIcon, Save, AlertCircle, Info, RotateCcw, Plus, Trash2, Pencil, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -20,7 +21,6 @@ import { doc, setDoc, serverTimestamp, collection, query, where, orderBy, Timest
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
-import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 
@@ -57,8 +57,8 @@ interface InfoBanner {
 
 const initialBannerSettings: BannerSettings = {
     preHolidayDays: 14,
-    yellowBannerText: 'Die {name} stehen bevor. In der Zeit vom {start} bis und mit {end} bleibt das Praxiszentrum geschlossen. Bitte überprüfen Sie Ihren Medikamentenvorrat und beziehen Sie allenfalls nötigen Nachschub rechtzeitig.',
-    redBannerText: 'Ferienhalber bleibt das Praxiszentrum in der Zeit vom {start} bis und mit {end} geschlossen. Die Notfall-Notrufnummern finden sie rechts oben im Menü unter dem Punkt "NOTFALL". Ab dem {next_day} stehen wieder wie gewohnt zur Verfügung.',
+    yellowBannerText: 'Die {name} stehen bevor. In der Zeit vom {start} bis und mit {ende} bleibt das Praxiszentrum geschlossen. Bitte überprüfen Sie Ihren Medikamentenvorrat und beziehen Sie allenfalls nötigen Nachschub rechtzeitig.',
+    redBannerText: 'Ferienhalber bleibt das Praxiszentrum in der Zeit vom {start} bis und mit {ende} geschlossen. Die Notfall-Notrufnummern finden sie rechts oben im Menü unter dem Punkt "NOTFALL". Ab dem {ende+1} stehen wieder wie gewohnt zur Verfügung.',
     yellowBannerSeparatorStyle: 'diamonds',
     redBannerSeparatorStyle: 'diamonds',
 };
@@ -83,12 +83,6 @@ const SeparatorPreview = ({ style }: { style?: SeparatorStyle }) => {
 };
 
 const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; color: 'yellow' | 'red' | 'blue'; separatorStyle?: SeparatorStyle; small?: boolean }) => {
-    const bannerClasses = {
-        yellow: 'bg-yellow-400 border-yellow-500 text-yellow-900',
-        red: 'bg-red-500 border-red-600 text-white',
-        blue: 'bg-blue-500 border-blue-600 text-white',
-    };
-    
     const marqueeRef = useRef<HTMLDivElement>(null);
     const [animationDuration, setAnimationDuration] = useState('60s');
 
@@ -114,7 +108,7 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
                         <React.Fragment key={i}>
                             <div className="flex shrink-0 items-center">
                                 <Info className="mr-3 h-5 w-5 shrink-0" />
-                                <p className={cn("whitespace-nowrap font-semibold text-sm")}>{text}</p>
+                                <p className={cn("whitespace-nowrap font-semibold", small ? "text-sm" : "text-xl")}>{text}</p>
                             </div>
                             <SeparatorPreview style={separatorStyle} />
                         </React.Fragment>
@@ -143,37 +137,20 @@ const SeparatorSelect = ({ value, onValueChange }: { value?: SeparatorStyle, onV
     );
 };
 
-const PlaceholderInfo = () => (
-    <Card>
-        <CardHeader>
-            <CardTitle className="text-primary font-bold">Verfügbare Text-Platzhalter</CardTitle>
-            <CardDescription>Diese Platzhalter werden automatisch durch die entsprechenden Daten aus den Ferienterminen ersetzt.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-            <div>
-                <h4 className="font-bold text-yellow-500">Gelbes Banner (Vorankündigung)</h4>
-                <Table>
-                    <TableHeader><TableRow><TableHead>Platzhalter</TableHead><TableHead>Beschreibung</TableHead></TableRow></TableHeader>
-                    <TableBody>
-                        <TableRow><TableCell className="font-mono">{'{}'}</TableCell><TableCell>Der Name der Ferien (z.B. "Sommerferien").</TableCell></TableRow>
-                        <TableRow><TableCell className="font-mono">{'{start}'}</TableCell><TableCell>Das Startdatum der Ferien.</TableCell></TableRow>
-                        <TableRow><TableCell className="font-mono">{'{end}'}</TableCell><TableCell>Das Enddatum der Ferien.</TableCell></TableRow>
-                    </TableBody>
-                </Table>
-            </div>
-            <div>
-                <h4 className="font-bold text-red-500">Rotes Banner (Während der Ferien)</h4>
-                <Table>
-                    <TableHeader><TableRow><TableHead>Platzhalter</TableHead><TableHead>Beschreibung</TableHead></TableRow></TableHeader>
-                    <TableBody>
-                        <TableRow><TableCell className="font-mono">{'{start}'}</TableCell><TableCell>Das Startdatum der Ferien.</TableCell></TableRow>
-                        <TableRow><TableCell className="font-mono">{'{end}'}</TableCell><TableCell>Das Enddatum der Ferien.</TableCell></TableRow>
-                        <TableRow><TableCell className="font-mono">{'{next_day}'}</TableCell><TableCell>Der erste Tag nach Ende der Ferien.</TableCell></TableRow>
-                    </TableBody>
-                </Table>
-            </div>
-        </CardContent>
-    </Card>
+const PlaceholderAlert = () => (
+    <Alert variant="info" className="mt-4">
+        <Info className="h-4 w-4" />
+        <AlertTitle className="font-bold">Verfügbare Platzhalter</AlertTitle>
+        <AlertDescription>
+            <code className="font-mono text-xs">{'{name}'}</code>, 
+            <code className="font-mono text-xs">{'{start}'}</code>, 
+            <code className="font-mono text-xs">{'{start-1}'}</code>, 
+            <code className="font-mono text-xs">{'{ende}'}</code>, 
+            <code className="font-mono text-xs">{'{ende+1}'}</code>, 
+            <code className="font-mono text-xs">{'{ende+2}'}</code>, 
+            <code className="font-mono text-xs">{'{ende+3}'}</code>
+        </AlertDescription>
+    </Alert>
 );
 
 
@@ -222,18 +199,23 @@ export default function BannerPage() {
 
     const upcomingHoliday = useMemo(() => holidays.find(h => h.start > new Date()), [holidays]);
 
+    const processPlaceholders = (text: string, holiday: Holiday): string => {
+        return text
+            .replace(/{name}/g, holiday.name)
+            .replace(/{start}/g, format(holiday.start, 'd. MMMM', { locale: de }))
+            .replace(/{start-1}/g, format(subDays(holiday.start, 1), 'd. MMMM', { locale: de }))
+            .replace(/{ende}/g, format(holiday.end, 'd. MMMM yyyy', { locale: de }))
+            .replace(/{ende\+1}/g, format(addDays(holiday.end, 1), 'd. MMMM', { locale: de }))
+            .replace(/{ende\+2}/g, format(addDays(holiday.end, 2), 'd. MMMM', { locale: de }))
+            .replace(/{ende\+3}/g, format(addDays(holiday.end, 3), 'd. MMMM', { locale: de }));
+    };
+
     const previewTexts = useMemo(() => {
         const defaultText = "Dies ist eine Demonstration der Banner-Komponente";
         if (upcomingHoliday) {
             return {
-                yellow: bannerSettings.yellowBannerText
-                    .replace('{name}', upcomingHoliday.name)
-                    .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
-                    .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de })),
-                red: bannerSettings.redBannerText
-                    .replace('{start}', format(upcomingHoliday.start, 'd. MMMM', { locale: de }))
-                    .replace('{end}', format(upcomingHoliday.end, 'd. MMMM yyyy', { locale: de }))
-                    .replace('{next_day}', format(addDays(upcomingHoliday.end, 1), 'd. MMMM', { locale: de })),
+                yellow: processPlaceholders(bannerSettings.yellowBannerText, upcomingHoliday),
+                red: processPlaceholders(bannerSettings.redBannerText, upcomingHoliday),
             };
         }
         return { yellow: defaultText, red: defaultText };
@@ -318,7 +300,7 @@ export default function BannerPage() {
     }
 
     return (
-        <TooltipProvider>
+        <>
             <div className="flex flex-1 flex-col items-center gap-6 p-4 sm:p-6">
                 <div className="w-full max-w-5xl">
                     <h1 className="font-headline text-2xl font-bold tracking-tight text-primary">Banner anpassen</h1>
@@ -326,11 +308,6 @@ export default function BannerPage() {
                 </div>
 
                 {notification && (<div className="w-full max-w-5xl"><TimedAlert variant={notification.variant} title={notification.title} description={notification.description} onClose={() => setNotification(null)} className="w-full"/></div>)}
-                
-                <div className="w-full max-w-5xl space-y-6">
-                    <PlaceholderInfo />
-                </div>
-
 
                 <div className="w-full max-w-5xl space-y-6">
                     <div className="border-2 border-accent rounded-lg">
@@ -385,7 +362,7 @@ export default function BannerPage() {
                                 <TableBody>
                                     {infoBanners.map(banner => (
                                         <TableRow key={banner.id} className={cn(isEditing && currentEditorBanner.id === banner.id && "bg-muted/50")}>
-                                            <TableCell className="w-full">
+                                            <TableCell className="min-w-[300px] sm:min-w-[400px]">
                                                 <BannerPreview text={banner.text} color="blue" separatorStyle={banner.separatorStyle} small />
                                             </TableCell>
                                             <TableCell className="whitespace-nowrap">
@@ -437,22 +414,17 @@ export default function BannerPage() {
                                 <Label htmlFor="yellowBannerText">Bannertext</Label>
                                 <Textarea id="yellowBannerText" value={bannerSettings.yellowBannerText} onChange={(e) => handleBannerSettingsChange('yellowBannerText', e.target.value)} rows={4} />
                             </div>
-                            <div className="flex items-end gap-4 pt-2">
-                                <div className="space-y-2">
-                                    <Label>Trennzeichen-Stil</Label>
-                                    <SeparatorSelect value={bannerSettings.yellowBannerSeparatorStyle} onValueChange={(value) => handleBannerSettingsChange('yellowBannerSeparatorStyle', value)} />
-                                </div>
-                                <div className="flex items-end gap-2">
+                            <PlaceholderAlert />
+                            <div className="flex items-end justify-between pt-2">
+                                <div className="flex items-end gap-4">
+                                    <div className="space-y-2">
+                                        <Label>Trennzeichen-Stil</Label>
+                                        <SeparatorSelect value={bannerSettings.yellowBannerSeparatorStyle} onValueChange={(value) => handleBannerSettingsChange('yellowBannerSeparatorStyle', value)} />
+                                    </div>
                                     <Button variant="secondary" onClick={() => handleBannerSettingsChange('yellowBannerText', initialBannerSettings.yellowBannerText)}>
                                         <RotateCcw className="mr-2 h-4 w-4" />
                                         Standardtext
                                     </Button>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Button variant="ghost" size="icon" className="cursor-help"><Info className="h-4 w-4" /></Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent className="max-w-[300px]"><p>{initialBannerSettings.yellowBannerText.replace('{name}', 'Name nächste Ferien').replace('{start}', 'erster Ferientag').replace('{end}', 'letzer Ferientag')}</p></TooltipContent>
-                                    </Tooltip>
                                 </div>
                                 <Button onClick={handleSaveBannerSettings}>
                                     <Save className="mr-2 h-4 w-4" />
@@ -473,22 +445,17 @@ export default function BannerPage() {
                                 <Label htmlFor="redBannerText">Bannertext</Label>
                                 <Textarea id="redBannerText" value={bannerSettings.redBannerText} onChange={(e) => handleBannerSettingsChange('redBannerText', e.target.value)} rows={4} />
                             </div>
-                            <div className="flex items-end gap-4 pt-2">
-                                <div className="space-y-2">
-                                    <Label>Trennzeichen-Stil</Label>
-                                    <SeparatorSelect value={bannerSettings.redBannerSeparatorStyle} onValueChange={(value) => handleBannerSettingsChange('redBannerSeparatorStyle', value)} />
-                                </div>
-                                <div className="flex items-end gap-2">
+                            <PlaceholderAlert />
+                            <div className="flex items-end justify-between pt-2">
+                                <div className="flex items-end gap-4">
+                                    <div className="space-y-2">
+                                        <Label>Trennzeichen-Stil</Label>
+                                        <SeparatorSelect value={bannerSettings.redBannerSeparatorStyle} onValueChange={(value) => handleBannerSettingsChange('redBannerSeparatorStyle', value)} />
+                                    </div>
                                     <Button variant="secondary" onClick={() => handleBannerSettingsChange('redBannerText', initialBannerSettings.redBannerText)}>
                                         <RotateCcw className="mr-2 h-4 w-4" />
                                         Standardtext
                                     </Button>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Button variant="ghost" size="icon" className="cursor-help"><Info className="h-4 w-4" /></Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent className="max-w-[300px]"><p>{initialBannerSettings.redBannerText.replace('{start}', 'erster Ferientag').replace('{end}', 'letzter Ferientag').replace('{next_day}', 'letzter Ferientag +1')}</p></TooltipContent>
-                                    </Tooltip>
                                 </div>
                                 <Button onClick={handleSaveBannerSettings}>
                                     <Save className="mr-2 h-4 w-4" />
@@ -522,6 +489,6 @@ export default function BannerPage() {
                     animation-duration: var(--animation-duration, 60s);
                 }
             `}</style>
-        </TooltipProvider>
+        </>
     );
 }
