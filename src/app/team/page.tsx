@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import type { Doctor } from './_components/doctor-card';
 import type { StaffMember } from '../admin/dashboard/team/staff/_components/staff-editor';
 import { cn } from '@/lib/utils';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy } from 'firebase/firestore';
 

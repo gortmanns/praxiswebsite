@@ -58,9 +58,7 @@ function processPlaceholders(text: string, holiday: Holiday): string {
 };
 
 
-function getActiveBanner(holidays: Holiday[], holidaySettings: BannerSettings | null, infoBanners: InfoBanner[] | null): BannerInfo | null {
-    const now = new Date();
-    
+function getActiveBanner(holidays: Holiday[], holidaySettings: BannerSettings | null, infoBanners: InfoBanner[] | null, now: Date): BannerInfo | null {
     // 1. Check for active info banners
     if (infoBanners) {
         for (const banner of infoBanners) {
@@ -153,13 +151,15 @@ export function HolidayBanner() {
 
     useEffect(() => {
         if (!isLoadingSettings && !isLoadingInfoBanners && !isLoadingHolidays) {
-            const activeBanner = getActiveBanner(holidays, holidaySettingsData, infoBanners);
+            const now = new Date();
+            const activeBanner = getActiveBanner(holidays, holidaySettingsData, infoBanners, now);
             setBannerInfo(activeBanner);
             if (activeBanner) {
                 setIsVisible(true);
             }
         }
     }, [holidays, holidaySettingsData, infoBanners, isLoadingSettings, isLoadingInfoBanners, isLoadingHolidays]);
+
 
     const marqueeRef = useRef<HTMLDivElement>(null);
     const [animationDuration, setAnimationDuration] = useState('60s');
