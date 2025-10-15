@@ -1,7 +1,8 @@
 
 'use client';
 
-import React, { useState, useRef, useEffect, type ReactNode } from 'react';
+import React from 'react';
+import { useState, useRef, type ReactNode } from 'react';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,7 +14,7 @@ import { ImageSourceDialog } from '@/app/admin/dashboard/team/doctors/_component
 import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_components/image-library-dialog';
 import { TextEditDialog } from '@/app/admin/dashboard/team/doctors/_components/text-edit-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Code2, ImageUp, RotateCcw } from 'lucide-react';
+import { Code2, ImageUp, RotateCcw, MoveHorizontal, MoveVertical } from 'lucide-react';
 import { projectImages } from '../project-images';
 import { Slider } from '@/components/ui/slider';
 
@@ -37,7 +38,7 @@ export interface Partner {
 interface PartnerEditorProps {
     cardData: Partner;
     onUpdate: (updatedData: Partner) => void;
-    children: ReactNode; // To accept the overlay as a child
+    children?: ReactNode; 
 }
 
 
@@ -52,8 +53,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
     }>({ type: null, data: {} });
 
     const handleInputChange = (field: keyof Partner, value: string | boolean | number) => {
-        const newCardData = { ...cardData, [field]: value };
-        onUpdate(newCardData);
+        onUpdate({ ...cardData, [field]: value });
     };
     
     const handleSliderChange = (field: 'logoScale' | 'logoX' | 'logoY', value: number[]) => {
@@ -84,12 +84,10 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 const imageRef = storageRef(storage, imagePath);
             
                 try {
-                    // Upload the original (un-cropped) image data URL
                     const snapshot = await uploadString(imageRef, dataUrl, 'data_url');
                     const downloadURL = await getDownloadURL(snapshot.ref);
                     
-                    // Update state with the new image URL immediately
-                    onUpdate({ ...cardData, imageUrl: downloadURL });
+                    onUpdate({ ...cardData, imageUrl: downloadURL, logoHtml: '' });
                 
                 } catch (error) {
                     console.error("Error uploading image: ", error);
@@ -102,31 +100,36 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
     };
 
     const handleImageLibrarySelect = (imageUrl: string) => {
-        // Directly update the imageUrl, no cropping.
-        onUpdate({ ...cardData, imageUrl });
+        onUpdate({ ...cardData, imageUrl, logoHtml: '' });
         setDialogState({ type: null, data: {} });
     };
 
     const handleHtmlSave = (newHtml: string) => {
-        onUpdate({ ...cardData, logoHtml: newHtml, imageUrl: '', logoScale: 100, logoX: 0, logoY: 0 });
+        // When custom HTML is saved, clear the image-based properties
+        onUpdate({ 
+            ...cardData, 
+            logoHtml: newHtml, 
+            imageUrl: '', 
+            logoScale: 100, 
+            logoX: 0, 
+            logoY: 0 
+        });
         setDialogState({ type: null, data: {} });
     }
 
     return (
-        <div className="relative z-10">
-            <div className="grid md:grid-cols-2 min-h-full">
+        <div className="relative">
+            <div className="grid md:grid-cols-2 h-[400px]">
                 {/* Left side: Editor Form */}
-                <div className="space-y-6 p-10 z-0">
+                <div className="space-y-6 p-10 rounded-l-lg bg-muted z-20">
                     <div className="space-y-2">
                         <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
                         <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
                     </div>
                     <div className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2">
-                        {/* Row 1: Labels */}
                         <Label htmlFor="websiteUrl">Website URL <span className="text-xs text-muted-foreground">(für Verlinkung)</span></Label>
                         <Label htmlFor="openInNewTab" className="text-center">in neuem Tab öffnen</Label>
 
-                        {/* Row 2: Inputs */}
                         <Input id="websiteUrl" value={cardData.websiteUrl || ''} onChange={(e) => handleInputChange('websiteUrl', e.target.value)} />
                         <div className="flex justify-center">
                             <Checkbox
@@ -143,33 +146,61 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                         <Button variant="secondary" onClick={() => setDialogState({ type: 'htmlEditor', data: {} })}>
                             <Code2 className="mr-2 h-4 w-4" /> HTML bearbeiten
                         </Button>
-                        <div className="ml-auto">
-                            <Button onClick={handleResetControls} variant="secondary" size="sm">
-                                <RotateCcw className="mr-2 h-4 w-4" />
-                                Normalwerte wiederherstellen
-                            </Button>
-                        </div>
                     </div>
+
+                    <div className="space-y-4 pt-4">
+                       
+                    </div>
+
                 </div>
 
                 {/* Right side: Visual Live Preview Area */}
-                 <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[300px]">
-                    <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
-                    <div className="space-y-2 w-[70%] mx-auto">
-                        <div className="text-center text-primary-foreground">
-                            <label htmlFor="logoScale" className="text-sm">Grösse: {cardData.logoScale || 100}%</label>
-                            <Slider
-                                id="logoScale"
-                                value={[cardData.logoScale || 100]}
-                                onValueChange={(value) => handleSliderChange('logoScale', value)}
-                                max={200}
-                                step={1}
-                                className="[&_[role=slider]]:bg-accent [&>span:first-child]:bg-muted [&>span:first-child>span]:bg-popover"
-                            />
+                 <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[400px] grid grid-cols-4 gap-4">
+                    <div className="col-span-1 flex flex-col items-center justify-end pb-2">
+                         <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-4/5 pointer-events-auto flex flex-col h-auto p-2 gap-1">
+                            <RotateCcw className="h-4 w-4" />
+                            <span>Zurück</span>
+                        </Button>
+                    </div>
+                    <div className="col-span-2 flex flex-col items-center py-4">
+                        <div className='w-full max-w-xs space-y-4'>
+                            <h3 className="text-xl font-bold text-primary-foreground text-center">Live Vorschau</h3>
+                            <div className="space-y-2">
+                                <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2">Grösse: {cardData.logoScale || 100}%</div>
+                                <Slider id="logoScale" value={[cardData.logoScale || 100]} onValueChange={(value) => handleSliderChange('logoScale', value)} max={200} step={1} className="w-full [&_[role=slider]]:bg-white [&>span:first-child>span]:bg-accent" />
+                            </div>
+                        </div>
+
+                        <div className="mt-auto w-full max-w-xs space-y-4">
+                             <div className="space-y-2">
+                                <Slider id="logoX" value={[cardData.logoX || 0]} onValueChange={(value) => handleSliderChange('logoX', value)} min={-100} max={100} step={1} className="w-full [&_[role=slider]]:bg-white [&>span:first-child>span]:bg-muted" />
+                                <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2">
+                                    <MoveHorizontal/> <span>Horizontale Position: {cardData.logoX || 0}px</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div className="flex-grow flex items-center justify-center">
-                    </div>
+                     <div className="col-span-1 flex justify-center items-center py-4">
+                         <div className="flex items-center justify-center gap-4 h-full">
+                            <Slider
+                                id="logoY"
+                                orientation="vertical"
+                                value={[cardData.logoY || 0]}
+                                onValueChange={(value) => handleSliderChange('logoY', value)}
+                                min={-100}
+                                max={100}
+                                step={1}
+                                className="h-[200px] [&_[role=slider]]:bg-white [&>span:first-child>span]:bg-muted"
+                                inverted
+                            />
+                             <div className="text-center text-primary-foreground text-sm flex flex-col items-center justify-center gap-2">
+                                <MoveVertical/>
+                                <span>Vertikale</span>
+                                <span>Position</span>
+                                <span>{cardData.logoY || 0}px</span>
+                            </div>
+                         </div>
+                     </div>
                 </div>
             </div>
 
@@ -207,3 +238,5 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         </div>
     );
 };
+
+    

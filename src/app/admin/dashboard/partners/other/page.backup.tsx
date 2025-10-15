@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import { ReusableCardManager } from '../../_components/reusable-card-manager';
+import ReusableCardManager from '../../_components/reusable-card-manager';
 import { PartnerCard as DisplayCard } from '../_components/partner-card';
 import { PartnerEditor as EditorComponent } from '../_components/partner-editor';
 import type { Partner as CardData } from '../_components/partner-editor';
