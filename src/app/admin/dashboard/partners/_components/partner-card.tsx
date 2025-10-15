@@ -12,32 +12,10 @@ export interface Partner {
     name: string;
     websiteUrl?: string;
     logoHtml: string;
-    imageUrl?: string;
     openInNewTab?: boolean;
     hidden?: boolean;
-    logoScale?: number;
-    logoX?: number;
-    logoY?: number;
     [key: string]: any;
 }
-
-const generateDynamicLogoHtml = (partner: Partner): string => {
-    // If there is a specific imageUrl, prioritize it to generate the logo for live preview.
-    if (partner.imageUrl) {
-        const scale = partner.logoScale || 100;
-        const x = partner.logoX || 0;
-        const y = partner.logoY || 0;
-        const transformStyle = `transform: scale(${scale / 100}) translate(${x}px, ${y}px);`;
-        return `<img src="${partner.imageUrl}" alt="${partner.name || 'Partner Logo'}" style="object-fit: contain; width: 100%; height: 100%; transition: transform 0.2s ease-out; ${transformStyle}" />`;
-    }
-    // Fallback to the logoHtml from the database if no specific imageUrl is present.
-    if (partner.logoHtml) {
-        return partner.logoHtml;
-    }
-    // Final fallback for new or empty cards.
-    return `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
-};
-
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
@@ -56,8 +34,6 @@ const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
 
 
 export const PartnerCard = React.forwardRef<HTMLAnchorElement, Partner>((props, ref) => {
-    const displayHtml = generateDynamicLogoHtml(props);
-    
     return (
         <Link
             ref={ref}
@@ -67,7 +43,7 @@ export const PartnerCard = React.forwardRef<HTMLAnchorElement, Partner>((props, 
             className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
             <Card className="flex h-full w-full items-center justify-center bg-background p-2">
-                <CodeRenderer html={displayHtml} />
+                {props.logoHtml && <CodeRenderer html={props.logoHtml} />}
             </Card>
             <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
         </Link>
