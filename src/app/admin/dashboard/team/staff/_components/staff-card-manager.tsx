@@ -273,46 +273,14 @@ export function StaffCardManager<T extends BaseCardData>({
                 <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
-                    <div className={cn("grid grid-cols-1 justify-items-center gap-8 mt-8", collectionName === 'staff' ? "lg:grid-cols-[1fr_auto]" : "sm:grid-cols-2")}>
+                    <div className={cn("grid grid-cols-1 justify-items-center gap-8 mt-8", collectionName === 'staff' ? "sm:grid-cols-2" : "sm:grid-cols-2")}>
                         {items.map((item, index) => (
                              <React.Fragment key={item.id}>
-                                <div className={cn("flex justify-center", collectionName === 'staff' && "w-full")}>
-                                     <div className={cn("flex flex-col items-center space-y-4", (item as any).fullWidth && "sm:col-span-2")}>
+                                <div className={cn("flex justify-center", collectionName === 'staff' && "w-full", (item as any).fullWidth && "sm:col-span-2")}>
+                                     <div className={cn("flex flex-col items-center space-y-4")}>
                                          <DisplayCardComponent {...item} />
-                                         {collectionName !== 'staff' && (
-                                             <div id={`buttons-${item.id}`} className="flex w-full max-w-sm justify-center items-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
-                                                 <Button size="sm" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
-                                                 <Button size="sm" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
-                                                 <div className="w-px bg-border self-stretch mx-2" />
-                                                 <div className="flex-grow space-y-1">
-                                                     <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}><Pencil className="mr-2" /> Bearbeiten</Button>
-                                                     <div className="grid grid-cols-2 gap-1">
-                                                         {item.hidden ? (<Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}><Eye className="mr-2" /> Einblenden</Button>) : (<Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}><EyeOff className="mr-2" /> Ausblenden</Button>)}
-                                                         {isStaffManager && (<Button variant={(item as any).fullWidth ? "default" : "outline"} size="sm" className="w-full" onClick={() => handleToggleFullWidth(item)}><RectangleHorizontal className="mr-2" /> Zeile</Button>)}
-                                                     </div>
-                                                     <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(item.id, item.name)}><Trash2 className="mr-2" /> Löschen</Button>
-                                                 </div>
-                                             </div>
-                                         )}
                                      </div>
                                  </div>
-                                 {collectionName === 'staff' && (
-                                      <div id={`buttons-${item.id}`} className="flex flex-col w-48 justify-center items-center gap-2 rounded-lg border bg-background/80 p-4 shadow-inner">
-                                         <div className="flex w-full justify-center gap-2">
-                                             <Button size="sm" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
-                                             <Button size="sm" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
-                                         </div>
-                                         <div className="w-full h-px bg-border my-2" />
-                                         <div className="flex-grow w-full space-y-2">
-                                             <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}><Pencil className="mr-2" /> Bearbeiten</Button>
-                                             <div className="grid grid-cols-1 gap-2">
-                                                 {item.hidden ? (<Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}><Eye className="mr-2" /> Einblenden</Button>) : (<Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}><EyeOff className="mr-2" /> Ausblenden</Button>)}
-                                                 {isStaffManager && (<Button variant={(item as any).fullWidth ? "default" : "outline"} size="sm" className="w-full" onClick={() => handleToggleFullWidth(item)}><RectangleHorizontal className="mr-2" /> Zeile</Button>)}
-                                             </div>
-                                             <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(item.id, item.name)}><Trash2 className="mr-2" /> Löschen</Button>
-                                         </div>
-                                     </div>
-                                 )}
                              </React.Fragment>
                         ))}
                     </div>
