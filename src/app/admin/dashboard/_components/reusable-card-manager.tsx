@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -9,58 +8,33 @@ import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionRefe
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, ArrowLeft, ArrowRight, RectangleHorizontal } from 'lucide-react';
+import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, ArrowLeft, ArrowRight } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 
+import { PartnerCard as DisplayCard } from '../_components/partner-card';
+import { PartnerEditor as EditorComponent } from '../_components/partner-editor';
+import type { Partner as CardData } from '../_components/partner-editor';
 
-export interface BaseCardData {
-    id: string;
-    order: number;
-    name: string;
-    hidden?: boolean;
-    [key:string]: any;
-}
-
-interface ReusableCardManagerProps<T extends BaseCardData> {
-    collectionName: string;
-    pageTitle: string;
-    pageDescription: string;
-    initialCardState: Omit<T, 'id' | 'order' | 'createdAt'>;
-    DisplayCardComponent: React.ComponentType<any>;
-    EditorCardComponent: React.ComponentType<{ 
-        cardData: T; 
-        onUpdate: (updatedData: T) => void;
-        children?: React.ReactNode;
-    }>;
-    entityName: string;
-}
-
-const generateFinalLogoHtml = (partner: BaseCardData): string => {
-    if ('imageUrl' in partner && partner.imageUrl) {
-        const scale = 'logoScale' in partner ? partner.logoScale : 100;
-        const x = 'logoX' in partner ? partner.logoX : 0;
-        const y = 'logoY' in partner ? partner.logoY : 0;
-        const transformStyle = `transform: scale(${scale / 100}) translate(${x}px, ${y}px);`;
-        return `<img src="${partner.imageUrl}" alt="${partner.name || 'Partner Logo'}" style="object-fit: contain; width: 100%; height: 100%; transition: transform 0.2s ease-out; ${transformStyle}" />`;
-    }
-    if ('logoHtml' in partner && partner.logoHtml) {
-        return partner.logoHtml;
-    }
-    return `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
+const initialMedicalPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
+    name: "Neuer Partner",
+    websiteUrl: "https://",
+    logoHtml: `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`,
+    imageUrl: "",
+    openInNewTab: true,
+    hidden: false,
+    logoScale: 100,
+    logoX: 0,
+    logoY: 0,
 };
 
+function MedicalPartnersPageManager() {
+    const collectionName = "medicalPartners";
+    const pageTitle = "Kooperationspartner-Karten Ärzte verwalten";
+    const pageDescription = "";
+    const entityName = "Ärztlicher Partner";
 
-export function ReusableCardManager<T extends BaseCardData>({
-    collectionName,
-    pageTitle,
-    pageDescription,
-    initialCardState,
-    DisplayCardComponent,
-    EditorCardComponent,
-    entityName,
-}: ReusableCardManagerProps<T>) {
     const firestore = useFirestore();
     
     const [notification, setNotification] = useState<TimedAlertProps | null>(null);
@@ -70,18 +44,16 @@ export function ReusableCardManager<T extends BaseCardData>({
         return query(collection(firestore, collectionName) as CollectionReference<DocumentData>, orderBy('order', 'asc'));
     }, [firestore, collectionName]);
 
-    const { data: dbData, isLoading: isLoadingData, error: dbError } = useCollection<T>(dataQuery as any);
+    const { data: dbData, isLoading: isLoadingData, error: dbError } = useCollection<CardData>(dataQuery as any);
 
     const [editingCardId, setEditingCardId] = useState<string | null>(null);
     const [isCreatingNew, setIsCreatingNew] = useState(false);
-    const [editorCardState, setEditorCardState] = useState<T>({ ...initialCardState, id: '', order: 0 } as T);
+    const [editorCardState, setEditorCardState] = useState<CardData>({ ...initialMedicalPartnerState, id: '', order: 0 } as CardData);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
 
     const isEditing = editingCardId !== null || isCreatingNew;
-    const isPartnerManager = collectionName.toLowerCase().includes('partner');
-    const isStaffManager = collectionName === 'staff';
 
-    const handleEdit = (card: T) => {
+    const handleEdit = (card: CardData) => {
         setEditingCardId(card.id);
         setIsCreatingNew(false);
         setEditorCardState(card);
@@ -90,13 +62,26 @@ export function ReusableCardManager<T extends BaseCardData>({
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
-        setEditorCardState({ ...initialCardState, id: '' } as T);
+        setEditorCardState({ ...initialMedicalPartnerState, id: '' } as CardData);
     };
-    
 
     const handleCancelEdit = () => {
         setEditingCardId(null);
         setIsCreatingNew(false);
+    };
+
+    const generateFinalLogoHtml = (partner: CardData): string => {
+        if ('imageUrl' in partner && partner.imageUrl) {
+            const scale = 'logoScale' in partner ? partner.logoScale : 100;
+            const x = 'logoX' in partner ? partner.logoX : 0;
+            const y = 'logoY' in partner ? partner.logoY : 0;
+            const transformStyle = `transform: scale(${scale / 100}) translate(${x}px, ${y}px);`;
+            return `<img src="${partner.imageUrl}" alt="${partner.name || 'Partner Logo'}" style="object-fit: contain; width: 100%; height: 100%; transition: transform 0.2s ease-out; ${transformStyle}" />`;
+        }
+        if ('logoHtml' in partner && partner.logoHtml) {
+            return partner.logoHtml;
+        }
+        return `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
     };
     
     const handleMove = async (cardId: string, direction: 'left' | 'right') => {
@@ -135,7 +120,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     };
 
 
-    const handleToggleHidden = async (card: T) => {
+    const handleToggleHidden = async (card: CardData) => {
         if (!firestore) return;
         const docRef = doc(firestore, collectionName, card.id);
         try {
@@ -143,17 +128,6 @@ export function ReusableCardManager<T extends BaseCardData>({
         } catch (error: any) {
             console.error('Error toggling hidden state:', error);
             setNotification({ variant: 'destructive', title: 'Fehler', description: `Sichtbarkeit konnte nicht geändert werden: ${error.message}` });
-        }
-    };
-
-    const handleToggleFullWidth = async (card: T) => {
-        if (!firestore || collectionName !== 'staff') return;
-        const docRef = doc(firestore, collectionName, card.id);
-        try {
-            await setDoc(docRef, { fullWidth: !card.fullWidth }, { merge: true });
-        } catch (error: any) {
-            console.error('Error toggling fullWidth state:', error);
-            setNotification({ variant: 'destructive', title: 'Fehler', description: `Breite konnte nicht geändert werden: ${error.message}` });
         }
     };
 
@@ -182,10 +156,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         }
         setNotification(null);
 
-        let dataToSave: Partial<T> = { ...editorCardState };
-        if (isPartnerManager) {
-            (dataToSave as any).logoHtml = generateFinalLogoHtml(editorCardState);
-        }
+        let dataToSave: Partial<CardData> = { ...editorCardState, logoHtml: generateFinalLogoHtml(editorCardState) };
     
         try {
             if (isCreatingNew) {
@@ -193,7 +164,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                 const highestOrder = dbData ? dbData.filter(d=>d.name).reduce((max, item) => item.order > max ? item.order : max, 0) : 0;
                 
                 const newCardData = {
-                    ...initialCardState,
+                    ...initialMedicalPartnerState,
                     ...dataToSave,
                     order: highestOrder + 1,
                     createdAt: serverTimestamp(),
@@ -222,7 +193,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
-    const partnerEditorOverlay = isPartnerManager && isEditing ? (
+    const partnerEditorOverlay = isEditing ? (
         <div className="pointer-events-none absolute inset-0 z-10">
              <div className="flex h-full w-full justify-end">
                 <div className="flex h-full w-[40%] flex-col justify-end">
@@ -234,7 +205,7 @@ export function ReusableCardManager<T extends BaseCardData>({
                                 </div>
                             </div>
                         </div>
-                        <DisplayCardComponent {...editorCardState} />
+                        <DisplayCard {...editorCardState} />
                     </div>
                      <div className="pointer-events-auto mt-4 flex w-full flex-col items-center justify-center">
                         <div className="w-full px-2">
@@ -267,7 +238,7 @@ export function ReusableCardManager<T extends BaseCardData>({
         const activeItems = validDbData.filter(i => !i.hidden);
         const hiddenItems = validDbData.filter(i => i.hidden);
     
-        const renderGrid = (items: T[], title: string, description: string) => {
+        const renderGrid = (items: CardData[], title: string, description: string) => {
             if (items.length === 0) return null;
             return (
                 <div className="space-y-4 mt-12">
@@ -275,8 +246,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                     <p className="text-sm text-muted-foreground">{description}</p>
                     <div className="grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-8 mt-8">
                         {items.map((item, index) => (
-                             <div key={item.id} className={cn("flex flex-col items-center space-y-4", (item as any).fullWidth && "sm:col-span-2")}>
-                                <DisplayCardComponent {...item} />
+                             <div key={item.id} className="flex flex-col items-center space-y-4">
+                                <DisplayCard {...item} />
                                 <div
                                     id={`buttons-${item.id}`}
                                     className="flex w-full max-w-sm justify-center items-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner"
@@ -299,17 +270,6 @@ export function ReusableCardManager<T extends BaseCardData>({
                                             ) : (
                                                 <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
                                                     <EyeOff className="mr-2" /> Ausblenden
-                                                </Button>
-                                            )}
-                                            {isStaffManager && (
-                                                <Button
-                                                    variant={(item as any).fullWidth ? "default" : "outline"}
-                                                    size="sm"
-                                                    className="w-full"
-                                                    onClick={() => handleToggleFullWidth(item)}
-                                                >
-                                                    <RectangleHorizontal className="mr-2" />
-                                                    Zeile
                                                 </Button>
                                             )}
                                         </div>
@@ -367,9 +327,9 @@ export function ReusableCardManager<T extends BaseCardData>({
                 <CardContent>
                    {isEditing && (
                         <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted min-h-[420px]">
-                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState}>
+                            <EditorComponent cardData={editorCardState} onUpdate={setEditorCardState}>
                                {partnerEditorOverlay}
-                            </EditorCardComponent>
+                            </EditorComponent>
                         </div>
                     )}
 
@@ -427,4 +387,8 @@ export function ReusableCardManager<T extends BaseCardData>({
             </AlertDialog>
         </div>
     );
+}
+
+export default function MedicalPartnersPage() {
+    return <MedicalPartnersPageManager />;
 }
