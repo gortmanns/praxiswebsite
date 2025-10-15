@@ -1,10 +1,11 @@
+'use client';
 
 import { AppSidebar } from './_components/app-sidebar';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { Toaster } from 'sonner';
 
 
-export default async function DashboardLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -21,11 +22,9 @@ export default async function DashboardLayout({
         {children}
         <Toaster />
       </SidebarInset>
-      <style jsx global>{`
-        * {
-          border: 1px solid red !important;
-        }
-      `}</style>
+      <style>
+        {`* { border: 1px solid red !important; }`}
+      </style>
     </SidebarProvider>
   );
 }
