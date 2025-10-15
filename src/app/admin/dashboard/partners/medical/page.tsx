@@ -293,7 +293,7 @@ function MedicalPartnersPageManager() {
 
     const partnerEditorOverlay = isEditing ? (
         <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
-            <div className="w-full">
+            <div className="w-full max-w-xs">
                 <DisplayCard {...editorCardState} />
             </div>
         </div>
