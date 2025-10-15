@@ -1,127 +1,259 @@
 /**
- * @fileoverview Firestore Security Rules for the practice website.
- *
- * Core Philosophy:
- * This ruleset provides public read access to all collections and restricts write access.
- * No authentication or authorization is required to read data.
- * Write access is completely disabled as of now.
+ * @file Firestore Security Rules
+ * @description This ruleset enforces a strict owner-only access model for all collections. Only authenticated users can create, update, or delete documents, and they can only do so if they "own" the document.
  *
  * Data Structure:
- * The Firestore database consists of several top-level collections:
- * - /doctors: Stores doctor profile information.
- * - /staff: Stores practice staff member profiles.
- * - /medicalPartners: Stores medical cooperation partner information.
- * - /otherPartners: Stores other cooperation partner information.
- * - /holidays: Stores practice holiday periods.
- * - /infoBanners: Stores multiple custom info banners (blue).
- * - /settings/banners: A single document that stores settings for holiday banners.
+ * All data is stored in top-level collections: `doctors`, `staff`, `medicalPartners`, `otherPartners`, `holidays`, `infoBanners`.
+ * The `settings/banners` document is a singleton document for storing banner settings.
  *
  * Key Security Decisions:
- * - All read operations (get, list) are public, requiring no authentication.
- * - All write operations (create, update, delete) are explicitly denied.
- * - Schema validation is not performed in this prototyping phase.
+ * - No public listing of documents is allowed.
+ * - All write operations require user authentication.
+ * - Ownership is determined by comparing the authenticated user's UID to an 'id' field on each document. This 'id' field acts as the owner ID.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows public read access to doctor profiles. Denies all writes.
+     * @description Manages access to the 'doctors' collection.
      * @path /doctors/{doctorId}
-     * @allow (get, list): Any user can read doctor profiles.
-     * @deny (create, update, delete): No user can create, update, or delete doctor profiles.
-     * @principle Allows public reads, denies all writes.
+     * @allow (create) User with auth UID 'user_abc' creates a new doctor profile with doctorId == 'user_abc'.
+     * @deny (create) User with auth UID 'user_xyz' attempts to create a doctor profile with doctorId == 'user_abc'.
+     * @allow (update) User with auth UID 'user_abc' updates the doctor profile with doctorId == 'user_abc'.
+     * @deny (update) User with auth UID 'user_xyz' attempts to update the doctor profile with doctorId == 'user_abc'.
+     * @allow (delete) User with auth UID 'user_abc' deletes the doctor profile with doctorId == 'user_abc'.
+     * @deny (delete) User with auth UID 'user_xyz' attempts to delete the doctor profile with doctorId == 'user_abc'.
+     * @principle Enforces document ownership for writes.
      */
     match /doctors/{doctorId} {
-      allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+      // Helper function to check if the user is signed in
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      // Helper function to check if the user is the owner of the document
+      function isOwner(doctorId) {
+        return request.auth.uid == doctorId;
+      }
+
+      // Helper function to check if the user is the owner of the document and the document exists
+      function isExistingOwner(doctorId) {
+        return isOwner(doctorId) && existsAfter(/databases/$(database)/documents/doctors/$(doctorId));
+      }
+
+      allow get: if false;
+      allow list: if false;
+      allow create: if isSignedIn() && isOwner(doctorId);
+      allow update: if isSignedIn() && isExistingOwner(doctorId);
+      allow delete: if isSignedIn() && isExistingOwner(doctorId);
     }
 
     /**
-     * @description Allows public read access to staff member profiles. Denies all writes.
-     * @path /staff/{staffMemberId}
-     * @allow (get, list): Any user can read staff member profiles.
-     * @deny (create, update, delete): No user can create, update, or delete staff member profiles.
-     * @principle Allows public reads, denies all writes.
+     * @description Manages access to the 'staff' collection.
+     * @path /staff/{staffId}
+     * @allow (create) User with auth UID 'user_abc' creates a new staff profile with staffId == 'user_abc'.
+     * @deny (create) User with auth UID 'user_xyz' attempts to create a staff profile with staffId == 'user_abc'.
+     * @allow (update) User with auth UID 'user_abc' updates the staff profile with staffId == 'user_abc'.
+     * @deny (update) User with auth UID 'user_xyz' attempts to update the staff profile with staffId == 'user_abc'.
+     * @allow (delete) User with auth UID 'user_abc' deletes the staff profile with staffId == 'user_abc'.
+     * @deny (delete) User with auth UID 'user_xyz' attempts to delete the staff profile with staffId == 'user_abc'.
+     * @principle Enforces document ownership for writes.
      */
-    match /staff/{staffMemberId} {
-      allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+    match /staff/{staffId} {
+      // Helper function to check if the user is signed in
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      // Helper function to check if the user is the owner of the document
+      function isOwner(staffId) {
+        return request.auth.uid == staffId;
+      }
+
+      // Helper function to check if the user is the owner of the document and the document exists
+      function isExistingOwner(staffId) {
+        return isOwner(staffId) && existsAfter(/databases/$(database)/documents/staff/$(staffId));
+      }
+
+      allow get: if false;
+      allow list: if false;
+      allow create: if isSignedIn() && isOwner(staffId);
+      allow update: if isSignedIn() && isExistingOwner(staffId);
+      allow delete: if isSignedIn() && isExistingOwner(staffId);
     }
 
     /**
-     * @description Allows public read access to medical partner information. Denies all writes.
+     * @description Manages access to the 'medicalPartners' collection.
      * @path /medicalPartners/{partnerId}
-     * @allow (get, list): Any user can read medical partner information.
-     * @deny (create, update, delete): No user can create, update, or delete medical partner information.
-     * @principle Allows public reads, denies all writes.
+     * @allow (create) User with auth UID 'user_abc' creates a new medical partner with partnerId == 'user_abc'.
+     * @deny (create) User with auth UID 'user_xyz' attempts to create a medical partner with partnerId == 'user_abc'.
+     * @allow (update) User with auth UID 'user_abc' updates the medical partner with partnerId == 'user_abc'.
+     * @deny (update) User with auth UID 'user_xyz' attempts to update the medical partner with partnerId == 'user_abc'.
+     * @allow (delete) User with auth UID 'user_abc' deletes the medical partner with partnerId == 'user_abc'.
+     * @deny (delete) User with auth UID 'user_xyz' attempts to delete the medical partner with partnerId == 'user_abc'.
+     * @principle Enforces document ownership for writes.
      */
     match /medicalPartners/{partnerId} {
-      allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+      // Helper function to check if the user is signed in
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      // Helper function to check if the user is the owner of the document
+      function isOwner(partnerId) {
+        return request.auth.uid == partnerId;
+      }
+
+      // Helper function to check if the user is the owner of the document and the document exists
+      function isExistingOwner(partnerId) {
+        return isOwner(partnerId) && existsAfter(/databases/$(database)/documents/medicalPartners/$(partnerId));
+      }
+
+      allow get: if false;
+      allow list: if false;
+      allow create: if isSignedIn() && isOwner(partnerId);
+      allow update: if isSignedIn() && isExistingOwner(partnerId);
+      allow delete: if isSignedIn() && isExistingOwner(partnerId);
     }
 
     /**
-     * @description Allows public read access to other partner information. Denies all writes.
+     * @description Manages access to the 'otherPartners' collection.
      * @path /otherPartners/{partnerId}
-     * @allow (get, list): Any user can read other partner information.
-     * @deny (create, update, delete): No user can create, update, or delete other partner information.
-     * @principle Allows public reads, denies all writes.
+     * @allow (create) User with auth UID 'user_abc' creates a new other partner with partnerId == 'user_abc'.
+     * @deny (create) User with auth UID 'user_xyz' attempts to create a other partner with partnerId == 'user_abc'.
+     * @allow (update) User with auth UID 'user_abc' updates the other partner with partnerId == 'user_abc'.
+     * @deny (update) User with auth UID 'user_xyz' attempts to update the other partner with partnerId == 'user_abc'.
+     * @allow (delete) User with auth UID 'user_abc' deletes the other partner with partnerId == 'user_abc'.
+     * @deny (delete) User with auth UID 'user_xyz' attempts to delete the other partner with partnerId == 'user_abc'.
+     * @principle Enforces document ownership for writes.
      */
     match /otherPartners/{partnerId} {
-      allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+      // Helper function to check if the user is signed in
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      // Helper function to check if the user is the owner of the document
+      function isOwner(partnerId) {
+        return request.auth.uid == partnerId;
+      }
+
+      // Helper function to check if the user is the owner of the document and the document exists
+      function isExistingOwner(partnerId) {
+        return isOwner(partnerId) && existsAfter(/databases/$(database)/documents/otherPartners/$(partnerId));
+      }
+
+      allow get: if false;
+      allow list: if false;
+      allow create: if isSignedIn() && isOwner(partnerId);
+      allow update: if isSignedIn() && isExistingOwner(partnerId);
+      allow delete: if isSignedIn() && isExistingOwner(partnerId);
     }
 
     /**
-     * @description Allows public read access to holiday periods. Denies all writes.
+     * @description Manages access to the 'holidays' collection.
      * @path /holidays/{holidayId}
-     * @allow (get, list): Any user can read holiday periods.
-     * @deny (create, update, delete): No user can create, update, or delete holiday periods.
-     * @principle Allows public reads, denies all writes.
+     * @allow (create) User with auth UID 'user_abc' creates a new holiday with holidayId == 'user_abc'.
+     * @deny (create) User with auth UID 'user_xyz' attempts to create a holiday with holidayId == 'user_abc'.
+     * @allow (update) User with auth UID 'user_abc' updates the holiday with holidayId == 'user_abc'.
+     * @deny (update) User with auth UID 'user_xyz' attempts to update the holiday with holidayId == 'user_abc'.
+     * @allow (delete) User with auth UID 'user_abc' deletes the holiday with holidayId == 'user_abc'.
+     * @deny (delete) User with auth UID 'user_xyz' attempts to delete the holiday with holidayId == 'user_abc'.
+     * @principle Enforces document ownership for writes.
      */
     match /holidays/{holidayId} {
-      allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+      // Helper function to check if the user is signed in
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      // Helper function to check if the user is the owner of the document
+      function isOwner(holidayId) {
+        return request.auth.uid == holidayId;
+      }
+
+      // Helper function to check if the user is the owner of the document and the document exists
+      function isExistingOwner(holidayId) {
+        return isOwner(holidayId) && existsAfter(/databases/$(database)/documents/holidays/$(holidayId));
+      }
+
+      allow get: if false;
+      allow list: if false;
+      allow create: if isSignedIn() && isOwner(holidayId);
+      allow update: if isSignedIn() && isExistingOwner(holidayId);
+      allow delete: if isSignedIn() && isExistingOwner(holidayId);
     }
 
     /**
-     * @description Allows public read access to info banners. Denies all writes.
+     * @description Manages access to the 'infoBanners' collection.
      * @path /infoBanners/{bannerId}
-     * @allow (get, list): Any user can read info banners.
-     * @deny (create, update, delete): No user can create, update, or delete info banners.
-     * @principle Allows public reads, denies all writes.
+     * @allow (create) User with auth UID 'user_abc' creates a new info banner with bannerId == 'user_abc'.
+     * @deny (create) User with auth UID 'user_xyz' attempts to create a info banner with bannerId == 'user_abc'.
+     * @allow (update) User with auth UID 'user_abc' updates the info banner with bannerId == 'user_abc'.
+     * @deny (update) User with auth UID 'user_xyz' attempts to update the info banner with bannerId == 'user_abc'.
+     * @allow (delete) User with auth UID 'user_abc' deletes the info banner with bannerId == 'user_abc'.
+     * @deny (delete) User with auth UID 'user_xyz' attempts to delete the info banner with bannerId == 'user_abc'.
+     * @principle Enforces document ownership for writes.
      */
     match /infoBanners/{bannerId} {
-      allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+      // Helper function to check if the user is signed in
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      // Helper function to check if the user is the owner of the document
+      function isOwner(bannerId) {
+        return request.auth.uid == bannerId;
+      }
+
+      // Helper function to check if the user is the owner of the document and the document exists
+      function isExistingOwner(bannerId) {
+        return isOwner(bannerId) && existsAfter(/databases/$(database)/documents/infoBanners/$(bannerId));
+      }
+
+      allow get: if false;
+      allow list: if false;
+      allow create: if isSignedIn() && isOwner(bannerId);
+      allow update: if isSignedIn() && isExistingOwner(bannerId);
+      allow delete: if isSignedIn() && isExistingOwner(bannerId);
     }
 
-     /**
-      * @description Allows public read access to the banner settings. Denies all writes.
-      * @path /settings/banners
-      * @allow (get): Any user can read the banner settings.
-      * @deny (create, update, delete, list): No user can create, update, or delete the banner settings. List is denied because it is a single document.
-      * @principle Allows public reads, denies all writes.
-      */
+    /**
+     * @description Manages access to the 'settings/banners' document.
+     * @path /settings/banners
+     * @allow (get) No access allowed
+     * @allow (list) No access allowed
+     * @allow (create) User with auth UID 'user_abc' creates the banner settings document, their UID is the document id.
+     * @deny (create) User with auth UID 'user_xyz' attempts to create the banner settings document with id 'user_abc'.
+     * @allow (update) User with auth UID 'user_abc' updates the banner settings document.
+     * @deny (update) User with auth UID 'user_xyz' attempts to update the banner settings document.
+     * @allow (delete) User with auth UID 'user_abc' deletes the banner settings document.
+     * @deny (delete) User with auth UID 'user_xyz' attempts to delete the banner settings document.
+     * @principle Enforces document ownership for writes.
+    */
     match /settings/banners {
-        allow get: if true;
-        allow list: if false;
-        allow create: if false;
-        allow update: if false;
-        allow delete: if false;
+          // Helper function to check if the user is signed in
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      // Helper function to check if the user is the owner of the document
+      function isOwner() {
+        return request.auth.uid == request.resource.data.id;
+      }
+
+      // Helper function to check if the user is the owner of the document and the document exists
+      function isExistingOwner() {
+        return request.auth.uid == resource.data.id && existsAfter(/databases/$(database)/documents/settings/banners);
+      }
+
+      // For singleton document, we check the userId against the "id" field.
+      allow get: if false;
+      allow list: if false;
+      allow create: if isSignedIn() && isOwner();
+      allow update: if isSignedIn() && isExistingOwner();
+      allow delete: if isSignedIn() && isExistingOwner();
     }
   }
 }
