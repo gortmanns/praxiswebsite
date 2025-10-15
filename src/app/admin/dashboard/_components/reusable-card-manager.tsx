@@ -201,11 +201,11 @@ function ReusableCardManager<T extends CardData>({
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
     const partnerEditorOverlay = isEditing ? (
-        <div className="absolute inset-0 pointer-events-none z-10">
-            <div className="grid h-full w-full grid-cols-2">
-                 <div className="z-0"></div>
-                 <div className="relative flex h-full w-full items-center justify-center p-10">
-                     <div className="w-full max-w-[250px] pointer-events-auto">
+        <div className="absolute inset-0 z-20 bg-green-500/30 border-4 border-green-700">
+            <div className="grid h-full w-full grid-cols-2 border-2 border-blue-500">
+                 <div className="z-0 border-2 border-yellow-400"></div>
+                 <div className="relative flex h-full w-full items-center justify-center p-10 border-2 border-red-500">
+                     <div className="w-full max-w-[250px]">
                         <DisplayCardComponent {...editorCardState} />
                     </div>
                 </div>
@@ -215,7 +215,7 @@ function ReusableCardManager<T extends CardData>({
 
 
     const AdminPartnerCard: React.FC<{ partner: T; isFirst: boolean; isLast: boolean; isHiddenCard?: boolean }> = ({ partner, isFirst, isLast, isHiddenCard = false }) => (
-        <div className="flex flex-col items-center space-y-4 w-full">
+        <div className="flex w-full flex-col items-center space-y-4">
             <DisplayCardComponent {...partner} />
             <div id={`buttons-${partner.id}`} className="flex w-full items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
                 <Button size="icon" variant="outline" onClick={() => handleMove(partner.id, 'left')} disabled={isFirst}><ArrowLeft /></Button>
@@ -234,38 +234,30 @@ function ReusableCardManager<T extends CardData>({
         </div>
     );
     
-    const RowGrid: React.FC<{ partners: T[]; totalItems: number, isHidden?: boolean }> = ({ partners, totalItems, isHidden }) => {
+    const RowGrid: React.FC<{ partners: T[], isHidden?: boolean }> = ({ partners, isHidden }) => {
         if (!partners || partners.length === 0) return null;
         const count = partners.length;
-
-        const getCardWithGridColumn = (card: T, index: number) => {
-            let colStart = 0;
-            
-            if (count === 4) { // 2-2-2-2
-                colStart = index * 2 + 1;
-            } else if (count === 3) { // 1-2-2-2-1
-                colStart = index * 2 + 2;
-            } else if (count === 2) { // 2-2-2-2 centered
-                colStart = index * 2 + 3;
-            } else if (count === 1) { // 1-2-2-2-1 centered
-                colStart = 4;
-            }
-
-            return (
-                <div key={card.id} style={{ gridColumnStart: colStart }} className="col-span-2 flex items-center justify-center">
-                    <AdminPartnerCard 
-                        partner={card} 
-                        isFirst={index === 0} 
-                        isLast={index === totalItems - 1} 
-                        isHiddenCard={isHidden} 
-                    />
-                </div>
-            );
+    
+        const getGridStyle = () => {
+            if (count === 1) return { gridTemplateColumns: '1fr 2fr 1fr' }; // Center the single item
+            if (count === 2) return { gridTemplateColumns: 'repeat(2, 1fr)' }; // Two items
+            if (count === 3) return { gridTemplateColumns: 'repeat(3, 1fr)' }; // Three items
+            return { gridTemplateColumns: 'repeat(4, 1fr)' }; // Four items
         };
-
+    
         return (
-            <div className="grid grid-cols-8 gap-8">
-                {partners.map((partner, index) => getCardWithGridColumn(partner, index))}
+            <div className="grid w-full gap-8" style={getGridStyle()}>
+                {count === 1 && <div />} 
+                {partners.map((partner, index) => (
+                    <div key={partner.id} className="flex items-center justify-center">
+                         <AdminPartnerCard 
+                            partner={partner} 
+                            isFirst={index === 0} 
+                            isLast={index === partners.length - 1} 
+                            isHiddenCard={isHidden} 
+                        />
+                    </div>
+                ))}
             </div>
         );
     };
@@ -281,7 +273,7 @@ function ReusableCardManager<T extends CardData>({
         return (
             <div className="space-y-8">
                 {chunkedPartners.map((rowPartners, index) => (
-                    <RowGrid key={index} partners={rowPartners} totalItems={partners.length} isHidden={isHidden} />
+                    <RowGrid key={index} partners={rowPartners} isHidden={isHidden} />
                 ))}
             </div>
         );
@@ -361,11 +353,11 @@ function ReusableCardManager<T extends CardData>({
 
                     <div className="relative">
                         {isLoadingData && (
-                            <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
+                            <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
                                 {Array.from({ length: 4 }).map((_, index) => (
                                     <div key={index} className="flex flex-col items-center space-y-4">
-                                        <Skeleton className="h-32 w-full max-w-sm" />
-                                        <Skeleton className="h-10 w-full max-w-sm" />
+                                        <Skeleton className="h-32 w-full" />
+                                        <Skeleton className="h-10 w-full" />
                                     </div>
                                 ))}
                             </div>
@@ -380,7 +372,7 @@ function ReusableCardManager<T extends CardData>({
                                 </AlertDescription>
                             </Alert>
                         )}
-                         {!isLoadingData && (
+                         {!isLoadingData && !isEditing && (
                            renderCardGroups()
                         )}
                     </div>
