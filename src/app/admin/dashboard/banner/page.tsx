@@ -158,22 +158,22 @@ const PlaceholderAlert = () => (
 export default function BannerPage() {
     const firestore = useFirestore();
     
-    const settingsDocRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'banners') : null, [firestore]);
+    const settingsDocRef = useMemoFirebase(() => (firestore ? doc(firestore, 'settings', 'banners') : null), [firestore]);
     const { data: dbSettings, isLoading: isLoadingSettings, error: dbSettingsError } = useDoc<BannerSettings>(settingsDocRef);
-    const [bannerSettings, setBannerSettings] = useState<BannerSettings>(initialBannerSettings);
-
-    const infoBannersQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'infoBanners'), orderBy('start', 'desc')) : null, [firestore]);
+    
+    const infoBannersQuery = useMemoFirebase(() => (firestore ? query(collection(firestore, 'infoBanners'), orderBy('start', 'desc')) : null), [firestore]);
     const { data: infoBannersData, isLoading: isLoadingInfoBanners, error: dbInfoBannerError } = useCollection<InfoBanner>(infoBannersQuery);
-
-    const [isEditing, setIsEditing] = useState(false);
-    const [currentEditorBanner, setCurrentEditorBanner] = useState<Partial<InfoBanner>>(initialInfoBannerState);
 
     const holidaysQuery = useMemoFirebase(() => {
         if (!firestore) return null;
         const today = new Date(); today.setHours(0, 0, 0, 0);
         return query(collection(firestore, 'holidays'), where('end', '>=', Timestamp.fromDate(today)), orderBy('end', 'asc'));
     }, [firestore]);
-    const { data: holidaysData, isLoading: isLoadingHolidays } = useCollection<any>(holidaysQuery);
+    const { data: holidaysData, isLoading: isLoadingHolidays, error: dbHolidaysError } = useCollection<any>(holidaysQuery);
+
+    const [bannerSettings, setBannerSettings] = useState<BannerSettings>(initialBannerSettings);
+    const [isEditing, setIsEditing] = useState(false);
+    const [currentEditorBanner, setCurrentEditorBanner] = useState<Partial<InfoBanner>>(initialInfoBannerState);
 
     const [notification, setNotification] = useState<TimedAlertProps | null>(null);
     const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; bannerId?: string; bannerText?: string }>({ isOpen: false });
@@ -291,11 +291,13 @@ export default function BannerPage() {
         }
     };
 
-    if (isLoadingSettings || isLoadingHolidays || isLoadingInfoBanners) {
+    const isLoading = isLoadingSettings || isLoadingHolidays || isLoadingInfoBanners;
+    const dbError = dbSettingsError || dbInfoBannerError || dbHolidaysError;
+
+    if (isLoading) {
         return ( <div className="flex flex-1 items-start p-4 sm:p-6"><Card className="w-full"><CardHeader><Skeleton className="h-8 w-1/2" /><Skeleton className="h-5 w-3/4" /></CardHeader><CardContent className="space-y-8"><Skeleton className="h-64 w-full" /><Skeleton className="h-48 w-full" /><Skeleton className="h-48 w-full" /></CardContent></Card></div>)
     }
 
-    const dbError = dbSettingsError || dbInfoBannerError;
     if (dbError) {
         return (<div className="flex flex-1 items-start p-4 sm:p-6"><Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertTitle>Datenbankfehler</AlertTitle><AlertDescription>{dbError.message}</AlertDescription></Alert></div>)
     }
