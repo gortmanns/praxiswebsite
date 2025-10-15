@@ -1,10 +1,9 @@
-
 'use client';
 
 import React from 'react';
 import { StaffCard as DisplayCard } from './_components/staff-card';
 import { StaffEditor as EditorComponent } from './_components/staff-editor';
-import { ReusableCardManager } from '../../_components/reusable-card-manager';
+import { StaffCardManager } from './_components/staff-card-manager';
 import type { StaffMember as CardData } from './_components/staff-editor';
 
 const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
@@ -21,7 +20,7 @@ const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
 export default function StaffPage() {
     
     return (
-        <ReusableCardManager
+        <StaffCardManager
             collectionName="staff"
             pageTitle="Praxispersonal verwalten"
             pageDescription="Verwalten Sie das auf der Team-Seite angezeigte Praxispersonal."
