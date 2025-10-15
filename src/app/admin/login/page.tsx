@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 import { login } from './actions';
+import Image from 'next/image';
 
 const loginSchema = z.object({
   username: z.string().min(1, 'Benutzername ist erforderlich.'),
@@ -39,14 +40,24 @@ export default function LoginPage() {
 
     if (result.success) {
       router.push('/admin/dashboard');
-      router.refresh(); // Wichtig, um den Layout-Status neu zu laden
+      router.refresh(); 
     } else {
       setAuthError(result.error || 'Ein unerwarteter Fehler ist aufgetreten.');
     }
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-muted/40 p-4">
+      <div className="mb-8">
+        <Image
+          src="/images/praxiszentrum-logo.png"
+          alt="Praxiszentrum im Ring Logo"
+          data-ai-hint="practice logo"
+          width={1511}
+          height={306}
+          className="h-auto w-80"
+        />
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Admin Login</CardTitle>
