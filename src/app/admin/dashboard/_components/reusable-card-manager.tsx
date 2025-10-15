@@ -201,7 +201,7 @@ function ReusableCardManager<T extends CardData>({
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
     const partnerEditorOverlay = isEditing ? (
-        <div className="absolute inset-0 z-20 bg-green-500/30">
+        <div className="pointer-events-auto absolute inset-0 z-20 bg-green-500/30">
             <div className="grid h-full w-full grid-cols-2 border-2 border-blue-500">
                  <div className="z-0 border-2 border-yellow-400"></div>
                  <div className="relative flex h-full w-full items-center justify-center p-10 border-2 border-red-500">
@@ -214,9 +214,16 @@ function ReusableCardManager<T extends CardData>({
     ) : null;
 
 
-    const AdminPartnerCard: React.FC<{ partner: T; isFirst: boolean; isLast: boolean; isHiddenCard?: boolean }> = ({ partner, isFirst, isLast, isHiddenCard = false }) => (
+    const AdminPartnerCard: React.FC<{ partner: T; isFirst: boolean; isLast: boolean; isBeingEdited: boolean; isHiddenCard?: boolean }> = ({ partner, isFirst, isLast, isBeingEdited, isHiddenCard = false }) => (
         <div className="flex w-full flex-col items-center space-y-4">
-            <DisplayCardComponent {...partner} />
+            <div className="relative w-full">
+                <DisplayCardComponent {...partner} />
+                {isBeingEdited && (
+                    <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/80">
+                        <span className="text-xl font-bold text-primary-foreground">In Bearbeitung</span>
+                    </div>
+                )}
+            </div>
             <div id={`buttons-${partner.id}`} className="flex w-full items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
                 <Button size="icon" variant="outline" onClick={() => handleMove(partner.id, 'left')} disabled={isFirst}><ArrowLeft /></Button>
                 <Button size="icon" variant="outline" onClick={() => handleMove(partner.id, 'right')} disabled={isLast}><ArrowRight /></Button>
@@ -236,41 +243,39 @@ function ReusableCardManager<T extends CardData>({
     
     const RowGrid: React.FC<{ partners: T[], isHidden?: boolean }> = ({ partners, isHidden }) => {
         if (!partners || partners.length === 0) return null;
-    
-        const getGridStyle = (count: number) => {
-            const styles: React.CSSProperties = {
-                display: 'grid',
-                gridTemplateColumns: 'repeat(4, 1fr)',
-                gap: '2rem',
-                justifyItems: 'center',
-            };
-    
-            if (count < 4) {
-                styles.gridTemplateColumns = `repeat(${count}, 1fr)`;
-                styles.width = `${count * 25}%`;
-                styles.margin = '0 auto'; 
+        
+        const count = partners.length;
+
+        const getGridStyle = (count: number, index: number, total: number) => {
+            let colStart = 0;
+            const isOdd = total % 2 !== 0;
+
+            if (total === 1) { // 1 card (1-2-2-2-1 structure, centered)
+                return { gridColumn: '4 / span 2' };
             }
-            
-            return styles;
+            if (total === 2) { // 2 cards (2-2-2-2 structure, centered)
+                return { gridColumnStart: index * 2 + 3 };
+            }
+            if (total === 3) { // 3 cards (1-2-2-2-1 structure)
+                return { gridColumnStart: index * 2 + 2 };
+            }
+            // 4 cards (2-2-2-2 structure)
+            return { gridColumnStart: index * 2 + 1 };
         };
 
-        const count = partners.length;
-        const gridStyle = getGridStyle(count);
-
         return (
-            <div className="w-full">
-                <div style={gridStyle}>
-                    {partners.map((partner, index) => (
-                        <div key={partner.id} className="w-full">
-                            <AdminPartnerCard 
-                                partner={partner} 
-                                isFirst={index === 0} 
-                                isLast={index === partners.length - 1} 
-                                isHiddenCard={isHidden} 
-                            />
-                        </div>
-                    ))}
-                </div>
+            <div className="grid grid-cols-8 gap-8">
+                {partners.map((partner, index) => (
+                    <div key={partner.id} style={getGridStyle(count, index, partners.length)} className="col-span-2 flex w-full items-center justify-center">
+                        <AdminPartnerCard 
+                            partner={partner} 
+                            isFirst={index === 0} 
+                            isLast={index === partners.length - 1} 
+                            isHiddenCard={isHidden} 
+                            isBeingEdited={partner.id === editingCardId}
+                        />
+                    </div>
+                ))}
             </div>
         );
     };
@@ -297,12 +302,17 @@ function ReusableCardManager<T extends CardData>({
         const hiddenItems = validDbData.filter(i => i.hidden);
     
         const renderGrid = (items: T[], title: string, description: string, isHiddenGrid: boolean) => {
-            if (items.length === 0) return null;
+            if (items.length === 0 && !(title === 'Aktive Karten' && isCreatingNew)) return null;
+
             return (
                 <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
-                    <PartnerGrid partners={items} isHidden={isHiddenGrid} />
+                     {items.length > 0 ? (
+                        <PartnerGrid partners={items} isHidden={isHiddenGrid} />
+                    ) : (
+                        <p className="text-sm text-muted-foreground pt-4">Keine Karten in dieser Kategorie.</p>
+                    )}
                 </div>
             );
         };
@@ -385,7 +395,7 @@ function ReusableCardManager<T extends CardData>({
                                 </AlertDescription>
                             </Alert>
                         )}
-                         {!isLoadingData && renderCardGroups()}
+                        {!isLoadingData && renderCardGroups()}
                     </div>
                 </CardContent>
             </Card>
