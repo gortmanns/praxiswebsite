@@ -1,89 +1,98 @@
-/**
- * @file Firestore Security Rules
- * @generated
- * @version Prototype
- *
- * @description This ruleset allows completely open access to all data, as explicitly requested.
- *   All reads and writes are permitted without authentication or authorization checks.
- *   This configuration is suitable for prototyping and disables all security restrictions.
- *
- * @security WARNING: This ruleset provides NO SECURITY. It should NEVER be used in a production environment.
- *   All data is publicly readable and writable.
- */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows anyone to read or write doctor profiles.
+     * @description Allows public read access and authenticated write access to doctor profiles.
      * @path /doctors/{doctorId}
-     * @allow (get, list, create, update, delete) Any user, authenticated or not.
-     * @deny None. All requests are allowed.
-     * @principle Disables all security restrictions for prototyping.
+     * @allow (get, list): Any user can read doctor profiles.
+     * @allow (create, update, delete): Only authenticated users can modify doctor profiles.
+     * @deny (create, update, delete): Unauthenticated users cannot modify doctor profiles.
+     * @principle Public read, authenticated write.  No ownerId field exists for ownership validation.
      */
     match /doctors/{doctorId} {
       allow get, list: if true;
-      allow create, update, delete: if true;
+      allow create, update, delete: if request.auth != null; // TODO: Add owner validation once the schema is updated with an ownership field.
     }
 
     /**
-     * @description Allows anyone to read or write staff member profiles.
-     * @path /staff/{staffId}
-     * @allow (get, list, create, update, delete) Any user, authenticated or not.
-     * @deny None. All requests are allowed.
-     * @principle Disables all security restrictions for prototyping.
+     * @description Allows public read access and authenticated write access to staff member profiles.
+     * @path /staff/{staffMemberId}
+     * @allow (get, list): Any user can read staff profiles.
+     * @allow (create, update, delete): Only authenticated users can modify staff profiles.
+     * @deny (create, update, delete): Unauthenticated users cannot modify staff profiles.
+     * @principle Public read, authenticated write.  No ownerId field exists for ownership validation.
      */
-    match /staff/{staffId} {
+    match /staff/{staffMemberId} {
       allow get, list: if true;
-      allow create, update, delete: if true;
+      allow create, update, delete: if request.auth != null; // TODO: Add owner validation once the schema is updated with an ownership field.
     }
 
     /**
-     * @description Allows anyone to read or write medical partner information.
-     * @path /medicalPartners/{partnerId}
-     * @allow (get, list, create, update, delete) Any user, authenticated or not.
-     * @deny None. All requests are allowed.
-     * @principle Disables all security restrictions for prototyping.
+     * @description Allows public read access and authenticated write access to medical partner information.
+     * @path /medicalPartners/{medicalPartnerId}
+     * @allow (get, list): Any user can read medical partner information.
+     * @allow (create, update, delete): Only authenticated users can modify medical partner information.
+     * @deny (create, update, delete): Unauthenticated users cannot modify medical partner information.
+     * @principle Public read, authenticated write.  No ownerId field exists for ownership validation.
      */
-    match /medicalPartners/{partnerId} {
+    match /medicalPartners/{medicalPartnerId} {
       allow get, list: if true;
-      allow create, update, delete: if true;
+      allow create, update, delete: if request.auth != null; // TODO: Add owner validation once the schema is updated with an ownership field.
     }
 
     /**
-     * @description Allows anyone to read or write other partner information.
-     * @path /otherPartners/{partnerId}
-     * @allow (get, list, create, update, delete) Any user, authenticated or not.
-     * @deny None. All requests are allowed.
-     * @principle Disables all security restrictions for prototyping.
+     * @description Allows public read access and authenticated write access to other partner information.
+     * @path /otherPartners/{otherPartnerId}
+     * @allow (get, list): Any user can read other partner information.
+     * @allow (create, update, delete): Only authenticated users can modify other partner information.
+     * @deny (create, update, delete): Unauthenticated users cannot modify other partner information.
+     * @principle Public read, authenticated write.  No ownerId field exists for ownership validation.
      */
-    match /otherPartners/{partnerId} {
+    match /otherPartners/{otherPartnerId} {
       allow get, list: if true;
-      allow create, update, delete: if true;
+      allow create, update, delete: if request.auth != null; // TODO: Add owner validation once the schema is updated with an ownership field.
     }
 
     /**
-     * @description Allows anyone to read or write practice holiday periods.
+     * @description Allows public read access and authenticated write access to holiday periods.
      * @path /holidays/{holidayId}
-     * @allow (get, list, create, update, delete) Any user, authenticated or not.
-     * @deny None. All requests are allowed.
-     * @principle Disables all security restrictions for prototyping.
+     * @allow (get, list): Any user can read holiday information.
+     * @allow (create, update, delete): Only authenticated users can modify holiday information.
+     * @deny (create, update, delete): Unauthenticated users cannot modify holiday information.
+     * @principle Public read, authenticated write. No ownerId field exists for ownership validation.
      */
     match /holidays/{holidayId} {
-      allow get, list: if true;
-      allow create, update, delete: if true;
+        allow get, list: if true;
+        allow create, update, delete: if request.auth != null; // TODO: Add owner validation once the schema is updated with an ownership field.
     }
 
     /**
-     * @description Allows anyone to read or write banner settings.
+     * @description Allows public read access and authenticated write access to banner settings.
      * @path /settings/banners
-     * @allow (get, list, create, update, delete) Any user, authenticated or not.
-     * @deny None. All requests are allowed.
-     * @principle Disables all security restrictions for prototyping.
+     * @allow (get): Any user can read the banner settings.
+     * @allow (create, update, delete): Only authenticated users can modify the banner settings.
+     * @deny (create, update, delete): Unauthenticated users cannot modify the banner settings.
+     * @principle Public read, authenticated write. No ownerId field exists for ownership validation.
      */
     match /settings/banners {
-      allow get, list: if true;
-      allow create, update, delete: if true;
+        allow get: if true;
+        allow create, update, delete: if request.auth != null; // TODO: Add owner validation once the schema is updated with an ownership field.
+    }
+
+    // catch-all to prevent accidental open access
+    match /{path=**} {
+      allow read, write: if false;
     }
   }
+
+  // Helper function to determine if a user is signed in.
+  //function isSignedIn() {
+  //  return request.auth != null;
+  //}
+
+  // Helper function to determine if the user is the owner of the document.
+  //function isOwner(userId) {
+  //  return request.auth.uid == userId;
+  //}
 }
