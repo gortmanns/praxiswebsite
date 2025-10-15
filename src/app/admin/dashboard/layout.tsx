@@ -1,7 +1,7 @@
 
 import { AppSidebar } from './_components/app-sidebar';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
-import { Toaster } from '@/components/ui/sonner';
+import { Toaster } from 'sonner';
 
 
 export default async function DashboardLayout({
