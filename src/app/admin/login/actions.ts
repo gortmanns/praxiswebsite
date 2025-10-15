@@ -33,12 +33,18 @@ export async function login(credentials: unknown): Promise<LoginResult> {
     const user = userCredential.user;
 
     if (user) {
+        const idToken = await user.getIdToken();
         const session = await getSession();
+        
         session.isLoggedIn = true;
         session.username = user.email || 'Admin';
+        session.idToken = idToken; // Store the token
+        
         await session.save();
+        
         return { success: true };
     }
+    // This case should theoretically not be reached if signInWithEmailAndPassword succeeds
     return { success: false, error: 'Benutzer nicht gefunden nach erfolgreichem Login.' };
 
   } catch (error: any) {

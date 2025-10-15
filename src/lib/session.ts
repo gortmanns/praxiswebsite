@@ -6,10 +6,11 @@ import { cookies } from 'next/headers';
 export interface SessionData {
   isLoggedIn: boolean;
   username?: string;
+  idToken?: string;
 }
 
 const sessionOptions = {
-  password: process.env.SESSION_SECRET as string,
+  password: process.env.SESSION_SECRET || 'some-very-strong-secret-you-should-change-in-production-for-safety-reasons-really-long',
   cookieName: 'pzir-admin-session',
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
