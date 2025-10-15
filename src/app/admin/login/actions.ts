@@ -31,7 +31,10 @@ export async function login(credentials: unknown): Promise<LoginResult> {
     return { success: false, error: 'Server-Konfigurationsfehler.' };
   }
   
-  if (username !== storedUsername || password !== storedPassword) {
+  const isUsernameValid = username === storedUsername;
+  const isPasswordValid = password === storedPassword;
+
+  if (!isUsernameValid || !isPasswordValid) {
     return { success: false, error: 'Ungültiger Benutzername oder falsches Passwort.' };
   }
 
