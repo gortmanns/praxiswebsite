@@ -29,7 +29,7 @@ export default function LoginPage() {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: '',
+      username: 'g.ortmanns@praxiszentrum-im-ring.ch',
       password: '',
     },
   });
@@ -49,7 +49,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-muted/40 p-4">
-      <div className="mb-8">
+      <div className="mb-8 flex justify-center">
         <Image
           src="/images/praxiszentrum-logo.png"
           alt="Praxiszentrum im Ring Logo"
@@ -74,7 +74,7 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>E-Mail</FormLabel>
                     <FormControl>
-                      <Input placeholder="admin@example.com" {...field} />
+                      <Input placeholder="g.ortmanns@praxiszentrum-im-ring.ch" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
