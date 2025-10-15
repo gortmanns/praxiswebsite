@@ -159,10 +159,10 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                     <div className="col-span-1 border-2 border-pink-500">
                         {/* Empty left column */}
                     </div>
-                    <div className="col-span-2 border-2 border-yellow-300 flex flex-col justify-between items-center py-4">
+                    <div className="col-span-2 border-2 border-yellow-300 flex flex-col items-center py-4 space-y-12">
                         <h3 className="text-xl font-bold text-primary-foreground text-center">Live Vorschau</h3>
                         
-                        <div className="w-full space-y-8">
+                        <div className="w-full space-y-2">
                              <div className="space-y-2">
                                 <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2">Grösse: {cardData.logoScale || 100}%</div>
                                 <Slider id="logoScale" value={[cardData.logoScale || 100]} onValueChange={(value) => handleSliderChange('logoScale', value)} max={200} step={1} className="w-full" />
