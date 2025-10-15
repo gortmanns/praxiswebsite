@@ -9,7 +9,7 @@ import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionRefe
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, ArrowLeft, ArrowRight, MoveHorizontal, MoveVertical } from 'lucide-react';
+import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, ArrowLeft, ArrowRight } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
@@ -201,7 +201,7 @@ function ReusableCardManager<T extends CardData>({
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
     const partnerEditorOverlay = isEditing ? (
-        <div style={{ zIndex: 10, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} className='pointer-events-none'>
+        <div style={{ zIndex: 10, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
              <div className="grid h-full w-full grid-cols-2">
                  <div className="z-0"></div>
                  <div className="z-30 flex h-full w-full items-center justify-center p-10">
@@ -245,7 +245,6 @@ function ReusableCardManager<T extends CardData>({
             isHiddenCard: isHidden
         });
         
-        // For 4 partners, use a standard 4-column grid for responsiveness
         if (count === 4) {
             return (
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -258,7 +257,6 @@ function ReusableCardManager<T extends CardData>({
             );
         }
         
-        // For 1-3 partners, use an 8-column grid with spacers to center the items
         return (
             <div className="grid grid-cols-8 gap-8">
                 {count === 1 && (
@@ -378,8 +376,8 @@ function ReusableCardManager<T extends CardData>({
                             <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
                                 {Array.from({ length: 4 }).map((_, index) => (
                                     <div key={index} className="flex flex-col items-center space-y-4">
-                                        <Skeleton className="h-[550px] w-full max-w-sm" />
-                                        <Skeleton className="h-24 w-full max-w-sm" />
+                                        <Skeleton className="h-32 w-full max-w-sm" />
+                                        <Skeleton className="h-10 w-full max-w-sm" />
                                     </div>
                                 ))}
                             </div>
@@ -420,7 +418,3 @@ function ReusableCardManager<T extends CardData>({
 }
 
 export default ReusableCardManager;
-
-    
-
-    
