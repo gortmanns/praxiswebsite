@@ -149,36 +149,47 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                     </div>
 
                     <div className="space-y-4 pt-4">
-                        <div>
-                             <div className="text-center text-muted-foreground text-sm flex items-center justify-center gap-2 mb-2">Grösse: {cardData.logoScale || 100}%</div>
-                             <Slider id="logoScale" value={[cardData.logoScale || 100]} onValueChange={(value) => handleSliderChange('logoScale', value)} max={200} step={1} className="w-full" />
-                        </div>
-                         <div>
-                             <Slider id="logoX" value={[cardData.logoX || 0]} onValueChange={(value) => handleSliderChange('logoX', value)} min={-100} max={100} step={1} className="w-full" />
-                            <div className="text-center text-muted-foreground text-sm flex items-center justify-center gap-2 mt-2">
-                                <MoveHorizontal/> <span>Horizontale Position: {cardData.logoX || 0}px</span>
-                            </div>
-                        </div>
-                        <div>
-                             <Slider id="logoY" value={[cardData.logoY || 0]} onValueChange={(value) => handleSliderChange('logoY', value)} min={-100} max={100} step={1} className="w-full" />
-                            <div className="text-center text-muted-foreground text-sm flex items-center justify-center gap-2 mt-2">
-                                <MoveVertical/> <span>Vertikale Position: {cardData.logoY || 0}px</span>
-                            </div>
-                        </div>
-                        <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-full pointer-events-auto mt-4">
-                            <RotateCcw className="mr-2 h-4 w-4" />
-                            Zurücksetzen
-                        </Button>
+                       
                     </div>
 
                 </div>
 
-                {/* Right side: Background area for overlay */}
-                <div className="relative px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[580px]">
-                    <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
-                    {/* This area is now just a placeholder for the overlay to sit on top of */}
-                    <div className="flex-grow flex items-center justify-center">
+                {/* Right side: Visual Live Preview Area */}
+                 <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[580px] grid grid-cols-4 gap-4 border-2 border-blue-500">
+                    <div className="col-span-1 border-2 border-pink-500">
+                        {/* Empty left column */}
                     </div>
+                    <div className="col-span-2 border-2 border-yellow-300 flex flex-col justify-between items-center py-4">
+                        <h3 className="text-xl font-bold text-primary-foreground text-center">Live Vorschau</h3>
+                        
+                        <div className="w-full space-y-8">
+                             <div className="space-y-2">
+                                <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2">Grösse: {cardData.logoScale || 100}%</div>
+                                <Slider id="logoScale" value={[cardData.logoScale || 100]} onValueChange={(value) => handleSliderChange('logoScale', value)} max={200} step={1} className="w-full" />
+                            </div>
+                        </div>
+
+                        <div className="w-full space-y-4">
+                             <div className="space-y-2">
+                                <Slider id="logoX" value={[cardData.logoX || 0]} onValueChange={(value) => handleSliderChange('logoX', value)} min={-100} max={100} step={1} className="w-full" />
+                                <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2">
+                                    <MoveHorizontal/> <span>Horizontale Position: {cardData.logoX || 0}px</span>
+                                </div>
+                            </div>
+                             <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-full pointer-events-auto">
+                                <RotateCcw className="mr-2 h-4 w-4" />
+                                Zurücksetzen
+                            </Button>
+                        </div>
+                    </div>
+                     <div className="col-span-1 border-2 border-purple-500 flex flex-col justify-end items-center py-4">
+                        <div className="w-full space-y-2">
+                            <Slider id="logoY" value={[cardData.logoY || 0]} onValueChange={(value) => handleSliderChange('logoY', value)} min={-100} max={100} step={1} className="w-full" orientation="vertical" />
+                            <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2">
+                                <MoveVertical/> <span>Vertikale Position: {cardData.logoY || 0}px</span>
+                            </div>
+                        </div>
+                     </div>
                 </div>
             </div>
 
@@ -216,5 +227,3 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         </div>
     );
 };
-
-    
