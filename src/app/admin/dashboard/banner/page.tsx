@@ -92,19 +92,13 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
 
     useEffect(() => {
         if (marqueeRef.current) {
+            // The content is duplicated for seamless looping, so we measure half of the scrollWidth.
             const contentWidth = marqueeRef.current.scrollWidth / 2;
-            const speed = 50; 
+            const speed = 50; // pixels per second
             const duration = contentWidth / speed;
-            
-            if (small && color === 'blue') {
-                setAnimationDuration(`${duration}s`);
-            } else if (color === 'red' || color === 'yellow') {
-                 setAnimationDuration('50s');
-            } else {
-                 setAnimationDuration('86s');
-            }
+            setAnimationDuration(`${duration}s`);
         }
-    }, [text, separatorStyle, small, color]);
+    }, [text, separatorStyle, small]);
 
 
     return (

@@ -134,7 +134,8 @@ export function HolidayBanner() {
 
     useEffect(() => {
         if (marqueeRef.current) {
-            const contentWidth = marqueeRef.current.scrollWidth / 2; // We have 2 copies of the content
+            // The content is duplicated for seamless looping, so we measure half of the scrollWidth.
+            const contentWidth = marqueeRef.current.scrollWidth / 2;
             const speed = 50; // pixels per second
             const duration = contentWidth / speed;
             setAnimationDuration(`${duration}s`);
