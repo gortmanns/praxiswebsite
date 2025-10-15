@@ -1,127 +1,97 @@
 /**
- * @file Firestore Security Rules
- * @description This ruleset enforces a strict admin-only access model for all data.
- * All collections (doctors, staff, medicalPartners, otherPartners, holidays) and the banner settings
- * document are only accessible to authenticated administrators. There are no user-specific or public access
- * permissions defined.
+ * @fileoverview Firestore Security Rules for the application.
+ *
+ * Core Philosophy:
+ * This ruleset prioritizes simplicity and security. It assumes all collections
+ * are read-only for unauthenticated users, and write access is denied unless
+ * explicitly granted. Data structure validation is relaxed to allow for rapid prototyping.
  *
  * Data Structure:
- * The Firestore database consists of several top-level collections: `doctors`, `staff`,
- * `medicalPartners`, `otherPartners`, and `holidays`. There is also a single document at
- * `settings/banners` that contains banner configuration.
+ * The Firestore database contains several top-level collections: `doctors`, `staff`,
+ * `medicalPartners`, `otherPartners`, `holidays`, and a special document at `settings/banners`.
  *
  * Key Security Decisions:
- * - No public or user-specific data access is permitted.
- * - Only authenticated users can read or write data. A more sophisticated role system can be added later.
+ * - Unauthenticated users can read all collections.
+ * - Write access is denied to all collections unless explicitly granted (currently none).
+ * - Data validation is minimal during this prototyping phase. Only relational integrity and
+ *   authorization-related fields are validated.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Grants admin-only access to the 'doctors' collection.
-     * @path /databases/{database}/documents/doctors/{doctorId}
-     * @allow (get, list) If the user is authenticated.
-     * @allow (create, update, delete) If the user is authenticated.
-     * @deny (get, list) If the user is not authenticated.
-     * @deny (create, update, delete) If the user is not authenticated.
-     * @principle Enforces admin-only access, requiring authentication for all operations.
+     * @description Allows public read access to doctor profiles. Write access is denied.
+     * @path /doctors/{doctorId}
+     * @allow get, list: Unauthenticated users can read doctor profiles.
+     * @deny create, update, delete: No one can create, update, or delete doctor profiles.
+     * @principle Allows public read access while restricting write access.
      */
     match /doctors/{doctorId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update: if isSignedIn();
-      allow delete: if isSignedIn();
+      allow get, list: if true;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Grants admin-only access to the 'staff' collection.
-     * @path /databases/{database}/documents/staff/{staffId}
-     * @allow (get, list) If the user is authenticated.
-     * @allow (create, update, delete) If the user is authenticated.
-     * @deny (get, list) If the user is not authenticated.
-     * @deny (create, update, delete) If the user is not authenticated.
-     * @principle Enforces admin-only access, requiring authentication for all operations.
+     * @description Allows public read access to staff member profiles. Write access is denied.
+     * @path /staff/{staffMemberId}
+     * @allow get, list: Unauthenticated users can read staff member profiles.
+     * @deny create, update, delete: No one can create, update, or delete staff member profiles.
+     * @principle Allows public read access while restricting write access.
      */
-    match /staff/{staffId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update: if isSignedIn();
-      allow delete: if isSignedIn();
+    match /staff/{staffMemberId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Grants admin-only access to the 'medicalPartners' collection.
-     * @path /databases/{database}/documents/medicalPartners/{partnerId}
-     * @allow (get, list) If the user is authenticated.
-     * @allow (create, update, delete) If the user is authenticated.
-     * @deny (get, list) If the user is not authenticated.
-     * @deny (create, update, delete) If the user is not authenticated.
-     * @principle Enforces admin-only access, requiring authentication for all operations.
+     * @description Allows public read access to medical partner information. Write access is denied.
+     * @path /medicalPartners/{medicalPartnerId}
+     * @allow get, list: Unauthenticated users can read medical partner information.
+     * @deny create, update, delete: No one can create, update, or delete medical partner information.
+     * @principle Allows public read access while restricting write access.
      */
-    match /medicalPartners/{partnerId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update: if isSignedIn();
-      allow delete: if isSignedIn();
+    match /medicalPartners/{medicalPartnerId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Grants admin-only access to the 'otherPartners' collection.
-     * @path /databases/{database}/documents/otherPartners/{partnerId}
-     * @allow (get, list) If the user is authenticated.
-     * @allow (create, update, delete) If the user is authenticated.
-     * @deny (get, list) If the user is not authenticated.
-     * @deny (create, update, delete) If the user is not authenticated.
-     * @principle Enforces admin-only access, requiring authentication for all operations.
+     * @description Allows public read access to other partner information. Write access is denied.
+     * @path /otherPartners/{otherPartnerId}
+     * @allow get, list: Unauthenticated users can read other partner information.
+     * @deny create, update, delete: No one can create, update, or delete other partner information.
+     * @principle Allows public read access while restricting write access.
      */
-    match /otherPartners/{partnerId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update: if isSignedIn();
-      allow delete: if isSignedIn();
+    match /otherPartners/{otherPartnerId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Grants admin-only access to the 'holidays' collection.
-     * @path /databases/{database}/documents/holidays/{holidayId}
-     * @allow (get, list) If the user is authenticated.
-     * @allow (create, update, delete) If the user is authenticated.
-     * @deny (get, list) If the user is not authenticated.
-     * @deny (create, update, delete) If the user is not authenticated.
-     * @principle Enforces admin-only access, requiring authentication for all operations.
+     * @description Allows public read access to holiday information. Write access is denied.
+     * @path /holidays/{holidayId}
+     * @allow get, list: Unauthenticated users can read holiday information.
+     * @deny create, update, delete: No one can create, update, or delete holiday information.
+     * @principle Allows public read access while restricting write access.
      */
     match /holidays/{holidayId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update: if isSignedIn();
-      allow delete: if isSignedIn();
+      allow get, list: if true;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Grants admin-only access to the 'settings/banners' document.
-     * @path /databases/{database}/documents/settings/banners
-     * @allow (get) If the user is authenticated.
-     * @allow (create, update, delete) If the user is authenticated.
-     * @deny (get) If the user is not authenticated.
-     * @deny (create, update, delete) If the user is not authenticated.
-     * @principle Enforces admin-only access, requiring authentication for all operations.
+     * @description Allows public read access to banner settings. Write access is denied.
+     * @path /settings/banners
+     * @allow get: Unauthenticated users can read banner settings.
+     * @deny list: Listing is not allowed on single documents.
+     * @deny create, update, delete: No one can create, update, or delete banner settings.
+     * @principle Allows public read access while restricting write access.
      */
     match /settings/banners {
-      allow get: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update: if isSignedIn();
-      allow delete: if isSignedIn();
+      allow get: if true;
+      allow list: if false;
+      allow create, update, delete: if false;
     }
-  }
-
-  // Helper function to determine if a user is signed in.
-  function isSignedIn() {
-    return request.auth != null;
   }
 }
