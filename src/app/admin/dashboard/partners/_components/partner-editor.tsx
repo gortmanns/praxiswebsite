@@ -1,7 +1,8 @@
 
 'use client';
 
-import React, { useState, useRef, type ReactNode } from 'react';
+import React from 'react';
+import { useState, useRef, type ReactNode } from 'react';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
@@ -170,10 +171,9 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                          {children}
                     </div>
 
-                    <div className="space-y-4 pt-4 mt-auto border-t border-primary-foreground/20">
-                         <div className="pointer-events-auto w-full space-y-2">
-                             <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2"><MoveHorizontal/> Horizontale Position: {cardData.logoX || 0}px</div>
-                             <Slider
+                    <div className="space-y-2 pt-4 mt-auto border-t border-primary-foreground/20">
+                         <div className="pointer-events-auto w-full">
+                            <Slider
                                 id="logoX"
                                 value={[cardData.logoX || 0]}
                                 onValueChange={(value) => handleSliderChange('logoX', value)}
@@ -182,6 +182,9 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                                 step={1}
                                 className="[&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20"
                             />
+                             <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2 mt-2">
+                                <MoveHorizontal/> Horizontale Position: {cardData.logoX || 0}px
+                             </div>
                         </div>
                         <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-full pointer-events-auto">
                             <RotateCcw className="mr-2 h-4 w-4" />
@@ -190,6 +193,40 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                     </div>
                 </div>
             </div>
+
+            <div className="pointer-events-none absolute inset-0 z-20">
+                <div className="grid h-full w-full grid-cols-8 items-center gap-x-4">
+                    <div className="col-start-8 col-span-1 flex h-full flex-col items-center justify-center">
+                        <div className="pointer-events-auto h-64 w-full">
+                            <div className="flex h-full flex-row items-center justify-center gap-1">
+                                <div className="h-full w-auto">
+                                    <Slider
+                                        id="logoY"
+                                        value={[cardData.logoY || 0]}
+                                        onValueChange={(value) => handleSliderChange('logoY', value)}
+                                        min={-100}
+                                        max={100}
+                                        step={1}
+                                        orientation="vertical"
+                                        className="[&>span:first-child]:bg-primary-foreground/50 [&_[role=slider]]:bg-primary-foreground [&_[role=slider]]:w-5 [&_[role=slider]]:h-5"
+                                    />
+                                </div>
+                                <div className="text-center text-xs text-white -rotate-90">
+                                    <div className="flex flex-col items-center justify-center h-full">
+                                        <div className="flex items-center gap-1">
+                                            <MoveVertical className="w-3 h-3 rotate-90"/>
+                                            <span>Vertikal</span>
+                                        </div>
+                                        <span>Position</span>
+                                        <span>{cardData.logoY || 0}px</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
 
@@ -223,5 +260,3 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         </div>
     );
 };
-
-    
