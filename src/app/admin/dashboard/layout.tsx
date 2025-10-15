@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Home, Calendar, User as UserIcon, LogOut, Users, Settings, Handshake, Palette, CreditCard } from 'lucide-react';
+import { Home, Calendar, LogOut, Users, Settings, Handshake, Palette, CreditCard } from 'lucide-react';
 import {
   SidebarProvider,
   Sidebar,
