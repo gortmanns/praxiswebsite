@@ -1,136 +1,114 @@
 /**
- * @file Firestore Security Rules
- * @description This ruleset enforces a strict owner-only access model for most collections,
- *              allowing only authenticated users to read and write their own data.
+ * @file Firebase Security Rules for Firestore.
  *
- * Data Structure:
- * - Top-level collections: /doctors, /staff, /medicalPartners, /otherPartners, /holidays, /settings/banners
+ * @core_philosophy This ruleset secures access to the Firestore database by allowing public read access to most collections
+ *   but restricting write access to authenticated users only.  This is suitable for a public-facing site where content
+ *   is managed through a separate admin interface.
  *
- * Key Security Decisions:
- * - Public Read Access: The `doctors`, `staff`, `medicalPartners`, and `otherPartners` collections allow public read access (get, list) to facilitate displaying content without authentication.
- * - Owner-Only Writes: Writes to these collections (`create`, `update`, `delete`) are restricted to authenticated users. It is REQUIRED that each document in these collections contains an ownership field (e.g., `ownerId`, `authorId`) that matches the authenticated user's UID.
- * - Denormalization: To avoid costly `get()` calls in the rules, each document should contain all the data needed for authorization.
- * - Settings document: The document at `/settings/banners` is protected from public modification.
+ * @data_structure The database consists of several top-level collections: `doctors`, `staff`, `medicalPartners`,
+ *   `otherPartners`, `holidays`, and a single document `settings/banners`. All collections are treated as public-readable.
+ *
+ * @key_security_decisions
+ *   - Public read access for all collections except `/settings/banners`.
+ *   - Write access restricted to authenticated users. No role-based access control is implemented in this prototype.
+ *   - No data validation beyond checking that `request.auth` is not null for write operations.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    /**
-     * @description Controls access to the 'doctors' collection. Allows public reads and owner-only writes.
-     * @path /databases/{database}/documents/doctors/{doctorId}
-     * @allow (get, list) Public read access.
-     * @allow (create) Authenticated user with matching 'authorId' in the request.
-     * @deny (create) Unauthenticated user.
-     * @deny (create) Authenticated user with mismatched 'authorId'.
-     * @allow (update, delete) Authenticated user who is the owner ('authorId' matches).
-     * @deny (update, delete) Authenticated user who is not the owner.
-     * @principle Allows public reading of doctor profiles, but restricts modifications to authorized users (owners).
-     */
-    match /doctors/{doctorId} {
-      allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.id == request.auth.uid;
-      allow update, delete: if isSignedIn() && isExistingOwner(/databases/$(database)/documents/doctors/$(doctorId));
-    }
-
-    /**
-     * @description Controls access to the 'staff' collection. Allows public reads and owner-only writes.
-     * @path /databases/{database}/documents/staff/{staffId}
-     * @allow (get, list) Public read access.
-     * @allow (create) Authenticated user with matching 'authorId' in the request.
-     * @deny (create) Unauthenticated user.
-     * @deny (create) Authenticated user with mismatched 'authorId'.
-     * @allow (update, delete) Authenticated user who is the owner ('authorId' matches).
-     * @deny (update, delete) Authenticated user who is not the owner.
-     * @principle Allows public reading of staff profiles, but restricts modifications to authorized users (owners).
-     */
-    match /staff/{staffId} {
-      allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.id == request.auth.uid;
-      allow update, delete: if isSignedIn() && isExistingOwner(/databases/$(database)/documents/staff/$(staffId));
-    }
-
-    /**
-     * @description Controls access to the 'medicalPartners' collection. Allows public reads and owner-only writes.
-     * @path /databases/{database}/documents/medicalPartners/{medicalPartnerId}
-     * @allow (get, list) Public read access.
-     * @allow (create) Authenticated user with matching 'authorId' in the request.
-     * @deny (create) Unauthenticated user.
-     * @deny (create) Authenticated user with mismatched 'authorId'.
-     * @allow (update, delete) Authenticated user who is the owner ('authorId' matches).
-     * @deny (update, delete) Authenticated user who is not the owner.
-     * @principle Allows public reading of medical partner information, but restricts modifications to authorized users (owners).
-     */
-    match /medicalPartners/{medicalPartnerId} {
-      allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.id == request.auth.uid;
-      allow update, delete: if isSignedIn() && isExistingOwner(/databases/$(database)/documents/medicalPartners/$(medicalPartnerId));
-    }
-
-    /**
-     * @description Controls access to the 'otherPartners' collection. Allows public reads and owner-only writes.
-     * @path /databases/{database}/documents/otherPartners/{otherPartnerId}
-     * @allow (get, list) Public read access.
-     * @allow (create) Authenticated user with matching 'authorId' in the request.
-     * @deny (create) Unauthenticated user.
-     * @deny (create) Authenticated user with mismatched 'authorId'.
-     * @allow (update, delete) Authenticated user who is the owner ('authorId' matches).
-     * @deny (update, delete) Authenticated user who is not the owner.
-     * @principle Allows public reading of other partner information, but restricts modifications to authorized users (owners).
-     */
-    match /otherPartners/{otherPartnerId} {
-      allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.id == request.auth.uid;
-      allow update, delete: if isSignedIn() && isExistingOwner(/databases/$(database)/documents/otherPartners/$(otherPartnerId));
-    }
-
-    /**
-     * @description Controls access to the 'holidays' collection. Allows public reads and owner-only writes.
-     * @path /databases/{database}/documents/holidays/{holidayId}
-     * @allow (get, list) Public read access.
-     * @allow (create) Authenticated user with matching 'authorId' in the request.
-     * @deny (create) Unauthenticated user.
-     * @deny (create) Authenticated user with mismatched 'authorId'.
-     * @allow (update, delete) Authenticated user who is the owner ('authorId' matches).
-     * @deny (update, delete) Authenticated user who is not the owner.
-     * @principle Allows public reading of holiday information, but restricts modifications to authorized users (owners).
-     */
-    match /holidays/{holidayId} {
-      allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.id == request.auth.uid;
-      allow update, delete: if isSignedIn() && isExistingOwner(/databases/$(database)/documents/holidays/$(holidayId));
-    }
-
-    /**
-     * @description Controls access to the 'banners' document under the 'settings' collection.
-     * @path /databases/{database}/documents/settings/banners
-     * @allow (get) Public read access.
-     * @deny (list) Listing is not allowed on single documents.
-     * @allow (create) Authenticated user with matching 'authorId' in the request.
-     * @deny (create) Unauthenticated user.
-     * @deny (create) Authenticated user with mismatched 'authorId'.
-     * @allow (update, delete) Authenticated user who is the owner ('authorId' matches).
-     * @deny (update, delete) Authenticated user who is not the owner.
-     * @principle Allows public reading of banner settings, but restricts modifications to authorized users (owners).
-     */
-    match /settings/banners {
-        allow get: if true;
-        allow list: if false;
-        allow create: if isSignedIn() && request.resource.data.id == request.auth.uid;
-        allow update, delete: if isSignedIn() && isExistingOwner(/databases/$(database)/documents/settings/banners);
-    }
-
-
     function isSignedIn() {
       return request.auth != null;
     }
 
-    function isOwner(resourceId) {
-      return request.auth.uid == get(resourceId).data.id;
+    /**
+     * @description Allows anyone to read doctor profiles, but only authenticated users to create, update, or delete them.
+     * @path /doctors/{doctorId}
+     * @allow (get, list): Anyone can read the data.
+     * @allow (create, update, delete): Only authenticated users can modify the data.
+     * @deny (create, update, delete): Requests without authentication will be rejected.
+     * @principle Public read, authenticated-user-only writes.
+     */
+    match /doctors/{doctorId} {
+      allow get, list: if true;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
 
-    function isExistingOwner(resourceId) {
-        return isSignedIn() && exists(resourceId) && isOwner(resourceId);
+    /**
+     * @description Allows anyone to read staff member profiles, but only authenticated users to create, update, or delete them.
+     * @path /staff/{staffId}
+     * @allow (get, list): Anyone can read the data.
+     * @allow (create, update, delete): Only authenticated users can modify the data.
+     * @deny (create, update, delete): Requests without authentication will be rejected.
+     * @principle Public read, authenticated-user-only writes.
+     */
+    match /staff/{staffId} {
+      allow get, list: if true;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
+    }
+
+    /**
+     * @description Allows anyone to read medical partner information, but only authenticated users to create, update, or delete them.
+     * @path /medicalPartners/{partnerId}
+     * @allow (get, list): Anyone can read the data.
+     * @allow (create, update, delete): Only authenticated users can modify the data.
+     * @deny (create, update, delete): Requests without authentication will be rejected.
+     * @principle Public read, authenticated-user-only writes.
+     */
+    match /medicalPartners/{partnerId} {
+      allow get, list: if true;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
+    }
+
+    /**
+     * @description Allows anyone to read other partner information, but only authenticated users to create, update, or delete them.
+     * @path /otherPartners/{partnerId}
+     * @allow (get, list): Anyone can read the data.
+     * @allow (create, update, delete): Only authenticated users can modify the data.
+     * @deny (create, update, delete): Requests without authentication will be rejected.
+     * @principle Public read, authenticated-user-only writes.
+     */
+    match /otherPartners/{partnerId} {
+      allow get, list: if true;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
+    }
+
+    /**
+     * @description Allows anyone to read holiday information, but only authenticated users to create, update, or delete them.
+     * @path /holidays/{holidayId}
+     * @allow (get, list): Anyone can read the data.
+     * @allow (create, update, delete): Only authenticated users can modify the data.
+     * @deny (create, update, delete): Requests without authentication will be rejected.
+     * @principle Public read, authenticated-user-only writes.
+     */
+    match /holidays/{holidayId} {
+        allow get, list: if true;
+        allow create: if isSignedIn();
+        allow update: if isSignedIn() && resource != null;
+        allow delete: if isSignedIn() && resource != null;
+    }
+
+    /**
+     * @description Restricts access to the banner settings document to authenticated users only.
+     * @path /settings/banners
+     * @allow (get): Only authenticated users can read the data.
+     * @allow (create, update, delete): Only authenticated users can modify the data.
+     * @deny (get, create, update, delete): Requests without authentication will be rejected.
+     * @principle Requires authentication for all operations.
+     */
+    match /settings/banners {
+        allow get: if isSignedIn();
+        allow create: if isSignedIn();
+        allow update: if isSignedIn() && resource != null;
+        allow delete: if isSignedIn() && resource != null;
     }
   }
 }
