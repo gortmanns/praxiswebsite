@@ -202,13 +202,15 @@ function ReusableCardManager<T extends CardData>({
 
     const partnerEditorOverlay = isEditing ? (
         <div className="pointer-events-auto absolute inset-0 z-20 bg-green-500/30">
-            <div className="grid h-full w-full grid-cols-2 border-2 border-blue-500">
-                 <div className="z-0 border-2 border-yellow-400"></div>
-                 <div className="relative flex h-full w-full items-center justify-center p-10 border-2 border-red-500">
+             <div className="grid h-full w-full grid-cols-8 gap-4 p-4 border-2 border-blue-500">
+                 <div className="z-0 border-2 border-yellow-400 col-span-4"></div>
+                 <div className="z-0 border-2 border-purple-400 col-span-1"></div>
+                 <div className="relative flex h-full w-full items-center justify-center border-2 border-red-500 col-span-2">
                      <div className="w-full">
                         <DisplayCardComponent {...editorCardState} />
                     </div>
                 </div>
+                <div className="z-0 border-2 border-orange-400 col-span-1"></div>
             </div>
         </div>
     ) : null;
@@ -246,27 +248,25 @@ function ReusableCardManager<T extends CardData>({
         
         const count = partners.length;
 
-        const getGridStyle = (count: number, index: number, total: number) => {
+        const getGridStyle = (index: number, total: number) => {
             let colStart = 0;
-            const isOdd = total % 2 !== 0;
-
-            if (total === 1) { // 1 card (1-2-2-2-1 structure, centered)
-                return { gridColumn: '4 / span 2' };
+            if (total === 4) { // 2-2-2-2
+                colStart = index * 2 + 1;
+            } else if (total === 3) { // 1-2-2-2-1
+                colStart = index * 2 + 2;
+            } else if (total === 2) { // 2-2-2-2 centered
+                colStart = index * 2 + 3;
+            } else if (total === 1) { // 1-2-2-2-1 centered
+                colStart = 4;
             }
-            if (total === 2) { // 2 cards (2-2-2-2 structure, centered)
-                return { gridColumnStart: index * 2 + 3 };
-            }
-            if (total === 3) { // 3 cards (1-2-2-2-1 structure)
-                return { gridColumnStart: index * 2 + 2 };
-            }
-            // 4 cards (2-2-2-2 structure)
-            return { gridColumnStart: index * 2 + 1 };
+    
+            return { gridColumnStart: colStart };
         };
 
         return (
             <div className="grid grid-cols-8 gap-8">
                 {partners.map((partner, index) => (
-                    <div key={partner.id} style={getGridStyle(count, index, partners.length)} className="col-span-2 flex w-full items-center justify-center">
+                    <div key={partner.id} style={getGridStyle(index, partners.length)} className="col-span-2 flex w-full items-center justify-center">
                         <AdminPartnerCard 
                             partner={partner} 
                             isFirst={index === 0} 
@@ -302,7 +302,7 @@ function ReusableCardManager<T extends CardData>({
         const hiddenItems = validDbData.filter(i => i.hidden);
     
         const renderGrid = (items: T[], title: string, description: string, isHiddenGrid: boolean) => {
-            if (items.length === 0 && !(title === 'Aktive Karten' && isCreatingNew)) return null;
+            if (items.length === 0) return null;
 
             return (
                 <div className="space-y-4 mt-12">
@@ -395,7 +395,7 @@ function ReusableCardManager<T extends CardData>({
                                 </AlertDescription>
                             </Alert>
                         )}
-                        {!isLoadingData && renderCardGroups()}
+                        {renderCardGroups()}
                     </div>
                 </CardContent>
             </Card>
