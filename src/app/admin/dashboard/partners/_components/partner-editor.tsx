@@ -211,10 +211,10 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                                         className="[&>span:first-child]:bg-primary-foreground/50 [&_[role=slider]]:bg-primary-foreground [&_[role=slider]]:w-5 [&_[role=slider]]:h-5"
                                     />
                                 </div>
-                                <div className="text-center text-xs text-white -rotate-90">
+                                <div className="text-center text-xs text-white rotate-90">
                                     <div className="flex flex-col items-center justify-center h-full">
                                         <div className="flex items-center gap-1">
-                                            <MoveVertical className="w-3 h-3 rotate-90"/>
+                                            <MoveVertical className="w-3 h-3"/>
                                             <span>Vertikal</span>
                                         </div>
                                         <span>Position</span>
