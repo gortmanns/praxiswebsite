@@ -201,11 +201,11 @@ function ReusableCardManager<T extends CardData>({
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
     const partnerEditorOverlay = isEditing ? (
-        <div className="absolute inset-0 z-20 bg-green-500/30 border-4 border-green-700">
+        <div className="absolute inset-0 z-20 bg-green-500/30">
             <div className="grid h-full w-full grid-cols-2 border-2 border-blue-500">
                  <div className="z-0 border-2 border-yellow-400"></div>
                  <div className="relative flex h-full w-full items-center justify-center p-10 border-2 border-red-500">
-                     <div className="w-full max-w-[250px]">
+                     <div className="w-full">
                         <DisplayCardComponent {...editorCardState} />
                     </div>
                 </div>
@@ -236,28 +236,41 @@ function ReusableCardManager<T extends CardData>({
     
     const RowGrid: React.FC<{ partners: T[], isHidden?: boolean }> = ({ partners, isHidden }) => {
         if (!partners || partners.length === 0) return null;
-        const count = partners.length;
     
-        const getGridStyle = () => {
-            if (count === 1) return { gridTemplateColumns: '1fr 2fr 1fr' }; // Center the single item
-            if (count === 2) return { gridTemplateColumns: 'repeat(2, 1fr)' }; // Two items
-            if (count === 3) return { gridTemplateColumns: 'repeat(3, 1fr)' }; // Three items
-            return { gridTemplateColumns: 'repeat(4, 1fr)' }; // Four items
+        const getGridStyle = (count: number) => {
+            const styles: React.CSSProperties = {
+                display: 'grid',
+                gridTemplateColumns: 'repeat(4, 1fr)',
+                gap: '2rem',
+                justifyItems: 'center',
+            };
+    
+            if (count < 4) {
+                styles.gridTemplateColumns = `repeat(${count}, 1fr)`;
+                styles.width = `${count * 25}%`;
+                styles.margin = '0 auto'; 
+            }
+            
+            return styles;
         };
-    
+
+        const count = partners.length;
+        const gridStyle = getGridStyle(count);
+
         return (
-            <div className="grid w-full gap-8" style={getGridStyle()}>
-                {count === 1 && <div />} 
-                {partners.map((partner, index) => (
-                    <div key={partner.id} className="flex items-center justify-center">
-                         <AdminPartnerCard 
-                            partner={partner} 
-                            isFirst={index === 0} 
-                            isLast={index === partners.length - 1} 
-                            isHiddenCard={isHidden} 
-                        />
-                    </div>
-                ))}
+            <div className="w-full">
+                <div style={gridStyle}>
+                    {partners.map((partner, index) => (
+                        <div key={partner.id} className="w-full">
+                            <AdminPartnerCard 
+                                partner={partner} 
+                                isFirst={index === 0} 
+                                isLast={index === partners.length - 1} 
+                                isHiddenCard={isHidden} 
+                            />
+                        </div>
+                    ))}
+                </div>
             </div>
         );
     };
@@ -372,9 +385,7 @@ function ReusableCardManager<T extends CardData>({
                                 </AlertDescription>
                             </Alert>
                         )}
-                         {!isLoadingData && !isEditing && (
-                           renderCardGroups()
-                        )}
+                         {!isLoadingData && renderCardGroups()}
                     </div>
                 </CardContent>
             </Card>
