@@ -19,6 +19,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 const bannerClasses = {
     yellow: 'bg-yellow-400 border-yellow-500 text-yellow-900',
@@ -145,6 +147,7 @@ const PlaceholderAlert = () => (
 );
 
 function BannerManager() {
+    const firestore = useFirestore();
     const [bannerSettings, setBannerSettings] = useState<BannerSettings>(initialBannerSettings);
     const [isEditing, setIsEditing] = useState(false);
     const [currentEditorBanner, setCurrentEditorBanner] = useState<Partial<InfoBanner>>(initialInfoBannerState);
@@ -152,31 +155,41 @@ function BannerManager() {
     const [notification, setNotification] = useState<TimedAlertProps | null>(null);
     const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; bannerId?: string; bannerText?: string }>({ isOpen: false });
 
-    // Placeholder data
-    const infoBanners: InfoBanner[] = [];
-    const previewTexts = {
-        yellow: "Vorschau des gelben Banners...",
-        red: "Vorschau des roten Banners...",
+    const settingsDocRef = useMemoFirebase(() => (firestore ? doc(firestore, 'settings', 'banners') : null), [firestore]);
+    const { data: dbSettings, isLoading: isLoadingSettings, error: dbSettingsError } = useDoc<BannerSettings>(settingsDocRef);
+
+    useEffect(() => {
+        if (dbSettings) {
+            setBannerSettings(prev => ({...prev, ...dbSettings}));
+        }
+    }, [dbSettings]);
+
+
+    const handleBannerSettingsChange = (field: keyof BannerSettings, value: any) => {
+        setBannerSettings(prev => ({ ...prev, [field]: value }));
+    };
+    
+    const handleSaveBannerSettings = async () => {
+        if (!firestore) {
+            setNotification({ variant: 'destructive', title: 'Fehler', description: 'Datenbankverbindung nicht verfügbar.' });
+            return;
+        }
+        if (!settingsDocRef) return;
+
+        try {
+            await setDoc(settingsDocRef, bannerSettings, { merge: true });
+            setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Banner-Einstellungen gespeichert.' });
+        } catch (e: any) {
+            console.error("Error saving banner settings: ", e);
+            setNotification({ variant: 'destructive', title: 'Fehler', description: `Einstellungen konnten nicht gespeichert werden: ${e.message}` });
+        }
     };
 
-    const handleDisabledClick = () => {
-        setNotification({ variant: 'warning', title: 'Funktion deaktiviert', description: 'Die Datenbankverbindung wurde entfernt. Speichern und Löschen sind deaktiviert.' });
-    };
 
-    const handleBannerSettingsChange = (field: keyof BannerSettings, value: any) => setBannerSettings(prev => ({ ...prev, [field]: value }));
     const handleInfoBannerInputChange = (field: keyof InfoBanner, value: any) => setCurrentEditorBanner(prev => ({ ...prev, [field]: value }));
     
     const handleNewInfoBanner = () => {
         setCurrentEditorBanner({ ...initialInfoBannerState });
-        setIsEditing(true);
-    };
-
-    const handleEditInfoBanner = (banner: InfoBanner) => {
-        setCurrentEditorBanner({
-            ...banner,
-            start: banner.start,
-            end: banner.end
-        });
         setIsEditing(true);
     };
     
@@ -184,6 +197,26 @@ function BannerManager() {
         setIsEditing(false);
         setCurrentEditorBanner(initialInfoBannerState);
     };
+
+    const handleDisabledClick = () => {
+        setNotification({ variant: 'warning', title: 'Funktion deaktiviert', description: 'Diese Funktion ist in dieser Version noch nicht implementiert.' });
+    };
+
+    const previewYellowText = useMemo(() => {
+        return bannerSettings.yellowBannerText
+            .replace('{name}', 'Beispielferien')
+            .replace('{start}', format(new Date(), 'd. MMM yyyy', { locale: de }))
+            .replace('{ende}', format(addDays(new Date(), 7), 'd. MMM yyyy', { locale: de }));
+    }, [bannerSettings.yellowBannerText]);
+
+    const previewRedText = useMemo(() => {
+        return bannerSettings.redBannerText
+            .replace('{name}', 'Beispielferien')
+            .replace('{start}', format(new Date(), 'd. MMM yyyy', { locale: de }))
+            .replace('{ende}', format(addDays(new Date(), 7), 'd. MMM yyyy', { locale: de }))
+            .replace('{ende+1}', format(addDays(new Date(), 8), 'd. MMM yyyy', { locale: de }));
+    }, [bannerSettings.redBannerText]);
+
 
     return (
         <>
@@ -248,7 +281,7 @@ function BannerManager() {
                                 <TableBody>
                                     <TableRow>
                                         <TableCell colSpan={3} className="text-center text-muted-foreground py-8">
-                                            Datenbankverbindung entfernt. Banner können nicht angezeigt werden.
+                                            Die Logik für blaue Info-Banner ist in dieser Version nicht implementiert.
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>
@@ -262,6 +295,8 @@ function BannerManager() {
                             <p className="text-muted-foreground text-sm">Wird eine bestimmte Anzahl Tage vor den Praxisferien angezeigt.</p>
                         </div>
                         <div className="space-y-4 bg-background p-6 rounded-b-lg">
+                           {isLoadingSettings ? <Skeleton className="h-48 w-full" /> : (
+                           <>
                            <div className="flex flex-col md:flex-row items-start gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="preHolidayDays">Wie viele Tage vorher anzeigen?</Label>
@@ -295,12 +330,14 @@ function BannerManager() {
                                 <div className="flex-1 min-w-[300px]">
                                     <PlaceholderAlert />
                                 </div>
-                                <Button onClick={handleDisabledClick}>
+                                <Button onClick={handleSaveBannerSettings}>
                                     <Save className="mr-2 h-4 w-4" />
                                     Speichern
                                 </Button>
                             </div>
-                            <BannerPreview text={previewTexts.yellow} color="yellow" separatorStyle={bannerSettings.yellowBannerSeparatorStyle} />
+                            <BannerPreview text={previewYellowText} color="yellow" separatorStyle={bannerSettings.yellowBannerSeparatorStyle} />
+                            </>
+                           )}
                         </div>
                     </div>
 
@@ -310,6 +347,8 @@ function BannerManager() {
                             <p className="text-muted-foreground text-sm">Wird während der Praxisferien angezeigt.</p>
                         </div>
                         <div className="space-y-4 bg-background p-6 rounded-b-lg">
+                            {isLoadingSettings ? <Skeleton className="h-48 w-full" /> : (
+                            <>
                             <div className="space-y-2">
                                 <Label htmlFor="redBannerText">Bannertext</Label>
                                 <Textarea id="redBannerText" value={bannerSettings.redBannerText} onChange={(e) => handleBannerSettingsChange('redBannerText', e.target.value)} rows={4} />
@@ -329,12 +368,14 @@ function BannerManager() {
                                 <div className="flex-1 min-w-[300px]">
                                     <PlaceholderAlert />
                                 </div>
-                                <Button onClick={handleDisabledClick}>
+                                <Button onClick={handleSaveBannerSettings}>
                                     <Save className="mr-2 h-4 w-4" />
                                     Speichern
                                 </Button>
                             </div>
-                            <BannerPreview text={previewTexts.red} color="red" separatorStyle={bannerSettings.redBannerSeparatorStyle} />
+                            <BannerPreview text={previewRedText} color="red" separatorStyle={bannerSettings.redBannerSeparatorStyle} />
+                            </>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -368,3 +409,5 @@ function BannerManager() {
 export default function BannerPage() {
     return <BannerManager />;
 }
+
+    
