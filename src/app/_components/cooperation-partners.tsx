@@ -39,58 +39,15 @@ const PartnerLink: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
 );
 
 
-const RowGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
-    const count = partners.length;
-    if (count === 0) return null;
-    
-    if (count === 4) {
-        return (
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                {partners.map(partner => (
-                    <div key={partner.id}>
-                        <PartnerLink partner={partner} />
-                    </div>
-                ))}
-            </div>
-        );
-    }
-    
-    return (
-        <div className="grid grid-cols-8 gap-8">
-            {count === 1 && (
-                <div className="col-start-3 col-span-4">
-                    <PartnerLink partner={partners[0]} />
-                </div>
-            )}
-            {count === 2 && (
-                <>
-                    <div className="col-start-2 col-span-3"><PartnerLink partner={partners[0]} /></div>
-                    <div className="col-span-3"><PartnerLink partner={partners[1]} /></div>
-                </>
-            )}
-            {count === 3 && (
-                <>
-                    <div className="col-start-1 col-span-2"><PartnerLink partner={partners[0]} /></div>
-                    <div className="col-start-4 col-span-2"><PartnerLink partner={partners[1]} /></div>
-                    <div className="col-start-7 col-span-2"><PartnerLink partner={partners[2]} /></div>
-                </>
-            )}
-        </div>
-    );
-};
-
 const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
     if (!partners || partners.length === 0) return null;
 
-    const chunkedPartners = [];
-    for (let i = 0; i < partners.length; i += 4) {
-        chunkedPartners.push(partners.slice(i, i + 4));
-    }
-
     return (
-        <div className="space-y-8">
-            {chunkedPartners.map((rowPartners, index) => (
-                <RowGrid key={index} partners={rowPartners} />
+        <div className="flex flex-wrap justify-center gap-8">
+            {partners.map(partner => (
+                <div key={partner.id} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 max-w-[280px] flex-shrink-0">
+                    <PartnerLink partner={partner} />
+                </div>
             ))}
         </div>
     );
