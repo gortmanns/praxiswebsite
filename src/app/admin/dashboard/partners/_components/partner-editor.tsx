@@ -166,7 +166,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                     <div className="w-full max-w-[250px] mx-auto">
                         <Slider id="logoX" value={[cardData.logoX || 0]} onValueChange={(value) => handleSliderChange('logoX', value)} min={-100} max={100} step={1} className="w-full [&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20" />
                         <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2 mt-2">
-                             <span>Horizontale Position: {cardData.logoX || 0}px</span>
+                             <MoveHorizontal/> <span>Horizontale Position: {cardData.logoX || 0}px</span>
                         </div>
                     </div>
 

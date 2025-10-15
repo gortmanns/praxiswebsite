@@ -203,7 +203,7 @@ function MedicalPartnersPageManager<T extends CardData>({
 
     const partnerEditorOverlay = isEditing ? (
         <div className="pointer-events-none absolute inset-0 z-30 border-2 border-blue-500">
-            <div className="grid h-full w-full grid-cols-12 items-center gap-x-2 border-2 border-red-500">
+            <div className="grid h-full w-full grid-cols-12 items-center gap-x-2">
                 <div className="col-start-6 col-span-6 flex flex-col items-center justify-center gap-2">
                     <div className="w-full max-w-[250px] h-32">
                         <DisplayCardComponent {...editorCardState} />
