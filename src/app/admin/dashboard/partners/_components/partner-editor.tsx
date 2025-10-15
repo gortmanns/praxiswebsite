@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useRef, type ReactNode } from 'react';
@@ -154,7 +155,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                     <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
                     
                      <div className="pointer-events-auto w-full space-y-2 mb-4">
-                        <div className="text-center text-primary-foreground text-sm">Grösse: {cardData.logoScale || 100}%</div>
+                         <div className="text-center text-primary-foreground text-sm">Grösse: {cardData.logoScale || 100}%</div>
                         <Slider
                             id="logoScale"
                             value={[cardData.logoScale || 100]}
@@ -169,10 +170,10 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                          {children}
                     </div>
 
-                    <div className="space-y-4 pt-4 mt-4 border-t border-primary-foreground/20">
+                    <div className="space-y-4 pt-4 mt-auto border-t border-primary-foreground/20">
                          <div className="pointer-events-auto w-full space-y-2">
                              <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2"><MoveHorizontal/> Horizontale Position: {cardData.logoX || 0}px</div>
-                            <Slider
+                             <Slider
                                 id="logoX"
                                 value={[cardData.logoX || 0]}
                                 onValueChange={(value) => handleSliderChange('logoX', value)}
@@ -222,3 +223,5 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         </div>
     );
 };
+
+    
