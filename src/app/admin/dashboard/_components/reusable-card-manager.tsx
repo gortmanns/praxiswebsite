@@ -9,7 +9,7 @@ import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionRefe
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, ArrowLeft, ArrowRight, MoveHorizontal, MoveVertical } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
@@ -201,7 +201,7 @@ function ReusableCardManager<T extends CardData>({
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
     const partnerEditorOverlay = isEditing ? (
-        <div style={{ zIndex: 10, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
+        <div className="w-full h-full" style={{ border: '2px solid blue', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 10, pointerEvents: 'none' }}>
              <div className="grid h-full w-full grid-cols-2">
                  <div className="z-0"></div>
                  <div className="z-30 flex h-full w-full items-center justify-center p-10">
@@ -305,7 +305,7 @@ function ReusableCardManager<T extends CardData>({
         const renderGrid = (items: T[], title: string, description: string, isHiddenGrid: boolean) => {
             if (items.length === 0) return null;
             return (
-                <div className="space-y-4 mt-12">
+                <div style={{border: '1px solid red'}} className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
                     {/* WICHTIGER HINWEIS: Es ist untersagt, diesen Codeabschnitt zur Darstellung der aktiven Karten ohne ausdrückliche vorherige Rücksprache zu ändern. */}

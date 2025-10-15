@@ -152,14 +152,14 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 </div>
 
                 {/* Right side: Visual Live Preview Area */}
-                 <div className="relative px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[580px]">
+                <div className="relative px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[580px]">
                     <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
                     
                     <div className="flex-grow flex items-center justify-center">
                          {children}
                     </div>
                     
-                    <div className="w-full max-w-[250px] mx-auto space-y-4">
+                     <div className="w-full max-w-[250px] mx-auto space-y-4">
                         <div>
                             <div className="text-center text-primary-foreground text-sm">Grösse: {cardData.logoScale || 100}%</div>
                             <Slider id="logoScale" value={[cardData.logoScale || 100]} onValueChange={(value) => handleSliderChange('logoScale', value)} max={200} step={1} className="w-full [&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20" />
@@ -185,9 +185,6 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                     </Button>
                 </div>
             </div>
-
-            {/* This is the overlay for sliders and card preview, controlled by the parent component's `children` prop */}
-            
 
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
 
@@ -220,6 +217,4 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
             )}
         </div>
     );
-    
-
-    
+};
