@@ -20,6 +20,7 @@ import { LanguageFlags } from '@/app/admin/dashboard/team/doctors/_components/la
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { StaffCard } from './staff-card';
 
 
 export interface StaffMember {
@@ -133,7 +134,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             <div className="group relative w-full overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
                                 <div className="flex h-full flex-col p-6">
                                     <button onClick={() => setDialogState({ type: 'imageSource', data: {} })} className={cn("relative w-full overflow-hidden rounded-md aspect-[2/3]")}>
-                                        {cardData.imageUrl && !cardData.imageUrl.includes('picsum.photos') ? (
+                                        {cardData.imageUrl && cardData.imageUrl.startsWith('https') ? (
                                             <Image
                                                 src={cardData.imageUrl}
                                                 alt={`Portrait von ${cardData.name}`}
