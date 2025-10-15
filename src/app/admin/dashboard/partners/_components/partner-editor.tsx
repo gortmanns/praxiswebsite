@@ -48,8 +48,8 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [dialogState, setDialogState] = useState<{
-        type: 'imageSource' | 'imageLibrary' | 'htmlEditor' | null;
-        data: any;
+        type: 'imageSource' | 'imageLibrary' | 'htmlEditor' | null,
+        data: any
     }>({ type: null, data: {} });
 
     const handleInputChange = (field: keyof Partner, value: string | boolean | number) => {
@@ -120,7 +120,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         <div className="relative">
             <div className="grid md:grid-cols-2 min-h-full">
                 {/* Left side: Editor Form */}
-                <div className="space-y-6 p-10 rounded-l-lg">
+                <div className="space-y-6 p-10 rounded-l-lg z-20 bg-muted">
                     <div className="space-y-2">
                         <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
                         <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
@@ -211,4 +211,6 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
             )}
         </div>
     );
-};
+    
+
+    

@@ -17,7 +17,6 @@ import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { PartnerCard as DisplayCard } from '../partners/_components/partner-card';
 import { PartnerEditor as EditorComponent } from '../partners/_components/partner-editor';
 import type { Partner as CardData } from '../partners/_components/partner-editor';
-import { Slider } from '@/components/ui/slider';
 
 
 interface ReusableCardManagerProps<T extends CardData> {
@@ -34,7 +33,7 @@ interface ReusableCardManagerProps<T extends CardData> {
     entityName: string;
 }
 
-function MedicalPartnersPageManager<T extends CardData>({
+function ReusableCardManager<T extends CardData>({
     collectionName,
     pageTitle,
     pageDescription,
@@ -202,11 +201,11 @@ function MedicalPartnersPageManager<T extends CardData>({
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
     const partnerEditorOverlay = isEditing ? (
-        <div style={{ zIndex: 10, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, border: '2px solid blue' }} className='pointer-events-none'>
-            <div className="grid h-full w-full grid-cols-2">
-                <div></div>
-                <div className="flex h-full w-full items-center justify-center p-10">
-                    <div className="w-full max-w-[250px]">
+        <div style={{ zIndex: 10, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} className='pointer-events-none'>
+             <div className="grid h-full w-full grid-cols-2">
+                 <div className="z-0"></div>
+                 <div className="z-30 flex h-full w-full items-center justify-center p-10">
+                     <div className="w-full max-w-[250px]">
                         <DisplayCardComponent {...editorCardState} />
                     </div>
                 </div>
@@ -218,7 +217,7 @@ function MedicalPartnersPageManager<T extends CardData>({
     const AdminPartnerCard: React.FC<{ partner: T; isFirst: boolean; isLast: boolean; isHiddenCard?: boolean }> = ({ partner, isFirst, isLast, isHiddenCard = false }) => (
         <div className="flex flex-col items-center space-y-4">
             <DisplayCardComponent {...partner} />
-            <div id={`buttons-${partner.id}`} className="flex w-full max-w-sm items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
+            <div id={`buttons-${partner.id}`} className="flex w-full max-w-[250px] items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
                 <Button size="icon" variant="outline" onClick={() => handleMove(partner.id, 'left')} disabled={isFirst}><ArrowLeft /></Button>
                 <Button size="icon" variant="outline" onClick={() => handleMove(partner.id, 'right')} disabled={isLast}><ArrowRight /></Button>
                 <div className="w-px self-stretch bg-border mx-2" />
@@ -239,43 +238,45 @@ function MedicalPartnersPageManager<T extends CardData>({
         const count = partners.length;
         if (count === 0) return null;
 
-        const getCardProps = (partner: T) => ({
+        const getCardProps = (partner: T, index: number) => ({
             partner: partner,
-            isFirst: partner.order === 1,
-            isLast: partner.order === totalItems,
+            isFirst: index === 0,
+            isLast: index === totalItems - 1,
             isHiddenCard: isHidden
         });
         
+        // For 4 partners, use a standard 4-column grid for responsiveness
         if (count === 4) {
             return (
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4" style={{ border: '1px solid red' }}>
-                    {partners.map((partner) => (
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                    {partners.map((partner, index) => (
                         <div key={partner.id}>
-                           <AdminPartnerCard {...getCardProps(partner)} />
+                           <AdminPartnerCard {...getCardProps(partner, partners.findIndex(p => p.id === partner.id))} />
                         </div>
                     ))}
                 </div>
             );
         }
         
+        // For 1-3 partners, use an 8-column grid with spacers to center the items
         return (
-            <div className="grid grid-cols-8 gap-8" style={{ border: '1px solid red' }}>
+            <div className="grid grid-cols-8 gap-8">
                 {count === 1 && (
                     <div className="col-start-3 col-span-4">
-                        <AdminPartnerCard {...getCardProps(partners[0])} />
+                        <AdminPartnerCard {...getCardProps(partners[0], 0)} />
                     </div>
                 )}
                 {count === 2 && (
                     <>
-                        <div className="col-start-2 col-span-3"><AdminPartnerCard {...getCardProps(partners[0])} /></div>
-                        <div className="col-span-3"><AdminPartnerCard {...getCardProps(partners[1])} /></div>
+                        <div className="col-start-2 col-span-3"><AdminPartnerCard {...getCardProps(partners[0], 0)} /></div>
+                        <div className="col-span-3"><AdminPartnerCard {...getCardProps(partners[1], 1)} /></div>
                     </>
                 )}
                 {count === 3 && (
                     <>
-                        <div className="col-start-1 col-span-2"><AdminPartnerCard {...getCardProps(partners[0])} /></div>
-                        <div className="col-start-4 col-span-2"><AdminPartnerCard {...getCardProps(partners[1])} /></div>
-                        <div className="col-start-7 col-span-2"><AdminPartnerCard {...getCardProps(partners[2])} /></div>
+                        <div className="col-start-1 col-span-2"><AdminPartnerCard {...getCardProps(partners[0], 0)} /></div>
+                        <div className="col-start-4 col-span-2"><AdminPartnerCard {...getCardProps(partners[1], 1)} /></div>
+                        <div className="col-start-7 col-span-2"><AdminPartnerCard {...getCardProps(partners[2], 2)} /></div>
                     </>
                 )}
             </div>
@@ -291,7 +292,7 @@ function MedicalPartnersPageManager<T extends CardData>({
         }
 
         return (
-            <div className="space-y-8" style={{ border: '1px solid red' }}>
+            <div className="space-y-8">
                 {chunkedPartners.map((rowPartners, index) => (
                     <RowGrid key={index} partners={rowPartners} totalItems={partners.length} isHidden={isHidden} />
                 ))}
@@ -306,9 +307,10 @@ function MedicalPartnersPageManager<T extends CardData>({
         const renderGrid = (items: T[], title: string, description: string, isHiddenGrid: boolean) => {
             if (items.length === 0) return null;
             return (
-                <div className="space-y-4 mt-12" style={{ border: '1px solid red' }}>
+                <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
+                    {/* WICHTIGER HINWEIS: Es ist untersagt, diesen Codeabschnitt zur Darstellung der aktiven Karten ohne ausdrückliche vorherige Rücksprache zu ändern. */}
                     <PartnerGrid partners={items} isHidden={isHiddenGrid} />
                 </div>
             );
@@ -417,7 +419,8 @@ function MedicalPartnersPageManager<T extends CardData>({
     );
 }
 
-export default MedicalPartnersPageManager;
+export default ReusableCardManager;
 
+    
 
     
