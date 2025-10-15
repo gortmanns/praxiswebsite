@@ -29,7 +29,7 @@ const PartnerLink: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
         href={partner.websiteUrl || '#'}
         target={partner.openInNewTab ? '_blank' : '_self'}
         rel="noopener noreferrer"
-        className="group relative block h-32 w-full max-w-[280px] mx-auto overflow-hidden rounded-lg shadow-2xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        className="group relative block h-32 w-full mx-auto overflow-hidden rounded-lg shadow-2xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
     >
         <Card className="flex h-full w-full items-center justify-center bg-background p-2">
             {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}

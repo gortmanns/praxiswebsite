@@ -215,9 +215,9 @@ function ReusableCardManager<T extends CardData>({
 
 
     const AdminPartnerCard: React.FC<{ partner: T; isFirst: boolean; isLast: boolean; isHiddenCard?: boolean }> = ({ partner, isFirst, isLast, isHiddenCard = false }) => (
-        <div className="flex flex-col items-center space-y-4">
+        <div className="flex flex-col items-center space-y-4 w-full">
             <DisplayCardComponent {...partner} />
-            <div id={`buttons-${partner.id}`} className="flex w-full max-w-[250px] items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
+            <div id={`buttons-${partner.id}`} className="flex w-full items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
                 <Button size="icon" variant="outline" onClick={() => handleMove(partner.id, 'left')} disabled={isFirst}><ArrowLeft /></Button>
                 <Button size="icon" variant="outline" onClick={() => handleMove(partner.id, 'right')} disabled={isLast}><ArrowRight /></Button>
                 <div className="w-px self-stretch bg-border mx-2" />
