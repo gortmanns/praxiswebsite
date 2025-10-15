@@ -157,35 +157,33 @@ const PlaceholderAlert = () => (
 export default function BannerPage() {
     const firestore = useFirestore();
     
-    // State for local form data
     const [bannerSettings, setBannerSettings] = useState<BannerSettings>(initialBannerSettings);
     
-    // State for editor UI
     const [isEditing, setIsEditing] = useState(false);
     const [currentEditorBanner, setCurrentEditorBanner] = useState<Partial<InfoBanner>>(initialInfoBannerState);
 
-    // State for notifications and confirmations
     const [notification, setNotification] = useState<TimedAlertProps | null>(null);
     const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; bannerId?: string; bannerText?: string }>({ isOpen: false });
 
-    // --- Data Fetching ---
-    const settingsDocRef = useMemoFirebase(() => (firestore ? doc(firestore, 'settings', 'banners') : null), [firestore]);
+    const settingsDocRef = useMemoFirebase(() => {
+        if (!firestore) return null;
+        return doc(firestore, 'settings', 'banners');
+    }, [firestore]);
     const { data: dbSettings, isLoading: isLoadingSettings, error: dbSettingsError } = useDoc<BannerSettings>(settingsDocRef);
     
     const infoBannersQuery = useMemoFirebase(() => {
         if (!firestore) return null;
         return query(collection(firestore, 'infoBanners'), orderBy('start', 'desc'));
     }, [firestore]);
-    const { data: infoBannersData, isLoading: isLoadingInfoBanners, error: dbInfoBannerError } = useCollection<InfoBanner>(infoBannersQuery);
+    const { data: infoBannersData, isLoading: isLoadingInfoBanners, error: dbInfoBannerError } = useCollection<InfoBanner>(infoBannersQuery as any);
 
     const holidaysQuery = useMemoFirebase(() => {
         if (!firestore) return null;
         const today = new Date(); today.setHours(0, 0, 0, 0);
         return query(collection(firestore, 'holidays'), where('end', '>=', Timestamp.fromDate(today)), orderBy('end', 'asc'));
     }, [firestore]);
-    const { data: holidaysData, isLoading: isLoadingHolidays, error: dbHolidaysError } = useCollection<any>(holidaysQuery);
+    const { data: holidaysData, isLoading: isLoadingHolidays, error: dbHolidaysError } = useCollection<any>(holidaysQuery as any);
 
-    // --- Data Processing & Memoization ---
     useEffect(() => {
         if (dbSettings) {
             setBannerSettings({ ...initialBannerSettings, ...dbSettings });
@@ -231,7 +229,6 @@ export default function BannerPage() {
     }, [upcomingHoliday, bannerSettings.yellowBannerText, bannerSettings.redBannerText]);
 
 
-    // --- Event Handlers ---
     const handleBannerSettingsChange = (field: keyof BannerSettings, value: any) => setBannerSettings(prev => ({ ...prev, [field]: value }));
     const handleInfoBannerInputChange = (field: keyof InfoBanner, value: any) => setCurrentEditorBanner(prev => ({ ...prev, [field]: value }));
 
@@ -274,7 +271,7 @@ export default function BannerPage() {
                 await setDoc(docRef, dataToSave, { merge: true });
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Info-Banner wurde aktualisiert.' });
             } else {
-                const { id, ...rest } = dataToSave; // Exclude potential undefined id
+                const { id, ...rest } = dataToSave;
                 const newDocRef = await addDoc(collection(firestore, 'infoBanners'), rest);
                 await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Neues Info-Banner wurde erstellt.' });
@@ -301,7 +298,6 @@ export default function BannerPage() {
         }
     };
     
-    // --- Render Logic ---
     const isLoading = isLoadingSettings || isLoadingHolidays || isLoadingInfoBanners;
     const dbError = dbSettingsError || dbInfoBannerError || dbHolidaysError;
 
