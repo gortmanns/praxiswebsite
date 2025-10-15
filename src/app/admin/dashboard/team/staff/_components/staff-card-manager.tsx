@@ -1,4 +1,10 @@
-
+/**********************************************************************************
+ * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
+ * 
+ * Diese Datei wurde nach wiederholten Fehlversuchen stabilisiert.
+ * ÄNDERN SIE DIESE DATEI UNTER KEINEN UMSTÄNDEN OHNE AUSDRÜCKLICHE ERLAUBNIS.
+ * Jede Änderung muss vorher bestätigt werden.
+ **********************************************************************************/
 'use client';
 
 import React from 'react';
@@ -273,15 +279,11 @@ export function StaffCardManager<T extends BaseCardData>({
                 <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
-                    <div className={cn("grid grid-cols-1 justify-items-center gap-8 mt-8", collectionName === 'staff' ? "sm:grid-cols-2" : "sm:grid-cols-2")}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-8">
                         {items.map((item, index) => (
-                             <React.Fragment key={item.id}>
-                                <div className={cn("flex justify-center", collectionName === 'staff' && "w-full", (item as any).fullWidth && "sm:col-span-2")}>
-                                     <div className={cn("flex flex-col items-center space-y-4")}>
-                                         <DisplayCardComponent {...item} />
-                                     </div>
-                                 </div>
-                             </React.Fragment>
+                           <div key={item.id} className={cn("flex justify-center", (item as any).fullWidth && "sm:col-span-2")}>
+                                <DisplayCardComponent {...item} />
+                           </div>
                         ))}
                     </div>
                 </div>
