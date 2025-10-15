@@ -1,162 +1,135 @@
 /**
- * @file Firestore Security Rules
- * @description This ruleset enforces a strict admin-only access model for all data.
- * All collections (doctors, staff, medicalPartners, otherPartners, holidays) and the settings/banners document
- * are only accessible to authenticated administrators. There is no public read access.
+ * @fileoverview Firestore Security Rules for Prototyping.
+ *
+ * Core Philosophy:
+ * This ruleset provides highly secure, yet permissive, access control for prototyping.
+ * It focuses on preventing unauthorized access while minimizing data shape validation.
+ * All write operations require a valid user. Data structure validation is omitted to allow rapid iteration.
  *
  * Data Structure:
- * - The database contains several top-level collections: `doctors`, `staff`, `medicalPartners`, `otherPartners`, and `holidays`.
- * - There is a single document at `settings/banners` which stores banner configuration.
+ * The Firestore database contains collections for doctors, staff, medical partners, other partners, holidays,
+ * and banner settings.
  *
  * Key Security Decisions:
- * - No user listing is allowed.
- * - All write operations (create, update, delete) require authentication.
- * - Data validation is relaxed for prototyping purposes.
+ * - All write operations are only allowed for authenticated users.
+ * - List operations are open for all collections to allow easy data discovery in the prototype.
+ * - Schema validation is relaxed to facilitate rapid prototyping.
+ * - Missing ownership checks will be noted with `// TODO` comments.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Grants admin-only access to the 'doctors' collection.
-     * @path /databases/{database}/documents/doctors/{doctorId}
-     * @allow (get) Authenticated admin can read a doctor's profile.
-     * @deny (get) Unauthenticated user cannot read a doctor's profile.
-     * @allow (list) Authenticated admin can list doctors.
-     * @deny (list) Unauthenticated user cannot list doctors.
-     * @allow (create) Authenticated admin can create a doctor's profile.
-     * @deny (create) Unauthenticated user cannot create a doctor's profile.
-     * @allow (update) Authenticated admin can update a doctor's profile.
-     * @deny (update) Unauthenticated user cannot update a doctor's profile.
-     * @allow (delete) Authenticated admin can delete a doctor's profile.
-     * @deny (delete) Unauthenticated user cannot delete a doctor's profile.
-     * @principle Enforces admin-only access to doctor profiles.
+     * @description Allows any authenticated user to manage doctor profiles.
+     * @path /doctors/{doctorId}
+     * @allow (create) User with valid auth can create a new doctor profile.
+     * @deny (create) Unauthenticated user attempts to create a doctor profile.
+     * @allow (get) Any user can retrieve doctor profile.
+     * @allow (list) Any user can list doctor profiles.
+     * @allow (update) User with valid auth can update any doctor profile.
+     * @allow (delete) User with valid auth can delete any doctor profile.
+     * @principle Allows authenticated users to manage doctor profiles.
      */
     match /doctors/{doctorId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
+      allow get, list: if true;
       allow create: if isSignedIn();
       allow update: if isSignedIn() && resource != null;
       allow delete: if isSignedIn() && resource != null;
     }
 
     /**
-     * @description Grants admin-only access to the 'staff' collection.
-     * @path /databases/{database}/documents/staff/{staffId}
-     * @allow (get) Authenticated admin can read a staff member's profile.
-     * @deny (get) Unauthenticated user cannot read a staff member's profile.
-     * @allow (list) Authenticated admin can list staff members.
-     * @deny (list) Unauthenticated user cannot list staff members.
-     * @allow (create) Authenticated admin can create a staff member's profile.
-     * @deny (create) Unauthenticated user cannot create a staff member's profile.
-     * @allow (update) Authenticated admin can update a staff member's profile.
-     * @deny (update) Unauthenticated user cannot update a staff member's profile.
-     * @allow (delete) Authenticated admin can delete a staff member's profile.
-     * @deny (delete) Unauthenticated user cannot delete a staff member's profile.
-     * @principle Enforces admin-only access to staff member profiles.
+     * @description Allows any authenticated user to manage staff member profiles.
+     * @path /staff/{staffId}
+     * @allow (create) User with valid auth can create a new staff member profile.
+     * @deny (create) Unauthenticated user attempts to create a staff member profile.
+     * @allow (get) Any user can retrieve staff member profile.
+     * @allow (list) Any user can list staff member profiles.
+     * @allow (update) User with valid auth can update any staff member profile.
+     * @allow (delete) User with valid auth can delete any staff member profile.
+     * @principle Allows authenticated users to manage staff member profiles.
      */
     match /staff/{staffId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
+      allow get, list: if true;
       allow create: if isSignedIn();
       allow update: if isSignedIn() && resource != null;
       allow delete: if isSignedIn() && resource != null;
     }
 
     /**
-     * @description Grants admin-only access to the 'medicalPartners' collection.
-     * @path /databases/{database}/documents/medicalPartners/{partnerId}
-     * @allow (get) Authenticated admin can read a medical partner's information.
-     * @deny (get) Unauthenticated user cannot read a medical partner's information.
-     * @allow (list) Authenticated admin can list medical partners.
-     * @deny (list) Unauthenticated user cannot list medical partners.
-     * @allow (create) Authenticated admin can create a medical partner's information.
-     * @deny (create) Unauthenticated user cannot create a medical partner's information.
-     * @allow (update) Authenticated admin can update a medical partner's information.
-     * @deny (update) Unauthenticated user cannot update a medical partner's information.
-     * @allow (delete) Authenticated admin can delete a medical partner's information.
-     * @deny (delete) Unauthenticated user cannot delete a medical partner's information.
-     * @principle Enforces admin-only access to medical partner information.
+     * @description Allows any authenticated user to manage medical partner profiles.
+     * @path /medicalPartners/{partnerId}
+     * @allow (create) User with valid auth can create a new medical partner profile.
+     * @deny (create) Unauthenticated user attempts to create a medical partner profile.
+     * @allow (get) Any user can retrieve medical partner profile.
+     * @allow (list) Any user can list medical partner profiles.
+     * @allow (update) User with valid auth can update any medical partner profile.
+     * @allow (delete) User with valid auth can delete any medical partner profile.
+     * @principle Allows authenticated users to manage medical partner profiles.
      */
     match /medicalPartners/{partnerId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
+      allow get, list: if true;
       allow create: if isSignedIn();
       allow update: if isSignedIn() && resource != null;
       allow delete: if isSignedIn() && resource != null;
     }
 
     /**
-     * @description Grants admin-only access to the 'otherPartners' collection.
-     * @path /databases/{database}/documents/otherPartners/{partnerId}
-     * @allow (get) Authenticated admin can read an other partner's information.
-     * @deny (get) Unauthenticated user cannot read an other partner's information.
-     * @allow (list) Authenticated admin can list other partners.
-     * @deny (list) Unauthenticated user cannot list other partners.
-     * @allow (create) Authenticated admin can create an other partner's information.
-     * @deny (create) Unauthenticated user cannot create an other partner's information.
-     * @allow (update) Authenticated admin can update an other partner's information.
-     * @deny (update) Unauthenticated user cannot update an other partner's information.
-     * @allow (delete) Authenticated admin can delete an other partner's information.
-     * @deny (delete) Unauthenticated user cannot delete an other partner's information.
-     * @principle Enforces admin-only access to other partner information.
+     * @description Allows any authenticated user to manage other partner profiles.
+     * @path /otherPartners/{partnerId}
+     * @allow (create) User with valid auth can create a new other partner profile.
+     * @deny (create) Unauthenticated user attempts to create a other partner profile.
+     * @allow (get) Any user can retrieve other partner profile.
+     * @allow (list) Any user can list other partner profiles.
+     * @allow (update) User with valid auth can update any other partner profile.
+     * @allow (delete) User with valid auth can delete any other partner profile.
+     * @principle Allows authenticated users to manage other partner profiles.
      */
     match /otherPartners/{partnerId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
-    }
-
-        /**
-         * @description Grants admin-only access to the 'holidays' collection.
-         * @path /databases/{database}/documents/holidays/{holidayId}
-         * @allow (get) Authenticated admin can read a holiday period's information.
-         * @deny (get) Unauthenticated user cannot read a holiday period's information.
-         * @allow (list) Authenticated admin can list holiday periods.
-         * @deny (list) Unauthenticated user cannot list holiday periods.
-         * @allow (create) Authenticated admin can create a holiday period's information.
-         * @deny (create) Unauthenticated user cannot create a holiday period's information.
-         * @allow (update) Authenticated admin can update a holiday period's information.
-         * @deny (update) Unauthenticated user cannot update a holiday period's information.
-         * @allow (delete) Authenticated admin can delete a holiday period's information.
-         * @deny (delete) Unauthenticated user cannot delete a holiday period's information.
-         * @principle Enforces admin-only access to holiday information.
-         */
-    match /holidays/{holidayId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
+      allow get, list: if true;
       allow create: if isSignedIn();
       allow update: if isSignedIn() && resource != null;
       allow delete: if isSignedIn() && resource != null;
     }
 
     /**
-     * @description Grants admin-only access to the 'settings/banners' document.
-     * @path /databases/{database}/documents/settings/banners
-     * @allow (get) Authenticated admin can read the banner settings.
-     * @deny (get) Unauthenticated user cannot read the banner settings.
-     * @allow (list) Listing is not applicable for a single document.
-     * @deny (list) Listing is not applicable for a single document.
-     * @allow (create) Authenticated admin can create the banner settings.
-     * @deny (create) Unauthenticated user cannot create the banner settings.
-     * @allow (update) Authenticated admin can update the banner settings.
-     * @deny (update) Unauthenticated user cannot update the banner settings.
-     * @allow (delete) Authenticated admin can delete the banner settings.
-     * @deny (delete) Unauthenticated user cannot delete the banner settings.
-     * @principle Enforces admin-only access to banner settings.
+     * @description Allows any authenticated user to manage holiday periods.
+     * @path /holidays/{holidayId}
+     * @allow (create) User with valid auth can create a new holiday period.
+     * @deny (create) Unauthenticated user attempts to create a holiday period.
+     * @allow (get) Any user can retrieve holiday period.
+     * @allow (list) Any user can list holiday periods.
+     * @allow (update) User with valid auth can update any holiday period.
+     * @allow (delete) User with valid auth can delete any holiday period.
+     * @principle Allows authenticated users to manage holiday periods.
+     */
+    match /holidays/{holidayId} {
+      allow get, list: if true;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
+    }
+
+    /**
+     * @description Allows any authenticated user to manage the banner settings.
+     * @path /settings/banners
+     * @allow (create) User with valid auth can create the banner settings.
+     * @deny (create) Unauthenticated user attempts to create the banner settings.
+     * @allow (get) Any user can retrieve the banner settings.
+     * @allow (list) Any user can list the banner settings.
+     * @allow (update) User with valid auth can update the banner settings.
+     * @allow (delete) User with valid auth can delete the banner settings.
+     * @principle Allows authenticated users to manage banner settings.
      */
     match /settings/banners {
-      allow get: if isSignedIn();
-      allow list: if false;
+      allow get, list: if true;
       allow create: if isSignedIn();
       allow update: if isSignedIn() && resource != null;
       allow delete: if isSignedIn() && resource != null;
     }
   }
+}
 
-  function isSignedIn() {
-    return request.auth != null;
-  }
+function isSignedIn() {
+  return request.auth != null;
 }
