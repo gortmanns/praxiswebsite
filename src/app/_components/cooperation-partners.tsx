@@ -4,11 +4,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { MedicalPartner, OtherPartner } from '@/docs/backend-types';
 import DOMPurify from 'dompurify';
+import { medicalPartnersData } from '@/app/admin/dashboard/partners/medical/_components/medical-partners-data';
+import { otherPartnersSeedData } from '@/app/admin/dashboard/partners/other/_components/other-partners-data';
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
@@ -100,20 +100,23 @@ const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = (
 };
 
 export function CooperationPartnersSection() {
-  const firestore = useFirestore();
+  const [isLoadingMedical, setIsLoadingMedical] = React.useState(true);
+  const [isLoadingOther, setIsLoadingOther] = React.useState(true);
 
-  const medicalPartnersQuery = useMemoFirebase(() => {
-      if (!firestore) return null;
-      return query(collection(firestore, 'medicalPartners'), orderBy('order', 'asc'));
-  }, [firestore]);
+  const [medicalPartners, setMedicalPartners] = React.useState<any[]>([]);
+  const [otherPartners, setOtherPartners] = React.useState<any[]>([]);
 
-  const otherPartnersQuery = useMemoFirebase(() => {
-      if (!firestore) return null;
-      return query(collection(firestore, 'otherPartners'), orderBy('order', 'asc'));
-  }, [firestore]);
-
-  const { data: medicalPartners, isLoading: isLoadingMedical } = useCollection<MedicalPartner>(medicalPartnersQuery);
-  const { data: otherPartners, isLoading: isLoadingOther } = useCollection<OtherPartner>(otherPartnersQuery);
+  React.useEffect(() => {
+    // Simulate fetching data
+    setTimeout(() => {
+      setMedicalPartners(medicalPartnersData.map(p => ({...p, id: p.name })));
+      setIsLoadingMedical(false);
+    }, 500);
+     setTimeout(() => {
+      setOtherPartners(otherPartnersSeedData.map(p => ({...p, id: p.name })));
+      setIsLoadingOther(false);
+    }, 500);
+  }, []);
 
   const visibleMedicalPartners = medicalPartners?.filter(p => !p.hidden) || [];
   const visibleOtherPartners = otherPartners?.filter(p => !p.hidden) || [];

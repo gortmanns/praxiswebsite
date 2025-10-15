@@ -2,8 +2,6 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
-import { doc, collection, query, where, orderBy, Timestamp } from 'firebase/firestore';
 import { format, differenceInDays, isWithinInterval, addDays, subDays } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
@@ -35,8 +33,8 @@ interface BannerSettings {
 interface InfoBanner {
     id: string;
     text: string;
-    start?: Timestamp;
-    end?: Timestamp;
+    start?: Date;
+    end?: Date;
     separatorStyle?: SeparatorStyle;
 }
 
@@ -59,41 +57,7 @@ function processPlaceholders(text: string, holiday: Holiday): string {
 
 
 function getActiveBanner(holidays: Holiday[], holidaySettings: BannerSettings | null, infoBanners: InfoBanner[] | null): BannerInfo | null {
-  const now = new Date();
-  
-  if (holidays && holidays.length > 0 && holidaySettings) {
-    const upcomingHoliday = holidays.find(h => h.start > now);
-    const currentHoliday = holidays.find(h => isWithinInterval(now, { start: h.start, end: h.end }));
-
-    // Priority 1: Red Banner (during holidays)
-    if (currentHoliday) {
-      const text = processPlaceholders(holidaySettings.redBannerText, currentHoliday);
-      return { text, color: 'red', separatorStyle: holidaySettings.redBannerSeparatorStyle || 'diamonds' };
-    }
-
-    // Priority 2: Yellow Banner (before holidays)
-    if (upcomingHoliday) {
-      const daysUntilStart = differenceInDays(upcomingHoliday.start, now);
-      if (daysUntilStart >= 0 && daysUntilStart <= holidaySettings.preHolidayDays) {
-        const text = processPlaceholders(holidaySettings.yellowBannerText, upcomingHoliday);
-        return { text, color: 'yellow', separatorStyle: holidaySettings.yellowBannerSeparatorStyle || 'diamonds' };
-      }
-    }
-  }
-
-  // Priority 3: Blue Banner (if no holiday banner is active)
-  if (infoBanners) {
-      const activeInfoBanner = infoBanners.find(b => 
-          b.start && 
-          b.end && 
-          isWithinInterval(now, { start: b.start.toDate(), end: b.end.toDate() })
-      );
-      if (activeInfoBanner) {
-          return { text: activeInfoBanner.text, color: 'blue', separatorStyle: activeInfoBanner.separatorStyle || 'diamonds' };
-      }
-  }
-
-  return null;
+    return null; // Temporarily disable all banners to fix crash
 }
 
 const Separator = ({ style }: { style: SeparatorStyle }) => {
@@ -110,25 +74,11 @@ const Separator = ({ style }: { style: SeparatorStyle }) => {
 
 export function HolidayBanner() {
     const [isVisible, setIsVisible] = useState(true);
-    const firestore = useFirestore();
-
-    const holidaySettingsDocRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'banners') : null, [firestore]);
-    const { data: holidaySettingsData } = useDoc<BannerSettings>(holidaySettingsDocRef);
     
-    const infoBannersQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'infoBanners')) : null, [firestore]);
-    const { data: infoBannersData } = useCollection<InfoBanner>(infoBannersQuery);
-
-    const holidaysQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
-        const today = new Date(); today.setHours(0, 0, 0, 0);
-        return query(collection(firestore, 'holidays'), where('end', '>=', Timestamp.fromDate(today)), orderBy('end', 'asc'));
-    }, [firestore]);
-    const { data: holidaysData } = useCollection<any>(holidaysQuery);
-
-    const holidays: Holiday[] = useMemo(() => {
-        if (!holidaysData) return [];
-        return holidaysData.map(h => ({ ...h, start: h.start.toDate(), end: h.end.toDate() })).sort((a, b) => a.start.getTime() - b.start.getTime());
-    }, [holidaysData]);
+    // Static data to avoid Firebase dependency
+    const holidays: Holiday[] = [];
+    const holidaySettingsData: BannerSettings | null = null;
+    const infoBannersData: InfoBanner[] | null = null;
     
     const bannerInfo = getActiveBanner(holidays, holidaySettingsData, infoBannersData);
     

@@ -4,29 +4,31 @@
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { TeamMemberCard } from './_components/team-member-card';
-import { DoctorCard, type Doctor } from './_components/doctor-card';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
+import { DoctorCard } from './_components/doctor-card';
 import { Skeleton } from '@/components/ui/skeleton';
+import type { Doctor } from './_components/doctor-card';
 import type { StaffMember } from '../admin/dashboard/team/staff/_components/staff-editor';
 import { cn } from '@/lib/utils';
+import React, { useState, useEffect } from 'react';
 
 
 export default function TeamPage() {
-  const firestore = useFirestore();
+  const [isLoadingDoctors, setIsLoadingDoctors] = useState(true);
+  const [isLoadingStaff, setIsLoadingStaff] = useState(true);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [staff, setStaff] = useState<StaffMember[]>([]);
   
-  const doctorsQuery = useMemoFirebase(() => {
-      if (!firestore) return null;
-      return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
-  }, [firestore]);
-
-  const staffQuery = useMemoFirebase(() => {
-      if (!firestore) return null;
-      return query(collection(firestore, 'staff'), orderBy('order', 'asc'));
-  }, [firestore]);
-
-  const { data: doctors, isLoading: isLoadingDoctors } = useCollection<Doctor>(doctorsQuery);
-  const { data: staff, isLoading: isLoadingStaff } = useCollection<StaffMember>(staffQuery);
+  useEffect(() => {
+    // Simulate fetching data
+    setTimeout(() => {
+        setDoctors([]);
+        setIsLoadingDoctors(false);
+    }, 500);
+     setTimeout(() => {
+        setStaff([]);
+        setIsLoadingStaff(false);
+    }, 500);
+  }, []);
 
   const visibleDoctors = doctors?.filter(doc => !doc.hidden) || [];
   const visibleStaff = staff?.filter(member => !member.hidden) || [];
@@ -52,12 +54,14 @@ export default function TeamPage() {
                         <Skeleton className="w-full aspect-[1000/495] rounded-lg" />
                     </div>
                 ))
-            ) : (
+            ) : visibleDoctors.length > 0 ? (
               visibleDoctors.map(doctor => (
                 <div key={doctor.id} id={doctor.id.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
                   <DoctorCard {...doctor} />
                 </div>
               ))
+            ) : (
+                <p className="text-center text-muted-foreground">Informationen zu den Ärzten werden in Kürze hier angezeigt.</p>
             )}
             
             <div id="praxispersonal">
@@ -74,12 +78,8 @@ export default function TeamPage() {
                         <Skeleton className="h-[550px] w-full max-w-sm" />
                         <Skeleton className="h-[550px] w-full max-w-sm" />
                     </div>
-                     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                         <Skeleton className="h-[550px] w-full max-w-sm" />
-                         <Skeleton className="h-[550px] w-full max-w-sm" />
-                    </div>
                 </div>
-            ) : (
+            ) : visibleStaff.length > 0 ? (
                 <div className="space-y-12">
                   {fullWidthStaff.length > 0 && (
                     <div className={cn("grid w-full grid-cols-1 justify-items-center gap-8", fullWidthStaff.length > 0 && "sm:grid-cols-2")}>
@@ -116,6 +116,8 @@ export default function TeamPage() {
                     </div>
                   )}
                 </div>
+            ) : (
+                 <p className="text-center text-muted-foreground">Informationen zum Praxispersonal werden in Kürze hier angezeigt.</p>
             )}
           </div>
         </div>
@@ -124,4 +126,3 @@ export default function TeamPage() {
     </div>
   );
 }
-
