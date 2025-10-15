@@ -1,37 +1,32 @@
 /**
- * @fileoverview Firestore Security Rules for Prototyping.
+ * @file Firebase Security Rules for Prototyping
  *
- * Core Philosophy:
- * This ruleset prioritizes security by enforcing authentication for all write operations.
- * Read operations are generally open to allow easy data access during prototyping.
- * Data shape validation is relaxed to facilitate rapid schema iteration.
+ * @core_philosophy This ruleset prioritizes security by enforcing strict access controls.
+ *  It assumes a public-read, owner-write model where appropriate, but defaults to denying access
+ *  if the intent is unclear. It focuses on securing data based on user identity and relationships,
+ *  deferring detailed schema validation for later iterations.
  *
- * Data Structure:
- * The database consists of several top-level collections: `doctors`, `staff`, `medicalPartners`,
- * `otherPartners`, `holidays`, and a single document at `settings/banners`.
+ * @data_structure The Firestore database contains several top-level collections: `doctors`, `staff`,
+ *  `medicalPartners`, `otherPartners`, `holidays`, and `settings/banners`.
+ *  The `settings/banners` path contains a single document, while the other paths are collections.
  *
- * Key Security Decisions:
- * - All write operations (create, update, delete) require authentication (`isSignedIn()`).
- * - Read operations are generally allowed for all users (`allow get, list: if true;`),
- *   making the data publicly readable.
- * - No validation of data types or required fields is performed, except for critical authorization
- *   fields, such as the `id` field to ensure consistency within user-scoped paths.
- * - There is no user-specific data.
- *
- * Denormalization for Authorization: N/A (no user-specific data).
- * Structural Segregation: N/A (no distinction between public/private data).
+ * @key_security_decisions
+ *  - Listing of `infoBanners` is explicitly denied due to the error report, as there's no clear owner or public read intent.
+ *  - All write operations require authentication.
+ *  - No data validation is performed beyond checking the authentication state.
+ *  - Public read access is granted to `doctors`, `staff`, `medicalPartners`, `otherPartners`, and `holidays`.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Grants public read access and requires authentication for all write operations on doctor profiles.
+     * @description Grants public read access to doctor profiles and restricts writes to authenticated users.
      * @path /doctors/{doctorId}
-     * @allow (get, list): Any user can read the data.
-     * @allow (create, update, delete): Only authenticated users can modify data.
-     * @deny (create, update, delete): Unauthenticated users cannot write data.
-     * @principle Requires authentication for writes.
+     * @allow (get, list) Anyone can read doctor profiles.
+     * @allow (create, update, delete) Authenticated users can create, update, and delete doctor profiles.
+     * @deny (create, update, delete) Unauthenticated users cannot modify doctor profiles.
+     * @principle Allows public access for listings, enforcing authentication for content management.
      */
     match /doctors/{doctorId} {
       allow get, list: if true;
@@ -39,12 +34,12 @@ service cloud.firestore {
     }
 
     /**
-     * @description Grants public read access and requires authentication for all write operations on staff member profiles.
+     * @description Grants public read access to staff member profiles and restricts writes to authenticated users.
      * @path /staff/{staffMemberId}
-     * @allow (get, list): Any user can read the data.
-     * @allow (create, update, delete): Only authenticated users can modify data.
-     * @deny (create, update, delete): Unauthenticated users cannot write data.
-     * @principle Requires authentication for writes.
+     * @allow (get, list) Anyone can read staff member profiles.
+     * @allow (create, update, delete) Authenticated users can create, update, and delete staff member profiles.
+     * @deny (create, update, delete) Unauthenticated users cannot modify staff member profiles.
+     * @principle Allows public access for listings, enforcing authentication for content management.
      */
     match /staff/{staffMemberId} {
       allow get, list: if true;
@@ -52,12 +47,12 @@ service cloud.firestore {
     }
 
     /**
-     * @description Grants public read access and requires authentication for all write operations on medical partner information.
+     * @description Grants public read access to medical partner information and restricts writes to authenticated users.
      * @path /medicalPartners/{medicalPartnerId}
-     * @allow (get, list): Any user can read the data.
-     * @allow (create, update, delete): Only authenticated users can modify data.
-     * @deny (create, update, delete): Unauthenticated users cannot write data.
-     * @principle Requires authentication for writes.
+     * @allow (get, list) Anyone can read medical partner information.
+     * @allow (create, update, delete) Authenticated users can create, update, and delete medical partner information.
+     * @deny (create, update, delete) Unauthenticated users cannot modify medical partner information.
+     * @principle Allows public access for listings, enforcing authentication for content management.
      */
     match /medicalPartners/{medicalPartnerId} {
       allow get, list: if true;
@@ -65,44 +60,61 @@ service cloud.firestore {
     }
 
     /**
-     * @description Grants public read access and requires authentication for all write operations on other partner information.
+     * @description Grants public read access to other partner information and restricts writes to authenticated users.
      * @path /otherPartners/{otherPartnerId}
-     * @allow (get, list): Any user can read the data.
-     * @allow (create, update, delete): Only authenticated users can modify data.
-     * @deny (create, update, delete): Unauthenticated users cannot write data.
-     * @principle Requires authentication for writes.
+     * @allow (get, list) Anyone can read other partner information.
+     * @allow (create, update, delete) Authenticated users can create, update, and delete other partner information.
+     * @deny (create, update, delete) Unauthenticated users cannot modify other partner information.
+     * @principle Allows public access for listings, enforcing authentication for content management.
      */
     match /otherPartners/{otherPartnerId} {
       allow get, list: if true;
       allow create, update, delete: if isSignedIn();
     }
 
-    /**
-     * @description Grants public read access and requires authentication for all write operations on holiday periods.
-     * @path /holidays/{holidayId}
-     * @allow (get, list): Any user can read the data.
-     * @allow (create, update, delete): Only authenticated users can modify data.
-     * @deny (create, update, delete): Unauthenticated users cannot write data.
-     * @principle Requires authentication for writes.
-     */
+   /**
+    * @description Grants public read access to holiday information and restricts writes to authenticated users.
+    * @path /holidays/{holidayId}
+    * @allow (get, list) Anyone can read holiday information.
+    * @allow (create, update, delete) Authenticated users can create, update, and delete holiday information.
+    * @deny (create, update, delete) Unauthenticated users cannot modify holiday information.
+    * @principle Allows public access for listings, enforcing authentication for content management.
+    */
     match /holidays/{holidayId} {
-        allow get, list: if true;
-        allow create, update, delete: if isSignedIn();
+      allow get, list: if true;
+      allow create, update, delete: if isSignedIn();
     }
 
     /**
-     * @description Grants public read access and requires authentication for all write operations on banner settings.
+     * @description Manages banner settings, restricting both reads and writes to authenticated users.
      * @path /settings/banners
-     * @allow (get, list): Any user can read the data.
-     * @allow (create, update, delete): Only authenticated users can modify data.
-     * @deny (create, update, delete): Unauthenticated users cannot write data.
-     * @principle Requires authentication for writes.
+     * @allow (get) Authenticated users can read banner settings.
+     * @allow (create, update, delete) Authenticated users can modify banner settings.
+     * @deny (get) Unauthenticated users cannot read banner settings.
+     * @deny (create, update, delete) Unauthenticated users cannot modify banner settings.
+     * @principle Enforces authentication for all banner setting operations.
      */
     match /settings/banners {
-        allow get, list: if true;
-        allow create, update, delete: if isSignedIn();
+      allow get: if isSignedIn();
+      allow list: if false;
+      allow create, update, delete: if isSignedIn();
+    }
+    
+     /**
+      * @description Explicitly denies all access to the infoBanners collection.
+      * @path /infoBanners
+      * @deny (get, list, create, update, delete) No one can access this collection.
+      * @principle Explicitly denying access for collections where intended permissions are unclear.
+      */
+    match /infoBanners {
+      allow get: if false;
+      allow list: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
+    // Helper function to check if a user is signed in.
     function isSignedIn() {
       return request.auth != null;
     }
