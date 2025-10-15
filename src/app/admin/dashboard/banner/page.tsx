@@ -172,7 +172,10 @@ export default function BannerPage() {
     const settingsDocRef = useMemoFirebase(() => (firestore ? doc(firestore, 'settings', 'banners') : null), [firestore]);
     const { data: dbSettings, isLoading: isLoadingSettings, error: dbSettingsError } = useDoc<BannerSettings>(settingsDocRef);
     
-    const infoBannersQuery = useMemoFirebase(() => (firestore ? query(collection(firestore, 'infoBanners'), orderBy('start', 'desc')) : null), [firestore]);
+    const infoBannersQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        return query(collection(firestore, 'infoBanners'), orderBy('start', 'desc'));
+    }, [firestore]);
     const { data: infoBannersData, isLoading: isLoadingInfoBanners, error: dbInfoBannerError } = useCollection<InfoBanner>(infoBannersQuery);
 
     const holidaysQuery = useMemoFirebase(() => {
