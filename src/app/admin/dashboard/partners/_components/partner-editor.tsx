@@ -119,7 +119,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
     return (
         <div className="relative">
-            <div className="grid md:grid-cols-2 h-[430px]">
+            <div className="grid md:grid-cols-2 h-[420px]">
                 {/* Left side: Editor Form */}
                 <div className="space-y-6 p-10 rounded-l-lg bg-muted z-20">
                     <div className="space-y-2">
