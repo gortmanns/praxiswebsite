@@ -201,16 +201,16 @@ function ReusableCardManager<T extends CardData>({
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
     const partnerEditorOverlay = isEditing ? (
-        <div className="pointer-events-auto absolute inset-0 z-20 bg-green-500/30">
+        <div className="pointer-events-none absolute inset-0 z-20 bg-green-500/30">
              <div className="grid h-full w-full grid-cols-8 gap-4 p-4">
-                 <div className="z-0 border-2 border-yellow-400 col-span-4"></div>
-                 <div className="z-0 border-2 border-purple-400 col-span-1"></div>
-                 <div className="relative flex h-full w-full items-center justify-center border-2 border-red-500 col-span-2">
+                 <div className="col-span-4"></div>
+                 <div className="col-span-1"></div>
+                 <div className="relative flex h-full w-full items-center justify-center col-span-2">
                      <div className="w-full">
                         <DisplayCardComponent {...editorCardState} />
                     </div>
                 </div>
-                <div className="z-0 border-2 border-orange-400 col-span-1"></div>
+                <div className="col-span-1"></div>
             </div>
         </div>
     ) : null;
@@ -356,9 +356,8 @@ function ReusableCardManager<T extends CardData>({
                 <CardContent>
                    {isEditing && (
                         <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted h-[420px] mb-8">
-                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState}>
-                               {partnerEditorOverlay}
-                            </EditorCardComponent>
+                            {partnerEditorOverlay}
+                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                         </div>
                     )}
 

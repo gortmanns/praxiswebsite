@@ -38,7 +38,7 @@ export interface Partner {
 interface PartnerEditorProps {
     cardData: Partner;
     onUpdate: (updatedData: Partner) => void;
-    children: ReactNode; // To accept the overlay as a child
+    children?: ReactNode; 
 }
 
 
