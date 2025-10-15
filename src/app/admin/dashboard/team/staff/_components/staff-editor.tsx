@@ -149,7 +149,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                             </div>
                                         )}
                                     </button>
-                                    <div className="flex-grow pt-6 text-center">
+                                    <div className="flex-grow pt-6 text-center min-h-[110px]">
                                         <h4 className="text-xl font-bold text-primary">{cardData.name}</h4>
                                         <p className="mt-2 text-base font-bold text-muted-foreground">{cardData.role}</p>
                                         {cardData.role2 && <p className="mt-1 text-base text-muted-foreground">{cardData.role2}</p>}
@@ -160,7 +160,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 </div>
                             </div>
                         </div>
-                        <div className="relative w-full max-w-[280px] mx-auto h-full rounded-lg bg-accent">
+                        <div className="relative w-full max-w-[280px] mx-auto h-full rounded-lg bg-accent text-background p-6">
                              <Button
                                 variant="ghost"
                                 size="icon"
@@ -169,6 +169,9 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                             >
                                 <Pencil className="h-12 w-12 stroke-white stroke-[3]" />
                             </Button>
+                             {cardData.backsideContent && (
+                                <div className="text-center text-lg" dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
+                            )}
                         </div>
                     </div>
                 </div>
