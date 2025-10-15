@@ -6,7 +6,9 @@ import { Footer } from '../_components/footer';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { Skeleton } from '@/components/ui/skeleton';
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, orderBy, Timestamp } from 'firebase/firestore';
 
 
 interface Holiday {
@@ -21,18 +23,32 @@ function formatDate(date: Date) {
 }
 
 export default function PraxisferienPage() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [sortedHolidays, setSortedHolidays] = useState<Holiday[]>([]);
+  const firestore = useFirestore();
 
-  useEffect(() => {
-    // Simulate fetching data
-    setTimeout(() => {
-        // In a real scenario, you'd fetch data here.
-        // For now, we'll just show an empty state.
-        setSortedHolidays([]);
-        setIsLoading(false);
-    }, 500);
-  }, []);
+  const holidaysQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'holidays'), orderBy('start', 'asc'));
+  }, [firestore]);
+
+  const { data: holidaysData, isLoading } = useCollection<{ id: string; name: string; start: Timestamp; end: Timestamp }>(holidaysQuery);
+
+  const sortedHolidays: Holiday[] = useMemo(() => {
+    if (!holidaysData) return [];
+    
+    const now = new Date();
+    now.setHours(0,0,0,0);
+
+    return holidaysData
+      .map(h => ({
+        id: h.id,
+        name: h.name,
+        start: h.start.toDate(),
+        end: h.end.toDate(),
+      }))
+      .filter(h => h.end >= now)
+      .sort((a, b) => a.start.getTime() - b.start.getTime());
+  }, [holidaysData]);
+
 
   return (
     <div className="flex min-h-screen flex-col bg-background">

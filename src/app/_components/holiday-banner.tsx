@@ -6,6 +6,8 @@ import { format, differenceInDays, isWithinInterval, addDays, subDays } from 'da
 import { de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
+import { useDoc, useCollection, useMemoFirebase, useFirestore } from '@/firebase';
+import { doc, collection, query, where, Timestamp, orderBy } from 'firebase/firestore';
 
 const FilledDiamond = (props: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" {...props}>
@@ -57,7 +59,52 @@ function processPlaceholders(text: string, holiday: Holiday): string {
 
 
 function getActiveBanner(holidays: Holiday[], holidaySettings: BannerSettings | null, infoBanners: InfoBanner[] | null): BannerInfo | null {
-    return null; // Temporarily disable all banners to fix crash
+    const now = new Date();
+    
+    // 1. Check for active info banners
+    if (infoBanners) {
+        for (const banner of infoBanners) {
+            const start = banner.start ? new Date(banner.start) : null;
+            const end = banner.end ? new Date(banner.end) : null;
+
+            if (start && end && isWithinInterval(now, { start, end })) {
+                return {
+                    text: banner.text,
+                    color: 'blue',
+                    separatorStyle: banner.separatorStyle || 'diamonds',
+                };
+            }
+        }
+    }
+
+    if (!holidaySettings || !holidays || holidays.length === 0) {
+        return null;
+    }
+
+    // 2. Check for active holiday periods (red banner)
+    for (const holiday of holidays) {
+        if (isWithinInterval(now, { start: holiday.start, end: holiday.end })) {
+            return {
+                text: processPlaceholders(holidaySettings.redBannerText, holiday),
+                color: 'red',
+                separatorStyle: holidaySettings.redBannerSeparatorStyle || 'diamonds',
+            };
+        }
+    }
+    
+    // 3. Check for upcoming holiday announcements (yellow banner)
+    for (const holiday of holidays) {
+        const daysUntilStart = differenceInDays(holiday.start, now);
+        if (daysUntilStart > 0 && daysUntilStart <= holidaySettings.preHolidayDays) {
+            return {
+                text: processPlaceholders(holidaySettings.yellowBannerText, holiday),
+                color: 'yellow',
+                separatorStyle: holidaySettings.yellowBannerSeparatorStyle || 'diamonds',
+            };
+        }
+    }
+    
+    return null;
 }
 
 const Separator = ({ style }: { style: SeparatorStyle }) => {
@@ -73,16 +120,46 @@ const Separator = ({ style }: { style: SeparatorStyle }) => {
 };
 
 export function HolidayBanner() {
+    const firestore = useFirestore();
     const [isVisible, setIsVisible] = useState(true);
+    const [bannerInfo, setBannerInfo] = useState<BannerInfo | null>(null);
+
+    const settingsDocRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'banners') : null, [firestore]);
+    const { data: holidaySettingsData, isLoading: isLoadingSettings } = useDoc<BannerSettings>(settingsDocRef);
     
-    // Static data to avoid Firebase dependency
-    const holidays: Holiday[] = [];
-    const holidaySettingsData: BannerSettings | null = null;
-    const infoBannersData: InfoBanner[] | null = null;
+    const infoBannersQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'infoBanners'), orderBy('start', 'desc')) : null, [firestore]);
+    const { data: infoBannersData, isLoading: isLoadingInfoBanners } = useCollection<InfoBanner>(infoBannersQuery);
+
+    const holidaysQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        return query(collection(firestore, 'holidays'), where('end', '>=', Timestamp.fromDate(today)), orderBy('end', 'asc'));
+    }, [firestore]);
+    const { data: holidaysData, isLoading: isLoadingHolidays } = useCollection<{ name: string; start: any; end: any }>(holidaysQuery);
+
+    const holidays: Holiday[] = useMemo(() => {
+        if (!holidaysData) return [];
+        return holidaysData.map(h => ({ id: h.id, name: h.name, start: h.start.toDate(), end: h.end.toDate() })).sort((a, b) => a.start.getTime() - b.start.getTime());
+    }, [holidaysData]);
     
-    const bannerInfo = getActiveBanner(holidays, holidaySettingsData, infoBannersData);
-    
-    useEffect(() => { if(bannerInfo) { setIsVisible(true); } }, [bannerInfo]);
+    const infoBanners: InfoBanner[] = useMemo(() => {
+        if (!infoBannersData) return [];
+        return infoBannersData.map(banner => ({
+            ...banner,
+            start: banner.start instanceof Timestamp ? banner.start.toDate() : banner.start,
+            end: banner.end instanceof Timestamp ? banner.end.toDate() : banner.end,
+        }));
+    }, [infoBannersData]);
+
+    useEffect(() => {
+        if (!isLoadingSettings && !isLoadingInfoBanners && !isLoadingHolidays) {
+            const activeBanner = getActiveBanner(holidays, holidaySettingsData, infoBanners);
+            setBannerInfo(activeBanner);
+            if (activeBanner) {
+                setIsVisible(true);
+            }
+        }
+    }, [holidays, holidaySettingsData, infoBanners, isLoadingSettings, isLoadingInfoBanners, isLoadingHolidays]);
 
     const marqueeRef = useRef<HTMLDivElement>(null);
     const [animationDuration, setAnimationDuration] = useState('60s');
