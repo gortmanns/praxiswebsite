@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Calendar, LogOut, Users, Settings, Palette, CreditCard } from 'lucide-react';
+import { Home, Calendar, Users, Settings, Palette, CreditCard } from 'lucide-react';
 import {
   Sidebar,
   SidebarHeader,
@@ -26,20 +26,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { logout } from '../actions';
 
 
-interface AppSidebarProps {
-    user?: string;
-}
-
-export function AppSidebar({ user }: AppSidebarProps) {
+export function AppSidebar() {
   const pathname = usePathname();
-
-  const getInitials = (username: string | undefined) => {
-    if (!username) return 'A';
-    return username.charAt(0).toUpperCase();
-  };
   
   const navItems = [
     { href: '/admin/dashboard', label: 'Dashboard', icon: Home },
@@ -151,24 +141,15 @@ export function AppSidebar({ user }: AppSidebarProps) {
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-auto w-full justify-start gap-2 p-2 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0">
                     <Avatar className="h-8 w-8">
-                       <AvatarFallback>{getInitials(user)}</AvatarFallback>
+                       <AvatarFallback>A</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col items-start truncate group-data-[collapsible=icon]:hidden">
-                       <span className="text-sm font-medium">{user || 'Admin'}</span>
+                       <span className="text-sm font-medium">Admin</span>
                     </div>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="right" align="start">
                 <DropdownMenuLabel>Mein Konto</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                    <form action={logout} className="w-full">
-                        <button type="submit" className="w-full flex items-center">
-                            <LogOut className="mr-2 h-4 w-4" />
-                            <span>Abmelden</span>
-                        </button>
-                    </form>
-                </DropdownMenuItem>
             </DropdownMenuContent>
            </DropdownMenu>
         </SidebarFooter>
