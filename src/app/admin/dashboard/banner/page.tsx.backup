@@ -1,4 +1,4 @@
-// Diese seite darf im Rahmen von Änderungen die an anderen Seiten vorgenommen werde nur nach ausdrücklicher vorheriger Freigabe durch den Administrator geändert werden, wozu eine explizite RÜckfrage nötig ist
+
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
