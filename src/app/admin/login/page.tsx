@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -15,7 +16,7 @@ import { login } from './actions';
 import Image from 'next/image';
 
 const loginSchema = z.object({
-  username: z.string().min(1, 'Benutzername ist erforderlich.'),
+  username: z.string().email({ message: "Bitte geben Sie eine gültige E-Mail-Adresse ein." }),
   password: z.string().min(1, 'Passwort ist erforderlich.'),
 });
 
@@ -71,9 +72,9 @@ export default function LoginPage() {
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Benutzername</FormLabel>
+                    <FormLabel>E-Mail</FormLabel>
                     <FormControl>
-                      <Input placeholder="Benutzername" {...field} />
+                      <Input placeholder="admin@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
