@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { format, addDays, isWithinInterval } from 'date-fns';
+import { format, addDays } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { Calendar as CalendarIcon, Save, AlertCircle, Info, RotateCcw, Plus, Trash2, Pencil, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -57,8 +57,8 @@ interface InfoBanner {
 
 const initialBannerSettings: BannerSettings = {
     preHolidayDays: 14,
-    yellowBannerText: 'Die <Name nächste Ferien> stehen bevor. In der Zeit vom <erster Ferientag> bis und mit <letzer Ferientag> bleibt das Praxiszentrum geschlossen. Bitte überprüfen Sie Ihren Medikamentenvorrat und beziehen Sie allenfalls nötigen Nachschub rechtzeitig.',
-    redBannerText: 'Ferienhalber bleibt das Praxiszentrum in der Zeit vom <erster Ferientag> bis und mit <letzter Ferientag> geschlossen. Die Notfall-Notrufnummern finden sie rechts oben im Menü unter dem Punkt "NOTFALL". Ab dem <letzter Ferientag +1> stehen wieder wie gewohnt zur Verfügung.',
+    yellowBannerText: 'Die {name} stehen bevor. In der Zeit vom {start} bis und mit {end} bleibt das Praxiszentrum geschlossen. Bitte überprüfen Sie Ihren Medikamentenvorrat und beziehen Sie allenfalls nötigen Nachschub rechtzeitig.',
+    redBannerText: 'Ferienhalber bleibt das Praxiszentrum in der Zeit vom {start} bis und mit {end} geschlossen. Die Notfall-Notrufnummern finden sie rechts oben im Menü unter dem Punkt "NOTFALL". Ab dem {next_day} stehen wieder wie gewohnt zur Verfügung.',
     yellowBannerSeparatorStyle: 'diamonds',
     redBannerSeparatorStyle: 'diamonds',
 };
@@ -89,18 +89,18 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
         blue: 'bg-blue-500 border-blue-600 text-white',
     };
     
-    const fontSizeClass = 'text-sm';
     const marqueeRef = useRef<HTMLDivElement>(null);
     const [animationDuration, setAnimationDuration] = useState('60s');
 
     useEffect(() => {
         if (marqueeRef.current) {
-            const contentWidth = marqueeRef.current.scrollWidth / 2; // We have 2 copies of the content
-            const speed = 50; // pixels per second
+            const contentWidth = marqueeRef.current.scrollWidth / 2;
+            const speed = 50; 
             const duration = contentWidth / speed;
             setAnimationDuration(`${duration}s`);
         }
-    }, [text, separatorStyle]);
+    }, [text, separatorStyle, marqueeRef.current?.scrollWidth]);
+
 
     return (
         <div className={cn("relative w-full border", small ? "rounded-md" : "rounded-lg mt-8", bannerClasses[color])}>
@@ -114,7 +114,7 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
                         <React.Fragment key={i}>
                             <div className="flex shrink-0 items-center">
                                 <Info className="mr-3 h-5 w-5 shrink-0" />
-                                <p className={cn("whitespace-nowrap font-semibold", fontSizeClass)}>{text}</p>
+                                <p className={cn("whitespace-nowrap font-semibold text-sm")}>{text}</p>
                             </div>
                             <SeparatorPreview style={separatorStyle} />
                         </React.Fragment>
@@ -142,6 +142,39 @@ const SeparatorSelect = ({ value, onValueChange }: { value?: SeparatorStyle, onV
         </Select>
     );
 };
+
+const PlaceholderInfo = () => (
+    <Card>
+        <CardHeader>
+            <CardTitle className="text-primary font-bold">Verfügbare Text-Platzhalter</CardTitle>
+            <CardDescription>Diese Platzhalter werden automatisch durch die entsprechenden Daten aus den Ferienterminen ersetzt.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+            <div>
+                <h4 className="font-bold text-yellow-500">Gelbes Banner (Vorankündigung)</h4>
+                <Table>
+                    <TableHeader><TableRow><TableHead>Platzhalter</TableHead><TableHead>Beschreibung</TableHead></TableRow></TableHeader>
+                    <TableBody>
+                        <TableRow><TableCell className="font-mono">{'{}'}</TableCell><TableCell>Der Name der Ferien (z.B. "Sommerferien").</TableCell></TableRow>
+                        <TableRow><TableCell className="font-mono">{'{start}'}</TableCell><TableCell>Das Startdatum der Ferien.</TableCell></TableRow>
+                        <TableRow><TableCell className="font-mono">{'{end}'}</TableCell><TableCell>Das Enddatum der Ferien.</TableCell></TableRow>
+                    </TableBody>
+                </Table>
+            </div>
+            <div>
+                <h4 className="font-bold text-red-500">Rotes Banner (Während der Ferien)</h4>
+                <Table>
+                    <TableHeader><TableRow><TableHead>Platzhalter</TableHead><TableHead>Beschreibung</TableHead></TableRow></TableHeader>
+                    <TableBody>
+                        <TableRow><TableCell className="font-mono">{'{start}'}</TableCell><TableCell>Das Startdatum der Ferien.</TableCell></TableRow>
+                        <TableRow><TableCell className="font-mono">{'{end}'}</TableCell><TableCell>Das Enddatum der Ferien.</TableCell></TableRow>
+                        <TableRow><TableCell className="font-mono">{'{next_day}'}</TableCell><TableCell>Der erste Tag nach Ende der Ferien.</TableCell></TableRow>
+                    </TableBody>
+                </Table>
+            </div>
+        </CardContent>
+    </Card>
+);
 
 
 export default function BannerPage() {
@@ -293,6 +326,11 @@ export default function BannerPage() {
                 </div>
 
                 {notification && (<div className="w-full max-w-5xl"><TimedAlert variant={notification.variant} title={notification.title} description={notification.description} onClose={() => setNotification(null)} className="w-full"/></div>)}
+                
+                <div className="w-full max-w-5xl space-y-6">
+                    <PlaceholderInfo />
+                </div>
+
 
                 <div className="w-full max-w-5xl space-y-6">
                     <div className="border-2 border-accent rounded-lg">
@@ -347,7 +385,7 @@ export default function BannerPage() {
                                 <TableBody>
                                     {infoBanners.map(banner => (
                                         <TableRow key={banner.id} className={cn(isEditing && currentEditorBanner.id === banner.id && "bg-muted/50")}>
-                                            <TableCell>
+                                            <TableCell className="w-full">
                                                 <BannerPreview text={banner.text} color="blue" separatorStyle={banner.separatorStyle} small />
                                             </TableCell>
                                             <TableCell className="whitespace-nowrap">
@@ -380,12 +418,12 @@ export default function BannerPage() {
                             <p className="text-muted-foreground text-sm">Wird eine bestimmte Anzahl Tage vor den Praxisferien angezeigt.</p>
                         </div>
                         <div className="space-y-4 bg-background p-6 rounded-b-lg">
-                           <div className="flex items-start gap-4">
+                           <div className="flex flex-col md:flex-row items-start gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="preHolidayDays">Wie viele Tage vorher anzeigen?</Label>
                                     <Input id="preHolidayDays" type="number" className="w-24" value={bannerSettings.preHolidayDays} onChange={(e) => handleBannerSettingsChange('preHolidayDays', parseInt(e.target.value, 10))} />
                                 </div>
-                                <div className="flex-1 pt-1.5">
+                                <div className="flex-1 pt-1.5 w-full">
                                     <Alert variant="info" className="mt-5">
                                         <Info className="h-4 w-4" />
                                         <AlertTitle className="font-bold">Anzeigedauer</AlertTitle>
@@ -413,9 +451,7 @@ export default function BannerPage() {
                                         <TooltipTrigger asChild>
                                             <Button variant="ghost" size="icon" className="cursor-help"><Info className="h-4 w-4" /></Button>
                                         </TooltipTrigger>
-                                        <TooltipContent className="max-w-[300px]">
-                                            <p>{initialBannerSettings.yellowBannerText.replace('{name}', 'Name nächste Ferien').replace('{start}', 'erster Ferientag').replace('{end}', 'letzer Ferientag')}</p>
-                                        </TooltipContent>
+                                        <TooltipContent className="max-w-[300px]"><p>{initialBannerSettings.yellowBannerText.replace('{name}', 'Name nächste Ferien').replace('{start}', 'erster Ferientag').replace('{end}', 'letzer Ferientag')}</p></TooltipContent>
                                     </Tooltip>
                                 </div>
                                 <Button onClick={handleSaveBannerSettings}>
@@ -451,9 +487,7 @@ export default function BannerPage() {
                                         <TooltipTrigger asChild>
                                             <Button variant="ghost" size="icon" className="cursor-help"><Info className="h-4 w-4" /></Button>
                                         </TooltipTrigger>
-                                        <TooltipContent className="max-w-[300px]">
-                                            <p>{initialBannerSettings.redBannerText.replace('{start}', 'erster Ferientag').replace('{end}', 'letzter Ferientag').replace('{next_day}', 'letzter Ferientag +1')}</p>
-                                        </TooltipContent>
+                                        <TooltipContent className="max-w-[300px]"><p>{initialBannerSettings.redBannerText.replace('{start}', 'erster Ferientag').replace('{end}', 'letzter Ferientag').replace('{next_day}', 'letzter Ferientag +1')}</p></TooltipContent>
                                     </Tooltip>
                                 </div>
                                 <Button onClick={handleSaveBannerSettings}>
@@ -485,6 +519,7 @@ export default function BannerPage() {
                 }
                 .marquee-preview {
                     animation: marquee-preview linear infinite;
+                    animation-duration: var(--animation-duration, 60s);
                 }
             `}</style>
         </TooltipProvider>
