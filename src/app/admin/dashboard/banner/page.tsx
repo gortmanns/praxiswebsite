@@ -96,16 +96,15 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
             const speed = 50; 
             const duration = contentWidth / speed;
             
-            let finalDuration = '86s'; // Default long duration for blue banner
-             if (small && color === 'blue') {
-                finalDuration = '30s';
+            if (small && color === 'blue') {
+                setAnimationDuration(`${duration}s`);
             } else if (color === 'red' || color === 'yellow') {
-                finalDuration = '50s';
+                 setAnimationDuration('50s');
+            } else {
+                 setAnimationDuration('86s');
             }
-            
-            setAnimationDuration(`${duration}s`);
         }
-    }, [text, separatorStyle, marqueeRef.current?.scrollWidth, small, color]);
+    }, [text, separatorStyle, small, color]);
 
 
     return (
@@ -118,7 +117,7 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
                 >
                     {Array.from({ length: 10 }).map((_, i) => (
                         <React.Fragment key={i}>
-                            <p className={cn("whitespace-nowrap font-semibold", small ? "text-sm" : "text-base")}>{text}</p>
+                            <p className={cn("whitespace-nowrap font-semibold", small ? "text-sm" : "text-xl")}>{text}</p>
                             <SeparatorPreview style={separatorStyle} />
                         </React.Fragment>
                     ))}
@@ -147,17 +146,16 @@ const SeparatorSelect = ({ value, onValueChange }: { value?: SeparatorStyle, onV
 };
 
 const PlaceholderAlert = () => (
-    <Alert variant="info" className="mt-4">
-        <Info className="h-4 w-4" />
+    <Alert variant="info" className="mt-0">
         <AlertTitle className="font-bold">Verfügbare Platzhalter</AlertTitle>
-        <AlertDescription>
-            <code className="font-mono text-xs">{'{name}'}</code>, 
-            <code className="font-mono text-xs">{'{start}'}</code>, 
-            <code className="font-mono text-xs">{'{start-1}'}</code>, 
-            <code className="font-mono text-xs">{'{ende}'}</code>, 
-            <code className="font-mono text-xs">{'{ende+1}'}</code>, 
-            <code className="font-mono text-xs">{'{ende+2}'}</code>, 
-            <code className="font-mono text-xs">{'{ende+3}'}</code>
+        <AlertDescription className="text-xs">
+            <code className="font-mono">{'{name}'}</code>, 
+            <code className="font-mono">{'{start}'}</code>, 
+            <code className="font-mono">{'{start-1}'}</code>, 
+            <code className="font-mono">{'{ende}'}</code>, 
+            <code className="font-mono">{'{ende+1}'}</code>, 
+            <code className="font-mono">{'{ende+2}'}</code>, 
+            <code className="font-mono">{'{ende+3}'}</code>
         </AlertDescription>
     </Alert>
 );
@@ -411,7 +409,6 @@ export default function BannerPage() {
                                 </div>
                                 <div className="flex-1 pt-1.5 w-full">
                                     <Alert variant="info" className="mt-5">
-                                        <Info className="h-4 w-4" />
                                         <AlertTitle className="font-bold">Anzeigedauer</AlertTitle>
                                         <AlertDescription>
                                             Sie können die Anzahl der Tage einstellen, die das Banner vor dem ersten Ferientag eingeblendet werden soll. Ein Enddatum ist nicht nötig, da es bei Erreichen des ersten Ferientags automatisch durch das rote Ferienbanner abgelöst wird.
@@ -423,9 +420,9 @@ export default function BannerPage() {
                                 <Label htmlFor="yellowBannerText">Bannertext</Label>
                                 <Textarea id="yellowBannerText" value={bannerSettings.yellowBannerText} onChange={(e) => handleBannerSettingsChange('yellowBannerText', e.target.value)} rows={4} />
                             </div>
-                            <PlaceholderAlert />
-                            <div className="flex items-end justify-between pt-2">
-                                <div className="flex items-end gap-4">
+                            
+                            <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+                                <div className="flex items-center gap-4">
                                     <div className="space-y-2">
                                         <Label>Trennzeichen-Stil</Label>
                                         <SeparatorSelect value={bannerSettings.yellowBannerSeparatorStyle} onValueChange={(value) => handleBannerSettingsChange('yellowBannerSeparatorStyle', value)} />
@@ -434,6 +431,9 @@ export default function BannerPage() {
                                         <RotateCcw className="mr-2 h-4 w-4" />
                                         Standardtext
                                     </Button>
+                                </div>
+                                <div className="flex-1 min-w-[300px]">
+                                    <PlaceholderAlert />
                                 </div>
                                 <Button onClick={handleSaveBannerSettings}>
                                     <Save className="mr-2 h-4 w-4" />
@@ -454,9 +454,9 @@ export default function BannerPage() {
                                 <Label htmlFor="redBannerText">Bannertext</Label>
                                 <Textarea id="redBannerText" value={bannerSettings.redBannerText} onChange={(e) => handleBannerSettingsChange('redBannerText', e.target.value)} rows={4} />
                             </div>
-                            <PlaceholderAlert />
-                            <div className="flex items-end justify-between pt-2">
-                                <div className="flex items-end gap-4">
+
+                            <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+                                <div className="flex items-center gap-4">
                                     <div className="space-y-2">
                                         <Label>Trennzeichen-Stil</Label>
                                         <SeparatorSelect value={bannerSettings.redBannerSeparatorStyle} onValueChange={(value) => handleBannerSettingsChange('redBannerSeparatorStyle', value)} />
@@ -465,6 +465,9 @@ export default function BannerPage() {
                                         <RotateCcw className="mr-2 h-4 w-4" />
                                         Standardtext
                                     </Button>
+                                </div>
+                                <div className="flex-1 min-w-[300px]">
+                                    <PlaceholderAlert />
                                 </div>
                                 <Button onClick={handleSaveBannerSettings}>
                                     <Save className="mr-2 h-4 w-4" />
