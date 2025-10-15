@@ -22,9 +22,6 @@ export default function DashboardLayout({
         {children}
         <Toaster />
       </SidebarInset>
-      <style>
-        {`* { border: 1px solid red !important; }`}
-      </style>
     </SidebarProvider>
   );
 }
