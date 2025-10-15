@@ -22,7 +22,7 @@ import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
-import { StaffCard } from './_components/staff-card';
+import { StaffCard as DisplayCard } from './_components/staff-card';
 import { StaffEditor } from './_components/staff-editor';
 import type { StaffMember as CardData } from './_components/staff-editor';
 
@@ -223,53 +223,50 @@ export default function StaffPageManager() {
                 <p className="text-sm text-muted-foreground">{description}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-16 mt-8">
                    {items.map((item, index) => (
-                       <div key={item.id} className={cn("flex justify-center", item.fullWidth && "sm:col-span-2")}>
-                            <div className="relative">
-                                <div id={`buttons-${item.id}`} className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 flex w-40 flex-col items-center justify-center gap-2 pr-4">
-                                     <div className="flex w-full flex-col items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
+                       <div key={item.id} className={cn("relative flex justify-center", item.fullWidth && "sm:col-span-2")}>
+                            <div id={`buttons-${item.id}`} className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 flex w-40 flex-col items-center justify-center gap-2 pr-4">
+                                <div className="flex w-full flex-col items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
+                                    {!isHiddenGrid && (
+                                        <div className="grid grid-cols-2 gap-1 w-full">
+                                            <Button size="icon" variant="ghost" className="h-9 w-full" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
+                                            <Button size="icon" variant="ghost" className="h-9 w-full" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
+                                        </div>
+                                    )}
+                                    <div className="flex-grow flex flex-col gap-1 w-full">
+                                        <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleEdit(item)}>
+                                            <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                                        </Button>
+                                        <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleToggleHidden(item)}>
+                                            {item.hidden ? <><Eye className="mr-2 h-4 w-4" /> Einblenden</> : <><EyeOff className="mr-2 h-4 w-4" /> Ausblenden</>}
+                                        </Button>
                                         {!isHiddenGrid && (
-                                            <div className="grid grid-cols-2 gap-1 w-full">
-                                                <Button size="icon" variant="ghost" className="h-9 w-full" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
-                                                <Button size="icon" variant="ghost" className="h-9 w-full" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
+                                            <div className="flex items-center justify-between w-full h-9 px-3 py-2 rounded-md border border-input bg-transparent text-sm">
+                                                <Label htmlFor={`fullwidth-switch-${item.id}`} className="flex items-center gap-2 cursor-pointer">
+                                                    <Columns className={cn("h-4 w-4", item.fullWidth && "text-primary")} />
+                                                    <span>Ganze Zeile</span>
+                                                </Label>
+                                                <Switch
+                                                    id={`fullwidth-switch-${item.id}`}
+                                                    checked={!!item.fullWidth}
+                                                    onCheckedChange={() => handleToggleFullWidth(item)}
+                                                />
                                             </div>
                                         )}
-                                        <div className="flex-grow flex flex-col gap-1 w-full">
-                                            <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleEdit(item)}>
-                                                <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                                            </Button>
-                                             <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleToggleHidden(item)}>
-                                                {item.hidden ? <><Eye className="mr-2 h-4 w-4" /> Einblenden</> : <><EyeOff className="mr-2 h-4 w-4" /> Ausblenden</>}
-                                            </Button>
-                                             {!isHiddenGrid && (
-                                                <div className="flex items-center justify-between w-full h-9 px-3 py-2 rounded-md border border-input bg-transparent text-sm">
-                                                    <Label htmlFor={`fullwidth-switch-${item.id}`} className="flex items-center gap-2 cursor-pointer">
-                                                        <Columns className={cn("h-4 w-4", item.fullWidth && "text-primary")} />
-                                                        <span>Ganze Zeile</span>
-                                                    </Label>
-                                                    <Switch
-                                                        id={`fullwidth-switch-${item.id}`}
-                                                        checked={!!item.fullWidth}
-                                                        onCheckedChange={() => handleToggleFullWidth(item)}
-                                                    />
-                                                </div>
-                                            )}
-                                        </div>
-                                       
-                                        {isHiddenGrid && (
-                                            <Button variant="destructive" size="sm" className="w-full justify-start" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                                                <Trash2 className="mr-2 h-4 w-4" /> Löschen
-                                            </Button>
-                                        )}
                                     </div>
+                                    {isHiddenGrid && (
+                                        <Button variant="destructive" size="sm" className="w-full justify-start" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                                            <Trash2 className="mr-2 h-4 w-4" /> Löschen
+                                        </Button>
+                                    )}
                                 </div>
-                                <div className={cn("w-full max-w-sm", isHiddenGrid && "grayscale")}>
-                                  <StaffCard {...item} />
-                                </div>
+                            </div>
+                            <div className={cn("w-full max-w-sm", isHiddenGrid && "grayscale")}>
+                                <DisplayCard {...item} />
                             </div>
                         </div>
                    ))}
                 </div>
-             </div>
+            </div>
            );
         };
     
@@ -320,7 +317,7 @@ export default function StaffPageManager() {
                                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                                     <div className="grid grid-cols-1 gap-4 place-items-center">
                                         <div className="relative flex items-center justify-center w-full max-w-sm">
-                                            <StaffCard {...editorCardState} />
+                                            <DisplayCard {...editorCardState} />
                                         </div>
                                     </div>
                                 </div>
