@@ -155,9 +155,9 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 </div>
 
                 {/* Right side: Visual Live Preview Area */}
-                 <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[430px] grid grid-cols-4 gap-4">
+                 <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[420px] grid grid-cols-4 gap-4">
                     <div className="col-span-1 border-2 border-pink-500 flex flex-col items-center justify-end pb-2">
-                         <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-full pointer-events-auto flex flex-col h-auto p-2 gap-1">
+                         <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-4/5 pointer-events-auto flex flex-col h-auto p-2 gap-1">
                             <RotateCcw className="h-4 w-4" />
                             <span>Zurück</span>
                         </Button>
