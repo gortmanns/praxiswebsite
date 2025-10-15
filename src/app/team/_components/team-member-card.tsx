@@ -28,7 +28,7 @@ export function TeamMemberCard({ name, role, role2, imageUrl, imageHint, languag
                     data-ai-hint={imageHint}
                 />
             </div>
-            <div className="flex-grow pt-6 text-center">
+            <div className="flex-grow pt-6 text-center min-h-[110px]">
                 <h4 className="text-xl font-bold text-primary">{name}</h4>
                 <p className="mt-2 text-base font-bold text-muted-foreground">{role}</p>
                 {role2 && <p className="mt-1 text-base text-muted-foreground">{role2}</p>}
