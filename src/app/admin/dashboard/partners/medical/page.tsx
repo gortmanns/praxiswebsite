@@ -45,9 +45,9 @@ const RowGrid: React.FC<{
         const isLast = index === partners.length - 1;
 
         return (
-            <div key={partner.id} className="flex flex-col items-center space-y-4">
+            <div key={partner.id} className="flex w-full flex-col items-center space-y-4">
                 <DisplayCard {...partner} />
-                <div id={`buttons-${partner.id}`} className="flex w-full max-w-sm items-center justify-center gap-1 rounded-lg border bg-background/80 p-2 shadow-inner">
+                <div id={`buttons-${partner.id}`} className="flex w-full items-center justify-center gap-1 rounded-lg border bg-background/80 p-2 shadow-inner">
                     <Button size="sm" variant="ghost" onClick={() => onMove(partner.id, 'left')} disabled={isFirst}><ArrowLeft /></Button>
                     <Button size="sm" variant="ghost" onClick={() => onMove(partner.id, 'right')} disabled={isLast}><ArrowRight /></Button>
                     
@@ -292,42 +292,9 @@ function MedicalPartnersPageManager() {
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
     const partnerEditorOverlay = isEditing ? (
-        <div className="pointer-events-none absolute inset-0 z-10">
-             <div className="flex h-full w-full justify-end">
-                <div className="flex h-full w-[40%] flex-col justify-end">
-                    <div className="relative">
-                        <div className="pointer-events-auto absolute -top-16 left-0 right-0">
-                             <div className="mx-auto mb-2 w-4/5 space-y-2">
-                                <div className="text-center text-primary-foreground">
-                                    <label htmlFor="logoScale" className="text-sm">Grösse: {editorCardState.logoScale || 100}%</label>
-                                </div>
-                            </div>
-                        </div>
-                        <DisplayCard {...editorCardState} />
-                    </div>
-                     <div className="pointer-events-auto mt-4 flex w-full flex-col items-center justify-center">
-                        <div className="w-full px-2">
-                        </div>
-                        <div className="mt-1 text-center text-xs text-white">
-                            <div>Horizontale Position</div>
-                            <div>{editorCardState.logoX || 0}px</div>
-                        </div>
-                    </div>
-                </div>
-                <div className="pointer-events-auto flex h-full w-[10%] flex-col justify-end">
-                    <div className="h-32">
-                        <div className="flex h-full flex-row items-center justify-center gap-2">
-                            <div className="flex h-full justify-center">
-                            </div>
-                             <div className="text-center text-xs text-white">
-                                <div>Vertikale</div>
-                                <div>Position</div>
-                                <div>{editorCardState.logoY || 0}px</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="h-14 w-full" />
-                </div>
+        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+            <div className="w-full">
+                <DisplayCard {...editorCardState} />
             </div>
         </div>
     ) : null;

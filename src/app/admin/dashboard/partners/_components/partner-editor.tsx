@@ -13,8 +13,9 @@ import { ImageSourceDialog } from '@/app/admin/dashboard/team/doctors/_component
 import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_components/image-library-dialog';
 import { TextEditDialog } from '@/app/admin/dashboard/team/doctors/_components/text-edit-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Code2, ImageUp, RotateCcw } from 'lucide-react';
+import { Code2, ImageUp, RotateCcw, MoveHorizontal, MoveVertical } from 'lucide-react';
 import { projectImages } from '../project-images';
+import { Slider } from '@/components/ui/slider';
 
 
 export interface Partner {
@@ -53,6 +54,11 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
     const handleInputChange = (field: keyof Partner, value: string | boolean | number) => {
         const newCardData = { ...cardData, [field]: value };
         onUpdate(newCardData);
+    };
+
+    const handleSliderChange = (field: 'logoScale' | 'logoX' | 'logoY', value: number[]) => {
+        const singleValue = value[0];
+        handleInputChange(field, singleValue);
     };
     
     const handleResetControls = () => {
@@ -142,12 +148,46 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                         <Button variant="secondary" onClick={() => setDialogState({ type: 'htmlEditor', data: {} })}>
                             <Code2 className="mr-2 h-4 w-4" /> HTML bearbeiten
                         </Button>
-                        <div className="ml-auto">
-                            <Button onClick={handleResetControls} variant="secondary" size="sm">
-                                <RotateCcw className="mr-2 h-4 w-4" />
-                                Normalwerte wiederherstellen
-                            </Button>
+                    </div>
+
+                    <div className="space-y-4 pt-4 border-t">
+                        <Label className="font-bold">Anpassungen für Bild-Logos</Label>
+                        <div className="space-y-2">
+                            <div className="text-sm">Grösse: {cardData.logoScale || 100}%</div>
+                            <Slider
+                                id="logoScale"
+                                value={[cardData.logoScale || 100]}
+                                onValueChange={(value) => handleSliderChange('logoScale', value)}
+                                max={200}
+                                step={1}
+                            />
                         </div>
+                         <div className="space-y-2">
+                            <div className="text-sm flex items-center gap-2"><MoveHorizontal/> Horizontale Position: {cardData.logoX || 0}px</div>
+                            <Slider
+                                id="logoX"
+                                value={[cardData.logoX || 0]}
+                                onValueChange={(value) => handleSliderChange('logoX', value)}
+                                min={-100}
+                                max={100}
+                                step={1}
+                            />
+                        </div>
+                         <div className="space-y-2">
+                            <div className="text-sm flex items-center gap-2"><MoveVertical/> Vertikale Position: {cardData.logoY || 0}px</div>
+                            <Slider
+                                id="logoY"
+                                value={[cardData.logoY || 0]}
+                                onValueChange={(value) => handleSliderChange('logoY', value)}
+                                min={-100}
+                                max={100}
+                                step={1}
+                            />
+                        </div>
+                        <Button onClick={handleResetControls} variant="secondary" size="sm">
+                            <RotateCcw className="mr-2 h-4 w-4" />
+                            Zurücksetzen
+                        </Button>
                     </div>
                 </div>
 
