@@ -22,9 +22,9 @@ export async function login(credentials: unknown): Promise<LoginResult> {
 
   const { username, password } = result.data;
 
-  // Hardcoded comparison as a reliable fallback
-  const isUsernameValid = username === 'web-admin';
-  const isPasswordValid = password === 'PraZeiR2023.';
+  // This is the secure and correct way to access environment variables on the server in Next.js
+  const isUsernameValid = username === process.env.ADMIN_USERNAME;
+  const isPasswordValid = password === process.env.ADMIN_PASSWORD;
 
   if (!isUsernameValid || !isPasswordValid) {
     return { success: false, error: 'Ungültiger Benutzername oder falsches Passwort.' };
