@@ -1,3 +1,4 @@
+
 'use client';
 import React from 'react';
 import Link from 'next/link';
@@ -7,8 +8,6 @@ import type { MedicalPartner, OtherPartner } from '@/docs/backend-types';
 import DOMPurify from 'dompurify';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, where } from 'firebase/firestore';
-import { cn } from '@/lib/utils';
-
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
@@ -30,7 +29,7 @@ const PartnerLink: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
         href={partner.websiteUrl || '#'}
         target={partner.openInNewTab ? '_blank' : '_self'}
         rel="noopener noreferrer"
-        className="group relative block h-32 w-full overflow-hidden rounded-lg shadow-2xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        className="group relative block h-32 w-full max-w-[280px] mx-auto overflow-hidden rounded-lg shadow-2xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
     >
         <Card className="flex h-full w-full items-center justify-center bg-background p-2">
             {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}
@@ -39,35 +38,61 @@ const PartnerLink: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
     </Link>
 );
 
+const RowGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
+    if (!partners || partners.length === 0) return null;
+    const count = partners.length;
+
+    const getCardWithGridColumn = (card: MedicalPartner | OtherPartner, index: number) => {
+        let colStart = 0;
+        
+        // 4 cards (2-2-2-2 structure)
+        if (count === 4) {
+            colStart = index * 2 + 1;
+        } 
+        // 3 cards (1-2-2-2-1 structure)
+        else if (count === 3) {
+            colStart = index * 2 + 2;
+        }
+        // 2 cards (2-2-2-2 structure, centered)
+        else if (count === 2) {
+            colStart = index * 2 + 3;
+        }
+        // 1 card (1-2-2-2-1 structure, centered)
+        else if (count === 1) {
+            colStart = 4;
+        }
+
+        return (
+            <div key={card.id} style={{ gridColumnStart: colStart }} className="col-span-2 flex items-center justify-center">
+                <PartnerLink partner={card} />
+            </div>
+        );
+    };
+
+    return (
+        <div className="grid grid-cols-8 gap-8">
+            {partners.map((partner, index) => getCardWithGridColumn(partner, index))}
+        </div>
+    );
+};
 
 const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
     if (!partners || partners.length === 0) return null;
 
-    const count = partners.length;
-    const isSingleRow = count < 4;
-
-    const getGridClass = () => {
-        if (isSingleRow) {
-            switch (count) {
-                case 1: return 'md:grid-cols-1';
-                case 2: return 'md:grid-cols-2';
-                case 3: return 'md:grid-cols-3';
-                default: return 'md:grid-cols-4';
-            }
-        }
-        return 'md:grid-cols-4';
-    };
+    const chunkedPartners = [];
+    for (let i = 0; i < partners.length; i += 4) {
+        chunkedPartners.push(partners.slice(i, i + 4));
+    }
 
     return (
-        <div className={cn("grid grid-cols-1 sm:grid-cols-2 gap-8 justify-center", getGridClass())}>
-            {partners.map(partner => (
-                <div key={partner.id} className="w-full max-w-[280px] mx-auto">
-                    <PartnerLink partner={partner} />
-                </div>
+        <div className="space-y-8">
+            {chunkedPartners.map((rowPartners, index) => (
+                <RowGrid key={index} partners={rowPartners} />
             ))}
         </div>
     );
 };
+
 
 export function CooperationPartnersSection() {
   const firestore = useFirestore();

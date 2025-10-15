@@ -234,23 +234,38 @@ function ReusableCardManager<T extends CardData>({
         </div>
     );
     
-    const RowGrid: React.FC<{ partners: T[], totalItems: number, isHidden?: boolean }> = ({ partners, totalItems, isHidden }) => {
+    const RowGrid: React.FC<{ partners: T[]; totalItems: number, isHidden?: boolean }> = ({ partners, totalItems, isHidden }) => {
         if (!partners || partners.length === 0) return null;
+        const count = partners.length;
 
-        const getCardProps = (partner: T, index: number) => ({
-            partner: partner,
-            isFirst: index === 0,
-            isLast: index === totalItems - 1,
-            isHiddenCard: isHidden
-        });
-        
+        const getCardWithGridColumn = (card: T, index: number) => {
+            let colStart = 0;
+            
+            if (count === 4) { // 2-2-2-2
+                colStart = index * 2 + 1;
+            } else if (count === 3) { // 1-2-2-2-1
+                colStart = index * 2 + 2;
+            } else if (count === 2) { // 2-2-2-2 centered
+                colStart = index * 2 + 3;
+            } else if (count === 1) { // 1-2-2-2-1 centered
+                colStart = 4;
+            }
+
+            return (
+                <div key={card.id} style={{ gridColumnStart: colStart }} className="col-span-2 flex items-center justify-center">
+                    <AdminPartnerCard 
+                        partner={card} 
+                        isFirst={index === 0} 
+                        isLast={index === totalItems - 1} 
+                        isHiddenCard={isHidden} 
+                    />
+                </div>
+            );
+        };
+
         return (
-             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                {partners.map((partner, index) => (
-                    <div key={partner.id}>
-                        <AdminPartnerCard {...getCardProps(partner, partners.findIndex(p => p.id === partner.id))} />
-                    </div>
-                ))}
+            <div className="grid grid-cols-8 gap-8">
+                {partners.map((partner, index) => getCardWithGridColumn(partner, index))}
             </div>
         );
     };
