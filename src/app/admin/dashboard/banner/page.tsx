@@ -19,8 +19,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { useFirestore, useDoc, useMemoFirebase, useCollection } from '@/firebase';
+import { doc, setDoc, collection, query, orderBy, addDoc, deleteDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { v4 as uuidv4 } from 'uuid';
 
 const bannerClasses = {
     yellow: 'bg-yellow-400 border-yellow-500 text-yellow-900',
@@ -47,10 +48,19 @@ interface BannerSettings {
 interface InfoBanner {
     id: string;
     text: string;
-    start?: Date;
-    end?: Date;
-    separatorStyle?: SeparatorStyle;
+    start: Date;
+    end: Date;
+    separatorStyle: SeparatorStyle;
 }
+
+interface InfoBannerFromDB {
+    id: string;
+    text: string;
+    start: Timestamp;
+    end: Timestamp;
+    separatorStyle: SeparatorStyle;
+}
+
 
 const initialBannerSettings: BannerSettings = {
     preHolidayDays: 14,
@@ -155,8 +165,27 @@ function BannerManager() {
     const [notification, setNotification] = useState<TimedAlertProps | null>(null);
     const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; bannerId?: string; bannerText?: string }>({ isOpen: false });
 
-    const settingsDocRef = useMemoFirebase(() => (firestore ? doc(firestore, 'settings', 'banners') : null), [firestore]);
+    const settingsDocRef = useMemoFirebase(() => {
+        if (!firestore) return null;
+        return doc(firestore, 'settings', 'banners');
+    }, [firestore]);
     const { data: dbSettings, isLoading: isLoadingSettings, error: dbSettingsError } = useDoc<BannerSettings>(settingsDocRef);
+    
+    const infoBannersQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        return query(collection(firestore, 'infoBanners'), orderBy('start', 'desc'));
+    }, [firestore]);
+    const { data: infoBannersData, isLoading: isLoadingInfoBanners, error: dbInfoBannerError } = useCollection<InfoBannerFromDB>(infoBannersQuery);
+
+    const infoBanners: InfoBanner[] = useMemo(() => {
+        if (!infoBannersData) return [];
+        return infoBannersData.map(b => ({
+            ...b,
+            start: b.start.toDate(),
+            end: b.end.toDate(),
+        }));
+    }, [infoBannersData]);
+
 
     useEffect(() => {
         if (dbSettings) {
@@ -170,10 +199,6 @@ function BannerManager() {
     };
     
     const handleSaveBannerSettings = async () => {
-        if (!firestore) {
-            setNotification({ variant: 'destructive', title: 'Fehler', description: 'Datenbankverbindung nicht verfügbar.' });
-            return;
-        }
         if (!settingsDocRef) return;
 
         try {
@@ -185,22 +210,69 @@ function BannerManager() {
         }
     };
 
-
-    const handleInfoBannerInputChange = (field: keyof InfoBanner, value: any) => setCurrentEditorBanner(prev => ({ ...prev, [field]: value }));
+    const handleInfoBannerInputChange = (field: keyof Omit<InfoBanner, 'id'>, value: any) => setCurrentEditorBanner(prev => ({ ...prev, [field]: value }));
     
     const handleNewInfoBanner = () => {
         setCurrentEditorBanner({ ...initialInfoBannerState });
         setIsEditing(true);
     };
     
+    const handleEditInfoBanner = (banner: InfoBanner) => {
+        setCurrentEditorBanner(banner);
+        setIsEditing(true);
+    }
+    
     const handleCancelEdit = () => {
         setIsEditing(false);
         setCurrentEditorBanner(initialInfoBannerState);
     };
 
-    const handleDisabledClick = () => {
-        setNotification({ variant: 'warning', title: 'Funktion deaktiviert', description: 'Diese Funktion ist in dieser Version noch nicht implementiert.' });
+    const handleSaveInfoBanner = async () => {
+        if (!firestore) return;
+
+        const bannerToSave = { ...currentEditorBanner };
+
+        if (!bannerToSave.text || !bannerToSave.start || !bannerToSave.end) {
+            setNotification({ variant: 'destructive', title: 'Fehler', description: 'Bitte füllen Sie alle Felder aus.' });
+            return;
+        }
+
+        try {
+            if (bannerToSave.id) {
+                // Update
+                const docRef = doc(firestore, 'infoBanners', bannerToSave.id);
+                await setDoc(docRef, bannerToSave, { merge: true });
+                setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Info-Banner aktualisiert.' });
+            } else {
+                // Create
+                const newId = uuidv4();
+                const docRef = doc(firestore, 'infoBanners', newId);
+                await setDoc(docRef, { ...bannerToSave, id: newId, createdAt: serverTimestamp() });
+                setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Neues Info-Banner erstellt.' });
+            }
+            handleCancelEdit();
+        } catch (e: any) {
+             console.error("Error saving info banner: ", e);
+            setNotification({ variant: 'destructive', title: 'Fehler', description: `Info-Banner konnte nicht gespeichert werden: ${e.message}` });
+        }
     };
+    
+    const openDeleteConfirmation = (banner: InfoBanner) => {
+        setDeleteConfirm({ isOpen: true, bannerId: banner.id, bannerText: banner.text });
+    };
+
+    const handleDeleteInfoBanner = async () => {
+        if (!firestore || !deleteConfirm.bannerId) return;
+        try {
+            await deleteDoc(doc(firestore, 'infoBanners', deleteConfirm.bannerId));
+            setNotification({ variant: 'success', title: 'Gelöscht', description: 'Das Info-Banner wurde entfernt.' });
+            setDeleteConfirm({ isOpen: false });
+        } catch (e: any) {
+            console.error("Error deleting info banner: ", e);
+            setNotification({ variant: 'destructive', title: 'Fehler', description: `Info-Banner konnte nicht gelöscht werden: ${e.message}` });
+        }
+    };
+
 
     const previewYellowText = useMemo(() => {
         return bannerSettings.yellowBannerText
@@ -261,7 +333,7 @@ function BannerManager() {
                                         <div className="space-y-2"><Label>Trennzeichen-Stil</Label><SeparatorSelect value={currentEditorBanner.separatorStyle} onValueChange={(value) => handleInfoBannerInputChange('separatorStyle', value)} /></div>
                                         <div className="flex gap-2">
                                             <Button variant="outline" onClick={handleCancelEdit}><XCircle className="mr-2 h-4 w-4" />Abbrechen</Button>
-                                            <Button onClick={handleDisabledClick}><Save className="mr-2 h-4 w-4" />Speichern</Button>
+                                            <Button onClick={handleSaveInfoBanner}><Save className="mr-2 h-4 w-4" />Speichern</Button>
                                         </div>
                                     </div>
                                 </div>
@@ -279,11 +351,30 @@ function BannerManager() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    <TableRow>
-                                        <TableCell colSpan={3} className="text-center text-muted-foreground py-8">
-                                            Die Logik für blaue Info-Banner ist in dieser Version nicht implementiert.
-                                        </TableCell>
-                                    </TableRow>
+                                    {isLoadingInfoBanners ? (
+                                        <TableRow><TableCell colSpan={3} className="text-center"><Skeleton className="h-8 w-full" /></TableCell></TableRow>
+                                    ) : infoBanners.length > 0 ? (
+                                        infoBanners.map(banner => (
+                                            <TableRow key={banner.id}>
+                                                <TableCell>
+                                                    <BannerPreview text={banner.text} color="blue" separatorStyle={banner.separatorStyle} small />
+                                                </TableCell>
+                                                <TableCell className="whitespace-nowrap">
+                                                    {format(banner.start, 'dd.MM.yy', { locale: de })} - {format(banner.end, 'dd.MM.yy', { locale: de })}
+                                                </TableCell>
+                                                <TableCell className="text-right space-x-2">
+                                                    <Button variant="ghost" size="icon" onClick={() => handleEditInfoBanner(banner)}><Pencil className="h-4 w-4" /></Button>
+                                                    <Button variant="ghost" size="icon" onClick={() => openDeleteConfirmation(banner)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell colSpan={3} className="text-center text-muted-foreground py-8">
+                                                Keine Info-Banner gefunden.
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
                                 </TableBody>
                             </Table>
                         </div>
@@ -388,7 +479,7 @@ function BannerManager() {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDisabledClick} className={cn(buttonVariants({ variant: "destructive" }))}>Löschen</AlertDialogAction>
+                        <AlertDialogAction onClick={handleDeleteInfoBanner} className={cn(buttonVariants({ variant: "destructive" }))}>Löschen</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
@@ -409,5 +500,3 @@ function BannerManager() {
 export default function BannerPage() {
     return <BannerManager />;
 }
-
-    
