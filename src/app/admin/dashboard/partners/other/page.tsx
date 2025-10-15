@@ -297,26 +297,20 @@ function OtherPartnersPageManager() {
            <div className="grid h-full w-full grid-cols-8 items-center gap-x-4">
                  {/* 2-column container for the card and its horizontal controls */}
                 <div className="col-start-6 col-span-2 flex flex-col items-center justify-center">
-                    {/* Size Slider */}
-                     <div className="pointer-events-auto w-full mb-2">
-                        <div className="mx-auto w-4/5 space-y-2">
-                            {/* Intentionally left blank, slider is in the editor component */}
-                        </div>
-                    </div>
                     {/* The Card */}
                      <div className="w-full">
                         <DisplayCard {...editorCardState} />
                     </div>
-                    {/* Horizontal Position Slider */}
-                     <div className="pointer-events-auto mt-4 flex w-full flex-col items-center justify-center">
-                        <div className="w-full px-2">
-                            {/* Intentionally left blank, slider is in the editor component */}
-                        </div>
-                    </div>
                 </div>
                 {/* 1-column container for the vertical slider and its label */}
                  <div className="col-start-8 col-span-1 flex h-full flex-col items-center justify-center">
-                      {/* Intentionally left blank, slider is in the editor component */}
+                      <div className="pointer-events-auto h-32 w-full">
+                        <div className="flex h-full flex-col items-center justify-center gap-1">
+                           <div className="h-full w-full">
+                               {/* Vertical Slider would go here */}
+                           </div>
+                        </div>
+                    </div>
                 </div>
            </div>
         </div>
