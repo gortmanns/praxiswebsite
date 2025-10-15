@@ -1,4 +1,3 @@
-
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -234,16 +233,16 @@ export function StaffCardManager<T extends BaseCardData>({
                            <div key={item.id} className={cn("relative mx-auto w-full max-w-sm", item.fullWidth && "sm:col-span-2")}>
                                 <div
                                     id={`buttons-${item.id}`}
-                                    className="absolute top-1/2 -translate-y-1/2 flex w-max flex-col items-center justify-center gap-2"
+                                    className="absolute top-1/2 -translate-y-1/2 flex w-[140px] flex-col items-center justify-center gap-2"
                                     style={{ right: 'calc(100% + 15px)' }}
                                 >
                                     {!isHiddenGrid && (
-                                        <div className="grid grid-cols-2 gap-1 w-[140px] rounded-lg border bg-background/80 p-1 shadow-inner">
+                                        <div className="grid grid-cols-2 gap-1 w-full rounded-lg border bg-background/80 p-1 shadow-inner">
                                             <Button size="icon" variant="ghost" className="h-8 w-full" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
                                             <Button size="icon" variant="ghost" className="h-8 w-full" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
                                         </div>
                                     )}
-                                    <div className="flex w-[140px] flex-col gap-1 rounded-lg border bg-background/80 p-1 shadow-inner">
+                                    <div className="flex w-full flex-col gap-1 rounded-lg border bg-background/80 p-1 shadow-inner">
                                         <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleEdit(item)}>
                                             <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
                                         </Button>
@@ -320,7 +319,7 @@ export function StaffCardManager<T extends BaseCardData>({
                 </CardHeader>
                 <CardContent>
                    {isEditing && (
-                        <div className="mb-8 relative rounded-lg border-2 border-dashed border-primary bg-muted min-h-[420px]">
+                        <div className="mb-8 relative rounded-lg border-2 border-dashed border-primary bg-muted">
                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                         </div>
                     )}
@@ -356,7 +355,7 @@ export function StaffCardManager<T extends BaseCardData>({
                                 </AlertDescription>
                             </Alert>
                         )}
-                         {!isLoadingData && (
+                         {!isEditing && (
                            renderCardGroups()
                         )}
                     </div>
