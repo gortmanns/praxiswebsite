@@ -210,7 +210,7 @@ export default function StaffPageManager() {
             }
             
             return (
-                <div className={cn("space-y-4 mt-12")}>
+                <div className={cn("space-y-4 mt-12", isEditing ? "opacity-50 pointer-events-none" : "")}>
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-16 mt-8">
@@ -219,22 +219,24 @@ export default function StaffPageManager() {
                              <div className="relative w-full max-w-sm">
                                 <div
                                     id={`buttons-${item.id}`}
-                                    className="absolute top-1/2 -translate-y-1/2 flex w-[140px] flex-col items-center justify-center gap-2"
-                                    style={{ right: 'calc(100% + 15px)' }}
+                                    className="absolute top-0 -translate-y-full flex w-full flex-col items-center justify-center gap-2"
                                 >
-                                    {!isHiddenGrid && (
-                                        <div className="grid grid-cols-2 gap-1 w-full rounded-lg border bg-background/80 p-1 shadow-inner">
-                                            <Button size="icon" variant="ghost" className="h-8 w-full" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
-                                            <Button size="icon" variant="ghost" className="h-8 w-full" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
+                                     <div className="flex w-full justify-center items-center gap-2 rounded-lg border bg-background/80 p-1 shadow-inner">
+                                        {!isHiddenGrid && (
+                                            <>
+                                                <Button size="icon" variant="ghost" className="h-8 w-12" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
+                                                <Button size="icon" variant="ghost" className="h-8 w-12" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
+                                                <div className="w-px bg-border self-stretch mx-1" />
+                                            </>
+                                        )}
+                                        <div className="flex-grow flex flex-col gap-1">
+                                            <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleEdit(item)}>
+                                                <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                                            </Button>
+                                             <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleToggleHidden(item)}>
+                                                {item.hidden ? <><Eye className="mr-2 h-4 w-4" /> Einblenden</> : <><EyeOff className="mr-2 h-4 w-4" /> Ausblenden</>}
+                                            </Button>
                                         </div>
-                                    )}
-                                    <div className="flex w-full flex-col gap-1 rounded-lg border bg-background/80 p-1 shadow-inner">
-                                        <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleEdit(item)}>
-                                            <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                                        </Button>
-                                        <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleToggleHidden(item)}>
-                                            {item.hidden ? <><Eye className="mr-2 h-4 w-4" /> Einblenden</> : <><EyeOff className="mr-2 h-4 w-4" /> Ausblenden</>}
-                                        </Button>
                                         {!isHiddenGrid && (
                                             <div className="flex items-center justify-between w-full h-9 px-3 py-2 rounded-md border border-input bg-transparent text-sm">
                                                 <Label htmlFor={`fullwidth-switch-${item.id}`} className="flex items-center gap-2 cursor-pointer">
@@ -306,12 +308,10 @@ export default function StaffPageManager() {
                 </CardHeader>
                 <CardContent>
                    {isEditing && (
-                        <div className="mb-8 relative rounded-lg border-2 border-dashed border-primary bg-muted p-6">
+                        <div className="mb-8 rounded-lg border-2 border-dashed border-primary bg-muted p-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                                <div>
-                                    <EditorComponent cardData={editorCardState} onUpdate={handleEditorUpdate} />
-                                </div>
-                                <div>
+                                <EditorComponent cardData={editorCardState} onUpdate={handleEditorUpdate} />
+                                <div className="space-y-4">
                                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                                     <div className="grid grid-cols-2 gap-4">
                                         <DisplayCard {...editorCardState} />
@@ -358,7 +358,7 @@ export default function StaffPageManager() {
                             </Alert>
                         )}
                          
-                        {!isEditing && renderCardGroups()}
+                        {renderCardGroups()}
                     </div>
                 </CardContent>
             </Card>
@@ -380,3 +380,4 @@ export default function StaffPageManager() {
         </div>
     );
 }
+
