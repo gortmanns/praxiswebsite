@@ -1,15 +1,12 @@
-
 'use server';
 
 import { z } from 'zod';
 import { getSession } from '@/lib/session';
 import { getAuth, signInWithEmailAndPassword, AuthErrorCodes } from 'firebase/auth';
-import { initializeFirebase } from '@/firebase';
+import { initializeFirebaseServer } from '@/firebase/server-init';
 
-// Initialize Firebase Admin SDK
-initializeFirebase();
-const auth = getAuth();
-
+// Initialize Firebase on the server
+const { auth } = initializeFirebaseServer();
 
 const loginSchema = z.object({
   username: z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse ein."),
