@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -78,9 +79,9 @@ function ReusableCardManager<T extends CardData>({
 
     const generateFinalLogoHtml = (partner: T): string => {
         if ('imageUrl' in partner && partner.imageUrl && partner.imageUrl.trim() !== '') {
-            const scale = 'logoScale' in partner ? partner.logoScale : 100;
-            const x = 'logoX' in partner ? partner.logoX : 0;
-            const y = 'logoY' in partner ? partner.logoY : 0;
+            const scale = 'logoScale' in partner ? (partner.logoScale || 100) : 100;
+            const x = 'logoX' in partner ? (partner.logoX || 0) : 0;
+            const y = 'logoY' in partner ? (partner.logoY || 0) : 0;
             const transformStyle = `transform: scale(${scale / 100}) translate(${x}px, ${y}px);`;
             return `<img src="${partner.imageUrl}" alt="${partner.name || 'Partner Logo'}" style="object-fit: contain; width: 100%; height: 100%; transition: transform 0.2s ease-out; ${transformStyle}" />`;
         }
@@ -206,7 +207,7 @@ function ReusableCardManager<T extends CardData>({
                  <div className="col-span-1"></div>
                  <div className="relative flex h-full w-full items-center justify-center col-span-2">
                      <div className="w-full">
-                        <DisplayCardComponent {...editorCardState} />
+                        <DisplayCardComponent {...editorCardState} logoHtml={generateFinalLogoHtml(editorCardState)} />
                     </div>
                 </div>
                 <div className="col-span-1"></div>
@@ -415,3 +416,5 @@ function ReusableCardManager<T extends CardData>({
 }
 
 export default ReusableCardManager;
+
+    
