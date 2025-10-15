@@ -78,17 +78,16 @@ function ReusableCardManager<T extends CardData>({
     };
 
     const generateFinalLogoHtml = (partner: T): string => {
-        if ('imageUrl' in partner && partner.imageUrl && partner.imageUrl.trim() !== '') {
-            const scale = 'logoScale' in partner ? (partner.logoScale || 100) : 100;
-            const x = 'logoX' in partner ? (partner.logoX || 0) : 0;
-            const y = 'logoY' in partner ? (partner.logoY || 0) : 0;
-            const transformStyle = `transform: scale(${scale / 100}) translate(${x}px, ${y}px);`;
-            return `<img src="${partner.imageUrl}" alt="${partner.name || 'Partner Logo'}" style="object-fit: contain; width: 100%; height: 100%; transition: transform 0.2s ease-out; ${transformStyle}" />`;
-        }
-        if ('logoHtml' in partner && partner.logoHtml) {
-            return partner.logoHtml;
-        }
-        return `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
+        const scale = 'logoScale' in partner ? (partner.logoScale || 100) / 100 : 1;
+        const x = 'logoX' in partner ? (partner.logoX || 0) : 0;
+        const y = 'logoY' in partner ? (partner.logoY || 0) : 0;
+        const transformStyle = `transform: scale(${scale}) translate(${x}px, ${y}px); transition: transform 0.2s ease-out; width: 100%; height: 100%;`;
+    
+        const innerContent = partner.imageUrl
+            ? `<img src="${partner.imageUrl}" alt="${partner.name || 'Partner Logo'}" style="object-fit: contain; width: 100%; height: 100%;" />`
+            : partner.logoHtml || `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
+    
+        return `<div style="${transformStyle}">${innerContent}</div>`;
     };
     
     const handleMove = async (cardId: string, direction: 'left' | 'right') => {
