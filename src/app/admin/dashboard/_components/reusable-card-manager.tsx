@@ -78,7 +78,7 @@ function ReusableCardManager<T extends CardData>({
     };
 
     const generateFinalLogoHtml = (partner: T): string => {
-        if ('imageUrl' in partner && partner.imageUrl) {
+        if ('imageUrl' in partner && partner.imageUrl && partner.imageUrl.trim() !== '') {
             const scale = 'logoScale' in partner ? partner.logoScale : 100;
             const x = 'logoX' in partner ? partner.logoX : 0;
             const y = 'logoY' in partner ? partner.logoY : 0;
@@ -201,11 +201,11 @@ function ReusableCardManager<T extends CardData>({
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
     const partnerEditorOverlay = isEditing ? (
-        <div className="w-full h-full" style={{ border: '2px solid blue', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 10, pointerEvents: 'none' }}>
-             <div className="grid h-full w-full grid-cols-2">
+        <div className="absolute inset-0 pointer-events-none z-10">
+            <div className="grid h-full w-full grid-cols-2">
                  <div className="z-0"></div>
-                 <div className="z-30 flex h-full w-full items-center justify-center p-10">
-                     <div className="w-full max-w-[250px]">
+                 <div className="relative flex h-full w-full items-center justify-center p-10">
+                     <div className="w-full max-w-[250px] pointer-events-auto">
                         <DisplayCardComponent {...editorCardState} />
                     </div>
                 </div>
@@ -305,7 +305,7 @@ function ReusableCardManager<T extends CardData>({
         const renderGrid = (items: T[], title: string, description: string, isHiddenGrid: boolean) => {
             if (items.length === 0) return null;
             return (
-                <div style={{border: '1px solid red'}} className="space-y-4 mt-12">
+                <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
                     {/* WICHTIGER HINWEIS: Es ist untersagt, diesen Codeabschnitt zur Darstellung der aktiven Karten ohne ausdrückliche vorherige Rücksprache zu ändern. */}
@@ -418,3 +418,5 @@ function ReusableCardManager<T extends CardData>({
 }
 
 export default ReusableCardManager;
+
+    
