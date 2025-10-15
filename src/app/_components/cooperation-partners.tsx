@@ -78,9 +78,9 @@ export function CooperationPartnersSection() {
         
         <div className="mt-12">
           {isLoadingMedical ? (
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="flex flex-wrap justify-center gap-8">
                 {Array.from({ length: 4 }).map((_, index) => (
-                    <Skeleton key={index} className="h-32 w-full rounded-lg" />
+                    <Skeleton key={index} className="h-32 w-full max-w-[280px] flex-shrink-0 rounded-lg" />
                 ))}
             </div>
           ) : (
@@ -95,9 +95,9 @@ export function CooperationPartnersSection() {
                 </h3>
                 <div className="mt-12">
                     {isLoadingOther ? (
-                        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                        <div className="flex flex-wrap justify-center gap-8">
                             {Array.from({ length: 4 }).map((_, index) => (
-                                <Skeleton key={index} className="h-32 w-full rounded-lg" />
+                                 <Skeleton key={index} className="h-32 w-full max-w-[280px] flex-shrink-0 rounded-lg" />
                             ))}
                         </div>
                     ) : (
