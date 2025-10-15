@@ -237,20 +237,20 @@ function ReusableCardManager<T extends CardData>({
     const RowGrid: React.FC<{ partners: T[], totalItems: number, isHidden?: boolean }> = ({ partners, totalItems, isHidden }) => {
         const count = partners.length;
         if (count === 0) return null;
-
+    
         const getCardProps = (partner: T, index: number) => ({
             partner: partner,
             isFirst: index === 0,
             isLast: index === totalItems - 1,
             isHiddenCard: isHidden
         });
-        
+    
         if (count === 4) {
             return (
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
                     {partners.map((partner, index) => (
                         <div key={partner.id}>
-                           <AdminPartnerCard {...getCardProps(partner, partners.findIndex(p => p.id === partner.id))} />
+                            <AdminPartnerCard {...getCardProps(partner, partners.findIndex(p => p.id === partner.id))} />
                         </div>
                     ))}
                 </div>
@@ -258,25 +258,22 @@ function ReusableCardManager<T extends CardData>({
         }
         
         return (
-            <div className="grid grid-cols-8 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-8 gap-8">
                 {count === 1 && (
-                    <div className="col-start-3 col-span-4">
+                    <div className="sm:col-start-4 sm:col-span-2">
                         <AdminPartnerCard {...getCardProps(partners[0], 0)} />
                     </div>
                 )}
-                {count === 2 && (
-                    <>
-                        <div className="col-start-2 col-span-3"><AdminPartnerCard {...getCardProps(partners[0], 0)} /></div>
-                        <div className="col-span-3"><AdminPartnerCard {...getCardProps(partners[1], 1)} /></div>
-                    </>
-                )}
-                {count === 3 && (
-                    <>
-                        <div className="col-start-1 col-span-2"><AdminPartnerCard {...getCardProps(partners[0], 0)} /></div>
-                        <div className="col-start-4 col-span-2"><AdminPartnerCard {...getCardProps(partners[1], 1)} /></div>
-                        <div className="col-start-7 col-span-2"><AdminPartnerCard {...getCardProps(partners[2], 2)} /></div>
-                    </>
-                )}
+                {count === 2 && partners.map((partner, index) => (
+                    <div key={partner.id} className={cn("sm:col-span-2", index === 0 ? "sm:col-start-2" : "sm:col-start-6")}>
+                        <AdminPartnerCard {...getCardProps(partner, index)} />
+                    </div>
+                ))}
+                {count === 3 && partners.map((partner, index) => (
+                     <div key={partner.id} className={cn("sm:col-span-2", index === 0 && "sm:col-start-1", index === 1 && "sm:col-start-4", index === 2 && "sm:col-start-7")}>
+                        <AdminPartnerCard {...getCardProps(partner, index)} />
+                    </div>
+                ))}
             </div>
         );
     };
@@ -308,7 +305,6 @@ function ReusableCardManager<T extends CardData>({
                 <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
-                    {/* WICHTIGER HINWEIS: Es ist untersagt, diesen Codeabschnitt zur Darstellung der aktiven Karten ohne ausdrückliche vorherige Rücksprache zu ändern. */}
                     <PartnerGrid partners={items} isHidden={isHiddenGrid} />
                 </div>
             );
@@ -418,5 +414,3 @@ function ReusableCardManager<T extends CardData>({
 }
 
 export default ReusableCardManager;
-
-    
