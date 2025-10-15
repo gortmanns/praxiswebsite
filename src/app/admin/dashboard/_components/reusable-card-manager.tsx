@@ -14,9 +14,9 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 
-import { PartnerCard as DisplayCard } from '../_components/partner-card';
-import { PartnerEditor as EditorComponent } from '../_components/partner-editor';
-import type { Partner as CardData } from '../_components/partner-editor';
+import { PartnerCard as DisplayCard } from '../partners/_components/partner-card';
+import { PartnerEditor as EditorComponent } from '../partners/_components/partner-editor';
+import type { Partner as CardData } from '../partners/_components/partner-editor';
 import { Slider } from '@/components/ui/slider';
 
 
@@ -202,7 +202,7 @@ function MedicalPartnersPageManager<T extends CardData>({
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
     const partnerEditorOverlay = isEditing ? (
-        <div style={{ zIndex: 10, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} className='pointer-events-none'>
+        <div style={{ zIndex: 10, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, border: '2px solid blue' }} className='pointer-events-none'>
             <div className="grid h-full w-full grid-cols-2">
                 <div></div>
                 <div className="flex h-full w-full items-center justify-center p-10">
@@ -248,7 +248,7 @@ function MedicalPartnersPageManager<T extends CardData>({
         
         if (count === 4) {
             return (
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4" style={{ border: '1px solid red' }}>
                     {partners.map((partner) => (
                         <div key={partner.id}>
                            <AdminPartnerCard {...getCardProps(partner)} />
@@ -259,7 +259,7 @@ function MedicalPartnersPageManager<T extends CardData>({
         }
         
         return (
-            <div className="grid grid-cols-8 gap-8">
+            <div className="grid grid-cols-8 gap-8" style={{ border: '1px solid red' }}>
                 {count === 1 && (
                     <div className="col-start-3 col-span-4">
                         <AdminPartnerCard {...getCardProps(partners[0])} />
@@ -291,7 +291,7 @@ function MedicalPartnersPageManager<T extends CardData>({
         }
 
         return (
-            <div className="space-y-8">
+            <div className="space-y-8" style={{ border: '1px solid red' }}>
                 {chunkedPartners.map((rowPartners, index) => (
                     <RowGrid key={index} partners={rowPartners} totalItems={partners.length} isHidden={isHidden} />
                 ))}
@@ -306,7 +306,7 @@ function MedicalPartnersPageManager<T extends CardData>({
         const renderGrid = (items: T[], title: string, description: string, isHiddenGrid: boolean) => {
             if (items.length === 0) return null;
             return (
-                <div className="space-y-4 mt-12">
+                <div className="space-y-4 mt-12" style={{ border: '1px solid red' }}>
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
                     <PartnerGrid partners={items} isHidden={isHiddenGrid} />
@@ -354,7 +354,7 @@ function MedicalPartnersPageManager<T extends CardData>({
                 </CardHeader>
                 <CardContent>
                    {isEditing && (
-                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted min-h-[580px]">
+                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted min-h-[580px] mb-8">
                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState}>
                                {partnerEditorOverlay}
                             </EditorCardComponent>
@@ -392,7 +392,7 @@ function MedicalPartnersPageManager<T extends CardData>({
                                 </AlertDescription>
                             </Alert>
                         )}
-                         {!isLoadingData && !isEditing && (
+                         {!isLoadingData && (
                            renderCardGroups()
                         )}
                     </div>
