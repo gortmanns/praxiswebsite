@@ -160,7 +160,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                                 </div>
                             </div>
                         </div>
-                        <div className="relative w-full max-w-[280px] mx-auto h-full rounded-lg bg-accent text-background p-6">
+                        <div className="relative flex items-center justify-center w-full max-w-[280px] mx-auto h-full rounded-lg bg-accent text-background p-6">
                              <Button
                                 variant="ghost"
                                 size="icon"
