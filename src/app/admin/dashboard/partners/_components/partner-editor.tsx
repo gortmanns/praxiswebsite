@@ -156,8 +156,8 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                          {children}
                     </div>
                     <div className="space-y-4 pt-4 border-t border-primary-foreground/20">
-                        <div className="pointer-events-auto w-full space-y-2 text-center text-primary-foreground">
-                            <div className="text-sm">Grösse: {cardData.logoScale || 100}%</div>
+                         <div className="pointer-events-auto w-full space-y-2">
+                            <div className="text-center text-primary-foreground text-sm">Grösse: {cardData.logoScale || 100}%</div>
                             <Slider
                                 id="logoScale"
                                 value={[cardData.logoScale || 100]}
@@ -167,8 +167,8 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                                 className="[&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20"
                             />
                         </div>
-                         <div className="pointer-events-auto w-full space-y-2 text-center text-primary-foreground">
-                            <div className="text-sm flex items-center justify-center gap-2"><MoveHorizontal/> Horizontale Position: {cardData.logoX || 0}px</div>
+                         <div className="pointer-events-auto w-full space-y-2">
+                             <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2"><MoveHorizontal/> Horizontale Position: {cardData.logoX || 0}px</div>
                             <Slider
                                 id="logoX"
                                 value={[cardData.logoX || 0]}
@@ -179,8 +179,8 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                                 className="[&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20"
                             />
                         </div>
-                         <div className="pointer-events-auto w-full space-y-2 text-center text-primary-foreground">
-                            <div className="text-sm flex items-center justify-center gap-2"><MoveVertical/> Vertikale Position: {cardData.logoY || 0}px</div>
+                         <div className="pointer-events-auto w-full space-y-2">
+                            <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2"><MoveVertical/> Vertikale Position: {cardData.logoY || 0}px</div>
                             <Slider
                                 id="logoY"
                                 value={[cardData.logoY || 0]}
@@ -231,3 +231,5 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         </div>
     );
 };
+
+    
