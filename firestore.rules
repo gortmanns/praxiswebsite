@@ -1,28 +1,31 @@
 /**
- * @fileOverview Firestore Security Rules for the practice data.
+ * @fileoverview Firestore Security Rules for the application.
  *
  * Core Philosophy:
- * This ruleset allows public read access to all collections to facilitate easy prototyping.
- * Write access to all collections is denied. This is a prototype and should be changed in production.
+ * This ruleset prioritizes simplicity and security. It assumes all collections
+ * are read-only for unauthenticated users, and write access is denied unless
+ * explicitly granted. Data structure validation is relaxed to allow for rapid prototyping.
  *
  * Data Structure:
- * The Firestore database contains several top-level collections: 'doctors', 'staff', 'medicalPartners',
- * 'otherPartners', 'holidays', and a document 'settings/banners'.
+ * The Firestore database contains several top-level collections: `doctors`, `staff`,
+ * `medicalPartners`, `otherPartners`, `holidays`, and a special document at `settings/banners`.
  *
  * Key Security Decisions:
- * - Public read access is enabled for all collections.
- * - No write access is allowed.
+ * - Unauthenticated users can read all collections.
+ * - Write access is denied to all collections unless explicitly granted (currently none).
+ * - Data validation is minimal during this prototyping phase. Only relational integrity and
+ *   authorization-related fields are validated.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows anyone to read doctor profiles, but nobody to modify them.
-     * @path /databases/{database}/documents/doctors/{doctorId}
-     * @allow (get, list): Any user can read doctor profiles.
-     * @deny (create, update, delete): No user can create, update, or delete doctor profiles.
-     * @principle Allows public read access but restricts all write access.
+     * @description Allows public read access to doctor profiles. Write access is denied.
+     * @path /doctors/{doctorId}
+     * @allow get, list: Unauthenticated users can read doctor profiles.
+     * @deny create, update, delete: No one can create, update, or delete doctor profiles.
+     * @principle Allows public read access while restricting write access.
      */
     match /doctors/{doctorId} {
       allow get, list: if true;
@@ -30,11 +33,11 @@ service cloud.firestore {
     }
 
     /**
-     * @description Allows anyone to read staff member profiles, but nobody to modify them.
-     * @path /databases/{database}/documents/staff/{staffMemberId}
-     * @allow (get, list): Any user can read staff member profiles.
-     * @deny (create, update, delete): No user can create, update, or delete staff member profiles.
-     * @principle Allows public read access but restricts all write access.
+     * @description Allows public read access to staff member profiles. Write access is denied.
+     * @path /staff/{staffMemberId}
+     * @allow get, list: Unauthenticated users can read staff member profiles.
+     * @deny create, update, delete: No one can create, update, or delete staff member profiles.
+     * @principle Allows public read access while restricting write access.
      */
     match /staff/{staffMemberId} {
       allow get, list: if true;
@@ -42,11 +45,11 @@ service cloud.firestore {
     }
 
     /**
-     * @description Allows anyone to read medical partner information, but nobody to modify them.
-     * @path /databases/{database}/documents/medicalPartners/{medicalPartnerId}
-     * @allow (get, list): Any user can read medical partner information.
-     * @deny (create, update, delete): No user can create, update, or delete medical partner information.
-     * @principle Allows public read access but restricts all write access.
+     * @description Allows public read access to medical partner information. Write access is denied.
+     * @path /medicalPartners/{medicalPartnerId}
+     * @allow get, list: Unauthenticated users can read medical partner information.
+     * @deny create, update, delete: No one can create, update, or delete medical partner information.
+     * @principle Allows public read access while restricting write access.
      */
     match /medicalPartners/{medicalPartnerId} {
       allow get, list: if true;
@@ -54,11 +57,11 @@ service cloud.firestore {
     }
 
     /**
-     * @description Allows anyone to read other partner information, but nobody to modify them.
-     * @path /databases/{database}/documents/otherPartners/{otherPartnerId}
-     * @allow (get, list): Any user can read other partner information.
-     * @deny (create, update, delete): No user can create, update, or delete other partner information.
-     * @principle Allows public read access but restricts all write access.
+     * @description Allows public read access to other partner information. Write access is denied.
+     * @path /otherPartners/{otherPartnerId}
+     * @allow get, list: Unauthenticated users can read other partner information.
+     * @deny create, update, delete: No one can create, update, or delete other partner information.
+     * @principle Allows public read access while restricting write access.
      */
     match /otherPartners/{otherPartnerId} {
       allow get, list: if true;
@@ -66,11 +69,11 @@ service cloud.firestore {
     }
 
     /**
-     * @description Allows anyone to read holiday information, but nobody to modify them.
-     * @path /databases/{database}/documents/holidays/{holidayId}
-     * @allow (get, list): Any user can read holiday information.
-     * @deny (create, update, delete): No user can create, update, or delete holiday information.
-     * @principle Allows public read access but restricts all write access.
+     * @description Allows public read access to holiday information. Write access is denied.
+     * @path /holidays/{holidayId}
+     * @allow get, list: Unauthenticated users can read holiday information.
+     * @deny create, update, delete: No one can create, update, or delete holiday information.
+     * @principle Allows public read access while restricting write access.
      */
     match /holidays/{holidayId} {
       allow get, list: if true;
@@ -78,15 +81,17 @@ service cloud.firestore {
     }
 
     /**
-     * @description Allows anyone to read banner settings, but nobody to modify them.
-     * @path /databases/{database}/documents/settings/banners
-     * @allow (get): Any user can read banner settings.
-     * @deny (create, update, delete, list): No user can create, update, delete, or list banner settings.
-     * @principle Allows public read access but restricts all write access.  Also, there should be only one settings doc.
+     * @description Allows public read access to banner settings. Write access is denied.
+     * @path /settings/banners
+     * @allow get: Unauthenticated users can read banner settings.
+     * @deny list: Listing is not allowed on single documents.
+     * @deny create, update, delete: No one can create, update, or delete banner settings.
+     * @principle Allows public read access while restricting write access.
      */
     match /settings/banners {
       allow get: if true;
-      allow create, update, delete, list: if false;
+      allow list: if false;
+      allow create, update, delete: if false;
     }
   }
 }
