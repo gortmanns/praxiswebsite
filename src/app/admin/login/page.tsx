@@ -5,18 +5,17 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
+import { login } from './actions';
 
 const loginSchema = z.object({
-  email: z.string().email('Ungültige E-Mail-Adresse.'),
-  password: z.string().min(6, 'Das Passwort muss mindestens 6 Zeichen lang sein.'),
+  username: z.string().min(1, 'Benutzername ist erforderlich.'),
+  password: z.string().min(1, 'Passwort ist erforderlich.'),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -24,32 +23,25 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const [authError, setAuthError] = useState<string | null>(null);
   const router = useRouter();
-  const auth = useAuth();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
+      username: '',
       password: '',
     },
   });
 
   const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
     setAuthError(null);
-    if (!auth) {
-      setAuthError('Authentifizierungs-Service nicht verfügbar.');
-      return;
-    }
-    try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
+    
+    const result = await login(data);
+
+    if (result.success) {
       router.push('/admin/dashboard');
-    } catch (error: any) {
-      console.error(error);
-      if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-        setAuthError('Ungültiger Benutzername oder falsches Passwort.');
-      } else {
-        setAuthError('Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.');
-      }
+      router.refresh(); // Wichtig, um den Layout-Status neu zu laden
+    } else {
+      setAuthError(result.error || 'Ein unerwarteter Fehler ist aufgetreten.');
     }
   };
 
@@ -65,12 +57,12 @@ export default function LoginPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
-                name="email"
+                name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>E-Mail</FormLabel>
+                    <FormLabel>Benutzername</FormLabel>
                     <FormControl>
-                      <Input placeholder="admin@example.com" {...field} />
+                      <Input placeholder="Benutzername" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
