@@ -1,7 +1,8 @@
 
 'use client';
 
-import React, { useState, useRef, type ReactNode } from 'react';
+import React from 'react';
+import { useState, useRef, type ReactNode } from 'react';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
@@ -170,7 +171,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                          {children}
                     </div>
 
-                    <div className="space-y-2 pt-4 mt-auto border-t border-primary-foreground/20">
+                    <div className="space-y-2 pt-4 mt-auto">
                          <div className="pointer-events-auto w-full">
                             <Slider
                                 id="logoX"
@@ -210,15 +211,17 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                                         className="[&>span:first-child]:bg-primary-foreground/50 [&_[role=slider]]:bg-primary-foreground [&_[role=slider]]:w-5 [&_[role=slider]]:h-5"
                                     />
                                 </div>
-                                <div className="text-center text-xs text-white">
-                                    <div className="flex flex-col items-center justify-center h-full">
-                                        <div className="flex items-center gap-1">
-                                            <MoveVertical className="w-3 h-3"/>
-                                            <span>Vertikal</span>
-                                        </div>
-                                        <span>Position</span>
-                                        <span>{cardData.logoY || 0}px</span>
-                                    </div>
+                                <div className="flex flex-col items-center justify-center text-center text-xs text-white -space-y-1">
+                                    <MoveVertical className="w-3 h-3 mb-1"/>
+                                    <span>V</span>
+                                    <span>E</span>
+                                    <span>R</span>
+                                    <span>T</span>
+                                    <span>I</span>
+                                    <span>K</span>
+                                    <span>A</span>
+                                    <span>L</span>
+                                    <span className="mt-2">{cardData.logoY || 0}px</span>
                                 </div>
                             </div>
                         </div>
