@@ -2,7 +2,6 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,6 +22,11 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
+const bannerClasses = {
+    yellow: 'bg-yellow-400 border-yellow-500 text-yellow-900',
+    red: 'bg-red-500 border-red-600 text-white',
+    blue: 'bg-blue-500 border-blue-600 text-white',
+};
 
 const FilledDiamond = (props: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" {...props}>
@@ -91,9 +95,17 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
             const contentWidth = marqueeRef.current.scrollWidth / 2;
             const speed = 50; 
             const duration = contentWidth / speed;
+            
+            let finalDuration = '86s'; // Default long duration for blue banner
+             if (small && color === 'blue') {
+                finalDuration = '30s';
+            } else if (color === 'red' || color === 'yellow') {
+                finalDuration = '50s';
+            }
+            
             setAnimationDuration(`${duration}s`);
         }
-    }, [text, separatorStyle, marqueeRef.current?.scrollWidth]);
+    }, [text, separatorStyle, marqueeRef.current?.scrollWidth, small, color]);
 
 
     return (
@@ -106,10 +118,7 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
                 >
                     {Array.from({ length: 10 }).map((_, i) => (
                         <React.Fragment key={i}>
-                            <div className="flex shrink-0 items-center">
-                                <Info className="mr-3 h-5 w-5 shrink-0" />
-                                <p className={cn("whitespace-nowrap font-semibold", small ? "text-sm" : "text-xl")}>{text}</p>
-                            </div>
+                            <p className={cn("whitespace-nowrap font-semibold", small ? "text-sm" : "text-base")}>{text}</p>
                             <SeparatorPreview style={separatorStyle} />
                         </React.Fragment>
                     ))}

@@ -159,10 +159,7 @@ export function HolidayBanner() {
                 >
                     {Array.from({ length: 10 }).map((_, i) => (
                         <React.Fragment key={i}>
-                            <div className="flex shrink-0 items-center">
-                                <Info className="mr-3 h-5 w-5 shrink-0" />
-                                <p className="whitespace-nowrap text-sm font-semibold">{bannerInfo.text}</p>
-                            </div>
+                            <p className="whitespace-nowrap text-sm font-semibold">{bannerInfo.text}</p>
                             <Separator style={bannerInfo.separatorStyle} />
                         </React.Fragment>
                     ))}
