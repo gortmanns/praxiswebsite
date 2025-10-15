@@ -21,6 +21,11 @@ export default async function DashboardLayout({
         {children}
         <Toaster />
       </SidebarInset>
+      <style jsx global>{`
+        * {
+          border: 1px solid red !important;
+        }
+      `}</style>
     </SidebarProvider>
   );
 }
