@@ -292,7 +292,7 @@ function OtherPartnersPageManager() {
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
     const partnerEditorOverlay = isEditing ? (
-        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+        <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center bg-green-500/50">
             <div className="w-full max-w-xs">
                 <DisplayCard {...editorCardState} />
             </div>
@@ -429,3 +429,5 @@ function OtherPartnersPageManager() {
 export default function OtherPartnersPage() {
     return <OtherPartnersPageManager />;
 }
+
+    
