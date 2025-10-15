@@ -213,6 +213,101 @@ function MedicalPartnersPageManager<T extends CardData>({
         </div>
     ) : null;
 
+
+    const AdminPartnerCard: React.FC<{ partner: T, isFirst: boolean, isLast: boolean }> = ({ partner, isFirst, isLast }) => (
+        <div className="flex flex-col items-center space-y-4">
+            <DisplayCardComponent {...partner} />
+            <div
+                id={`buttons-${partner.id}`}
+                className="flex w-full max-w-sm justify-center items-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner"
+            >
+                <Button size="sm" onClick={() => handleMove(partner.id, 'left')} disabled={isFirst}><ArrowLeft /></Button>
+                <Button size="sm" onClick={() => handleMove(partner.id, 'right')} disabled={isLast}><ArrowRight /></Button>
+                
+                <div className="w-px bg-border self-stretch mx-2" />
+                
+                <div className="flex-grow space-y-1">
+                    <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(partner)}>
+                        <Pencil className="mr-2" /> Bearbeiten
+                    </Button>
+                    
+                    <div className="grid grid-cols-2 gap-1">
+                        {partner.hidden ? (
+                            <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(partner)}>
+                                <Eye className="mr-2" /> Einblenden
+                            </Button>
+                        ) : (
+                            <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(partner)}>
+                                <EyeOff className="mr-2" /> Ausblenden
+                            </Button>
+                        )}
+                    </div>
+
+                    <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(partner.id, partner.name)}>
+                        <Trash2 className="mr-2" /> Löschen
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
+
+    const RowGrid: React.FC<{ partners: T[], totalItems: number }> = ({ partners, totalItems }) => {
+        const count = partners.length;
+        if (count === 0) return null;
+        
+        if (count === 4) {
+            return (
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                    {partners.map((partner, index) => (
+                        <div key={partner.id} style={{ border: '1px solid red' }}>
+                           <AdminPartnerCard partner={partner} isFirst={partner.order === 1} isLast={partner.order === totalItems} />
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+        
+        return (
+            <div className="grid grid-cols-8 gap-8">
+                {count === 1 && (
+                    <div className="col-start-3 col-span-4" style={{ border: '1px solid red' }}>
+                        <AdminPartnerCard partner={partners[0]} isFirst={partners[0].order === 1} isLast={partners[0].order === totalItems} />
+                    </div>
+                )}
+                {count === 2 && (
+                    <>
+                        <div className="col-start-2 col-span-3" style={{ border: '1px solid red' }}><AdminPartnerCard partner={partners[0]} isFirst={partners[0].order === 1} isLast={partners[0].order === totalItems} /></div>
+                        <div className="col-span-3" style={{ border: '1px solid red' }}><AdminPartnerCard partner={partners[1]} isFirst={partners[1].order === 1} isLast={partners[1].order === totalItems} /></div>
+                    </>
+                )}
+                {count === 3 && (
+                    <>
+                        <div className="col-start-1 col-span-2" style={{ border: '1px solid red' }}><AdminPartnerCard partner={partners[0]} isFirst={partners[0].order === 1} isLast={partners[0].order === totalItems} /></div>
+                        <div className="col-start-4 col-span-2" style={{ border: '1px solid red' }}><AdminPartnerCard partner={partners[1]} isFirst={partners[1].order === 1} isLast={partners[1].order === totalItems} /></div>
+                        <div className="col-start-7 col-span-2" style={{ border: '1px solid red' }}><AdminPartnerCard partner={partners[2]} isFirst={partners[2].order === 1} isLast={partners[2].order === totalItems} /></div>
+                    </>
+                )}
+            </div>
+        );
+    };
+
+    const PartnerGrid: React.FC<{ partners: T[] }> = ({ partners }) => {
+        if (!partners || partners.length === 0) return null;
+
+        const chunkedPartners = [];
+        for (let i = 0; i < partners.length; i += 4) {
+            chunkedPartners.push(partners.slice(i, i + 4));
+        }
+
+        return (
+            <div className="space-y-8" style={{ border: '1px solid red' }}>
+                {chunkedPartners.map((rowPartners, index) => (
+                    <RowGrid key={index} partners={rowPartners} totalItems={partners.length} />
+                ))}
+            </div>
+        );
+    };
+
     const renderCardGroups = () => {
         const activeItems = validDbData.filter(i => !i.hidden);
         const hiddenItems = validDbData.filter(i => i.hidden);
@@ -220,47 +315,10 @@ function MedicalPartnersPageManager<T extends CardData>({
         const renderGrid = (items: T[], title: string, description: string) => {
             if (items.length === 0) return null;
             return (
-                <div className="space-y-4 mt-12">
+                <div className="space-y-4 mt-12" style={{ border: '1px solid red' }}>
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
-                    <div className="grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-8 mt-8">
-                        {items.map((item, index) => (
-                             <div key={item.id} className="flex flex-col items-center space-y-4">
-                                <DisplayCardComponent {...item} />
-                                <div
-                                    id={`buttons-${item.id}`}
-                                    className="flex w-full max-w-sm justify-center items-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner"
-                                >
-                                    <Button size="sm" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
-                                    <Button size="sm" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
-                                    
-                                    <div className="w-px bg-border self-stretch mx-2" />
-                                    
-                                    <div className="flex-grow space-y-1">
-                                        <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}>
-                                            <Pencil className="mr-2" /> Bearbeiten
-                                        </Button>
-                                        
-                                        <div className="grid grid-cols-2 gap-1">
-                                            {item.hidden ? (
-                                                <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
-                                                    <Eye className="mr-2" /> Einblenden
-                                                </Button>
-                                            ) : (
-                                                <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
-                                                    <EyeOff className="mr-2" /> Ausblenden
-                                                </Button>
-                                            )}
-                                        </div>
-
-                                        <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                                            <Trash2 className="mr-2" /> Löschen
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    <PartnerGrid partners={items} />
                 </div>
             );
         };
@@ -275,6 +333,9 @@ function MedicalPartnersPageManager<T extends CardData>({
 
     return (
         <div id="card-manager-container" className="flex flex-1 flex-col items-start gap-8 p-4 sm:px-6 sm:py-8">
+            <div style={{ border: '1px solid blue', zIndex: 50, position: 'relative' }}>
+                {partnerEditorOverlay}
+            </div>
             <Card className="w-full">
                 <CardHeader>
                     <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
