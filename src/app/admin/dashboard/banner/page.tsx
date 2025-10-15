@@ -21,7 +21,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 
 const FilledDiamond = (props: React.SVGProps<SVGSVGElement>) => (
@@ -89,7 +88,7 @@ const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; c
         blue: 'bg-blue-500 border-blue-600 text-white',
     };
     
-    const fontSizeClass = small ? 'text-sm' : 'text-base';
+    const fontSizeClass = 'text-sm';
     const marqueeRef = useRef<HTMLDivElement>(null);
     const [animationDuration, setAnimationDuration] = useState('60s');
 
@@ -413,7 +412,7 @@ export default function BannerPage() {
                                         <TooltipTrigger asChild>
                                             <Button variant="ghost" size="icon" className="cursor-help"><Info className="h-4 w-4" /></Button>
                                         </TooltipTrigger>
-                                        <TooltipContent>
+                                        <TooltipContent className="max-w-[300px]">
                                             <p>{initialBannerSettings.yellowBannerText.replace('{name}', 'Name nächste Ferien').replace('{start}', 'erster Ferientag').replace('{end}', 'letzer Ferientag')}</p>
                                         </TooltipContent>
                                     </Tooltip>
@@ -451,7 +450,7 @@ export default function BannerPage() {
                                         <TooltipTrigger asChild>
                                             <Button variant="ghost" size="icon" className="cursor-help"><Info className="h-4 w-4" /></Button>
                                         </TooltipTrigger>
-                                        <TooltipContent>
+                                        <TooltipContent className="max-w-[300px]">
                                             <p>{initialBannerSettings.redBannerText.replace('{start}', 'erster Ferientag').replace('{end}', 'letzter Ferientag').replace('{next_day}', 'letzter Ferientag +1')}</p>
                                         </TooltipContent>
                                     </Tooltip>
