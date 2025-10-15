@@ -20,7 +20,8 @@ import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, ArrowLef
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
-
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 export interface BaseCardData {
     id: string;
@@ -215,7 +216,7 @@ export function StaffCardManager<T extends BaseCardData>({
         const hiddenItems = validDbData.filter(i => i.hidden);
     
         const renderGrid = (items: T[], title: string, description: string, isHiddenGrid: boolean) => {
-            if (items.length === 0 && !isEditing) return (
+            if (items.length === 0) return (
                 <div className="space-y-4 mt-12">
                      <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground pt-4">Keine Karten in dieser Kategorie.</p>
@@ -228,36 +229,42 @@ export function StaffCardManager<T extends BaseCardData>({
                     <p className="text-sm text-muted-foreground">{description}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-16 mt-8">
                        {items.map((item, index) => (
-                           <div key={item.id} className={cn("flex justify-center", item.fullWidth && "sm:col-span-2")}>
-                               <div className="relative w-full max-w-sm">
-                                    <div
-                                        id={`buttons-${item.id}`}
-                                        className="absolute top-1/2 -translate-y-1/2 flex w-max flex-col items-center justify-center gap-2"
-                                        style={{ right: 'calc(100% + 15px)' }}
-                                    >
-                                        <div className="grid grid-cols-2 gap-1 w-[140px] rounded-lg border bg-background/80 p-1 shadow-inner">
-                                            <Button size="icon" variant="ghost" className="h-8 w-full" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
-                                            <Button size="icon" variant="ghost" className="h-8 w-full" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
-                                        </div>
-                                        <div className="flex w-[140px] flex-col gap-1 rounded-lg border bg-background/80 p-1 shadow-inner">
-                                            <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleEdit(item)}>
-                                                <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                                            </Button>
-                                            <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleToggleHidden(item)}>
-                                                {item.hidden ? <><Eye className="mr-2 h-4 w-4" /> Einblenden</> : <><EyeOff className="mr-2 h-4 w-4" /> Ausblenden</>}
-                                            </Button>
-                                            <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleToggleFullWidth(item)}>
-                                                <Columns className={cn("mr-2 h-4 w-4", item.fullWidth && "text-primary")} /> Ganze Zeile
-                                            </Button>
-                                            {isHiddenGrid && (
-                                                <Button variant="destructive" size="sm" className="w-full justify-start" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                                                    <Trash2 className="mr-2 h-4 w-4" /> Löschen
-                                                </Button>
-                                            )}
-                                        </div>
+                           <div key={item.id} className={cn("flex justify-center w-full max-w-sm mx-auto relative", item.fullWidth && "sm:col-span-2")}>
+                                <div
+                                    id={`buttons-${item.id}`}
+                                    className="absolute top-1/2 -translate-y-1/2 flex w-max flex-col items-center justify-center gap-2"
+                                    style={{ right: 'calc(100% + 15px)' }}
+                                >
+                                     <div className="grid grid-cols-2 gap-1 w-[140px] rounded-lg border bg-background/80 p-1 shadow-inner">
+                                        <Button size="icon" variant="ghost" className="h-8 w-full" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
+                                        <Button size="icon" variant="ghost" className="h-8 w-full" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
                                     </div>
-                                    <DisplayCardComponent {...item} />
-                               </div>
+                                    <div className="flex w-[140px] flex-col gap-1 rounded-lg border bg-background/80 p-1 shadow-inner">
+                                        <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleEdit(item)}>
+                                            <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                                        </Button>
+                                        <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleToggleHidden(item)}>
+                                            {item.hidden ? <><Eye className="mr-2 h-4 w-4" /> Einblenden</> : <><EyeOff className="mr-2 h-4 w-4" /> Ausblenden</>}
+                                        </Button>
+                                        <div className="flex items-center justify-between w-full h-9 px-3 py-2 rounded-md border border-input bg-transparent text-sm">
+                                            <Label htmlFor={`fullwidth-switch-${item.id}`} className="flex items-center gap-2 cursor-pointer">
+                                                <Columns className={cn("h-4 w-4", item.fullWidth && "text-primary")} />
+                                                <span>Ganze Zeile</span>
+                                            </Label>
+                                            <Switch
+                                                id={`fullwidth-switch-${item.id}`}
+                                                checked={!!item.fullWidth}
+                                                onCheckedChange={() => handleToggleFullWidth(item)}
+                                            />
+                                        </div>
+                                        {isHiddenGrid && (
+                                            <Button variant="destructive" size="sm" className="w-full justify-start" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                                                <Trash2 className="mr-2 h-4 w-4" /> Löschen
+                                            </Button>
+                                        )}
+                                    </div>
+                                </div>
+                                <DisplayCardComponent {...item} />
                            </div>
                         ))}
                     </div>
@@ -305,7 +312,7 @@ export function StaffCardManager<T extends BaseCardData>({
                 </CardHeader>
                 <CardContent>
                    {isEditing && (
-                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted min-h-[420px]">
+                        <div className="mb-8 relative rounded-lg border-2 border-dashed border-primary bg-muted min-h-[420px]">
                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                         </div>
                     )}
@@ -341,7 +348,7 @@ export function StaffCardManager<T extends BaseCardData>({
                                 </AlertDescription>
                             </Alert>
                         )}
-                         {!isLoadingData && !isEditing && (
+                         {!isLoadingData && (
                            renderCardGroups()
                         )}
                     </div>
