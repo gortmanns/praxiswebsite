@@ -15,7 +15,7 @@ import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionRefe
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, ArrowLeft, ArrowRight, RectangleHorizontal } from 'lucide-react';
+import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, ArrowLeft, ArrowRight, RectangleHorizontal, Columns } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
@@ -26,6 +26,7 @@ export interface BaseCardData {
     order: number;
     name: string;
     hidden?: boolean;
+    fullWidth?: boolean;
     [key:string]: any;
 }
 
@@ -42,21 +43,6 @@ interface StaffCardManagerProps<T extends BaseCardData> {
     }>;
     entityName: string;
 }
-
-const generateFinalLogoHtml = (partner: BaseCardData): string => {
-    if ('imageUrl' in partner && partner.imageUrl) {
-        const scale = 'logoScale' in partner ? partner.logoScale : 100;
-        const x = 'logoX' in partner ? partner.logoX : 0;
-        const y = 'logoY' in partner ? partner.logoY : 0;
-        const transformStyle = `transform: scale(${scale / 100}) translate(${x}px, ${y}px);`;
-        return `<img src="${partner.imageUrl}" alt="${partner.name || 'Partner Logo'}" style="object-fit: contain; width: 100%; height: 100%; transition: transform 0.2s ease-out; ${transformStyle}" />`;
-    }
-    if ('logoHtml' in partner && partner.logoHtml) {
-        return partner.logoHtml;
-    }
-    return `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
-};
-
 
 export function StaffCardManager<T extends BaseCardData>({
     collectionName,
@@ -84,9 +70,7 @@ export function StaffCardManager<T extends BaseCardData>({
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
 
     const isEditing = editingCardId !== null || isCreatingNew;
-    const isPartnerManager = collectionName.toLowerCase().includes('partner');
-    const isStaffManager = collectionName === 'staff';
-
+    
     const handleEdit = (card: T) => {
         setEditingCardId(card.id);
         setIsCreatingNew(false);
@@ -108,7 +92,7 @@ export function StaffCardManager<T extends BaseCardData>({
     const handleMove = async (cardId: string, direction: 'left' | 'right') => {
         if (!dbData || !firestore) return;
     
-        const items = dbData.filter(d => d.name).sort((a, b) => a.order - b.order);
+        const items = dbData.filter(d => !d.hidden).sort((a, b) => a.order - b.order);
         const currentIndex = items.findIndex(item => item.id === cardId);
     
         if (currentIndex === -1) return;
@@ -189,9 +173,6 @@ export function StaffCardManager<T extends BaseCardData>({
         setNotification(null);
 
         let dataToSave: Partial<T> = { ...editorCardState };
-        if (isPartnerManager) {
-            (dataToSave as any).logoHtml = generateFinalLogoHtml(editorCardState);
-        }
     
         try {
             if (isCreatingNew) {
@@ -228,62 +209,54 @@ export function StaffCardManager<T extends BaseCardData>({
     
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
-    const partnerEditorOverlay = isPartnerManager && isEditing ? (
-        <div className="pointer-events-none absolute inset-0 z-10">
-             <div className="flex h-full w-full justify-end">
-                <div className="flex h-full w-[40%] flex-col justify-end">
-                    <div className="relative">
-                        <div className="pointer-events-auto absolute -top-16 left-0 right-0">
-                             <div className="mx-auto mb-2 w-4/5 space-y-2">
-                                <div className="text-center text-primary-foreground">
-                                    <label htmlFor="logoScale" className="text-sm">Grösse: {editorCardState.logoScale || 100}%</label>
-                                </div>
-                            </div>
-                        </div>
-                        <DisplayCardComponent {...editorCardState} />
-                    </div>
-                     <div className="pointer-events-auto mt-4 flex w-full flex-col items-center justify-center">
-                        <div className="w-full px-2">
-                        </div>
-                        <div className="mt-1 text-center text-xs text-white">
-                            <div>Horizontale Position</div>
-                            <div>{editorCardState.logoX || 0}px</div>
-                        </div>
-                    </div>
-                </div>
-                <div className="pointer-events-auto flex h-full w-[10%] flex-col justify-end">
-                    <div className="h-32">
-                        <div className="flex h-full flex-row items-center justify-center gap-2">
-                            <div className="flex h-full justify-center">
-                            </div>
-                             <div className="text-center text-xs text-white">
-                                <div>Vertikale</div>
-                                <div>Position</div>
-                                <div>{editorCardState.logoY || 0}px</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="h-14 w-full" />
-                </div>
-            </div>
-        </div>
-    ) : null;
-
     const renderCardGroups = () => {
         const activeItems = validDbData.filter(i => !i.hidden);
         const hiddenItems = validDbData.filter(i => i.hidden);
     
         const renderGrid = (items: T[], title: string, description: string) => {
-            if (items.length === 0) return null;
+            if (items.length === 0 && !isEditing) return (
+                <div className="space-y-4 mt-12">
+                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
+                    <p className="text-sm text-muted-foreground pt-4">Keine Karten in dieser Kategorie.</p>
+                </div>
+            );
+            
             return (
                 <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-8">
-                        {items.map((item, index) => (
-                           <div key={item.id} className={cn("flex justify-center", (item as any).fullWidth && "sm:col-span-2")}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-16 mt-8">
+                       {items.map((item, index) => (
+                           <div 
+                               key={item.id} 
+                               className={cn(
+                                   "relative flex justify-center", 
+                                   item.fullWidth && "sm:col-span-2"
+                                )}
+                           >
+                                <div 
+                                    id={`buttons-${item.id}`}
+                                    className="absolute right-full top-0 mr-2 flex h-full flex-col items-center justify-center gap-2"
+                                >
+                                    <div className="flex flex-col gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
+                                        <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
+                                        <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
+                                    </div>
+                                     <div className="flex flex-col gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
+                                        <Button variant="outline" size="icon" onClick={() => handleEdit(item)}><Pencil /></Button>
+                                        <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)}>
+                                            {item.hidden ? <Eye /> : <EyeOff />}
+                                        </Button>
+                                        <Button variant="outline" size="icon" onClick={() => handleToggleFullWidth(item)}>
+                                            <Columns className={cn(item.fullWidth && "text-primary")} />
+                                        </Button>
+                                        <Button variant="destructive" size="icon" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                                            <Trash2 />
+                                        </Button>
+                                    </div>
+                                </div>
                                 <DisplayCardComponent {...item} />
-                           </div>
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -331,9 +304,7 @@ export function StaffCardManager<T extends BaseCardData>({
                 <CardContent>
                    {isEditing && (
                         <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted min-h-[420px]">
-                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState}>
-                               {partnerEditorOverlay}
-                            </EditorCardComponent>
+                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                         </div>
                     )}
 
