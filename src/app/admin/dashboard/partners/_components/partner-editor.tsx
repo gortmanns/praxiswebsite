@@ -119,7 +119,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
     return (
         <div className="relative">
-            <div className="grid md:grid-cols-2 h-[410px]">
+            <div className="grid md:grid-cols-2 h-[400px]">
                 {/* Left side: Editor Form */}
                 <div className="space-y-6 p-10 rounded-l-lg bg-muted z-20">
                     <div className="space-y-2">
@@ -155,7 +155,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 </div>
 
                 {/* Right side: Visual Live Preview Area */}
-                 <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[410px] grid grid-cols-4 gap-4">
+                 <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[400px] grid grid-cols-4 gap-4">
                     <div className="col-span-1 flex flex-col items-center justify-end pb-2">
                          <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-4/5 pointer-events-auto flex flex-col h-auto p-2 gap-1">
                             <RotateCcw className="h-4 w-4" />

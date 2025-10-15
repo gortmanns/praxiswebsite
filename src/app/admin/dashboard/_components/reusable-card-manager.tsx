@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -201,7 +200,7 @@ function ReusableCardManager<T extends CardData>({
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
     const partnerEditorOverlay = isEditing ? (
-        <div className="pointer-events-none absolute inset-0 z-20 bg-green-500/30">
+        <div className="pointer-events-none absolute inset-0 z-20">
              <div className="grid h-full w-full grid-cols-8 gap-4 p-4">
                  <div className="col-span-4"></div>
                  <div className="col-span-1"></div>
@@ -355,7 +354,7 @@ function ReusableCardManager<T extends CardData>({
                 </CardHeader>
                 <CardContent>
                    {isEditing && (
-                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted h-[410px] mb-8">
+                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted h-[400px] mb-8">
                             {partnerEditorOverlay}
                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                         </div>
