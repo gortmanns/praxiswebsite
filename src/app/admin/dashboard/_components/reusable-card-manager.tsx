@@ -235,43 +235,20 @@ function ReusableCardManager<T extends CardData>({
     );
     
     const RowGrid: React.FC<{ partners: T[], totalItems: number, isHidden?: boolean }> = ({ partners, totalItems, isHidden }) => {
-        const count = partners.length;
-        if (count === 0) return null;
-    
+        if (!partners || partners.length === 0) return null;
+
         const getCardProps = (partner: T, index: number) => ({
             partner: partner,
             isFirst: index === 0,
             isLast: index === totalItems - 1,
             isHiddenCard: isHidden
         });
-    
-        if (count === 4) {
-            return (
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                    {partners.map((partner, index) => (
-                        <div key={partner.id}>
-                            <AdminPartnerCard {...getCardProps(partner, partners.findIndex(p => p.id === partner.id))} />
-                        </div>
-                    ))}
-                </div>
-            );
-        }
         
         return (
-            <div className="grid grid-cols-1 sm:grid-cols-8 gap-8">
-                {count === 1 && (
-                    <div className="sm:col-start-4 sm:col-span-2">
-                        <AdminPartnerCard {...getCardProps(partners[0], 0)} />
-                    </div>
-                )}
-                {count === 2 && partners.map((partner, index) => (
-                    <div key={partner.id} className={cn("sm:col-span-2", index === 0 ? "sm:col-start-2" : "sm:col-start-6")}>
-                        <AdminPartnerCard {...getCardProps(partner, index)} />
-                    </div>
-                ))}
-                {count === 3 && partners.map((partner, index) => (
-                     <div key={partner.id} className={cn("sm:col-span-2", index === 0 && "sm:col-start-1", index === 1 && "sm:col-start-4", index === 2 && "sm:col-start-7")}>
-                        <AdminPartnerCard {...getCardProps(partner, index)} />
+             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                {partners.map((partner, index) => (
+                    <div key={partner.id}>
+                        <AdminPartnerCard {...getCardProps(partner, partners.findIndex(p => p.id === partner.id))} />
                     </div>
                 ))}
             </div>
