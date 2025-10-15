@@ -1,8 +1,7 @@
 
 'use client';
 
-import React from 'react';
-import { useState, useRef, type ReactNode } from 'react';
+import React, { useState, useRef, type ReactNode } from 'react';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
@@ -156,7 +155,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                     <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
                     
                      <div className="pointer-events-auto w-full space-y-2 mb-4">
-                         <div className="text-center text-primary-foreground text-sm">Grösse: {cardData.logoScale || 100}%</div>
+                        <div className="text-center text-primary-foreground text-sm">Grösse: {cardData.logoScale || 100}%</div>
                         <Slider
                             id="logoScale"
                             value={[cardData.logoScale || 100]}
@@ -182,7 +181,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                                 step={1}
                                 className="[&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20"
                             />
-                            <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2 mt-2">
+                             <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2 mt-2">
                                 <MoveHorizontal/> <span>Horizontale Position: {cardData.logoX || 0}px</span>
                             </div>
                         </div>
@@ -211,7 +210,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                                         className="[&>span:first-child]:bg-primary-foreground/50 [&_[role=slider]]:bg-primary-foreground [&_[role=slider]]:w-5 [&_[role=slider]]:h-5"
                                     />
                                 </div>
-                                <div className="text-center text-xs text-white -rotate-90">
+                                <div className="text-center text-xs text-white">
                                     <div className="flex flex-col items-center justify-center h-full">
                                         <div className="flex items-center gap-1">
                                             <MoveVertical className="w-3 h-3"/>
