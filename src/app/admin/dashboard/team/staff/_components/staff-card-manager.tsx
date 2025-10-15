@@ -1,4 +1,3 @@
-
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -214,7 +213,7 @@ export function StaffCardManager<T extends BaseCardData>({
         const activeItems = validDbData.filter(i => !i.hidden);
         const hiddenItems = validDbData.filter(i => i.hidden);
     
-        const renderGrid = (items: T[], title: string, description: string) => {
+        const renderGrid = (items: T[], title: string, description: string, isHiddenGrid: boolean) => {
             if (items.length === 0 && !isEditing) return (
                 <div className="space-y-4 mt-12">
                      <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
@@ -228,32 +227,34 @@ export function StaffCardManager<T extends BaseCardData>({
                     <p className="text-sm text-muted-foreground">{description}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-16 mt-8">
                        {items.map((item, index) => (
-                           <div key={item.id} className={cn("flex justify-center", item.fullWidth && "sm:col-span-2")}>
-                               <div className="relative w-full max-w-sm">
-                                   <div
-                                       id={`buttons-${item.id}`}
-                                       className="absolute top-1/2 -translate-y-1/2 flex flex-col items-center justify-center gap-2"
-                                       style={{ right: 'calc(100% + 15px)' }}
-                                   >
-                                       <div className="flex flex-col gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
-                                           <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
-                                           <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
-                                       </div>
-                                       <div className="flex flex-col gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
-                                           <Button variant="outline" size="icon" onClick={() => handleEdit(item)}><Pencil /></Button>
-                                           <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)}>
-                                               {item.hidden ? <Eye /> : <EyeOff />}
-                                           </Button>
-                                           <Button variant="outline" size="icon" onClick={() => handleToggleFullWidth(item)}>
-                                               <Columns className={cn(item.fullWidth && "text-primary")} />
-                                           </Button>
-                                           <Button variant="destructive" size="icon" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                                               <Trash2 />
-                                           </Button>
-                                       </div>
-                                   </div>
-                                   <DisplayCardComponent {...item} />
-                               </div>
+                           <div key={item.id} className={cn("relative flex justify-center w-full max-w-sm mx-auto", item.fullWidth && "sm:col-span-2")}>
+                                <div
+                                    id={`buttons-${item.id}`}
+                                    className="absolute top-1/2 -translate-y-1/2 flex flex-col items-center justify-center gap-2"
+                                    style={{ right: 'calc(100% + 15px)' }}
+                                >
+                                     <div className="flex items-center gap-2 rounded-lg border bg-background/80 p-1 shadow-inner">
+                                        <Button size="icon" variant="ghost" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
+                                        <Button size="icon" variant="ghost" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
+                                    </div>
+                                    <div className="flex w-[120px] flex-col gap-1 rounded-lg border bg-background/80 p-2 shadow-inner">
+                                        <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}>
+                                            <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
+                                        </Button>
+                                        <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
+                                            {item.hidden ? <><Eye className="mr-2 h-4 w-4" /> Einblenden</> : <><EyeOff className="mr-2 h-4 w-4" /> Ausblenden</>}
+                                        </Button>
+                                         <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleFullWidth(item)}>
+                                            <Columns className={cn("mr-2 h-4 w-4", item.fullWidth && "text-primary")} /> Ganze Zeile
+                                        </Button>
+                                        {isHiddenGrid && (
+                                            <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                                                <Trash2 className="mr-2 h-4 w-4" /> Löschen
+                                            </Button>
+                                        )}
+                                    </div>
+                                </div>
+                                <DisplayCardComponent {...item} />
                            </div>
                         ))}
                     </div>
@@ -263,8 +264,8 @@ export function StaffCardManager<T extends BaseCardData>({
     
         return (
             <>
-                {renderGrid(activeItems, 'Aktive Karten', 'Die hier angezeigten Karten sind auf der Webseite sichtbar.')}
-                {renderGrid(hiddenItems, 'Ausgeblendete Karten', 'Diese Karten sind auf der Webseite nicht sichtbar.')}
+                {renderGrid(activeItems, 'Aktive Karten', 'Die hier angezeigten Karten sind auf der Webseite sichtbar.', false)}
+                {renderGrid(hiddenItems, 'Ausgeblendete Karten', 'Diese Karten sind auf der Webseite nicht sichtbar.', true)}
             </>
         );
     };
