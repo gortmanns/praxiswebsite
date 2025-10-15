@@ -1,138 +1,147 @@
 /**
- * @file Firestore Security Rules
- * @description This ruleset enforces a strict authentication-based access control model.
- * Only authenticated users are allowed to read or write data.
+ * @file Firebase Security Rules for Firestore.
  *
- * Data Structure:
- * The database consists of several top-level collections: `doctors`, `staff`, `medicalPartners`, `otherPartners`, `holidays`, and `settings/banners`.
+ * @core_philosophy This ruleset provides public read access to all collections
+ *   while restricting write access to authenticated users only. It does NOT
+ *   validate the data being written, prioritizing rapid prototyping over
+ *   strict schema enforcement. This is a deliberate choice for the
+ *   prototyping phase and should be revisited for production.
  *
- * Key Security Decisions:
- * - All data access requires authentication.
- * - All collections are writeable by authenticated users.
- * - The 'banners' document is in a `settings` collection, which should only ever contain one document.
+ * @data_structure The database contains several top-level collections:
+ *   - /doctors: Stores doctor profile information.
+ *   - /staff: Stores staff member profiles.
+ *   - /medicalPartners: Stores medical partner information.
+ *   - /otherPartners: Stores other partner information.
+ *   - /holidays: Stores practice holiday periods.
+ *   - /settings/banners: A singleton document for banner settings.
  *
- * Data Denormalization: N/A - Not applicable for this authentication-only ruleset.
+ * @key_security_decisions
+ *   - All collections are publicly readable.
+ *   - Write access (create, update, delete) requires authentication.
+ *   - No data validation is performed on write operations beyond requiring authentication.
+ *   - The `settings/banners` document is treated as a singleton; only one document is allowed at that path.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
     /**
-     * @description Grants access to the 'doctors' collection for authenticated users.
-     * @path /doctors/{doctorId}
-     * @allow (get, list) Authenticated user can read doctor profile.
-     * @allow (create) Authenticated user can create doctor profile.
-     * @allow (update) Authenticated user can update doctor profile.
-     * @allow (delete) Authenticated user can delete doctor profile.
-     * @deny (get, list) Unauthenticated user cannot read doctor profiles.
-     * @deny (create, update, delete) Unauthenticated user cannot write doctor profiles.
-     * @principle Allows authenticated users to manage doctor profiles.
+     * @description Rules for the /doctors collection.
+     * @path /databases/{database}/documents/doctors/{doctorId}
+     * @allow (get, list): Anyone can read doctor profiles.
+     * @allow (create): An authenticated user can create a doctor profile.
+     * @allow (update): An authenticated user can update a doctor profile.
+     * @allow (delete): An authenticated user can delete a doctor profile.
+     * @deny (create): An unauthenticated user cannot create a doctor profile.
+     * @deny (update): An unauthenticated user cannot update a doctor profile.
+     * @deny (delete): An unauthenticated user cannot delete a doctor profile.
+     * @principle Allows public read access but restricts write access to authenticated users.
      */
     match /doctors/{doctorId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
+      allow get, list: if true;
       allow create: if isSignedIn();
       allow update: if isSignedIn();
       allow delete: if isSignedIn();
     }
 
     /**
-     * @description Grants access to the 'staff' collection for authenticated users.
-     * @path /staff/{staffId}
-     * @allow (get, list) Authenticated user can read staff profile.
-     * @allow (create) Authenticated user can create staff profile.
-     * @allow (update) Authenticated user can update staff profile.
-     * @allow (delete) Authenticated user can delete staff profile.
-     * @deny (get, list) Unauthenticated user cannot read staff profiles.
-     * @deny (create, update, delete) Unauthenticated user cannot write staff profiles.
-     * @principle Allows authenticated users to manage staff profiles.
+     * @description Rules for the /staff collection.
+     * @path /databases/{database}/documents/staff/{staffId}
+     * @allow (get, list): Anyone can read staff profiles.
+     * @allow (create): An authenticated user can create a staff profile.
+     * @allow (update): An authenticated user can update a staff profile.
+     * @allow (delete): An authenticated user can delete a staff profile.
+     * @deny (create): An unauthenticated user cannot create a staff profile.
+     * @deny (update): An unauthenticated user cannot update a staff profile.
+     * @deny (delete): An unauthenticated user cannot delete a staff profile.
+     * @principle Allows public read access but restricts write access to authenticated users.
      */
     match /staff/{staffId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
+      allow get, list: if true;
       allow create: if isSignedIn();
       allow update: if isSignedIn();
       allow delete: if isSignedIn();
     }
 
     /**
-     * @description Grants access to the 'medicalPartners' collection for authenticated users.
-     * @path /medicalPartners/{partnerId}
-     * @allow (get, list) Authenticated user can read medical partner info.
-     * @allow (create) Authenticated user can create medical partner info.
-     * @allow (update) Authenticated user can update medical partner info.
-     * @allow (delete) Authenticated user can delete medical partner info.
-     * @deny (get, list) Unauthenticated user cannot read medical partner info.
-     * @deny (create, update, delete) Unauthenticated user cannot write medical partner info.
-     * @principle Allows authenticated users to manage medical partner information.
+     * @description Rules for the /medicalPartners collection.
+     * @path /databases/{database}/documents/medicalPartners/{partnerId}
+     * @allow (get, list): Anyone can read medical partner information.
+     * @allow (create): An authenticated user can create a medical partner profile.
+     * @allow (update): An authenticated user can update a medical partner profile.
+     * @allow (delete): An authenticated user can delete a medical partner profile.
+     * @deny (create): An unauthenticated user cannot create a medical partner profile.
+     * @deny (update): An unauthenticated user cannot update a medical partner profile.
+     * @deny (delete): An unauthenticated user cannot delete a medical partner profile.
+     * @principle Allows public read access but restricts write access to authenticated users.
      */
     match /medicalPartners/{partnerId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
+      allow get, list: if true;
       allow create: if isSignedIn();
       allow update: if isSignedIn();
       allow delete: if isSignedIn();
     }
 
     /**
-     * @description Grants access to the 'otherPartners' collection for authenticated users.
-     * @path /otherPartners/{partnerId}
-     * @allow (get, list) Authenticated user can read other partner info.
-     * @allow (create) Authenticated user can create other partner info.
-     * @allow (update) Authenticated user can update other partner info.
-     * @allow (delete) Authenticated user can delete other partner info.
-     * @deny (get, list) Unauthenticated user cannot read other partner info.
-     * @deny (create, update, delete) Unauthenticated user cannot write other partner info.
-     * @principle Allows authenticated users to manage other partner information.
+     * @description Rules for the /otherPartners collection.
+     * @path /databases/{database}/documents/otherPartners/{partnerId}
+     * @allow (get, list): Anyone can read other partner information.
+     * @allow (create): An authenticated user can create an other partner profile.
+     * @allow (update): An authenticated user can update an other partner profile.
+     * @allow (delete): An authenticated user can delete an other partner profile.
+     * @deny (create): An unauthenticated user cannot create an other partner profile.
+     * @deny (update): An unauthenticated user cannot update an other partner profile.
+     * @deny (delete): An unauthenticated user cannot delete an other partner profile.
+     * @principle Allows public read access but restricts write access to authenticated users.
      */
     match /otherPartners/{partnerId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
+      allow get, list: if true;
       allow create: if isSignedIn();
       allow update: if isSignedIn();
       allow delete: if isSignedIn();
     }
 
     /**
-     * @description Grants access to the 'holidays' collection for authenticated users.
-     * @path /holidays/{holidayId}
-     * @allow (get, list) Authenticated user can read holiday info.
-     * @allow (create) Authenticated user can create holiday info.
-     * @allow (update) Authenticated user can update holiday info.
-     * @allow (delete) Authenticated user can delete holiday info.
-     * @deny (get, list) Unauthenticated user cannot read holiday info.
-     * @deny (create, update, delete) Unauthenticated user cannot write holiday info.
-     * @principle Allows authenticated users to manage holiday information.
+     * @description Rules for the /holidays collection.
+     * @path /databases/{database}/documents/holidays/{holidayId}
+     * @allow (get, list): Anyone can read holiday information.
+     * @allow (create): An authenticated user can create a holiday period.
+     * @allow (update): An authenticated user can update a holiday period.
+     * @allow (delete): An authenticated user can delete a holiday period.
+     * @deny (create): An unauthenticated user cannot create a holiday period.
+     * @deny (update): An unauthenticated user cannot update a holiday period.
+     * @deny (delete): An unauthenticated user cannot delete a holiday period.
+     * @principle Allows public read access but restricts write access to authenticated users.
      */
     match /holidays/{holidayId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
+      allow get, list: if true;
       allow create: if isSignedIn();
       allow update: if isSignedIn();
       allow delete: if isSignedIn();
     }
 
     /**
-     * @description Grants access to the 'banners' document under the 'settings' collection for authenticated users.
-     * @path /settings/banners
-     * @allow (get) Authenticated user can read banner settings.
-     * @allow (create) Authenticated user can create banner settings.
-     * @allow (update) Authenticated user can update banner settings.
-     * @allow (delete) Authenticated user can delete banner settings.
-     * @deny (get) Unauthenticated user cannot read banner settings.
-     * @deny (create, update, delete) Unauthenticated user cannot write banner settings.
-     * @principle Allows authenticated users to manage banner settings.
+     * @description Rules for the /settings/banners document.
+     * @path /databases/{database}/documents/settings/banners
+     * @allow (get): Anyone can read banner settings.
+     * @allow (create): An authenticated user can create the banner settings.
+     * @allow (update): An authenticated user can update the banner settings.
+     * @allow (delete): An authenticated user can delete the banner settings.
+     * @deny (create): An unauthenticated user cannot create the banner settings.
+     * @deny (update): An unauthenticated user cannot update the banner settings.
+     * @deny (delete): An unauthenticated user cannot delete the banner settings.
+     * @principle Allows public read access but restricts write access to authenticated users. Ensures only one banner settings document exists.
      */
     match /settings/banners {
-      allow get: if isSignedIn();
-      allow list: if false; // There is only 1 banner document, so listing this collection doesn't make sense.
-      allow create: if isSignedIn();
+      allow get: if true;
+      allow create: if isSignedIn() && !existsAfter(resource.path);
       allow update: if isSignedIn();
       allow delete: if isSignedIn();
+    }
+
+    // Helper function to check if a user is signed in.
+    function isSignedIn() {
+      return request.auth != null;
     }
   }
 }
