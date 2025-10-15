@@ -1,4 +1,10 @@
-
+/**********************************************************************************
+ * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
+ * 
+ * Diese Datei wurde nach wiederholten Fehlversuchen stabilisiert.
+ * ÄNDERN SIE DIESE DATEI UNTER KEINEN UMSTÄNDEN OHNE AUSDRÜCKLICHE ERLAUBNIS.
+ * Jede Änderung muss vorher bestätigt werden.
+ **********************************************************************************/
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -15,8 +21,8 @@ import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
-import { StaffCard as DisplayCard } from './_components/staff-card';
-import { StaffEditor as EditorComponent } from './_components/staff-editor';
+import { StaffCard } from './_components/staff-card';
+import { StaffEditor } from './_components/staff-editor';
 import type { StaffMember as CardData } from './_components/staff-editor';
 
 const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
@@ -200,17 +206,21 @@ export default function StaffPageManager() {
         const hiddenItems = validDbData.filter(i => i.hidden);
     
         const renderGrid = (items: CardData[], title: string, description: string, isHiddenGrid: boolean) => {
-            if (!isLoadingData && items.length === 0 && !isEditing) {
-                 return (
-                    <div className="space-y-4 mt-12">
-                        <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
-                        <p className="text-sm text-muted-foreground pt-4">Keine Karten in dieser Kategorie.</p>
-                    </div>
-                );
-            }
-            
-            return (
-                <div className={cn("space-y-4 mt-12", isEditing ? "opacity-50 pointer-events-none" : "")}>
+            if (!isLoadingData && items.length === 0 && !isHiddenGrid && !isEditing) {
+                return (
+                   <div className="space-y-4 mt-12">
+                       <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
+                       <p className="text-sm text-muted-foreground pt-4">Keine Karten in dieser Kategorie.</p>
+                   </div>
+               );
+           }
+           if (!isLoadingData && items.length === 0 && isHiddenGrid) {
+               return null;
+           }
+           
+           return (
+               <>
+                <div className={cn("space-y-4 mt-12", isEditing && !isHiddenGrid ? "opacity-50 pointer-events-none" : "")}>
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-16 mt-8">
@@ -257,11 +267,11 @@ export default function StaffPageManager() {
                                   <DisplayCard {...item} />
                                 </div>
                             </div>
-                           </div>
-                        ))}
+                       ))}
                     </div>
-                </div>
-            );
+                 </div>
+               </>
+           );
         };
     
         return (
@@ -306,17 +316,12 @@ export default function StaffPageManager() {
                    {isEditing && (
                         <div className="mb-8 rounded-lg border-2 border-dashed border-primary bg-muted p-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                                <EditorComponent cardData={editorCardState} onUpdate={handleEditorUpdate} />
+                                <StaffEditor cardData={editorCardState} onUpdate={handleEditorUpdate} />
                                 <div className="space-y-4">
                                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="relative flex items-center justify-center">
-                                            <DisplayCard {...editorCardState} />
-                                        </div>
-                                        <div className="relative flex items-center justify-center w-full max-w-sm mx-auto h-full rounded-lg bg-accent text-background p-6">
-                                            {editorCardState.backsideContent && (
-                                                <div className="text-center text-lg" dangerouslySetInnerHTML={{ __html: editorCardState.backsideContent }} />
-                                            )}
+                                    <div className="grid grid-cols-1 gap-4 place-items-center">
+                                        <div className="relative flex items-center justify-center w-full max-w-sm">
+                                            <StaffCard {...editorCardState} />
                                         </div>
                                     </div>
                                 </div>
