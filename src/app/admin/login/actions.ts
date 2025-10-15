@@ -4,7 +4,6 @@
 import { z } from 'zod';
 import { getSession } from '@/lib/session';
 import { compare } from 'bcrypt';
-import 'dotenv/config';
 
 const loginSchema = z.object({
   username: z.string(),
