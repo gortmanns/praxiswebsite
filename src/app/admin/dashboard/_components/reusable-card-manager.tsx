@@ -302,8 +302,6 @@ function ReusableCardManager<T extends CardData>({
         const hiddenItems = validDbData.filter(i => i.hidden);
     
         const renderGrid = (items: T[], title: string, description: string, isHiddenGrid: boolean) => {
-            if (items.length === 0 && !isEditing) return null;
-
             return (
                 <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
@@ -357,7 +355,7 @@ function ReusableCardManager<T extends CardData>({
                 </CardHeader>
                 <CardContent>
                    {isEditing && (
-                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted min-h-[450px] mb-8">
+                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted h-[420px] mb-8">
                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState}>
                                {partnerEditorOverlay}
                             </EditorCardComponent>
