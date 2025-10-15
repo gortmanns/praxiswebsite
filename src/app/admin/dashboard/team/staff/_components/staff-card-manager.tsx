@@ -1,3 +1,4 @@
+
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -227,36 +228,36 @@ export function StaffCardManager<T extends BaseCardData>({
                     <p className="text-sm text-muted-foreground">{description}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-16 mt-8">
                        {items.map((item, index) => (
-                           <div key={item.id} className={cn("relative flex justify-center", item.fullWidth && "sm:col-span-2")}>
-                                <div
-                                    id={`buttons-${item.id}`}
-                                    className="absolute top-1/2 -translate-y-1/2 flex w-max flex-col items-center justify-center gap-2"
-                                    style={{ right: 'calc(100% + 15px)' }}
-                                >
-                                    <div className="flex w-full items-center justify-center gap-1 rounded-lg border bg-background/80 p-1 shadow-inner">
-                                        <Button size="icon" variant="ghost" className="h-8 w-full flex-1" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
-                                        <Button size="icon" variant="ghost" className="h-8 w-full flex-1" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
-                                    </div>
-                                    <div className="flex w-full flex-col gap-1 rounded-lg border bg-background/80 p-2 shadow-inner">
-                                        <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleEdit(item)}>
-                                            <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
-                                        </Button>
-                                        <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleToggleHidden(item)}>
-                                            {item.hidden ? <><Eye className="mr-2 h-4 w-4" /> Einblenden</> : <><EyeOff className="mr-2 h-4 w-4" /> Ausblenden</>}
-                                        </Button>
-                                         <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleToggleFullWidth(item)}>
-                                            <Columns className={cn("mr-2 h-4 w-4", item.fullWidth && "text-primary")} /> Ganze Zeile
-                                        </Button>
-                                        {isHiddenGrid && (
-                                            <Button variant="destructive" size="sm" className="w-full justify-start" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                                                <Trash2 className="mr-2 h-4 w-4" /> Löschen
+                           <div key={item.id} className={cn("flex justify-center", item.fullWidth && "sm:col-span-2")}>
+                               <div className="relative w-full max-w-sm">
+                                    <div
+                                        id={`buttons-${item.id}`}
+                                        className="absolute top-1/2 -translate-y-1/2 flex w-max flex-col items-center justify-center gap-2"
+                                        style={{ right: 'calc(100% + 15px)' }}
+                                    >
+                                        <div className="grid grid-cols-2 gap-1 w-[140px] rounded-lg border bg-background/80 p-1 shadow-inner">
+                                            <Button size="icon" variant="ghost" className="h-8 w-full" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
+                                            <Button size="icon" variant="ghost" className="h-8 w-full" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
+                                        </div>
+                                        <div className="flex w-[140px] flex-col gap-1 rounded-lg border bg-background/80 p-1 shadow-inner">
+                                            <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleEdit(item)}>
+                                                <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
                                             </Button>
-                                        )}
+                                            <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleToggleHidden(item)}>
+                                                {item.hidden ? <><Eye className="mr-2 h-4 w-4" /> Einblenden</> : <><EyeOff className="mr-2 h-4 w-4" /> Ausblenden</>}
+                                            </Button>
+                                            <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => handleToggleFullWidth(item)}>
+                                                <Columns className={cn("mr-2 h-4 w-4", item.fullWidth && "text-primary")} /> Ganze Zeile
+                                            </Button>
+                                            {isHiddenGrid && (
+                                                <Button variant="destructive" size="sm" className="w-full justify-start" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                                                    <Trash2 className="mr-2 h-4 w-4" /> Löschen
+                                                </Button>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="w-full max-w-sm">
                                     <DisplayCardComponent {...item} />
-                                </div>
+                               </div>
                            </div>
                         ))}
                     </div>
