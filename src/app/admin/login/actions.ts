@@ -1,6 +1,7 @@
 
 'use server';
 
+import 'dotenv/config';
 import { z } from 'zod';
 import { getSession } from '@/lib/session';
 
@@ -30,7 +31,7 @@ export async function login(credentials: unknown): Promise<LoginResult> {
     console.error('Admin credentials are not set in .env file');
     return { success: false, error: 'Server-Konfigurationsfehler.' };
   }
-  
+
   const isUsernameValid = username === storedUsername;
   const isPasswordValid = password === storedPassword;
 
