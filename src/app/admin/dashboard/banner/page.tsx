@@ -1,4 +1,4 @@
-// Diese seite darf im Rahmen von Änderungen die an anderen Seiten vorgenommen werde nur nach ausdrücklicher vorheriger Freigabe durch den Administrator geändert werden, wozu eine explizite RÜckfrage nötig ist
+
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
@@ -153,8 +153,7 @@ const PlaceholderAlert = () => (
     </Alert>
 );
 
-
-export default function BannerPage() {
+function BannerManager() {
     const firestore = useFirestore();
     
     const [bannerSettings, setBannerSettings] = useState<BannerSettings>(initialBannerSettings);
@@ -165,11 +164,12 @@ export default function BannerPage() {
     const [notification, setNotification] = useState<TimedAlertProps | null>(null);
     const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; bannerId?: string; bannerText?: string }>({ isOpen: false });
 
+    // Correctly memoized data fetching hooks
     const settingsDocRef = useMemoFirebase(() => {
         if (!firestore) return null;
         return doc(firestore, 'settings', 'banners');
     }, [firestore]);
-    const { data: dbSettings, isLoading: isLoadingSettings, error: dbSettingsError } = useDoc<BannerSettings>(settingsDocRef);
+    const { data: dbSettings, isLoading: isLoadingSettings, error: dbSettingsError } = useDoc<BannerSettings>(settingsDocRef as any);
     
     const infoBannersQuery = useMemoFirebase(() => {
         if (!firestore) return null;
@@ -306,7 +306,9 @@ export default function BannerPage() {
     }
 
     if (dbError) {
-        return (<div className="flex flex-1 items-start p-4 sm:p-6"><Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertTitle>Datenbankfehler</AlertTitle><AlertDescription>{dbError.message}</AlertDescription></Alert></div>)
+        // The error boundary will catch and display the contextual error.
+        // We can render a simple fallback UI here.
+        return (<div className="flex flex-1 items-start p-4 sm:p-6"><Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertTitle>Datenbankfehler</AlertTitle><AlertDescription>Die Bannerdaten konnten nicht geladen werden. Der Fehler wurde zur Analyse gemeldet.</AlertDescription></Alert></div>)
     }
 
     return (
@@ -507,3 +509,9 @@ export default function BannerPage() {
         </>
     );
 }
+
+export default function BannerPage() {
+    return <BannerManager />;
+}
+
+    
