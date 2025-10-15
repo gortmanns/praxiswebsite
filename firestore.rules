@@ -1,97 +1,127 @@
 /**
- * @fileoverview Firestore Security Rules for the application.
+ * @fileoverview Firestore Security Rules for the practice website.
  *
  * Core Philosophy:
- * This ruleset prioritizes simplicity and security. It assumes all collections
- * are read-only for unauthenticated users, and write access is denied unless
- * explicitly granted. Data structure validation is relaxed to allow for rapid prototyping.
+ * This ruleset provides public read access to all collections and restricts write access.
+ * No authentication or authorization is required to read data.
+ * Write access is completely disabled as of now.
  *
  * Data Structure:
- * The Firestore database contains several top-level collections: `doctors`, `staff`,
- * `medicalPartners`, `otherPartners`, `holidays`, and a special document at `settings/banners`.
+ * The Firestore database consists of several top-level collections:
+ * - /doctors: Stores doctor profile information.
+ * - /staff: Stores practice staff member profiles.
+ * - /medicalPartners: Stores medical cooperation partner information.
+ * - /otherPartners: Stores other cooperation partner information.
+ * - /holidays: Stores practice holiday periods.
+ * - /infoBanners: Stores multiple custom info banners (blue).
+ * - /settings/banners: A single document that stores settings for holiday banners.
  *
  * Key Security Decisions:
- * - Unauthenticated users can read all collections.
- * - Write access is denied to all collections unless explicitly granted (currently none).
- * - Data validation is minimal during this prototyping phase. Only relational integrity and
- *   authorization-related fields are validated.
+ * - All read operations (get, list) are public, requiring no authentication.
+ * - All write operations (create, update, delete) are explicitly denied.
+ * - Schema validation is not performed in this prototyping phase.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows public read access to doctor profiles. Write access is denied.
+     * @description Allows public read access to doctor profiles. Denies all writes.
      * @path /doctors/{doctorId}
-     * @allow get, list: Unauthenticated users can read doctor profiles.
-     * @deny create, update, delete: No one can create, update, or delete doctor profiles.
-     * @principle Allows public read access while restricting write access.
+     * @allow (get, list): Any user can read doctor profiles.
+     * @deny (create, update, delete): No user can create, update, or delete doctor profiles.
+     * @principle Allows public reads, denies all writes.
      */
     match /doctors/{doctorId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
-     * @description Allows public read access to staff member profiles. Write access is denied.
+     * @description Allows public read access to staff member profiles. Denies all writes.
      * @path /staff/{staffMemberId}
-     * @allow get, list: Unauthenticated users can read staff member profiles.
-     * @deny create, update, delete: No one can create, update, or delete staff member profiles.
-     * @principle Allows public read access while restricting write access.
+     * @allow (get, list): Any user can read staff member profiles.
+     * @deny (create, update, delete): No user can create, update, or delete staff member profiles.
+     * @principle Allows public reads, denies all writes.
      */
     match /staff/{staffMemberId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
-     * @description Allows public read access to medical partner information. Write access is denied.
-     * @path /medicalPartners/{medicalPartnerId}
-     * @allow get, list: Unauthenticated users can read medical partner information.
-     * @deny create, update, delete: No one can create, update, or delete medical partner information.
-     * @principle Allows public read access while restricting write access.
+     * @description Allows public read access to medical partner information. Denies all writes.
+     * @path /medicalPartners/{partnerId}
+     * @allow (get, list): Any user can read medical partner information.
+     * @deny (create, update, delete): No user can create, update, or delete medical partner information.
+     * @principle Allows public reads, denies all writes.
      */
-    match /medicalPartners/{medicalPartnerId} {
+    match /medicalPartners/{partnerId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
-     * @description Allows public read access to other partner information. Write access is denied.
-     * @path /otherPartners/{otherPartnerId}
-     * @allow get, list: Unauthenticated users can read other partner information.
-     * @deny create, update, delete: No one can create, update, or delete other partner information.
-     * @principle Allows public read access while restricting write access.
+     * @description Allows public read access to other partner information. Denies all writes.
+     * @path /otherPartners/{partnerId}
+     * @allow (get, list): Any user can read other partner information.
+     * @deny (create, update, delete): No user can create, update, or delete other partner information.
+     * @principle Allows public reads, denies all writes.
      */
-    match /otherPartners/{otherPartnerId} {
+    match /otherPartners/{partnerId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
-     * @description Allows public read access to holiday information. Write access is denied.
+     * @description Allows public read access to holiday periods. Denies all writes.
      * @path /holidays/{holidayId}
-     * @allow get, list: Unauthenticated users can read holiday information.
-     * @deny create, update, delete: No one can create, update, or delete holiday information.
-     * @principle Allows public read access while restricting write access.
+     * @allow (get, list): Any user can read holiday periods.
+     * @deny (create, update, delete): No user can create, update, or delete holiday periods.
+     * @principle Allows public reads, denies all writes.
      */
     match /holidays/{holidayId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
-     * @description Allows public read access to banner settings. Write access is denied.
-     * @path /settings/banners
-     * @allow get: Unauthenticated users can read banner settings.
-     * @deny list: Listing is not allowed on single documents.
-     * @deny create, update, delete: No one can create, update, or delete banner settings.
-     * @principle Allows public read access while restricting write access.
+     * @description Allows public read access to info banners. Denies all writes.
+     * @path /infoBanners/{bannerId}
+     * @allow (get, list): Any user can read info banners.
+     * @deny (create, update, delete): No user can create, update, or delete info banners.
+     * @principle Allows public reads, denies all writes.
      */
+    match /infoBanners/{bannerId} {
+      allow get, list: if true;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+     /**
+      * @description Allows public read access to the banner settings. Denies all writes.
+      * @path /settings/banners
+      * @allow (get): Any user can read the banner settings.
+      * @deny (create, update, delete, list): No user can create, update, or delete the banner settings. List is denied because it is a single document.
+      * @principle Allows public reads, denies all writes.
+      */
     match /settings/banners {
-      allow get: if true;
-      allow list: if false;
-      allow create, update, delete: if false;
+        allow get: if true;
+        allow list: if false;
+        allow create: if false;
+        allow update: if false;
+        allow delete: if false;
     }
   }
 }
