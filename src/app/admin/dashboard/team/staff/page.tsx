@@ -224,7 +224,7 @@ export default function StaffPageManager() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-16 mt-8">
                    {items.map((item, index) => (
                        <div key={item.id} className={cn("relative flex justify-center", item.fullWidth && "sm:col-span-2")}>
-                            <div id={`buttons-${item.id}`} className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 flex w-40 flex-col items-center justify-center gap-2 pr-4">
+                           <div id={`buttons-${item.id}`} className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 flex w-40 flex-col items-center justify-center gap-2 pr-4 z-10">
                                 <div className="flex w-full flex-col items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
                                     {!isHiddenGrid && (
                                         <div className="grid grid-cols-2 gap-1 w-full">
