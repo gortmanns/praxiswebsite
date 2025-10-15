@@ -3,7 +3,6 @@
 
 import { z } from 'zod';
 import { getSession } from '@/lib/session';
-import { compare } from 'bcrypt';
 
 const loginSchema = z.object({
   username: z.string(),
@@ -25,20 +24,14 @@ export async function login(credentials: unknown): Promise<LoginResult> {
   const { username, password } = result.data;
 
   const storedUsername = process.env.ADMIN_USERNAME;
-  const storedPasswordHash = process.env.ADMIN_PASSWORD_HASH;
+  const storedPassword = process.env.ADMIN_PASSWORD;
 
-  if (!storedUsername || !storedPasswordHash) {
+  if (!storedUsername || !storedPassword) {
     console.error('Admin credentials are not set in .env file');
     return { success: false, error: 'Server-Konfigurationsfehler.' };
   }
   
-  if (username !== storedUsername) {
-    return { success: false, error: 'Ungültiger Benutzername oder falsches Passwort.' };
-  }
-
-  const passwordMatch = await compare(password, storedPasswordHash);
-
-  if (!passwordMatch) {
+  if (username !== storedUsername || password !== storedPassword) {
     return { success: false, error: 'Ungültiger Benutzername oder falsches Passwort.' };
   }
 
