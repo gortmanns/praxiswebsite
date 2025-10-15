@@ -119,7 +119,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
 
     return (
         <div className="relative">
-            <div className="grid md:grid-cols-2 h-[420px]">
+            <div className="grid md:grid-cols-2 h-[410px]">
                 {/* Left side: Editor Form */}
                 <div className="space-y-6 p-10 rounded-l-lg bg-muted z-20">
                     <div className="space-y-2">
@@ -155,14 +155,14 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 </div>
 
                 {/* Right side: Visual Live Preview Area */}
-                 <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[420px] grid grid-cols-4 gap-4">
-                    <div className="col-span-1 border-2 border-pink-500 flex flex-col items-center justify-end pb-2">
+                 <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[410px] grid grid-cols-4 gap-4">
+                    <div className="col-span-1 flex flex-col items-center justify-end pb-2">
                          <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-4/5 pointer-events-auto flex flex-col h-auto p-2 gap-1">
                             <RotateCcw className="h-4 w-4" />
                             <span>Zurück</span>
                         </Button>
                     </div>
-                    <div className="col-span-2 border-2 border-yellow-300 flex flex-col items-center py-4">
+                    <div className="col-span-2 flex flex-col items-center py-4">
                         <div className='w-full max-w-xs space-y-4'>
                             <h3 className="text-xl font-bold text-primary-foreground text-center">Live Vorschau</h3>
                             <div className="space-y-2">
@@ -180,7 +180,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                             </div>
                         </div>
                     </div>
-                     <div className="col-span-1 border-2 border-purple-500 flex justify-center items-center py-4">
+                     <div className="col-span-1 flex justify-center items-center py-4">
                          <div className="flex items-center justify-center gap-4 h-full">
                             <Slider
                                 id="logoY"

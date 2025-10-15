@@ -355,7 +355,7 @@ function ReusableCardManager<T extends CardData>({
                 </CardHeader>
                 <CardContent>
                    {isEditing && (
-                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted h-[420px] mb-8">
+                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted h-[410px] mb-8">
                             {partnerEditorOverlay}
                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                         </div>
