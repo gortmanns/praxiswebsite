@@ -209,32 +209,8 @@ function MedicalPartnersPageManager<T extends CardData>({
         <div className="pointer-events-none absolute inset-0 z-20">
             <div className="grid h-full w-full grid-cols-12 items-center gap-x-2">
                 <div className="col-start-6 col-span-6 flex flex-col items-center justify-center gap-2">
-                    <div className="pointer-events-auto w-full max-w-[250px]">
-                        <div className="text-center text-primary-foreground text-sm">Grösse: {editorCardState.logoScale || 100}%</div>
-                        <Slider id="logoScale" value={[editorCardState.logoScale || 100]} onValueChange={(value) => handleSliderChange('logoScale', value)} max={200} step={1} className="w-full [&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20" />
-                    </div>
                     <div className="w-full max-w-[250px] h-32">
                         <DisplayCardComponent {...editorCardState} />
-                    </div>
-                    <div className="pointer-events-auto w-full max-w-[250px]">
-                        <Slider id="logoX" value={[editorCardState.logoX || 0]} onValueChange={(value) => handleSliderChange('logoX', value)} min={-100} max={100} step={1} className="w-full [&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20" />
-                        <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2 mt-2">
-                            <MoveHorizontal/> <span>Horizontale Position: {editorCardState.logoX || 0}px</span>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-start-12 col-span-1 flex h-full flex-col items-center justify-center">
-                    <div className="pointer-events-auto h-32 w-full">
-                        <div className="flex h-full flex-row items-center justify-center gap-1">
-                            <div className="h-full w-auto">
-                                <Slider id="logoY" value={[editorCardState.logoY || 0]} onValueChange={(value) => handleSliderChange('logoY', value)} min={-100} max={100} step={1} orientation="vertical" className="h-full [&>span:first-child]:bg-primary-foreground/50 [&_[role=slider]]:bg-primary-foreground [&_[role=slider]]:w-5 [&_[role=slider]]:h-5" />
-                            </div>
-                            <div className="flex flex-col items-center justify-center text-center text-xs text-white -space-y-1">
-                                <MoveVertical className="w-3 h-3 mb-1"/>
-                                <span>V</span><span>E</span><span>R</span><span>T</span><span>I</span><span>K</span><span>A</span><span>L</span>
-                                <span className="mt-2">{editorCardState.logoY || 0}px</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

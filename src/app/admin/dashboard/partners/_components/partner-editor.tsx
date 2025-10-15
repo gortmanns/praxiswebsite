@@ -154,9 +154,20 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 {/* Right side: Visual Live Preview Area */}
                  <div className="relative px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[580px]">
                     <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
+                    <div className="w-full max-w-[250px] mx-auto">
+                        <div className="text-center text-primary-foreground text-sm">Grösse: {cardData.logoScale || 100}%</div>
+                        <Slider id="logoScale" value={[cardData.logoScale || 100]} onValueChange={(value) => handleSliderChange('logoScale', value)} max={200} step={1} className="w-full [&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20" />
+                    </div>
                     
                     <div className="flex-grow flex items-center justify-center">
                          {children}
+                    </div>
+
+                    <div className="w-full max-w-[250px] mx-auto">
+                        <Slider id="logoX" value={[cardData.logoX || 0]} onValueChange={(value) => handleSliderChange('logoX', value)} min={-100} max={100} step={1} className="w-full [&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20" />
+                        <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2 mt-2">
+                             <span>Horizontale Position: {cardData.logoX || 0}px</span>
+                        </div>
                     </div>
 
                     <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-full pointer-events-auto mt-4">
