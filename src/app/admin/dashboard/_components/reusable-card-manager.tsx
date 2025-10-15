@@ -91,10 +91,6 @@ function MedicalPartnersPageManager<T extends CardData>({
         }
         return `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
     };
-
-    const handleSliderChange = (field: 'logoScale' | 'logoX' | 'logoY', value: number[]) => {
-        setEditorCardState(prev => ({ ...prev, [field]: value[0] }));
-    };
     
     const handleMove = async (cardId: string, direction: 'left' | 'right') => {
         if (!dbData || !firestore) return;
@@ -206,8 +202,8 @@ function MedicalPartnersPageManager<T extends CardData>({
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
     const partnerEditorOverlay = isEditing ? (
-        <div className="pointer-events-none absolute inset-0 z-20">
-            <div className="grid h-full w-full grid-cols-12 items-center gap-x-2">
+        <div className="pointer-events-none absolute inset-0 z-30 border-2 border-blue-500">
+            <div className="grid h-full w-full grid-cols-12 items-center gap-x-2 border-2 border-red-500">
                 <div className="col-start-6 col-span-6 flex flex-col items-center justify-center gap-2">
                     <div className="w-full max-w-[250px] h-32">
                         <DisplayCardComponent {...editorCardState} />
