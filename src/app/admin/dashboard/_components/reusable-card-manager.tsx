@@ -14,9 +14,9 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 
-import { PartnerCard as DisplayCard } from '../partners/_components/partner-card';
-import { PartnerEditor as EditorComponent } from '../partners/_components/partner-editor';
-import type { Partner as CardData } from '../partners/_components/partner-editor';
+import { PartnerCard as DisplayCard } from '../_components/partner-card';
+import { PartnerEditor as EditorComponent } from '../_components/partner-editor';
+import type { Partner as CardData } from '../_components/partner-editor';
 import { Slider } from '@/components/ui/slider';
 
 
@@ -202,10 +202,11 @@ function MedicalPartnersPageManager<T extends CardData>({
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
     const partnerEditorOverlay = isEditing ? (
-        <div className="pointer-events-none absolute inset-0 z-30 border-2 border-blue-500">
-            <div className="grid h-full w-full grid-cols-12 items-center gap-x-2">
-                <div className="col-start-6 col-span-6 flex flex-col items-center justify-center gap-2">
-                    <div className="w-full max-w-[250px] h-32">
+        <div style={{ zIndex: 10, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} className='pointer-events-none'>
+            <div className="grid h-full w-full grid-cols-2">
+                <div></div>
+                <div className="flex h-full w-full items-center justify-center p-10">
+                    <div className="w-full max-w-[250px]">
                         <DisplayCardComponent {...editorCardState} />
                     </div>
                 </div>
@@ -214,53 +215,43 @@ function MedicalPartnersPageManager<T extends CardData>({
     ) : null;
 
 
-    const AdminPartnerCard: React.FC<{ partner: T, isFirst: boolean, isLast: boolean }> = ({ partner, isFirst, isLast }) => (
+    const AdminPartnerCard: React.FC<{ partner: T; isFirst: boolean; isLast: boolean; isHiddenCard?: boolean }> = ({ partner, isFirst, isLast, isHiddenCard = false }) => (
         <div className="flex flex-col items-center space-y-4">
             <DisplayCardComponent {...partner} />
-            <div
-                id={`buttons-${partner.id}`}
-                className="flex w-full max-w-sm justify-center items-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner"
-            >
-                <Button size="sm" onClick={() => handleMove(partner.id, 'left')} disabled={isFirst}><ArrowLeft /></Button>
-                <Button size="sm" onClick={() => handleMove(partner.id, 'right')} disabled={isLast}><ArrowRight /></Button>
-                
-                <div className="w-px bg-border self-stretch mx-2" />
-                
-                <div className="flex-grow space-y-1">
-                    <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(partner)}>
-                        <Pencil className="mr-2" /> Bearbeiten
+            <div id={`buttons-${partner.id}`} className="flex w-full max-w-sm items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
+                <Button size="icon" variant="outline" onClick={() => handleMove(partner.id, 'left')} disabled={isFirst}><ArrowLeft /></Button>
+                <Button size="icon" variant="outline" onClick={() => handleMove(partner.id, 'right')} disabled={isLast}><ArrowRight /></Button>
+                <div className="w-px self-stretch bg-border mx-2" />
+                <Button variant="outline" size="icon" onClick={() => handleEdit(partner)}><Pencil /></Button>
+                <Button variant="outline" size="icon" onClick={() => handleToggleHidden(partner)}>
+                    {partner.hidden ? <Eye /> : <EyeOff />}
+                </Button>
+                {isHiddenCard && (
+                    <Button variant="destructive" size="icon" onClick={() => openDeleteConfirmation(partner.id, partner.name)}>
+                        <Trash2 />
                     </Button>
-                    
-                    <div className="grid grid-cols-2 gap-1">
-                        {partner.hidden ? (
-                            <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(partner)}>
-                                <Eye className="mr-2" /> Einblenden
-                            </Button>
-                        ) : (
-                            <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(partner)}>
-                                <EyeOff className="mr-2" /> Ausblenden
-                            </Button>
-                        )}
-                    </div>
-
-                    <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(partner.id, partner.name)}>
-                        <Trash2 className="mr-2" /> Löschen
-                    </Button>
-                </div>
+                )}
             </div>
         </div>
     );
-
-    const RowGrid: React.FC<{ partners: T[], totalItems: number }> = ({ partners, totalItems }) => {
+    
+    const RowGrid: React.FC<{ partners: T[], totalItems: number, isHidden?: boolean }> = ({ partners, totalItems, isHidden }) => {
         const count = partners.length;
         if (count === 0) return null;
+
+        const getCardProps = (partner: T) => ({
+            partner: partner,
+            isFirst: partner.order === 1,
+            isLast: partner.order === totalItems,
+            isHiddenCard: isHidden
+        });
         
         if (count === 4) {
             return (
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                    {partners.map((partner, index) => (
-                        <div key={partner.id} style={{ border: '1px solid red' }}>
-                           <AdminPartnerCard partner={partner} isFirst={partner.order === 1} isLast={partner.order === totalItems} />
+                    {partners.map((partner) => (
+                        <div key={partner.id}>
+                           <AdminPartnerCard {...getCardProps(partner)} />
                         </div>
                     ))}
                 </div>
@@ -270,28 +261,28 @@ function MedicalPartnersPageManager<T extends CardData>({
         return (
             <div className="grid grid-cols-8 gap-8">
                 {count === 1 && (
-                    <div className="col-start-3 col-span-4" style={{ border: '1px solid red' }}>
-                        <AdminPartnerCard partner={partners[0]} isFirst={partners[0].order === 1} isLast={partners[0].order === totalItems} />
+                    <div className="col-start-3 col-span-4">
+                        <AdminPartnerCard {...getCardProps(partners[0])} />
                     </div>
                 )}
                 {count === 2 && (
                     <>
-                        <div className="col-start-2 col-span-3" style={{ border: '1px solid red' }}><AdminPartnerCard partner={partners[0]} isFirst={partners[0].order === 1} isLast={partners[0].order === totalItems} /></div>
-                        <div className="col-span-3" style={{ border: '1px solid red' }}><AdminPartnerCard partner={partners[1]} isFirst={partners[1].order === 1} isLast={partners[1].order === totalItems} /></div>
+                        <div className="col-start-2 col-span-3"><AdminPartnerCard {...getCardProps(partners[0])} /></div>
+                        <div className="col-span-3"><AdminPartnerCard {...getCardProps(partners[1])} /></div>
                     </>
                 )}
                 {count === 3 && (
                     <>
-                        <div className="col-start-1 col-span-2" style={{ border: '1px solid red' }}><AdminPartnerCard partner={partners[0]} isFirst={partners[0].order === 1} isLast={partners[0].order === totalItems} /></div>
-                        <div className="col-start-4 col-span-2" style={{ border: '1px solid red' }}><AdminPartnerCard partner={partners[1]} isFirst={partners[1].order === 1} isLast={partners[1].order === totalItems} /></div>
-                        <div className="col-start-7 col-span-2" style={{ border: '1px solid red' }}><AdminPartnerCard partner={partners[2]} isFirst={partners[2].order === 1} isLast={partners[2].order === totalItems} /></div>
+                        <div className="col-start-1 col-span-2"><AdminPartnerCard {...getCardProps(partners[0])} /></div>
+                        <div className="col-start-4 col-span-2"><AdminPartnerCard {...getCardProps(partners[1])} /></div>
+                        <div className="col-start-7 col-span-2"><AdminPartnerCard {...getCardProps(partners[2])} /></div>
                     </>
                 )}
             </div>
         );
     };
 
-    const PartnerGrid: React.FC<{ partners: T[] }> = ({ partners }) => {
+    const PartnerGrid: React.FC<{ partners: T[], isHidden?: boolean }> = ({ partners, isHidden }) => {
         if (!partners || partners.length === 0) return null;
 
         const chunkedPartners = [];
@@ -300,9 +291,9 @@ function MedicalPartnersPageManager<T extends CardData>({
         }
 
         return (
-            <div className="space-y-8" style={{ border: '1px solid red' }}>
+            <div className="space-y-8">
                 {chunkedPartners.map((rowPartners, index) => (
-                    <RowGrid key={index} partners={rowPartners} totalItems={partners.length} />
+                    <RowGrid key={index} partners={rowPartners} totalItems={partners.length} isHidden={isHidden} />
                 ))}
             </div>
         );
@@ -312,30 +303,27 @@ function MedicalPartnersPageManager<T extends CardData>({
         const activeItems = validDbData.filter(i => !i.hidden);
         const hiddenItems = validDbData.filter(i => i.hidden);
     
-        const renderGrid = (items: T[], title: string, description: string) => {
+        const renderGrid = (items: T[], title: string, description: string, isHiddenGrid: boolean) => {
             if (items.length === 0) return null;
             return (
-                <div className="space-y-4 mt-12" style={{ border: '1px solid red' }}>
+                <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
-                    <PartnerGrid partners={items} />
+                    <PartnerGrid partners={items} isHidden={isHiddenGrid} />
                 </div>
             );
         };
     
         return (
             <>
-                {renderGrid(activeItems, 'Aktive Karten', 'Die hier angezeigten Karten sind auf der Webseite sichtbar.')}
-                {renderGrid(hiddenItems, 'Ausgeblendete Karten', 'Diese Karten sind auf der Webseite nicht sichtbar.')}
+                {renderGrid(activeItems, 'Aktive Karten', 'Die hier angezeigten Karten sind auf der Webseite sichtbar.', false)}
+                {renderGrid(hiddenItems, 'Ausgeblendete Karten', 'Diese Karten sind auf der Webseite nicht sichtbar.', true)}
             </>
         );
     };
 
     return (
         <div id="card-manager-container" className="flex flex-1 flex-col items-start gap-8 p-4 sm:px-6 sm:py-8">
-            <div style={{ border: '1px solid blue', zIndex: 50, position: 'relative' }}>
-                {partnerEditorOverlay}
-            </div>
             <Card className="w-full">
                 <CardHeader>
                     <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
@@ -430,3 +418,6 @@ function MedicalPartnersPageManager<T extends CardData>({
 }
 
 export default MedicalPartnersPageManager;
+
+
+    
