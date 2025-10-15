@@ -29,6 +29,87 @@ const initialMedicalPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> =
     logoY: 0,
 };
 
+const RowGrid: React.FC<{ partners: CardData[], onMove: (id: string, dir: 'left' | 'right') => void, onEdit: (card: CardData) => void, onToggleHidden: (card: CardData) => void, onDelete: (id: string, name: string) => void }> = ({ partners, onMove, onEdit, onToggleHidden, onDelete }) => {
+    const count = partners.length;
+    if (count === 0) return null;
+
+    const renderCardWithControls = (partner: CardData, isFirst: boolean, isLast: boolean) => (
+        <div key={partner.id} className="flex flex-col items-center space-y-4">
+            <DisplayCard {...partner} />
+            <div
+                id={`buttons-${partner.id}`}
+                className="flex w-full max-w-sm justify-center items-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner"
+            >
+                <Button size="sm" onClick={() => onMove(partner.id, 'left')} disabled={isFirst}><ArrowLeft /></Button>
+                <Button size="sm" onClick={() => onMove(partner.id, 'right')} disabled={isLast}><ArrowRight /></Button>
+                <div className="w-px bg-border self-stretch mx-2" />
+                <div className="flex-grow space-y-1">
+                    <Button variant="outline" size="sm" className="w-full" onClick={() => onEdit(partner)}>
+                        <Pencil className="mr-2" /> Bearbeiten
+                    </Button>
+                    <div className="grid grid-cols-1 gap-1">
+                        <Button variant="outline" size="sm" className="w-full" onClick={() => onToggleHidden(partner)}>
+                            {partner.hidden ? <><Eye className="mr-2" /> Einblenden</> : <><EyeOff className="mr-2" /> Ausblenden</>}
+                        </Button>
+                    </div>
+                    <Button variant="destructive" size="sm" className="w-full" onClick={() => onDelete(partner.id, partner.name)}>
+                        <Trash2 className="mr-2" /> Löschen
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
+
+    if (count === 4) {
+        return (
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                {partners.map((partner, index) => renderCardWithControls(partner, index === 0, index === partners.length - 1))}
+            </div>
+        );
+    }
+    
+    return (
+        <div className="grid grid-cols-8 gap-8">
+            {count === 1 && (
+                <div className="col-start-1 sm:col-start-3 col-span-8 sm:col-span-4">
+                    {renderCardWithControls(partners[0], true, true)}
+                </div>
+            )}
+            {count === 2 && (
+                <>
+                    <div className="col-start-1 sm:col-start-2 col-span-8 sm:col-span-3">{renderCardWithControls(partners[0], true, false)}</div>
+                    <div className="col-start-1 sm:col-start-5 col-span-8 sm:col-span-3">{renderCardWithControls(partners[1], false, true)}</div>
+                </>
+            )}
+            {count === 3 && (
+                <>
+                    <div className="col-start-1 sm:col-start-1 col-span-8 sm:col-span-2">{renderCardWithControls(partners[0], true, false)}</div>
+                    <div className="col-start-1 sm:col-start-4 col-span-8 sm:col-span-2">{renderCardWithControls(partners[1], false, false)}</div>
+                    <div className="col-start-1 sm:col-start-7 col-span-8 sm:col-span-2">{renderCardWithControls(partners[2], false, true)}</div>
+                </>
+            )}
+        </div>
+    );
+};
+
+const PartnerGrid: React.FC<{ partners: CardData[], onMove: (id: string, dir: 'left' | 'right') => void, onEdit: (card: CardData) => void, onToggleHidden: (card: CardData) => void, onDelete: (id: string, name: string) => void }> = ({ partners, ...rest }) => {
+    if (!partners || partners.length === 0) return null;
+
+    const chunkedPartners = [];
+    for (let i = 0; i < partners.length; i += 4) {
+        chunkedPartners.push(partners.slice(i, i + 4));
+    }
+
+    return (
+        <div className="space-y-8">
+            {chunkedPartners.map((rowPartners, index) => (
+                <RowGrid key={index} partners={rowPartners} {...rest} />
+            ))}
+        </div>
+    );
+};
+
+
 function MedicalPartnersPageManager() {
     const collectionName = "medicalPartners";
     const pageTitle = "Kooperationspartner-Karten Ärzte verwalten";
@@ -238,49 +319,20 @@ function MedicalPartnersPageManager() {
         const activeItems = validDbData.filter(i => !i.hidden);
         const hiddenItems = validDbData.filter(i => i.hidden);
     
-        const renderGrid = (items: CardData[], title: string, description: string) => {
+        const renderGroup = (items: CardData[], title: string, description: string) => {
             if (items.length === 0) return null;
             return (
                 <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
-                    <div className="grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-8 mt-8">
-                        {items.map((item, index) => (
-                             <div key={item.id} className="flex flex-col items-center space-y-4">
-                                <DisplayCard {...item} />
-                                <div
-                                    id={`buttons-${item.id}`}
-                                    className="flex w-full max-w-sm justify-center items-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner"
-                                >
-                                    <Button size="sm" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
-                                    <Button size="sm" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
-                                    
-                                    <div className="w-px bg-border self-stretch mx-2" />
-                                    
-                                    <div className="flex-grow space-y-1">
-                                        <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}>
-                                            <Pencil className="mr-2" /> Bearbeiten
-                                        </Button>
-                                        
-                                        <div className="grid grid-cols-2 gap-1">
-                                            {item.hidden ? (
-                                                <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
-                                                    <Eye className="mr-2" /> Einblenden
-                                                </Button>
-                                            ) : (
-                                                <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
-                                                    <EyeOff className="mr-2" /> Ausblenden
-                                                </Button>
-                                            )}
-                                        </div>
-
-                                        <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                                            <Trash2 className="mr-2" /> Löschen
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                    <div className="mt-8">
+                       <PartnerGrid 
+                            partners={items}
+                            onMove={handleMove}
+                            onEdit={handleEdit}
+                            onToggleHidden={handleToggleHidden}
+                            onDelete={openDeleteConfirmation}
+                        />
                     </div>
                 </div>
             );
@@ -288,8 +340,8 @@ function MedicalPartnersPageManager() {
     
         return (
             <>
-                {renderGrid(activeItems, 'Aktive Karten', 'Die hier angezeigten Karten sind auf der Webseite sichtbar.')}
-                {renderGrid(hiddenItems, 'Ausgeblendete Karten', 'Diese Karten sind auf der Webseite nicht sichtbar.')}
+                {renderGroup(activeItems, 'Aktive Karten', 'Die hier angezeigten Karten sind auf der Webseite sichtbar.')}
+                {renderGroup(hiddenItems, 'Ausgeblendete Karten', 'Diese Karten sind auf der Webseite nicht sichtbar.')}
             </>
         );
     };
@@ -345,11 +397,11 @@ function MedicalPartnersPageManager() {
 
                     <div className="relative">
                         {isLoadingData && (
-                            <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
+                            <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
                                 {Array.from({ length: 4 }).map((_, index) => (
                                     <div key={index} className="flex flex-col items-center space-y-4">
-                                        <Skeleton className="h-[550px] w-full max-w-sm" />
-                                        <Skeleton className="h-24 w-full max-w-sm" />
+                                        <Skeleton className="h-32 w-full" />
+                                        <Skeleton className="h-24 w-full" />
                                     </div>
                                 ))}
                             </div>
