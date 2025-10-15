@@ -273,20 +273,21 @@ export function ReusableCardManager<T extends BaseCardData>({
                 <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
-                    <div className="relative grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-x-24 gap-y-16 mt-8">
+                    <div className="grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-8 mt-8">
                         {items.map((item) => (
-                             <div key={item.id} className={cn("relative w-full max-w-sm", (item as any).fullWidth && "sm:col-span-2 justify-self-center")}>
+                             <div key={item.id} className={cn("flex flex-col items-center space-y-4", (item as any).fullWidth && "sm:col-span-2")}>
+                                <DisplayCardComponent {...item} />
                                 <div
                                     id={`buttons-${item.id}`}
-                                    className="absolute z-20 flex flex-col items-center gap-1.5 rounded-lg border bg-background/80 p-2 shadow-2xl backdrop-blur-sm top-1/2 -translate-y-1/2 left-full ml-4 w-[125px]"
+                                    className="flex w-full max-w-sm justify-center items-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner"
                                 >
-                                    <p className="text-xs font-bold text-center text-foreground">Verschieben</p>
-                                    <div className="grid grid-cols-2 gap-1 w-full">
+                                    <div className="grid grid-cols-2 gap-1 flex-grow">
                                         <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'left')}><ArrowLeft /></Button>
                                         <Button size="sm" variant="outline" className="h-7 w-full" onClick={() => handleMove(item.id, 'right')}><ArrowRight /></Button>
                                     </div>
-                                    <div className="w-full border-t my-1.5" />
-
+                                    <div className="w-px bg-border self-stretch" />
+                                    
+                                    <div className="flex flex-col gap-1 flex-grow">
                                     {isStaffManager && (
                                         <Button
                                             variant={(item as any).fullWidth ? "default" : "outline"}
@@ -316,8 +317,8 @@ export function ReusableCardManager<T extends BaseCardData>({
                                     <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(item.id, item.name)}>
                                         <Trash2 className="mr-2" /> Löschen
                                     </Button>
+                                    </div>
                                 </div>
-                                <DisplayCardComponent {...item} />
                             </div>
                         ))}
                     </div>
@@ -327,7 +328,7 @@ export function ReusableCardManager<T extends BaseCardData>({
     
         return (
             <>
-                {renderGrid(activeItems, 'Aktive Karten', 'Die Aktions-Buttons werden rechts neben den Karten angezeigt.')}
+                {renderGrid(activeItems, 'Aktive Karten', 'Die hier angezeigten Karten sind auf der Webseite sichtbar.')}
                 {renderGrid(hiddenItems, 'Ausgeblendete Karten', 'Diese Karten sind auf der Webseite nicht sichtbar.')}
             </>
         );
@@ -386,8 +387,9 @@ export function ReusableCardManager<T extends BaseCardData>({
                         {isLoadingData && (
                             <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
                                 {Array.from({ length: 4 }).map((_, index) => (
-                                    <div key={index} className="flex justify-center">
+                                    <div key={index} className="flex flex-col items-center space-y-4">
                                         <Skeleton className="h-[550px] w-full max-w-sm" />
+                                        <Skeleton className="h-24 w-full max-w-sm" />
                                     </div>
                                 ))}
                             </div>
