@@ -175,7 +175,7 @@ function BannerManager() {
         if (!firestore) return null;
         return query(collection(firestore, 'infoBanners'), orderBy('start', 'desc'));
     }, [firestore]);
-    const { data: infoBannersData, isLoading: isLoadingInfoBanners, error: dbInfoBannerError } = useCollection<InfoBannerFromDB>(infoBannersQuery);
+    const { data: infoBannersData, isLoading: isLoadingInfoBanners, error: dbInfoBannerError } = useCollection<InfoBannerFromDB>(infoBannersQuery as any);
 
     const infoBanners: InfoBanner[] = useMemo(() => {
         if (!infoBannersData) return [];
@@ -356,7 +356,7 @@ function BannerManager() {
                                     ) : infoBanners.length > 0 ? (
                                         infoBanners.map(banner => (
                                             <TableRow key={banner.id}>
-                                                <TableCell>
+                                                <TableCell className="max-w-sm overflow-hidden">
                                                     <BannerPreview text={banner.text} color="blue" separatorStyle={banner.separatorStyle} small />
                                                 </TableCell>
                                                 <TableCell className="whitespace-nowrap">
@@ -500,3 +500,5 @@ function BannerManager() {
 export default function BannerPage() {
     return <BannerManager />;
 }
+
+    
