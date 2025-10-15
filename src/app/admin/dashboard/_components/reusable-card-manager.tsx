@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -13,28 +14,35 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 
-import { PartnerCard as DisplayCard } from '../_components/partner-card';
-import { PartnerEditor as EditorComponent } from '../_components/partner-editor';
-import type { Partner as CardData } from '../_components/partner-editor';
+import { PartnerCard as DisplayCard } from '../partners/_components/partner-card';
+import { PartnerEditor as EditorComponent } from '../partners/_components/partner-editor';
+import type { Partner as CardData } from '../partners/_components/partner-editor';
+import { Slider } from '@/components/ui/slider';
 
-const initialMedicalPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
-    name: "Neuer Partner",
-    websiteUrl: "https://",
-    logoHtml: `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`,
-    imageUrl: "",
-    openInNewTab: true,
-    hidden: false,
-    logoScale: 100,
-    logoX: 0,
-    logoY: 0,
-};
 
-function MedicalPartnersPageManager() {
-    const collectionName = "medicalPartners";
-    const pageTitle = "Kooperationspartner-Karten Ärzte verwalten";
-    const pageDescription = "";
-    const entityName = "Ärztlicher Partner";
+interface ReusableCardManagerProps<T extends CardData> {
+    collectionName: string;
+    pageTitle: string;
+    pageDescription: string;
+    initialCardState: Omit<T, 'id' | 'order' | 'createdAt'>;
+    DisplayCardComponent: React.ComponentType<any>;
+    EditorCardComponent: React.ComponentType<{ 
+        cardData: T; 
+        onUpdate: (updatedData: T) => void;
+        children?: React.ReactNode;
+    }>;
+    entityName: string;
+}
 
+function MedicalPartnersPageManager<T extends CardData>({
+    collectionName,
+    pageTitle,
+    pageDescription,
+    initialCardState,
+    DisplayCardComponent,
+    EditorCardComponent,
+    entityName,
+}: ReusableCardManagerProps<T>) {
     const firestore = useFirestore();
     
     const [notification, setNotification] = useState<TimedAlertProps | null>(null);
@@ -44,16 +52,16 @@ function MedicalPartnersPageManager() {
         return query(collection(firestore, collectionName) as CollectionReference<DocumentData>, orderBy('order', 'asc'));
     }, [firestore, collectionName]);
 
-    const { data: dbData, isLoading: isLoadingData, error: dbError } = useCollection<CardData>(dataQuery as any);
+    const { data: dbData, isLoading: isLoadingData, error: dbError } = useCollection<T>(dataQuery as any);
 
     const [editingCardId, setEditingCardId] = useState<string | null>(null);
     const [isCreatingNew, setIsCreatingNew] = useState(false);
-    const [editorCardState, setEditorCardState] = useState<CardData>({ ...initialMedicalPartnerState, id: '', order: 0 } as CardData);
+    const [editorCardState, setEditorCardState] = useState<T>({ ...initialCardState, id: '', order: 0 } as T);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
 
     const isEditing = editingCardId !== null || isCreatingNew;
 
-    const handleEdit = (card: CardData) => {
+    const handleEdit = (card: T) => {
         setEditingCardId(card.id);
         setIsCreatingNew(false);
         setEditorCardState(card);
@@ -62,7 +70,7 @@ function MedicalPartnersPageManager() {
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
-        setEditorCardState({ ...initialMedicalPartnerState, id: '' } as CardData);
+        setEditorCardState({ ...initialCardState, id: '' } as T);
     };
 
     const handleCancelEdit = () => {
@@ -70,7 +78,7 @@ function MedicalPartnersPageManager() {
         setIsCreatingNew(false);
     };
 
-    const generateFinalLogoHtml = (partner: CardData): string => {
+    const generateFinalLogoHtml = (partner: T): string => {
         if ('imageUrl' in partner && partner.imageUrl) {
             const scale = 'logoScale' in partner ? partner.logoScale : 100;
             const x = 'logoX' in partner ? partner.logoX : 0;
@@ -82,6 +90,10 @@ function MedicalPartnersPageManager() {
             return partner.logoHtml;
         }
         return `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; border-radius: 8px;"><span style="font-family: sans-serif; color: #999;">Logo</span></div>`;
+    };
+
+    const handleSliderChange = (field: 'logoScale' | 'logoX' | 'logoY', value: number[]) => {
+        setEditorCardState(prev => ({ ...prev, [field]: value[0] }));
     };
     
     const handleMove = async (cardId: string, direction: 'left' | 'right') => {
@@ -120,7 +132,7 @@ function MedicalPartnersPageManager() {
     };
 
 
-    const handleToggleHidden = async (card: CardData) => {
+    const handleToggleHidden = async (card: T) => {
         if (!firestore) return;
         const docRef = doc(firestore, collectionName, card.id);
         try {
@@ -156,7 +168,7 @@ function MedicalPartnersPageManager() {
         }
         setNotification(null);
 
-        let dataToSave: Partial<CardData> = { ...editorCardState, logoHtml: generateFinalLogoHtml(editorCardState) };
+        let dataToSave: Partial<T> = { ...editorCardState, logoHtml: generateFinalLogoHtml(editorCardState) as any };
     
         try {
             if (isCreatingNew) {
@@ -164,7 +176,7 @@ function MedicalPartnersPageManager() {
                 const highestOrder = dbData ? dbData.filter(d=>d.name).reduce((max, item) => item.order > max ? item.order : max, 0) : 0;
                 
                 const newCardData = {
-                    ...initialMedicalPartnerState,
+                    ...initialCardState,
                     ...dataToSave,
                     order: highestOrder + 1,
                     createdAt: serverTimestamp(),
@@ -194,41 +206,36 @@ function MedicalPartnersPageManager() {
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
     const partnerEditorOverlay = isEditing ? (
-        <div className="pointer-events-none absolute inset-0 z-10">
-             <div className="flex h-full w-full justify-end">
-                <div className="flex h-full w-[40%] flex-col justify-end">
-                    <div className="relative">
-                        <div className="pointer-events-auto absolute -top-16 left-0 right-0">
-                             <div className="mx-auto mb-2 w-4/5 space-y-2">
-                                <div className="text-center text-primary-foreground">
-                                    <label htmlFor="logoScale" className="text-sm">Grösse: {editorCardState.logoScale || 100}%</label>
-                                </div>
-                            </div>
-                        </div>
-                        <DisplayCard {...editorCardState} />
+        <div className="pointer-events-none absolute inset-0 z-20">
+            <div className="grid h-full w-full grid-cols-12 items-center gap-x-2">
+                <div className="col-start-6 col-span-6 flex flex-col items-center justify-center gap-2">
+                    <div className="pointer-events-auto w-full max-w-[250px]">
+                        <div className="text-center text-primary-foreground text-sm">Grösse: {editorCardState.logoScale || 100}%</div>
+                        <Slider id="logoScale" value={[editorCardState.logoScale || 100]} onValueChange={(value) => handleSliderChange('logoScale', value)} max={200} step={1} className="w-full [&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20" />
                     </div>
-                     <div className="pointer-events-auto mt-4 flex w-full flex-col items-center justify-center">
-                        <div className="w-full px-2">
-                        </div>
-                        <div className="mt-1 text-center text-xs text-white">
-                            <div>Horizontale Position</div>
-                            <div>{editorCardState.logoX || 0}px</div>
+                    <div className="w-full max-w-[250px] h-32">
+                        <DisplayCardComponent {...editorCardState} />
+                    </div>
+                    <div className="pointer-events-auto w-full max-w-[250px]">
+                        <Slider id="logoX" value={[editorCardState.logoX || 0]} onValueChange={(value) => handleSliderChange('logoX', value)} min={-100} max={100} step={1} className="w-full [&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20" />
+                        <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2 mt-2">
+                            <MoveHorizontal/> <span>Horizontale Position: {editorCardState.logoX || 0}px</span>
                         </div>
                     </div>
                 </div>
-                <div className="pointer-events-auto flex h-full w-[10%] flex-col justify-end">
-                    <div className="h-32">
-                        <div className="flex h-full flex-row items-center justify-center gap-2">
-                            <div className="flex h-full justify-center">
+                <div className="col-start-12 col-span-1 flex h-full flex-col items-center justify-center">
+                    <div className="pointer-events-auto h-32 w-full">
+                        <div className="flex h-full flex-row items-center justify-center gap-1">
+                            <div className="h-full w-auto">
+                                <Slider id="logoY" value={[editorCardState.logoY || 0]} onValueChange={(value) => handleSliderChange('logoY', value)} min={-100} max={100} step={1} orientation="vertical" className="h-full [&>span:first-child]:bg-primary-foreground/50 [&_[role=slider]]:bg-primary-foreground [&_[role=slider]]:w-5 [&_[role=slider]]:h-5" />
                             </div>
-                             <div className="text-center text-xs text-white">
-                                <div>Vertikale</div>
-                                <div>Position</div>
-                                <div>{editorCardState.logoY || 0}px</div>
+                            <div className="flex flex-col items-center justify-center text-center text-xs text-white -space-y-1">
+                                <MoveVertical className="w-3 h-3 mb-1"/>
+                                <span>V</span><span>E</span><span>R</span><span>T</span><span>I</span><span>K</span><span>A</span><span>L</span>
+                                <span className="mt-2">{editorCardState.logoY || 0}px</span>
                             </div>
                         </div>
                     </div>
-                    <div className="h-14 w-full" />
                 </div>
             </div>
         </div>
@@ -238,7 +245,7 @@ function MedicalPartnersPageManager() {
         const activeItems = validDbData.filter(i => !i.hidden);
         const hiddenItems = validDbData.filter(i => i.hidden);
     
-        const renderGrid = (items: CardData[], title: string, description: string) => {
+        const renderGrid = (items: T[], title: string, description: string) => {
             if (items.length === 0) return null;
             return (
                 <div className="space-y-4 mt-12">
@@ -247,7 +254,7 @@ function MedicalPartnersPageManager() {
                     <div className="grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-8 mt-8">
                         {items.map((item, index) => (
                              <div key={item.id} className="flex flex-col items-center space-y-4">
-                                <DisplayCard {...item} />
+                                <DisplayCardComponent {...item} />
                                 <div
                                     id={`buttons-${item.id}`}
                                     className="flex w-full max-w-sm justify-center items-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner"
@@ -326,10 +333,10 @@ function MedicalPartnersPageManager() {
                 </CardHeader>
                 <CardContent>
                    {isEditing && (
-                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted min-h-[420px]">
-                            <EditorComponent cardData={editorCardState} onUpdate={setEditorCardState}>
+                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted min-h-[580px]">
+                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState}>
                                {partnerEditorOverlay}
-                            </EditorComponent>
+                            </EditorCardComponent>
                         </div>
                     )}
 
@@ -389,6 +396,4 @@ function MedicalPartnersPageManager() {
     );
 }
 
-export default function MedicalPartnersPage() {
-    return <MedicalPartnersPageManager />;
-}
+export default MedicalPartnersPageManager;

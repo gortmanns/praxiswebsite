@@ -152,83 +152,22 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 </div>
 
                 {/* Right side: Visual Live Preview Area */}
-                 <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[580px]">
+                 <div className="relative px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[580px]">
                     <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
                     
-                     <div className="pointer-events-auto w-full space-y-2 mb-4">
-                        <div className="text-center text-primary-foreground text-sm">Grösse: {cardData.logoScale || 100}%</div>
-                        <Slider
-                            id="logoScale"
-                            value={[cardData.logoScale || 100]}
-                            onValueChange={(value) => handleSliderChange('logoScale', value)}
-                            max={200}
-                            step={1}
-                            className="[&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20"
-                        />
-                    </div>
-
                     <div className="flex-grow flex items-center justify-center">
                          {children}
                     </div>
 
-                    <div className="space-y-2 pt-4 mt-auto">
-                         <div className="pointer-events-auto w-full">
-                            <Slider
-                                id="logoX"
-                                value={[cardData.logoX || 0]}
-                                onValueChange={(value) => handleSliderChange('logoX', value)}
-                                min={-100}
-                                max={100}
-                                step={1}
-                                className="[&_[role=slider]]:bg-primary-foreground [&>span:first-child]:bg-black/20"
-                            />
-                             <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2 mt-2">
-                                <MoveHorizontal/> <span>Horizontale Position: {cardData.logoX || 0}px</span>
-                            </div>
-                        </div>
-                        <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-full pointer-events-auto">
-                            <RotateCcw className="mr-2 h-4 w-4" />
-                            Zurücksetzen
-                        </Button>
-                    </div>
+                    <Button onClick={handleResetControls} variant="secondary" size="sm" className="w-full pointer-events-auto mt-4">
+                        <RotateCcw className="mr-2 h-4 w-4" />
+                        Zurücksetzen
+                    </Button>
                 </div>
             </div>
 
-            <div className="pointer-events-none absolute inset-0 z-20">
-                <div className="grid h-full w-full grid-cols-8 items-center gap-x-4">
-                    <div className="col-start-8 col-span-1 flex h-full flex-col items-center justify-center">
-                        <div className="pointer-events-auto h-64 w-full">
-                            <div className="flex h-full flex-row items-center justify-center gap-1">
-                                <div className="h-full w-auto">
-                                    <Slider
-                                        id="logoY"
-                                        value={[cardData.logoY || 0]}
-                                        onValueChange={(value) => handleSliderChange('logoY', value)}
-                                        min={-100}
-                                        max={100}
-                                        step={1}
-                                        orientation="vertical"
-                                        className="[&>span:first-child]:bg-primary-foreground/50 [&_[role=slider]]:bg-primary-foreground [&_[role=slider]]:w-5 [&_[role=slider]]:h-5"
-                                    />
-                                </div>
-                                <div className="flex flex-col items-center justify-center text-center text-xs text-white -space-y-1">
-                                    <MoveVertical className="w-3 h-3 mb-1"/>
-                                    <span>V</span>
-                                    <span>E</span>
-                                    <span>R</span>
-                                    <span>T</span>
-                                    <span>I</span>
-                                    <span>K</span>
-                                    <span>A</span>
-                                    <span>L</span>
-                                    <span className="mt-2">{cardData.logoY || 0}px</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            {/* This is the overlay for sliders and card preview, controlled by the parent component's `children` prop */}
+            
 
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
 
