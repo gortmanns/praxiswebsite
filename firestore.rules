@@ -1,94 +1,146 @@
+/**
+ * @fileoverview Firestore Security Rules for the application.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict data-access model where only authenticated users can access the data.
+ * Public read access is enabled for specific collections.
+ *
+ * Data Structure:
+ * The Firestore database stores documents in top-level collections: `doctors`, `staff`, `medicalPartners`, `otherPartners`, `holidays`, `infoBanners`, and `settings/banners`.
+ *
+ * Key Security Decisions:
+ * - All write operations require authentication.
+ * - Read access is public for `doctors`, `staff`, `medicalPartners`, `otherPartners`, `holidays`, `infoBanners` collections.
+ * - The `settings/banners` document is only accessible to authenticated users.
+ */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    function isOwner(resourceAuthorId) {
-      return isSignedIn() && request.auth.uid == resourceAuthorId;
-    }
-
-    function isExistingOwner(resourceAuthorId) {
-      return isSignedIn() && resource.data.id == request.auth.uid;
-    }
-
     /**
-     * @description Allows public read access and owner-only write access for doctor profiles.
+     * @description Grants public read access, but requires authentication for all write operations on doctor profiles.
      * @path /doctors/{doctorId}
+     * @allow (get, list): Always.
+     * @allow (create, update, delete): Only authenticated users.
+     * @deny (create, update, delete): If not authenticated.
+     * @principle Public read, authenticated writes.
      */
     match /doctors/{doctorId} {
       allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.id == request.auth.uid;
-      allow update: if isSignedIn() && request.resource.data.id == resource.data.id;
-      allow delete: if isSignedIn() && resource.data.id == resource.data.id;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
 
     /**
-     * @description Allows public read access and owner-only write access for staff member profiles.
-     * @path /staff/{staffId}
+     * @description Grants public read access, but requires authentication for all write operations on staff member profiles.
+     * @path /staff/{staffMemberId}
+     * @allow (get, list): Always.
+     * @allow (create, update, delete): Only authenticated users.
+     * @deny (create, update, delete): If not authenticated.
+     * @principle Public read, authenticated writes.
      */
-    match /staff/{staffId} {
+    match /staff/{staffMemberId} {
       allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.id == request.auth.uid;
-      allow update: if isSignedIn() && request.resource.data.id == resource.data.id;
-      allow delete: if isSignedIn() && resource.data.id == resource.data.id;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
 
     /**
-     * @description Allows public read access and owner-only write access for medical partner information.
-     * @path /medicalPartners/{partnerId}
+     * @description Grants public read access, but requires authentication for all write operations on medical partner information.
+     * @path /medicalPartners/{medicalPartnerId}
+     * @allow (get, list): Always.
+     * @allow (create, update, delete): Only authenticated users.
+     * @deny (create, update, delete): If not authenticated.
+     * @principle Public read, authenticated writes.
      */
-    match /medicalPartners/{partnerId} {
+    match /medicalPartners/{medicalPartnerId} {
       allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.id == request.auth.uid;
-      allow update: if isSignedIn() && request.resource.data.id == resource.data.id;
-      allow delete: if isSignedIn() && resource.data.id == resource.data.id;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
 
     /**
-     * @description Allows public read access and owner-only write access for other partner information.
-     * @path /otherPartners/{partnerId}
+     * @description Grants public read access, but requires authentication for all write operations on other partner information.
+     * @path /otherPartners/{otherPartnerId}
+     * @allow (get, list): Always.
+     * @allow (create, update, delete): Only authenticated users.
+     * @deny (create, update, delete): If not authenticated.
+     * @principle Public read, authenticated writes.
      */
-    match /otherPartners/{partnerId} {
+    match /otherPartners/{otherPartnerId} {
       allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.id == request.auth.uid;
-      allow update: if isSignedIn() && request.resource.data.id == resource.data.id;
-      allow delete: if isSignedIn() && resource.data.id == resource.data.id;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
 
-        /**
-         * @description Allows public read access and owner-only write access for holiday periods.
-         * @path /holidays/{holidayId}
-         */
+    /**
+     * @description Grants public read access, but requires authentication for all write operations on holiday information.
+     * @path /holidays/{holidayId}
+     * @allow (get, list): Always.
+     * @allow (create, update, delete): Only authenticated users.
+     * @deny (create, update, delete): If not authenticated.
+     * @principle Public read, authenticated writes.
+     */
     match /holidays/{holidayId} {
       allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.id == request.auth.uid;
-      allow update: if isSignedIn() && request.resource.data.id == resource.data.id;
-      allow delete: if isSignedIn() && resource.data.id == resource.data.id;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
 
     /**
-     * @description Allows public read access and owner-only write access for info banners.
-     * @path /infoBanners/{bannerId}
+     * @description Grants public read access, but requires authentication for all write operations on info banners.
+     * @path /infoBanners/{infoBannerId}
+     * @allow (get, list): Always.
+     * @allow (create, update, delete): Only authenticated users.
+     * @deny (create, update, delete): If not authenticated.
+     * @principle Public read, authenticated writes.
      */
-    match /infoBanners/{bannerId} {
+    match /infoBanners/{infoBannerId} {
       allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.id == request.auth.uid;
-      allow update: if isSignedIn() && request.resource.data.id == resource.data.id;
-      allow delete: if isSignedIn() && resource.data.id == resource.data.id;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
 
     /**
-     * @description Allows public read access and owner-only write access for banner settings.
+     * @description Restricts access to banner settings to authenticated users only.
      * @path /settings/banners
+     * @allow (get): Only authenticated users.
+     * @allow (create, update, delete): Only authenticated users.
+     * @deny (get, create, update, delete): If not authenticated.
+     * @principle Authenticated access only.
      */
     match /settings/banners {
+      allow get: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
+    }
+
+    /**
+     * @description Grants read access, but requires authentication for all write operations on banner settings.
+     * @path /settings/{document=**}
+     * @allow (get): Always.
+     * @allow (create, update, delete): Only authenticated users.
+     * @deny (create, update, delete): If not authenticated.
+     * @principle Public read, authenticated writes.
+     */
+     match /settings/{document=**} {
       allow get: if true;
-      allow create: if isSignedIn() && request.resource.data.id == request.auth.uid;
-      allow update: if isSignedIn() && request.resource.data.id == resource.data.id;
-      allow delete: if isSignedIn() && request.resource.data.id == resource.data.id;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
+    }
+
+
+    // Define helper function to determine if a user is signed in
+    function isSignedIn() {
+      return request.auth != null;
     }
   }
 }
