@@ -181,13 +181,26 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                             </Button>
                         </div>
                     </div>
-                     <div className="col-span-1 border-2 border-purple-500 flex flex-col justify-center items-center py-4">
-                        <div className="w-full max-w-xs space-y-2">
-                            <Slider id="logoY" value={[cardData.logoY || 0]} onValueChange={(value) => handleSliderChange('logoY', value)} min={-100} max={100} step={1} className="w-full" />
-                            <div className="text-center text-primary-foreground text-sm flex items-center justify-center gap-2">
-                                <MoveVertical/> <span>Vertikale Position: {cardData.logoY || 0}px</span>
+                     <div className="col-span-1 border-2 border-purple-500 flex justify-center items-center py-4">
+                         <div className="flex items-center justify-center gap-4 h-full">
+                            <Slider
+                                id="logoY"
+                                orientation="vertical"
+                                value={[cardData.logoY || 0]}
+                                onValueChange={(value) => handleSliderChange('logoY', value)}
+                                min={-100}
+                                max={100}
+                                step={1}
+                                className="h-[200px]"
+                                inverted
+                            />
+                             <div className="text-center text-primary-foreground text-sm flex flex-col items-center justify-center gap-2">
+                                <MoveVertical/>
+                                <span>Vertikale</span>
+                                <span>Position:</span>
+                                <span>{cardData.logoY || 0}px</span>
                             </div>
-                        </div>
+                         </div>
                      </div>
                 </div>
             </div>
