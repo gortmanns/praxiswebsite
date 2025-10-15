@@ -150,7 +150,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 </div>
 
                 {/* Right side: Visual Live Preview Area */}
-                 <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[420px]">
+                 <div className="px-10 pb-10 pt-4 bg-primary rounded-r-lg flex flex-col z-0 min-h-[580px]">
                     <h3 className="text-xl font-bold text-primary-foreground mb-4 text-center">Live Vorschau</h3>
                     <div className="flex-grow flex items-center justify-center">
                          {children}
@@ -231,5 +231,3 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         </div>
     );
 };
-
-    

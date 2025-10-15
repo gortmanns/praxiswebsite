@@ -23,7 +23,7 @@ export default function DashboardLayout({
         <Toaster />
       </SidebarInset>
       <style>
-        {`* { border: 1px solid red !important; }`}
+        {`/* * { border: 1px solid red !important; } */`}
       </style>
     </SidebarProvider>
   );
