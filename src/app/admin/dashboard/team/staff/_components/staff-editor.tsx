@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -16,11 +16,9 @@ import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/
 import { projectImages } from '@/app/admin/dashboard/partners/project-images';
 import { LanguageSelectDialog } from '@/app/admin/dashboard/team/doctors/_components/language-select-dialog';
 import { VitaEditorDialog } from '@/app/admin/dashboard/team/doctors/_components/vita-editor-dialog';
-import { LanguageFlags } from '@/app/admin/dashboard/team/doctors/_components/language-flags';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { StaffCard } from './staff-card';
 
 
 export interface StaffMember {
@@ -40,7 +38,7 @@ export interface StaffMember {
 
 interface StaffEditorProps {
     cardData: StaffMember;
-    onUpdate: (updatedData: StaffMember) => void;
+    onUpdate: (updatedData: Partial<StaffMember>) => void;
 }
 
 export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) => {
@@ -54,7 +52,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
     }>({ type: null, data: {} });
 
     const handleInputChange = (field: keyof StaffMember, value: string | boolean | string[]) => {
-        onUpdate({ ...cardData, [field]: value });
+        onUpdate({ [field]: value });
     };
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +79,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
         try {
             const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
             const downloadURL = await getDownloadURL(snapshot.ref);
-            onUpdate({ ...cardData, imageUrl: downloadURL });
+            onUpdate({ imageUrl: downloadURL });
         } catch (error) {
             console.error("Error uploading image: ", error);
             toast({ variant: 'destructive', title: 'Upload-Fehler', description: 'Das Bild konnte nicht hochgeladen werden.' });
@@ -89,13 +87,13 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
     };
 
     const handleVitaSave = (newVita: string) => {
-        onUpdate({ ...cardData, backsideContent: newVita });
+        onUpdate({ backsideContent: newVita });
         setDialogState({ type: null, data: {} });
     };
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start p-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                 <div className="flex flex-col h-full">
                     <div className="space-y-6">
                         <div className="space-y-2">
@@ -128,53 +126,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                 </div>
 
                 <div className="relative">
-                    <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="w-full max-w-[280px] mx-auto">
-                            <div className="group relative w-full overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
-                                <div className="flex h-full flex-col p-6">
-                                    <button onClick={() => setDialogState({ type: 'imageSource', data: {} })} className={cn("relative w-full overflow-hidden rounded-md aspect-[2/3]")}>
-                                        {cardData.imageUrl && cardData.imageUrl.startsWith('https') ? (
-                                            <Image
-                                                src={cardData.imageUrl}
-                                                alt={`Portrait von ${cardData.name}`}
-                                                fill
-                                                className="object-cover"
-                                                sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw"
-                                                data-ai-hint="staff portrait preview"
-                                            />
-                                        ) : (
-                                            <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-200 text-neutral-500 hover:bg-neutral-300 transition-colors p-4">
-                                                <UserIcon className="h-40 w-40 text-black stroke-2" />
-                                                <span className="mt-2 text-base font-semibold text-center">Zum Bearbeiten klicken</span>
-                                            </div>
-                                        )}
-                                    </button>
-                                    <div className="flex-grow pt-6 text-center min-h-[110px]">
-                                        <h4 className="text-xl font-bold text-primary">{cardData.name}</h4>
-                                        <p className="mt-2 text-base font-bold text-muted-foreground">{cardData.role}</p>
-                                        {cardData.role2 && <p className="mt-1 text-base text-muted-foreground">{cardData.role2}</p>}
-                                    </div>
-                                    <div className="flex h-8 items-end justify-end pt-4">
-                                    {cardData.languages && <LanguageFlags languages={cardData.languages} />}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="relative flex items-center justify-center w-full max-w-[280px] mx-auto h-full rounded-lg bg-accent text-background p-6">
-                             <Button
-                                variant="ghost"
-                                size="icon"
-                                className="absolute top-2 right-2 h-16 w-16 text-white/50 hover:text-white hover:bg-transparent"
-                                onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}
-                            >
-                                <Pencil className="h-12 w-12 stroke-white stroke-[3]" />
-                            </Button>
-                             {cardData.backsideContent && (
-                                <div className="text-center text-lg" dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
-                            )}
-                        </div>
-                    </div>
+                    {/* Live-Vorschau wird jetzt in der Elternkomponente gerendert */}
                 </div>
             </div>
 

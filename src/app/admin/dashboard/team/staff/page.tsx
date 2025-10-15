@@ -188,6 +188,10 @@ export default function StaffPageManager() {
             setNotification({ variant: 'destructive', title: 'Fehler', description: `Die Änderungen konnten nicht gespeichert werden: ${error.message}` });
         }
     };
+
+    const handleEditorUpdate = (update: Partial<CardData>) => {
+        setEditorCardState(prev => ({...prev, ...update} as CardData));
+    };
     
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
@@ -206,12 +210,13 @@ export default function StaffPageManager() {
             }
             
             return (
-                <div className={cn("space-y-4 mt-12", isEditing && 'hidden')}>
+                <div className={cn("space-y-4 mt-12")}>
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-16 mt-8">
                        {items.map((item, index) => (
-                           <div key={item.id} className={cn("relative mx-auto w-full max-w-sm", item.fullWidth && "sm:col-span-2")}>
+                           <div key={item.id} className={cn("flex justify-center", item.fullWidth && "sm:col-span-2")}>
+                             <div className="relative w-full max-w-sm">
                                 <div
                                     id={`buttons-${item.id}`}
                                     className="absolute top-1/2 -translate-y-1/2 flex w-[140px] flex-col items-center justify-center gap-2"
@@ -253,6 +258,7 @@ export default function StaffPageManager() {
                                 <div className={cn(isHiddenGrid && "grayscale")}>
                                   <DisplayCard {...item} />
                                 </div>
+                            </div>
                            </div>
                         ))}
                     </div>
@@ -300,8 +306,23 @@ export default function StaffPageManager() {
                 </CardHeader>
                 <CardContent>
                    {isEditing && (
-                        <div className="mb-8 relative rounded-lg border-2 border-dashed border-primary bg-muted">
-                             <EditorComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                        <div className="mb-8 relative rounded-lg border-2 border-dashed border-primary bg-muted p-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                                <div>
+                                    <EditorComponent cardData={editorCardState} onUpdate={handleEditorUpdate} />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <DisplayCard {...editorCardState} />
+                                        <div className="relative flex items-center justify-center w-full max-w-sm mx-auto h-full rounded-lg bg-accent text-background p-6">
+                                            {editorCardState.backsideContent && (
+                                                <div className="text-center text-lg" dangerouslySetInnerHTML={{ __html: editorCardState.backsideContent }} />
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     )}
 
@@ -337,7 +358,7 @@ export default function StaffPageManager() {
                             </Alert>
                         )}
                          
-                        {renderCardGroups()}
+                        {!isEditing && renderCardGroups()}
                     </div>
                 </CardContent>
             </Card>
