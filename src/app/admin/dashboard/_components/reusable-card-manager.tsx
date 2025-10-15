@@ -202,7 +202,7 @@ function ReusableCardManager<T extends CardData>({
 
     const partnerEditorOverlay = isEditing ? (
         <div className="pointer-events-auto absolute inset-0 z-20 bg-green-500/30">
-             <div className="grid h-full w-full grid-cols-8 gap-4 p-4 border-2 border-blue-500">
+             <div className="grid h-full w-full grid-cols-8 gap-4 p-4">
                  <div className="z-0 border-2 border-yellow-400 col-span-4"></div>
                  <div className="z-0 border-2 border-purple-400 col-span-1"></div>
                  <div className="relative flex h-full w-full items-center justify-center border-2 border-red-500 col-span-2">
@@ -357,7 +357,7 @@ function ReusableCardManager<T extends CardData>({
                 </CardHeader>
                 <CardContent>
                    {isEditing && (
-                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted min-h-[580px] mb-8">
+                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted min-h-[480px] mb-8">
                             <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState}>
                                {partnerEditorOverlay}
                             </EditorCardComponent>
