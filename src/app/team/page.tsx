@@ -67,14 +67,13 @@ export default function TeamPage() {
             </div>
             
             {isLoadingStaff ? (
-                <div className="space-y-12">
-                    <div className="grid w-full grid-cols-1 justify-items-center gap-8 sm:grid-cols-2">
-                        <Skeleton className="h-[550px] w-full max-w-sm" />
-                        <Skeleton className="h-[550px] w-full max-w-sm" />
-                    </div>
+                <div className="grid grid-cols-1 justify-items-center gap-8 sm:grid-cols-2">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                         <Skeleton key={index} className="h-[550px] w-full max-w-sm" />
+                    ))}
                 </div>
             ) : staffMembers.length > 0 ? (
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                     {staffMembers.map((member) => {
                         const backside = member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined;
                         return (
