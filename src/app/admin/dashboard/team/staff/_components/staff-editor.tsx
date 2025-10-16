@@ -59,9 +59,10 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
     }>({ type: null, data: {} });
 
     useEffect(() => {
-        if (cardData._dialog) {
+        if (cardData._dialog && cardData._dialog.type) {
             setDialogState({ type: cardData._dialog.type as any, data: cardData._dialog.data });
-            onUpdate({ _dialog: undefined }); // Reset dialog state in parent
+            // Clear the dialog trigger from the parent state immediately
+            onUpdate({ _dialog: undefined });
         }
     }, [cardData._dialog, onUpdate]);
     
