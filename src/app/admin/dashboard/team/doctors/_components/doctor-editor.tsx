@@ -80,6 +80,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
         }
         
         let updatedCardData = { ...cardData, frontSideCode: doc.body.innerHTML };
+        // Special case: if the 'name' field is updated, also update the top-level 'name' property
         if (field === 'name') {
             updatedCardData.name = value;
         }
@@ -106,7 +107,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
         const container = doc.getElementById('image-container');
         
         if (container) {
-            const newHtml = `<div id="edit-image" class="image-button-background w-full h-full relative"><img src="${url}" alt="Portrait" class="h-full w-full object-cover relative" /></div>`;
+            const newHtml = `<div id="edit-image" class="image-button w-full h-full relative"><img src="${url}" alt="Portrait" class="h-full w-full object-cover relative" /></div>`;
             container.innerHTML = newHtml;
         }
         
@@ -142,8 +143,17 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
         const wrapInButton = (html: string) => {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
-            if (doc.querySelector('div#edit-vita')) return html;
+            const vitaContainer = doc.querySelector('div#edit-vita');
+            if (vitaContainer) {
+                // If it already has the wrapper, just update the inner content
+                const contentDiv = vitaContainer.querySelector('.vita-content');
+                if (contentDiv) {
+                    contentDiv.innerHTML = html;
+                    return doc.body.innerHTML;
+                }
+            }
             
+            // If the wrapper doesn't exist, create it
             const style = `<style>.vita-content { color: hsl(var(--background)); } .vita-content p { margin: 0; } .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; } .vita-content li { margin-bottom: 0.5em; } .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; } .vita-content .is-small { font-size: 0.8em; font-weight: normal; } .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); } .vita-content span[style*="color: var(--color-tiptap-gray)"] { color: hsl(var(--secondary-foreground)); }</style>`;
             const contentDiv = `<div class="vita-content w-full h-full">${html}</div>`;
             return `<div class="w-full h-full text-left">${style}<div id="edit-vita" class="w-full h-full text-left p-8">${contentDiv}</div></div>`;
@@ -176,7 +186,13 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
             if (field === 'image') {
                 setDialogState({ type: 'imageSource', data: { field: 'image' } });
             } else if (field === 'vita') {
-                setDialogState({ type: 'vita', data: { initialValue: cardData.backSideCode.includes("Zum Bearbeiten klicken") ? '' : cardData.backSideCode } });
+                const initialHtml = cardData.backSideCode;
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(initialHtml, 'text/html');
+                const contentDiv = doc.querySelector('.vita-content');
+                const vitaContent = contentDiv ? contentDiv.innerHTML : '';
+                const finalContent = vitaContent.includes("Zum Bearbeiten klicken") ? '' : vitaContent;
+                setDialogState({ type: 'vita', data: { initialValue: finalContent } });
             } else if (field === 'language') {
                 setDialogState({ type: 'language', data: {} });
             } else if (field === 'position') {
