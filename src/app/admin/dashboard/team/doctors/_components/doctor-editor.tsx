@@ -17,11 +17,14 @@ import type { Doctor } from '../page';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Info } from 'lucide-react';
 
 
 interface DoctorEditorProps {
     cardData: Doctor;
     onUpdate: (updatedData: Partial<Doctor>) => void;
+    isCreatingNew: boolean;
 }
 
 const extractText = (html: string, id: string): string => {
@@ -41,7 +44,7 @@ const extractText = (html: string, id: string): string => {
 };
 
 
-export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }) => {
+export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate, isCreatingNew }) => {
     const { toast } = useToast();
     const storage = useStorage();
 
@@ -147,7 +150,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
     const handleCardClick = (e: React.MouseEvent) => {
         let target = e.target as HTMLElement;
         
-        while (target && target.id !== 'card-root') {
+        while (target && target.id !== 'card-root' && target.id !== 'doctor-editor-root') {
             const id = target.id;
 
             if (id.startsWith('edit-')) {
@@ -189,9 +192,20 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
     };
 
     return (
-        <div id="doctor-editor-root" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-            <EditableDoctorCard doctor={cardData} onCardClick={handleCardClick} />
-            <EditableDoctorCard doctor={cardData} showBackside={true} onCardClick={handleCardClick} />
+        <div id="doctor-editor-root">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <EditableDoctorCard doctor={cardData} onCardClick={handleCardClick} />
+                <EditableDoctorCard doctor={cardData} showBackside={true} onCardClick={handleCardClick} />
+            </div>
+
+            <Alert variant="info" className="mt-8">
+                <Info className="h-4 w-4" />
+                <AlertTitle className="font-bold">Anleitung</AlertTitle>
+                <AlertDescription>
+                    Klicken Sie auf ein Element, um dieses zu bearbeiten. Die Live-Vorschau wird sofort entsprechend der Bearbeitung aktualisiert. Die Übernahme in die Datenbank erfolgt erst am Ende als separater Schritt mit dem Klick auf die Schaltfläche "{isCreatingNew ? 'Neue Karte speichern' : 'Änderungen speichern'}".
+                </AlertDescription>
+            </Alert>
+
 
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
             

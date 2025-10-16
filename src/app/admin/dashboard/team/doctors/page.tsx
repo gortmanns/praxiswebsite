@@ -22,9 +22,20 @@ import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 
 import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { DoctorEditor as EditorComponent } from './_components/doctor-editor';
-import type { Doctor as CardData } from '@/app/admin/dashboard/team/doctors/_components/doctor-editor';
 
-const initialDoctorState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
+export interface Doctor {
+    id: string;
+    order: number;
+    name: string;
+    frontSideCode: string;
+    backSideCode: string;
+    languages: string[];
+    hidden: boolean;
+    createdAt?: any;
+}
+
+
+const initialDoctorState: Omit<Doctor, 'id' | 'order' | 'createdAt'> = {
     name: "Neuer Arzt",
     languages: ['de'],
     hidden: false,
@@ -376,7 +387,7 @@ export default function DoctorsPage() {
                 <CardContent>
                    {isEditing && (
                         <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted p-4 mb-8">
-                            <EditorComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                            <EditorComponent cardData={editorCardState} onUpdate={setEditorCardState} isCreatingNew={isCreatingNew} />
                         </div>
                     )}
 
