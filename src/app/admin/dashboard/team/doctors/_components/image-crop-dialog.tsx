@@ -34,9 +34,12 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
     const cropper = cropperRef.current?.cropper;
     if (!cropper) return;
 
-    const croppedCanvas = cropper.getCroppedCanvas();
+    // By setting a white fill color, we prevent black backgrounds on JPEGs
+    const croppedCanvas = cropper.getCroppedCanvas({
+        fillColor: '#fff'
+    });
     if (!croppedCanvas) return;
-
+    
     const resultDataUrl = croppedCanvas.toDataURL('image/jpeg', 0.9);
     onCropComplete(resultDataUrl);
     onClose();
