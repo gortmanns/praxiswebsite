@@ -134,7 +134,8 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
             const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
             const downloadURL = await getDownloadURL(snapshot.ref);
     
-            onUpdate({ ...cardData, frontSideCode: updateHtmlWithImage(cardData.frontSideCode, field, downloadURL) });
+            const newFrontSideCode = updateHtmlWithImage(cardData.frontSideCode, field, downloadURL);
+            onUpdate({ ...cardData, frontSideCode: newFrontSideCode });
         
         } catch (error) {
             console.error("Error uploading image: ", error);
