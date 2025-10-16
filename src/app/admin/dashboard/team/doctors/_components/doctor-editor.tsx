@@ -71,21 +71,15 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
             return;
         }
 
-        if (!storage) {
-            toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
-            return;
-        }
-
-        const imagePath = `doctors/${uuidv4()}.jpeg`;
-        const imageRef = storageRef(storage, imagePath);
-
         try {
-            const snapshot = await uploadString(imageRef, croppedDataUrl, 'data_url');
-            const downloadURL = await getDownloadURL(snapshot.ref);
-
-            const newFrontSideCode = updateHtmlWithImage(cardData.frontSideCode, downloadURL, field);
-            onUpdate({ frontSideCode: newFrontSideCode });
-            toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich aktualisiert.' });
+            const result = await saveCroppedImage(croppedDataUrl);
+            if (result.success && result.filePath) {
+                const newFrontSideCode = updateHtmlWithImage(cardData.frontSideCode, result.filePath, field);
+                onUpdate({ frontSideCode: newFrontSideCode });
+                toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich aktualisiert.' });
+            } else {
+                 throw new Error(result.error || 'Unbekannter Fehler beim Speichern des Bildes.');
+            }
         } catch (error: any) {
             console.error("Error saving image: ", error);
             toast({ variant: 'destructive', title: 'Speicher-Fehler', description: error.message });
@@ -196,14 +190,8 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
 
     return (
         <div id="doctor-editor-root" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-            <div className="space-y-4">
-                 <p className="text-center block mb-2 text-sm font-medium text-muted-foreground">Vorderseite (Live-Vorschau)</p>
-                 <EditableDoctorCard doctor={cardData} onCardClick={handleCardClick} />
-            </div>
-            <div className="space-y-4">
-                 <p className="text-center block mb-2 text-sm font-medium text-muted-foreground">Rückseite (Live-Vorschau)</p>
-                 <EditableDoctorCard doctor={cardData} showBackside={true} onCardClick={handleCardClick} />
-            </div>
+            <EditableDoctorCard doctor={cardData} onCardClick={handleCardClick} />
+            <EditableDoctorCard doctor={cardData} showBackside={true} onCardClick={handleCardClick} />
 
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
             
