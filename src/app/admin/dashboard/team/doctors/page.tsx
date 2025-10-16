@@ -15,7 +15,7 @@ import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionRefe
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Pencil, EyeOff, Eye, Trash2, Plus, Save, XCircle, AlertCircle, ArrowUp, ArrowDown } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
@@ -302,27 +302,23 @@ export default function DoctorsPage() {
                                             </div>
                                         )}
                                     </div>
-                                    <div
-                                        id={`buttons-${item.id}`}
-                                        className="flex w-full max-w-sm items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner"
-                                    >
-                                        <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'up')} disabled={index === 0}>
-                                            <ArrowLeft className="transform -rotate-90" />
+                                    <div id={`buttons-${item.id}`} className="flex w-full max-w-lg items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
+                                        <Button variant="outline" onClick={() => handleMove(item.id, 'up')} disabled={index === 0}>
+                                            <ArrowUp className="mr-2 h-4 w-4" /> Nach oben
                                         </Button>
-                                        <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'down')} disabled={index === items.length - 1}>
-                                            <ArrowLeft className="transform rotate-90" />
+                                        <Button variant="outline" onClick={() => handleMove(item.id, 'down')} disabled={index === items.length - 1}>
+                                            <ArrowDown className="mr-2 h-4 w-4" /> Nach unten
                                         </Button>
-                                        
                                         <div className="w-px self-stretch bg-border mx-2" />
-
-                                        <Button variant="outline" size="icon" onClick={() => handleEdit(item)}><Pencil /></Button>
-                                        <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)}>
-                                            {item.hidden ? <Eye /> : <EyeOff />}
+                                        <Button variant="outline" onClick={() => handleEdit(item)}>
+                                            <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
                                         </Button>
-                                        
+                                        <Button variant="outline" onClick={() => handleToggleHidden(item)}>
+                                            {item.hidden ? <><Eye className="mr-2 h-4 w-4" /> Einblenden</> : <><EyeOff className="mr-2 h-4 w-4" /> Ausblenden</>}
+                                        </Button>
                                         {isHiddenGrid && (
-                                            <Button variant="destructive" size="icon" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                                                <Trash2 />
+                                            <Button variant="destructive" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                                                <Trash2 className="mr-2 h-4 w-4" /> Löschen
                                             </Button>
                                         )}
                                     </div>
