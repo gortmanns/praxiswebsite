@@ -33,6 +33,7 @@ export interface StaffMember {
     hidden?: boolean;
     fullWidth?: boolean;
     createdAt?: any;
+    _dialog?: { type: string; data: any };
     [key: string]: any;
 }
 
@@ -50,6 +51,13 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
         type: 'imageSource' | 'imageLibrary' | 'imageCrop' | 'language' | 'vita' | null;
         data: any;
     }>({ type: null, data: {} });
+
+    useEffect(() => {
+        if (cardData._dialog) {
+            setDialogState({ type: cardData._dialog.type as any, data: cardData._dialog.data });
+            onUpdate({ _dialog: undefined }); // Reset dialog state in parent
+        }
+    }, [cardData._dialog, onUpdate]);
     
     const handleInputChange = (field: keyof StaffMember, value: string | boolean | string[]) => {
         onUpdate({ [field]: value });
