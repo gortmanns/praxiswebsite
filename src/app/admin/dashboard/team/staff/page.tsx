@@ -293,6 +293,7 @@ export default function StaffPageManager() {
                                 <div className="space-y-4">
                                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                                     <div className="grid grid-cols-2 gap-4">
+                                        {/* Frontend Card Preview */}
                                         <div className="w-full max-w-sm overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
                                             <div className="flex h-full flex-col p-6">
                                                 <button className="relative w-full overflow-hidden rounded-md aspect-[2/3] cursor-pointer" onClick={() => handleEditorUpdate({_dialog: { type: 'imageSource', data: {} }})}>
@@ -318,6 +319,7 @@ export default function StaffPageManager() {
                                                 </div>
                                             </div>
                                         </div>
+                                        {/* Backend Card Preview */}
                                         <div className="relative w-full max-w-sm overflow-hidden rounded-lg border bg-accent/95 text-background shadow-xl aspect-[0.666]">
                                             <button className="absolute top-2 right-2 z-10 p-2 text-white/80 hover:text-white" onClick={() => handleEditorUpdate({_dialog: { type: 'vita', data: { initialValue: editorCardState.backsideContent || '' } }})}>
                                                 <Pencil className="h-8 w-8 font-bold" />
