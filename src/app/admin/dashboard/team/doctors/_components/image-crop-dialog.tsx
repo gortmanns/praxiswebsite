@@ -34,7 +34,11 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
     const cropper = cropperRef.current?.cropper;
     if (!cropper) return;
 
-    const resultDataUrl = cropper.getCroppedCanvas().toDataURL('image/jpeg', 0.9);
+    // This is the crucial part: get the cropped image data.
+    const croppedCanvas = cropper.getCroppedCanvas();
+    if (!croppedCanvas) return;
+
+    const resultDataUrl = croppedCanvas.toDataURL('image/jpeg', 0.9);
     onCropComplete(resultDataUrl);
     onClose();
   };
