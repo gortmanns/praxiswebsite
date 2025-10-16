@@ -1,364 +1,163 @@
-
+/**********************************************************************************
+ * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
+ * 
+ * Diese Datei wurde nach wiederholten Fehlversuchen stabilisiert.
+ * ÄNDERN SIE DIESE DATEI UNTER KEINEN UMSTÄNDEN OHNE AUSDRÜCKLICHE ERLAUBNIS.
+ * Jede Änderung muss vorher bestätigt werden.
+ **********************************************************************************/
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Button, buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { Save, XCircle, AlertCircle, Plus } from 'lucide-react';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
+import React, { useState, useRef, useCallback } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { ImageUp, Loader2 } from 'lucide-react';
+import Image from 'next/image';
+import { useToast } from '@/hooks/use-toast';
+import { saveCroppedImage } from './actions';
 
-import { StaffCard } from './_components/staff-card';
-import { StaffEditor } from './_components/staff-editor';
-import type { StaffMember as CardData } from './_components/staff-editor';
+import { ImageSourceDialog } from '../team/doctors/_components/image-source-dialog';
+import { ImageLibraryDialog } from '../team/doctors/_components/image-library-dialog';
+import { ImageCropDialog } from '../team/doctors/_components/image-crop-dialog';
+import { projectImages } from '../partners/project-images';
 
-const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
-    name: "Name",
-    role: "Funktion",
-    role2: "",
-    imageUrl: "",
-    backsideContent: "Zum Bearbeiten klicken",
-    languages: ['de'],
-    hidden: false,
-    fullWidth: false,
-};
+export default function ImageTestPage() {
+    const { toast } = useToast();
 
+    const [imageUrl, setImageUrl] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [dialogState, setDialogState] = useState<{
+        type: 'imageSource' | 'imageLibrary' | 'imageCrop' | null;
+        data: any;
+    }>({ type: null, data: {} });
 
-export default function StaffPageManager() {
-    const collectionName = "staff";
-    const pageTitle = "Praxispersonal verwalten";
-    const pageDescription = "Verwalten Sie das auf der Team-Seite angezeigte Praxispersonal.";
-    const entityName = "Mitarbeiter";
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const firestore = useFirestore();
-    
-    const [notification, setNotification] = useState<TimedAlertProps | null>(null);
-
-    const dataQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
-        return query(collection(firestore, collectionName) as CollectionReference<DocumentData>, orderBy('order', 'asc'));
-    }, [firestore, collectionName]);
-
-    const { data: dbData, isLoading: isLoadingData, error: dbError } = useCollection<CardData>(dataQuery as any);
-
-    const [editingCardId, setEditingCardId] = useState<string | null>(null);
-    const [isCreatingNew, setIsCreatingNew] = useState(false);
-    const [editorCardState, setEditorCardState] = useState<CardData>({ ...initialStaffState, id: '', order: 0 } as CardData);
-    const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
-
-    const isEditing = editingCardId !== null || isCreatingNew;
-    
-    const handleEdit = (card: CardData) => {
-        setEditingCardId(card.id);
-        setIsCreatingNew(false);
-        setEditorCardState(card);
-    };
-
-    const handleCreateNew = () => {
-        setEditingCardId(null);
-        setIsCreatingNew(true);
-        setEditorCardState({ ...initialStaffState, id: '', order: 0 } as CardData);
-    };
-
-    const handleCancelEdit = () => {
-        setEditingCardId(null);
-        setIsCreatingNew(false);
-    };
-    
-    const handleMove = async (cardId: string, direction: 'left' | 'right') => {
-        if (!dbData || !firestore) return;
-    
-        const items = dbData.filter(d => !d.hidden).sort((a, b) => a.order - b.order);
-        const currentIndex = items.findIndex(item => item.id === cardId);
-    
-        if (currentIndex === -1) return;
-    
-        let otherIndex = -1;
-        if (direction === 'left' && currentIndex > 0) {
-            otherIndex = currentIndex - 1;
-        } else if (direction === 'right' && currentIndex < items.length - 1) {
-            otherIndex = currentIndex + 1;
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files?.[0]) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio: 2/3 } });
+            };
+            reader.readAsDataURL(e.target.files[0]);
         }
-    
-        if (otherIndex === -1) return;
-    
-        const item1 = items[currentIndex];
-        const item2 = items[otherIndex];
-    
-        try {
-            const batch = writeBatch(firestore);
-            const item1Ref = doc(firestore, collectionName, item1.id);
-            const item2Ref = doc(firestore, collectionName, item2.id);
-    
-            batch.update(item1Ref, { order: item2.order });
-            batch.update(item2Ref, { order: item1.order });
-    
-            await batch.commit();
-        } catch (error: any) {
-            console.error('Error moving item:', error);
-            setNotification({ variant: 'destructive', title: 'Fehler', description: `Position konnte nicht geändert werden: ${error.message}` });
-        }
+        e.target.value = '';
     };
 
-    const handleToggleHidden = async (card: CardData) => {
-        if (!firestore) return;
-        const docRef = doc(firestore, collectionName, card.id);
-        try {
-            await setDoc(docRef, { hidden: !card.hidden }, { merge: true });
-        } catch (error: any) {
-            console.error('Error toggling hidden state:', error);
-            setNotification({ variant: 'destructive', title: 'Fehler', description: `Sichtbarkeit konnte nicht geändert werden: ${error.message}` });
-        }
-    };
-
-    const handleToggleFullWidth = async (card: CardData) => {
-        if (!firestore || collectionName !== 'staff') return;
-        const docRef = doc(firestore, collectionName, card.id);
-        try {
-            await setDoc(docRef, { fullWidth: !card.fullWidth }, { merge: true });
-        } catch (error: any) {
-            console.error('Error toggling fullWidth state:', error);
-            setNotification({ variant: 'destructive', title: 'Fehler', description: `Breite konnte nicht geändert werden: ${error.message}` });
-        }
-    };
-
-    const openDeleteConfirmation = (cardId: string, cardName: string) => {
-        setDeleteConfirmState({ isOpen: true, cardId, cardName });
-    };
-
-    const handleDelete = async () => {
-        if (!firestore || !deleteConfirmState.cardId) return;
-        setNotification(null);
-        try {
-            const docRef = doc(firestore, collectionName, deleteConfirmState.cardId);
-            await deleteDoc(docRef);
-            setNotification({ title: 'Erfolgreich', description: 'Karte wurde erfolgreich gelöscht.', variant: 'success' });
-            setDeleteConfirmState({ isOpen: false });
-        } catch (error) {
-            console.error("Error deleting document: ", error);
-            setNotification({ variant: 'destructive', title: 'Fehler', description: 'Karte konnte nicht gelöscht werden.' });
-        }
-    };
-
-    const handleSaveChanges = async () => {
-        if (!firestore) {
-            setNotification({ variant: 'destructive', title: 'Fehler', description: 'Datenbank-Dienst nicht verfügbar.' });
+    const handleCropComplete = useCallback(async (croppedDataUrl: string) => {
+        setDialogState({ type: null, data: {} });
+        if (!croppedDataUrl) {
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Keine Bilddaten vom Zuschneide-Dialog erhalten.' });
             return;
         }
-        setNotification(null);
 
-        let dataToSave: Partial<CardData> = { ...editorCardState };
-    
+        setIsLoading(true);
+
         try {
-            if (isCreatingNew) {
-                delete (dataToSave as any).id;
-                const highestOrder = dbData ? dbData.filter(d=>d.name).reduce((max, item) => item.order > max ? item.order : max, 0) : 0;
-                
-                const newCardData = {
-                    ...initialStaffState,
-                    ...dataToSave,
-                    order: highestOrder + 1,
-                    createdAt: serverTimestamp(),
-                    hidden: false,
-                };
-    
-                const newDocRef = await addDoc(collection(firestore, collectionName), newCardData);
-                await setDoc(newDocRef, { id: newDocRef.id }, { merge: true });
-    
-                setNotification({ variant: 'success', title: 'Erfolgreich', description: `Neue ${entityName}-Karte erfolgreich erstellt.` });
-            
-            } else if (editingCardId) {
-                delete dataToSave.createdAt;
-                delete dataToSave.id;
-    
-                const docRef = doc(firestore, collectionName, editingCardId);
-                await setDoc(docRef, dataToSave, { merge: true });
-                setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Änderungen erfolgreich gespeichert.' });
+            const result = await saveCroppedImage(croppedDataUrl);
+
+            if (result.success && result.filePath) {
+                // Wichtig: Füge einen Zeitstempel hinzu, um Caching-Probleme im Browser zu vermeiden
+                setImageUrl(`${result.filePath}?t=${new Date().getTime()}`);
+                toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich gespeichert und angezeigt.' });
+            } else {
+                throw new Error(result.error || 'Unbekannter Fehler beim Speichern des Bildes.');
             }
-            handleCancelEdit();
         } catch (error: any) {
-            console.error("Error saving changes: ", error);
-            setNotification({ variant: 'destructive', title: 'Fehler', description: `Die Änderungen konnten nicht gespeichert werden: ${error.message}` });
+            console.error("Error saving image: ", error);
+            toast({ variant: 'destructive', title: 'Speicher-Fehler', description: error.message });
+        } finally {
+            setIsLoading(false);
         }
-    };
-
-    const handleEditorUpdate = (update: Partial<CardData>) => {
-        setEditorCardState(prev => ({...prev, ...update} as CardData));
-    };
-    
-    const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
-
-    const renderCardGroups = () => {
-        const activeItems = validDbData.filter(i => !i.hidden);
-        const hiddenItems = validDbData.filter(i => i.hidden);
-    
-        const renderGrid = (items: CardData[], title: string, description: string, isHiddenGrid: boolean) => {
-             if (!isLoadingData && items.length === 0 && !isEditing) {
-                if (isHiddenGrid) return null;
-                return (
-                   <div className="space-y-4 mt-12">
-                       <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
-                       <p className="text-sm text-muted-foreground pt-4">Keine Karten in dieser Kategorie.</p>
-                   </div>
-               );
-           }
-           
-           return (
-            <div className={cn("space-y-4 mt-12", isEditing && !isHiddenGrid ? "opacity-50 pointer-events-none" : "")}>
-                <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
-                <p className="text-sm text-muted-foreground">{description}</p>
-                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-16 mt-8">
-                   {items.map((item, index) => (
-                       <div key={item.id} className={cn("flex justify-center", item.fullWidth && "sm:col-span-2")}>
-                            <div className={cn("relative", isHiddenGrid && "grayscale")}>
-                                <StaffCard 
-                                    {...item}
-                                    isFirst={index === 0}
-                                    isLast={index === items.length - 1}
-                                    isHiddenCard={isHiddenGrid}
-                                    isBeingEdited={item.id === editingCardId && isEditing}
-                                    onMove={handleMove}
-                                    onEdit={handleEdit}
-                                    onToggleHidden={handleToggleHidden}
-                                    onToggleFullWidth={handleToggleFullWidth}
-                                    onDelete={openDeleteConfirmation}
-                                />
-                            </div>
-                        </div>
-                   ))}
-                </div>
-            </div>
-           );
-        };
-    
-        return (
-            <>
-                {renderGrid(activeItems, 'Aktive Karten', 'Die hier angezeigten Karten sind auf der Webseite sichtbar.', false)}
-                {renderGrid(hiddenItems, 'Ausgeblendete Karten', 'Diese Karten sind auf der Webseite nicht sichtbar.', true)}
-            </>
-        );
-    };
+    }, [toast]);
 
     return (
-        <div id="card-manager-container" className="flex flex-1 flex-col items-start gap-8 p-4 sm:px-6 sm:py-8">
-            <Card className="w-full">
+        <div className="flex flex-1 items-start p-4 sm:p-6">
+            <Card className="w-full max-w-2xl">
                 <CardHeader>
-                    <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
-                        <div>
-                            <CardTitle className="text-primary">{pageTitle}</CardTitle>
-                            {!isEditing && <CardDescription>{pageDescription}</CardDescription>}
-                        </div>
-                        <div className="flex gap-2">
-                             {isEditing ? (
-                                <>
-                                    <Button onClick={handleSaveChanges}>
-                                        <Save className="mr-2 h-4 w-4" />
-                                        {isCreatingNew ? `Neue Karte speichern` : 'Änderungen speichern'}
-                                    </Button>
-                                    <Button variant="destructive" onClick={handleCancelEdit}>
-                                        <XCircle className="mr-2 h-4 w-4" />
-                                        Abbrechen
-                                    </Button>
-                                </>
+                    <CardTitle>Isolierter Bild-Upload-Test</CardTitle>
+                    <CardDescription>
+                        Dieser Test validiert den Prozess: Bild auswählen, zuschneiden und lokal im Projektordner `/public/images/uploads` speichern.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div className="space-y-4">
+                        <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })}>
+                            <ImageUp className="mr-2 h-4 w-4" />
+                            Bild auswählen
+                        </Button>
+                        <p className="text-sm text-muted-foreground">
+                            Dieser Button startet den Dialog zur Auswahl einer Bildquelle (Upload oder Bibliothek), gefolgt vom Zuschneide-Dialog. Das Ergebnis wird unten angezeigt.
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="font-semibold">Vorschau:</h3>
+                        <div className="relative flex h-80 w-full items-center justify-center rounded-md border border-dashed bg-muted">
+                            {isLoading ? (
+                                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                            ) : imageUrl ? (
+                                <Image
+                                    src={imageUrl}
+                                    alt="Vorschau des hochgeladenen Bildes"
+                                    fill
+                                    className="object-contain p-2"
+                                    // Wichtig: 'key' erzwingt ein Neuladen des Bildes, wenn sich die URL ändert
+                                    key={imageUrl}
+                                />
                             ) : (
-                                <Button onClick={handleCreateNew}>
-                                    <Plus className="mr-2 h-4 w-4" />
-                                    Neue Karte erstellen
-                                </Button>
+                                <span className="text-muted-foreground">Hier erscheint die Vorschau</span>
                             )}
                         </div>
                     </div>
-                </CardHeader>
-                <CardContent>
-                   {isEditing && (
-                        <div className="mb-8 rounded-lg border-2 border-dashed border-primary bg-muted p-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                                <StaffEditor cardData={editorCardState} onUpdate={handleEditorUpdate} />
-                                <div className="space-y-4">
-                                    <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                                    <div className="grid grid-cols-1 gap-4 place-items-center">
-                                        <div className="relative flex items-center justify-center w-full max-w-sm">
-                                             <div className="w-full max-w-sm">
-                                                <div className="group relative w-full max-w-sm overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
-                                                    <div className="flex h-full flex-col p-6">
-                                                        <div className={cn("relative w-full overflow-hidden rounded-md aspect-[2/3]")}>
-                                                            <img
-                                                                src={editorCardState.imageUrl || "https://picsum.photos/seed/placeholder/400/600"}
-                                                                alt={`Portrait von ${editorCardState.name}`}
-                                                                className="object-cover w-full h-full"
-                                                            />
-                                                        </div>
-                                                        <div className="flex-grow pt-6 text-center min-h-[110px]">
-                                                            <h4 className="text-xl font-bold text-primary">{editorCardState.name}</h4>
-                                                            <p className="mt-2 text-base font-bold text-muted-foreground">{editorCardState.role}</p>
-                                                            {editorCardState.role2 && <p className="mt-1 text-base text-muted-foreground">{editorCardState.role2}</p>}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
 
-                    {notification && (
-                       <TimedAlert
-                           variant={notification.variant}
-                           title={notification.title}
-                           description={notification.description}
-                           onClose={() => setNotification(null)}
-                           className="my-6"
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Bild-URL (lokaler Pfad):</h3>
+                        <Input
+                            readOnly
+                            value={imageUrl}
+                            placeholder="Der lokale Bildpfad wird hier angezeigt"
                         />
-                    )}
-
-                    <div className="relative">
-                        {isLoadingData && (
-                            <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
-                                {Array.from({ length: 4 }).map((_, index) => (
-                                    <div key={index} className="flex flex-col items-center space-y-4">
-                                        <Skeleton className="h-[550px] w-full max-w-sm" />
-                                        <Skeleton className="h-24 w-full max-w-sm" />
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-                        {dbError && (
-                            <Alert variant="destructive" className="mt-8">
-                                <AlertCircle className="h-4 w-4" />
-                                <AlertTitle>Datenbankfehler</AlertTitle>
-                                <AlertDescription>
-                                    Die Daten konnten nicht geladen werden: {dbError.message}
-                                </AlertDescription>
-                            </Alert>
-                        )}
-                         
-                        {renderCardGroups()}
                     </div>
                 </CardContent>
             </Card>
 
-            <AlertDialog open={deleteConfirmState.isOpen} onOpenChange={(isOpen) => !isOpen && setDeleteConfirmState({ isOpen: false })}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Sind Sie sicher?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Möchten Sie die Karte für <strong>{deleteConfirmState.cardName}</strong> wirklich endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDelete} className={cn(buttonVariants({ variant: "destructive" }))}>Löschen</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+            <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileSelect}
+            />
+
+            {dialogState.type === 'imageSource' && (
+                <ImageSourceDialog
+                    isOpen={true}
+                    onOpenChange={() => setDialogState({ type: null, data: {} })}
+                    onUpload={() => fileInputRef.current?.click()}
+                    onSelect={() => setDialogState({ type: 'imageLibrary', data: {} })}
+                />
+            )}
+
+            {dialogState.type === 'imageLibrary' && (
+                 <ImageLibraryDialog 
+                    isOpen={true} 
+                    onOpenChange={() => setDialogState({ type: null, data: {} })} 
+                    images={projectImages} 
+                    onImageSelect={(selectedImageUrl) => {
+                        setDialogState({ type: 'imageCrop', data: { imageUrl: selectedImageUrl, aspectRatio: 2/3 } });
+                    }}
+                 />
+            )}
+            
+            {dialogState.type === 'imageCrop' && (
+                <ImageCropDialog
+                    imageUrl={dialogState.data.imageUrl}
+                    aspectRatio={dialogState.data.aspectRatio}
+                    onCropComplete={handleCropComplete}
+                    onClose={() => setDialogState({ type: null, data: {} })}
+                />
+            )}
         </div>
     );
 }

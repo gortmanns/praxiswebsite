@@ -1,16 +1,20 @@
-
+/**********************************************************************************
+ * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
+ * 
+ * Diese Datei wurde nach wiederholten Fehlversuchen stabilisiert.
+ * ÄNDERN SIE DIESE DATEI UNTER KEINEN UMSTÄNDEN OHNE AUSDRÜCKLICHE ERLAUBNIS.
+ * Jede Änderung muss vorher bestätigt werden.
+ **********************************************************************************/
 'use client';
 
 import React, { useState, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ImageUp, Loader2 } from 'lucide-react';
 import Image from 'next/image';
-import { useStorage } from '@/firebase';
-import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
-import { v4 as uuidv4 } from 'uuid';
 import { useToast } from '@/hooks/use-toast';
+import { saveCroppedImage } from './actions';
 
 import { ImageSourceDialog } from '../team/doctors/_components/image-source-dialog';
 import { ImageLibraryDialog } from '../team/doctors/_components/image-library-dialog';
@@ -19,7 +23,6 @@ import { projectImages } from '../partners/project-images';
 
 export default function ImageTestPage() {
     const { toast } = useToast();
-    const storage = useStorage();
 
     const [imageUrl, setImageUrl] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -34,45 +37,48 @@ export default function ImageTestPage() {
         if (e.target.files?.[0]) {
             const reader = new FileReader();
             reader.onload = (event) => {
-                setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string } });
+                setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio: 2/3 } });
             };
             reader.readAsDataURL(e.target.files[0]);
         }
         e.target.value = '';
     };
 
-    const handleCropComplete = useCallback(async (croppedImageUrl: string) => {
+    const handleCropComplete = useCallback(async (croppedDataUrl: string) => {
         setDialogState({ type: null, data: {} });
-        setIsLoading(true);
-
-        if (!storage) {
-            toast({ variant: 'destructive', title: 'Fehler', description: 'Firebase Storage ist nicht verfügbar.' });
-            setIsLoading(false);
+        if (!croppedDataUrl) {
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Keine Bilddaten vom Zuschneide-Dialog erhalten.' });
             return;
         }
 
-        try {
-            const imagePath = `image-test/${uuidv4()}.jpg`;
-            const imageRef = storageRef(storage, imagePath);
-            await uploadString(imageRef, croppedImageUrl, 'data_url');
-            const downloadURL = await getDownloadURL(imageRef);
-            
-            setImageUrl(downloadURL);
-            toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich hochgeladen und angezeigt.' });
+        setIsLoading(true);
 
-        } catch (error) {
-            console.error("Error uploading image: ", error);
-            toast({ variant: 'destructive', title: 'Upload-Fehler', description: 'Das Bild konnte nicht hochgeladen werden.' });
+        try {
+            const result = await saveCroppedImage(croppedDataUrl);
+
+            if (result.success && result.filePath) {
+                // Wichtig: Füge einen Zeitstempel hinzu, um Caching-Probleme im Browser zu vermeiden
+                setImageUrl(`${result.filePath}?t=${new Date().getTime()}`);
+                toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich gespeichert und angezeigt.' });
+            } else {
+                throw new Error(result.error || 'Unbekannter Fehler beim Speichern des Bildes.');
+            }
+        } catch (error: any) {
+            console.error("Error saving image: ", error);
+            toast({ variant: 'destructive', title: 'Speicher-Fehler', description: error.message });
         } finally {
             setIsLoading(false);
         }
-    }, [storage, toast]);
+    }, [toast]);
 
     return (
         <div className="flex flex-1 items-start p-4 sm:p-6">
             <Card className="w-full max-w-2xl">
                 <CardHeader>
                     <CardTitle>Isolierter Bild-Upload-Test</CardTitle>
+                    <CardDescription>
+                        Dieser Test validiert den Prozess: Bild auswählen, zuschneiden und lokal im Projektordner `/public/images/uploads` speichern.
+                    </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <div className="space-y-4">
@@ -96,6 +102,8 @@ export default function ImageTestPage() {
                                     alt="Vorschau des hochgeladenen Bildes"
                                     fill
                                     className="object-contain p-2"
+                                    // Wichtig: 'key' erzwingt ein Neuladen des Bildes, wenn sich die URL ändert
+                                    key={imageUrl}
                                 />
                             ) : (
                                 <span className="text-muted-foreground">Hier erscheint die Vorschau</span>
@@ -104,11 +112,11 @@ export default function ImageTestPage() {
                     </div>
 
                     <div className="space-y-2">
-                        <h3 className="font-semibold">Bild-URL:</h3>
+                        <h3 className="font-semibold">Bild-URL (lokaler Pfad):</h3>
                         <Input
                             readOnly
                             value={imageUrl}
-                            placeholder="Die Firebase Storage URL wird hier angezeigt"
+                            placeholder="Der lokale Bildpfad wird hier angezeigt"
                         />
                     </div>
                 </CardContent>
@@ -137,7 +145,7 @@ export default function ImageTestPage() {
                     onOpenChange={() => setDialogState({ type: null, data: {} })} 
                     images={projectImages} 
                     onImageSelect={(selectedImageUrl) => {
-                        setDialogState({ type: 'imageCrop', data: { imageUrl: selectedImageUrl } });
+                        setDialogState({ type: 'imageCrop', data: { imageUrl: selectedImageUrl, aspectRatio: 2/3 } });
                     }}
                  />
             )}
@@ -145,6 +153,7 @@ export default function ImageTestPage() {
             {dialogState.type === 'imageCrop' && (
                 <ImageCropDialog
                     imageUrl={dialogState.data.imageUrl}
+                    aspectRatio={dialogState.data.aspectRatio}
                     onCropComplete={handleCropComplete}
                     onClose={() => setDialogState({ type: null, data: {} })}
                 />

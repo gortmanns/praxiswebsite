@@ -1,250 +1,163 @@
-
+/**********************************************************************************
+ * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
+ * 
+ * Diese Datei wurde nach wiederholten Fehlversuchen stabilisiert.
+ * ÄNDERN SIE DIESE DATEI UNTER KEINEN UMSTÄNDEN OHNE AUSDRÜCKLICHE ERLAUBNIS.
+ * Jede Änderung muss vorher bestätigt werden.
+ **********************************************************************************/
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, addDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
-import { Button, buttonVariants } from '@/components/ui/button';
+import React, { useState, useRef, useCallback } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { format } from 'date-fns';
-import { de } from 'date-fns/locale';
-import { Calendar as CalendarIcon, Trash2, PlusCircle, XCircle } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { cn } from '@/lib/utils';
+import { ImageUp, Loader2 } from 'lucide-react';
+import Image from 'next/image';
+import { useToast } from '@/hooks/use-toast';
+import { saveCroppedImage } from './actions';
 
-interface Holiday {
-  id: string;
-  name: string;
-  start: Date;
-  end: Date;
-}
+import { ImageSourceDialog } from '../team/doctors/_components/image-source-dialog';
+import { ImageLibraryDialog } from '../team/doctors/_components/image-library-dialog';
+import { ImageCropDialog } from '../team/doctors/_components/image-crop-dialog';
+import { projectImages } from '../partners/project-images';
 
-export default function HolidaysPage() {
-  const firestore = useFirestore();
+export default function ImageTestPage() {
+    const { toast } = useToast();
 
-  const [newName, setNewName] = useState('');
-  const [newStart, setNewStart] = useState<Date | undefined>();
-  const [newEnd, setNewEnd] = useState<Date | undefined>();
-  const [isAdding, setIsAdding] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; holidayId?: string; holidayName?: string }>({ isOpen: false });
+    const [imageUrl, setImageUrl] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [dialogState, setDialogState] = useState<{
+        type: 'imageSource' | 'imageLibrary' | 'imageCrop' | null;
+        data: any;
+    }>({ type: null, data: {} });
 
-  const holidaysQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'holidays'), orderBy('start', 'asc'));
-  }, [firestore]);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { data: holidaysData, isLoading, error: dbError } = useCollection<{ name: string; start: any; end: any }>(holidaysQuery);
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files?.[0]) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio: 2/3 } });
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+        e.target.value = '';
+    };
 
-  const holidays: Holiday[] = useMemo(() => {
-    return holidaysData?.map(h => ({
-      ...h,
-      start: h.start.toDate(),
-      end: h.end.toDate(),
-    })) || [];
-  }, [holidaysData]);
-  
-  const handleAddHoliday = async () => {
-    if (!newName || !newStart || !newEnd) {
-      setError('Bitte füllen Sie alle Felder aus.');
-      return;
-    }
-    if (newEnd < newStart) {
-      setError('Das Enddatum muss nach dem Startdatum liegen.');
-      return;
-    }
-    if (!firestore) {
-      setError('Datenbankverbindung nicht verfügbar.');
-      return;
-    }
-    setError(null);
+    const handleCropComplete = useCallback(async (croppedDataUrl: string) => {
+        setDialogState({ type: null, data: {} });
+        if (!croppedDataUrl) {
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Keine Bilddaten vom Zuschneide-Dialog erhalten.' });
+            return;
+        }
 
-    try {
-      await addDoc(collection(firestore, 'holidays'), {
-        name: newName,
-        start: newStart,
-        end: newEnd,
-        createdAt: serverTimestamp(),
-      });
-      // Reset form
-      setNewName('');
-      setNewStart(undefined);
-      setNewEnd(undefined);
-      setIsAdding(false);
-    } catch (e: any) {
-      setError(`Fehler beim Speichern: ${e.message}`);
-    }
-  };
+        setIsLoading(true);
 
-  const handleDeleteHoliday = async () => {
-    if (!firestore || !deleteConfirm.holidayId) return;
-    try {
-      await deleteDoc(doc(firestore, 'holidays', deleteConfirm.holidayId));
-      setDeleteConfirm({ isOpen: false });
-    } catch (e: any) {
-      setError(`Fehler beim Löschen: ${e.message}`);
-    }
-  };
+        try {
+            const result = await saveCroppedImage(croppedDataUrl);
 
-  const formatDateRange = (start: Date, end: Date) => {
-    const startFormatted = format(start, 'd. MMMM yyyy', { locale: de });
-    const endFormatted = format(end, 'd. MMMM yyyy', { locale: de });
-    return `${startFormatted} – ${endFormatted}`;
-  }
+            if (result.success && result.filePath) {
+                // Wichtig: Füge einen Zeitstempel hinzu, um Caching-Probleme im Browser zu vermeiden
+                setImageUrl(`${result.filePath}?t=${new Date().getTime()}`);
+                toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich gespeichert und angezeigt.' });
+            } else {
+                throw new Error(result.error || 'Unbekannter Fehler beim Speichern des Bildes.');
+            }
+        } catch (error: any) {
+            console.error("Error saving image: ", error);
+            toast({ variant: 'destructive', title: 'Speicher-Fehler', description: error.message });
+        } finally {
+            setIsLoading(false);
+        }
+    }, [toast]);
 
-  return (
-    <>
-      <div className="flex flex-1 items-start p-4 sm:p-6">
-        <Card className="w-full">
-          <CardHeader>
-            <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
-                <div>
-                    <CardTitle className="text-primary">Ferientermine bearbeiten</CardTitle>
+    return (
+        <div className="flex flex-1 items-start p-4 sm:p-6">
+            <Card className="w-full max-w-2xl">
+                <CardHeader>
+                    <CardTitle>Isolierter Bild-Upload-Test</CardTitle>
                     <CardDescription>
-                    Hier können Sie die Daten für die Praxisferien verwalten.
+                        Dieser Test validiert den Prozess: Bild auswählen, zuschneiden und lokal im Projektordner `/public/images/uploads` speichern.
                     </CardDescription>
-                </div>
-                {!isAdding && (
-                     <Button onClick={() => setIsAdding(true)}>
-                        <PlusCircle className="mr-2" />
-                        Neuen Termin hinzufügen
-                    </Button>
-                )}
-            </div>
-          </CardHeader>
-          <CardContent>
-            {dbError && (
-              <Alert variant="destructive" className="mb-4">
-                <XCircle className="h-4 w-4" />
-                <AlertTitle>Datenbankfehler</AlertTitle>
-                <AlertDescription>{dbError.message}</AlertDescription>
-              </Alert>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div className="space-y-4">
+                        <Button onClick={() => setDialogState({ type: 'imageSource', data: {} })}>
+                            <ImageUp className="mr-2 h-4 w-4" />
+                            Bild auswählen
+                        </Button>
+                        <p className="text-sm text-muted-foreground">
+                            Dieser Button startet den Dialog zur Auswahl einer Bildquelle (Upload oder Bibliothek), gefolgt vom Zuschneide-Dialog. Das Ergebnis wird unten angezeigt.
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="font-semibold">Vorschau:</h3>
+                        <div className="relative flex h-80 w-full items-center justify-center rounded-md border border-dashed bg-muted">
+                            {isLoading ? (
+                                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                            ) : imageUrl ? (
+                                <Image
+                                    src={imageUrl}
+                                    alt="Vorschau des hochgeladenen Bildes"
+                                    fill
+                                    className="object-contain p-2"
+                                    // Wichtig: 'key' erzwingt ein Neuladen des Bildes, wenn sich die URL ändert
+                                    key={imageUrl}
+                                />
+                            ) : (
+                                <span className="text-muted-foreground">Hier erscheint die Vorschau</span>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Bild-URL (lokaler Pfad):</h3>
+                        <Input
+                            readOnly
+                            value={imageUrl}
+                            placeholder="Der lokale Bildpfad wird hier angezeigt"
+                        />
+                    </div>
+                </CardContent>
+            </Card>
+
+            <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileSelect}
+            />
+
+            {dialogState.type === 'imageSource' && (
+                <ImageSourceDialog
+                    isOpen={true}
+                    onOpenChange={() => setDialogState({ type: null, data: {} })}
+                    onUpload={() => fileInputRef.current?.click()}
+                    onSelect={() => setDialogState({ type: 'imageLibrary', data: {} })}
+                />
             )}
 
-            <div className="space-y-4">
-                {isAdding && (
-                    <div className="rounded-lg border bg-muted p-4">
-                        <h3 className="text-lg font-semibold mb-4">Neuen Ferientermin erstellen</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                     <label className="text-sm font-medium">Von</label>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                        <Button
-                                            variant={'outline'}
-                                            className={cn('w-full justify-start text-left font-normal', !newStart && 'text-muted-foreground')}
-                                        >
-                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                            {newStart ? format(newStart, 'd. MMM yyyy', { locale: de }) : <span>Datum wählen</span>}
-                                        </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0">
-                                        <Calendar
-                                            mode="single"
-                                            selected={newStart}
-                                            onSelect={setNewStart}
-                                            initialFocus
-                                            locale={de}
-                                        />
-                                        </PopoverContent>
-                                    </Popover>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">Bis</label>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                        <Button
-                                            variant={'outline'}
-                                            className={cn('w-full justify-start text-left font-normal', !newEnd && 'text-muted-foreground')}
-                                        >
-                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                            {newEnd ? format(newEnd, 'd. MMM yyyy', { locale: de }) : <span>Datum wählen</span>}
-                                        </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0">
-                                        <Calendar
-                                            mode="single"
-                                            selected={newEnd}
-                                            onSelect={setNewEnd}
-                                            initialFocus
-                                            locale={de}
-                                        />
-                                        </PopoverContent>
-                                    </Popover>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Bezeichnung</label>
-                                <Input
-                                placeholder="z.B. Sommerferien"
-                                value={newName}
-                                onChange={(e) => setNewName(e.target.value)}
-                                />
-                            </div>
-                            <div className="flex gap-2">
-                                <Button onClick={handleAddHoliday} className="w-full">Speichern</Button>
-                                <Button variant="destructive" onClick={() => setIsAdding(false)} className="w-full">Abbrechen</Button>
-                            </div>
-                        </div>
-                        {error && <p className="text-sm text-destructive mt-2">{error}</p>}
-                    </div>
-                )}
-
-
-                <div className="mt-6 border-t pt-6">
-                    <h3 className="text-xl font-semibold mb-4 text-primary">Geplante Termine</h3>
-                    {isLoading ? (
-                        <div className="space-y-4">
-                            <Skeleton className="h-12 w-full" />
-                            <Skeleton className="h-12 w-full" />
-                            <Skeleton className="h-12 w-full" />
-                        </div>
-                    ) : holidays.length > 0 ? (
-                        <div className="space-y-2">
-                        {holidays.map((holiday) => (
-                            <div key={holiday.id} className="flex items-center justify-between rounded-lg border p-3">
-                            <div>
-                                <p className="font-semibold">{holiday.name}</p>
-                                <p className="text-sm text-muted-foreground">{formatDateRange(holiday.start, holiday.end)}</p>
-                            </div>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => setDeleteConfirm({ isOpen: true, holidayId: holiday.id, holidayName: holiday.name })}
-                            >
-                                <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                            </div>
-                        ))}
-                        </div>
-                    ) : (
-                        <p className="text-muted-foreground">Keine Ferientermine gefunden.</p>
-                    )}
-                </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-      <AlertDialog open={deleteConfirm.isOpen} onOpenChange={(isOpen) => !isOpen && setDeleteConfirm({ isOpen: false })}>
-        <AlertDialogContent>
-            <AlertDialogHeader>
-                <AlertDialogTitle>Sind Sie sicher?</AlertDialogTitle>
-                <AlertDialogDescription>
-                    Möchten Sie den Ferientermin <strong>{deleteConfirm.holidayName}</strong> wirklich endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-                </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-                <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDeleteHoliday} className={cn(buttonVariants({ variant: "destructive" }))}>Löschen</AlertDialogAction>
-            </AlertDialogFooter>
-        </AlertDialogContent>
-    </AlertDialog>
-    </>
-  );
+            {dialogState.type === 'imageLibrary' && (
+                 <ImageLibraryDialog 
+                    isOpen={true} 
+                    onOpenChange={() => setDialogState({ type: null, data: {} })} 
+                    images={projectImages} 
+                    onImageSelect={(selectedImageUrl) => {
+                        setDialogState({ type: 'imageCrop', data: { imageUrl: selectedImageUrl, aspectRatio: 2/3 } });
+                    }}
+                 />
+            )}
+            
+            {dialogState.type === 'imageCrop' && (
+                <ImageCropDialog
+                    imageUrl={dialogState.data.imageUrl}
+                    aspectRatio={dialogState.data.aspectRatio}
+                    onCropComplete={handleCropComplete}
+                    onClose={() => setDialogState({ type: null, data: {} })}
+                />
+            )}
+        </div>
+    );
 }
