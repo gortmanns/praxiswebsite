@@ -53,7 +53,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
         const container = doc.getElementById(containerId);
         
         if (container) {
-            const newHtml = `<div id="edit-${field}" class="w-full h-full relative"><img src="${url}" alt="Dynamisches Bild" class="h-full w-full ${field === 'position' ? 'object-contain' : 'object-cover'} relative" /></div>`;
+             const newHtml = `<div id="edit-${field}" class="w-full h-full relative"><img src="${url}" alt="Dynamisches Bild" class="h-full w-full ${field === 'position' ? 'object-contain' : 'object-cover'} relative" /></div>`;
             container.innerHTML = newHtml;
         } else {
              console.error(`Container with id '${containerId}' not found in HTML.`);
@@ -84,7 +84,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
             console.error("Error uploading image: ", error);
             toast({ variant: 'destructive', title: 'Upload-Fehler', description: 'Das Bild konnte nicht hochgeladen werden.' });
         }
-    }, [storage, cardData, onUpdate, toast]);
+    }, [storage, cardData, onUpdate, toast, updateHtmlWithImage]);
 
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
