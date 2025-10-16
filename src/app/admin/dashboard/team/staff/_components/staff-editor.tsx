@@ -99,6 +99,10 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
             toast({ variant: 'destructive', title: 'Upload-Fehler', description: 'Das Bild konnte nicht hochgeladen werden.' });
         }
     };
+    
+    const handleImageLibrarySelect = (imageUrl: string) => {
+        setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio: 2 / 3 } });
+    };
 
     const handleVitaSave = (newVita: string) => {
         onUpdate({ backsideContent: newVita });
@@ -149,9 +153,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                     isOpen={true}
                     onOpenChange={() => setDialogState({ type: null, data: {} })}
                     images={projectImages}
-                    onImageSelect={(imageUrl) => {
-                        setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio: 2/3 } });
-                    }}
+                    onImageSelect={handleImageLibrarySelect}
                 />
             )}
             {dialogState.type === 'imageCrop' && (
