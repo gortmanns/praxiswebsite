@@ -71,13 +71,34 @@ const CodeRenderer: React.FC<{ html: string; className?: string;}> = ({ html, cl
 
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onCardClick, isBeingEdited, showBackside = false }) => {
     
+    if (showBackside) {
+        return (
+            <div 
+                id="card-root"
+                className="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border"
+                onClick={onCardClick}
+            >
+                <CodeRenderer html={doctor.frontSideCode} />
+                <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
+                    <CodeRenderer html={doctor.backSideCode} />
+                </div>
+                
+                {isBeingEdited && (
+                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/90">
+                        <span className="text-2xl font-bold text-primary-foreground">In Bearbeitung</span>
+                    </div>
+                )}
+            </div>
+        );
+    }
+    
     return (
         <div 
             id="card-root"
             className="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border"
             onClick={onCardClick}
         >
-             <CodeRenderer html={showBackside ? doctor.backSideCode : doctor.frontSideCode} />
+             <CodeRenderer html={doctor.frontSideCode} />
             
             {isBeingEdited && (
                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/90">
@@ -87,4 +108,3 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
         </div>
     );
 };
-
