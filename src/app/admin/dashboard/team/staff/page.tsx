@@ -20,7 +20,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 
-import { StaffCard as DisplayCard } from './_components/staff-card';
+import { StaffCard } from './_components/staff-card';
 import { StaffEditor } from './_components/staff-editor';
 import type { StaffMember as CardData } from './_components/staff-editor';
 
@@ -223,7 +223,7 @@ export default function StaffPageManager() {
                    {items.map((item, index) => (
                        <div key={item.id} className={cn("flex justify-center", item.fullWidth && "sm:col-span-2")}>
                             <div className={cn("relative", isHiddenGrid && "grayscale")}>
-                                <DisplayCard 
+                                <StaffCard 
                                     {...item}
                                     isFirst={index === 0}
                                     isLast={index === items.length - 1}
