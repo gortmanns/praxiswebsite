@@ -23,6 +23,7 @@ import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { StaffCard } from './_components/staff-card';
 import { StaffEditor } from './_components/staff-editor';
 import type { StaffMember as CardData } from './_components/staff-editor';
+import { TeamMemberCard } from '@/app/team/_components/team-member-card';
 
 const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     name: "Name",
@@ -222,7 +223,7 @@ export default function StaffPageManager() {
                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-16 mt-8">
                    {items.map((item, index) => (
                        <div key={item.id} className={cn("flex justify-center", item.fullWidth && "sm:col-span-2")}>
-                            <div className={cn("relative", isHiddenGrid && "grayscale")}>
+                            <div className={cn("relative w-full max-w-sm", isHiddenGrid && "grayscale")}>
                                 <StaffCard 
                                     {...item}
                                     isFirst={index === 0}
@@ -250,6 +251,10 @@ export default function StaffPageManager() {
             </>
         );
     };
+
+    const backsideElement = editorCardState.backsideContent ? (
+        <div dangerouslySetInnerHTML={{ __html: editorCardState.backsideContent }} />
+    ) : null;
 
     return (
         <div id="card-manager-container" className="flex flex-1 flex-col items-start gap-8 p-4 sm:px-6 sm:py-8">
@@ -288,25 +293,15 @@ export default function StaffPageManager() {
                                 <StaffEditor cardData={editorCardState} onUpdate={handleEditorUpdate} />
                                 <div className="space-y-4">
                                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
-                                    <div className="grid grid-cols-1 gap-4 place-items-center">
-                                        <div className="relative flex items-center justify-center w-full max-w-sm">
-                                             <div className="w-full max-w-sm">
-                                                <div className="group relative w-full max-w-sm overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
-                                                    <div className="flex h-full flex-col p-6">
-                                                        <div className={cn("relative w-full overflow-hidden rounded-md aspect-[2/3]")}>
-                                                            <img
-                                                                src={editorCardState.imageUrl || "https://picsum.photos/seed/placeholder/400/600"}
-                                                                alt={`Portrait von ${editorCardState.name}`}
-                                                                className="object-cover w-full h-full"
-                                                            />
-                                                        </div>
-                                                        <div className="flex-grow pt-6 text-center min-h-[110px]">
-                                                            <h4 className="text-xl font-bold text-primary">{editorCardState.name}</h4>
-                                                            <p className="mt-2 text-base font-bold text-muted-foreground">{editorCardState.role}</p>
-                                                            {editorCardState.role2 && <p className="mt-1 text-base text-muted-foreground">{editorCardState.role2}</p>}
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <p className="text-center text-xs font-medium text-muted-foreground mb-1">Vorderseite</p>
+                                            <TeamMemberCard {...editorCardState} imageHint="staff preview" />
+                                        </div>
+                                        <div>
+                                            <p className="text-center text-xs font-medium text-muted-foreground mb-1">Rückseite</p>
+                                            <div className="w-full max-w-sm overflow-hidden rounded-lg border bg-accent/95 text-background shadow-xl aspect-[0.666]">
+                                                <div className="p-6 text-center text-lg">{backsideElement}</div>
                                             </div>
                                         </div>
                                     </div>
