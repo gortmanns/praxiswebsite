@@ -12,6 +12,7 @@ interface EditableDoctorCardProps {
     onCardClick?: (e: React.MouseEvent) => void;
     isBeingEdited?: boolean;
     showBackside?: boolean;
+    showBacksideOnly?: boolean;
 }
 
 const CodeRenderer: React.FC<{ html: string; className?: string;}> = ({ html, className }) => {
@@ -69,7 +70,26 @@ const CodeRenderer: React.FC<{ html: string; className?: string;}> = ({ html, cl
 };
 
 
-export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onCardClick, isBeingEdited, showBackside = false }) => {
+export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onCardClick, isBeingEdited, showBackside = false, showBacksideOnly = false }) => {
+    
+    if (showBacksideOnly) {
+         return (
+             <div 
+                id="card-root"
+                className="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border"
+                onClick={onCardClick}
+            >
+                <div className="absolute inset-0 flex flex-col items-center justify-start overflow-auto bg-accent/95 text-left text-background">
+                    <CodeRenderer html={doctor.backSideCode} />
+                </div>
+                 {isBeingEdited && (
+                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/90">
+                        <span className="text-2xl font-bold text-primary-foreground">In Bearbeitung</span>
+                    </div>
+                )}
+            </div>
+        );
+    }
     
     if (showBackside) {
         return (
