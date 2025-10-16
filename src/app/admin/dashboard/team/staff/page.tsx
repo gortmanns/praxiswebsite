@@ -222,18 +222,20 @@ export default function StaffPageManager() {
                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-16 mt-8">
                    {items.map((item, index) => (
                        <div key={item.id} className={cn("flex justify-center", item.fullWidth && "sm:col-span-2")}>
-                            <DisplayCard 
-                                {...item}
-                                isFirst={index === 0}
-                                isLast={index === items.length - 1}
-                                isHiddenCard={isHiddenGrid}
-                                isBeingEdited={item.id === editingCardId && isEditing}
-                                onMove={handleMove}
-                                onEdit={handleEdit}
-                                onToggleHidden={handleToggleHidden}
-                                onToggleFullWidth={handleToggleFullWidth}
-                                onDelete={openDeleteConfirmation}
-                             />
+                            <div className={cn("relative", isHiddenGrid && "grayscale")}>
+                                <DisplayCard 
+                                    {...item}
+                                    isFirst={index === 0}
+                                    isLast={index === items.length - 1}
+                                    isHiddenCard={isHiddenGrid}
+                                    isBeingEdited={item.id === editingCardId && isEditing}
+                                    onMove={handleMove}
+                                    onEdit={handleEdit}
+                                    onToggleHidden={handleToggleHidden}
+                                    onToggleFullWidth={handleToggleFullWidth}
+                                    onDelete={openDeleteConfirmation}
+                                />
+                            </div>
                         </div>
                    ))}
                 </div>
@@ -289,15 +291,22 @@ export default function StaffPageManager() {
                                     <div className="grid grid-cols-1 gap-4 place-items-center">
                                         <div className="relative flex items-center justify-center w-full max-w-sm">
                                              <div className="w-full max-w-sm">
-                                                <TeamMemberCard
-                                                    name={editorCardState.name}
-                                                    role={editorCardState.role}
-                                                    role2={editorCardState.role2}
-                                                    imageUrl={editorCardState.imageUrl}
-                                                    imageHint="staff portrait"
-                                                    languages={editorCardState.languages}
-                                                    backsideContent={editorCardState.backsideContent ? <div dangerouslySetInnerHTML={{ __html: editorCardState.backsideContent }} /> : undefined}
-                                                />
+                                                <div className="group relative w-full max-w-sm overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
+                                                    <div className="flex h-full flex-col p-6">
+                                                        <div className={cn("relative w-full overflow-hidden rounded-md aspect-[2/3]")}>
+                                                            <img
+                                                                src={editorCardState.imageUrl || "https://picsum.photos/seed/placeholder/400/600"}
+                                                                alt={`Portrait von ${editorCardState.name}`}
+                                                                className="object-cover w-full h-full"
+                                                            />
+                                                        </div>
+                                                        <div className="flex-grow pt-6 text-center min-h-[110px]">
+                                                            <h4 className="text-xl font-bold text-primary">{editorCardState.name}</h4>
+                                                            <p className="mt-2 text-base font-bold text-muted-foreground">{editorCardState.role}</p>
+                                                            {editorCardState.role2 && <p className="mt-1 text-base text-muted-foreground">{editorCardState.role2}</p>}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
