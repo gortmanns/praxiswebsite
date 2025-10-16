@@ -110,15 +110,12 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
                      <Button variant="outline" size="sm" onClick={() => setDialogState({ type: 'language', data: {} })}>
                         <Languages className="mr-2 h-4 w-4" /> Sprachen bearbeiten
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent } })}>
-                       <Pencil className="mr-2 h-4 w-4" /> Rückseite bearbeiten
-                    </Button>
                 </div>
                 <Alert variant="info" className="mt-8">
                     <Info className="h-4 w-4" />
                     <AlertTitle>Bearbeitungsmodus</AlertTitle>
                     <AlertDescription>
-                        Füllen Sie die Felder aus. Ein Klick auf die Vorschau rechts erlaubt das Ändern des Bildes.
+                        Füllen Sie die Felder aus. Ein Klick auf die Vorschau rechts erlaubt das Ändern des Bildes und des Rückseitentextes.
                     </AlertDescription>
                 </Alert>
             </div>

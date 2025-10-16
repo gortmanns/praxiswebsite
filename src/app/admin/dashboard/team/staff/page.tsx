@@ -15,12 +15,12 @@ import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionRefe
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Save, XCircle, AlertCircle, Plus, User } from 'lucide-react';
+import { Save, XCircle, AlertCircle, Plus, User, Pencil } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 
-import { StaffCard } from './_components/staff-card';
+import { StaffCard as DisplayCard } from './_components/staff-card';
 import { StaffEditor } from './_components/staff-editor';
 import type { StaffMember as CardData } from './_components/staff-editor';
 import { LanguageFlags } from '@/app/admin/dashboard/team/doctors/_components/language-flags';
@@ -31,7 +31,7 @@ const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     role: "Funktion",
     role2: "",
     imageUrl: "",
-    backsideContent: "Zum Bearbeiten klicken",
+    backsideContent: "",
     languages: ['de'],
     hidden: false,
     fullWidth: false,
@@ -225,7 +225,7 @@ export default function StaffPageManager() {
                    {items.map((item, index) => (
                        <div key={item.id} className={cn("flex justify-center", item.fullWidth && "sm:col-span-2")}>
                             <div className={cn("relative", isHiddenGrid && "grayscale")}>
-                                <StaffCard 
+                                <DisplayCard 
                                     {...item}
                                     isFirst={index === 0}
                                     isLast={index === items.length - 1}
@@ -295,39 +295,38 @@ export default function StaffPageManager() {
                                 <div className="space-y-4">
                                     <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <p className="text-center text-xs font-medium text-muted-foreground mb-1">Vorderseite</p>
-                                            <div className="w-full max-w-sm overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl aspect-[0.666]">
-                                                <div className="flex h-full flex-col p-6">
-                                                     <div className="relative w-full overflow-hidden rounded-md aspect-[2/3]">
-                                                        {editorCardState.imageUrl ? (
-                                                            <img
-                                                                src={editorCardState.imageUrl}
-                                                                alt={`Portrait von ${editorCardState.name}`}
-                                                                className="object-cover w-full h-full"
-                                                            />
-                                                        ) : (
-                                                            <div className="flex h-full w-full items-center justify-center bg-secondary">
-                                                                <User className="h-24 w-24 text-muted-foreground" />
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    <div className="flex-grow pt-6 text-center min-h-[110px]">
-                                                        <h4 className="text-xl font-bold text-primary">{editorCardState.name}</h4>
-                                                        <p className="mt-2 text-base font-bold text-muted-foreground">{editorCardState.role}</p>
-                                                        {editorCardState.role2 && <p className="mt-1 text-base text-muted-foreground">{editorCardState.role2}</p>}
-                                                    </div>
-                                                     <div className="flex h-8 items-end justify-end pt-4">
-                                                        {editorCardState.languages && <LanguageFlags languages={editorCardState.languages} />}
-                                                    </div>
+                                        {/* Frontend Card Preview */}
+                                        <div className="w-full max-w-sm overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl aspect-[0.666]">
+                                            <div className="flex h-full flex-col p-6">
+                                                <button className="relative w-full overflow-hidden rounded-md aspect-[2/3] cursor-pointer" onClick={() => handleEditorUpdate({})}>
+                                                    {editorCardState.imageUrl ? (
+                                                        <img
+                                                            src={editorCardState.imageUrl}
+                                                            alt={`Portrait von ${editorCardState.name}`}
+                                                            className="object-cover w-full h-full"
+                                                        />
+                                                    ) : (
+                                                        <div className="flex h-full w-full items-center justify-center bg-secondary">
+                                                            <User className="h-24 w-24 text-muted-foreground" />
+                                                        </div>
+                                                    )}
+                                                </button>
+                                                <div className="flex-grow pt-6 text-center min-h-[110px]">
+                                                    <h4 className="text-xl font-bold text-primary">{editorCardState.name}</h4>
+                                                    <p className="mt-2 text-base font-bold text-muted-foreground">{editorCardState.role}</p>
+                                                    {editorCardState.role2 && <p className="mt-1 text-base text-muted-foreground">{editorCardState.role2}</p>}
+                                                </div>
+                                                <div className="flex h-8 items-end justify-end pt-4">
+                                                    {editorCardState.languages && <LanguageFlags languages={editorCardState.languages} />}
                                                 </div>
                                             </div>
                                         </div>
-                                        <div>
-                                            <p className="text-center text-xs font-medium text-muted-foreground mb-1">Rückseite</p>
-                                            <div className="w-full max-w-sm overflow-hidden rounded-lg border bg-accent/95 text-background shadow-xl aspect-[0.666]">
-                                                <div className="p-6 text-center text-lg">{backsideElement}</div>
-                                            </div>
+                                        {/* Backend Card Preview */}
+                                        <div className="relative w-full max-w-sm overflow-hidden rounded-lg border bg-accent/95 text-background shadow-xl aspect-[0.666]">
+                                            <button className="absolute top-2 right-2 z-10 p-2 text-white/80 hover:text-white" onClick={() => handleEditorUpdate({})}>
+                                                <Pencil className="h-6 w-6" />
+                                            </button>
+                                            <div className="p-6 text-center text-lg">{backsideElement}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -389,6 +388,3 @@ export default function StaffPageManager() {
         </div>
     );
 }
-
-
-    
