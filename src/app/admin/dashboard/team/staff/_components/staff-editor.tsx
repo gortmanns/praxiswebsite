@@ -102,6 +102,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
     };
     
     const handleImageLibrarySelect = (imageUrl: string) => {
+        // Instead of directly updating, open the cropper
         setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio: 2 / 3 } });
     };
 
