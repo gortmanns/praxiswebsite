@@ -20,7 +20,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 
-import { DoctorCard as DisplayCard } from '@/app/team/_components/doctor-card';
+import { EditableDoctorCard } from './_components/editable-doctor-card';
 import { DoctorEditor as EditorComponent } from './_components/doctor-editor';
 import type { Doctor as CardData } from '@/app/admin/dashboard/team/doctors/_components/doctor-editor';
 
@@ -32,7 +32,7 @@ const initialDoctorState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
         <style>
             .template-card button, .template-card div[id^="edit-"] { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; display: block; }
             .template-card .image-button:hover { background-color: rgba(0,0,0,0.1); }
-            .template-card .image-button-background { background-color: white !important; }
+            .template-card .image-button-background { background-color: white; }
             .template-card p, .template-card h3, .template-card span { margin:0; }
             .template-card .font-headline { font-family: var(--font-headline); }
             .template-card .text-card-foreground { color: hsl(var(--card-foreground)); }
@@ -299,12 +299,7 @@ export default function DoctorsPage() {
                                          isEditing && editingCardId !== item.id && "opacity-50 pointer-events-none",
                                          isHiddenGrid && "grayscale"
                                      )}>
-                                        <DisplayCard {...item} />
-                                        {isEditing && editingCardId === item.id && (
-                                            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/80">
-                                                <span className="text-2xl font-bold text-primary-foreground">In Bearbeitung</span>
-                                            </div>
-                                        )}
+                                        <EditableDoctorCard doctor={item} isBeingEdited={isEditing && editingCardId === item.id} />
                                     </div>
                                     <div id={`buttons-${item.id}`} className="flex w-full max-w-lg items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
                                         {!isHiddenGrid && (

@@ -100,6 +100,19 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
         if (e.target) e.target.value = '';
     };
 
+    const updateHtmlWithImage = (html: string, field: string, url: string): string => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const container = doc.getElementById('image-container');
+        
+        if (container) {
+            const newHtml = `<div id="edit-image" class="image-button-background w-full h-full relative"><img src="${url}" alt="Portrait" class="h-full w-full object-cover relative" /></div>`;
+            container.innerHTML = newHtml;
+        }
+        
+        return doc.body.innerHTML;
+    };
+    
     const handleCropComplete = async (croppedImageUrl: string) => {
         if (!storage) {
             toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
@@ -124,22 +137,6 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
         setDialogState({ type: null, data: {} });
     };
 
-    const updateHtmlWithImage = (html: string, field: string, url: string): string => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const containerId = field === 'image' ? 'image-container' : 'position-container';
-        const buttonId = field === 'image' ? 'edit-image' : 'edit-position';
-        const altText = field === 'image' ? 'Portrait' : 'Logo';
-        const objectFitClass = field === 'image' ? 'object-cover' : 'object-contain';
-        const customStyle = field === 'position' ? 'max-width: 75%;' : '';
-
-        const container = doc.getElementById(containerId);
-        if (container) {
-            const newHtml = `<div id="${buttonId}" class="image-button-background w-full h-full relative"><img src="${url}" alt="${altText}" class="h-full w-full ${objectFitClass} relative" style="${customStyle}" /></div>`;
-             container.innerHTML = newHtml;
-        }
-        return doc.body.innerHTML;
-    };
 
     const handleVitaSave = (newVita: string) => {
         const wrapInButton = (html: string) => {
