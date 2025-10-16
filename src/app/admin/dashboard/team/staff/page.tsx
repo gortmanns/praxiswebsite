@@ -15,7 +15,7 @@ import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionRefe
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Save, XCircle, AlertCircle, Plus } from 'lucide-react';
+import { Save, XCircle, AlertCircle, Plus, User } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
@@ -23,7 +23,8 @@ import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { StaffCard } from './_components/staff-card';
 import { StaffEditor } from './_components/staff-editor';
 import type { StaffMember as CardData } from './_components/staff-editor';
-import { TeamMemberCard } from '@/app/team/_components/team-member-card';
+import { LanguageFlags } from '@/app/admin/dashboard/team/doctors/_components/language-flags';
+
 
 const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     name: "Name",
@@ -223,7 +224,7 @@ export default function StaffPageManager() {
                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-16 mt-8">
                    {items.map((item, index) => (
                        <div key={item.id} className={cn("flex justify-center", item.fullWidth && "sm:col-span-2")}>
-                            <div className={cn("relative w-full max-w-sm", isHiddenGrid && "grayscale")}>
+                            <div className={cn("relative", isHiddenGrid && "grayscale")}>
                                 <StaffCard 
                                     {...item}
                                     isFirst={index === 0}
@@ -296,7 +297,31 @@ export default function StaffPageManager() {
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <p className="text-center text-xs font-medium text-muted-foreground mb-1">Vorderseite</p>
-                                            <TeamMemberCard {...editorCardState} imageHint="staff preview" />
+                                            <div className="w-full max-w-sm overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl aspect-[0.666]">
+                                                <div className="flex h-full flex-col p-6">
+                                                     <div className="relative w-full overflow-hidden rounded-md aspect-[2/3]">
+                                                        {editorCardState.imageUrl ? (
+                                                            <img
+                                                                src={editorCardState.imageUrl}
+                                                                alt={`Portrait von ${editorCardState.name}`}
+                                                                className="object-cover w-full h-full"
+                                                            />
+                                                        ) : (
+                                                            <div className="flex h-full w-full items-center justify-center bg-secondary">
+                                                                <User className="h-24 w-24 text-muted-foreground" />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex-grow pt-6 text-center min-h-[110px]">
+                                                        <h4 className="text-xl font-bold text-primary">{editorCardState.name}</h4>
+                                                        <p className="mt-2 text-base font-bold text-muted-foreground">{editorCardState.role}</p>
+                                                        {editorCardState.role2 && <p className="mt-1 text-base text-muted-foreground">{editorCardState.role2}</p>}
+                                                    </div>
+                                                     <div className="flex h-8 items-end justify-end pt-4">
+                                                        {editorCardState.languages && <LanguageFlags languages={editorCardState.languages} />}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div>
                                             <p className="text-center text-xs font-medium text-muted-foreground mb-1">Rückseite</p>
@@ -364,3 +389,6 @@ export default function StaffPageManager() {
         </div>
     );
 }
+
+
+    
