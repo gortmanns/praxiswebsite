@@ -19,6 +19,7 @@ import { projectImages } from '@/app/admin/dashboard/partners/project-images';
 import { Button } from '@/components/ui/button';
 import { Languages, Image as ImageIcon, Text, Info, Type, FileText } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
 
 
 export interface Doctor {
@@ -60,28 +61,32 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
 
     const textFields = useMemo(() => ({
         title: extractText(cardData.frontSideCode, 'edit-title'),
-        name: extractText(cardData.frontSideCode, 'edit-name'),
+        name: cardData.name, // Use the name from the card data directly
         specialty: extractText(cardData.frontSideCode, 'edit-specialty'),
         qual1: extractText(cardData.frontSideCode, 'edit-qual1'),
         qual2: extractText(cardData.frontSideCode, 'edit-qual2'),
         qual3: extractText(cardData.frontSideCode, 'edit-qual3'),
         qual4: extractText(cardData.frontSideCode, 'edit-qual4'),
         position: extractText(cardData.frontSideCode, 'edit-position'),
-    }), [cardData.frontSideCode]);
+    }), [cardData.frontSideCode, cardData.name]);
 
     const handleTextChange = (field: keyof typeof textFields, value: string) => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(cardData.frontSideCode, 'text/html');
-        const element = doc.getElementById(`edit-${field}`);
-        if(element) {
-            const pOrH3 = element.querySelector('p') || element.querySelector('h3');
-            if (pOrH3) {
-                pOrH3.textContent = value;
-            } else if (field === 'position') {
-                 element.innerHTML = `<div class="w-full text-left"><p class="text-base">${value}</p></div>`;
+        if (field === 'name') {
+            onUpdate({ ...cardData, name: value });
+        } else {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(cardData.frontSideCode, 'text/html');
+            const element = doc.getElementById(`edit-${field}`);
+            if(element) {
+                const pOrH3 = element.querySelector('p') || element.querySelector('h3');
+                if (pOrH3) {
+                    pOrH3.textContent = value;
+                } else if (field === 'position') {
+                     element.innerHTML = `<div class="w-full text-left"><p class="text-base">${value}</p></div>`;
+                }
             }
+            onUpdate({ ...cardData, frontSideCode: doc.body.innerHTML });
         }
-        onUpdate({ ...cardData, frontSideCode: doc.body.innerHTML });
     };
     
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -162,7 +167,6 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
     const editButtons: {label: string, field: keyof typeof textFields | 'image' | 'vita' | 'language', icon: React.FC<any>, multiline?: boolean, dialogTitle?: string }[] = [
         { label: "Bild ändern", field: "image", icon: ImageIcon },
         { label: "Titel", field: "title", icon: Type, dialogTitle: "Titel bearbeiten" },
-        { label: "Name", field: "name", icon: Type, dialogTitle: "Namen bearbeiten" },
         { label: "Spezialisierung", field: "specialty", icon: Type, dialogTitle: "Spezialisierung bearbeiten" },
         { label: "Qualifikation 1", field: "qual1", icon: Text, dialogTitle: "Qualifikation 1 bearbeiten" },
         { label: "Qualifikation 2", field: "qual2", icon: Text, dialogTitle: "Qualifikation 2 bearbeiten" },
