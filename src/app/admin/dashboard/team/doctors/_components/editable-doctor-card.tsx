@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
-import type { Doctor } from '@/app/admin/dashboard/team/doctors/page';
+import type { Doctor } from '../page';
 import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
 
@@ -34,8 +34,12 @@ const CodeRenderer: React.FC<{ html: string; className?: string;}> = ({ html, cl
             resizeObserver.observe(wrapperRef.current);
         }
 
-        return () => resizeObserver.disconnect();
-    }, []);
+        return () => {
+            if (wrapperRef.current) {
+                resizeObserver.unobserve(wrapperRef.current);
+            }
+        };
+    }, [html]);
     
     const sanitizedHtml = React.useMemo(() => {
         if (typeof window !== 'undefined') {
@@ -83,3 +87,4 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
         </div>
     );
 };
+
