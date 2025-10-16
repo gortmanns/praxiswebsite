@@ -59,9 +59,8 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
     }>({ type: null, data: {} });
 
     useEffect(() => {
-        if (cardData._dialog && cardData._dialog.type) {
+        if (cardData._dialog?.type) {
             setDialogState({ type: cardData._dialog.type as any, data: cardData._dialog.data });
-            // Clear the dialog trigger from the parent state immediately
             onUpdate({ _dialog: undefined });
         }
     }, [cardData._dialog, onUpdate]);
@@ -78,7 +77,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
             };
             reader.readAsDataURL(e.target.files[0]);
         }
-        e.target.value = '';
+        if (e.target) e.target.value = '';
     };
 
     const handleCropComplete = async (croppedImageUrl: string) => {
@@ -102,7 +101,6 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
     };
     
     const handleImageLibrarySelect = (imageUrl: string) => {
-        // Instead of directly updating, open the cropper
         setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio: 2 / 3 } });
     };
 
