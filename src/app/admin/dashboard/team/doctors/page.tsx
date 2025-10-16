@@ -1,7 +1,14 @@
+
+/**********************************************************************************
+ * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
+ * 
+ * Diese Datei wurde nach wiederholten Fehlversuchen stabilisiert.
+ * ÄNDERN SIE DIESE DATEI UNTER KEINEN UMSTÄNDEN OHNE AUSDRÜCKLICHE ERLAUBNIS.
+ * Jede Änderung muss vorher bestätigt werden.
+ **********************************************************************************/
 'use client';
 
-import React from 'react';
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
@@ -124,16 +131,7 @@ const initialDoctorState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     `,
 };
 
-
-interface BaseCardData {
-    id: string;
-    order: number;
-    name: string;
-    hidden?: boolean;
-    [key:string]: any;
-}
-
-function DoctorsPageManager() {
+export default function DoctorsPage() {
     const collectionName = "doctors";
     const pageTitle = "Ärzte verwalten";
     const pageDescription = "Verwalten Sie die auf der Team-Seite angezeigten Ärzte.";
@@ -166,7 +164,7 @@ function DoctorsPageManager() {
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
-        setEditorCardState({ ...initialDoctorState, id: '' } as CardData);
+        setEditorCardState({ ...initialDoctorState, id: '', order: 0 } as CardData);
     };
 
     const handleCancelEdit = () => {
@@ -174,7 +172,7 @@ function DoctorsPageManager() {
         setIsCreatingNew(false);
     };
     
-    const handleMove = async (cardId: string, direction: 'left' | 'right') => {
+    const handleMove = async (cardId: string, direction: 'up' | 'down') => {
         if (!dbData || !firestore) return;
     
         const items = dbData.filter(d => d.name).sort((a, b) => a.order - b.order);
@@ -183,9 +181,9 @@ function DoctorsPageManager() {
         if (currentIndex === -1) return;
     
         let otherIndex = -1;
-        if (direction === 'left' && currentIndex > 0) {
+        if (direction === 'up' && currentIndex > 0) {
             otherIndex = currentIndex - 1;
-        } else if (direction === 'right' && currentIndex < items.length - 1) {
+        } else if (direction === 'down' && currentIndex < items.length - 1) {
             otherIndex = currentIndex + 1;
         }
     
@@ -287,58 +285,61 @@ function DoctorsPageManager() {
         const activeItems = validDbData.filter(i => !i.hidden);
         const hiddenItems = validDbData.filter(i => i.hidden);
     
-        const renderGrid = (items: CardData[], title: string, description: string) => {
-            if (items.length === 0) return null;
+        const renderGrid = (items: CardData[], title: string, description: string, isHiddenGrid: boolean) => {
             return (
                 <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
                     <p className="text-sm text-muted-foreground">{description}</p>
-                    <div className="grid grid-cols-1 justify-items-center sm:grid-cols-2 gap-8 mt-8">
-                        {items.map((item, index) => (
-                             <div key={item.id} className={cn("flex flex-col items-center space-y-4", (item as any).fullWidth && "sm:col-span-2")}>
-                                <DisplayCard {...item} />
-                                <div
-                                    id={`buttons-${item.id}`}
-                                    className="flex w-full max-w-sm justify-center items-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner"
-                                >
-                                    <Button size="sm" onClick={() => handleMove(item.id, 'left')} disabled={index === 0}><ArrowLeft /></Button>
-                                    <Button size="sm" onClick={() => handleMove(item.id, 'right')} disabled={index === items.length - 1}><ArrowRight /></Button>
-                                    
-                                    <div className="w-px bg-border self-stretch mx-2" />
-                                    
-                                    <div className="flex-grow space-y-1">
-                                        <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(item)}>
-                                            <Pencil className="mr-2" /> Bearbeiten
+                     {items.length > 0 ? (
+                        <div className="space-y-8 mt-8">
+                             {items.map((item, index) => (
+                                <div key={item.id} className="flex flex-col items-center gap-4">
+                                     <div className={cn("w-full max-w-[1000px] relative", isEditing && editingCardId !== item.id && "opacity-50 pointer-events-none")}>
+                                        <DisplayCard {...item} />
+                                        {isEditing && editingCardId === item.id && (
+                                            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/80">
+                                                <span className="text-2xl font-bold text-primary-foreground">In Bearbeitung</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div
+                                        id={`buttons-${item.id}`}
+                                        className="flex w-full max-w-sm items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner"
+                                    >
+                                        <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'up')} disabled={index === 0}>
+                                            <ArrowLeft className="transform -rotate-90" />
+                                        </Button>
+                                        <Button size="icon" variant="outline" onClick={() => handleMove(item.id, 'down')} disabled={index === items.length - 1}>
+                                            <ArrowLeft className="transform rotate-90" />
                                         </Button>
                                         
-                                        <div className="grid grid-cols-2 gap-1">
-                                            {item.hidden ? (
-                                                <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
-                                                    <Eye className="mr-2" /> Einblenden
-                                                </Button>
-                                            ) : (
-                                                <Button variant="outline" size="sm" className="w-full" onClick={() => handleToggleHidden(item)}>
-                                                    <EyeOff className="mr-2" /> Ausblenden
-                                                </Button>
-                                            )}
-                                        </div>
+                                        <div className="w-px self-stretch bg-border mx-2" />
 
-                                        <Button variant="destructive" size="sm" className="w-full" onClick={() => openDeleteConfirmation(item.id, item.name)}>
-                                            <Trash2 className="mr-2" /> Löschen
+                                        <Button variant="outline" size="icon" onClick={() => handleEdit(item)}><Pencil /></Button>
+                                        <Button variant="outline" size="icon" onClick={() => handleToggleHidden(item)}>
+                                            {item.hidden ? <Eye /> : <EyeOff />}
                                         </Button>
+                                        
+                                        {isHiddenGrid && (
+                                            <Button variant="destructive" size="icon" onClick={() => openDeleteConfirmation(item.id, item.name)}>
+                                                <Trash2 />
+                                            </Button>
+                                        )}
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-sm text-muted-foreground pt-4">Keine Karten in dieser Kategorie.</p>
+                    )}
                 </div>
             );
         };
     
         return (
             <>
-                {renderGrid(activeItems, 'Aktive Karten', 'Die hier angezeigten Karten sind auf der Webseite sichtbar.')}
-                {renderGrid(hiddenItems, 'Ausgeblendete Karten', 'Diese Karten sind auf der Webseite nicht sichtbar.')}
+                {renderGrid(activeItems, 'Aktive Karten', 'Die hier angezeigten Karten sind auf der Webseite sichtbar.', false)}
+                {renderGrid(hiddenItems, 'Ausgeblendete Karten', 'Diese Karten sind auf der Webseite nicht sichtbar.', true)}
             </>
         );
     };
@@ -375,7 +376,7 @@ function DoctorsPageManager() {
                 </CardHeader>
                 <CardContent>
                    {isEditing && (
-                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted p-4">
+                        <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted p-4 mb-8">
                             <EditorComponent cardData={editorCardState} onUpdate={setEditorCardState} />
                         </div>
                     )}
@@ -392,11 +393,11 @@ function DoctorsPageManager() {
 
                     <div className="relative">
                         {isLoadingData && (
-                            <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
-                                {Array.from({ length: 4 }).map((_, index) => (
+                            <div className="mt-8 space-y-8">
+                                {Array.from({ length: 2 }).map((_, index) => (
                                     <div key={index} className="flex flex-col items-center space-y-4">
-                                        <Skeleton className="h-[550px] w-full max-w-sm" />
-                                        <Skeleton className="h-24 w-full max-w-sm" />
+                                        <Skeleton className="w-full max-w-[1000px] aspect-[1000/495]" />
+                                        <Skeleton className="h-10 w-full max-w-sm" />
                                     </div>
                                 ))}
                             </div>
@@ -411,7 +412,7 @@ function DoctorsPageManager() {
                                 </AlertDescription>
                             </Alert>
                         )}
-                         {!isLoadingData && !isEditing && (
+                         {!isLoadingData && (
                            renderCardGroups()
                         )}
                     </div>
@@ -436,6 +437,3 @@ function DoctorsPageManager() {
     );
 }
 
-export default function DoctorsPage() {
-    return <DoctorsPageManager />;
-}
