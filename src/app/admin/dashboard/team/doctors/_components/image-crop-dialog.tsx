@@ -34,7 +34,6 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
     const cropper = cropperRef.current?.cropper;
     if (!cropper) return;
 
-    // This is the crucial part: get the cropped image data.
     const croppedCanvas = cropper.getCroppedCanvas();
     if (!croppedCanvas) return;
 
