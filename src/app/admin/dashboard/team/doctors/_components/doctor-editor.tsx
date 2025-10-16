@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useMemo, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,12 +16,6 @@ import { EditableDoctorCard } from './editable-doctor-card';
 import { useToast } from '@/hooks/use-toast';
 import { projectImages } from '@/app/admin/dashboard/partners/project-images';
 import type { Doctor } from '../page';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Languages, Image as ImageIcon, Type, User, FileText, Award, Badge, Workflow, Hash } from 'lucide-react';
-
 
 interface DoctorEditorProps {
     cardData: Doctor;
@@ -84,7 +78,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
             const downloadURL = await getDownloadURL(snapshot.ref);
     
             const newFrontSideCode = updateHtmlWithImage(cardData.frontSideCode, downloadURL, field);
-            onUpdate({ ...cardData, frontSideCode: newFrontSideCode });
+            onUpdate({ frontSideCode: newFrontSideCode });
         
         } catch (error) {
             console.error("Error uploading image: ", error);
@@ -150,69 +144,59 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
         setDialog({ type: null });
     };
 
-    const handleButtonClick = (field: string, title?: string, isTextArea = false) => {
-        const textFields = {
-            title: extractText(cardData.frontSideCode, 'edit-title'),
-            name: cardData.name,
-            specialty: extractText(cardData.frontSideCode, 'edit-specialty'),
-            qual1: extractText(cardData.frontSideCode, 'edit-qual1'),
-            qual2: extractText(cardData.frontSideCode, 'edit-qual2'),
-            qual3: extractText(cardData.frontSideCode, 'edit-qual3'),
-            qual4: extractText(cardData.frontSideCode, 'edit-qual4'),
-            position: extractText(cardData.frontSideCode, 'edit-position'),
-        };
+    const handleCardClick = (e: React.MouseEvent) => {
+        let target = e.target as HTMLElement;
+        
+        while (target && target.id !== 'card-root') {
+            const id = target.id;
 
-        if (field === 'image') {
-            setDialog({ type: 'imageSource', data: { field: 'image' } });
-        } else if (field === 'vita') {
-            const initialHtml = cardData.backSideCode;
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(initialHtml, 'text/html');
-            const contentDiv = doc.querySelector('.vita-content');
-            const vitaContent = contentDiv ? contentDiv.innerHTML : '';
-            const finalContent = vitaContent.includes("Zum Bearbeiten klicken") ? '' : vitaContent;
-            setDialog({ type: 'vita', data: { initialValue: finalContent } });
-        } else if (field === 'language') {
-            setDialog({ type: 'language', data: {} });
-        } else if (field === 'position') {
-            setDialog({ type: 'logoFunction', data: { field: 'position' } });
-        } else {
-             setDialog({ type: 'text', data: { title, label: 'Neuer Text', initialValue: textFields[field as keyof typeof textFields], field, isTextArea } });
+            if (id.startsWith('edit-')) {
+                e.stopPropagation();
+                const field = id.substring(5);
+
+                const textFields: { [key: string]: { title: string; label: string, isTextArea?: boolean, initialValue: string } } = {
+                    title: { title: "Titel bearbeiten", label: "Neuer Titel", initialValue: extractText(cardData.frontSideCode, 'edit-title') },
+                    name: { title: "Name bearbeiten", label: "Neuer Name", initialValue: cardData.name },
+                    specialty: { title: "Spezialisierung bearbeiten", label: "Neue Spezialisierung", initialValue: extractText(cardData.frontSideCode, 'edit-specialty') },
+                    qual1: { title: "Qualifikation 1 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual1') },
+                    qual2: { title: "Qualifikation 2 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual2') },
+                    qual3: { title: "Qualifikation 3 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual3') },
+                    qual4: { title: "Qualifikation 4 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual4') },
+                };
+
+                if (textFields[field]) {
+                    setDialog({ type: 'text', data: { ...textFields[field], field } });
+                } else if (field === 'image') {
+                    setDialog({ type: 'imageSource', data: { field: 'image' } });
+                } else if (field === 'vita') {
+                    const initialHtml = cardData.backSideCode;
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(initialHtml, 'text/html');
+                    const contentDiv = doc.querySelector('.vita-content');
+                    const vitaContent = contentDiv ? contentDiv.innerHTML : '';
+                    const finalContent = vitaContent.includes("Zum Bearbeiten klicken") ? '' : vitaContent;
+                    setDialog({ type: 'vita', data: { initialValue: finalContent } });
+                } else if (field === 'language') {
+                    setDialog({ type: 'language', data: {} });
+                } else if (field === 'position') {
+                    setDialog({ type: 'logoFunction', data: { field: 'position' } });
+                }
+                
+                return;
+            }
+            target = target.parentElement as HTMLElement;
         }
     };
 
-    const editButtons = [
-        { label: 'Name', field: 'name', icon: User, dialogTitle: "Name bearbeiten" },
-        { label: 'Titel', field: 'title', icon: Award, dialogTitle: "Titel bearbeiten" },
-        { label: 'Spezialisierung', field: 'specialty', icon: Badge, dialogTitle: "Spezialisierung bearbeiten" },
-        { label: 'Qualifikationen (4 Zeilen)', field: 'qual1', icon: Hash, dialogTitle: "Qualifikationen bearbeiten" },
-        { label: 'Position/Logo', field: 'position', icon: Workflow, dialogTitle: "Position/Logo bearbeiten" },
-        { label: 'Portraitbild', field: 'image', icon: ImageIcon, dialogTitle: "Portraitbild ändern" },
-        { label: 'Sprachen', field: 'language', icon: Languages, dialogTitle: "Sprachen bearbeiten" },
-        { label: 'Rückseitentext (Vita)', field: 'vita', icon: FileText, dialogTitle: "Rückseitentext bearbeiten" },
-    ];
-
-
     return (
         <div id="doctor-editor-root" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-            <div>
-                 <div className="space-y-2">
-                    <Label htmlFor="internalName">Name (für interne Sortierung)</Label>
-                    <Input id="internalName" value={cardData.name} onChange={(e) => onUpdate({...cardData, name: e.target.value})} placeholder="z.B. Dr. Müller" />
-                </div>
-                 <Separator className="my-4" />
-                {editButtons.map(({label, field, icon: Icon, dialogTitle}) => (
-                     <Button key={field} variant="outline" className="w-full justify-start mb-2" onClick={() => handleButtonClick(field, dialogTitle)}>
-                        <Icon className="mr-2 h-4 w-4" />
-                        {label}
-                    </Button>
-                ))}
-            </div>
-
             <div className="space-y-4">
-                 <p className="text-center block mb-2 text-sm font-medium text-muted-foreground">Live-Vorschau</p>
-                 <EditableDoctorCard doctor={cardData} isBeingEdited={true} />
-                 <EditableDoctorCard doctor={cardData} isBeingEdited={true} showBackside={true} />
+                 <p className="text-center block mb-2 text-sm font-medium text-muted-foreground">Vorderseite (Live-Vorschau)</p>
+                 <EditableDoctorCard doctor={cardData} onCardClick={handleCardClick} />
+            </div>
+            <div className="space-y-4">
+                 <p className="text-center block mb-2 text-sm font-medium text-muted-foreground">Rückseite (Live-Vorschau)</p>
+                 <EditableDoctorCard doctor={cardData} showBackside={true} onCardClick={handleCardClick} />
             </div>
 
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
@@ -224,7 +208,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
                 <LogoFunctionSelectDialog 
                     isOpen={true} 
                     onOpenChange={() => setDialog({ type: null })} 
-                    onSelectFunction={() => handleButtonClick('position', 'Funktion bearbeiten', true)} 
+                    onSelectFunction={() => setDialog(prev => ({ type: 'text', data: { ...prev.data, title: 'Funktion bearbeiten', label: 'Funktion', isTextArea: true, initialValue: extractText(cardData.frontSideCode, 'edit-position') } }))} 
                     onSelectFromLibrary={() => setDialog(prev => ({ type: 'imageLibrary', data: prev.data }))} 
                     onUploadNew={() => fileInputRef.current?.click()} />
             )}
