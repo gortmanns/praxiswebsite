@@ -294,7 +294,11 @@ export default function DoctorsPage() {
                         <div className="space-y-8 mt-8">
                              {items.map((item, index) => (
                                 <div key={item.id} className="flex flex-col items-center gap-4">
-                                     <div className={cn("w-full max-w-[1000px] relative", isEditing && editingCardId !== item.id && "opacity-50 pointer-events-none")}>
+                                     <div className={cn(
+                                         "w-full max-w-[1000px] relative", 
+                                         isEditing && editingCardId !== item.id && "opacity-50 pointer-events-none",
+                                         isHiddenGrid && "grayscale"
+                                     )}>
                                         <DisplayCard {...item} />
                                         {isEditing && editingCardId === item.id && (
                                             <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/80">
@@ -303,13 +307,17 @@ export default function DoctorsPage() {
                                         )}
                                     </div>
                                     <div id={`buttons-${item.id}`} className="flex w-full max-w-lg items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
-                                        <Button variant="outline" onClick={() => handleMove(item.id, 'up')} disabled={index === 0}>
-                                            <ArrowUp className="mr-2 h-4 w-4" /> Nach oben
-                                        </Button>
-                                        <Button variant="outline" onClick={() => handleMove(item.id, 'down')} disabled={index === items.length - 1}>
-                                            <ArrowDown className="mr-2 h-4 w-4" /> Nach unten
-                                        </Button>
-                                        <div className="w-px self-stretch bg-border mx-2" />
+                                        {!isHiddenGrid && (
+                                            <>
+                                                <Button variant="outline" onClick={() => handleMove(item.id, 'up')} disabled={index === 0}>
+                                                    <ArrowUp className="mr-2 h-4 w-4" /> Nach oben
+                                                </Button>
+                                                <Button variant="outline" onClick={() => handleMove(item.id, 'down')} disabled={index === items.length - 1}>
+                                                    <ArrowDown className="mr-2 h-4 w-4" /> Nach unten
+                                                </Button>
+                                                <div className="w-px self-stretch bg-border mx-2" />
+                                            </>
+                                        )}
                                         <Button variant="outline" onClick={() => handleEdit(item)}>
                                             <Pencil className="mr-2 h-4 w-4" /> Bearbeiten
                                         </Button>
@@ -432,4 +440,3 @@ export default function DoctorsPage() {
         </div>
     );
 }
-
