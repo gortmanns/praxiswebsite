@@ -14,6 +14,10 @@ import { EditableDoctorCard } from './editable-doctor-card';
 import { useToast } from '@/hooks/use-toast';
 import { projectImages } from '@/app/admin/dashboard/partners/project-images';
 import type { Doctor } from '../page';
+import { useStorage } from '@/firebase';
+import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
+
 
 interface DoctorEditorProps {
     cardData: Doctor;
@@ -39,8 +43,9 @@ const extractText = (html: string, id: string): string => {
 
 export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }) => {
     const { toast } = useToast();
+    const storage = useStorage();
 
-    const [dialog, setDialog] = useState<{ type: string | null; data?: any }>({ type: null });
+    const [dialogState, setDialogState] = useState<{ type: string | null; data?: any }>({ type: null });
     const fileInputRef = useRef<HTMLInputElement>(null);
     
     const updateHtmlWithImage = (html: string, url: string, field: string): string => {
@@ -60,36 +65,41 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
     };
     
     const handleCropComplete = useCallback(async (croppedDataUrl: string, field: string) => {
-        setDialog({ type: null });
+        setDialogState({ type: null });
         if (!croppedDataUrl) {
             toast({ variant: 'destructive', title: 'Fehler', description: 'Keine Bilddaten vom Zuschneide-Dialog erhalten.' });
             return;
         }
-    
+
+        if (!storage) {
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
+            return;
+        }
+
+        const imagePath = `doctors/${uuidv4()}.jpeg`;
+        const imageRef = storageRef(storage, imagePath);
+
         try {
-            const result = await saveCroppedImage(croppedDataUrl);
-    
-            if (result.success && result.filePath) {
-                const newFrontSideCode = updateHtmlWithImage(cardData.frontSideCode, result.filePath, field);
-                onUpdate({ frontSideCode: newFrontSideCode });
-                toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich aktualisiert.' });
-            } else {
-                throw new Error(result.error || 'Unbekannter Fehler beim Speichern des Bildes.');
-            }
+            const snapshot = await uploadString(imageRef, croppedDataUrl, 'data_url');
+            const downloadURL = await getDownloadURL(snapshot.ref);
+
+            const newFrontSideCode = updateHtmlWithImage(cardData.frontSideCode, downloadURL, field);
+            onUpdate({ frontSideCode: newFrontSideCode });
+            toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich aktualisiert.' });
         } catch (error: any) {
             console.error("Error saving image: ", error);
             toast({ variant: 'destructive', title: 'Speicher-Fehler', description: error.message });
         }
-    }, [cardData.frontSideCode, onUpdate, toast]);
+    }, [storage, cardData.frontSideCode, onUpdate, toast]);
 
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files?.[0]) {
             const reader = new FileReader();
             reader.onload = (event) => {
-                const { field } = dialog.data;
+                const { field } = dialogState.data;
                 const aspectRatio = field === 'position' ? 1600/265 : 2/3;
-                setDialog({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio, field } });
+                setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio, field } });
             };
             reader.readAsDataURL(e.target.files[0]);
         }
@@ -112,7 +122,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
     };
     
     const handleTextSave = (newValue: string) => {
-        const { field } = dialog.data;
+        const { field } = dialogState.data;
         if (!field) return;
 
         const newFrontSideCode = updateFrontSideCode(field, newValue);
@@ -123,7 +133,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
         }
 
         onUpdate(updatedCardData);
-        setDialog({ type: null });
+        setDialogState({ type: null });
     };
     
     const handleVitaSave = (newVita: string) => {
@@ -137,7 +147,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
                 onUpdate({ backSideCode: doc.body.innerHTML });
             }
         }
-        setDialog({ type: null });
+        setDialogState({ type: null });
     };
 
     const handleCardClick = (e: React.MouseEvent) => {
@@ -161,9 +171,9 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
                 };
 
                 if (textFields[field]) {
-                    setDialog({ type: 'text', data: { ...textFields[field], field } });
+                    setDialogState({ type: 'text', data: { ...textFields[field], field } });
                 } else if (field === 'image') {
-                    setDialog({ type: 'imageSource', data: { field: 'image' } });
+                    setDialogState({ type: 'imageSource', data: { field: 'image' } });
                 } else if (field === 'vita') {
                     const initialHtml = cardData.backSideCode;
                     const parser = new DOMParser();
@@ -171,11 +181,11 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
                     const contentDiv = doc.querySelector('.vita-content');
                     const vitaContent = contentDiv ? contentDiv.innerHTML : '';
                     const finalContent = vitaContent.includes("Zum Bearbeiten klicken") ? '' : vitaContent;
-                    setDialog({ type: 'vita', data: { initialValue: finalContent } });
+                    setDialogState({ type: 'vita', data: { initialValue: finalContent } });
                 } else if (field === 'language') {
-                    setDialog({ type: 'language', data: {} });
+                    setDialogState({ type: 'language', data: {} });
                 } else if (field === 'position') {
-                    setDialog({ type: 'logoFunction', data: { field: 'position' } });
+                    setDialogState({ type: 'logoFunction', data: { field: 'position' } });
                 }
                 
                 return;
@@ -197,37 +207,37 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
 
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileSelect} />
             
-            {dialog.type === 'text' && ( <TextEditDialog isOpen={true} onOpenChange={() => setDialog({ type: null })} {...dialog.data} onSave={handleTextSave} /> )}
-            {dialog.type === 'vita' && ( <VitaEditorDialog isOpen={true} onOpenChange={() => setDialog({ type: null })} {...dialog.data} onSave={handleVitaSave} /> )}
-            {dialog.type === 'language' && ( <LanguageSelectDialog isOpen={true} onOpenChange={() => setDialog({ type: null })} initialLanguages={cardData.languages || []} onSave={(langs) => onUpdate({ languages: langs })} /> )}
-            {dialog.type === 'logoFunction' && (
+            {dialogState.type === 'text' && ( <TextEditDialog isOpen={true} onOpenChange={() => setDialogState({ type: null })} {...dialogState.data} onSave={handleTextSave} /> )}
+            {dialogState.type === 'vita' && ( <VitaEditorDialog isOpen={true} onOpenChange={() => setDialogState({ type: null })} {...dialogState.data} onSave={handleVitaSave} /> )}
+            {dialogState.type === 'language' && ( <LanguageSelectDialog isOpen={true} onOpenChange={() => setDialogState({ type: null })} initialLanguages={cardData.languages || []} onSave={(langs) => onUpdate({ languages: langs })} /> )}
+            {dialogState.type === 'logoFunction' && (
                 <LogoFunctionSelectDialog 
                     isOpen={true} 
-                    onOpenChange={() => setDialog({ type: null })} 
-                    onSelectFunction={() => setDialog(prev => ({ type: 'text', data: { ...prev.data, title: 'Funktion bearbeiten', label: 'Funktion', isTextArea: true, initialValue: extractText(cardData.frontSideCode, 'edit-position') } }))} 
-                    onSelectFromLibrary={() => setDialog(prev => ({ type: 'imageLibrary', data: prev.data }))} 
+                    onOpenChange={() => setDialogState({ type: null })} 
+                    onSelectFunction={() => setDialogState(prev => ({ type: 'text', data: { ...prev.data, title: 'Funktion bearbeiten', label: 'Funktion', isTextArea: true, initialValue: extractText(cardData.frontSideCode, 'edit-position') } }))} 
+                    onSelectFromLibrary={() => setDialogState(prev => ({ type: 'imageLibrary', data: prev.data }))} 
                     onUploadNew={() => fileInputRef.current?.click()} />
             )}
-            {dialog.type === 'imageSource' && (
+            {dialogState.type === 'imageSource' && (
                 <ImageSourceDialog 
                     isOpen={true} 
-                    onOpenChange={() => setDialog({ type: null })} 
+                    onOpenChange={() => setDialogState({ type: null })} 
                     onUpload={() => fileInputRef.current?.click()} 
-                    onSelect={() => setDialog(prev => ({ type: 'imageLibrary', data: prev.data }))} />
+                    onSelect={() => setDialogState(prev => ({ type: 'imageLibrary', data: prev.data }))} />
             )}
-            {dialog.type === 'imageLibrary' && (
+            {dialogState.type === 'imageLibrary' && (
                  <ImageLibraryDialog 
                     isOpen={true} 
-                    onOpenChange={() => setDialog({ type: null })} 
+                    onOpenChange={() => setDialogState({ type: null })} 
                     images={projectImages} 
-                    onImageSelect={(imageUrl) => setDialog({ type: 'imageCrop', data: { ...dialog.data, imageUrl, aspectRatio: dialog.data.field === 'position' ? 1600/265 : 2/3 } })} />
+                    onImageSelect={(imageUrl) => setDialogState({ type: 'imageCrop', data: { ...dialogState.data, imageUrl, aspectRatio: dialogState.data.field === 'position' ? 1600/265 : 2/3 } })} />
             )}
-            {dialog.type === 'imageCrop' && (
+            {dialogState.type === 'imageCrop' && (
                 <ImageCropDialog
-                    imageUrl={dialog.data.imageUrl}
-                    aspectRatio={dialog.data.aspectRatio}
-                    onCropComplete={(croppedImage) => handleCropComplete(croppedImage, dialog.data.field)}
-                    onClose={() => setDialog({ type: null })}
+                    imageUrl={dialogState.data.imageUrl}
+                    aspectRatio={dialogState.data.aspectRatio}
+                    onCropComplete={(croppedImage) => handleCropComplete(croppedImage, dialogState.data.field)}
+                    onClose={() => setDialogState({ type: null })}
                 />
             )}
         </div>
