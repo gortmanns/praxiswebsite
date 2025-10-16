@@ -7,15 +7,13 @@
  **********************************************************************************/
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Languages, User as UserIcon, Info, Pencil } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useStorage } from '@/firebase';
-import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
-import { v4 as uuidv4 } from 'uuid';
+import { saveCroppedImage } from '../../../image-test/actions';
 import { ImageSourceDialog } from '@/app/admin/dashboard/team/doctors/_components/image-source-dialog';
 import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_components/image-library-dialog';
 import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/image-crop-dialog';
@@ -50,7 +48,6 @@ interface StaffEditorProps {
 
 export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) => {
     const { toast } = useToast();
-    const storage = useStorage();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [dialogState, setDialogState] = useState<{
@@ -77,25 +74,26 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
        setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio: 2 / 3 } });
     };
 
-    const handleCropComplete = async (croppedImageUrl: string) => {
+    const handleCropComplete = useCallback(async (croppedDataUrl: string) => {
         setDialogState({ type: null, data: {} });
-        if (!storage) {
-            toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
+        if (!croppedDataUrl) {
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Keine Bilddaten vom Zuschneide-Dialog erhalten.' });
             return;
         }
 
-        const imagePath = `staff/${uuidv4()}.jpg`;
-        const imageRef = storageRef(storage, imagePath);
-
         try {
-            const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
-            const downloadURL = await getDownloadURL(snapshot.ref);
-            onUpdate({ imageUrl: downloadURL }); // This line was missing, now corrected.
-        } catch (error) {
-            console.error("Error uploading image: ", error);
-            toast({ variant: 'destructive', title: 'Upload-Fehler', description: 'Das Bild konnte nicht hochgeladen werden.' });
+            const result = await saveCroppedImage(croppedDataUrl);
+            if (result.success && result.filePath) {
+                onUpdate({ imageUrl: result.filePath });
+                toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich aktualisiert.' });
+            } else {
+                throw new Error(result.error || 'Unbekannter Fehler beim Speichern des Bildes.');
+            }
+        } catch (error: any) {
+            console.error("Error saving image: ", error);
+            toast({ variant: 'destructive', title: 'Speicher-Fehler', description: error.message });
         }
-    };
+    }, [onUpdate, toast]);
     
     const handleVitaSave = (newVita: string) => {
         onUpdate({ backsideContent: newVita });

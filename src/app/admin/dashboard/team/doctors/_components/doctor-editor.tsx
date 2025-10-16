@@ -2,9 +2,7 @@
 'use client';
 
 import React, { useState, useRef, useCallback } from 'react';
-import { useStorage } from '@/firebase';
-import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
-import { v4 as uuidv4 } from 'uuid';
+import { saveCroppedImage } from '../../../image-test/actions';
 import { TextEditDialog } from './text-edit-dialog';
 import { VitaEditorDialog } from './vita-editor-dialog';
 import { LanguageSelectDialog } from './language-select-dialog';
@@ -40,7 +38,6 @@ const extractText = (html: string, id: string): string => {
 
 
 export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }) => {
-    const storage = useStorage();
     const { toast } = useToast();
 
     const [dialog, setDialog] = useState<{ type: string | null; data?: any }>({ type: null });
@@ -62,29 +59,28 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
         return doc.body.innerHTML;
     };
     
-    const handleCropComplete = useCallback(async (croppedImageUrl: string, field: string) => {
+    const handleCropComplete = useCallback(async (croppedDataUrl: string, field: string) => {
         setDialog({ type: null });
-    
-        if (!storage) {
-            toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
+        if (!croppedDataUrl) {
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Keine Bilddaten vom Zuschneide-Dialog erhalten.' });
             return;
         }
     
-        const imagePath = `doctors/${uuidv4()}.jpg`;
-        const imageRef = storageRef(storage, imagePath);
-    
         try {
-            const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
-            const downloadURL = await getDownloadURL(snapshot.ref);
+            const result = await saveCroppedImage(croppedDataUrl);
     
-            const newFrontSideCode = updateHtmlWithImage(cardData.frontSideCode, downloadURL, field);
-            onUpdate({ frontSideCode: newFrontSideCode });
-        
-        } catch (error) {
-            console.error("Error uploading image: ", error);
-            toast({ variant: 'destructive', title: 'Upload-Fehler', description: 'Das Bild konnte nicht hochgeladen werden.' });
+            if (result.success && result.filePath) {
+                const newFrontSideCode = updateHtmlWithImage(cardData.frontSideCode, result.filePath, field);
+                onUpdate({ frontSideCode: newFrontSideCode });
+                toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich aktualisiert.' });
+            } else {
+                throw new Error(result.error || 'Unbekannter Fehler beim Speichern des Bildes.');
+            }
+        } catch (error: any) {
+            console.error("Error saving image: ", error);
+            toast({ variant: 'destructive', title: 'Speicher-Fehler', description: error.message });
         }
-    }, [storage, cardData, onUpdate, toast, updateHtmlWithImage]);
+    }, [cardData.frontSideCode, onUpdate, toast]);
 
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
