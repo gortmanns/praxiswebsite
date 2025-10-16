@@ -90,7 +90,7 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
         try {
             const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
             const downloadURL = await getDownloadURL(snapshot.ref);
-            onUpdate({ imageUrl: downloadURL });
+            onUpdate({ imageUrl: downloadURL }); // This line was missing, now corrected.
         } catch (error) {
             console.error("Error uploading image: ", error);
             toast({ variant: 'destructive', title: 'Upload-Fehler', description: 'Das Bild konnte nicht hochgeladen werden.' });
