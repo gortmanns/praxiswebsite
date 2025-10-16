@@ -347,11 +347,10 @@ export const VitaEditorDialog: React.FC<VitaEditorDialogProps> = ({ isOpen, onOp
 
   useEffect(() => {
     if (isOpen) {
-        // Strip the button wrapper if present
         const parser = new DOMParser();
         const doc = parser.parseFromString(initialValue, 'text/html');
-        const button = doc.querySelector('button#edit-vita');
-        const content = button ? button.innerHTML : initialValue;
+        const contentDiv = doc.querySelector('.vita-content');
+        const content = contentDiv ? contentDiv.innerHTML : initialValue;
 
         setHtmlContent(content);
         if (editor && !editor.isDestroyed) {

@@ -12,14 +12,10 @@ import { ImageSourceDialog } from './image-source-dialog';
 import { ImageLibraryDialog } from './image-library-dialog';
 import { ImageCropDialog } from './image-crop-dialog';
 import { LogoFunctionSelectDialog } from './logo-function-select-dialog';
-import { cn } from '@/lib/utils';
-import { renderToStaticMarkup } from 'react-dom/server';
-import { DeFlag, EnFlag, EsFlag, FrFlag, ItFlag, PtFlag, RuFlag, SqFlag, ArFlag, BsFlag, ZhFlag, DaFlag, FiFlag, ElFlag, HeFlag, HiFlag, JaFlag, KoFlag, HrFlag, NlFlag, NoFlag, FaFlag, PlFlag, PaFlag, RoFlag, SvFlag, SrFlag, TaFlag, CsFlag, TrFlag, UkFlag, HuFlag, UrFlag } from '@/components/logos/flags';
-import { useToast } from '@/hooks/use-toast';
-import { Input } from '@/components/ui/input';
+import { EditableDoctorCard } from './editable-doctor-card';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Image as ImageIcon, Languages, Type } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { projectImages } from '@/app/admin/dashboard/partners/project-images';
 
 export interface Doctor {
     id: string;
@@ -38,47 +34,6 @@ interface DoctorEditorProps {
     onUpdate: (updatedData: Doctor) => void;
 }
 
-const CardHtmlRenderer: React.FC<{ html: string; className?: string; onClick?: (e: React.MouseEvent) => void }> = ({ html, className, onClick }) => {
-    const wrapperRef = useRef<HTMLDivElement>(null);
-    const [scale, setScale] = useState(1);
-
-    useEffect(() => {
-        const calculateScale = () => {
-            if (wrapperRef.current) {
-                const parentWidth = wrapperRef.current.offsetWidth;
-                if (parentWidth > 0) {
-                   setScale(parentWidth / 1000);
-                }
-            }
-        };
-        calculateScale();
-        window.addEventListener('resize', calculateScale);
-        const observer = new MutationObserver(calculateScale);
-        observer.observe(document.body, { attributes: true, childList: true, subtree: true });
-        
-        return () => {
-            window.removeEventListener('resize', calculateScale);
-            observer.disconnect();
-        };
-    }, []);
-
-    return (
-        <div ref={wrapperRef} className={cn("relative w-full aspect-[1000/495] overflow-hidden", className)} onClick={onClick}>
-             <div 
-                className="absolute top-0 left-0 origin-top-left"
-                style={{ 
-                    width: '1000px', 
-                    height: '495px',
-                    transform: `scale(${scale})`,
-                    transformOrigin: 'top left',
-                }}
-                dangerouslySetInnerHTML={{ __html: html }}
-            />
-        </div>
-    );
-};
-
-// Helper function to extract text content
 const extractText = (html: string, id: string): string => {
     if (typeof window === 'undefined') return '';
     const parser = new DOMParser();
@@ -99,7 +54,6 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
     const [dialogState, setDialogState] = useState<{ type: string | null; data: any }>({ type: null, data: {} });
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Memoize extracted text values
     const textFields = useMemo(() => ({
         title: extractText(cardData.frontSideCode, 'edit-title'),
         name: extractText(cardData.frontSideCode, 'edit-name'),
@@ -120,15 +74,38 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
             if (pOrH3) {
                 pOrH3.textContent = value;
             } else if (field === 'position') {
-                 element.innerHTML = `<button id="edit-position" class="w-full text-left"><p class="text-base">${value}</p></button>`;
+                 element.innerHTML = `<div class="w-full text-left"><p class="text-base">${value}</p></div>`;
             }
         }
         onUpdate({ ...cardData, frontSideCode: doc.body.innerHTML });
     };
 
-    const projectImages = [
-        '/images/luftbild.jpg', '/images/VASC-Alliance-Logo.png', '/images/schemmer-worni-logo.png', '/images/go-medical-logo.png', '/images/mcl-labor-logo.png', '/images/doxnet-logo.jpg', '/images/logos/slezak-logo.png', '/images/praxiszentrum-logo.png', '/images/praxiszentrum-logo-icon.png', '/images/mehrfacharzt-logo.png', '/images/rtw-bern.jpg', '/images/medphone_logo.png', '/images/toxinfo-logo.svg', '/images/foto-medis.jpg', '/images/team/Ortmanns.jpg', '/images/team/Prof.Schemmer.jpg', '/images/team/Dr.Rosenov.jpg', '/images/team/Dr.Herschel.jpg', '/images/team/Dr.Slezak.jpg', '/images/team/Garcia.jpg', '/images/team/Aeschlimann.jpg', '/images/team/Huber.jpg', '/images/team/Oetztuerk.jpg', '/images/team/Sommer.jpg', '/images/leistungen/audiometrie.jpg', '/images/leistungen/ekg.jpg', '/images/leistungen/labor.jpg', '/images/leistungen/praxisapotheke.jpg', '/images/leistungen/roentgen.jpg', '/images/leistungen/spirometrie.jpg', '/images/leistungen/twint_logo.png', '/images/leistungen/VMU.png', '/images/leistungen/wundversorgung.jpg',
-    ];
+    const handleFrontCardClick = (e: React.MouseEvent) => {
+        let target = e.target as HTMLElement;
+        while (target && target.id !== 'card-root') {
+            const id = target.id;
+            if (id) {
+                const field = id.replace('edit-', '');
+                if (['title', 'name', 'specialty', 'qual1', 'qual2', 'qual3', 'qual4'].includes(field)) {
+                    setDialogState({ type: 'text', data: { title: `Feld "${field}" bearbeiten`, label: 'Neuer Text', initialValue: textFields[field as keyof typeof textFields], field } });
+                    return;
+                }
+                if (id === 'edit-image') {
+                    setDialogState({ type: 'imageSource', data: { field: 'image' } });
+                    return;
+                }
+                if (id === 'edit-position') {
+                     setDialogState({ type: 'logoFunction', data: { field: 'position' } });
+                    return;
+                }
+                 if (id === 'language-container') {
+                    setDialogState({ type: 'language', data: {} });
+                    return;
+                }
+            }
+            target = target.parentElement as HTMLElement;
+        }
+    };
     
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files?.[0]) {
@@ -177,12 +154,8 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
 
         const container = doc.getElementById(containerId);
         if (container) {
-            const newHtml = `<button id="${buttonId}" class="image-button-background w-full h-full relative"><img src="${url}" alt="${altText}" class="h-full w-full ${objectFitClass} relative" style="${customStyle}" /></button>`;
-            if (field === 'image') {
-                container.innerHTML = newHtml;
-            } else {
-                container.innerHTML = newHtml;
-            }
+            const newHtml = `<div id="${buttonId}" class="image-button-background w-full h-full relative"><img src="${url}" alt="${altText}" class="h-full w-full ${objectFitClass} relative" style="${customStyle}" /></div>`;
+             container.innerHTML = newHtml;
         }
         return doc.body.innerHTML;
     };
@@ -191,11 +164,11 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
         const wrapInButton = (html: string) => {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
-            if (doc.querySelector('button#edit-vita')) return html;
+            if (doc.querySelector('div#edit-vita')) return html;
             
             const style = `<style>.vita-content { color: hsl(var(--background)); } .vita-content p { margin: 0; } .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; } .vita-content li { margin-bottom: 0.5em; } .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; } .vita-content .is-small { font-size: 0.8em; font-weight: normal; } .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); } .vita-content span[style*="color: var(--color-tiptap-gray)"] { color: hsl(var(--secondary-foreground)); }</style>`;
             const contentDiv = `<div class="vita-content w-full h-full">${html}</div>`;
-            return `<div class="w-full h-full text-left">${style}<button id="edit-vita" class="w-full h-full text-left p-8">${contentDiv}</button></div>`;
+            return `<div class="w-full h-full text-left">${style}<div id="edit-vita" class="w-full h-full text-left p-8">${contentDiv}</div></div>`;
         };
         onUpdate({ ...cardData, backSideCode: wrapInButton(newVita) });
         setDialogState({ type: null, data: {} });
@@ -211,63 +184,18 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
     return (
         <>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                <div className="space-y-4 p-4 border rounded-lg">
-                    <div className="space-y-2">
-                        <Label htmlFor="edit-name-input">Name</Label>
-                        <Input id="edit-name-input" value={textFields.name} onChange={(e) => handleTextChange('name', e.target.value)} />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="edit-title-input">Titel</Label>
-                        <Input id="edit-title-input" value={textFields.title} onChange={(e) => handleTextChange('title', e.target.value)} />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="edit-specialty-input">Spezialisierung</Label>
-                        <Input id="edit-specialty-input" value={textFields.specialty} onChange={(e) => handleTextChange('specialty', e.target.value)} />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="edit-qual1-input">Qualifikation 1</Label>
-                            <Input id="edit-qual1-input" value={textFields.qual1} onChange={(e) => handleTextChange('qual1', e.target.value)} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="edit-qual2-input">Qualifikation 2</Label>
-                            <Input id="edit-qual2-input" value={textFields.qual2} onChange={(e) => handleTextChange('qual2', e.target.value)} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="edit-qual3-input">Qualifikation 3</Label>
-                            <Input id="edit-qual3-input" value={textFields.qual3} onChange={(e) => handleTextChange('qual3', e.target.value)} />
-                        </div>
-                         <div className="space-y-2">
-                            <Label htmlFor="edit-qual4-input">Qualifikation 4</Label>
-                            <Input id="edit-qual4-input" value={textFields.qual4} onChange={(e) => handleTextChange('qual4', e.target.value)} />
-                        </div>
-                    </div>
-                    <div className="space-y-3 pt-2">
-                         <Button variant="outline" size="sm" onClick={() => setDialogState({ type: 'imageSource', data: { field: 'image' } })}>
-                            <ImageIcon className="mr-2 h-4 w-4" /> Porträtbild ändern
-                        </Button>
-                         <Button variant="outline" size="sm" onClick={() => setDialogState({ type: 'logoFunction', data: { field: 'position' } })}>
-                            <Type className="mr-2 h-4 w-4" /> Position/Logo ändern
-                        </Button>
-                         <Button variant="outline" size="sm" onClick={() => setDialogState({ type: 'language', data: {} })}>
-                            <Languages className="mr-2 h-4 w-4" /> Sprachen bearbeiten
-                        </Button>
-                         <Button variant="outline" size="sm" onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backSideCode.includes("Zum Bearbeiten klicken") ? '' : cardData.backSideCode } })}>
-                           Text der Rückseite bearbeiten
-                        </Button>
-                    </div>
+                <div>
+                    <Label className="text-center block mb-2 text-sm font-medium text-muted-foreground">Vorderseite (Klicken zum Bearbeiten)</Label>
+                    <EditableDoctorCard doctor={cardData} onCardClick={handleFrontCardClick} />
                 </div>
-
-                <div className="flex items-start gap-2.5">
-                    <div className="flex-1">
-                        <Label className="text-center block mb-2 text-sm font-medium text-muted-foreground">Vorderseite</Label>
-                        <CardHtmlRenderer html={cardData.frontSideCode} />
-                    </div>
-                    <div className="flex-1">
-                        <Label className="text-center block mb-2 text-sm font-medium text-muted-foreground">Rückseite</Label>
-                         <div className="bg-accent/95 rounded-lg">
-                            <CardHtmlRenderer html={cardData.backSideCode} className="text-background" />
-                        </div>
+                <div>
+                    <Label className="text-center block mb-2 text-sm font-medium text-muted-foreground">Rückseite (Klicken zum Bearbeiten)</Label>
+                     <div className="bg-accent/95 rounded-lg">
+                        <EditableDoctorCard 
+                            doctor={cardData} 
+                            onCardClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backSideCode.includes("Zum Bearbeiten klicken") ? '' : cardData.backSideCode } })}
+                            showBackside
+                        />
                     </div>
                 </div>
             </div>
@@ -297,5 +225,3 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
         </>
     );
 };
-
-    
