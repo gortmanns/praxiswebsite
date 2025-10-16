@@ -1,3 +1,4 @@
+
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -58,13 +59,6 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
         data: any;
     }>({ type: null, data: {} });
 
-    useEffect(() => {
-        if (cardData._dialog?.type) {
-            setDialogState({ type: cardData._dialog.type as any, data: cardData._dialog.data });
-            onUpdate({ _dialog: undefined });
-        }
-    }, [cardData._dialog, onUpdate]);
-    
     const handleInputChange = (field: keyof StaffMember, value: string | boolean | string[]) => {
         onUpdate({ [field]: value });
     };
@@ -78,6 +72,10 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
             reader.readAsDataURL(e.target.files[0]);
         }
         if (e.target) e.target.value = '';
+    };
+
+    const handleImageLibrarySelect = (imageUrl: string) => {
+       setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio: 2 / 3 } });
     };
 
     const handleCropComplete = async (croppedImageUrl: string) => {
@@ -100,14 +98,18 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
         }
     };
     
-    const handleImageLibrarySelect = (imageUrl: string) => {
-        setDialogState({ type: 'imageCrop', data: { imageUrl, aspectRatio: 2 / 3 } });
-    };
-
     const handleVitaSave = (newVita: string) => {
         onUpdate({ backsideContent: newVita });
         setDialogState({ type: null, data: {} });
     };
+
+    // This effect handles opening dialogs requested by the parent component.
+    useEffect(() => {
+        if (cardData._dialog?.type) {
+            setDialogState({ type: cardData._dialog.type as any, data: cardData._dialog.data });
+            onUpdate({ _dialog: undefined }); // Clear the request
+        }
+    }, [cardData._dialog, onUpdate]);
 
     return (
         <>
