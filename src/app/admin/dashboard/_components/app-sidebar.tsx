@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Calendar, Users, Settings, Palette, CreditCard, LogOut } from 'lucide-react';
+import { Home, Calendar, Users, Settings, Palette, CreditCard, LogOut, TestTube2 } from 'lucide-react';
 import {
   Sidebar,
   SidebarHeader,
@@ -53,8 +53,10 @@ export function AppSidebar() {
   ];
 
   const visualDesignItem = { href: '/admin/dashboard/visual-design', label: 'Visual Design', icon: Palette };
+  const testPageItem = { href: '/admin/dashboard/image-test', label: 'Bild-Upload Test', icon: TestTube2 };
 
   const handleLogout = async () => {
+    if (!auth) return;
     await signOut(auth);
     router.push('/admin/login');
   };
@@ -140,6 +142,20 @@ export function AppSidebar() {
                   >
                       <visualDesignItem.icon />
                       <span>{visualDesignItem.label}</span>
+                  </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+                <div className="my-4 border-t border-sidebar-border" />
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+              <Link href={testPageItem.href} passHref>
+                  <SidebarMenuButton 
+                      isActive={pathname === testPageItem.href}
+                      tooltip={testPageItem.label}
+                  >
+                      <testPageItem.icon />
+                      <span>{testPageItem.label}</span>
                   </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
