@@ -1,4 +1,3 @@
-
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -291,7 +290,6 @@ export default function StaffPageManager() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                                 <StaffEditor cardData={editorCardState} onUpdate={handleEditorUpdate} />
                                 <div className="space-y-4">
-                                    <p className="text-sm font-semibold text-muted-foreground mb-2 text-center">Live-Vorschau</p>
                                     <div className="grid grid-cols-2 gap-4">
                                         {/* Frontend Card Preview */}
                                         <div className="w-full max-w-sm overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
