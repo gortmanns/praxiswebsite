@@ -1,29 +1,35 @@
 /**
- * @fileoverview Firestore Security Rules for the application.
+ * @fileoverview Firestore Security Rules for the practice data model.
  *
  * Core Philosophy:
- * This ruleset enforces a strict data-access model where only authenticated users can access the data.
- * Public read access is enabled for specific collections.
+ * This ruleset adopts a public read, owner-only write model. All data is readable by any client,
+ * but write access (create, update, delete) is restricted to authenticated users.
+ * There is no concept of user roles or shared data access in this model.
  *
  * Data Structure:
- * The Firestore database stores documents in top-level collections: `doctors`, `staff`, `medicalPartners`, `otherPartners`, `holidays`, `infoBanners`, and `settings/banners`.
+ * The Firestore database consists of several top-level collections: `doctors`, `staff`, `medicalPartners`,
+ * `otherPartners`, `holidays`, and `infoBanners`. Additionally, a single document at `settings/banners` stores banner settings.
  *
  * Key Security Decisions:
- * - All write operations require authentication.
- * - Read access is public for `doctors`, `staff`, `medicalPartners`, `otherPartners`, `holidays`, `infoBanners` collections.
- * - The `settings/banners` document is only accessible to authenticated users.
+ * - Public Read: All collections are publicly readable to facilitate easy data consumption in the application.
+ * - Owner-Only Writes: All write operations require authentication.
+ * - No User Listing: There is no dedicated user collection, and user listing is therefore not applicable.
+ * - Denormalization: These rules assume that each document contains all information required for
+ *   authorization. There are no cross-collection `get()` calls in the rules.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Grants public read access, but requires authentication for all write operations on doctor profiles.
+     * @description Allows public read access and owner-only write access to doctor profiles.
      * @path /doctors/{doctorId}
-     * @allow (get, list): Always.
-     * @allow (create, update, delete): Only authenticated users.
-     * @deny (create, update, delete): If not authenticated.
-     * @principle Public read, authenticated writes.
+     * @allow (get, list): if true
+     * @allow (create): if isSignedIn()
+     * @allow (update, delete): if isSignedIn()
+     * @deny (create): if !isSignedIn()
+     * @deny (update, delete): if !isSignedIn()
+     * @principle Allows public read access and restricts write access to authenticated users.
      */
     match /doctors/{doctorId} {
       allow get, list: if true;
@@ -33,14 +39,16 @@ service cloud.firestore {
     }
 
     /**
-     * @description Grants public read access, but requires authentication for all write operations on staff member profiles.
-     * @path /staff/{staffMemberId}
-     * @allow (get, list): Always.
-     * @allow (create, update, delete): Only authenticated users.
-     * @deny (create, update, delete): If not authenticated.
-     * @principle Public read, authenticated writes.
+     * @description Allows public read access and owner-only write access to staff member profiles.
+     * @path /staff/{staffId}
+     * @allow (get, list): if true
+     * @allow (create): if isSignedIn()
+     * @allow (update, delete): if isSignedIn()
+     * @deny (create): if !isSignedIn()
+     * @deny (update, delete): if !isSignedIn()
+     * @principle Allows public read access and restricts write access to authenticated users.
      */
-    match /staff/{staffMemberId} {
+    match /staff/{staffId} {
       allow get, list: if true;
       allow create: if isSignedIn();
       allow update: if isSignedIn() && resource != null;
@@ -48,14 +56,16 @@ service cloud.firestore {
     }
 
     /**
-     * @description Grants public read access, but requires authentication for all write operations on medical partner information.
-     * @path /medicalPartners/{medicalPartnerId}
-     * @allow (get, list): Always.
-     * @allow (create, update, delete): Only authenticated users.
-     * @deny (create, update, delete): If not authenticated.
-     * @principle Public read, authenticated writes.
+     * @description Allows public read access and owner-only write access to medical partner information.
+     * @path /medicalPartners/{partnerId}
+     * @allow (get, list): if true
+     * @allow (create): if isSignedIn()
+     * @allow (update, delete): if isSignedIn()
+     * @deny (create): if !isSignedIn()
+     * @deny (update, delete): if !isSignedIn()
+     * @principle Allows public read access and restricts write access to authenticated users.
      */
-    match /medicalPartners/{medicalPartnerId} {
+    match /medicalPartners/{partnerId} {
       allow get, list: if true;
       allow create: if isSignedIn();
       allow update: if isSignedIn() && resource != null;
@@ -63,84 +73,78 @@ service cloud.firestore {
     }
 
     /**
-     * @description Grants public read access, but requires authentication for all write operations on other partner information.
-     * @path /otherPartners/{otherPartnerId}
-     * @allow (get, list): Always.
-     * @allow (create, update, delete): Only authenticated users.
-     * @deny (create, update, delete): If not authenticated.
-     * @principle Public read, authenticated writes.
+     * @description Allows public read access and owner-only write access to other partner information.
+     * @path /otherPartners/{partnerId}
+     * @allow (get, list): if true
+     * @allow (create): if isSignedIn()
+     * @allow (update, delete): if isSignedIn()
+     * @deny (create): if !isSignedIn()
+     * @deny (update, delete): if !isSignedIn()
+     * @principle Allows public read access and restricts write access to authenticated users.
      */
-    match /otherPartners/{otherPartnerId} {
+    match /otherPartners/{partnerId} {
       allow get, list: if true;
       allow create: if isSignedIn();
       allow update: if isSignedIn() && resource != null;
       allow delete: if isSignedIn() && resource != null;
     }
 
-    /**
-     * @description Grants public read access, but requires authentication for all write operations on holiday information.
-     * @path /holidays/{holidayId}
-     * @allow (get, list): Always.
-     * @allow (create, update, delete): Only authenticated users.
-     * @deny (create, update, delete): If not authenticated.
-     * @principle Public read, authenticated writes.
-     */
+     /**
+      * @description Allows public read access and owner-only write access to holiday information.
+      * @path /holidays/{holidayId}
+      * @allow (get, list): if true
+      * @allow (create): if isSignedIn()
+      * @allow (update, delete): if isSignedIn()
+      * @deny (create): if !isSignedIn()
+      * @deny (update, delete): if !isSignedIn()
+      * @principle Allows public read access and restricts write access to authenticated users.
+      */
     match /holidays/{holidayId} {
-      allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+        allow get, list: if true;
+        allow create: if isSignedIn();
+        allow update: if isSignedIn() && resource != null;
+        allow delete: if isSignedIn() && resource != null;
     }
 
     /**
-     * @description Grants public read access, but requires authentication for all write operations on info banners.
-     * @path /infoBanners/{infoBannerId}
-     * @allow (get, list): Always.
-     * @allow (create, update, delete): Only authenticated users.
-     * @deny (create, update, delete): If not authenticated.
-     * @principle Public read, authenticated writes.
+     * @description Allows public read access and owner-only write access to info banner information.
+     * @path /infoBanners/{bannerId}
+     * @allow (get, list): if true
+     * @allow (create): if isSignedIn()
+     * @allow (update, delete): if isSignedIn()
+     * @deny (create): if !isSignedIn()
+     * @deny (update, delete): if !isSignedIn()
+     * @principle Allows public read access and restricts write access to authenticated users.
      */
-    match /infoBanners/{infoBannerId} {
-      allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+    match /infoBanners/{bannerId} {
+        allow get, list: if true;
+        allow create: if isSignedIn();
+        allow update: if isSignedIn() && resource != null;
+        allow delete: if isSignedIn() && resource != null;
     }
 
     /**
-     * @description Restricts access to banner settings to authenticated users only.
+     * @description Allows public read access and owner-only write access to banner settings.
      * @path /settings/banners
-     * @allow (get): Only authenticated users.
-     * @allow (create, update, delete): Only authenticated users.
-     * @deny (get, create, update, delete): If not authenticated.
-     * @principle Authenticated access only.
+     * @allow (get): if true
+     * @allow (create): if isSignedIn()
+     * @allow (update, delete): if isSignedIn()
+     * @allow (list): if false;
+     * @deny (create): if !isSignedIn()
+     * @deny (update, delete): if !isSignedIn()
+     * @principle Allows public read access and restricts write access to authenticated users.
      */
     match /settings/banners {
-      allow get: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+        allow get: if true;
+        allow list: if false;
+        allow create: if isSignedIn();
+        allow update: if isSignedIn() && resource != null;
+        allow delete: if isSignedIn() && resource != null;
     }
 
-    /**
-     * @description Grants read access, but requires authentication for all write operations on banner settings.
-     * @path /settings/{document=**}
-     * @allow (get): Always.
-     * @allow (create, update, delete): Only authenticated users.
-     * @deny (create, update, delete): If not authenticated.
-     * @principle Public read, authenticated writes.
-     */
-     match /settings/{document=**} {
-      allow get: if true;
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
-    }
+  }
 
-
-    // Define helper function to determine if a user is signed in
-    function isSignedIn() {
-      return request.auth != null;
-    }
+  function isSignedIn() {
+    return request.auth != null;
   }
 }
