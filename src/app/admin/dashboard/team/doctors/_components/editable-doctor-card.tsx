@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 
 interface EditableDoctorCardProps {
     doctor: Doctor;
-    onCardClick: (e: React.MouseEvent) => void;
+    onCardClick?: (e: React.MouseEvent) => void;
     isBeingEdited?: boolean;
     showBackside?: boolean;
 }
@@ -70,7 +70,7 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
     return (
         <div 
             id="card-root"
-            className="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border cursor-pointer"
+            className="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border"
             onClick={onCardClick}
         >
              <CodeRenderer html={showBackside ? doctor.backSideCode : doctor.frontSideCode} />
