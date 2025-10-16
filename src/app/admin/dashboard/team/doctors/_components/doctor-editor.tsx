@@ -15,7 +15,7 @@ import { LogoFunctionSelectDialog } from './logo-function-select-dialog';
 import { EditableDoctorCard } from './editable-doctor-card';
 import { useToast } from '@/hooks/use-toast';
 import { projectImages } from '@/app/admin/dashboard/partners/project-images';
-import type { Doctor } from './editable-doctor-card';
+import type { Doctor } from '../page';
 
 interface DoctorEditorProps {
     cardData: Doctor;
@@ -44,14 +44,14 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
 
     const textFields = useMemo(() => ({
         title: extractText(cardData.frontSideCode, 'edit-title'),
-        name: extractText(cardData.frontSideCode, 'edit-name'),
+        name: cardData.name,
         specialty: extractText(cardData.frontSideCode, 'edit-specialty'),
         qual1: extractText(cardData.frontSideCode, 'edit-qual1'),
         qual2: extractText(cardData.frontSideCode, 'edit-qual2'),
         qual3: extractText(cardData.frontSideCode, 'edit-qual3'),
         qual4: extractText(cardData.frontSideCode, 'edit-qual4'),
         position: extractText(cardData.frontSideCode, 'edit-position'),
-    }), [cardData.frontSideCode]);
+    }), [cardData.frontSideCode, cardData.name]);
 
     const updateFrontSideCode = (field: string, value: string) => {
         const parser = new DOMParser();
@@ -84,23 +84,16 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
     };
 
     const handleVitaSave = (newVita: string) => {
-        const wrapInButton = (html: string) => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            const vitaContainer = doc.querySelector('div#edit-vita');
-            if (vitaContainer) {
-                const contentDiv = vitaContainer.querySelector('.vita-content');
-                if (contentDiv) {
-                    contentDiv.innerHTML = html;
-                    return doc.body.innerHTML;
-                }
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(cardData.backSideCode, 'text/html');
+        const vitaContainer = doc.querySelector('#edit-vita');
+        if(vitaContainer) {
+            const contentDiv = vitaContainer.querySelector('.vita-content');
+            if(contentDiv) {
+                contentDiv.innerHTML = newVita;
+                onUpdate({ backSideCode: doc.body.innerHTML });
             }
-            
-            const style = `<style>.vita-content { color: hsl(var(--background)); } .vita-content p { margin: 0; } .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; } .vita-content li { margin-bottom: 0.5em; } .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; } .vita-content .is-small { font-size: 0.8em; font-weight: normal; } .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); } .vita-content span[style*="color: var(--color-tiptap-gray)"] { color: hsl(var(--secondary-foreground)); }</style>`;
-            const contentDiv = `<div class="vita-content w-full h-full">${html}</div>`;
-            return `<div class="w-full h-full text-left">${style}<div id="edit-vita" class="w-full h-full text-left p-8">${contentDiv}</div></div>`;
-        };
-        onUpdate({ backSideCode: wrapInButton(newVita) });
+        }
         setDialog({ type: null });
     };
     
@@ -117,13 +110,13 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
         if (e.target) e.target.value = '';
     };
 
-    const updateHtmlWithImage = (html: string, url: string): string => {
+    const updateHtmlWithImage = (html: string, url: string, field: string): string => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
-        const container = doc.getElementById('image-container');
+        const container = doc.getElementById(field === 'position' ? 'position-container' : 'image-container');
         
         if (container) {
-            const newHtml = `<div id="edit-image" class="image-button w-full h-full relative"><img src="${url}" alt="Portrait" class="h-full w-full object-cover relative" /></div>`;
+            const newHtml = `<div id="edit-${field}" class="w-full h-full relative"><img src="${url}" alt="Portrait" class="h-full w-full ${field === 'position' ? 'object-contain' : 'object-cover'} relative" /></div>`;
             container.innerHTML = newHtml;
         }
         
@@ -131,9 +124,12 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
     };
     
     const handleCropComplete = async (croppedImageUrl: string) => {
+        const { field } = dialog.data;
+        setDialog({ type: null });
+
         if (!storage) {
             toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
-            return setDialog({ type: null });
+            return;
         }
     
         const imagePath = `doctors/${uuidv4()}.jpg`;
@@ -143,23 +139,21 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
             const snapshot = await uploadString(imageRef, croppedImageUrl, 'data_url');
             const downloadURL = await getDownloadURL(snapshot.ref);
     
-            const newFrontSideCode = updateHtmlWithImage(cardData.frontSideCode, downloadURL);
+            const newFrontSideCode = updateHtmlWithImage(cardData.frontSideCode, downloadURL, field);
             onUpdate({ frontSideCode: newFrontSideCode });
         
         } catch (error) {
             console.error("Error uploading image: ", error);
             toast({ variant: 'destructive', title: 'Upload-Fehler', description: 'Das Bild konnte nicht hochgeladen werden.' });
         }
-        setDialog({ type: null });
     };
 
     const handleCardClick = (e: React.MouseEvent) => {
         let target = e.target as HTMLElement;
         let field: string | null = null;
-        let dialogTitle: string | undefined = undefined;
 
-        while (target && target.id !== 'card-root') {
-            if (target.id.startsWith('edit-')) {
+        while (target && target.id !== 'card-root' && target.id !== 'doctor-editor-root') {
+             if (target.id.startsWith('edit-')) {
                 field = target.id.replace('edit-', '');
                 break;
             }
@@ -191,7 +185,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
                     qual3: "Qualifikation 3 bearbeiten",
                     qual4: "Qualifikation 4 bearbeiten",
                 };
-                dialogTitle = titles[field] || "Text bearbeiten";
+                const dialogTitle = titles[field] || "Text bearbeiten";
                 setDialog({ type: 'text', data: { title: dialogTitle, label: 'Neuer Text', initialValue: textFields[field as keyof typeof textFields], field } });
             }
         }
@@ -199,7 +193,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
 
 
     return (
-        <>
+        <div id="doctor-editor-root">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                 <div>
                     <p className="text-center block mb-2 text-sm font-medium text-muted-foreground">Vorderseite</p>
@@ -240,6 +234,6 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate }
             {dialog.type === 'imageCrop' && (
                 <ImageCropDialog {...dialog.data} onCropComplete={handleCropComplete} onClose={() => setDialog({ type: null })} />
             )}
-        </>
+        </div>
     );
 };
