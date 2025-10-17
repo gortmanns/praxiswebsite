@@ -199,5 +199,3 @@ export function CooperationPartnersSection() {
     </section>
   );
 }
-
-    
