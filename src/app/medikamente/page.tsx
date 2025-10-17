@@ -1,4 +1,6 @@
 
+'use client';
+
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,8 +9,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
 import { cn } from '@/lib/utils';
 import { Phone, Mail } from 'lucide-react';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { useState } from 'react';
 
 export default function MedikamentePage() {
+  const [toggleValue, setToggleValue] = useState('telefon');
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -54,6 +60,24 @@ export default function MedikamentePage() {
             <p className="mt-4 text-xl font-bold text-foreground">
               Ganz bequem, wahlweise per Telefon oder E-Mail
             </p>
+          </div>
+
+          <div className="mx-auto mt-12 max-w-4xl space-y-8">
+            <div className="rounded-lg border p-6">
+                <h4 className="text-center font-headline text-xl font-bold text-primary mb-4">Beispiel: Segmented Control / Umschalter</h4>
+                <div className="flex justify-center">
+                    <ToggleGroup type="single" value={toggleValue} onValueChange={(value) => { if (value) setToggleValue(value); }} className="w-full max-w-md">
+                        <ToggleGroupItem value="telefon" className="flex-1 data-[state=on]:bg-gradient-to-b data-[state=on]:from-gradient-start data-[state=on]:to-gradient-end data-[state=on]:text-primary-foreground">
+                            <Phone className="mr-2 h-4 w-4" />
+                            Telefon
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="email" className="flex-1 data-[state=on]:bg-gradient-to-b data-[state=on]:from-gradient-start data-[state=on]:to-gradient-end data-[state=on]:text-primary-foreground">
+                            <Mail className="mr-2 h-4 w-4" />
+                            E-Mail
+                        </ToggleGroupItem>
+                    </ToggleGroup>
+                </div>
+            </div>
           </div>
 
           <div className="mx-auto mt-12 max-w-7xl">
