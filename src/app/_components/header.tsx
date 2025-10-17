@@ -199,7 +199,17 @@ export function Header() {
                         'relative z-10 flex h-full cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold uppercase transition-colors',
                         zeitenActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}>
-                        Zeiten <ChevronDown className="h-4 w-4" />
+                        <div>
+                            <div className="flex items-center">
+                                Zeiten <ChevronDown className="h-4 w-4 ml-1" />
+                            </div>
+                            <span className={cn(
+                                "text-xs font-normal normal-case transition-colors",
+                                zeitenActive ? 'text-primary-foreground/70' : 'text-muted-foreground/80'
+                            )}>
+                                Erreichbarkeit
+                            </span>
+                        </div>
                     </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent onMouseLeave={handleMouseLeave}>
