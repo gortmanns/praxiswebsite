@@ -135,7 +135,14 @@ export default function LeistungenPage() {
                         </div>
                     </div>
                     <div className={cn("relative flex-1", leistung.name === 'TWINT' && "bg-black")}>
-                      {/* Image will be added back in the next step */}
+                        <Image
+                            src={leistung.image}
+                            alt={leistung.name}
+                            fill
+                            className="object-cover"
+                            data-ai-hint={leistung.hint}
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        />
                     </div>
                      {leistung.backsideContent && (
                           <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
