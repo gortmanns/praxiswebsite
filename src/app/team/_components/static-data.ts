@@ -70,8 +70,8 @@ export const doctorsData = [
                         </div>
                     </div>
                     <div class="absolute bottom-0 right-0 flex items-center gap-2">
-                        <img src="https://flag.pk/flags/iso/de.svg" class="h-5 w-auto rounded-sm shadow-md border border-border" alt="DE">
-                        <img src="https://flag.pk/flags/iso/gb.svg" class="h-5 w-auto rounded-sm shadow-md border border-border" alt="EN">
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md border border-border"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="h-5 w-auto rounded-sm shadow-md border border-border"><clipPath id="a"><path d="M30 15h30v15zv-15z"></path></clipPath><path d="M0 0v30h60V0z" fill="#012169"></path><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"></path><path d="M0 0l60 30m0-30L0 30" clip-path="url(#a)" stroke="#C8102E" stroke-width="4"></path><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"></path><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"></path></svg>
                     </div>
                 </div>
             </div>
@@ -170,8 +170,8 @@ export const doctorsData = [
                         </div>
                     </div>
                     <div class="absolute bottom-0 right-0 flex items-center gap-2">
-                        <img src="https://flag.pk/flags/iso/de.svg" class="h-5 w-auto rounded-sm shadow-md border border-border" alt="DE">
-                        <img src="https://flag.pk/flags/iso/en.svg" class="h-5 w-auto rounded-sm shadow-md border border-border" alt="EN">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="h-5 w-auto rounded-sm shadow-md border border-border"><rect width="5" height="3" fill="#FFCE00"></rect><rect width="5" height="2" fill="#DD0000"></rect><rect width="5" height="1" fill="#000"></rect></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" class="h-5 w-auto rounded-sm shadow-md border border-border"><clipPath id="a"><path d="M30 15h30v15zv-15z"></path></clipPath><path d="M0 0v30h60V0z" fill="#012169"></path><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"></path><path d="M0 0l60 30m0-30L0 30" clip-path="url(#a)" stroke="#C8102E" stroke-width="4"></path><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"></path><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"></path></svg>
                     </div>
                 </div>
             </div>
