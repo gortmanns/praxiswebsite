@@ -9,7 +9,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { TeamMemberCard } from '../../staff/_components/staff-card';
+import { TeamMemberCard } from '@/app/team/_components/team-member-card';
 import type { ServiceProvider } from '../page';
 
 
