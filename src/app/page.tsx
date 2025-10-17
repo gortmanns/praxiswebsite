@@ -57,19 +57,20 @@ const PartnerCard: React.FC<{ partner: Partner }> = ({ partner }) => (
 
 const RowGrid: React.FC<{ partners: Partner[] }> = ({ partners }) => {
     if (!partners || partners.length === 0) return null;
-
+    
     const getGridStyle = (index: number, total: number) => {
-        let colStart;
-        if (total === 4) { // 2-2-2-2
+        let colStart = 0;
+        if (total === 4) {
             colStart = index * 2 + 1;
-        } else if (total === 3) { // 1-2-2-2-1
-             colStart = index * 2 + 2;
-        } else if (total === 2) { // 2-2-2 centered
+        } else if (total === 3) {
+            colStart = index * 2 + 2;
+        } else if (total === 2) {
             colStart = index * 2 + 3;
-        } else { // 1 card centered
+        } else if (total === 1) {
             colStart = 4;
         }
-        return { gridColumnStart: colStart, gridColumnEnd: `span 2` };
+
+        return { gridColumnStart: colStart, gridColumnEnd: 'span 2' };
     };
 
     return (
@@ -100,17 +101,66 @@ const PartnerGrid: React.FC<{ partners: Partner[] }> = ({ partners }) => {
     );
 };
 
+function CooperationPartnersSection() {
+  const firestore = useFirestore();
+
+  const medicalPartnersQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'medicalPartners'), where('hidden', '==', false), orderBy('order', 'asc'));
+  }, [firestore]);
+
+  const otherPartnersQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'otherPartners'), where('hidden', '==', false), orderBy('order', 'asc'));
+  }, [firestore]);
+  
+  const { data: medicalPartners, isLoading: isLoadingMedical } = useCollection<Partner>(medicalPartnersQuery);
+  const { data: otherPartners, isLoading: isLoadingOther } = useCollection<Partner>(otherPartnersQuery);
+  
+  return (
+    <section id="partners" className="w-full bg-primary">
+      <div className="mx-auto w-full px-4 pt-12 pb-16 sm:px-6 lg:px-8">
+        <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
+          Unsere ärztlichen Kooperationspartner
+        </h2>
+        
+        <div className="mt-12">
+          {isLoadingMedical ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {Array.from({ length: 4 }).map((_, index) => (
+                    <Skeleton key={index} className="h-32 w-full rounded-lg" />
+                ))}
+            </div>
+          ) : (
+            <PartnerGrid partners={medicalPartners || []} />
+          )}
+        </div>
+
+        {(isLoadingOther || (otherPartners && otherPartners.length > 0)) && (
+            <>
+                <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
+                Unsere weiteren Partner
+                </h3>
+                <div className="mt-12">
+                    {isLoadingOther ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {Array.from({ length: 4 }).map((_, index) => (
+                                 <Skeleton key={index} className="h-32 w-full rounded-lg" />
+                            ))}
+                        </div>
+                    ) : (
+                        <PartnerGrid partners={otherPartners || []} />
+                    )}
+                </div>
+            </>
+        )}
+      </div>
+    </section>
+  );
+}
+
 
 export default function Home() {
-    const firestore = useFirestore();
-
-    const medicalPartnersQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
-        return query(collection(firestore, 'medicalPartners'), where('hidden', '==', false), orderBy('order', 'asc'));
-    }, [firestore]);
-    
-    const { data: medicalPartners, isLoading: isLoadingMedical } = useCollection<Partner>(medicalPartnersQuery);
-    
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -118,24 +168,7 @@ export default function Home() {
         <Hero />
         <WelcomeSection />
         <QuickNavSection />
-        <section id="partners" className="w-full bg-green-600">
-            <div className="mx-auto w-full px-4 pt-12 pb-16 sm:px-6 lg:px-8">
-                <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                    Unsere ärztlichen Kooperationspartner
-                </h2>
-                 <div className="mt-12">
-                  {isLoadingMedical ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {Array.from({ length: 4 }).map((_, index) => (
-                            <Skeleton key={index} className="h-32 w-full rounded-lg" />
-                        ))}
-                    </div>
-                  ) : (
-                    <PartnerGrid partners={medicalPartners || []} />
-                  )}
-                </div>
-            </div>
-        </section>
+        <CooperationPartnersSection />
       </main>
       <Footer />
     </div>
