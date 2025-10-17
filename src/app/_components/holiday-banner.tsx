@@ -6,6 +6,10 @@ import { format, differenceInDays, isWithinInterval, addDays, subDays } from 'da
 import { de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
+import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
+import { doc, collection, query, where, Timestamp } from 'firebase/firestore';
+import type { Holiday as HolidayData, BannerSettings, InfoBanner as InfoBannerData } from '@/docs/backend-types';
+
 
 const FilledDiamond = (props: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" {...props}>
@@ -34,15 +38,98 @@ const Separator = ({ style }: { style: SeparatorStyle }) => {
     }
 };
 
+interface Holiday extends HolidayData {
+    start: Date;
+    end: Date;
+}
+
+interface InfoBanner extends InfoBannerData {
+    start: Date;
+    end: Date;
+}
+
+interface InfoBannerFromDB extends Omit<InfoBanner, 'start' | 'end'> {
+    start: Timestamp;
+    end: Timestamp;
+}
+
+const formatDate = (date: Date, pattern: string = 'd. MMM yyyy') => format(date, pattern, { locale: de });
+
+
 export function HolidayBanner() {
     const [isVisible, setIsVisible] = useState(true);
     const [bannerInfo, setBannerInfo] = useState<BannerInfo | null>(null);
+    const firestore = useFirestore();
+
+    const bannerSettingsDoc = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'banners') : null, [firestore]);
+    const holidaysQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'holidays')) : null, [firestore]);
+    const infoBannersQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'infoBanners'), where('end', '>=', new Date())) : null, [firestore]);
+
+    const { data: bannerSettings } = useDoc<BannerSettings>(bannerSettingsDoc);
+    const { data: holidaysData } = useCollection<HolidayData & { start: Timestamp, end: Timestamp }>(holidaysQuery);
+    const { data: infoBannersData } = useCollection<InfoBannerFromDB>(infoBannersQuery);
+
+    const holidays = useMemo<Holiday[]>(() => {
+        if (!holidaysData) return [];
+        return holidaysData.map(h => ({ ...h, start: h.start.toDate(), end: h.end.toDate() }));
+    }, [holidaysData]);
+
+    const infoBanners = useMemo<InfoBanner[]>(() => {
+        if (!infoBannersData) return [];
+        return infoBannersData.map(b => ({ ...b, start: b.start.toDate(), end: b.end.toDate() }));
+    }, [infoBannersData]);
 
     useEffect(() => {
-        // Since database logic is removed, we don't fetch anything.
-        // Set bannerInfo to null to ensure no banner is displayed.
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Check for custom info banners first
+        const activeInfoBanner = infoBanners.find(banner => isWithinInterval(today, { start: banner.start, end: banner.end }));
+        if (activeInfoBanner) {
+            setBannerInfo({
+                text: activeInfoBanner.text,
+                color: 'blue',
+                separatorStyle: activeInfoBanner.separatorStyle || 'diamonds',
+            });
+            return;
+        }
+
+        if (!holidays.length || !bannerSettings) return;
+
+        for (const holiday of holidays) {
+            const preHolidayStart = subDays(holiday.start, bannerSettings.preHolidayDays);
+
+            // Check if today is during a holiday
+            if (isWithinInterval(today, { start: holiday.start, end: holiday.end })) {
+                const redText = bannerSettings.redBannerText
+                    .replace('{name}', holiday.name)
+                    .replace('{start}', formatDate(holiday.start))
+                    .replace('{ende}', formatDate(holiday.end))
+                    .replace('{ende+1}', formatDate(addDays(holiday.end, 1)))
+                    .replace('{ende+2}', formatDate(addDays(holiday.end, 2)))
+                    .replace('{ende+3}', formatDate(addDays(holiday.end, 3)));
+                
+                setBannerInfo({ text: redText, color: 'red', separatorStyle: bannerSettings.redBannerSeparatorStyle || 'diamonds' });
+                return;
+            }
+
+            // Check if today is in the pre-holiday period
+            if (isWithinInterval(today, { start: preHolidayStart, end: subDays(holiday.start, 1) })) {
+                 const yellowText = bannerSettings.yellowBannerText
+                    .replace('{name}', holiday.name)
+                    .replace('{start}', formatDate(holiday.start))
+                    .replace('{start-1}', formatDate(subDays(holiday.start, 1)))
+                    .replace('{ende}', formatDate(holiday.end));
+
+                setBannerInfo({ text: yellowText, color: 'yellow', separatorStyle: bannerSettings.yellowBannerSeparatorStyle || 'diamonds' });
+                return;
+            }
+        }
+        
+        // If no active banners, set to null
         setBannerInfo(null);
-    }, []);
+
+    }, [holidays, bannerSettings, infoBanners]);
 
 
     const marqueeRef = useRef<HTMLDivElement>(null);
@@ -85,4 +172,3 @@ export function HolidayBanner() {
         </div>
     );
 }
-
