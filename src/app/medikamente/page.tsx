@@ -60,14 +60,14 @@ export default function MedikamentePage() {
 
           <div className="mx-auto mt-12 max-w-7xl">
              <Tabs defaultValue="telefon" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid h-auto w-full grid-cols-1 gap-0 bg-transparent p-0 sm:grid-cols-2">
+                <TabsList className="grid h-auto w-full grid-cols-1 bg-transparent p-0 sm:grid-cols-2">
                     <TabsTrigger
                         value="telefon"
                         className={cn(
-                          'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold transition-all duration-300',
+                          'group/telefon mr-1 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold transition-all duration-300',
                           'border-x border-t border-border',
                           '!bg-gradient-start !text-primary-foreground',
-                          activeTab === 'telefon' ? 'rounded-b-none' : 'hover:opacity-90'
+                           activeTab === 'telefon' ? 'rounded-b-none' : ''
                         )}
                     >
                         <div className="flex flex-col items-center">
@@ -81,10 +81,10 @@ export default function MedikamentePage() {
                      <TabsTrigger
                         value="email"
                         className={cn(
-                          'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold transition-all duration-300',
+                          'group/email ml-1 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold transition-all duration-300',
                            'border-x border-t border-border',
                            '!bg-secondary !text-primary-foreground',
-                           activeTab === 'email' ? 'rounded-b-none' : 'hover:opacity-90'
+                           activeTab === 'email' ? 'rounded-b-none' : ''
                         )}
                     >
                         <div className="flex flex-col items-center">
@@ -97,7 +97,7 @@ export default function MedikamentePage() {
                     </TabsTrigger>
                 </TabsList>
               <TabsContent value="telefon" className="-mt-px">
-                 <Card className="rounded-t-none border-t-0 bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
+                 <Card className="rounded-t-none !border-t-0 bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg">
                             <h4 className="text-left font-headline text-2xl font-bold">Vorbestellung per Telefon</h4>
@@ -119,7 +119,7 @@ export default function MedikamentePage() {
                 </Card>
               </TabsContent>
               <TabsContent value="email" className="-mt-px">
-                <Card className="rounded-t-none border-t-0 bg-gradient-to-b from-secondary to-accent text-primary-foreground">
+                <Card className="rounded-t-none !border-t-0 bg-gradient-to-b from-secondary to-accent text-primary-foreground">
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg">
                             <h4 className="text-left font-headline text-2xl font-bold">Vorbestellung per E-Mail</h4>
