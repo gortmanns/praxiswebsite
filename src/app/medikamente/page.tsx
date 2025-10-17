@@ -66,12 +66,8 @@ export default function MedikamentePage() {
                         className={cn(
                           'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold transition-all duration-300',
                           'border-x border-t border-border',
-                          // Static colors that should not change
                           '!bg-gradient-start !text-primary-foreground',
-                          // Handle active/inactive state
-                          activeTab === 'telefon'
-                            ? 'rounded-b-none opacity-100'
-                            : 'opacity-70 hover:opacity-100'
+                          activeTab === 'telefon' ? 'rounded-b-none' : 'hover:opacity-90'
                         )}
                     >
                         <div className="flex flex-col items-center">
@@ -87,12 +83,8 @@ export default function MedikamentePage() {
                         className={cn(
                           'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold transition-all duration-300',
                            'border-x border-t border-border',
-                           // Static colors that should not change
                            '!bg-secondary !text-primary-foreground',
-                           // Handle active/inactive state
-                           activeTab === 'email'
-                            ? 'rounded-b-none opacity-100'
-                            : 'opacity-70 hover:opacity-100'
+                           activeTab === 'email' ? 'rounded-b-none' : 'hover:opacity-90'
                         )}
                     >
                         <div className="flex flex-col items-center">
