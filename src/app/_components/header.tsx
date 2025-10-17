@@ -130,14 +130,14 @@ export function Header() {
       </div>
 
       <div className="flex h-[140px] items-center justify-between px-8">
-        <Link href="/" className="min-w-[280px]">
+        <Link href="/" className="min-w-[280px] max-w-[781px]">
               <Image
                 src="/images/praxiszentrum-logo.png"
                 alt="Praxiszentrum im Ring Logo"
                 data-ai-hint="practice logo"
                 width={1964}
                 height={398}
-                className="h-auto w-full max-w-[781px]"
+                className="h-auto w-full"
                 priority
               />
         </Link>
