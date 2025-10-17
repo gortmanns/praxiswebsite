@@ -45,6 +45,7 @@ export function AppSidebar() {
   const teamNavItems = [
       { href: '/admin/dashboard/team/doctors', label: 'Ärzte' },
       { href: '/admin/dashboard/team/staff', label: 'Praxispersonal' },
+      { href: '/admin/dashboard/team/service-providers', label: 'Externe Dienstleister' },
   ];
 
   const cardPartnerNavItems = [
@@ -186,3 +187,5 @@ export function AppSidebar() {
       </Sidebar>
   );
 }
+
+    

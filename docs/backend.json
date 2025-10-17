@@ -34,6 +34,24 @@
       },
       "required": ["id", "order", "name", "role", "imageUrl"]
     },
+    "ServiceProvider": {
+      "title": "Service Provider",
+      "description": "Represents an external service provider's profile.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the service provider." },
+        "order": { "type": "number", "description": "Display order of the service provider." },
+        "name": { "type": "string", "description": "The full name of the service provider." },
+        "role": { "type": "string", "description": "The primary role of the service provider." },
+        "role2": { "type": "string", "description": "An optional secondary role." },
+        "imageUrl": { "type": "string", "description": "URL of the service provider's portrait image." },
+        "backsideContent": { "type": "string", "description": "HTML or text content for the card's flip side." },
+        "languages": { "type": "array", "items": { "type": "string" }, "description": "Languages spoken by the service provider." },
+        "hidden": { "type": "boolean", "description": "Whether the service provider card is hidden." },
+        "fullWidth": { "type": "boolean", "description": "Whether the card should span the full width of the grid." }
+      },
+      "required": ["id", "order", "name", "role", "imageUrl"]
+    },
     "MedicalPartner": {
       "title": "Medical Partner",
       "description": "Represents a medical cooperation partner.",
@@ -123,6 +141,10 @@
       "schema": { "$ref": "#/entities/StaffMember" },
       "description": "Stores practice staff member profiles."
     },
+    "serviceProviders": {
+      "schema": { "$ref": "#/entities/ServiceProvider" },
+      "description": "Stores external service provider profiles."
+    },
     "medicalPartners": {
       "schema": { "$ref": "#/entities/MedicalPartner" },
       "description": "Stores medical cooperation partner information."
@@ -145,3 +167,5 @@
     }
   }
 }
+
+    
