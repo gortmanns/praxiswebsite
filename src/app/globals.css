@@ -26,6 +26,9 @@
     --accent: 220 9% 40%;
     --accent-foreground: 197 100% 47%;
 
+    --info: 200 100% 95%;
+    --info-foreground: 197 100% 27%;
+
     --destructive: 0 84.2% 40.2%;
     --destructive-foreground: 0 0% 98%;
 

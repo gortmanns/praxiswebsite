@@ -84,7 +84,7 @@
         },
         "required": ["id", "name", "start", "end"]
     },
-    "InfoBanner": {
+     "InfoBanner": {
       "title": "Info Banner",
       "description": "Represents a single custom blue info banner.",
       "type": "object",
@@ -95,7 +95,7 @@
         "end": { "type": "string", "format": "date-time" },
         "separatorStyle": { "type": "string", "enum": ["diamonds", "spaces", "equals", "dashes", "plus", "asterisks"] }
       },
-      "required": ["id", "text"]
+      "required": ["id", "text", "start", "end", "separatorStyle"]
     },
     "BannerSettings": {
       "title": "Banner Settings",
