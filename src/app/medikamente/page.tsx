@@ -58,38 +58,40 @@ export default function MedikamentePage() {
 
           <div className="mx-auto mt-12 max-w-7xl">
              <Tabs defaultValue="telefon" className="w-full">
-               <TabsList className="grid h-auto w-full grid-cols-1 gap-0 bg-transparent p-0 sm:grid-cols-2">
-                  <TabsTrigger
-                      value="telefon"
-                      className={cn(
-                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-xl font-bold data-[state=inactive]:bg-secondary data-[state=inactive]:text-secondary-foreground',
-                        'data-[state=active]:rounded-t-lg data-[state=active]:bg-gradient-start data-[state=active]:text-primary-foreground'
-                      )}
-                  >
-                    <div className="flex flex-col items-center">
-                        <div className="flex items-center gap-3">
-                            <Phone className="h-6 w-6"/>
-                            <span>Vorbestellung per Telefon</span>
+                <TabsList className="grid h-auto w-full grid-cols-1 gap-0 bg-transparent p-0 sm:grid-cols-2">
+                    <TabsTrigger
+                        value="telefon"
+                        className={cn(
+                            'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-xl font-bold',
+                            'data-[state=active]:bg-gradient-start data-[state=active]:text-primary-foreground data-[state=active]:rounded-b-none',
+                            'data-[state=inactive]:bg-secondary data-[state=inactive]:text-secondary-foreground'
+                        )}
+                    >
+                        <div className="flex flex-col items-center">
+                            <div className="flex items-center gap-3">
+                                <Phone className="h-6 w-6"/>
+                                <span>Vorbestellung per Telefon</span>
+                            </div>
+                            <span className="text-base font-normal">031 316 26 66</span>
                         </div>
-                        <span className="text-base font-normal">031 316 26 66</span>
-                    </div>
-                  </TabsTrigger>
-                  <TabsTrigger
-                      value="email"
-                      className={cn(
-                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-xl font-bold data-[state=inactive]:bg-secondary data-[state=inactive]:text-secondary-foreground',
-                        'data-[state=active]:rounded-t-lg data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground'
-                      )}
-                  >
-                     <div className="flex flex-col items-center">
-                        <div className="flex items-center gap-3">
-                            <Mail className="h-6 w-6"/>
-                            <span>Vorbestellung per E-Mail</span>
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="email"
+                        className={cn(
+                            'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-xl font-bold',
+                             'data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground data-[state=active]:rounded-b-none',
+                            'data-[state=inactive]:bg-gradient-start data-[state=inactive]:text-primary-foreground'
+                        )}
+                    >
+                        <div className="flex flex-col items-center">
+                            <div className="flex items-center gap-3">
+                                <Mail className="h-6 w-6"/>
+                                <span>Vorbestellung per E-Mail</span>
+                            </div>
+                            <span className="break-all text-base font-normal">medikamente@praxiszentrum-im-ring.ch</span>
                         </div>
-                        <span className="break-all text-base font-normal">medikamente@praxiszentrum-im-ring.ch</span>
-                     </div>
-                  </TabsTrigger>
-              </TabsList>
+                    </TabsTrigger>
+                </TabsList>
               <TabsContent value="telefon" className="mt-0">
                 <Card className="rounded-t-none border-t-0 bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
                     <CardContent className="p-6 md:p-8">
