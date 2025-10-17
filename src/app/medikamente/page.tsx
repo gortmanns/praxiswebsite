@@ -66,26 +66,34 @@ export default function MedikamentePage() {
           <div className="mx-auto mt-12 max-w-4xl space-y-8">
             <div className="rounded-lg border p-6">
                 <h4 className="text-center font-headline text-xl font-bold text-primary mb-4">Beispiel: Akkordeon-Ansicht</h4>
-                <Accordion type="single" collapsible className="w-full" defaultValue="telefon">
-                    <AccordionItem value="telefon">
-                        <AccordionTrigger>
-                            <div className="flex items-center gap-3 text-lg font-bold">
+                 <Accordion type="single" collapsible className="w-full space-y-2" defaultValue="telefon">
+                    <AccordionItem value="telefon" className="overflow-hidden rounded-lg border-none">
+                        <AccordionTrigger className={cn(
+                            "flex items-center gap-3 p-4 text-lg font-bold transition-all",
+                            "data-[state=closed]:bg-secondary data-[state=closed]:text-secondary-foreground data-[state=closed]:hover:bg-secondary/80",
+                            "data-[state=open]:bg-gradient-to-b data-[state=open]:from-gradient-start data-[state=open]:to-gradient-end data-[state=open]:text-primary-foreground"
+                        )}>
+                            <div className="flex items-center gap-3">
                                 <Phone className="h-5 w-5"/>
                                 Vorbestellung per Telefon
                             </div>
                         </AccordionTrigger>
-                        <AccordionContent>
+                        <AccordionContent className="bg-card p-4">
                             <p className="text-base text-foreground/80 pt-2">Hier würde der Inhalt für die telefonische Bestellung stehen. Dies ist ein Beispieltext, um die Funktion des Akkordeons zu demonstrieren. Der tatsächliche Inhalt kann hier eingefügt werden.</p>
                         </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="email">
-                        <AccordionTrigger>
-                             <div className="flex items-center gap-3 text-lg font-bold">
+                    <AccordionItem value="email" className="overflow-hidden rounded-lg border-none">
+                        <AccordionTrigger className={cn(
+                            "flex items-center gap-3 p-4 text-lg font-bold transition-all",
+                            "data-[state=closed]:bg-secondary data-[state=closed]:text-secondary-foreground data-[state=closed]:hover:bg-secondary/80",
+                            "data-[state=open]:bg-gradient-to-b data-[state=open]:from-gradient-start data-[state=open]:to-gradient-end data-[state=open]:text-primary-foreground"
+                        )}>
+                             <div className="flex items-center gap-3">
                                 <Mail className="h-5 w-5"/>
                                 Vorbestellung per E-Mail
                             </div>
                         </AccordionTrigger>
-                        <AccordionContent>
+                        <AccordionContent className="bg-card p-4">
                             <p className="text-base text-foreground/80 pt-2">Hier würde der Inhalt für die E-Mail-Bestellung stehen. Dies ist ein Beispieltext, um zu zeigen, wie der zweite Bereich des Akkordeons aussieht, wenn er geöffnet ist.</p>
                         </AccordionContent>
                     </AccordionItem>
