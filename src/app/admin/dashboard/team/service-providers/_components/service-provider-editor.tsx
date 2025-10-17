@@ -21,16 +21,17 @@ import { projectImages } from '@/app/admin/dashboard/partners/project-images';
 import { LanguageSelectDialog } from '@/app/admin/dashboard/team/doctors/_components/language-select-dialog';
 import { VitaEditorDialog } from '@/app/admin/dashboard/team/doctors/_components/vita-editor-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { LanguageFlags } from '@/app/admin/dashboard/team/doctors/_components/language-flags';
 import type { ServiceProvider } from '../page';
+import { EditableServiceProviderCard } from './editable-service-provider-card';
 
 
 interface ServiceProviderEditorProps {
     cardData: ServiceProvider;
     onUpdate: (updatedData: Partial<ServiceProvider>) => void;
+    isCreatingNew: boolean;
 }
 
-export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ cardData, onUpdate }) => {
+export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ cardData, onUpdate, isCreatingNew }) => {
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -83,10 +84,22 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
         onUpdate({ backsideContent: newVita });
         setDialogState({ type: null, data: {} });
     };
-    
-    const backsideElement = cardData.backsideContent ? (
-        <div dangerouslySetInnerHTML={{ __html: cardData.backsideContent }} />
-    ) : null;
+
+    const handleCardClick = (e: React.MouseEvent) => {
+        let target = e.target as HTMLElement;
+         while (target && target.id !== 'card-root') {
+            if (target.tagName === 'IMG' || (target.parentElement && target.parentElement.id === 'card-image-container')) {
+                 setDialogState({ type: 'imageSource', data: {} });
+                 return;
+            }
+            if (target.classList.contains('flip-card-back') || (target.parentElement && target.parentElement.classList.contains('flip-card-back'))) {
+                setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent || '' } });
+                return;
+            }
+            target = target.parentElement as HTMLElement;
+        }
+    };
+
 
     return (
         <>
@@ -118,39 +131,10 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
                     </Alert>
                 </div>
 
-                <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="w-full max-w-sm overflow-hidden rounded-lg border bg-background text-card-foreground shadow-xl">
-                            <div className="flex h-full flex-col p-6">
-                                <button className="relative w-full overflow-hidden rounded-md aspect-[2/3] cursor-pointer" onClick={() => setDialogState({ type: 'imageSource', data: {} })}>
-                                    {cardData.imageUrl ? (
-                                        <img
-                                            src={cardData.imageUrl}
-                                            alt={`Portrait von ${cardData.name}`}
-                                            className="object-cover w-full h-full"
-                                        />
-                                    ) : (
-                                        <div className="flex h-full w-full items-center justify-center bg-secondary aspect-[2/3]">
-                                            <UserIcon className="h-24 w-24 text-muted-foreground" />
-                                        </div>
-                                    )}
-                                </button>
-                                <div className="flex-grow pt-6 text-center min-h-[110px]">
-                                    <h4 className="text-xl font-bold text-primary">{cardData.name}</h4>
-                                    <p className="mt-2 text-base font-bold text-muted-foreground">{cardData.role}</p>
-                                    {cardData.role2 && <p className="mt-1 text-base text-muted-foreground">{cardData.role2}</p>}
-                                </div>
-                                <div className="flex h-8 items-end justify-end pt-4">
-                                    {cardData.languages && <LanguageFlags languages={cardData.languages} />}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="relative w-full max-w-sm overflow-hidden rounded-lg border bg-accent/95 text-background shadow-xl aspect-[2/3]">
-                            <button className="absolute top-2 right-2 z-10 p-2 text-white/80 hover:text-white" onClick={() => setDialogState({ type: 'vita', data: { initialValue: cardData.backsideContent || '' } })}>
-                                <Pencil className="h-8 w-8 font-bold" />
-                            </button>
-                            <div className="p-6 text-center text-lg">{backsideElement}</div>
-                        </div>
+                <div className="flex justify-center space-y-4">
+                     <div className="grid grid-cols-2 gap-4">
+                        <EditableServiceProviderCard provider={cardData} onCardClick={handleCardClick} showBackside={true} />
+                        <EditableServiceProviderCard provider={cardData} onCardClick={handleCardClick} showBacksideOnly={true} />
                     </div>
                 </div>
             </div>

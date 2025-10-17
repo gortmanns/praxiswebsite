@@ -293,7 +293,7 @@ export default function ServiceProvidersPage() {
                 <CardContent>
                    {isEditing && (
                         <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted p-4 mb-8">
-                            <ServiceProviderEditor cardData={editorCardState} onUpdate={setEditorCardState} />
+                            <ServiceProviderEditor cardData={editorCardState} onUpdate={setEditorCardState} isCreatingNew={isCreatingNew} />
                         </div>
                     )}
 
