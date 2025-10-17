@@ -120,7 +120,7 @@ export default function LeistungenPage() {
 
             <div className="mx-auto mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {leistungen.map((leistung) => (
-                  <div key={leistung.name} className="group relative flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-lg transition-all hover:-translate-y-1 hover:shadow-xl aspect-[4/5]">
+                  <div key={leistung.name} className="group relative flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-xl transition-all hover:-translate-y-1 hover:shadow-2xl aspect-[4/5]">
                     <div className="flex items-center justify-center p-4 min-h-[9rem]">
                         <div className="text-center">
                           <h3 className="font-headline text-2xl font-bold text-primary">
