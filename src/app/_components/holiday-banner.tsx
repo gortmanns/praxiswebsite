@@ -148,7 +148,7 @@ export function HolidayBanner() {
     const bannerClasses = {
         yellow: 'bg-yellow-400 border-yellow-500 text-yellow-900',
         red: 'bg-red-500 border-red-600 text-white',
-        blue: 'bg-info border-primary/20 text-info-foreground',
+        blue: 'bg-accent border-accent-foreground/20 text-primary',
     };
 
     return (
