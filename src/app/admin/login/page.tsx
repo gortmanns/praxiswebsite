@@ -16,6 +16,8 @@ import Image from 'next/image';
 export default function LoginPage() {
   const auth = useAuth();
   const router = useRouter();
+  const [email, setEmail] = useState('admin@praxis-im-ring.ch');
+  const [password, setPassword] = useState('password');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -25,7 +27,7 @@ export default function LoginPage() {
     setError(null);
     try {
         await setPersistence(auth, browserLocalPersistence);
-        await signInWithEmailAndPassword(auth, 'admin@praxis-im-ring.ch', 'password');
+        await signInWithEmailAndPassword(auth, email, password);
         router.push('/admin/dashboard');
     } catch (err: any) {
         if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
@@ -61,11 +63,11 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Benutzername</Label>
-              <Input id="email" type="text" value="admin@praxis-im-ring.ch" readOnly disabled />
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="admin@praxis-im-ring.ch" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Passwort</Label>
-              <Input id="password" type="password" value="password" readOnly disabled />
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
             </div>
             {error && (
               <Alert variant="destructive">
