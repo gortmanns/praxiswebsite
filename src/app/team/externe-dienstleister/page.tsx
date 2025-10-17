@@ -32,7 +32,7 @@ export default function ExterneDienstleisterPage() {
             <div>
               <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl">Externe Dienstleister im Praxiszentrum im Ring</h2>
               <p className="mt-4 text-center text-lg text-foreground/80">
-                Zur Erweiterung unseres Angebots arbeiten wir mit qualifizierten externen Spezialisten zusammen.
+                Zur Erweiterung unseres Angebots arbeiten wir mit den nachfolgenden Spezialisten zusammen, die Ihre Dienstleistungen in unseren Praxisräumen anbieten.
               </p>
             </div>
             
