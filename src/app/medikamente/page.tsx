@@ -6,6 +6,7 @@ import { Footer } from '../_components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
 import { cn } from '@/lib/utils';
 import { Phone, Mail } from 'lucide-react';
@@ -64,19 +65,31 @@ export default function MedikamentePage() {
 
           <div className="mx-auto mt-12 max-w-4xl space-y-8">
             <div className="rounded-lg border p-6">
-                <h4 className="text-center font-headline text-xl font-bold text-primary mb-4">Beispiel: Segmented Control / Umschalter</h4>
-                <div className="flex justify-center">
-                    <ToggleGroup type="single" value={toggleValue} onValueChange={(value) => { if (value) setToggleValue(value); }} className="w-full max-w-md">
-                        <ToggleGroupItem value="telefon" className="flex-1 data-[state=on]:bg-gradient-to-b data-[state=on]:from-gradient-start data-[state=on]:to-gradient-end data-[state=on]:text-primary-foreground">
-                            <Phone className="mr-2 h-4 w-4" />
-                            Telefon
-                        </ToggleGroupItem>
-                        <ToggleGroupItem value="email" className="flex-1 data-[state=on]:bg-gradient-to-b data-[state=on]:from-gradient-start data-[state=on]:to-gradient-end data-[state=on]:text-primary-foreground">
-                            <Mail className="mr-2 h-4 w-4" />
-                            E-Mail
-                        </ToggleGroupItem>
-                    </ToggleGroup>
-                </div>
+                <h4 className="text-center font-headline text-xl font-bold text-primary mb-4">Beispiel: Akkordeon-Ansicht</h4>
+                <Accordion type="single" collapsible className="w-full" defaultValue="telefon">
+                    <AccordionItem value="telefon">
+                        <AccordionTrigger>
+                            <div className="flex items-center gap-3 text-lg font-bold">
+                                <Phone className="h-5 w-5"/>
+                                Vorbestellung per Telefon
+                            </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                            <p className="text-base text-foreground/80 pt-2">Hier würde der Inhalt für die telefonische Bestellung stehen. Dies ist ein Beispieltext, um die Funktion des Akkordeons zu demonstrieren. Der tatsächliche Inhalt kann hier eingefügt werden.</p>
+                        </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="email">
+                        <AccordionTrigger>
+                             <div className="flex items-center gap-3 text-lg font-bold">
+                                <Mail className="h-5 w-5"/>
+                                Vorbestellung per E-Mail
+                            </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                            <p className="text-base text-foreground/80 pt-2">Hier würde der Inhalt für die E-Mail-Bestellung stehen. Dies ist ein Beispieltext, um zu zeigen, wie der zweite Bereich des Akkordeons aussieht, wenn er geöffnet ist.</p>
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
             </div>
           </div>
 
