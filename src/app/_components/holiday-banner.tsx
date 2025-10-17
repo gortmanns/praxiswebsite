@@ -57,7 +57,6 @@ const formatDate = (date: Date, pattern: string = 'd. MMM yyyy') => format(date,
 
 
 export function HolidayBanner() {
-    const [isVisible, setIsVisible] = useState(true);
     const [bannerInfo, setBannerInfo] = useState<BannerInfo | null>(null);
     const firestore = useFirestore();
 
@@ -144,7 +143,7 @@ export function HolidayBanner() {
         }
     }, [bannerInfo?.text, bannerInfo?.separatorStyle]);
 
-    if (!bannerInfo || !isVisible) return null;
+    if (!bannerInfo) return null;
 
     const bannerClasses = {
         yellow: 'bg-yellow-400 border-yellow-500 text-yellow-900',
@@ -168,7 +167,6 @@ export function HolidayBanner() {
                     ))}
                 </div>
             </div>
-            <button onClick={() => setIsVisible(false)} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-black/10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-label="Banner schliessen"><X className="h-5 w-5" /></button>
         </div>
     );
 }
