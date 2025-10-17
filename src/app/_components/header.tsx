@@ -42,25 +42,25 @@ export function Header() {
   const [indicatorStyle, setIndicatorStyle] = useState({});
 
   const navLinks = [
-    { href: '/', title: 'Startseite', subtitle: 'Herzlich Willkommen' },
-    { href: '/leistungen', title: 'Leistungen', subtitle: 'Unser Angebot' },
-    { href: '/medikamente', title: 'Medikamente', subtitle: 'Einfach bestellen' },
-    { href: '/termine', title: 'Termine', subtitle: 'Vereinbaren Sie jetzt' },
-    { href: '/jobs', title: 'Jobs', subtitle: 'Mitarbeit bei uns'},
-    { href: '/notfall', title: 'NOTFALL', subtitle: 'Wichtige Nummern' },
+    { href: '/', title: 'Startseite' },
+    { href: '/leistungen', title: 'Leistungen' },
+    { href: '/medikamente', title: 'Medikamente' },
+    { href: '/termine', title: 'Termine' },
+    { href: '/jobs', title: 'Jobs'},
+    { href: '/notfall', title: 'NOTFALL' },
   ];
   
   const mainNavLinks = navLinks.filter(l => !['/oeffnungszeiten', '/notfall', '/jobs', '/termine'].includes(l.href));
   const notfallLink = navLinks.find(l => l.href === '/notfall');
 
   const ueberUnsLinks = [
-    { href: '/team', title: 'Team', subtitle: 'Wir stellen uns vor' },
-    { href: '/impressionen', title: 'Impressionen', subtitle: 'Ein Einblick' }
+    { href: '/team', title: 'Team' },
+    { href: '/impressionen', title: 'Impressionen' }
   ];
 
   const zeitenLinks = [
-    { href: '/oeffnungszeiten', title: 'Öffnungs- & Telefonzeiten', subtitle: 'Unsere Erreichbarkeit' },
-    { href: '/praxisferien', title: 'Praxisferien', subtitle: 'Geplante Abwesenheiten' }
+    { href: '/oeffnungszeiten', title: 'Öffnungs- & Telefonzeiten' },
+    { href: '/praxisferien', title: 'Praxisferien' }
   ];
 
   const pagesWithQuickNav = ['/team', '/leistungen', '/medikamente', '/notfall', '/impressionen'];
@@ -148,17 +148,11 @@ export function Header() {
                     href={link.href}
                     onMouseEnter={handleMouseEnter}
                     className={cn(
-                        'relative z-10 flex flex-col items-center justify-center whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold uppercase transition-colors',
+                        'relative z-10 flex h-14 items-center justify-center whitespace-nowrap rounded-md px-4 text-xl font-bold uppercase transition-colors',
                         isActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}
                 >
-                    <span>{link.title}</span>
-                    <span className={cn(
-                        "text-xs font-normal normal-case transition-colors",
-                        isActive ? 'text-primary-foreground/70' : 'text-muted-foreground/80'
-                    )}>
-                        {link.subtitle}
-                    </span>
+                    {link.title}
                 </Link>
                 );
             })}
@@ -167,19 +161,11 @@ export function Header() {
                     <div 
                       onMouseEnter={handleMouseEnter}
                       className={cn(
-                        'relative z-10 flex h-full cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold uppercase transition-colors',
+                        'relative z-10 flex h-14 cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-4 text-xl font-bold uppercase transition-colors',
                         ueberUnsActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}>
-                        <div>
-                            <div className="flex items-center">
-                                Über uns <ChevronDown className="h-4 w-4 ml-1" />
-                            </div>
-                            <span className={cn(
-                                "text-xs font-normal normal-case transition-colors",
-                                ueberUnsActive ? 'text-primary-foreground/70' : 'text-muted-foreground/80'
-                            )}>
-                                Wir stellen uns vor
-                            </span>
+                        <div className="flex items-center">
+                            Über uns <ChevronDown className="h-4 w-4 ml-1" />
                         </div>
                     </div>
                 </DropdownMenuTrigger>
@@ -196,19 +182,11 @@ export function Header() {
                     <div 
                       onMouseEnter={handleMouseEnter}
                       className={cn(
-                        'relative z-10 flex h-full cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold uppercase transition-colors',
+                        'relative z-10 flex h-14 cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-4 text-xl font-bold uppercase transition-colors',
                         zeitenActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}>
-                        <div>
-                            <div className="flex items-center">
-                                Zeiten <ChevronDown className="h-4 w-4 ml-1" />
-                            </div>
-                            <span className={cn(
-                                "text-xs font-normal normal-case transition-colors",
-                                zeitenActive ? 'text-primary-foreground/70' : 'text-muted-foreground/80'
-                            )}>
-                                Erreichbarkeit
-                            </span>
+                        <div className="flex items-center">
+                            Zeiten <ChevronDown className="h-4 w-4 ml-1" />
                         </div>
                     </div>
                 </DropdownMenuTrigger>
@@ -227,17 +205,11 @@ export function Header() {
                  href={notfallLink.href}
                  onMouseEnter={handleMouseEnter}
                  className={cn(
-                  'relative z-10 flex flex-col items-center justify-center whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold uppercase transition-colors',
+                  'relative z-10 flex h-14 items-center justify-center whitespace-nowrap rounded-md px-4 text-xl font-bold uppercase transition-colors',
                   pathname === notfallLink.href ? 'ring-2 ring-emergency-red ring-offset-2 ring-offset-background' : 'text-emergency-red hover:text-emergency-red/80'
                  )}
              >
-                 <span>{notfallLink.title}</span>
-                 <span className={cn(
-                    "text-xs font-normal normal-case",
-                    pathname === notfallLink.href ? 'text-foreground' : 'text-muted-foreground'
-                 )}>
-                    {notfallLink.subtitle}
-                </span>
+                 {notfallLink.title}
              </Link>
             )}
         </nav>
