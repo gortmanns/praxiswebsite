@@ -48,14 +48,18 @@ export function Header() {
     { href: '/notfall', title: 'NOTFALL' },
     { href: '/oeffnungszeiten', title: 'Öffnungszeiten'},
     { href: '/telefonzeiten', title: 'Telefonzeiten'},
-    { href: '/praxisferien', title: 'Praxisferien' }
+    { href: '/praxisferien', title: 'Praxisferien' },
+    { href: '/team', title: 'Team' },
+    { href: '/team/externe-dienstleister', title: 'Externe Dienstleister' },
+    { href: '/impressionen', title: 'Impressionen' },
   ];
   
-  const mainNavLinks = navLinks.filter(l => !['/oeffnungszeiten', '/telefonzeiten', '/praxisferien', '/notfall', '/jobs', '/termine'].includes(l.href));
+  const mainNavLinks = navLinks.filter(l => !['/oeffnungszeiten', '/telefonzeiten', '/praxisferien', '/notfall', '/jobs', '/termine', '/team', '/team/externe-dienstleister', '/impressionen'].includes(l.href));
   const notfallLink = navLinks.find(l => l.href === '/notfall');
 
   const ueberUnsLinks = [
     { href: '/team', title: 'Team' },
+    { href: '/team/externe-dienstleister', title: 'Externe Dienstleister' },
     { href: '/impressionen', title: 'Impressionen' }
   ];
   
@@ -65,11 +69,11 @@ export function Header() {
     { href: '/praxisferien', title: 'Praxisferien' }
   ];
 
-  const pagesWithQuickNav = ['/team', '/leistungen', '/medikamente', '/notfall', '/impressionen', '/oeffnungszeiten', '/telefonzeiten', '/praxisferien'];
+  const pagesWithQuickNav = ['/team', '/leistungen', '/medikamente', '/notfall', '/impressionen', '/oeffnungszeiten', '/telefonzeiten', '/praxisferien', '/team/externe-dienstleister'];
   const activePath = pagesWithQuickNav.includes(pathname) ? pathname : '/';
 
   const zeitenActive = pathname === '/oeffnungszeiten' || pathname === '/telefonzeiten' || pathname === '/praxisferien';
-  const ueberUnsActive = pathname === '/team' || pathname === '/impressionen';
+  const ueberUnsActive = pathname === '/team' || pathname === '/impressionen' || pathname === '/team/externe-dienstleister';
 
 
   const [indicatorStyle, setIndicatorStyle] = useState({});
@@ -276,6 +280,22 @@ export function Header() {
                             </Link>
                         )
                     }
+                     if (['/team', '/impressionen', '/team/externe-dienstleister'].includes(link.href)) {
+                        return (
+                             <Link
+                                key={link.href}
+                                href={link.href}
+                                className={cn(
+                                'rounded-md px-3 py-2 text-lg font-bold transition-colors uppercase',
+                                isActive
+                                    ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground'
+                                    : 'text-muted-foreground hover:text-primary'
+                                )}
+                            >
+                                {link.title}
+                            </Link>
+                        )
+                    }
                     if (link.href === '/notfall') {
                       return (
                         <Link
@@ -290,7 +310,7 @@ export function Header() {
                         </Link>
                       );
                     }
-                    if (['/', '/team', '/leistungen', '/medikamente', '/jobs', '/termine'].includes(link.href)) {
+                    if (['/', '/leistungen', '/medikamente', '/jobs', '/termine'].includes(link.href)) {
                       return (
                         <Link
                             key={link.href}
