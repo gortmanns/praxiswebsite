@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -129,19 +130,19 @@ export function Header() {
       </div>
 
       <div className="flex h-[140px] items-center justify-between px-8">
-        <Link href="/">
+        <Link href="/" className="min-w-[280px]">
               <Image
                 src="/images/praxiszentrum-logo.png"
                 alt="Praxiszentrum im Ring Logo"
                 data-ai-hint="practice logo"
                 width={1964}
                 height={398}
-                className="h-auto w-[781px]"
+                className="h-auto w-full max-w-[781px]"
                 priority
               />
         </Link>
 
-        <nav ref={navRef} className="relative hidden items-center md:flex" onMouseLeave={handleMouseLeave}>
+        <nav ref={navRef} className="relative hidden items-center xl:flex" onMouseLeave={handleMouseLeave}>
             <div className="nav-link-indicator bg-gradient-to-b from-secondary to-accent" style={indicatorStyle} />
 
             {mainNavLinks.map((link) => {
@@ -220,7 +221,7 @@ export function Header() {
             )}
         </nav>
 
-        <div className="flex items-center md:hidden">
+        <div className="flex items-center xl:hidden">
         <Sheet>
             <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
@@ -318,3 +319,5 @@ export function Header() {
     </header>
   );
 }
+
+    
