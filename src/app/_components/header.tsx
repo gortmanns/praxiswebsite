@@ -39,7 +39,6 @@ const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export function Header() {
   const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
-  const [indicatorStyle, setIndicatorStyle] = useState({});
 
   const navLinks = [
     { href: '/', title: 'Startseite' },
@@ -69,6 +68,8 @@ export function Header() {
   const zeitenActive = pathname === '/oeffnungszeiten' || pathname === '/praxisferien';
   const ueberUnsActive = pathname === '/team' || pathname === '/impressionen';
 
+
+  const [indicatorStyle, setIndicatorStyle] = useState({});
 
   const updateIndicator = useCallback((element: HTMLElement | null) => {
     if (element && navRef.current) {
