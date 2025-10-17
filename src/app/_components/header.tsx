@@ -42,22 +42,21 @@ export function Header() {
   const [indicatorStyle, setIndicatorStyle] = useState({});
 
   const navLinks = [
-    { href: '/', label: 'Startseite' },
-    { href: '/team', label: 'Team' },
-    { href: '/leistungen', label: 'Leistungen' },
-    { href: '/medikamente', label: 'Medikamente' },
-    { href: '/termine', label: 'Termine' },
-    { href: '/oeffnungszeiten', label: 'Zeiten' },
-    { href: '/jobs', label: 'Jobs'},
-    { href: '/notfall', label: 'NOTFALL' },
+    { href: '/', title: 'Startseite', subtitle: 'Herzlich Willkommen' },
+    { href: '/team', title: 'Team', subtitle: 'Wir stellen uns vor' },
+    { href: '/leistungen', title: 'Leistungen', subtitle: 'Unser Angebot' },
+    { href: '/medikamente', title: 'Medikamente', subtitle: 'Einfach bestellen' },
+    { href: '/termine', title: 'Termine', subtitle: 'Vereinbaren Sie jetzt' },
+    { href: '/jobs', title: 'Jobs', subtitle: 'Mitarbeit bei uns'},
+    { href: '/notfall', title: 'NOTFALL', subtitle: 'Wichtige Nummern' },
   ];
   
   const mainNavLinks = navLinks.filter(l => !['/oeffnungszeiten', '/notfall', '/jobs', '/termine'].includes(l.href));
   const notfallLink = navLinks.find(l => l.href === '/notfall');
 
   const zeitenLinks = [
-    { href: '/oeffnungszeiten', label: 'Öffnungs- & Telefonzeiten' },
-    { href: '/praxisferien', label: 'Praxisferien' }
+    { href: '/oeffnungszeiten', title: 'Öffnungs- & Telefonzeiten', subtitle: 'Unsere Erreichbarkeit' },
+    { href: '/praxisferien', title: 'Praxisferien', subtitle: 'Geplante Abwesenheiten' }
   ];
 
   const pagesWithQuickNav = ['/team', '/leistungen', '/medikamente', '/notfall'];
@@ -143,11 +142,17 @@ export function Header() {
                     href={link.href}
                     onMouseEnter={handleMouseEnter}
                     className={cn(
-                        'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold uppercase transition-colors',
+                        'relative z-10 flex flex-col items-center justify-center whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold uppercase transition-colors',
                         isActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}
                 >
-                    {link.label}
+                    <span>{link.title}</span>
+                    <span className={cn(
+                        "text-xs font-normal normal-case transition-colors",
+                        isActive ? 'text-primary-foreground/70' : 'text-muted-foreground/80'
+                    )}>
+                        {link.subtitle}
+                    </span>
                 </Link>
                 );
             })}
@@ -156,7 +161,7 @@ export function Header() {
                     <div 
                       onMouseEnter={handleMouseEnter}
                       className={cn(
-                        'relative z-10 flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold uppercase transition-colors',
+                        'relative z-10 flex h-full cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold uppercase transition-colors',
                         zeitenActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}>
                         Zeiten <ChevronDown className="h-4 w-4" />
@@ -165,7 +170,7 @@ export function Header() {
                 <DropdownMenuContent onMouseLeave={handleMouseLeave}>
                     {zeitenLinks.map(link => (
                         <DropdownMenuItem key={link.href} asChild>
-                            <Link href={link.href} className="uppercase">{link.label}</Link>
+                            <Link href={link.href} className="uppercase">{link.title}</Link>
                         </DropdownMenuItem>
                     ))}
                 </DropdownMenuContent>
@@ -177,11 +182,17 @@ export function Header() {
                  href={notfallLink.href}
                  onMouseEnter={handleMouseEnter}
                  className={cn(
-                  'relative z-10 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold uppercase text-emergency-red transition-colors hover:text-emergency-red/80',
-                  pathname === notfallLink.href && 'ring-2 ring-emergency-red ring-offset-2 ring-offset-background'
+                  'relative z-10 flex flex-col items-center justify-center whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold uppercase transition-colors',
+                  pathname === notfallLink.href ? 'ring-2 ring-emergency-red ring-offset-2 ring-offset-background' : 'text-emergency-red hover:text-emergency-red/80'
                  )}
              >
-                 {notfallLink.label}
+                 <span>{notfallLink.title}</span>
+                 <span className={cn(
+                    "text-xs font-normal normal-case",
+                    pathname === notfallLink.href ? 'text-foreground' : 'text-muted-foreground'
+                 )}>
+                    {notfallLink.subtitle}
+                </span>
              </Link>
             )}
         </nav>
@@ -226,12 +237,12 @@ export function Header() {
                 <nav className="flex flex-col space-y-4">
                 {navLinks.map((link) => {
                     const isActive = pathname === link.href;
-                    if (link.href === '/oeffnungszeiten') {
+                    if (link.href === '/oeffnungszeiten') { // This logic seems to be a placeholder
                         return (
-                            <div key={link.href}>
+                            <div key="zeiten-menu">
                                 <h3 className={cn(
                                     'rounded-md px-3 py-2 text-lg font-bold uppercase',
-                                    (isActive || pathname === '/praxisferien') ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'
+                                    (pathname === '/oeffnungszeiten' || pathname === '/praxisferien') ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'
                                 )}>
                                     Zeiten
                                 </h3>
@@ -245,7 +256,7 @@ export function Header() {
                                                 pathname === subLink.href ? "text-primary" : "text-muted-foreground hover:text-primary"
                                             )}
                                         >
-                                            {subLink.label}
+                                            {subLink.title}
                                         </Link>
                                     ))}
                                 </div>
@@ -262,11 +273,11 @@ export function Header() {
                             isActive ? 'text-emergency-red ring-2 ring-emergency-red' : 'text-emergency-red/80 hover:text-emergency-red'
                           )}
                         >
-                          {link.label}
+                          {link.title}
                         </Link>
                       );
                     }
-                    if (['/', '/team', '/leistungen', '/medikamente', '/jobs'].includes(link.href)) {
+                    if (['/', '/team', '/leistungen', '/medikamente', '/jobs', '/termine'].includes(link.href)) {
                       return (
                         <Link
                             key={link.href}
@@ -278,7 +289,7 @@ export function Header() {
                                 : 'text-muted-foreground hover:text-primary'
                             )}
                         >
-                            {link.label}
+                            {link.title}
                         </Link>
                       );
                     }
@@ -294,5 +305,3 @@ export function Header() {
     </header>
   );
 }
-
-    
