@@ -1,9 +1,9 @@
 
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
-import { OpeningHoursCalendar } from './_components/opening-hours-calendar';
+import { PhoneHoursCalendar } from '../oeffnungszeiten/_components/phone-hours-calendar';
 
-export default function OeffnungszeitenPage() {
+export default function TelefonzeitenPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -11,12 +11,12 @@ export default function OeffnungszeitenPage() {
         <div className="container py-16 sm:py-24">
             <div className="mx-auto max-w-5xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
-                    ÖFFNUNGSZEITEN
+                    TELEFONZEITEN
                 </h2>
             </div>
 
             <div className="mx-auto mt-16">
-                <OpeningHoursCalendar />
+                <PhoneHoursCalendar />
             </div>
         </div>
       </main>
