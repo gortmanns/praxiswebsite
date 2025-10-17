@@ -54,7 +54,7 @@ export function QuickNavSection() {
               </div>
               
               <div
-                className="absolute flex h-full w-full flex-col items-center justify-center gap-4 rounded-lg bg-primary p-6 text-primary-foreground transition-transform duration-500 translate-y-full group-hover:translate-y-0"
+                className="absolute flex h-full w-full flex-col items-center justify-center gap-4 rounded-lg bg-gradient-to-r from-gradient-start to-gradient-end p-6 text-primary-foreground transition-transform duration-500 translate-y-full group-hover:translate-y-0"
               >
                 <item.Icon className="h-24 w-24" />
                 <span className="text-xl font-bold uppercase tracking-wider">
@@ -68,3 +68,5 @@ export function QuickNavSection() {
     </section>
   );
 }
+
+    

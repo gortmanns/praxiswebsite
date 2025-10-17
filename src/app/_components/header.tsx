@@ -150,7 +150,7 @@ export function Header() {
                     onMouseEnter={handleMouseEnter}
                     className={cn(
                         'relative z-10 flex h-14 items-center justify-center whitespace-nowrap rounded-md px-4 text-xl font-bold uppercase transition-colors',
-                        isActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
+                        isActive ? 'bg-gradient-to-r from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}
                 >
                     {link.title}
@@ -163,7 +163,7 @@ export function Header() {
                       onMouseEnter={handleMouseEnter}
                       className={cn(
                         'relative z-10 flex h-14 cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-4 text-xl font-bold uppercase transition-colors',
-                        ueberUnsActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
+                        ueberUnsActive ? 'bg-gradient-to-r from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}>
                         <div className="flex items-center">
                             Über uns <ChevronDown className="h-4 w-4 ml-1" />
@@ -184,7 +184,7 @@ export function Header() {
                       onMouseEnter={handleMouseEnter}
                       className={cn(
                         'relative z-10 flex h-14 cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-4 text-xl font-bold uppercase transition-colors',
-                        zeitenActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
+                        zeitenActive ? 'bg-gradient-to-r from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}>
                         <div className="flex items-center">
                             Zeiten <ChevronDown className="h-4 w-4 ml-1" />
@@ -260,7 +260,7 @@ export function Header() {
                             <div key="zeiten-menu">
                                 <h3 className={cn(
                                     'rounded-md px-3 py-2 text-lg font-bold uppercase',
-                                    (pathname === '/oeffnungszeiten' || pathname === '/praxisferien') ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'
+                                    (pathname === '/oeffnungszeiten' || pathname === '/praxisferien') ? 'bg-gradient-to-r from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground'
                                 )}>
                                     Zeiten
                                 </h3>
@@ -303,7 +303,7 @@ export function Header() {
                             className={cn(
                             'rounded-md px-3 py-2 text-lg font-bold transition-colors uppercase',
                             isActive
-                                ? 'bg-primary text-primary-foreground'
+                                ? 'bg-gradient-to-r from-gradient-start to-gradient-end text-primary-foreground'
                                 : 'text-muted-foreground hover:text-primary'
                             )}
                         >
@@ -323,3 +323,5 @@ export function Header() {
     </header>
   );
 }
+
+    
