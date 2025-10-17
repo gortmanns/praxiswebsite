@@ -62,11 +62,8 @@ export default function MedikamentePage() {
                   <TabsTrigger 
                       value="telefon" 
                       className={cn(
-                        'flex h-auto w-full flex-col items-center justify-center gap-2 p-6 text-xl font-bold text-primary-foreground',
-                        'data-[state=inactive]:rounded-t-lg',
-                        'data-[state=active]:rounded-t-lg data-[state=active]:rounded-b-none',
-                        'data-[state=active]:bg-gradient-start',
-                        'bg-gradient-start'
+                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-xl font-bold text-primary-foreground',
+                        'data-[state=active]:rounded-t-lg bg-gradient-start data-[state=inactive]:rounded-t-lg'
                       )}
                   >
                     <div className="flex flex-col items-center">
@@ -80,11 +77,8 @@ export default function MedikamentePage() {
                   <TabsTrigger 
                       value="email"
                       className={cn(
-                        'flex h-auto w-full flex-col items-center justify-center gap-2 p-6 text-xl font-bold text-secondary-foreground',
-                        'data-[state=inactive]:rounded-t-lg',
-                        'data-[state=active]:rounded-t-lg data-[state=active]:rounded-b-none',
-                        'data-[state=active]:bg-secondary',
-                        'bg-secondary'
+                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-xl font-bold text-secondary-foreground',
+                        'data-[state=active]:rounded-t-lg bg-secondary data-[state=inactive]:rounded-t-lg'
                       )}
                   >
                      <div className="flex flex-col items-center">
