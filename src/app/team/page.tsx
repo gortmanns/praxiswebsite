@@ -10,25 +10,14 @@ import type { Doctor } from './_components/doctor-card';
 import type { StaffMember } from '../admin/dashboard/team/staff/_components/staff-editor';
 import { cn } from '@/lib/utils';
 import React from 'react';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy } from 'firebase/firestore';
+import { doctorsData, staffData } from './_components/static-data';
 
 
 export default function TeamPage() {
-  const firestore = useFirestore();
-
-  const doctorsQuery = useMemoFirebase(() => 
-    firestore ? query(collection(firestore, 'doctors'), where('hidden', '==', false), orderBy('order', 'asc')) : null
-  , [firestore]);
-  
-  const staffQuery = useMemoFirebase(() => 
-    firestore ? query(collection(firestore, 'staff'), where('hidden', '==', false), orderBy('order', 'asc')) : null
-  , [firestore]);
-  
-  const { data: doctors, isLoading: isLoadingDoctors } = useCollection<Doctor>(doctorsQuery);
-  const { data: staff, isLoading: isLoadingStaff } = useCollection<StaffMember>(staffQuery);
-
-  const staffMembers = staff || [];
+  const isLoadingDoctors = false;
+  const isLoadingStaff = false;
+  const doctors: Doctor[] = doctorsData as Doctor[];
+  const staffMembers: StaffMember[] = staffData as StaffMember[];
 
 
   return (
@@ -105,5 +94,4 @@ export default function TeamPage() {
     </div>
   );
 }
-
 
