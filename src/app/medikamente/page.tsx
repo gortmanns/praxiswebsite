@@ -64,10 +64,10 @@ export default function MedikamentePage() {
                     <TabsTrigger
                         value="telefon"
                         className={cn(
-                          'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg border-x border-t p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
-                          'bg-gradient-start',
-                          activeTab !== 'telefon' && 'opacity-70 hover:opacity-100 rounded-b-lg',
-                          activeTab === 'telefon' && 'rounded-b-none'
+                          'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold transition-all duration-300',
+                          'bg-gradient-start text-primary-foreground',
+                          'border-x border-t border-b-border',
+                          activeTab === 'telefon' ? 'rounded-b-none border-b-transparent' : 'rounded-b-lg opacity-70 hover:opacity-100'
                         )}
                     >
                         <div className="flex flex-col items-center">
@@ -81,10 +81,10 @@ export default function MedikamentePage() {
                      <TabsTrigger
                         value="email"
                         className={cn(
-                          'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg border-x border-t p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
-                          'bg-secondary',
-                           activeTab !== 'email' && 'opacity-70 hover:opacity-100 rounded-b-lg',
-                           activeTab === 'email' && 'rounded-b-none'
+                          'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold transition-all duration-300',
+                          'bg-secondary text-primary-foreground',
+                           'border-x border-t border-b-border',
+                           activeTab === 'email' ? 'rounded-b-none border-b-transparent' : 'rounded-b-lg opacity-70 hover:opacity-100'
                         )}
                     >
                         <div className="flex flex-col items-center">
@@ -119,7 +119,7 @@ export default function MedikamentePage() {
                 </Card>
               </TabsContent>
               <TabsContent value="email" className="-mt-px">
-                <Card className="rounded-t-none border-t-0 bg-gradient-to-b from-secondary to-accent text-secondary-foreground">
+                <Card className="rounded-t-none border-t-0 bg-gradient-to-b from-secondary to-accent text-primary-foreground">
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg">
                             <h4 className="text-left font-headline text-2xl font-bold">Vorbestellung per E-Mail</h4>
@@ -128,7 +128,7 @@ export default function MedikamentePage() {
                             <ObfuscatedLink
                                 user="medikamente"
                                 domain="praxiszentrum-im-ring.ch"
-                                className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-secondary-foreground/80 md:text-3xl lg:text-4xl"
+                                className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl"
                             >
                                 <Mail className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
                                 <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
