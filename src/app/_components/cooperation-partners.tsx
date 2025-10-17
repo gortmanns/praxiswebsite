@@ -30,7 +30,7 @@ const PartnerCard: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
         href={partner.websiteUrl || '#'}
         target={partner.openInNewTab ? '_blank' : '_self'}
         rel="noopener noreferrer"
-        className="group relative block h-32 w-full mx-auto overflow-hidden rounded-lg shadow-2xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        className="group relative block h-32 w-full max-w-xs mx-auto overflow-hidden rounded-lg shadow-2xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
     >
         <Card className="flex h-full w-full items-center justify-center bg-background p-2">
             {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}
@@ -41,26 +41,13 @@ const PartnerCard: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
 
 const RowGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
     if (!partners || partners.length === 0) return null;
-    
-    const getGridStyle = (index: number, total: number) => {
-        let colStart = 0;
-        if (total === 4) { // 2-2-2-2
-            colStart = index * 2 + 1;
-        } else if (total === 3) { // 1-2-2-2-1
-            colStart = index * 2 + 2;
-        } else if (total === 2) { // 2-2-2-2 centered
-            colStart = index * 2 + 3;
-        } else if (total === 1) { // 1-2-2-2-1 centered
-            colStart = 4;
-        }
 
-        return { gridColumnStart: colStart };
-    };
+    const gridCols = `grid-cols-${partners.length}`;
 
     return (
-        <div className="grid grid-cols-8 gap-8">
-            {partners.map((partner, index) => (
-                <div key={partner.id} style={getGridStyle(index, partners.length)} className="col-span-2 flex items-center justify-center">
+        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8`}>
+            {partners.map((partner) => (
+                <div key={partner.id} className="flex items-center justify-center">
                     <PartnerCard partner={partner} />
                 </div>
             ))}
