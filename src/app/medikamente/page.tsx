@@ -60,13 +60,13 @@ export default function MedikamentePage() {
           </div>
 
           <div className="mx-auto mt-12 max-w-7xl">
-            <Tabs defaultValue="telefon" className="w-full">
+             <Tabs defaultValue="telefon" className="w-full">
                <TabsList className="grid h-auto w-full grid-cols-1 gap-0 bg-transparent p-0 sm:grid-cols-2">
                   <TabsTrigger 
                       value="telefon" 
                       className={cn(
-                        'flex h-auto w-full flex-col items-center justify-center gap-2 p-6 text-xl font-bold rounded-t-lg',
-                        'bg-gradient-start text-primary-foreground',
+                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold text-primary-foreground',
+                        'bg-gradient-start',
                         'data-[state=active]:rounded-b-none'
                       )}
                   >
@@ -81,9 +81,9 @@ export default function MedikamentePage() {
                   <TabsTrigger 
                       value="email"
                       className={cn(
-                        'flex h-auto w-full flex-col items-center justify-center gap-2 p-6 text-xl font-bold rounded-t-lg',
-                        'bg-secondary text-secondary-foreground',
-                        'data-[state=active]:bg-secondary data-[state=active]:rounded-b-none'
+                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold text-secondary-foreground',
+                        'bg-secondary',
+                        'data-[state=active]:rounded-b-none'
                       )}
                   >
                      <div className="flex flex-col items-center">
