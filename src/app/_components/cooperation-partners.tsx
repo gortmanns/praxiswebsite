@@ -4,11 +4,88 @@
 import React from 'react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import type { MedicalPartner, OtherPartner } from '@/docs/backend-types';
 import DOMPurify from 'dompurify';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, where } from 'firebase/firestore';
+
+// --- Static Data Definition ---
+
+const medicalPartnersData = [
+    {
+      id: 'ortho',
+      order: 1,
+      name: 'orthozentrum-bern',
+      websiteUrl: 'https://orthozentrum-bern.ch/',
+      logoHtml: `
+        <svg viewBox="0 0 240 55.5" xmlns="http://www.w3.org/2000/svg" class="text-card-foreground h-full w-full object-contain" aria-label="orthozentrum-bern Logo">
+          <g>
+            <path d="M46.7 7.8S44.5 3.9 40 3.9H20.8s-4.4 0-6.7 3.9L4.6 24.4s-2.2 3.9 0 7.7l9.6 16.6s2.2 3.9 6.7 3.9H40s4.4 0 6.7-3.9l9.6-16.6s2.2-3.9 0-7.7L46.7 7.8z" fill="none" stroke="#588791" stroke-width="1.639"></path>
+            <path d="M24 52.4c-1.1-3.4-3.1-8-5.1-11.1-.6-.9-1-1.9-1.2-2.9-.3-1.8.9-3.2 2.9-3.5 6.5-1 13-1 19.5 0 2.2.3 3.4 2 2.9 4-.2.7-.5 1.4-1 2.1-2 3.1-4.1 8-5.2 11.4" fill="none" stroke="#588791" stroke-width="1.639"></path>
+            <path d="M35.4 4.4c.4 3.8 1.7 8 4.1 11.3 1.8 2.4 3.1 2.6 3.7 5.6.5 2.5-.3 6.9-2.3 7.9-2.3 1.2-4.6 1-6.8-.4-1.4-1.2-2.4-1.4-3.6-1.3-1.3 0-2.3.2-3.6 1.3-2.2 1.5-4.4 1.6-6.8.4-2-1-2.8-5.3-2.3-7.9.6-3 1.9-3.2 3.7-5.6 2.4-3.2 3.7-7.4 4.1-11.3" fill="none" stroke="#588791" stroke-width="1.639"></path>
+          </g>
+          <text x="70" y="32" font-family="Montserrat, sans-serif" font-size="16" font-weight="bold" fill="#588791" dominant-baseline="middle">orthozentrum-bern</text>
+        </svg>
+      `,
+      openInNewTab: true,
+    },
+    {
+      id: 'vasc',
+      order: 2,
+      name: 'VASC ALLIANCE',
+      websiteUrl: 'https://www.vasc-alliance.ch/',
+      logoHtml: '<img src="/images/VASC-Alliance-Logo.png" alt="VASC ALLIANCE Logo" style="object-fit: contain; width: 100%; height: 100%;" data-ai-hint="vascular surgery logo" />',
+      openInNewTab: true,
+    },
+    {
+      id: 'schemmer',
+      order: 3,
+      name: 'Schemmer & Worni',
+      websiteUrl: 'https://schemmer-worni.ch/',
+      logoHtml: '<img src="/images/schemmer-worni-logo.png" alt="Schemmer & Worni Logo" style="object-fit: contain; width: 100%; height: 100%;" data-ai-hint="surgery logo" />',
+      openInNewTab: true,
+    },
+    {
+      id: 'slezak',
+      order: 4,
+      name: 'Agnieszka Slezak',
+      websiteUrl: 'https://neurologie-plus.ch/',
+      logoHtml: `
+        <svg viewBox="0 0 500 150" xmlns="http://www.w3.org/2000/svg" class="text-special-green h-full w-full object-contain" aria-label="Agnieszka Slezak Logo">
+          <style>.text-special-green { color: #358392; } .foreground-fill { fill: hsl(var(--foreground)); }</style>
+          <text x="5" y="70" font-family="Montserrat, sans-serif" font-size="36" font-weight="bold" fill="currentColor">Dr. med. Agnieszka Slezak</text>
+          <text x="250" y="110" font-family="Montserrat, sans-serif" font-size="24" font-weight="normal" class="foreground-fill" text-anchor="middle">Fachärztin für Neurologie</text>
+        </svg>
+      `,
+      openInNewTab: true,
+    },
+];
+
+const otherPartnersData = [
+    {
+      id: 'go-medical',
+      order: 1,
+      name: 'Go-Medical',
+      websiteUrl: 'https://www.go-medical.ch/',
+      logoHtml: '<img src="/images/go-medical-logo.png" alt="Go-Medical Logo" style="object-fit: contain; width: 100%; height: 100%;" data-ai-hint="medical services logo" />',
+      openInNewTab: true,
+    },
+    {
+      id: 'mcl',
+      order: 2,
+      name: 'MCL',
+      websiteUrl: 'https://www.mcl.ch/',
+      logoHtml: '<img src="/images/mcl-labor-logo.png" alt="MCL Logo" style="object-fit: contain; width: 100%; height: 100%;" data-ai-hint="laboratory logo" />',
+      openInNewTab: true,
+    },
+    {
+      id: 'doxnet',
+      order: 3,
+      name: 'doxnet',
+      websiteUrl: 'https://www.doxnet.ch/',
+      logoHtml: '<img src="/images/doxnet-logo.jpg" alt="doxnet Logo" style="object-fit: contain; width: 100%; height: 100%;" data-ai-hint="medical network logo" />',
+      openInNewTab: true,
+    },
+];
+
+// --- Components ---
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
@@ -25,7 +102,7 @@ const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     return <div className="relative flex h-full w-full items-center justify-center overflow-hidden" dangerouslySetInnerHTML={sanitizedHtml} />;
 };
 
-const PartnerCard: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ partner }) => (
+const PartnerCard: React.FC<{ partner: typeof medicalPartnersData[0] }> = ({ partner }) => (
     <Link
         href={partner.websiteUrl || '#'}
         target={partner.openInNewTab ? '_blank' : '_self'}
@@ -39,7 +116,7 @@ const PartnerCard: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
     </Link>
 );
 
-const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
+const PartnerGrid: React.FC<{ partners: typeof medicalPartnersData }> = ({ partners }) => {
     if (!partners || partners.length === 0) return null;
     
     return (
@@ -53,23 +130,7 @@ const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = (
     );
 };
 
-
 export function CooperationPartnersSection() {
-  const firestore = useFirestore();
-
-  const medicalPartnersQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'medicalPartners'), where('hidden', '==', false), orderBy('order', 'asc'));
-  }, [firestore]);
-
-  const otherPartnersQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'otherPartners'), where('hidden', '==', false), orderBy('order', 'asc'));
-  }, [firestore]);
-  
-  const { data: medicalPartners, isLoading: isLoadingMedical } = useCollection<MedicalPartner>(medicalPartnersQuery);
-  const { data: otherPartners, isLoading: isLoadingOther } = useCollection<OtherPartner>(otherPartnersQuery);
-  
   return (
     <section id="partners" className="w-full bg-primary">
       <div className="mx-auto w-full px-4 pt-12 pb-16 sm:px-6 lg:px-8">
@@ -78,32 +139,16 @@ export function CooperationPartnersSection() {
         </h2>
         
         <div className="mt-12">
-          {isLoadingMedical ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {Array.from({ length: 4 }).map((_, index) => (
-                    <Skeleton key={index} className="h-32 w-full rounded-lg" />
-                ))}
-            </div>
-          ) : (
-            <PartnerGrid partners={medicalPartners || []} />
-          )}
+          <PartnerGrid partners={medicalPartnersData} />
         </div>
 
-        {(isLoadingOther || (otherPartners && otherPartners.length > 0)) && (
+        {otherPartnersData && otherPartnersData.length > 0 && (
             <>
                 <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
                 Unsere weiteren Partner
                 </h3>
                 <div className="mt-12">
-                    {isLoadingOther ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {Array.from({ length: 4 }).map((_, index) => (
-                                 <Skeleton key={index} className="h-32 w-full rounded-lg" />
-                            ))}
-                        </div>
-                    ) : (
-                        <PartnerGrid partners={otherPartners || []} />
-                    )}
+                    <PartnerGrid partners={otherPartnersData} />
                 </div>
             </>
         )}
