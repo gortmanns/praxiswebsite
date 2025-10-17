@@ -65,9 +65,9 @@ export default function MedikamentePage() {
                   <TabsTrigger 
                       value="telefon" 
                       className={cn(
-                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg rounded-b-none border-b-0 p-6 text-xl font-bold',
-                        'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-gradient-to-b data-[state=inactive]:from-secondary data-[state=inactive]:to-accent data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:opacity-80',
-                        'data-[state=active]:bg-gradient-to-b data-[state=active]:from-gradient-start data-[state=active]:to-gradient-end data-[state=active]:text-primary-foreground'
+                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold',
+                        'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-gradient-to-b data-[state=inactive]:from-secondary data-[state=inactive]:to-accent data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:opacity-80 data-[state=inactive]:rounded-b-none',
+                        'data-[state=active]:bg-gradient-to-b data-[state=active]:from-gradient-start data-[state=active]:to-gradient-end data-[state=active]:text-primary-foreground data-[state=active]:rounded-b-none'
                       )}
                   >
                     <div className="flex flex-col items-center">
@@ -96,7 +96,7 @@ export default function MedikamentePage() {
                   </TabsTrigger>
               </TabsList>
               <TabsContent value="telefon" className="mt-0">
-                <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
+                <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground border-t-0">
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg">
                             <h4 className="text-left font-headline text-2xl font-bold text-primary-foreground">Vorbestellung per Telefon</h4>
