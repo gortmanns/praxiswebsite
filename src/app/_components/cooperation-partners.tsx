@@ -24,7 +24,6 @@ const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     return <div className="relative flex h-full w-full items-center justify-center overflow-hidden" dangerouslySetInnerHTML={sanitizedHtml} />;
 };
 
-
 const PartnerCard: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ partner }) => (
     <Link
         href={partner.websiteUrl || '#'}
@@ -39,34 +38,16 @@ const PartnerCard: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
     </Link>
 );
 
-const RowGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
+const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
     if (!partners || partners.length === 0) return null;
 
-    const gridCols = `grid-cols-${partners.length}`;
-
+    // This is a simple grid that wraps every 4 items. It's more robust than calculating rows.
     return (
-        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8`}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {partners.map((partner) => (
                 <div key={partner.id} className="flex items-center justify-center">
                     <PartnerCard partner={partner} />
                 </div>
-            ))}
-        </div>
-    );
-};
-
-const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
-    if (!partners || partners.length === 0) return null;
-
-    const chunkedPartners = [];
-    for (let i = 0; i < partners.length; i += 4) {
-        chunkedPartners.push(partners.slice(i, i + 4));
-    }
-
-    return (
-        <div className="space-y-8">
-            {chunkedPartners.map((rowPartners, index) => (
-                <RowGrid key={index} partners={rowPartners} />
             ))}
         </div>
     );
@@ -108,7 +89,7 @@ export function CooperationPartnersSection() {
           )}
         </div>
 
-        {(otherPartners && otherPartners.length > 0) && (
+        {(isLoadingOther || (otherPartners && otherPartners.length > 0)) && (
             <>
                 <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
                 Unsere weiteren Partner
