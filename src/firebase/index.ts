@@ -3,37 +3,30 @@
 
 import { firebaseConfig } from '@/firebase/config';
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore'
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage';
-import { getAuth } from 'firebase/auth';
+import { getAuth, connectAuthEmulator } from 'firebase/auth';
 
 // IMPORTANT: DO NOT MODIFY THIS FUNCTION
 export function initializeFirebase() {
-  if (!getApps().length) {
-    let firebaseApp;
-    try {
-      firebaseApp = initializeApp(firebaseConfig);
-    } catch (e) {
-      if (process.env.NODE_ENV === "production") {
-        console.warn('Automatic initialization failed. Falling back to firebase config object.', e);
-      }
-      firebaseApp = initializeApp(firebaseConfig);
-    }
+  const firebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-    return getSdks(firebaseApp);
+  const firestore = getFirestore(firebaseApp);
+  const storage = getStorage(firebaseApp);
+  const auth = getAuth(firebaseApp);
+
+  if (process.env.NODE_ENV !== 'production') {
+    try {
+      connectFirestoreEmulator(firestore, 'localhost', 8080);
+      connectAuthEmulator(auth, 'http://localhost:9099');
+    } catch (error) {
+      // This is expected on a page refresh
+    }
   }
 
-  return getSdks(getApp());
+  return { firebaseApp, firestore, storage, auth };
 }
 
-export function getSdks(firebaseApp: FirebaseApp) {
-  return {
-    firebaseApp,
-    firestore: getFirestore(firebaseApp),
-    storage: getStorage(firebaseApp),
-    auth: getAuth(firebaseApp),
-  };
-}
 
 export * from './provider';
 export * from './client-provider';

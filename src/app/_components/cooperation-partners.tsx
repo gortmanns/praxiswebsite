@@ -1,5 +1,6 @@
 
 'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
@@ -40,8 +41,7 @@ const PartnerCard: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
 
 const PartnerGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
     if (!partners || partners.length === 0) return null;
-
-    // This is a simple grid that wraps every 4 items. It's more robust than calculating rows.
+    
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {partners.map((partner) => (
