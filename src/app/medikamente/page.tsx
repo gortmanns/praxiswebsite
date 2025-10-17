@@ -63,7 +63,7 @@ export default function MedikamentePage() {
                       value="telefon" 
                       className={cn(
                         'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg rounded-b-none border-b-0 p-6 text-xl font-bold',
-                        'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-secondary data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:bg-secondary/80',
+                        'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-gradient-to-b data-[state=inactive]:from-secondary data-[state=inactive]:to-accent data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:opacity-80',
                         'data-[state=active]:bg-gradient-to-b data-[state=active]:from-gradient-start data-[state=active]:to-gradient-end data-[state=active]:text-primary-foreground'
                       )}
                   >
@@ -79,7 +79,7 @@ export default function MedikamentePage() {
                       value="email"
                       className={cn(
                         'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg rounded-b-none border-b-0 p-6 text-xl font-bold',
-                        'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-secondary data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:bg-secondary/80',
+                        'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-gradient-to-b data-[state=inactive]:from-secondary data-[state=inactive]:to-accent data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:opacity-80',
                         'data-[state=active]:bg-gradient-to-b data-[state=active]:from-gradient-start data-[state=active]:to-gradient-end data-[state=active]:text-primary-foreground'
                       )}
                   >
