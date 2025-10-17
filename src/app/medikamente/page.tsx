@@ -61,13 +61,13 @@ export default function MedikamentePage() {
 
           <div className="mx-auto mt-12 max-w-7xl">
             <Tabs defaultValue="telefon" className="w-full">
-               <TabsList className="grid h-auto w-full grid-cols-1 gap-4 bg-transparent p-0 sm:grid-cols-2">
+               <TabsList className="grid h-auto w-full grid-cols-1 gap-0 bg-transparent p-0 sm:grid-cols-2">
                   <TabsTrigger 
                       value="telefon" 
                       className={cn(
                         'flex h-auto w-full flex-col items-center justify-center gap-2 p-6 text-xl font-bold',
-                        'data-[state=inactive]:rounded-lg data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-gradient-to-b data-[state=inactive]:from-secondary data-[state=inactive]:to-accent data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:opacity-80',
-                        'data-[state=active]:bg-gradient-start data-[state=active]:text-primary-foreground data-[state=active]:rounded-t-lg data-[state=active]:rounded-b-none'
+                        'bg-gradient-start text-primary-foreground',
+                        'data-[state=active]:rounded-b-none'
                       )}
                   >
                     <div className="flex flex-col items-center">
@@ -82,8 +82,8 @@ export default function MedikamentePage() {
                       value="email"
                       className={cn(
                         'flex h-auto w-full flex-col items-center justify-center gap-2 p-6 text-xl font-bold',
-                        'data-[state=inactive]:rounded-lg data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-gradient-to-b data-[state=inactive]:from-secondary data-[state=inactive]:to-accent data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:opacity-80',
-                        'data-[state=active]:bg-gradient-start data-[state=active]:text-primary-foreground data-[state=active]:rounded-t-lg data-[state=active]:rounded-b-none'
+                        'bg-secondary text-secondary-foreground',
+                        'data-[state=active]:rounded-b-none'
                       )}
                   >
                      <div className="flex flex-col items-center">
@@ -96,10 +96,10 @@ export default function MedikamentePage() {
                   </TabsTrigger>
               </TabsList>
               <TabsContent value="telefon" className="mt-0">
-                <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground border-t-0">
+                <Card className="rounded-t-none border-t-0 bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg">
-                            <h4 className="text-left font-headline text-2xl font-bold text-primary-foreground">Vorbestellung per Telefon</h4>
+                            <h4 className="text-left font-headline text-2xl font-bold">Vorbestellung per Telefon</h4>
                             <p>Unsere Bestellhotline für Medikamente erreichen Sie Tag und Nacht an 365 Tagen im Jahr unter der Rufnummer:</p>
                             
                             <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl">
@@ -118,16 +118,16 @@ export default function MedikamentePage() {
                 </Card>
               </TabsContent>
               <TabsContent value="email" className="mt-0">
-                <Card className="rounded-t-none">
+                <Card className="rounded-t-none border-t-0 bg-gradient-to-b from-secondary to-accent text-secondary-foreground">
                     <CardContent className="p-6 md:p-8">
-                        <div className="space-y-6 text-lg text-foreground/80">
-                            <h4 className="text-left font-headline text-2xl font-bold text-primary">Vorbestellung per E-Mail</h4>
+                        <div className="space-y-6 text-lg">
+                            <h4 className="text-left font-headline text-2xl font-bold">Vorbestellung per E-Mail</h4>
                             <p>Die Bestellung per E-Mail ist ganz einfach. Schreiben Sie eine E-Mail an:</p>
                             
                             <ObfuscatedLink
                                 user="medikamente"
                                 domain="praxiszentrum-im-ring.ch"
-                                className="my-4 flex items-center justify-start gap-4 text-2xl font-bold text-foreground transition-colors hover:text-primary md:text-3xl lg:text-4xl"
+                                className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-secondary-foreground/80 md:text-3xl lg:text-4xl"
                             >
                                 <Mail className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
                                 <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
@@ -143,7 +143,7 @@ export default function MedikamentePage() {
                             
                             <p>Alternativ können Sie auch ganz unkompliziert Fotos der Verpackungen schicken, auf denen die Bezeichnung des jeweiligen Medikaments gut erkennbar ist.</p>
                             
-                            <div className="space-y-2 rounded-md border border-border bg-card p-4">
+                            <div className="space-y-2 rounded-md border border-border bg-card p-4 text-card-foreground">
                                 <h5 className="font-bold text-primary">Hinweis zum Datenschutz</h5>
                                 <p className="text-base">E-Mails werden im Internet unverschlüsselt übertragen und passieren dabei mehrere Server und Zwischenstationen. Das heisst, mit ausreichendem technischem Wissen kann jeder, der Zugriff auf diese Zwischenstationen hat, den Inhalt der E-Mails lesen. Eine E-Mail entspricht also am ehesten einer Postkarte und nicht einem geschlossenen Brief. Bitte bedenken Sie dies, wenn Sie diesen Weg der Vorbestellung wählen. Wenn Sie Bedenken bezüglich Vertraulichkeit und Datenschutz haben, nutzen Sie im Zweifel lieber die telefonische Bestellhotline.</p>
                             </div>
