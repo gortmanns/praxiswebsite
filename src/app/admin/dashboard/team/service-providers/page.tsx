@@ -1,3 +1,4 @@
+
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -103,12 +104,6 @@ const initialServiceProviderState: Omit<ServiceProvider, 'id' | 'order' | 'creat
                         <div id="edit-specialty" class="w-full text-left">
                             <p class="text-xl font-bold">Spezialisierung</p>
                         </div>
-                        <div class="mt-6 text-xl">
-                            <div id="edit-qual1" class="w-full text-left"><p>Qualifikation 1</p></div>
-                            <div id="edit-qual2" class="w-full text-left"><p>Qualifikation 2</p></div>
-                            <div id="edit-qual3" class="w-full text-left"><p>Qualifikation 3</p></div>
-                            <div id="edit-qual4" class="w-full text-left"><p>Qualifikation 4</p></div>
-                        </div>
                         <div id="position-container" class="mt-6">
                             <div id="edit-position"><div class="w-full text-left"><p class="text-base">Position oder Logo</p></div></div>
                         </div>
@@ -156,16 +151,16 @@ export default function ServiceProvidersPage() {
         return query(collection(firestore, collectionName) as CollectionReference<DocumentData>, orderBy('order', 'asc'));
     }, [firestore, collectionName]);
 
-    const { data: dbData, isLoading: isLoadingData, error: dbError } = useCollection<ServiceProvider>(dataQuery as any);
+    const { data: dbData, isLoading: isLoadingData, error: dbError } = useCollection<CardData>(dataQuery as any);
 
     const [editingCardId, setEditingCardId] = useState<string | null>(null);
     const [isCreatingNew, setIsCreatingNew] = useState(false);
-    const [editorCardState, setEditorCardState] = useState<ServiceProvider>({ ...initialServiceProviderState, id: '', order: 0 } as ServiceProvider);
+    const [editorCardState, setEditorCardState] = useState<CardData>({ ...initialServiceProviderState, id: '', order: 0 } as CardData);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
 
     const isEditing = editingCardId !== null || isCreatingNew;
 
-    const handleEdit = (card: ServiceProvider) => {
+    const handleEdit = (card: CardData) => {
         setEditingCardId(card.id);
         setIsCreatingNew(false);
         setEditorCardState(card);
@@ -174,7 +169,7 @@ export default function ServiceProvidersPage() {
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
-        setEditorCardState({ ...initialServiceProviderState, id: '', order: 0 } as ServiceProvider);
+        setEditorCardState({ ...initialServiceProviderState, id: '', order: 0 } as CardData);
     };
 
     const handleCancelEdit = () => {
@@ -218,7 +213,7 @@ export default function ServiceProvidersPage() {
     };
 
 
-    const handleToggleHidden = async (card: ServiceProvider) => {
+    const handleToggleHidden = async (card: CardData) => {
         if (!firestore) return;
         const docRef = doc(firestore, collectionName, card.id);
         try {
@@ -254,7 +249,7 @@ export default function ServiceProvidersPage() {
         }
         setNotification(null);
 
-        let dataToSave: Partial<ServiceProvider> = { ...editorCardState };
+        let dataToSave: Partial<CardData> = { ...editorCardState };
     
         try {
             if (isCreatingNew) {
@@ -295,7 +290,7 @@ export default function ServiceProvidersPage() {
         const activeItems = validDbData.filter(i => !i.hidden);
         const hiddenItems = validDbData.filter(i => i.hidden);
     
-        const renderGrid = (items: ServiceProvider[], title: string, description: string, isHiddenGrid: boolean) => {
+        const renderGrid = (items: CardData[], title: string, description: string, isHiddenGrid: boolean) => {
             return (
                 <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>

@@ -160,10 +160,6 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
                     title: { title: "Titel bearbeiten", label: "Neuer Titel", initialValue: extractText(cardData.frontSideCode, 'edit-title') },
                     name: { title: "Name bearbeiten", label: "Neuer Name", initialValue: cardData.name },
                     specialty: { title: "Spezialisierung bearbeiten", label: "Neue Spezialisierung", initialValue: extractText(cardData.frontSideCode, 'edit-specialty') },
-                    qual1: { title: "Qualifikation 1 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual1') },
-                    qual2: { title: "Qualifikation 2 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual2') },
-                    qual3: { title: "Qualifikation 3 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual3') },
-                    qual4: { title: "Qualifikation 4 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual4') },
                 };
 
                 if (textFields[field]) {
@@ -192,9 +188,8 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
 
     return (
         <div id="doctor-editor-root">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-8 items-start">
                 <EditableServiceProviderCard serviceProvider={cardData} onCardClick={handleCardClick} />
-                <EditableServiceProviderCard serviceProvider={cardData} showBacksideOnly={true} onCardClick={handleCardClick} />
             </div>
 
             <Alert variant="info" className="mt-8">
