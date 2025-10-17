@@ -89,14 +89,19 @@ const otherPartnersData = [
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     const sanitizedHtml = React.useMemo(() => {
-        // This check caused the server-side render to be empty.
-        // It's safe to run DOMPurify on the server, it just won't do anything,
-        // but the HTML will be present for the client to hydrate correctly.
+        // This handles differences in how DOMPurify is imported in different environments (SSR vs. Client).
+        const sanitize = (DOMPurify.sanitize || (DOMPurify as any).default?.sanitize);
+
+        if (typeof sanitize !== 'function') {
+            // Fallback if sanitize is not available
+            return { __html: '' };
+        }
+
         const config = {
             ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img"],
             ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src']
         };
-        const sanitized = typeof window !== 'undefined' ? DOMPurify.sanitize(html, config) : html;
+        const sanitized = sanitize(html, config);
         return { __html: sanitized };
     }, [html]);
 
@@ -108,9 +113,9 @@ const PartnerCard: React.FC<{ partner: typeof medicalPartnersData[0] }> = ({ par
         href={partner.websiteUrl || '#'}
         target={partner.openInNewTab ? '_blank' : '_self'}
         rel="noopener noreferrer"
-        className="group relative block h-32 w-full max-w-xs mx-auto overflow-hidden rounded-lg shadow-2xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        className="group relative block w-full aspect-[2/1] overflow-hidden rounded-lg shadow-2xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
     >
-        <Card className="flex h-full w-full items-center justify-center bg-background p-2">
+        <Card className="flex h-full w-full items-center justify-center bg-background p-4">
             {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}
         </Card>
         <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
