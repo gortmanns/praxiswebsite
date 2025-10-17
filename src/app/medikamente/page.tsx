@@ -64,12 +64,12 @@ export default function MedikamentePage() {
                     <TabsTrigger
                         value="telefon"
                         className={cn(
-                          'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold transition-all duration-300',
-                          'border-x border-t',
-                          'bg-gradient-start text-primary-foreground',
+                          'flex h-auto w-full flex-col items-center justify-center gap-2 p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
+                          'border-x border-t border-border',
+                          'bg-gradient-start',
                           activeTab === 'telefon'
-                            ? 'rounded-b-none border-b-transparent'
-                            : 'rounded-b-lg border-border opacity-70 hover:opacity-100'
+                            ? 'rounded-t-lg rounded-b-none'
+                            : 'rounded-lg opacity-70 hover:opacity-100'
                         )}
                     >
                         <div className="flex flex-col items-center">
@@ -83,12 +83,12 @@ export default function MedikamentePage() {
                      <TabsTrigger
                         value="email"
                         className={cn(
-                          'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold transition-all duration-300',
-                           'border-x border-t',
-                           'bg-secondary text-primary-foreground',
+                          'flex h-auto w-full flex-col items-center justify-center gap-2 p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
+                           'border-x border-t border-border',
+                           'bg-secondary',
                            activeTab === 'email'
-                            ? 'rounded-b-none border-b-transparent'
-                            : 'rounded-b-lg border-border opacity-70 hover:opacity-100'
+                            ? 'rounded-t-lg rounded-b-none'
+                            : 'rounded-lg opacity-70 hover:opacity-100'
                         )}
                     >
                         <div className="flex flex-col items-center">
