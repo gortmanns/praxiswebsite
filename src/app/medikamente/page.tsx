@@ -65,9 +65,11 @@ export default function MedikamentePage() {
                         value="telefon"
                         className={cn(
                           'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold transition-all duration-300',
+                          'border-x border-t',
                           'bg-gradient-start text-primary-foreground',
-                          'border-x border-t border-b-border',
-                          activeTab === 'telefon' ? 'rounded-b-none border-b-transparent' : 'rounded-b-lg opacity-70 hover:opacity-100'
+                          activeTab === 'telefon'
+                            ? 'rounded-b-none border-b-transparent'
+                            : 'rounded-b-lg border-border opacity-70 hover:opacity-100'
                         )}
                     >
                         <div className="flex flex-col items-center">
@@ -82,9 +84,11 @@ export default function MedikamentePage() {
                         value="email"
                         className={cn(
                           'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold transition-all duration-300',
-                          'bg-secondary text-primary-foreground',
-                           'border-x border-t border-b-border',
-                           activeTab === 'email' ? 'rounded-b-none border-b-transparent' : 'rounded-b-lg opacity-70 hover:opacity-100'
+                           'border-x border-t',
+                           'bg-secondary text-primary-foreground',
+                           activeTab === 'email'
+                            ? 'rounded-b-none border-b-transparent'
+                            : 'rounded-b-lg border-border opacity-70 hover:opacity-100'
                         )}
                     >
                         <div className="flex flex-col items-center">
