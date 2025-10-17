@@ -64,7 +64,7 @@ export default function MedikamentePage() {
                       className={cn(
                         'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg rounded-b-none border-b-0 p-6 text-xl font-bold',
                         'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-secondary data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:bg-secondary/80',
-                        'data-[state=active]:bg-card data-[state=active]:text-primary'
+                        'data-[state=active]:bg-gradient-to-b data-[state=active]:from-gradient-start data-[state=active]:to-gradient-end data-[state=active]:text-primary-foreground'
                       )}
                   >
                     <div className="flex flex-col items-center">
@@ -80,7 +80,7 @@ export default function MedikamentePage() {
                       className={cn(
                         'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg rounded-b-none border-b-0 p-6 text-xl font-bold',
                         'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:bg-secondary data-[state=inactive]:text-secondary-foreground data-[state=inactive]:hover:bg-secondary/80',
-                        'data-[state=active]:bg-card data-[state=active]:text-primary'
+                        'data-[state=active]:bg-gradient-to-b data-[state=active]:from-gradient-start data-[state=active]:to-gradient-end data-[state=active]:text-primary-foreground'
                       )}
                   >
                      <div className="flex flex-col items-center">
