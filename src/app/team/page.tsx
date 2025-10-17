@@ -42,21 +42,23 @@ export default function TeamPage() {
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
             
-            {isLoadingDoctors ? (
-                Array.from({ length: 3 }).map((_, index) => (
-                    <div key={index} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
-                        <Skeleton className="w-full aspect-[1000/495] rounded-lg" />
+            <div className="space-y-8">
+                {isLoadingDoctors ? (
+                    Array.from({ length: 3 }).map((_, index) => (
+                        <div key={index} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                            <Skeleton className="w-full aspect-[1000/495] rounded-lg" />
+                        </div>
+                    ))
+                ) : doctors && doctors.length > 0 ? (
+                doctors.map(doctor => (
+                    <div key={doctor.id} id={doctor.id.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                    <DoctorCard {...doctor} />
                     </div>
                 ))
-            ) : doctors && doctors.length > 0 ? (
-              doctors.map(doctor => (
-                <div key={doctor.id} id={doctor.id.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
-                  <DoctorCard {...doctor} />
-                </div>
-              ))
-            ) : (
-                <p className="text-center text-muted-foreground">Informationen zu den Ärzten werden in Kürze hier angezeigt.</p>
-            )}
+                ) : (
+                    <p className="text-center text-muted-foreground">Informationen zu den Ärzten werden in Kürze hier angezeigt.</p>
+                )}
+            </div>
             
             <div id="praxispersonal">
               <h2 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">Praxispersonal</h2>
@@ -66,34 +68,36 @@ export default function TeamPage() {
               </p>
             </div>
             
-            {isLoadingStaff ? (
-                <div className="grid grid-cols-1 justify-items-center gap-8 sm:grid-cols-2">
-                    {Array.from({ length: 4 }).map((_, index) => (
-                         <Skeleton key={index} className="h-[550px] w-full max-w-sm" />
-                    ))}
-                </div>
-            ) : staffMembers.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                    {staffMembers.map((member) => {
-                        const backside = member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined;
-                        return (
-                            <div key={member.id} className={cn("flex justify-center", member.fullWidth && "sm:col-span-2")}>
-                                <TeamMemberCard 
-                                    name={member.name}
-                                    role={member.role}
-                                    role2={member.role2}
-                                    imageUrl={member.imageUrl}
-                                    imageHint="staff portrait"
-                                    languages={member.languages}
-                                    backsideContent={backside}
-                                />
-                            </div>
-                        );
-                    })}
-                </div>
-            ) : (
-                 <p className="text-center text-muted-foreground">Informationen zum Praxispersonal werden in Kürze hier angezeigt.</p>
-            )}
+            <div className="mt-12">
+                {isLoadingStaff ? (
+                    <div className="grid grid-cols-1 justify-items-center gap-8 sm:grid-cols-2">
+                        {Array.from({ length: 4 }).map((_, index) => (
+                            <Skeleton key={index} className="h-[550px] w-full max-w-sm" />
+                        ))}
+                    </div>
+                ) : staffMembers.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        {staffMembers.map((member) => {
+                            const backside = member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined;
+                            return (
+                                <div key={member.id} className={cn("flex justify-center", member.fullWidth && "sm:col-span-2")}>
+                                    <TeamMemberCard 
+                                        name={member.name}
+                                        role={member.role}
+                                        role2={member.role2}
+                                        imageUrl={member.imageUrl}
+                                        imageHint="staff portrait"
+                                        languages={member.languages}
+                                        backsideContent={backside}
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <p className="text-center text-muted-foreground">Informationen zum Praxispersonal werden in Kürze hier angezeigt.</p>
+                )}
+            </div>
           </div>
         </div>
       </main>
@@ -101,3 +105,4 @@ export default function TeamPage() {
     </div>
   );
 }
+
