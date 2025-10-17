@@ -64,10 +64,10 @@ export default function MedikamentePage() {
                     <TabsTrigger
                         value="telefon"
                         className={cn(
-                          'flex h-auto w-full flex-col items-center justify-center gap-2 border-x border-t border-transparent p-6 text-xl font-bold transition-all duration-300',
-                          'bg-gradient-start text-primary-foreground',
-                          'data-[state=active]:rounded-b-none',
-                          'data-[state=inactive]:rounded-b-lg data-[state=inactive]:opacity-70 data-[state=inactive]:hover:opacity-100'
+                          'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg border-x border-t p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
+                          'bg-gradient-start',
+                          activeTab !== 'telefon' && 'opacity-70 hover:opacity-100 rounded-b-lg',
+                          activeTab === 'telefon' && 'rounded-b-none'
                         )}
                     >
                         <div className="flex flex-col items-center">
@@ -81,10 +81,10 @@ export default function MedikamentePage() {
                      <TabsTrigger
                         value="email"
                         className={cn(
-                          'flex h-auto w-full flex-col items-center justify-center gap-2 border-x border-t border-transparent p-6 text-xl font-bold transition-all duration-300',
-                          'bg-secondary text-secondary-foreground',
-                          'data-[state=active]:rounded-b-none',
-                          'data-[state=inactive]:rounded-b-lg data-[state=inactive]:opacity-70 data-[state=inactive]:hover:opacity-100'
+                          'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg border-x border-t p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
+                          'bg-secondary',
+                           activeTab !== 'email' && 'opacity-70 hover:opacity-100 rounded-b-lg',
+                           activeTab === 'email' && 'rounded-b-none'
                         )}
                     >
                         <div className="flex flex-col items-center">
@@ -96,7 +96,7 @@ export default function MedikamentePage() {
                         </div>
                     </TabsTrigger>
                 </TabsList>
-              <TabsContent value="telefon" className="mt-0">
+              <TabsContent value="telefon" className="-mt-px">
                  <Card className="rounded-t-none border-t-0 bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg">
@@ -118,7 +118,7 @@ export default function MedikamentePage() {
                     </CardContent>
                 </Card>
               </TabsContent>
-              <TabsContent value="email" className="mt-0">
+              <TabsContent value="email" className="-mt-px">
                 <Card className="rounded-t-none border-t-0 bg-gradient-to-b from-secondary to-accent text-secondary-foreground">
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg">
