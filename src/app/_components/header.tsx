@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -52,7 +51,7 @@ export function Header() {
     { href: '/praxisferien', title: 'Praxisferien' }
   ];
   
-  const mainNavLinks = navLinks.filter(l => !['/oeffnungszeiten', '/notfall', '/jobs', '/termine', '/telefonzeiten', '/praxisferien'].includes(l.href));
+  const mainNavLinks = navLinks.filter(l => !['/oeffnungszeiten', '/telefonzeiten', '/praxisferien', '/notfall', '/jobs', '/termine'].includes(l.href));
   const notfallLink = navLinks.find(l => l.href === '/notfall');
 
   const ueberUnsLinks = [
@@ -61,7 +60,8 @@ export function Header() {
   ];
   
   const zeitenLinks = [
-    { href: '/oeffnungszeiten', title: 'Öffnungs- & Telefonzeiten' },
+    { href: '/oeffnungszeiten', title: 'Öffnungszeiten' },
+    { href: '/telefonzeiten', title: 'Telefonzeiten' },
     { href: '/praxisferien', title: 'Praxisferien' }
   ];
 
@@ -181,23 +181,28 @@ export function Header() {
                     ))}
                 </DropdownMenuContent>
             </DropdownMenu>
-
-            {navLinks.filter(l => ['/oeffnungszeiten', '/telefonzeiten', '/praxisferien'].includes(l.href)).map(link => {
-              const isActive = activePath === link.href;
-              return (
-                <Link
-                    key={link.href}
-                    href={link.href}
-                    onMouseEnter={handleMouseEnter}
-                    className={cn(
-                        'relative z-10 flex h-14 items-center justify-center whitespace-nowrap rounded-md px-4 text-xl font-bold uppercase transition-colors',
-                        isActive || (zeitenActive && (link.href === '/oeffnungszeiten' || link.href === '/telefonzeiten' || link.href === '/praxisferien')) ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
-                    )}
-                >
-                    {link.title}
-                </Link>
-              )
-            })}
+            
+             <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <div 
+                      onMouseEnter={handleMouseEnter}
+                      className={cn(
+                        'relative z-10 flex h-14 cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-4 text-xl font-bold uppercase transition-colors',
+                        zeitenActive ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
+                    )}>
+                        <div className="flex items-center">
+                            Zeiten <ChevronDown className="h-4 w-4 ml-1" />
+                        </div>
+                    </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent onMouseLeave={handleMouseLeave}>
+                    {zeitenLinks.map(link => (
+                        <DropdownMenuItem key={link.href} asChild>
+                            <Link href={link.href} className="uppercase">{link.title}</Link>
+                        </DropdownMenuItem>
+                    ))}
+                </DropdownMenuContent>
+            </DropdownMenu>
 
 
             {notfallLink && (
