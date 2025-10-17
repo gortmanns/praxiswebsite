@@ -134,7 +134,7 @@ export default function LeistungenPage() {
                           </h3>
                         </div>
                     </div>
-                    <div className={cn("relative flex-1", leistung.name === 'TWINT' && "bg-black")}>
+                    <div className={cn("relative w-full aspect-square", leistung.name === 'TWINT' && "bg-black")}>
                         <Image
                             src={leistung.image}
                             alt={leistung.name}
