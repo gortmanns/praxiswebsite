@@ -16,7 +16,6 @@ import {
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu";
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { HolidayBanner } from './holiday-banner';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -231,7 +230,7 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="right">
             <div className="p-4">
-                <Link href="/" className="mb-8 block">
+                <Link href="/" className="mb-8 block max-w-[781px]">
                     <Image
                       src="/images/praxiszentrum-logo.png"
                       alt="Praxiszentrum im Ring Logo"
@@ -315,9 +314,6 @@ export function Header() {
         </Sheet>
         </div>
       </div>
-      <HolidayBanner />
     </header>
   );
 }
-
-    

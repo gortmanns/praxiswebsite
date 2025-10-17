@@ -5,6 +5,7 @@ import { Hero } from './_components/hero';
 import { WelcomeSection } from './_components/welcome-section';
 import { QuickNavSection } from './_components/quick-nav-section';
 import { CooperationPartnersSection } from './_components/cooperation-partners';
+import { HolidayBanner } from './_components/holiday-banner';
 
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
+        <HolidayBanner />
         <Hero />
         <WelcomeSection />
         <QuickNavSection />
