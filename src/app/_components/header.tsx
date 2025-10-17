@@ -43,7 +43,6 @@ export function Header() {
 
   const navLinks = [
     { href: '/', title: 'Startseite', subtitle: 'Herzlich Willkommen' },
-    { href: '/team', title: 'Team', subtitle: 'Wir stellen uns vor' },
     { href: '/leistungen', title: 'Leistungen', subtitle: 'Unser Angebot' },
     { href: '/medikamente', title: 'Medikamente', subtitle: 'Einfach bestellen' },
     { href: '/termine', title: 'Termine', subtitle: 'Vereinbaren Sie jetzt' },
@@ -54,15 +53,22 @@ export function Header() {
   const mainNavLinks = navLinks.filter(l => !['/oeffnungszeiten', '/notfall', '/jobs', '/termine'].includes(l.href));
   const notfallLink = navLinks.find(l => l.href === '/notfall');
 
+  const ueberUnsLinks = [
+    { href: '/team', title: 'Team', subtitle: 'Wir stellen uns vor' },
+    { href: '/impressionen', title: 'Impressionen', subtitle: 'Ein Einblick' }
+  ];
+
   const zeitenLinks = [
     { href: '/oeffnungszeiten', title: 'Öffnungs- & Telefonzeiten', subtitle: 'Unsere Erreichbarkeit' },
     { href: '/praxisferien', title: 'Praxisferien', subtitle: 'Geplante Abwesenheiten' }
   ];
 
-  const pagesWithQuickNav = ['/team', '/leistungen', '/medikamente', '/notfall'];
+  const pagesWithQuickNav = ['/team', '/leistungen', '/medikamente', '/notfall', '/impressionen'];
   const activePath = pagesWithQuickNav.includes(pathname) ? pathname : '/';
 
   const zeitenActive = pathname === '/oeffnungszeiten' || pathname === '/praxisferien';
+  const ueberUnsActive = pathname === '/team' || pathname === '/impressionen';
+
 
   const updateIndicator = useCallback((element: HTMLElement | null) => {
     if (element && navRef.current) {
@@ -156,6 +162,35 @@ export function Header() {
                 </Link>
                 );
             })}
+             <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <div 
+                      onMouseEnter={handleMouseEnter}
+                      className={cn(
+                        'relative z-10 flex h-full cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 py-2 text-xl font-bold uppercase transition-colors',
+                        ueberUnsActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
+                    )}>
+                        <div>
+                            <div className="flex items-center">
+                                Über uns <ChevronDown className="h-4 w-4 ml-1" />
+                            </div>
+                            <span className={cn(
+                                "text-xs font-normal normal-case transition-colors",
+                                ueberUnsActive ? 'text-primary-foreground/70' : 'text-muted-foreground/80'
+                            )}>
+                                Wir stellen uns vor
+                            </span>
+                        </div>
+                    </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent onMouseLeave={handleMouseLeave}>
+                    {ueberUnsLinks.map(link => (
+                        <DropdownMenuItem key={link.href} asChild>
+                            <Link href={link.href} className="uppercase">{link.title}</Link>
+                        </DropdownMenuItem>
+                    ))}
+                </DropdownMenuContent>
+            </DropdownMenu>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <div 
