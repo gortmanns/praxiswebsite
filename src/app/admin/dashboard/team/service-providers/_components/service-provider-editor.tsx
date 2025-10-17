@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useRef, useCallback } from 'react';
@@ -94,7 +95,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
             const reader = new FileReader();
             reader.onload = (event) => {
                 const { field } = dialogState.data;
-                const aspectRatio = field === 'position' ? 1600/265 : 2/3;
+                const aspectRatio = field === 'position' ? 1600 / 397.5 : 2/3; // Adjusted for Service Provider Logo
                 setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio, field } });
             };
             reader.readAsDataURL(e.target.files[0]);
@@ -188,7 +189,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
 
     return (
         <div id="doctor-editor-root">
-            <div className="grid grid-cols-1 md:grid-cols-1 gap-8 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                 <EditableServiceProviderCard serviceProvider={cardData} onCardClick={handleCardClick} />
             </div>
 
@@ -226,7 +227,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
                     isOpen={true} 
                     onOpenChange={() => setDialogState({ type: null })} 
                     images={projectImages} 
-                    onImageSelect={(imageUrl) => setDialogState({ type: 'imageCrop', data: { ...dialogState.data, imageUrl, aspectRatio: dialogState.data.field === 'position' ? 1600/265 : 2/3 } })} />
+                    onImageSelect={(imageUrl) => setDialogState({ type: 'imageCrop', data: { ...dialogState.data, imageUrl, aspectRatio: dialogState.data.field === 'position' ? 1600 / 397.5 : 2/3 } })} />
             )}
             {dialogState.type === 'imageCrop' && (
                 <ImageCropDialog
