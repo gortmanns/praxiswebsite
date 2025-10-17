@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -70,6 +71,7 @@ export function useCollection<T = any>(
       return;
     }
 
+    // Set loading state to true whenever a new query is provided.
     setIsLoading(true);
     setError(null);
 
