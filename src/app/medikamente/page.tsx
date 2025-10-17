@@ -54,9 +54,6 @@ export default function MedikamentePage() {
             <h3 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl">
               So einfach bestellen Sie Ihre Medikamente
             </h3>
-            <p className="mt-4 text-xl font-bold text-foreground">
-              Ganz bequem, wahlweise per Telefon oder E-Mail
-            </p>
           </div>
 
           <div className="mx-auto mt-12 max-w-7xl">
@@ -65,9 +62,11 @@ export default function MedikamentePage() {
                   <TabsTrigger 
                       value="telefon" 
                       className={cn(
-                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold text-primary-foreground',
-                        'bg-gradient-start',
-                        'data-[state=active]:rounded-b-none'
+                        'flex h-auto w-full flex-col items-center justify-center gap-2 p-6 text-xl font-bold text-primary-foreground',
+                        'data-[state=inactive]:rounded-t-lg',
+                        'data-[state=active]:rounded-t-lg data-[state=active]:rounded-b-none',
+                        'data-[state=active]:bg-gradient-start',
+                        'bg-gradient-start'
                       )}
                   >
                     <div className="flex flex-col items-center">
@@ -81,9 +80,11 @@ export default function MedikamentePage() {
                   <TabsTrigger 
                       value="email"
                       className={cn(
-                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold text-secondary-foreground',
-                        'bg-secondary',
-                        'data-[state=active]:rounded-b-none'
+                        'flex h-auto w-full flex-col items-center justify-center gap-2 p-6 text-xl font-bold text-secondary-foreground',
+                        'data-[state=inactive]:rounded-t-lg',
+                        'data-[state=active]:rounded-t-lg data-[state=active]:rounded-b-none',
+                        'data-[state=active]:bg-secondary',
+                        'bg-secondary'
                       )}
                   >
                      <div className="flex flex-col items-center">
