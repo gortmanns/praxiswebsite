@@ -9,8 +9,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
 import { cn } from '@/lib/utils';
 import { Phone, Mail } from 'lucide-react';
+import { useState } from 'react';
 
 export default function MedikamentePage() {
+  const [activeTab, setActiveTab] = useState('telefon');
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -57,14 +59,15 @@ export default function MedikamentePage() {
           </div>
 
           <div className="mx-auto mt-12 max-w-7xl">
-             <Tabs defaultValue="telefon" className="w-full">
+             <Tabs defaultValue="telefon" value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid h-auto w-full grid-cols-1 gap-0 bg-transparent p-0 sm:grid-cols-2">
                     <TabsTrigger
                         value="telefon"
-                        className={cn(
-                            'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-xl font-bold',
-                            'data-[state=active]:bg-gradient-start data-[state=active]:text-primary-foreground data-[state=active]:rounded-b-none',
-                            'data-[state=inactive]:bg-secondary data-[state=inactive]:text-secondary-foreground'
+                         className={cn(
+                            'flex h-auto w-full flex-col items-center justify-center gap-2 border-x border-t border-transparent p-6 text-xl font-bold transition-all duration-300',
+                            'bg-gradient-start text-primary-foreground', // Always blue background
+                            activeTab === 'telefon' ? 'rounded-b-none' : 'rounded-b-lg',
+                            activeTab !== 'telefon' ? 'opacity-70 hover:opacity-100' : ''
                         )}
                     >
                         <div className="flex flex-col items-center">
@@ -75,12 +78,13 @@ export default function MedikamentePage() {
                             <span className="text-base font-normal">031 316 26 66</span>
                         </div>
                     </TabsTrigger>
-                    <TabsTrigger
+                     <TabsTrigger
                         value="email"
                         className={cn(
-                            'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-xl font-bold',
-                             'data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground data-[state=active]:rounded-b-none',
-                            'data-[state=inactive]:bg-gradient-start data-[state=inactive]:text-primary-foreground'
+                            'flex h-auto w-full flex-col items-center justify-center gap-2 border-x border-t border-transparent p-6 text-xl font-bold transition-all duration-300',
+                            'bg-secondary text-secondary-foreground', // Always gray background
+                            activeTab === 'email' ? 'rounded-b-none' : 'rounded-b-lg',
+                             activeTab !== 'email' ? 'opacity-70 hover:opacity-100' : ''
                         )}
                     >
                         <div className="flex flex-col items-center">
@@ -93,7 +97,7 @@ export default function MedikamentePage() {
                     </TabsTrigger>
                 </TabsList>
               <TabsContent value="telefon" className="mt-0">
-                <Card className="rounded-t-none border-t-0 bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
+                 <Card className="rounded-t-none border-t-0 bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg">
                             <h4 className="text-left font-headline text-2xl font-bold">Vorbestellung per Telefon</h4>
