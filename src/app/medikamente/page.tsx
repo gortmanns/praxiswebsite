@@ -63,11 +63,11 @@ export default function MedikamentePage() {
                 <TabsList className="grid h-auto w-full grid-cols-1 gap-0 bg-transparent p-0 sm:grid-cols-2">
                     <TabsTrigger
                         value="telefon"
-                         className={cn(
-                            'flex h-auto w-full flex-col items-center justify-center gap-2 border-x border-t border-transparent p-6 text-xl font-bold transition-all duration-300',
-                            'bg-gradient-start text-primary-foreground', // Always blue background
-                            activeTab === 'telefon' ? 'rounded-b-none' : 'rounded-b-lg',
-                            activeTab !== 'telefon' ? 'opacity-70 hover:opacity-100' : ''
+                        className={cn(
+                          'flex h-auto w-full flex-col items-center justify-center gap-2 border-x border-t border-transparent p-6 text-xl font-bold transition-all duration-300',
+                          'bg-gradient-start text-primary-foreground',
+                          'data-[state=active]:rounded-b-none',
+                          'data-[state=inactive]:rounded-b-lg data-[state=inactive]:opacity-70 data-[state=inactive]:hover:opacity-100'
                         )}
                     >
                         <div className="flex flex-col items-center">
@@ -81,10 +81,10 @@ export default function MedikamentePage() {
                      <TabsTrigger
                         value="email"
                         className={cn(
-                            'flex h-auto w-full flex-col items-center justify-center gap-2 border-x border-t border-transparent p-6 text-xl font-bold transition-all duration-300',
-                            'bg-secondary text-secondary-foreground', // Always gray background
-                            activeTab === 'email' ? 'rounded-b-none' : 'rounded-b-lg',
-                             activeTab !== 'email' ? 'opacity-70 hover:opacity-100' : ''
+                          'flex h-auto w-full flex-col items-center justify-center gap-2 border-x border-t border-transparent p-6 text-xl font-bold transition-all duration-300',
+                          'bg-secondary text-secondary-foreground',
+                          'data-[state=active]:rounded-b-none',
+                          'data-[state=inactive]:rounded-b-lg data-[state=inactive]:opacity-70 data-[state=inactive]:hover:opacity-100'
                         )}
                     >
                         <div className="flex flex-col items-center">
