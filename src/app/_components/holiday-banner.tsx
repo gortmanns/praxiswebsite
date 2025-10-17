@@ -5,7 +5,6 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { format, differenceInDays, isWithinInterval, addDays, subDays } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
-import { X } from 'lucide-react';
 import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, collection, query, where, Timestamp } from 'firebase/firestore';
 import type { Holiday as HolidayData, BannerSettings, InfoBanner as InfoBannerData } from '@/docs/backend-types';
@@ -148,7 +147,7 @@ export function HolidayBanner() {
     const bannerClasses = {
         yellow: 'bg-yellow-400 border-yellow-500 text-yellow-900',
         red: 'bg-red-500 border-red-600 text-white',
-        blue: 'bg-accent border-accent-foreground/20 text-primary',
+        blue: 'bg-gradient-to-b from-secondary to-accent border-accent-foreground/20 text-primary-foreground',
     };
 
     return (
