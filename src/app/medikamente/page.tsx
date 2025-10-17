@@ -6,15 +6,11 @@ import { Footer } from '../_components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
 import { cn } from '@/lib/utils';
 import { Phone, Mail } from 'lucide-react';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { useState } from 'react';
 
 export default function MedikamentePage() {
-  const [toggleValue, setToggleValue] = useState('telefon');
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -100,13 +96,13 @@ export default function MedikamentePage() {
                   </TabsTrigger>
               </TabsList>
               <TabsContent value="telefon" className="mt-0">
-                <Card className="rounded-t-none">
+                <Card className="rounded-t-none bg-primary text-primary-foreground">
                     <CardContent className="p-6 md:p-8">
-                        <div className="space-y-6 text-lg text-foreground/80">
-                            <h4 className="text-left font-headline text-2xl font-bold text-primary">Vorbestellung per Telefon</h4>
+                        <div className="space-y-6 text-lg">
+                            <h4 className="text-left font-headline text-2xl font-bold text-primary-foreground">Vorbestellung per Telefon</h4>
                             <p>Unsere Bestellhotline für Medikamente erreichen Sie Tag und Nacht an 365 Tagen im Jahr unter der Rufnummer:</p>
                             
-                            <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold text-foreground transition-colors hover:text-primary md:text-3xl lg:text-4xl">
+                            <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl">
                                 <Phone className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
                                 <span>031 316 26 66</span>
                             </a>
@@ -115,7 +111,7 @@ export default function MedikamentePage() {
                             
                             <div>
                               <p>Zum Beispiel:</p>
-                              <pre className="mt-2 rounded-md bg-muted p-4 font-code text-base text-muted-foreground">ATORVASTATIN Mepha Lactab 40 mg</pre>
+                              <pre className="mt-2 rounded-md bg-background/20 p-4 font-code text-base">ATORVASTATIN Mepha Lactab 40 mg</pre>
                             </div>
                         </div>
                     </CardContent>
