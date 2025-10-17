@@ -30,7 +30,7 @@ export default function ExterneDienstleisterPage() {
         <div className="container py-16 sm:py-24">
           <div className="mx-auto max-w-5xl space-y-16">
             <div>
-              <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl">Externe Dienstleister</h2>
+              <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl">Externe Dienstleister im Praxiszentrum im Ring</h2>
               <p className="mt-4 text-center text-lg text-foreground/80">
                 Zur Erweiterung unseres Angebots arbeiten wir mit qualifizierten externen Spezialisten zusammen.
               </p>
