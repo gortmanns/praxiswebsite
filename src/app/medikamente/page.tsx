@@ -64,12 +64,14 @@ export default function MedikamentePage() {
                     <TabsTrigger
                         value="telefon"
                         className={cn(
-                          'flex h-auto w-full flex-col items-center justify-center gap-2 p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
+                          'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold transition-all duration-300',
                           'border-x border-t border-border',
-                          'bg-gradient-start',
+                          // Static colors that should not change
+                          '!bg-gradient-start !text-primary-foreground',
+                          // Handle active/inactive state
                           activeTab === 'telefon'
-                            ? 'rounded-t-lg rounded-b-none'
-                            : 'rounded-lg opacity-70 hover:opacity-100'
+                            ? 'rounded-b-none opacity-100'
+                            : 'opacity-70 hover:opacity-100'
                         )}
                     >
                         <div className="flex flex-col items-center">
@@ -83,12 +85,14 @@ export default function MedikamentePage() {
                      <TabsTrigger
                         value="email"
                         className={cn(
-                          'flex h-auto w-full flex-col items-center justify-center gap-2 p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
+                          'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold transition-all duration-300',
                            'border-x border-t border-border',
-                           'bg-secondary',
+                           // Static colors that should not change
+                           '!bg-secondary !text-primary-foreground',
+                           // Handle active/inactive state
                            activeTab === 'email'
-                            ? 'rounded-t-lg rounded-b-none'
-                            : 'rounded-lg opacity-70 hover:opacity-100'
+                            ? 'rounded-b-none opacity-100'
+                            : 'opacity-70 hover:opacity-100'
                         )}
                     >
                         <div className="flex flex-col items-center">
