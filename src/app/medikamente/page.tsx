@@ -96,7 +96,7 @@ export default function MedikamentePage() {
                   </TabsTrigger>
               </TabsList>
               <TabsContent value="telefon" className="mt-0">
-                <Card className="rounded-t-none bg-primary text-primary-foreground">
+                <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
                     <CardContent className="p-6 md:p-8">
                         <div className="space-y-6 text-lg">
                             <h4 className="text-left font-headline text-2xl font-bold text-primary-foreground">Vorbestellung per Telefon</h4>
@@ -111,7 +111,7 @@ export default function MedikamentePage() {
                             
                             <div>
                               <p>Zum Beispiel:</p>
-                              <pre className="mt-2 rounded-md bg-background/20 p-4 font-code text-base">ATORVASTATIN Mepha Lactab 40 mg</pre>
+                              <pre className="mt-2 rounded-md bg-muted p-4 font-code text-base text-muted-foreground">ATORVASTATIN Mepha Lactab 40 mg</pre>
                             </div>
                         </div>
                     </CardContent>
