@@ -24,7 +24,8 @@ const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     return <div className="relative flex h-full w-full items-center justify-center overflow-hidden" dangerouslySetInnerHTML={sanitizedHtml} />;
 };
 
-const PartnerLink: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ partner }) => (
+
+const PartnerCard: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ partner }) => (
     <Link
         href={partner.websiteUrl || '#'}
         target={partner.openInNewTab ? '_blank' : '_self'}
@@ -60,7 +61,7 @@ const RowGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ pa
         <div className="grid grid-cols-8 gap-8">
             {partners.map((partner, index) => (
                 <div key={partner.id} style={getGridStyle(index, partners.length)} className="col-span-2 flex items-center justify-center">
-                    <PartnerLink partner={partner} />
+                    <PartnerCard partner={partner} />
                 </div>
             ))}
         </div>
