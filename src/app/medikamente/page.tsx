@@ -59,11 +59,12 @@ export default function MedikamentePage() {
           <div className="mx-auto mt-12 max-w-7xl">
              <Tabs defaultValue="telefon" className="w-full">
                <TabsList className="grid h-auto w-full grid-cols-1 gap-0 bg-transparent p-0 sm:grid-cols-2">
-                  <TabsTrigger 
-                      value="telefon" 
+                  <TabsTrigger
+                      value="telefon"
                       className={cn(
-                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-xl font-bold text-primary-foreground',
-                        'data-[state=active]:rounded-t-lg bg-gradient-start data-[state=inactive]:rounded-t-lg'
+                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-xl font-bold',
+                        'bg-gradient-start text-primary-foreground',
+                        'data-[state=active]:rounded-t-lg data-[state=active]:border-b-0'
                       )}
                   >
                     <div className="flex flex-col items-center">
@@ -74,11 +75,12 @@ export default function MedikamentePage() {
                         <span className="text-base font-normal">031 316 26 66</span>
                     </div>
                   </TabsTrigger>
-                  <TabsTrigger 
+                  <TabsTrigger
                       value="email"
                       className={cn(
-                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-xl font-bold text-secondary-foreground',
-                        'data-[state=active]:rounded-t-lg bg-secondary data-[state=inactive]:rounded-t-lg'
+                        'flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-xl font-bold',
+                        'bg-secondary text-secondary-foreground',
+                        'data-[state=active]:rounded-t-lg data-[state=active]:border-b-0'
                       )}
                   >
                      <div className="flex flex-col items-center">
