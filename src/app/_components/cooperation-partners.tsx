@@ -40,38 +40,29 @@ const PartnerLink: React.FC<{ partner: MedicalPartner | OtherPartner }> = ({ par
 
 const RowGrid: React.FC<{ partners: (MedicalPartner | OtherPartner)[] }> = ({ partners }) => {
     if (!partners || partners.length === 0) return null;
-    const count = partners.length;
-
-    const getCardWithGridColumn = (card: MedicalPartner | OtherPartner, index: number) => {
+    
+    const getGridStyle = (index: number, total: number) => {
         let colStart = 0;
-        
-        // 4 cards (2-2-2-2 structure)
-        if (count === 4) {
+        if (total === 4) { // 2-2-2-2
             colStart = index * 2 + 1;
-        } 
-        // 3 cards (1-2-2-2-1 structure)
-        else if (count === 3) {
+        } else if (total === 3) { // 1-2-2-2-1
             colStart = index * 2 + 2;
-        }
-        // 2 cards (2-2-2-2 structure, centered)
-        else if (count === 2) {
+        } else if (total === 2) { // 2-2-2-2 centered
             colStart = index * 2 + 3;
-        }
-        // 1 card (1-2-2-2-1 structure, centered)
-        else if (count === 1) {
+        } else if (total === 1) { // 1-2-2-2-1 centered
             colStart = 4;
         }
 
-        return (
-            <div key={card.id} style={{ gridColumnStart: colStart }} className="col-span-2 flex items-center justify-center">
-                <PartnerLink partner={card} />
-            </div>
-        );
+        return { gridColumnStart: colStart };
     };
 
     return (
         <div className="grid grid-cols-8 gap-8">
-            {partners.map((partner, index) => getCardWithGridColumn(partner, index))}
+            {partners.map((partner, index) => (
+                <div key={partner.id} style={getGridStyle(index, partners.length)} className="col-span-2 flex items-center justify-center">
+                    <PartnerLink partner={partner} />
+                </div>
+            ))}
         </div>
     );
 };
@@ -119,9 +110,9 @@ export function CooperationPartnersSection() {
         
         <div className="mt-12">
           {isLoadingMedical ? (
-            <div className="flex flex-wrap justify-center gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {Array.from({ length: 4 }).map((_, index) => (
-                    <Skeleton key={index} className="h-32 w-full max-w-[280px] flex-shrink-0 rounded-lg" />
+                    <Skeleton key={index} className="h-32 w-full rounded-lg" />
                 ))}
             </div>
           ) : (
@@ -136,9 +127,9 @@ export function CooperationPartnersSection() {
                 </h3>
                 <div className="mt-12">
                     {isLoadingOther ? (
-                        <div className="flex flex-wrap justify-center gap-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                             {Array.from({ length: 4 }).map((_, index) => (
-                                 <Skeleton key={index} className="h-32 w-full max-w-[280px] flex-shrink-0 rounded-lg" />
+                                 <Skeleton key={index} className="h-32 w-full rounded-lg" />
                             ))}
                         </div>
                     ) : (
