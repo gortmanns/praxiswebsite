@@ -128,7 +128,7 @@ export default function LeistungenPage() {
                                 <>
                                     TWINT
                                     <br />
-                                    <span>Mit dem Handy bezahlen</span>
+                                    <span className="text-xl">Mit dem Handy bezahlen</span>
                                 </>
                             ) : leistung.name}
                           </h3>
