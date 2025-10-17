@@ -3,9 +3,9 @@
 
 import { Header } from '../../_components/header';
 import { Footer } from '../../_components/footer';
-import { TeamMemberCard } from '../_components/team-member-card';
+import { DoctorCard } from '../_components/doctor-card';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { StaffMember } from '../../admin/dashboard/team/staff/_components/staff-editor';
+import type { Doctor as ServiceProvider } from '../_components/doctor-card';
 import { cn } from '@/lib/utils';
 import React, { useMemo } from 'react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
@@ -19,7 +19,7 @@ export default function ExterneDienstleisterPage() {
     return query(collection(firestore, 'serviceProviders') as CollectionReference<DocumentData>, orderBy('order', 'asc'));
   }, [firestore]);
 
-  const { data: serviceProvidersData, isLoading: isLoadingServiceProviders } = useCollection<StaffMember>(serviceProvidersQuery as any);
+  const { data: serviceProvidersData, isLoading: isLoadingServiceProviders } = useCollection<ServiceProvider>(serviceProvidersQuery as any);
 
   const activeServiceProviders = useMemo(() => serviceProvidersData?.filter(s => !s.hidden) || [], [serviceProvidersData]);
 
@@ -36,32 +36,19 @@ export default function ExterneDienstleisterPage() {
               </p>
             </div>
             
-            <div className="mt-12">
+             <div className="space-y-8">
                 {isLoadingServiceProviders ? (
-                    <div className="grid grid-cols-1 justify-items-center gap-8 sm:grid-cols-2">
-                        {Array.from({ length: 4 }).map((_, index) => (
-                            <Skeleton key={index} className="h-[550px] w-full max-w-sm" />
-                        ))}
-                    </div>
+                    Array.from({ length: 2 }).map((_, index) => (
+                        <div key={index} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                            <Skeleton className="w-full aspect-[1000/495] rounded-lg" />
+                        </div>
+                    ))
                 ) : activeServiceProviders.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                        {activeServiceProviders.map((member) => {
-                            const backside = member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined;
-                            return (
-                                <div key={member.id} className={cn("flex justify-center", member.fullWidth && "sm:col-span-2")}>
-                                    <TeamMemberCard 
-                                        name={member.name}
-                                        role={member.role}
-                                        role2={member.role2}
-                                        imageUrl={member.imageUrl}
-                                        imageHint="service provider portrait"
-                                        languages={member.languages}
-                                        backsideContent={backside}
-                                    />
-                                </div>
-                            );
-                        })}
+                activeServiceProviders.map(provider => (
+                    <div key={provider.id} id={provider.id.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                      <DoctorCard {...provider} />
                     </div>
+                ))
                 ) : (
                     <p className="text-center text-muted-foreground">Informationen zu den externen Dienstleistern werden in Kürze hier angezeigt.</p>
                 )}
