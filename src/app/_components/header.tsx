@@ -96,7 +96,7 @@ export function Header() {
   
   return (
     <header className="w-full border-b bg-background">
-      <div className="bg-primary text-primary-foreground">
+      <div className="bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
         <div className="w-full px-4 sm:px-8">
             <div className="flex h-auto items-center justify-center py-2 md:h-10 md:justify-end">
                 <div className="flex flex-col items-center gap-2 text-sm md:flex-row md:gap-6">
