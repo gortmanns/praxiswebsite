@@ -60,8 +60,10 @@ export function Header() {
   const navRef = useRef<HTMLElement>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
 
+  const isEnglish = pathname.startsWith('/page-en');
+
   const mainNavLinks = [
-    { href: '/', title: 'Startseite' },
+    { href: isEnglish ? '/page-en' : '/', title: isEnglish ? 'Home' : 'Startseite' },
     { href: '/leistungen', title: 'Leistungen' },
     { href: '/medikamente', title: 'Medikamente' },
   ];
@@ -186,7 +188,7 @@ export function Header() {
                         ueberUnsActive ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}>
                         <div className="flex items-center">
-                            Über uns <ChevronDown className="h-4 w-4 ml-1" />
+                            {isEnglish ? 'About Us' : 'Über uns'} <ChevronDown className="h-4 w-4 ml-1" />
                         </div>
                     </div>
                 </DropdownMenuTrigger>
@@ -208,7 +210,7 @@ export function Header() {
                         zeitenActive ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}>
                         <div className="flex items-center">
-                            Zeiten <ChevronDown className="h-4 w-4 ml-1" />
+                            {isEnglish ? 'Times' : 'Zeiten'} <ChevronDown className="h-4 w-4 ml-1" />
                         </div>
                     </div>
                 </DropdownMenuTrigger>
@@ -230,7 +232,7 @@ export function Header() {
                   pathname === notfallLink.href ? 'ring-2 ring-emergency-red ring-offset-2 ring-offset-background' : 'text-emergency-red hover:text-emergency-red/80'
                  )}
              >
-                 {notfallLink.title}
+                 {isEnglish ? 'EMERGENCY' : 'NOTFALL'}
              </Link>
         </nav>
 
@@ -282,7 +284,7 @@ export function Header() {
                     
                     <Collapsible>
                         <CollapsibleTrigger className={cn("group flex w-full items-center justify-between rounded-md px-3 py-2 text-lg font-bold uppercase transition-colors", ueberUnsActive ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary')}>
-                            Über uns <ChevronDown className="h-5 w-5 transition-transform duration-300 group-data-[state=open]:rotate-180" />
+                            {isEnglish ? 'About Us' : 'Über uns'} <ChevronDown className="h-5 w-5 transition-transform duration-300 group-data-[state=open]:rotate-180" />
                         </CollapsibleTrigger>
                         <CollapsibleContent className="py-2 pl-6">
                             <div className="flex flex-col space-y-2">
@@ -295,7 +297,7 @@ export function Header() {
                     
                     <Collapsible>
                         <CollapsibleTrigger className={cn("group flex w-full items-center justify-between rounded-md px-3 py-2 text-lg font-bold uppercase transition-colors", zeitenActive ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary')}>
-                            Zeiten <ChevronDown className="h-5 w-5 transition-transform duration-300 group-data-[state=open]:rotate-180" />
+                            {isEnglish ? 'Times' : 'Zeiten'} <ChevronDown className="h-5 w-5 transition-transform duration-300 group-data-[state=open]:rotate-180" />
                         </CollapsibleTrigger>
                         <CollapsibleContent className="py-2 pl-6">
                              <div className="flex flex-col space-y-2">

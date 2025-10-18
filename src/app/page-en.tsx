@@ -4,11 +4,16 @@
 import { Header } from './_components/header';
 import { Footer } from './_components/footer';
 import { Hero } from './_components/hero';
-import { WelcomeSection } from './_components/welcome-section';
-import { QuickNavSection } from './_components/quick-nav-section';
 import { CooperationPartnersSection } from './_components/cooperation-partners';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/components/ui/skeleton';
+import Link from 'next/link';
+import {
+  Siren,
+  HandHelping,
+  Pill,
+  Users,
+} from 'lucide-react';
 
 const HolidayBanner = dynamic(
   () => import('./_components/holiday-banner').then((mod) => mod.HolidayBanner),
@@ -17,6 +22,66 @@ const HolidayBanner = dynamic(
     loading: () => <Skeleton className="h-12 w-full" />,
   }
 );
+
+const navItems = [
+  {
+    href: '/team',
+    label: 'Team',
+    Icon: Users,
+  },
+  {
+    href: '/leistungen',
+    label: 'Services',
+    Icon: HandHelping,
+  },
+  {
+    href: '/medikamente',
+    label: 'Medication',
+    Icon: Pill,
+  },
+  {
+    href: '/notfall',
+    label: 'Emergency',
+    Icon: Siren,
+  },
+];
+
+function QuickNavSectionEn() {
+  return (
+    <section id="quick-nav" className="w-full bg-background">
+      <div className="mx-auto w-full px-4 pt-8 pb-16 sm:px-6 sm:pt-12 sm:pb-24 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="group relative h-40 w-full overflow-hidden rounded-lg shadow-2xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            >
+              
+              <div
+                className="absolute flex h-full w-full flex-col items-center justify-center gap-4 rounded-lg bg-gradient-to-b from-secondary to-accent p-6 text-primary-foreground transition-transform duration-500"
+              >
+                <item.Icon className="h-24 w-24" />
+                <span className="text-xl font-bold uppercase tracking-wider">
+                  {item.label}
+                </span>
+              </div>
+              
+              <div
+                className="absolute flex h-full w-full flex-col items-center justify-center gap-4 rounded-lg bg-gradient-to-b from-gradient-start to-gradient-end p-6 text-primary-foreground transition-transform duration-500 translate-y-full group-hover:translate-y-0"
+              >
+                <item.Icon className="h-24 w-24" />
+                <span className="text-xl font-bold uppercase tracking-wider">
+                  {item.label}
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 
 export default function HomeEn() {
@@ -38,7 +103,7 @@ export default function HomeEn() {
                 </div>
             </div>
         </section>
-        <QuickNavSection />
+        <QuickNavSectionEn />
         <CooperationPartnersSection />
       </main>
       <Footer />
