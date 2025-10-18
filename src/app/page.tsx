@@ -1,11 +1,22 @@
 
+'use client';
+
 import { Header } from './_components/header';
 import { Footer } from './_components/footer';
 import { Hero } from './_components/hero';
 import { WelcomeSection } from './_components/welcome-section';
 import { QuickNavSection } from './_components/quick-nav-section';
 import { CooperationPartnersSection } from './_components/cooperation-partners';
-import { HolidayBanner } from './_components/holiday-banner';
+import dynamic from 'next/dynamic';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const HolidayBanner = dynamic(
+  () => import('./_components/holiday-banner').then((mod) => mod.HolidayBanner),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-12 w-full" />,
+  }
+);
 
 
 export default function Home() {

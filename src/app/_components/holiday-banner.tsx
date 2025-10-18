@@ -63,9 +63,9 @@ export function HolidayBanner() {
     const holidaysQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'holidays')) : null, [firestore]);
     const infoBannersQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'infoBanners'), where('end', '>=', new Date())) : null, [firestore]);
 
-    const { data: bannerSettings } = useDoc<BannerSettings>(bannerSettingsDoc);
-    const { data: holidaysData } = useCollection<HolidayData & { start: Timestamp, end: Timestamp }>(holidaysQuery);
-    const { data: infoBannersData } = useCollection<InfoBannerFromDB>(infoBannersQuery);
+    const { data: bannerSettings, error: bannerSettingsError } = useDoc<BannerSettings>(bannerSettingsDoc);
+    const { data: holidaysData, error: holidaysError } = useCollection<HolidayData & { start: Timestamp, end: Timestamp }>(holidaysQuery);
+    const { data: infoBannersData, error: infoBannersError } = useCollection<InfoBannerFromDB>(infoBannersQuery);
 
     const holidays = useMemo<Holiday[]>(() => {
         if (!holidaysData) return [];
@@ -78,6 +78,12 @@ export function HolidayBanner() {
     }, [infoBannersData]);
 
     useEffect(() => {
+        if (bannerSettingsError || holidaysError || infoBannersError) {
+          console.error("Fehler beim Laden der Banner-Daten:", { bannerSettingsError, holidaysError, infoBannersError });
+          setBannerInfo(null);
+          return;
+        }
+
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -92,7 +98,10 @@ export function HolidayBanner() {
             return;
         }
 
-        if (!holidays.length || !bannerSettings) return;
+        if (!holidays.length || !bannerSettings) {
+            setBannerInfo(null);
+            return;
+        };
 
         for (const holiday of holidays) {
             const preHolidayStart = subDays(holiday.start, bannerSettings.preHolidayDays);
@@ -127,7 +136,7 @@ export function HolidayBanner() {
         // If no active banners, set to null
         setBannerInfo(null);
 
-    }, [holidays, bannerSettings, infoBanners]);
+    }, [holidays, bannerSettings, infoBanners, bannerSettingsError, holidaysError, infoBannersError]);
 
 
     const marqueeRef = useRef<HTMLDivElement>(null);
