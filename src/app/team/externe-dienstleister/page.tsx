@@ -6,22 +6,11 @@ import { Footer } from '../../_components/footer';
 import { DoctorCard } from '../_components/doctor-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Doctor as ServiceProvider } from '../_components/doctor-card';
-import { cn } from '@/lib/utils';
 import React, { useMemo } from 'react';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, CollectionReference, DocumentData } from 'firebase/firestore';
 
 export default function ExterneDienstleisterPage() {
-  const firestore = useFirestore();
-
-  const serviceProvidersQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'serviceProviders') as CollectionReference<DocumentData>, orderBy('order', 'asc'));
-  }, [firestore]);
-
-  const { data: serviceProvidersData, isLoading: isLoadingServiceProviders } = useCollection<ServiceProvider>(serviceProvidersQuery as any);
-
-  const activeServiceProviders = useMemo(() => serviceProvidersData?.filter(s => !s.hidden) || [], [serviceProvidersData]);
+  const isLoadingServiceProviders = false;
+  const activeServiceProviders: ServiceProvider[] = [];
 
   return (
     <div className="flex min-h-screen flex-col bg-background">

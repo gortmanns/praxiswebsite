@@ -10,32 +10,12 @@ import type { Doctor } from './_components/doctor-card';
 import type { StaffMember } from '../admin/dashboard/team/staff/_components/staff-editor';
 import { cn } from '@/lib/utils';
 import React, { useMemo } from 'react';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, CollectionReference, DocumentData, Timestamp } from 'firebase/firestore';
-
-
-// Helper type to convert Timestamp to Date
-type WithDate<T> = Omit<T, 'createdAt'> & { createdAt?: Date };
-
 
 export default function TeamPage() {
-  const firestore = useFirestore();
-
-  // Logic for doctors, copied from admin/dashboard/team/doctors/page.tsx
-  const doctorsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'doctors') as CollectionReference<DocumentData>, orderBy('order', 'asc'));
-  }, [firestore]);
-  const { data: doctorsData, isLoading: isLoadingDoctors } = useCollection<Doctor>(doctorsQuery as any);
-  const activeDoctors = useMemo(() => doctorsData?.filter(d => !d.hidden) || [], [doctorsData]);
-
-  // Logic for staff, copied from admin/dashboard/team/staff/page.tsx
-  const staffQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'staff') as CollectionReference<DocumentData>, orderBy('order', 'asc'));
-  }, [firestore]);
-  const { data: staffData, isLoading: isLoadingStaff } = useCollection<StaffMember>(staffQuery as any);
-  const activeStaff = useMemo(() => staffData?.filter(s => !s.hidden) || [], [staffData]);
+  const isLoadingDoctors = false;
+  const activeDoctors: Doctor[] = [];
+  const isLoadingStaff = false;
+  const activeStaff: StaffMember[] = [];
 
 
   return (
@@ -112,3 +92,4 @@ export default function TeamPage() {
     </div>
   );
 }
+
