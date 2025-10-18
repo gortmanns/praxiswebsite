@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import DOMPurify from 'dompurify';
+import { cn } from '@/lib/utils';
 
 // --- Static Data Definition ---
 
@@ -120,11 +121,50 @@ const PartnerCard: React.FC<{ partner: typeof medicalPartnersData[0] }> = ({ par
 const PartnerGrid: React.FC<{ partners: typeof medicalPartnersData }> = ({ partners }) => {
   if (!partners || partners.length === 0) return null;
 
+  // Chunk partners into rows of max 4
+  const rows = [];
+  for (let i = 0; i < partners.length; i += 4) {
+    rows.push(partners.slice(i, i + 4));
+  }
+
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:gap-8">
-      {partners.map((partner) => (
-        <PartnerCard key={partner.id} partner={partner} />
-      ))}
+    <div className="space-y-4 md:space-y-8">
+      {rows.map((row, rowIndex) => {
+        const rowCount = row.length;
+        return (
+          <div key={rowIndex} className="grid grid-cols-4 gap-4 md:gap-8">
+            {row.map((partner, partnerIndex) => {
+              let gridClasses = 'col-span-2 md:col-span-1'; // Default
+
+              if (rowCount === 1) {
+                // Center the single card
+                gridClasses = 'col-span-2 col-start-2';
+              } else if (rowCount === 2) {
+                // Two cards, centered
+                if (partnerIndex === 0) gridClasses = 'col-span-2 col-start-1';
+                if (partnerIndex === 1) gridClasses = 'col-span-2 col-start-3';
+              } else if (rowCount === 3) {
+                 // Three cards, more balanced on mobile
+                 if (partnerIndex === 0) gridClasses = 'col-span-2 md:col-span-1 md:col-start-1';
+                 if (partnerIndex === 1) gridClasses = 'col-span-2 md:col-span-1 md:col-start-2';
+                 if (partnerIndex === 2) gridClasses = 'col-span-4 md:col-span-1 md:col-start-3';
+
+              } else { // 4 cards
+                 gridClasses = 'col-span-2 md:col-span-1';
+              }
+
+              return (
+                <div key={partner.id} className={cn(
+                    "flex justify-center",
+                    gridClasses
+                )}>
+                  <PartnerCard partner={partner} />
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 };
