@@ -1,10 +1,10 @@
 
 'use client';
 
-import { Header } from './_components/header';
-import { Footer } from './_components/footer';
-import { Hero } from './_components/hero';
-import { CooperationPartnersSection } from './_components/cooperation-partners';
+import { Header } from '../_components/header';
+import { Footer } from '../_components/footer';
+import { Hero } from '../_components/hero';
+import { CooperationPartnersSection } from '../_components/cooperation-partners';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 const HolidayBanner = dynamic(
-  () => import('./_components/holiday-banner').then((mod) => mod.HolidayBanner),
+  () => import('../_components/holiday-banner').then((mod) => mod.HolidayBanner),
   {
     ssr: false,
     loading: () => <Skeleton className="h-12 w-full" />,
