@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, ChevronDown } from 'lucide-react';
+import { Menu, ChevronDown, Plus } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -15,6 +15,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useState, useRef, useCallback, useEffect } from 'react';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -35,28 +36,37 @@ const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
+const MobileNavLink = ({ href, title, isActive, isEmergency = false, setSheetOpen }: { href: string; title: string; isActive: boolean; isEmergency?: boolean; setSheetOpen: (open: boolean) => void; }) => {
+    return (
+        <Link
+            href={href}
+            onClick={() => setSheetOpen(false)}
+            className={cn(
+                'block rounded-md px-3 py-2 text-lg font-bold uppercase transition-colors',
+                isEmergency
+                    ? (isActive ? 'text-emergency-red ring-2 ring-emergency-red' : 'text-emergency-red/80 hover:text-emergency-red')
+                    : (isActive ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary')
+            )}
+        >
+            {title}
+        </Link>
+    );
+};
+
+
 export function Header() {
   const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
-  const navLinks = [
+  const mainNavLinks = [
     { href: '/', title: 'Startseite' },
     { href: '/leistungen', title: 'Leistungen' },
     { href: '/medikamente', title: 'Medikamente' },
     { href: '/termine', title: 'Termine' },
-    { href: '/jobs', title: 'Jobs'},
-    { href: '/notfall', title: 'NOTFALL' },
-    { href: '/oeffnungszeiten', title: 'Öffnungszeiten'},
-    { href: '/telefonzeiten', title: 'Telefonzeiten'},
-    { href: '/praxisferien', title: 'Praxisferien' },
-    { href: '/team', title: 'Team' },
-    { href: '/team/externe-dienstleister', title: 'Externe Dienstleister' },
-    { href: '/impressionen', title: 'Impressionen' },
+    { href: '/jobs', title: 'Jobs' },
   ];
   
-  const mainNavLinks = navLinks.filter(l => !['/oeffnungszeiten', '/telefonzeiten', '/praxisferien', '/notfall', '/jobs', '/termine', '/team', '/team/externe-dienstleister', '/impressionen'].includes(l.href));
-  const notfallLink = navLinks.find(l => l.href === '/notfall');
-
   const ueberUnsLinks = [
     { href: '/team', title: 'Team' },
     { href: '/team/externe-dienstleister', title: 'Externe Dienstleister' },
@@ -68,9 +78,8 @@ export function Header() {
     { href: '/telefonzeiten', title: 'Telefonzeiten' },
     { href: '/praxisferien', title: 'Praxisferien' }
   ];
-
-  const pagesWithQuickNav = ['/team', '/leistungen', '/medikamente', '/notfall', '/impressionen', '/oeffnungszeiten', '/telefonzeiten', '/praxisferien', '/team/externe-dienstleister'];
-  const activePath = pagesWithQuickNav.includes(pathname) ? pathname : '/';
+  
+  const notfallLink = { href: '/notfall', title: 'NOTFALL' };
 
   const zeitenActive = pathname === '/oeffnungszeiten' || pathname === '/telefonzeiten' || pathname === '/praxisferien';
   const ueberUnsActive = pathname === '/team' || pathname === '/impressionen' || pathname === '/team/externe-dienstleister';
@@ -148,22 +157,19 @@ export function Header() {
         <nav ref={navRef} className="relative hidden items-center xl:flex" onMouseLeave={handleMouseLeave}>
             <div className="nav-link-indicator bg-gradient-to-b from-secondary to-accent" style={indicatorStyle} />
 
-            {mainNavLinks.map((link) => {
-                const isActive = activePath === link.href;
-                return (
+            {mainNavLinks.map((link) => (
                 <Link
                     key={link.href}
                     href={link.href}
                     onMouseEnter={handleMouseEnter}
                     className={cn(
                         'relative z-10 flex h-14 items-center justify-center whitespace-nowrap rounded-md px-4 text-xl font-bold uppercase transition-colors',
-                        isActive ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
+                        pathname === link.href ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}
                 >
                     {link.title}
                 </Link>
-                );
-            })}
+            ))}
              <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <div 
@@ -208,9 +214,7 @@ export function Header() {
                 </DropdownMenuContent>
             </DropdownMenu>
 
-
-            {notfallLink && (
-                 <Link
+            <Link
                  key={notfallLink.href}
                  href={notfallLink.href}
                  onMouseEnter={handleMouseEnter}
@@ -221,11 +225,10 @@ export function Header() {
              >
                  {notfallLink.title}
              </Link>
-            )}
         </nav>
 
         <div className="flex items-center xl:hidden">
-        <Sheet>
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
                 <Menu className="h-6 w-6" />
@@ -261,73 +264,40 @@ export function Header() {
                     <span>empfang@praxiszentrum-im-ring.ch</span>
                 </ObfuscatedLink>
                 </div>
-                <nav className="flex flex-col space-y-4">
-                {navLinks.map((link) => {
-                    const isActive = pathname === link.href;
-                    if (['/oeffnungszeiten', '/telefonzeiten', '/praxisferien'].includes(link.href)) {
-                        return (
-                             <Link
-                                key={link.href}
-                                href={link.href}
-                                className={cn(
-                                'rounded-md px-3 py-2 text-lg font-bold transition-colors uppercase',
-                                isActive
-                                    ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground'
-                                    : 'text-muted-foreground hover:text-primary'
-                                )}
-                            >
-                                {link.title}
-                            </Link>
-                        )
-                    }
-                     if (['/team', '/impressionen', '/team/externe-dienstleister'].includes(link.href)) {
-                        return (
-                             <Link
-                                key={link.href}
-                                href={link.href}
-                                className={cn(
-                                'rounded-md px-3 py-2 text-lg font-bold transition-colors uppercase',
-                                isActive
-                                    ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground'
-                                    : 'text-muted-foreground hover:text-primary'
-                                )}
-                            >
-                                {link.title}
-                            </Link>
-                        )
-                    }
-                    if (link.href === '/notfall') {
-                      return (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          className={cn(
-                            'rounded-md px-3 py-2 text-lg font-bold uppercase transition-colors',
-                            isActive ? 'text-emergency-red ring-2 ring-emergency-red' : 'text-emergency-red/80 hover:text-emergency-red'
-                          )}
-                        >
-                          {link.title}
-                        </Link>
-                      );
-                    }
-                    if (['/', '/leistungen', '/medikamente', '/jobs', '/termine'].includes(link.href)) {
-                      return (
-                        <Link
-                            key={link.href}
-                            href={link.href}
-                            className={cn(
-                            'rounded-md px-3 py-2 text-lg font-bold transition-colors uppercase',
-                            isActive
-                                ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground'
-                                : 'text-muted-foreground hover:text-primary'
-                            )}
-                        >
-                            {link.title}
-                        </Link>
-                      );
-                    }
-                    return null;
-                })}
+                <nav className="flex flex-col space-y-2">
+                    {mainNavLinks.map((link) => (
+                        <MobileNavLink key={link.href} {...link} isActive={pathname === link.href} setSheetOpen={setSheetOpen} />
+                    ))}
+                    
+                    <Collapsible>
+                        <CollapsibleTrigger className={cn("group flex w-full items-center justify-between rounded-md px-3 py-2 text-lg font-bold uppercase transition-colors", ueberUnsActive ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary')}>
+                            Über uns <ChevronDown className="h-5 w-5 transition-transform duration-300 group-data-[state=open]:rotate-180" />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="py-2 pl-6">
+                            <div className="flex flex-col space-y-2">
+                            {ueberUnsLinks.map((link) => (
+                                <MobileNavLink key={link.href} {...link} isActive={pathname === link.href} setSheetOpen={setSheetOpen} />
+                            ))}
+                            </div>
+                        </CollapsibleContent>
+                    </Collapsible>
+                    
+                    <Collapsible>
+                        <CollapsibleTrigger className={cn("group flex w-full items-center justify-between rounded-md px-3 py-2 text-lg font-bold uppercase transition-colors", zeitenActive ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary')}>
+                            Zeiten <ChevronDown className="h-5 w-5 transition-transform duration-300 group-data-[state=open]:rotate-180" />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="py-2 pl-6">
+                             <div className="flex flex-col space-y-2">
+                                {zeitenLinks.map((link) => (
+                                    <MobileNavLink key={link.href} {...link} isActive={pathname === link.href} setSheetOpen={setSheetOpen} />
+                                ))}
+                            </div>
+                        </CollapsibleContent>
+                    </Collapsible>
+                    
+                    <div className="pt-2">
+                        <MobileNavLink {...notfallLink} isActive={pathname === notfallLink.href} isEmergency={true} setSheetOpen={setSheetOpen}/>
+                    </div>
                 </nav>
             </div>
             </SheetContent>
