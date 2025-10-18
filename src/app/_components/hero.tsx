@@ -3,8 +3,12 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Calendar } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 export function Hero() {
+  const pathname = usePathname();
+  const isEnglish = pathname.startsWith('/page-en');
+
   return (
     <section className="relative w-full aspect-[1511/721]">
       <Image
@@ -19,7 +23,7 @@ export function Hero() {
         <Button asChild size="lg" className="h-14 gap-3 rounded-full px-8 text-xl font-bold shadow-2xl">
           <Link href="/termine">
             <Calendar />
-            Termin vereinbaren
+            {isEnglish ? 'Book Appointment' : 'Termin vereinbaren'}
           </Link>
         </Button>
       </div>

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
+import { usePathname } from 'next/navigation';
 
 // --- Static Data Definition ---
 
@@ -135,11 +136,14 @@ const PartnerGrid: React.FC<{ partners: typeof medicalPartnersData }> = ({ partn
 
 
 export function CooperationPartnersSection() {
+  const pathname = usePathname();
+  const isEnglish = pathname.startsWith('/page-en');
+
   return (
     <section id="partners" className="w-full bg-primary">
       <div className="mx-auto w-full px-4 pt-12 pb-16 sm:px-6 lg:px-8">
         <h2 className="text-center font-headline text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
-          Unsere ärztlichen Kooperationspartner
+          {isEnglish ? 'Our Medical Cooperation Partners' : 'Unsere ärztlichen Kooperationspartner'}
         </h2>
         
         <div className="mt-12">
@@ -149,7 +153,7 @@ export function CooperationPartnersSection() {
         {otherPartnersData && otherPartnersData.length > 0 && (
             <>
                 <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
-                Unsere weiteren Partner
+                {isEnglish ? 'Our Other Partners' : 'Unsere weiteren Partner'}
                 </h3>
                 <div className="mt-12">
                     <PartnerGrid partners={otherPartnersData} />
