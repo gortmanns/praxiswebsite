@@ -92,14 +92,17 @@ const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     const [sanitizedHtml, setSanitizedHtml] = useState({ __html: '' });
 
     useEffect(() => {
+        // This effect runs only on the client, after the component has mounted.
         const sanitize = DOMPurify.sanitize;
         const config = {
             ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img"],
             ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src']
         };
         setSanitizedHtml({ __html: sanitize(html, config) });
-    }, [html]);
+    }, [html]); // Re-run if the html prop changes.
 
+    // On the server and during initial client render, this div will be empty.
+    // After mount, the useEffect will run and the sanitized HTML will be rendered.
     return <div className="relative flex h-full w-full items-center justify-center overflow-hidden" dangerouslySetInnerHTML={sanitizedHtml} />;
 };
 
@@ -114,14 +117,13 @@ const PartnerCard: React.FC<{ partner: typeof medicalPartnersData[0] }> = ({ par
         <Card className="flex h-full w-full items-center justify-center bg-background p-4">
             {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}
         </Card>
-        <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
     </Link>
 );
 
 const PartnerGrid: React.FC<{ partners: typeof medicalPartnersData }> = ({ partners }) => {
   if (!partners || partners.length === 0) return null;
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 md:gap-8">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
       {partners.map((partner) => (
         <div key={partner.id} className="flex justify-center">
           <PartnerCard partner={partner} />
