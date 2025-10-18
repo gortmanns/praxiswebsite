@@ -64,23 +64,23 @@ export function Header() {
 
   const mainNavLinks = [
     { href: isEnglish ? '/page-en' : '/', title: isEnglish ? 'Home' : 'Startseite' },
-    { href: '/leistungen', title: 'Leistungen' },
-    { href: '/medikamente', title: 'Medikamente' },
+    { href: '/leistungen', title: isEnglish ? 'Services' : 'Leistungen' },
+    { href: '/medikamente', title: isEnglish ? 'Medication' : 'Medikamente' },
   ];
   
   const ueberUnsLinks = [
     { href: '/team', title: 'Team' },
-    { href: '/team/externe-dienstleister', title: 'Externe Dienstleister' },
-    { href: '/impressionen', title: 'Impressionen' }
+    { href: '/team/externe-dienstleister', title: isEnglish ? 'External Providers' : 'Externe Dienstleister' },
+    { href: '/impressionen', title: isEnglish ? 'Impressions' : 'Impressionen' }
   ];
   
   const zeitenLinks = [
-    { href: '/oeffnungszeiten', title: 'Öffnungszeiten' },
-    { href: '/telefonzeiten', title: 'Telefonzeiten' },
-    { href: '/praxisferien', title: 'Praxisferien' }
+    { href: '/oeffnungszeiten', title: isEnglish ? 'Opening Hours' : 'Öffnungszeiten' },
+    { href: '/telefonzeiten', title: isEnglish ? 'Phone Hours' : 'Telefonzeiten' },
+    { href: '/praxisferien', title: isEnglish ? 'Practice Holidays' : 'Praxisferien' }
   ];
   
-  const notfallLink = { href: '/notfall', title: 'NOTFALL' };
+  const notfallLink = { href: '/notfall', title: isEnglish ? 'EMERGENCY' : 'NOTFALL' };
 
   const zeitenActive = pathname === '/oeffnungszeiten' || pathname === '/telefonzeiten' || pathname === '/praxisferien';
   const ueberUnsActive = pathname === '/team' || pathname === '/impressionen' || pathname === '/team/externe-dienstleister';
@@ -151,7 +151,7 @@ export function Header() {
       </div>
 
       <div className="flex h-[140px] items-center justify-between px-8">
-        <Link href="/" className="min-w-[280px] max-w-[781px]">
+        <Link href={isEnglish ? "/page-en" : "/"} className="min-w-[280px] max-w-[781px]">
               <Image
                 src="/images/praxiszentrum-logo.png"
                 alt="Praxiszentrum im Ring Logo"
@@ -232,7 +232,7 @@ export function Header() {
                   pathname === notfallLink.href ? 'ring-2 ring-emergency-red ring-offset-2 ring-offset-background' : 'text-emergency-red hover:text-emergency-red/80'
                  )}
              >
-                 {isEnglish ? 'EMERGENCY' : 'NOTFALL'}
+                 {notfallLink.title}
              </Link>
         </nav>
 
@@ -250,7 +250,7 @@ export function Header() {
                     <SheetDescription>Hauptnavigation für mobile Geräte</SheetDescription>
                 </SheetHeader>
             <div className="p-4">
-                <Link href="/" className="mb-8 block max-w-[781px]">
+                <Link href={isEnglish ? "/page-en" : "/"} className="mb-8 block max-w-[781px]">
                     <Image
                       src="/images/praxiszentrum-logo.png"
                       alt="Praxiszentrum im Ring Logo"
