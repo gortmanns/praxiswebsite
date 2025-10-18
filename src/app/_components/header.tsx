@@ -17,6 +17,7 @@ import {
   } from "@/components/ui/dropdown-menu";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { DeFlag, EnFlag } from '@/components/logos/flags';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -113,7 +114,15 @@ export function Header() {
     <header className="w-full border-b bg-background">
       <div className="bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
         <div className="w-full px-4 sm:px-8">
-            <div className="flex h-auto items-center justify-center py-2 md:h-10 md:justify-end">
+            <div className="flex h-auto items-center justify-between py-2 md:h-10">
+                <div className="flex items-center gap-2">
+                    <Link href="/" title="Deutsch">
+                        <DeFlag className="h-6 w-auto cursor-pointer rounded-sm border-2 border-transparent hover:border-primary-foreground" />
+                    </Link>
+                     <Link href="/page-en" title="English">
+                        <EnFlag className="h-6 w-auto cursor-pointer rounded-sm border-2 border-transparent hover:border-primary-foreground" />
+                    </Link>
+                </div>
                 <div className="flex flex-col items-center gap-2 text-sm md:flex-row md:gap-6">
                     <a
                     href="tel:0313162600"
