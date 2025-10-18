@@ -1,7 +1,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import DOMPurify from 'dompurify';
@@ -88,25 +88,15 @@ const otherPartnersData = [
 // --- Components ---
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
-    const sanitizedHtml = React.useMemo(() => {
-        const isServer = typeof window === 'undefined';
-        if (isServer) {
-             return { __html: html };
-        }
-        // This handles differences in how DOMPurify is imported in different environments.
-        const sanitize = (DOMPurify.sanitize || (DOMPurify as any).default?.sanitize);
+    const [sanitizedHtml, setSanitizedHtml] = useState({ __html: '' });
 
-        if (typeof sanitize !== 'function') {
-            console.error("DOMPurify.sanitize is not a function.");
-            return { __html: '' }; // Fallback to an empty string
-        }
-
+    useEffect(() => {
+        const sanitize = DOMPurify.sanitize;
         const config = {
             ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img"],
             ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src']
         };
-        const sanitized = sanitize(html, config);
-        return { __html: sanitized };
+        setSanitizedHtml({ __html: sanitize(html, config) });
     }, [html]);
 
     return <div className="relative flex h-full w-full items-center justify-center overflow-hidden" dangerouslySetInnerHTML={sanitizedHtml} />;
