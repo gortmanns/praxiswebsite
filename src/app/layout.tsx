@@ -22,6 +22,7 @@ const openSans = Open_Sans({
 export const metadata: Metadata = {
   title: 'Praxiszentrum im Ring',
   description: 'Ihre Gesundheit, Unsere Priorität.',
+  viewport: 'width=device-width, initial-scale=1.0',
 };
 
 export default function RootLayout({
