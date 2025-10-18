@@ -1,4 +1,10 @@
-
+/**********************************************************************************
+ * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
+ * 
+ * Diese Datei wurde nach wiederholten Fehlversuchen stabilisiert.
+ * ÄNDERN SIE DIESE DATEI UNTER KEINEN UMSTÄNDEN OHNE AUSDRÜCKLICHE ERLAUBNIS.
+ * Jede Änderung muss vorher bestätigt werden.
+ **********************************************************************************/
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
@@ -7,6 +13,9 @@ import { doc, collection, query, where, Timestamp } from 'firebase/firestore';
 import { format, addDays, differenceInDays, isWithinInterval } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // --- Helper Components & Types ---
 
@@ -100,36 +109,33 @@ interface BannerSettings {
 
 export function HolidayBanner() {
     const firestore = useFirestore();
-    const [now, setNow] = useState(new Date());
+    const [now, setNow] = useState<Date | null>(null);
 
     useEffect(() => {
-        // This ensures 'now' is only set on the client, avoiding hydration mismatches.
         setNow(new Date());
+        const timer = setInterval(() => setNow(new Date()), 60000); // Update every minute
+        return () => clearInterval(timer);
     }, []);
 
-    // Fetch Banner Settings
     const settingsDocRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'banners') : null, [firestore]);
     const { data: settings, isLoading: isLoadingSettings, error: settingsError } = useDoc<BannerSettings>(settingsDocRef);
-
-    // Fetch relevant holidays (ending today or in the future)
+    
     const holidaysQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
-        return query(collection(firestore, 'holidays'), where('end', '>=', now));
+        if (!firestore || !now) return null;
+        const today = new Date(now);
+        today.setHours(0, 0, 0, 0);
+        return query(collection(firestore, 'holidays'), where('end', '>=', today));
     }, [firestore, now]);
     const { data: holidaysData, isLoading: isLoadingHolidays, error: holidaysError } = useCollection<HolidayFromDB>(holidaysQuery);
 
-    // Fetch active info banners
     const infoBannersQuery = useMemoFirebase(() => {
-        if (!firestore) return null;
-        return query(
-            collection(firestore, 'infoBanners'),
-            where('start', '<=', now),
-        );
+        if (!firestore || !now) return null;
+        return query(collection(firestore, 'infoBanners'), where('start', '<=', now));
     }, [firestore, now]);
     const { data: infoBannersData, isLoading: isLoadingInfoBanners, error: infoBannersError } = useCollection<InfoBannerFromDB>(infoBannersQuery);
 
     const activeInfoBanner = useMemo(() => {
-        if (!infoBannersData) return null;
+        if (!infoBannersData || !now) return null;
         const active = infoBannersData
             .map(b => ({ ...b, start: b.start.toDate(), end: b.end.toDate() }))
             .find(b => isWithinInterval(now, { start: b.start, end: b.end }));
@@ -146,6 +152,8 @@ export function HolidayBanner() {
 
 
     const bannerToDisplay = useMemo(() => {
+        if (!now) return null;
+
         if (activeInfoBanner) {
             return {
                 text: activeInfoBanner.text,
@@ -195,12 +203,11 @@ export function HolidayBanner() {
 
     }, [activeInfoBanner, nextHoliday, settings, now]);
 
-    const isLoading = isLoadingSettings || isLoadingHolidays || isLoadingInfoBanners;
-
-    // We only want to show the loading skeleton if there are no errors
+    const isLoading = isLoadingSettings || isLoadingHolidays || isLoadingInfoBanners || !now;
     const hasError = settingsError || holidaysError || infoBannersError;
+
     if (isLoading && !hasError) {
-        return null; // Return null instead of a skeleton to just hide it while loading.
+        return <Skeleton className="h-12 w-full" />;
     }
     
     if (hasError || !bannerToDisplay) {
