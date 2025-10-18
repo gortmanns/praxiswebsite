@@ -23,6 +23,8 @@ export interface FirebaseContextState {
   firestore: Firestore | null;
   storage: FirebaseStorage | null;
   auth: Auth | null;
+  authLoading: boolean;
+  user: User | null;
 }
 
 export interface FirebaseServices {
@@ -41,6 +43,16 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
   storage,
   auth,
 }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setAuthLoading(false);
+    });
+    return () => unsubscribe();
+  }, [auth]);
 
   const contextValue = useMemo((): FirebaseContextState => {
     const servicesAvailable = !!(firebaseApp && firestore && storage && auth);
@@ -50,8 +62,10 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
       firestore: servicesAvailable ? firestore : null,
       storage: servicesAvailable ? storage : null,
       auth: servicesAvailable ? auth : null,
+      authLoading,
+      user,
     };
-  }, [firebaseApp, firestore, storage, auth]);
+  }, [firebaseApp, firestore, storage, auth, authLoading, user]);
 
   return (
     <FirebaseContext.Provider value={contextValue}>
@@ -81,12 +95,20 @@ export const useFirebase = (): FirebaseServices => {
 };
 
 export const useFirestore = (): Firestore | null => {
-  const context = useContext(FirebaseContext);
-  return context?.firestore ?? null;
+    const context = useContext(FirebaseContext);
+    // Return Firestore instance only when auth is done and user is present for protected routes
+    // or when auth is done for public routes. This prevents queries from running too early.
+    if (context?.authLoading) {
+        return null;
+    }
+    return context?.firestore ?? null;
 };
 
 export const useStorage = (): FirebaseStorage | null => {
     const context = useContext(FirebaseContext);
+    if (context?.authLoading) {
+        return null;
+    }
     return context?.storage ?? null;
 };
 
@@ -98,37 +120,22 @@ interface UseAuthOptions {
 export const useAuth = (options: UseAuthOptions = {}) => {
   const context = useContext(FirebaseContext);
   const auth = context?.auth ?? null;
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const user = context?.user ?? null;
+  const loading = context?.authLoading ?? true;
+  const [error, setError] = useState<Error | null>(null); // Keep local error for auth calls
   const router = useRouter();
 
   useEffect(() => {
-    if (!auth) {
-      setLoading(false);
-      return;
-    }
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-      
-      if (options.redirectOn) {
-        const shouldRedirect = (options.redirectOn === 'login' && user) || (options.redirectOn === 'logout' && !user);
-        if (shouldRedirect && options.redirectTo) {
-          router.push(options.redirectTo);
-        }
+    if (!loading && options.redirectOn) {
+      const shouldRedirect = (options.redirectOn === 'login' && user) || (options.redirectOn === 'logout' && !user);
+      if (shouldRedirect && options.redirectTo) {
+        router.push(options.redirectTo);
       }
+    }
+  }, [user, loading, options.redirectOn, options.redirectTo, router]);
 
-    }, (error) => {
-      setError(error);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [auth, options.redirectOn, options.redirectTo, router]);
-
-  return { auth, user, loading, error };
+  // This hook now primarily provides auth state; specific errors can be handled by callers.
+  return { auth, user, loading, error, setError };
 }
 
 
@@ -143,7 +150,19 @@ export function useMemoFirebase<T>(factory: () => T, deps: DependencyList): T | 
   const memoized = useMemo(factory, deps);
   
   if(typeof memoized !== 'object' || memoized === null) return memoized;
-  (memoized as MemoFirebase<T>).__memo = true;
+  if (!('__memo' in memoized)) {
+    try {
+      Object.defineProperty(memoized, '__memo', {
+        value: true,
+        enumerable: false, 
+        writable: false, 
+        configurable: true 
+      });
+    } catch (e) {
+      // In case the object is frozen
+      (memoized as any).__memo = true;
+    }
+  }
   
   return memoized;
 }
