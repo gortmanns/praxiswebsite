@@ -45,6 +45,9 @@
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-ring: 197 100% 47%;
 
+    --gradient-gray-start: 220 9% 45%;
+    --gradient-gray-end: 220 9% 35%;
+
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;

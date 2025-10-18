@@ -149,7 +149,7 @@ export function HolidayBanner() {
         if (activeInfoBanner) {
             return {
                 text: activeInfoBanner.text,
-                color: 'blue',
+                color: 'gray',
                 separatorStyle: activeInfoBanner.separatorStyle,
             };
         }
@@ -212,7 +212,7 @@ export function HolidayBanner() {
     const bannerClasses = {
         yellow: 'bg-yellow-400 border-yellow-500 text-yellow-900',
         red: 'bg-red-500 border-red-600 text-white',
-        blue: 'bg-blue-500 border-blue-600 text-white',
+        gray: 'bg-gradient-to-b from-gradient-gray-start to-gradient-gray-end text-primary-foreground',
     };
 
     return (
