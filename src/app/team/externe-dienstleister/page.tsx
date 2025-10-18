@@ -3,12 +3,32 @@
 
 import { Header } from '../../_components/header';
 import { Footer } from '../../_components/footer';
-import { serviceProviders } from '../_components/static-data';
 import { DoctorCard } from '../_components/doctor-card';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, orderBy } from 'firebase/firestore';
+import { Skeleton } from '@/components/ui/skeleton';
 import React from 'react';
 
+interface ServiceProvider {
+    id: string;
+    order: number;
+    name: string;
+    frontSideCode: string;
+    backSideCode: string;
+    hidden?: boolean;
+}
+
 export default function ExterneDienstleisterPage() {
-    const activeServiceProviders = serviceProviders.filter(sp => !sp.hidden);
+    const firestore = useFirestore();
+
+    const serviceProvidersQuery = useMemoFirebase(() => {
+        if (!firestore) return null;
+        return query(collection(firestore, 'serviceProviders'), orderBy('order', 'asc'));
+    }, [firestore]);
+
+    const { data: serviceProvidersData, isLoading: isLoadingServiceProviders } = useCollection<ServiceProvider>(serviceProvidersQuery);
+
+    const activeServiceProviders = serviceProvidersData?.filter(sp => !sp.hidden) || [];
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -24,7 +44,13 @@ export default function ExterneDienstleisterPage() {
             </div>
             
              <div className="space-y-8">
-                {activeServiceProviders.length > 0 ? (
+                {isLoadingServiceProviders ? (
+                     Array.from({ length: 2 }).map((_, index) => (
+                        <div key={index} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                            <Skeleton className="w-full aspect-[1000/495]" />
+                        </div>
+                    ))
+                ) : activeServiceProviders.length > 0 ? (
                      activeServiceProviders.map(provider => (
                         <div key={provider.id} id={provider.id.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
                             <DoctorCard {...provider} />

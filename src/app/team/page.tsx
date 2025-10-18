@@ -6,13 +6,51 @@ import { Footer } from '../_components/footer';
 import { TeamMemberCard } from './_components/team-member-card';
 import { DoctorCard } from './_components/doctor-card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { doctors, staff, serviceProviders } from './_components/static-data';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, orderBy, Timestamp } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import React from 'react';
 
+interface Doctor {
+    id: string;
+    order: number;
+    name: string;
+    frontSideCode: string;
+    backSideCode: string;
+    hidden?: boolean;
+}
+
+interface StaffMember {
+    id: string;
+    order: number;
+    name: string;
+    role: string;
+    role2?: string;
+    imageUrl: string;
+    backsideContent?: string;
+    languages?: string[];
+    hidden?: boolean;
+    fullWidth?: boolean;
+}
+
 export default function TeamPage() {
-  const activeDoctors = doctors.filter(d => !d.hidden);
-  const activeStaff = staff.filter(s => !s.hidden);
+  const firestore = useFirestore();
+
+  const doctorsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'doctors'), orderBy('order', 'asc'));
+  }, [firestore]);
+
+  const staffQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'staff'), orderBy('order', 'asc'));
+  }, [firestore]);
+
+  const { data: doctorsData, isLoading: isLoadingDoctors } = useCollection<Doctor>(doctorsQuery);
+  const { data: staffData, isLoading: isLoadingStaff } = useCollection<StaffMember>(staffQuery);
+
+  const activeDoctors = doctorsData?.filter(d => !d.hidden) || [];
+  const activeStaff = staffData?.filter(s => !s.hidden) || [];
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -26,12 +64,18 @@ export default function TeamPage() {
             </div>
             
             <div className="space-y-8">
-                {activeDoctors.length > 0 ? (
-                activeDoctors.map(doctor => (
-                    <div key={doctor.id} id={doctor.id.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
-                      <DoctorCard {...doctor} />
-                    </div>
-                ))
+                {isLoadingDoctors ? (
+                    Array.from({ length: 2 }).map((_, index) => (
+                        <div key={index} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                            <Skeleton className="w-full aspect-[1000/495]" />
+                        </div>
+                    ))
+                ) : activeDoctors.length > 0 ? (
+                    activeDoctors.map(doctor => (
+                        <div key={doctor.id} id={doctor.id.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                        <DoctorCard {...doctor} />
+                        </div>
+                    ))
                 ) : (
                     <p className="text-center text-muted-foreground">Informationen zu den Ärzten werden in Kürze hier angezeigt.</p>
                 )}
@@ -46,7 +90,15 @@ export default function TeamPage() {
             </div>
             
             <div className="mt-12">
-                {activeStaff.length > 0 ? (
+                {isLoadingStaff ? (
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        {Array.from({ length: 4 }).map((_, index) => (
+                            <div key={index} className="flex justify-center">
+                                <Skeleton className="h-[550px] w-full max-w-sm" />
+                            </div>
+                        ))}
+                    </div>
+                ) : activeStaff.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                         {activeStaff.map((member) => {
                             const backside = member.backsideContent ? <div dangerouslySetInnerHTML={{ __html: member.backsideContent }} /> : undefined;
