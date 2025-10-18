@@ -112,7 +112,7 @@ const PartnerCard: React.FC<{ partner: typeof medicalPartnersData[0] }> = ({ par
         href={partner.websiteUrl || '#'}
         target={partner.openInNewTab ? '_blank' : '_self'}
         rel="noopener noreferrer"
-        className="group relative block w-full aspect-[2/1] overflow-hidden rounded-lg shadow-2xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        className="block w-full aspect-[2/1] overflow-hidden rounded-lg shadow-2xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
     >
         <Card className="flex h-full w-full items-center justify-center bg-background p-4">
             {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}
@@ -123,7 +123,7 @@ const PartnerCard: React.FC<{ partner: typeof medicalPartnersData[0] }> = ({ par
 const PartnerGrid: React.FC<{ partners: typeof medicalPartnersData }> = ({ partners }) => {
   if (!partners || partners.length === 0) return null;
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
       {partners.map((partner) => (
         <div key={partner.id} className="flex justify-center">
           <PartnerCard partner={partner} />
