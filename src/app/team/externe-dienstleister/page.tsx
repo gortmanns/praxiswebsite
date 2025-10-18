@@ -3,15 +3,8 @@
 
 import { Header } from '../../_components/header';
 import { Footer } from '../../_components/footer';
-import { DoctorCard } from '../_components/doctor-card';
-import { Skeleton } from '@/components/ui/skeleton';
-import type { Doctor as ServiceProvider } from '../_components/doctor-card';
-import React, { useMemo } from 'react';
 
 export default function ExterneDienstleisterPage() {
-  const isLoadingServiceProviders = false;
-  const activeServiceProviders: ServiceProvider[] = [];
-
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -26,21 +19,7 @@ export default function ExterneDienstleisterPage() {
             </div>
             
              <div className="space-y-8">
-                {isLoadingServiceProviders ? (
-                    Array.from({ length: 2 }).map((_, index) => (
-                        <div key={index} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
-                            <Skeleton className="w-full aspect-[1000/495] rounded-lg" />
-                        </div>
-                    ))
-                ) : activeServiceProviders.length > 0 ? (
-                activeServiceProviders.map(provider => (
-                    <div key={provider.id} id={provider.id.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
-                      <DoctorCard {...provider} />
-                    </div>
-                ))
-                ) : (
-                    <p className="text-center text-muted-foreground">Informationen zu den externen Dienstleistern werden in Kürze hier angezeigt.</p>
-                )}
+                <p className="text-center text-muted-foreground">Informationen zu den externen Dienstleistern werden in Kürze hier angezeigt.</p>
             </div>
           </div>
         </div>

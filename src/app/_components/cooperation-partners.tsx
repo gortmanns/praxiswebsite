@@ -120,41 +120,11 @@ const PartnerCard: React.FC<{ partner: typeof medicalPartnersData[0] }> = ({ par
 
 const PartnerGrid: React.FC<{ partners: typeof medicalPartnersData }> = ({ partners }) => {
   if (!partners || partners.length === 0) return null;
-
-  const rows = [];
-  for (let i = 0; i < partners.length; i += 4) {
-    rows.push(partners.slice(i, i + 4));
-  }
-
-  const getGridClasses = (index: number, count: number) => {
-    // Mobile is always 2 columns, so we don't need special logic for it.
-    // We only need to adjust for desktop (md and up).
-    let desktopStart = index + 1;
-    if (count === 1) {
-      desktopStart = 2; // Center the single item in a 4-col grid
-    } else if (count === 2) {
-      desktopStart = index + 2; // Center the two items
-    } else if (count === 3) {
-      // No special start needed, they'll be 1,2,3
-    }
-    return `md:col-start-${desktopStart}`;
-  };
-
   return (
-    <div className="space-y-4 md:space-y-8">
-      {rows.map((row, rowIndex) => (
-        <div key={rowIndex} className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-8">
-          {row.map((partner, partnerIndex) => (
-            <div
-              key={partner.id}
-              className={cn(
-                'col-span-1 flex justify-center',
-                getGridClasses(partnerIndex, row.length)
-              )}
-            >
-              <PartnerCard partner={partner} />
-            </div>
-          ))}
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 md:gap-8">
+      {partners.map((partner) => (
+        <div key={partner.id} className="flex justify-center">
+          <PartnerCard partner={partner} />
         </div>
       ))}
     </div>
