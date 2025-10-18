@@ -3,8 +3,13 @@
 
 import { Header } from '../../_components/header';
 import { Footer } from '../../_components/footer';
+import { serviceProviders } from '../_components/static-data';
+import { DoctorCard } from '../_components/doctor-card';
+import React from 'react';
 
 export default function ExterneDienstleisterPage() {
+    const activeServiceProviders = serviceProviders.filter(sp => !sp.hidden);
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -19,7 +24,15 @@ export default function ExterneDienstleisterPage() {
             </div>
             
              <div className="space-y-8">
-                <p className="text-center text-muted-foreground">Informationen zu den externen Dienstleistern werden in Kürze hier angezeigt.</p>
+                {activeServiceProviders.length > 0 ? (
+                     activeServiceProviders.map(provider => (
+                        <div key={provider.id} id={provider.id.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                            <DoctorCard {...provider} />
+                        </div>
+                    ))
+                ) : (
+                    <p className="text-center text-muted-foreground">Informationen zu den externen Dienstleistern werden in Kürze hier angezeigt.</p>
+                )}
             </div>
           </div>
         </div>
