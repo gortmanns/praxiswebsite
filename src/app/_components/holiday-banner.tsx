@@ -100,7 +100,12 @@ interface BannerSettings {
 
 export function HolidayBanner() {
     const firestore = useFirestore();
-    const now = useMemo(() => new Date(), []);
+    const [now, setNow] = useState(new Date());
+
+    useEffect(() => {
+        // This ensures 'now' is only set on the client, avoiding hydration mismatches.
+        setNow(new Date());
+    }, []);
 
     // Fetch Banner Settings
     const settingsDocRef = useMemoFirebase(() => firestore ? doc(firestore, 'settings', 'banners') : null, [firestore]);
@@ -218,4 +223,3 @@ export function HolidayBanner() {
         </div>
     );
 }
-
