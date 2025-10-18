@@ -117,50 +117,16 @@ const PartnerCard: React.FC<{ partner: typeof medicalPartnersData[0] }> = ({ par
     </Link>
 );
 
+const PartnerGrid: React.FC<{ partners: typeof medicalPartnersData }> = ({ partners }) => {
+  if (!partners || partners.length === 0) return null;
 
-const RowGrid: React.FC<{ partners: typeof medicalPartnersData[0][] }> = ({ partners }) => {
-    if (!partners || partners.length === 0) return null;
-
-    const total = partners.length;
-
-    const getGridStyle = (index: number) => {
-        let colStart;
-        switch (total) {
-            case 1: colStart = 4; break; 
-            case 2: colStart = 3 + (index * 2); break;
-            case 3: colStart = 2 + (index * 2); break;
-            case 4: colStart = 1 + (index * 2); break;
-            default: colStart = 1;
-        }
-        return { gridColumn: `span 2 / span 2`, gridColumnStart: colStart };
-    };
-    
-    return (
-        <div className="grid grid-cols-8 gap-x-8">
-            {partners.map((partner, index) => (
-                <div key={partner.id} style={getGridStyle(index)} className="flex items-center justify-center">
-                    <PartnerCard partner={partner} />
-                </div>
-            ))}
-        </div>
-    );
-};
-
-const PartnerGrid: React.FC<{ partners: typeof medicalPartnersData[0][] }> = ({ partners }) => {
-    if (!partners || partners.length === 0) return null;
-    
-    const chunkedPartners: typeof medicalPartnersData[0][][] = [];
-    for (let i = 0; i < partners.length; i += 4) {
-        chunkedPartners.push(partners.slice(i, i + 4));
-    }
-
-    return (
-        <div className="space-y-8">
-            {chunkedPartners.map((rowPartners, index) => (
-                <RowGrid key={index} partners={rowPartners} />
-            ))}
-        </div>
-    );
+  return (
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:gap-8">
+      {partners.map((partner) => (
+        <PartnerCard key={partner.id} partner={partner} />
+      ))}
+    </div>
+  );
 };
 
 export function CooperationPartnersSection() {
