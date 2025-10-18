@@ -159,9 +159,7 @@ export function HolidayBanner() {
         const isInHoliday = isWithinInterval(now, { start: nextHoliday.start, end: nextHoliday.end });
         const daysUntilHoliday = differenceInDays(nextHoliday.start, now);
 
-        const formatDate = (date: Date) => format(date, 'd. MMMM', { locale: de });
         const formatFullDate = (date: Date) => format(date, 'd. MMMM yyyy', { locale: de });
-        const formatDay = (date: Date) => format(date, 'eeee', { locale: de });
         
         const placeholders = {
             '{name}': nextHoliday.name,
