@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Menu, ChevronDown, Plus } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -234,6 +234,10 @@ export function Header() {
             </Button>
             </SheetTrigger>
             <SheetContent side="right">
+                <SheetHeader className="sr-only">
+                    <SheetTitle>Mobiles Menü</SheetTitle>
+                    <SheetDescription>Hauptnavigation für mobile Geräte</SheetDescription>
+                </SheetHeader>
             <div className="p-4">
                 <Link href="/" className="mb-8 block max-w-[781px]">
                     <Image
