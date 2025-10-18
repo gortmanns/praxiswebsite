@@ -63,8 +63,6 @@ export function Header() {
     { href: '/', title: 'Startseite' },
     { href: '/leistungen', title: 'Leistungen' },
     { href: '/medikamente', title: 'Medikamente' },
-    { href: '/termine', title: 'Termine' },
-    { href: '/jobs', title: 'Jobs' },
   ];
   
   const ueberUnsLinks = [
