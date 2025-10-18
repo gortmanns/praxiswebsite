@@ -8,6 +8,9 @@ export default {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  safelist: [ // Ensure these classes are not purged
+    { pattern: /^md:col-start-(1|2|3|4)$/ },
+  ],
   theme: {
     container: {
       center: true,
