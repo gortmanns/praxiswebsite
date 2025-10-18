@@ -5,8 +5,9 @@ import React, { DependencyList, createContext, useContext, ReactNode, useMemo, u
 import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
 import { FirebaseStorage } from 'firebase/storage';
-import { Auth } from 'firebase/auth';
+import { Auth, onAuthStateChanged, User } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener'
+import { useRouter } from 'next/navigation';
 
 interface FirebaseProviderProps {
   children: ReactNode;
@@ -79,24 +80,61 @@ export const useFirebase = (): FirebaseServices => {
   };
 };
 
-export const useFirestore = (): Firestore => {
-  const { firestore } = useFirebase();
-  return firestore;
+export const useFirestore = (): Firestore | null => {
+  const context = useContext(FirebaseContext);
+  return context?.firestore ?? null;
 };
 
-export const useStorage = (): FirebaseStorage => {
-    const { storage } = useFirebase();
-    return storage;
+export const useStorage = (): FirebaseStorage | null => {
+    const context = useContext(FirebaseContext);
+    return context?.storage ?? null;
 };
 
-export const useAuth = (): Auth => {
-    const { auth } = useFirebase();
-    return auth;
+interface UseAuthOptions {
+  redirectOn?: 'login' | 'logout';
+  redirectTo?: string;
 }
 
-export const useFirebaseApp = (): FirebaseApp => {
-  const { firebaseApp } = useFirebase();
-  return firebaseApp;
+export const useAuth = (options: UseAuthOptions = {}) => {
+  const context = useContext(FirebaseContext);
+  const auth = context?.auth ?? null;
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+      
+      if (options.redirectOn) {
+        const shouldRedirect = (options.redirectOn === 'login' && user) || (options.redirectOn === 'logout' && !user);
+        if (shouldRedirect && options.redirectTo) {
+          router.push(options.redirectTo);
+        }
+      }
+
+    }, (error) => {
+      setError(error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [auth, options.redirectOn, options.redirectTo, router]);
+
+  return { auth, user, loading, error };
+}
+
+
+export const useFirebaseApp = (): FirebaseApp | null => {
+  const context = useContext(FirebaseContext);
+  return context?.firebaseApp ?? null;
 };
 
 type MemoFirebase <T> = T & {__memo?: boolean};
