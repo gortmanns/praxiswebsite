@@ -125,8 +125,8 @@ export function Header() {
                         <EnFlag className="h-6 w-auto cursor-pointer rounded-sm border-2 border-transparent hover:border-primary-foreground" />
                     </Link>
                     <div className="border-l border-primary-foreground/50 h-6"></div>
-                    <div className="google-translate-container flex items-center">
-                        <Globe className="h-6 w-6 text-white" />
+                    <div className="flex items-center">
+                        <Globe className="h-6 w-6 text-white mr-2" />
                         <div id="google_translate_element"></div>
                     </div>
                 </div>

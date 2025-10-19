@@ -93,19 +93,6 @@
 }
 
 /* --- Simple Google Translate Widget CSS --- */
-.google-translate-container {
-    position: relative;
-    cursor: pointer;
-}
-#google_translate_element {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-}
 #google_translate_element .goog-te-gadget-simple {
     background-color: transparent !important;
     border: none !important;
@@ -113,6 +100,7 @@
     margin: 0 !important;
     font-size: 0 !important; /* Hide original text */
     display: inline-block;
+    cursor: pointer;
 }
 #google_translate_element .goog-te-gadget-simple span {
     display: none; /* Hide all internal spans */
@@ -123,6 +111,8 @@
 
 /* Cleanup: Hide other Google elements that might appear */
 body { top: 0 !important; }
-.skiptranslate:not(.goog-te-gadget-simple) { display: none !important; }
+.skiptranslate:not(#google_translate_element) { display: none !important; }
+iframe.skiptranslate { display: none !important; }
 #goog-gt-tt { display: none !important; }
 .goog-te-banner-frame { display: none !important; }
+

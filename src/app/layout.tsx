@@ -39,24 +39,23 @@ export default function RootLayout({
         </FirebaseClientProvider>
         <Toaster />
         <Script
-          id="google-translate-script-loader"
+          strategy="afterInteractive"
+          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+        />
+        <Script
+          id="google-translate-init"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               function googleTranslateElementInit() {
-                new window.google.translate.TranslateElement({
+                new google.translate.TranslateElement({
                   pageLanguage: 'de',
-                  layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+                  layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
                   autoDisplay: false
                 }, 'google_translate_element');
               }
             `,
           }}
-        />
-        <Script
-          id="google-translate-script"
-          strategy="afterInteractive"
-          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
         />
       </body>
     </html>
