@@ -154,8 +154,7 @@ export default function MedikamentePage() {
                       <TabsTrigger
                           value="telefon"
                            className={cn(
-                                "group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground",
-                                "bg-gradient-start"
+                                "group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold bg-gradient-start text-primary-foreground"
                            )}
                       >
                            <span className="text-3xl">Vorbestellung per Telefon</span>
@@ -167,8 +166,7 @@ export default function MedikamentePage() {
                        <TabsTrigger
                           value="email"
                           className={cn(
-                            "group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground",
-                            "bg-secondary"
+                            "group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold bg-secondary text-primary-foreground"
                           )}
                       >
                           <span className="text-3xl">Vorbestellung per E-Mail</span>
