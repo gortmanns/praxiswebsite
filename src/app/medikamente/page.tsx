@@ -153,15 +153,15 @@ export default function MedikamentePage() {
                 STYLING-ANWEISUNG:
                 - Telefon-Tab (und zugehörige Karte) IST IMMER BLAU (gradient-start).
                 - E-Mail-Tab (und zugehörige Karte) IST IMMER GRAU (secondary).
-                - Der data-state-Switch dient NUR dazu, die richtige Karte anzuzeigen, NICHT um die Farbe des Tabs zu ändern.
                 - Die Schrift ist IMMER WEISS (primary-foreground).
                 - KEINE Opazitätseffekte.
+                - Der data-state-Switch dient NUR dazu, die richtige Karte anzuzeigen, NICHT um die Farbe des Tabs zu ändern.
               */}
                <Tabs defaultValue="telefon" value={activeTab} onValueChange={setActiveTab} className="w-full">
                   <TabsList className="grid h-auto w-full grid-cols-2 p-0">
                       <TabsTrigger
                           value="telefon"
-                          className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground bg-gradient-start"
+                          className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-3xl font-bold text-primary-foreground bg-gradient-start"
                       >
                            <span className="text-4xl">Vorbestellung per Telefon</span>
                            <div className="flex items-center gap-3 text-lg">
@@ -171,7 +171,7 @@ export default function MedikamentePage() {
                       </TabsTrigger>
                        <TabsTrigger
                           value="email"
-                          className="group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground bg-secondary"
+                          className="group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-3xl font-bold text-primary-foreground bg-secondary"
                       >
                           <span className="text-4xl">Vorbestellung per E-Mail</span>
                           <div
