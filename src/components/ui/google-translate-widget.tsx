@@ -7,7 +7,7 @@
  **********************************************************************************/
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Globe } from 'lucide-react';
 import {
   AlertDialog,
@@ -19,7 +19,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { FrFlag, ItFlag, EnFlag, EsFlag, PtFlag, TrFlag } from '@/components/logos/flags';
-import { cn } from '@/lib/utils';
 
 const disclaimerTranslations = [
     { lang: 'fr', Flag: FrFlag, text: 'Ceci est une traduction automatique. Seule la version originale allemande est juridiquement contraignante.' },
@@ -32,6 +31,13 @@ const disclaimerTranslations = [
 
 export function GoogleTranslateWidget() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isWarningDismissed, setIsWarningDismissed] = useState(true);
+
+  // Check session storage only on the client side
+  useEffect(() => {
+    const dismissed = sessionStorage.getItem('googleTranslateWarningDismissed') === 'true';
+    setIsWarningDismissed(dismissed);
+  }, []);
 
   useEffect(() => {
     if (document.getElementById('google-translate-script')) {
@@ -63,41 +69,24 @@ export function GoogleTranslateWidget() {
 
   }, []);
 
-  const handleWidgetClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const hasBeenWarned = sessionStorage.getItem('googleTranslateWarningDismissed');
-    if (!hasBeenWarned) {
-      e.stopPropagation();
-      e.preventDefault();
+  const handleMouseEnter = () => {
+    if (!isWarningDismissed) {
       setIsDialogOpen(true);
     }
   };
 
   const handleDialogConfirm = () => {
     sessionStorage.setItem('googleTranslateWarningDismissed', 'true');
+    setIsWarningDismissed(true);
     setIsDialogOpen(false);
-    
-    // Defer the click to the next event loop tick to ensure the dialog is closed.
-    setTimeout(() => {
-      const selectElement = document.querySelector('#google_translate_element select') as HTMLSelectElement | null;
-      if (selectElement) {
-        // Create and dispatch a mouse event to simulate a click, which opens the dropdown.
-        const event = new MouseEvent('mousedown', {
-            bubbles: true,
-            cancelable: true,
-            view: window
-        });
-        selectElement.dispatchEvent(event);
-      }
-    }, 0);
   };
-
 
   return (
     <>
       <div 
         id="google_translate_element" 
         className="google-translate-widget group"
-        onClickCapture={handleWidgetClick}
+        onMouseEnter={handleMouseEnter}
       >
         <style>{`
           .google-translate-widget {
@@ -134,7 +123,7 @@ export function GoogleTranslateWidget() {
               appearance: none;
           }
         `}</style>
-        <Globe className="pointer-events-none absolute top-0 left-0 h-6 w-6 text-primary-foreground group-hover:text-accent-foreground transition-colors" />
+        <Globe className="pointer-events-none absolute top-0 left-0 h-6 w-6 text-primary-foreground group-hover:text-accent transition-colors" />
       </div>
 
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
