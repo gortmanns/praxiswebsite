@@ -96,7 +96,7 @@ export function GoogleTranslateWidget() {
     <>
       <div 
         id="google_translate_element" 
-        className="google-translate-widget"
+        className="google-translate-widget group"
         onClickCapture={handleWidgetClick}
       >
         <style>{`
@@ -134,7 +134,7 @@ export function GoogleTranslateWidget() {
               appearance: none;
           }
         `}</style>
-        <Globe className="pointer-events-none absolute top-0 left-0 h-6 w-6 text-primary-foreground" />
+        <Globe className="pointer-events-none absolute top-0 left-0 h-6 w-6 text-primary-foreground transition-colors group-hover:text-accent-foreground" />
       </div>
 
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
