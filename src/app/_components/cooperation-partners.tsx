@@ -124,9 +124,9 @@ const PartnerCard: React.FC<{ partner: typeof medicalPartnersData[0] }> = ({ par
 const PartnerGrid: React.FC<{ partners: typeof medicalPartnersData }> = ({ partners }) => {
   if (!partners || partners.length === 0) return null;
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+    <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8">
       {partners.map((partner) => (
-        <div key={partner.id} className="flex justify-center">
+        <div key={partner.id} className="w-full md:w-1/3 lg:w-1/4 max-w-xs flex-grow">
           <PartnerCard partner={partner} />
         </div>
       ))}
