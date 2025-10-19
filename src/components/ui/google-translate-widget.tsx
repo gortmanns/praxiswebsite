@@ -8,8 +8,6 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { Globe } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 export function GoogleTranslateWidget() {
 
@@ -47,6 +45,7 @@ export function GoogleTranslateWidget() {
       .goog-te-gadget-simple {
         background-color: transparent !important;
         border: none !important;
+        font-size: 0px !important; /* Hide text */
         width: 100%;
         height: 100%;
         cursor: pointer;
@@ -57,6 +56,7 @@ export function GoogleTranslateWidget() {
       .goog-te-gadget-simple > img {
          display: none !important;
       }
+      /* This makes the invisible select box cover our div */
       .goog-te-gadget-simple .goog-te-menu-value select {
           cursor: pointer;
           position: absolute;
@@ -73,10 +73,7 @@ export function GoogleTranslateWidget() {
     document.head.appendChild(style);
   }, []);
 
-  return (
-    <div className="relative h-6 w-6 cursor-pointer group">
-      <div id="google_translate_element" className="absolute inset-0 z-10" />
-      <Globe className="absolute inset-0 h-6 w-6 text-primary-foreground transition-colors group-hover:text-accent" />
-    </div>
-  );
+  // This div is the ONLY thing that should be here. It's the target for Google's script.
+  // It has no visuals itself.
+  return <div id="google_translate_element" />;
 }

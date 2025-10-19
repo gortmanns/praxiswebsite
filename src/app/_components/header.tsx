@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { Menu, ChevronDown, Plus } from 'lucide-react';
+import { Menu, ChevronDown, Plus, Globe } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -118,7 +118,7 @@ export function Header() {
       <div className="bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
         <div className="w-full px-4 sm:px-8">
             <div className="flex h-auto items-center justify-between py-2 md:h-10">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 group">
                     <Link href="/" title="Deutsch">
                         <DeFlag className="h-6 w-auto cursor-pointer rounded-sm border-2 border-transparent hover:border-primary-foreground" />
                     </Link>
@@ -126,7 +126,12 @@ export function Header() {
                         <EnFlag className="h-6 w-auto cursor-pointer rounded-sm border-2 border-transparent hover:border-primary-foreground" />
                     </Link>
                     <div className="border-l border-primary-foreground/50 h-6"></div>
-                    <GoogleTranslateWidget />
+                    <div className="relative h-6 w-6">
+                        <div className="absolute inset-0 z-10">
+                            <GoogleTranslateWidget />
+                        </div>
+                        <Globe className="h-6 w-6 text-primary-foreground transition-colors group-hover:text-accent pointer-events-none" />
+                    </div>
                 </div>
                 <div className="flex flex-col items-center gap-2 text-sm md:flex-row md:gap-6">
                     <a
