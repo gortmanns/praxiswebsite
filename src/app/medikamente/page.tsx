@@ -153,13 +153,13 @@ export default function MedikamentePage() {
                   <TabsList className="grid h-auto w-full grid-cols-2 gap-2 p-0">
                       {/*
                         WICHTIGER HINWEIS: Die Farben der Tabs sind fix und ändern sich NICHT je nach Aktiv-Zustand.
-                        - Telefon-Tab ist IMMER blau (gradient-start/end).
-                        - E-Mail-Tab ist IMMER grau (secondary/accent).
-                        - Die Schrift ist IMMER weiss (primary-foreground).
+                        - Telefon-Tab ist IMMER blau (bg-gradient-start).
+                        - E-Mail-Tab ist IMMER grau (bg-secondary).
+                        - Die Schrift ist IMMER weiss (text-primary-foreground).
                       */}
                       <TabsTrigger
                           value="telefon"
-                          className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-primary-foreground bg-gradient-to-b from-gradient-start to-gradient-end data-[state=inactive]:opacity-100"
+                          className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-primary-foreground bg-gradient-start data-[state=inactive]:opacity-100"
                       >
                            <span className="text-xl font-bold">Vorbestellung per Telefon</span>
                            <div className="flex items-center gap-3 text-lg">
@@ -169,7 +169,7 @@ export default function MedikamentePage() {
                       </TabsTrigger>
                        <TabsTrigger
                           value="email"
-                          className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-primary-foreground bg-gradient-to-b from-secondary to-accent data-[state=inactive]:opacity-100"
+                          className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-primary-foreground bg-secondary data-[state=inactive]:opacity-100"
                       >
                           <span className="text-xl font-bold">Vorbestellung per E-Mail</span>
                           <div
@@ -181,14 +181,14 @@ export default function MedikamentePage() {
                       </TabsTrigger>
                   </TabsList>
                 <TabsContent value="telefon" className="-mt-px">
-                   <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
+                   <Card className="rounded-t-none bg-gradient-start text-primary-foreground">
                       <CardContent className="p-6 md:p-8">
                            <PhoneCardContent />
                       </CardContent>
                   </Card>
                 </TabsContent>
                 <TabsContent value="email" className="-mt-px">
-                  <Card className="rounded-t-none bg-gradient-to-b from-secondary to-accent text-primary-foreground">
+                  <Card className="rounded-t-none bg-secondary text-primary-foreground">
                       <CardContent className="p-6 md:p-8">
                         <EmailCardContent />
                       </CardContent>
@@ -199,7 +199,7 @@ export default function MedikamentePage() {
             
             {/* Mobile View: Stacked Cards */}
              <div className="space-y-8 sm:hidden">
-                <Card className="overflow-hidden bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
+                <Card className="overflow-hidden bg-gradient-start text-primary-foreground">
                     <CardHeader>
                          <div className="flex items-center gap-3 text-xl font-bold">
                             <Phone />
@@ -210,7 +210,7 @@ export default function MedikamentePage() {
                         <MobilePhoneCardContent />
                     </CardContent>
                 </Card>
-                <Card className="overflow-hidden bg-gradient-to-b from-secondary to-accent text-primary-foreground">
+                <Card className="overflow-hidden bg-secondary text-primary-foreground">
                      <CardHeader>
                          <div className="flex items-center gap-3 text-xl font-bold">
                             <Mail />
@@ -248,4 +248,5 @@ export default function MedikamentePage() {
       <Footer />
     </div>
   );
-}
+
+    
