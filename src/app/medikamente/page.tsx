@@ -115,7 +115,7 @@ export default function MedikamentePage() {
                       <TabsTrigger
                           value="telefon"
                           className={cn(
-                            'group/telefon mr-1 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold transition-all duration-300',
+                            'group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold transition-all duration-300',
                             'border-x border-t border-border',
                             '!bg-gradient-start !text-primary-foreground',
                              activeTab === 'telefon' ? 'rounded-b-none' : ''
@@ -132,7 +132,7 @@ export default function MedikamentePage() {
                        <TabsTrigger
                           value="email"
                           className={cn(
-                            'group/email ml-1 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold transition-all duration-300',
+                            'group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold transition-all duration-300',
                              'border-x border-t border-border',
                              '!bg-secondary !text-primary-foreground',
                              activeTab === 'email' ? 'rounded-b-none' : ''
@@ -151,7 +151,7 @@ export default function MedikamentePage() {
                    <Card className="rounded-t-none !border-t-0 bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
                       <CardContent className="p-6 md:p-8">
                            <div className="space-y-6 text-lg">
-                                <h4 className="text-left font-headline text-2xl font-bold">Vorbestellung per Telefon</h4>
+                                <h4 className="sr-only text-left font-headline text-2xl font-bold">Vorbestellung per Telefon</h4>
                                 <p>Unsere Bestellhotline für Medikamente erreichen Sie Tag und Nacht an 365 Tagen im Jahr unter der Rufnummer:</p>
                                 
                                 <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl">
