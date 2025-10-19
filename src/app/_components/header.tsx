@@ -18,7 +18,6 @@ import {
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { DeFlag, EnFlag } from '@/components/logos/flags';
-import { GoogleTranslateWidget } from '@/components/ui/google-translate-widget';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -126,10 +125,7 @@ export function Header() {
                         <EnFlag className="h-6 w-auto cursor-pointer rounded-sm border-2 border-transparent hover:border-primary-foreground" />
                     </Link>
                     <div className="border-l border-primary-foreground/50 h-6"></div>
-                    <div className="relative group flex items-center justify-center h-6 w-6">
-                        <Globe className="h-6 w-6 text-primary-foreground transition-colors group-hover:text-accent" />
-                        <GoogleTranslateWidget />
-                    </div>
+                    <div id="google_translate_element"></div>
                 </div>
                 <div className="flex flex-col items-center gap-2 text-sm md:flex-row md:gap-6">
                     <a

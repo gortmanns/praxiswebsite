@@ -1,6 +1,7 @@
 
 import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
+import Script from 'next/script';
 import './globals.css';
 import './tiptap-styles.css';
 import { cn } from '@/lib/utils';
@@ -37,6 +38,26 @@ export default function RootLayout({
           {children}
         </FirebaseClientProvider>
         <Toaster />
+        <Script
+          id="google-translate-script-loader"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              function googleTranslateElementInit() {
+                new window.google.translate.TranslateElement({
+                  pageLanguage: 'de',
+                  layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+                  autoDisplay: false
+                }, 'google_translate_element');
+              }
+            `,
+          }}
+        />
+        <Script
+          id="google-translate-script"
+          strategy="afterInteractive"
+          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+        />
       </body>
     </html>
   );

@@ -93,53 +93,52 @@
 }
 
 /* --- Standard Google Translate Widget CSS --- */
-
-/* This container is positioned over the visible globe icon */
+/* Hide the entire translate element container initially */
 #google_translate_element {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  z-index: 10;
+  display: flex;
+  align-items: center;
 }
 
-/* Hide everything inside the widget EXCEPT the <select> dropdown */
-.goog-te-gadget {
-  height: 100% !important;
-  width: 100% !important;
+/* Hide the inner span with "Sprache auswählen" */
+.goog-te-gadget-simple span {
+    display: none;
+}
+/* Style the select element to be just the globe icon */
+.goog-te-gadget-simple .goog-te-menu-value {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    background: none !important;
+    border: none !important;
+    font-size: 0; /* hides any residual text */
+    cursor: pointer;
 }
 
-.goog-te-gadget-simple {
-  background-color: transparent !important;
-  border: none !important;
-  font-size: 0 !important; /* Hide text like "Sprache auswählen" */
-  height: 100% !important;
-  width: 100% !important;
-  display: inline-block;
-  vertical-align: middle;
+.goog-te-gadget-simple .goog-te-menu-value::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 24px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-globe'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20'/%3E%3Cpath d='M2 12h20'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
-/* Hide the default Google Translate icon and any text */
-.goog-te-gadget-icon,
-.goog-te-menu-value span,
-.goog-te-menu-value img {
+.goog-te-gadget-simple .goog-te-menu-value:hover::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235E616B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-globe'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20'/%3E%3Cpath d='M2 12h20'/%3E%3C/svg%3E");
+}
+
+
+/* Hide the google branding */
+.goog-te-gadget-icon {
   display: none !important;
-}
-
-/* Make the <select> element completely transparent and fill the container */
-select.goog-te-combo {
-  opacity: 0 !important;
-  -moz-opacity: 0 !important;
-  filter: alpha(opacity=0) !important;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
 }
 
 /* Cleanup: Hide other Google elements that might appear */
 body { top: 0 !important; }
-.skiptranslate { display: none !important; }
+.skiptranslate:not(.goog-te-gadget-simple) { display: none !important; }
 #goog-gt-tt { display: none !important; }
 .goog-te-banner-frame { display: none !important; }
