@@ -32,7 +32,7 @@ import { v4 as uuidv4 } from 'uuid';
 const bannerClasses = {
     yellow: 'bg-yellow-400 border-yellow-500 text-yellow-900',
     red: 'bg-red-500 border-red-600 text-white',
-    blue: 'bg-blue-500 border-blue-600 text-white',
+    gray: 'bg-gradient-to-b from-secondary to-accent text-primary-foreground',
 };
 
 const FilledDiamond = (props: React.SVGProps<SVGSVGElement>) => (
@@ -102,7 +102,7 @@ const SeparatorPreview = ({ style }: { style?: SeparatorStyle }) => {
     }
 };
 
-const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; color: 'yellow' | 'red' | 'blue'; separatorStyle?: SeparatorStyle; small?: boolean }) => {
+const BannerPreview = ({ text, color, separatorStyle, small }: { text: string; color: 'yellow' | 'red' | 'gray'; separatorStyle?: SeparatorStyle; small?: boolean }) => {
     const marqueeRef = useRef<HTMLDivElement>(null);
     const [animationDuration, setAnimationDuration] = useState('60s');
 
@@ -327,7 +327,7 @@ function BannerManager() {
                         <div className="p-6">
                             <div className="flex justify-between items-start">
                                 <div>
-                                    <h3 className="text-blue-500 font-bold text-lg">Info-Banner (Blau)</h3>
+                                    <h3 className="text-gray-500 font-bold text-lg">Info-Banner (Grau)</h3>
                                     <p className="text-muted-foreground text-sm">Für benutzerdefinierte Ankündigungen. Banner werden im angegebenen Zeitraum angezeigt.</p>
                                 </div>
                                 {!isEditing && <Button onClick={handleNewInfoBanner}><Plus className="mr-2 h-4 w-4" />Neues Info-Banner</Button>}
@@ -365,7 +365,7 @@ function BannerManager() {
                                         </div>
                                     </div>
                                 </div>
-                                <BannerPreview text={currentEditorBanner.text || "Vorschau"} color="blue" separatorStyle={currentEditorBanner.separatorStyle} />
+                                <BannerPreview text={currentEditorBanner.text || "Vorschau"} color="gray" separatorStyle={currentEditorBanner.separatorStyle} />
                             </div>
                         )}
 
@@ -385,7 +385,7 @@ function BannerManager() {
                                         infoBanners.map(banner => (
                                             <TableRow key={banner.id}>
                                                 <TableCell className="max-w-sm overflow-hidden">
-                                                    <BannerPreview text={banner.text} color="blue" separatorStyle={banner.separatorStyle} small />
+                                                    <BannerPreview text={banner.text} color="gray" separatorStyle={banner.separatorStyle} small />
                                                 </TableCell>
                                                 <TableCell className="whitespace-nowrap">
                                                     {format(banner.start, 'dd.MM.yy', { locale: de })} - {format(banner.end, 'dd.MM.yy', { locale: de })}
@@ -540,3 +540,5 @@ function BannerManager() {
 export default function BannerPage() {
     return <BannerManager />;
 }
+
+    
