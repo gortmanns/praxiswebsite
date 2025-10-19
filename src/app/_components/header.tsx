@@ -18,6 +18,7 @@ import {
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { DeFlag, EnFlag } from '@/components/logos/flags';
+import { GoogleTranslateWidget } from '@/components/ui/google-translate-widget';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -117,13 +118,15 @@ export function Header() {
       <div className="bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
         <div className="w-full px-4 sm:px-8">
             <div className="flex h-auto items-center justify-between py-2 md:h-10">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                     <Link href="/" title="Deutsch">
                         <DeFlag className="h-6 w-auto cursor-pointer rounded-sm border-2 border-transparent hover:border-primary-foreground" />
                     </Link>
                      <Link href="/page-en" title="English">
                         <EnFlag className="h-6 w-auto cursor-pointer rounded-sm border-2 border-transparent hover:border-primary-foreground" />
                     </Link>
+                    <div className="border-l border-primary-foreground/50 h-6"></div>
+                    <GoogleTranslateWidget />
                 </div>
                 <div className="flex flex-col items-center gap-2 text-sm md:flex-row md:gap-6">
                     <a
