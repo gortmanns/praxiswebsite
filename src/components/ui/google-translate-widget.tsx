@@ -134,7 +134,7 @@ export function GoogleTranslateWidget() {
               appearance: none;
           }
         `}</style>
-        <Globe className="pointer-events-none absolute top-0 left-0 h-6 w-6 text-primary-foreground transition-colors group-hover:text-accent-foreground" />
+        <Globe className="pointer-events-none absolute top-0 left-0 h-6 w-6 text-primary-foreground group-hover:text-accent-foreground transition-colors" />
       </div>
 
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
