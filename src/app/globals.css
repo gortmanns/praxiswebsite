@@ -92,9 +92,16 @@
   opacity: 0.5 !important;
 }
 
-/* Cleanup: Hide Google Translate elements that might appear */
+/* --- Google Translate Widget Cleanup --- */
+
+/* Hide the main widget container, but keep it in the layout */
 body { top: 0 !important; }
 .skiptranslate:not(#google_translate_element) { display: none !important; }
 iframe.skiptranslate { display: none !important; }
 #goog-gt-tt { display: none !important; }
 .goog-te-banner-frame { display: none !important; }
+
+/* Specifically target the google translate dropdown */
+.goog-te-combo {
+  @apply cursor-pointer rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background;
+}

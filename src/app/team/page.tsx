@@ -10,6 +10,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, Timestamp } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import React from 'react';
+import Link from 'next/link';
 
 interface Doctor {
     id: string;
@@ -72,13 +73,19 @@ export default function TeamPage() {
                     ))
                 ) : activeDoctors.length > 0 ? (
                     activeDoctors.map(doctor => (
-                        <div key={doctor.id} id={doctor.id.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                        <div key={doctor.id} id={doctor.name.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
                         <DoctorCard {...doctor} />
                         </div>
                     ))
                 ) : (
                     <p className="text-center text-muted-foreground">Informationen zu den Ärzten werden in Kürze hier angezeigt.</p>
                 )}
+            </div>
+
+            <div className="text-center pt-8">
+                 <Link href="/team/externe-dienstleister" className="text-primary hover:underline text-lg">
+                    Klicken Sie hier für unsere externen Dienstleister.
+                </Link>
             </div>
             
             <div id="praxispersonal">

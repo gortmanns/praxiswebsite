@@ -10,6 +10,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import React from 'react';
+import Link from 'next/link';
 
 interface Doctor {
     id: string;
@@ -58,7 +59,7 @@ export default function TeamEnPage() {
       <main className="flex-1">
         <div className="container py-16 sm:py-24">
           <div className="mx-auto max-w-5xl space-y-16">
-            <div id="aerzte">
+            <div id="doctors">
               <h2 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">Doctors</h2>
               <div className="mt-2 h-1 w-full bg-primary"></div>
             </div>
@@ -72,7 +73,7 @@ export default function TeamEnPage() {
                     ))
                 ) : activeDoctors.length > 0 ? (
                     activeDoctors.map(doctor => (
-                        <div key={doctor.id} id={doctor.id.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                        <div key={doctor.id} id={doctor.name.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
                         <DoctorCard {...doctor} />
                         </div>
                     ))
@@ -80,8 +81,13 @@ export default function TeamEnPage() {
                     <p className="text-center text-muted-foreground">Information about the doctors will be displayed here shortly.</p>
                 )}
             </div>
+             <div className="text-center pt-8">
+                 <Link href="/team/externe-dienstleister-en" className="text-primary hover:underline text-lg">
+                    Click here for our external service providers.
+                </Link>
+            </div>
             
-            <div id="praxispersonal">
+            <div id="practice-staff">
               <h2 className="font-headline text-2xl font-bold tracking-tight text-primary sm:text-3xl">Practice Staff</h2>
               <div className="mt-2 h-1 w-full bg-primary"></div>
               <p className="mt-4 text-center text-lg text-foreground/80">
@@ -128,5 +134,3 @@ export default function TeamEnPage() {
     </div>
   );
 }
-
-    

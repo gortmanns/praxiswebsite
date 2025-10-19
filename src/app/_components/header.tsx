@@ -197,7 +197,7 @@ export function Header() {
                 <DropdownMenuContent onMouseLeave={handleMouseLeave}>
                     {ueberUnsLinks.map(link => (
                         <DropdownMenuItem key={link.href} asChild>
-                            <Link href={link.href} className="uppercase">{link.title}</Link>
+                            <Link href={isEnglish ? `${link.href}-en` : link.href} className="uppercase">{link.title}</Link>
                         </DropdownMenuItem>
                     ))}
                 </DropdownMenuContent>
