@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Header } from '../_components/header';
@@ -16,11 +15,7 @@ export default function MedikamentePage() {
 
   const PhoneCardContent = () => (
      <div className="space-y-6 text-lg">
-        <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl">
-            <Phone className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
-            <span>031 316 26 66</span>
-        </a>
-        
+        <h4 className="font-headline text-2xl font-bold">Bestellungen per Telefon</h4>
         <p>Befolgen Sie einfach die Anweisungen und deponieren Sie über das Dialogsystem Ihren Namen, Vornamen sowie das Geburtsdatum, gefolgt von den benötigten Medikamenten. Um Missverständnissen vorzubeugen, lesen Sie am einfachsten die Medikamente so vor, wie diese auf der Originalverpackung bezeichnet sind.</p>
         
         <div>
@@ -32,17 +27,8 @@ export default function MedikamentePage() {
 
   const EmailCardContent = () => (
       <div className="space-y-6 text-lg">
-          <ObfuscatedLink
-              user="medikamente"
-              domain="praxiszentrum-im-ring.ch"
-              className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl"
-          >
-              <Mail className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
-              <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
-          </ObfuscatedLink>
-
-          <p>In den Betreff schreiben Sie bitte Ihren Namen, Vornamen sowie das Geburtsdatum, damit wir Ihre Bestellung zuordnen können.</p>
-          <p>Schreiben Sie dann in die E-Mail einfach die benötigten Medikamente, möglichst so, wie diese auf der Originalverpackung bezeichnet sind.</p>
+          <h4 className="font-headline text-2xl font-bold">Bestellungen per E-Mail</h4>
+          <p>In den Betreff schreiben Sie bitte Ihren Namen, Vornamen sowie das Geburtsdatum, damit wir Ihre Bestellung zuordnen können. Schreiben Sie dann in die E-Mail einfach die benötigten Medikamente, möglichst so, wie diese auf der Originalverpackung bezeichnet sind.</p>
           
           <div>
               <p>Zum Beispiel:</p>
@@ -57,7 +43,6 @@ export default function MedikamentePage() {
           </div>
       </div>
   );
-
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -107,34 +92,36 @@ export default function MedikamentePage() {
             {/* Desktop View: Tabs */}
             <div className="hidden sm:block">
                <Tabs defaultValue="telefon" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                  <TabsList className="grid h-auto w-full grid-cols-1 bg-transparent p-0 sm:grid-cols-2">
+                  <TabsList className="grid h-auto w-full grid-cols-2 gap-x-2 bg-transparent p-0">
                       <TabsTrigger
                           value="telefon"
                           className={cn(
-                            'group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold text-primary-foreground transition-all duration-300 rounded-b-none',
-                            'bg-gradient-to-b from-gradient-start to-gradient-end'
+                            'group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg rounded-b-none p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
+                            activeTab === 'telefon' ? 'bg-gradient-start' : 'bg-secondary'
                           )}
                       >
-                          <div className="flex flex-col items-center">
-                              <div className="flex items-center gap-3">
-                                  <Phone className="h-6 w-6"/>
-                                  <span>Vorbestellung per Telefon</span>
-                              </div>
-                          </div>
+                          <span className="text-primary-foreground">Vorbestellung per Telefon</span>
+                           <a href="tel:0313162666" className="flex items-center gap-3 text-lg text-primary-foreground">
+                              <Phone className="h-6 w-6"/>
+                              <span>031 316 26 66</span>
+                          </a>
                       </TabsTrigger>
                        <TabsTrigger
                           value="email"
                           className={cn(
-                            'group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold text-primary-foreground transition-all duration-300 rounded-b-none',
-                            'bg-gradient-to-b from-secondary to-accent'
+                            'group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg rounded-b-none p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
+                            activeTab === 'email' ? 'bg-secondary' : 'bg-gradient-start'
                           )}
                       >
-                          <div className="flex flex-col items-center">
-                              <div className="flex items-center gap-3">
-                                  <Mail className="h-6 w-6"/>
-                                  <span>Vorbestellung per E-Mail</span>
-                              </div>
-                          </div>
+                          <span className="text-primary-foreground">Vorbestellung per E-Mail</span>
+                          <ObfuscatedLink
+                              user="medikamente"
+                              domain="praxiszentrum-im-ring.ch"
+                              className="flex items-center gap-3 text-lg text-primary-foreground"
+                          >
+                              <Mail className="h-6 w-6"/>
+                              <span>medikamente@praxiszentrum-im-ring.ch</span>
+                          </ObfuscatedLink>
                       </TabsTrigger>
                   </TabsList>
                 <TabsContent value="telefon" className="-mt-px">
@@ -155,7 +142,7 @@ export default function MedikamentePage() {
             </div>
             
             {/* Mobile View: Stacked Cards */}
-            <div className="space-y-8 sm:hidden">
+             <div className="space-y-8 sm:hidden">
                 <Card className="overflow-hidden bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
                     <CardHeader>
                         <div className="flex items-center gap-3 text-xl font-bold">
@@ -164,7 +151,17 @@ export default function MedikamentePage() {
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <PhoneCardContent />
+                         <div className="space-y-6 text-lg">
+                            <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl">
+                                <Phone className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
+                                <span>031 316 26 66</span>
+                            </a>
+                            <p>Befolgen Sie einfach die Anweisungen und deponieren Sie über das Dialogsystem Ihren Namen, Vornamen sowie das Geburtsdatum, gefolgt von den benötigten Medikamenten. Um Missverständnissen vorzubeugen, lesen Sie am einfachsten die Medikamente so vor, wie diese auf der Originalverpackung bezeichnet sind.</p>
+                            <div>
+                              <p>Zum Beispiel:</p>
+                              <pre className="mt-2 rounded-md bg-muted p-4 font-code text-base text-muted-foreground">ATORVASTATIN Mepha Lactab 40 mg</pre>
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
                 <Card className="overflow-hidden bg-gradient-to-b from-secondary to-accent text-primary-foreground">
@@ -175,11 +172,29 @@ export default function MedikamentePage() {
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <EmailCardContent />
+                        <div className="space-y-6 text-lg">
+                            <ObfuscatedLink
+                                user="medikamente"
+                                domain="praxiszentrum-im-ring.ch"
+                                className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl"
+                            >
+                                <Mail className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
+                                <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
+                            </ObfuscatedLink>
+                            <p>In den Betreff schreiben Sie bitte Ihren Namen, Vornamen sowie das Geburtsdatum, damit wir Ihre Bestellung zuordnen können. Schreiben Sie dann in die E-Mail einfach die benötigten Medikamente, möglichst so, wie diese auf der Originalverpackung bezeichnet sind.</p>
+                            <div>
+                                <p>Zum Beispiel:</p>
+                                <pre className="mt-2 rounded-md bg-muted p-4 font-code text-base text-muted-foreground">ATORVASTATIN Mepha Lactab 40 mg</pre>
+                            </div>
+                            <p>Alternativ können Sie auch ganz unkompliziert Fotos der Verpackungen schicken, auf denen die Bezeichnung des jeweiligen Medikaments gut erkennbar ist.</p>
+                            <div className="space-y-2 rounded-md border border-border bg-card p-4 text-card-foreground">
+                                <h5 className="font-bold text-primary">Hinweis zum Datenschutz</h5>
+                                <p className="text-base">E-Mails werden im Internet unverschlüsselt übertragen und passieren dabei mehrere Server und Zwischenstationen. Das heisst, mit ausreichendem technischem Wissen kann jeder, der Zugriff auf diese Zwischenstationen hat, den Inhalt der E-Mails lesen. Eine E-Mail entspricht also am ehesten einer Postkarte und nicht einem geschlossenen Brief. Bitte bedenken Sie dies, wenn Sie diesen Weg der Vorbestellung wählen. Wenn Sie Bedenken bezüglich Vertraulichkeit und Datenschutz haben, nutzen Sie im Zweifel lieber die telefonische Bestellhotline.</p>
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
             </div>
-
           </div>
 
           <div className="mx-auto mt-16 max-w-7xl">
@@ -206,4 +221,3 @@ export default function MedikamentePage() {
       <Footer />
     </div>
   );
-}
