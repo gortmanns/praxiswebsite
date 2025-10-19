@@ -111,8 +111,8 @@ export default function MedikamentePage() {
                       <TabsTrigger
                           value="telefon"
                           className={cn(
-                            'group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold transition-all duration-300 rounded-b-none',
-                             activeTab === 'telefon' ? '!bg-gradient-start !text-primary-foreground' : '!bg-secondary !text-primary-foreground'
+                            'group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg rounded-b-none p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
+                             '!bg-gradient-start'
                           )}
                       >
                           <div className="flex flex-col items-center">
@@ -126,8 +126,8 @@ export default function MedikamentePage() {
                        <TabsTrigger
                           value="email"
                           className={cn(
-                            'group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold transition-all duration-300 rounded-b-none',
-                             activeTab === 'email' ? '!bg-gradient-start !text-primary-foreground' : '!bg-secondary !text-primary-foreground'
+                            'group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg rounded-b-none p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
+                             '!bg-secondary'
                           )}
                       >
                           <div className="flex flex-col items-center">
@@ -147,7 +147,7 @@ export default function MedikamentePage() {
                   </Card>
                 </TabsContent>
                 <TabsContent value="email" className="-mt-px">
-                  <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
+                  <Card className="rounded-t-none bg-gradient-to-b from-secondary to-accent text-primary-foreground">
                       <CardContent className="p-6 md:p-8">
                         <EmailCardContent />
                       </CardContent>
@@ -160,10 +160,10 @@ export default function MedikamentePage() {
             <div className="space-y-8 sm:hidden">
                 <Card className="overflow-hidden bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 text-xl font-bold">
                             <Phone />
                             Vorbestellung per Telefon
-                        </CardTitle>
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <PhoneCardContent />
@@ -171,10 +171,10 @@ export default function MedikamentePage() {
                 </Card>
                 <Card className="overflow-hidden bg-gradient-to-b from-secondary to-accent text-primary-foreground">
                      <CardHeader>
-                        <CardTitle className="flex items-center gap-3">
+                         <div className="flex items-center gap-3 text-xl font-bold">
                             <Mail />
                             Vorbestellung per E-Mail
-                        </CardTitle>
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <EmailCardContent />
