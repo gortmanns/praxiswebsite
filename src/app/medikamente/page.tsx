@@ -16,13 +16,13 @@ export default function MedikamentePage() {
 
   const PhoneCardContent = () => (
      <>
-        <h4 className="font-headline text-3xl font-bold">Bestellungen per Telefon</h4>
-        <p className="text-lg mt-4">Unsere Medikamenten-Hotline ist rund um die Uhr an 365 Tagen im Jahr für Sie erreichbar.</p>
-        <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-3xl font-bold text-primary-foreground transition-colors hover:text-primary-foreground/80 md:text-4xl lg:text-5xl">
+        <h4 className="font-headline font-bold text-[clamp(1.5rem,4vw,1.875rem)]">Bestellungen per Telefon</h4>
+        <p className="text-[clamp(1rem,2.5vw,1.125rem)] mt-4">Unsere Medikamenten-Hotline ist rund um die Uhr an 365 Tagen im Jahr für Sie erreichbar.</p>
+        <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 font-bold text-primary-foreground transition-colors hover:text-primary-foreground/80 text-[clamp(1.5rem,5vw,3rem)]">
             <Phone className="h-10 w-10 flex-shrink-0 md:h-12 md:w-12" />
             <span>031 316 26 66</span>
         </a>
-        <div className="space-y-6 text-lg">
+        <div className="space-y-6 text-[clamp(1rem,2.5vw,1.125rem)]">
             <p>Befolgen Sie einfach die Anweisungen und deponieren Sie über das Dialogsystem Ihren Namen, Vornamen sowie das Geburtsdatum, gefolgt von den benötigten Medikamenten. Um Missverständnissen vorzubeugen, lesen Sie am einfachsten die Medikamente so vor, wie diese auf der Originalverpackung bezeichnet sind.</p>
             <div>
             <p>Zum Beispiel:</p>
@@ -51,17 +51,17 @@ export default function MedikamentePage() {
 
   const EmailCardContent = () => (
       <>
-          <h4 className="font-headline text-3xl font-bold">Bestellungen per E-Mail</h4>
-          <p className="text-lg mt-4">Sie können Ihre Medikamente auch bequem per E-Mail bestellen.</p>
+          <h4 className="font-headline font-bold text-[clamp(1.5rem,4vw,1.875rem)]">Bestellungen per E-Mail</h4>
+          <p className="text-[clamp(1rem,2.5vw,1.125rem)] mt-4">Sie können Ihre Medikamente auch bequem per E-Mail bestellen.</p>
           <ObfuscatedLink
             user="medikamente"
             domain="praxiszentrum-im-ring.ch"
-            className="my-4 flex items-center justify-start gap-4 text-3xl font-bold text-primary-foreground transition-colors hover:text-primary-foreground/80 md:text-4xl lg:text-5xl"
+            className="my-4 flex items-center justify-start gap-4 font-bold text-primary-foreground transition-colors hover:text-primary-foreground/80 text-[clamp(1.2rem,4vw,3rem)]"
         >
             <Mail className="h-10 w-10 flex-shrink-0 md:h-12 md:w-12" />
             <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
         </ObfuscatedLink>
-          <div className="space-y-6 text-lg">
+          <div className="space-y-6 text-[clamp(1rem,2.5vw,1.125rem)]">
               <p>In den Betreff schreiben Sie bitte Ihren Namen, Vornamen sowie das Geburtsdatum, damit wir Ihre Bestellung zuordnen können. Schreiben Sie dann in die E-Mail einfach die benötigten Medikamente, möglichst so, wie diese auf der Originalverpackung bezeichnet sind.</p>
               <div>
                   <p>Zum Beispiel:</p>
@@ -153,13 +153,13 @@ export default function MedikamentePage() {
           <div className="mx-auto mt-12 max-w-7xl">
             {/* Desktop View: Tabs */}
             <div className="hidden sm:block">
-              <Tabs defaultValue="telefon" value={activeTab} onValueChange={setActiveTab} className="w-full rounded-lg shadow-2xl">
-                  <TabsList className="grid h-auto w-full grid-cols-2 gap-2 p-0">
+              <Tabs defaultValue="telefon" value={activeTab} onValueChange={setActiveTab} className="w-full">
+                  <TabsList className="grid h-auto w-full grid-cols-2 gap-2 rounded-lg bg-transparent p-0 shadow-2xl">
+                      {/* WICHTIGER HINWEIS: Die Farben der Tabs sind fix und ändern sich NICHT. Telefon ist IMMER blau, Email IMMER grau. Beide IMMER mit weisser Schrift. */}
                       <TabsTrigger
                           value="telefon"
-                          className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-primary-foreground data-[state=inactive]:opacity-100"
+                          className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-primary-foreground opacity-100 data-[state=active]:opacity-100"
                       >
-                           {/* WICHTIGER HINWEIS: Die Farben der Tabs sind fix und ändern sich NICHT. Telefon ist IMMER blau, Email IMMER grau. Beide IMMER mit weisser Schrift. */}
                            <span className="text-2xl font-bold">Vorbestellung per Telefon</span>
                            <div className="flex items-center gap-3 text-base">
                               <Phone className="h-6 w-6"/>
@@ -168,7 +168,7 @@ export default function MedikamentePage() {
                       </TabsTrigger>
                        <TabsTrigger
                           value="email"
-                          className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 text-primary-foreground data-[state=inactive]:opacity-100"
+                          className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 text-primary-foreground opacity-100 data-[state=active]:opacity-100"
                       >
                           <span className="text-2xl font-bold">Vorbestellung per E-Mail</span>
                           <div className="flex items-center gap-3 text-base">
@@ -178,14 +178,14 @@ export default function MedikamentePage() {
                       </TabsTrigger>
                   </TabsList>
                 <TabsContent value="telefon" className="-mt-px">
-                   <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
+                   <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground shadow-2xl">
                       <CardContent className="p-6 md:p-8">
                            <PhoneCardContent />
                       </CardContent>
                   </Card>
                 </TabsContent>
                 <TabsContent value="email" className="-mt-px">
-                  <Card className="rounded-t-none bg-gradient-to-b from-secondary to-accent text-primary-foreground">
+                  <Card className="rounded-t-none bg-gradient-to-b from-secondary to-accent text-primary-foreground shadow-2xl">
                       <CardContent className="p-6 md:p-8">
                         <EmailCardContent />
                       </CardContent>
