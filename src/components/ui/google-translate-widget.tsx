@@ -19,9 +19,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { DeFlag, FrFlag, ItFlag, EnFlag, EsFlag, PtFlag, TrFlag } from '@/components/logos/flags';
+import { cn } from '@/lib/utils';
 
 const disclaimerTranslations = [
-    { lang: 'de', Flag: DeFlag, text: 'Dies ist eine automatische Übersetzung. Nur die deutsche Originalversion ist rechtlich bindend.' },
     { lang: 'fr', Flag: FrFlag, text: 'Ceci est une traduction automatique. Seule la version originale allemande est juridiquement contraignante.' },
     { lang: 'it', Flag: ItFlag, text: 'Questa è una traduzione automatica. Solo la versione originale tedesca è legalmente vincolante.' },
     { lang: 'en', Flag: EnFlag, text: 'This is an automatic translation. Only the original German version is legally binding.' },
@@ -138,14 +138,14 @@ export function GoogleTranslateWidget() {
       </div>
 
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <AlertDialogContent>
+          <AlertDialogContent className="w-[90vw] max-w-none sm:w-[80vw] sm:max-w-4xl max-h-[90vh] flex flex-col">
               <AlertDialogHeader>
                   <AlertDialogTitle>Hinweis zur automatischen Übersetzung</AlertDialogTitle>
                   <AlertDialogDescription>
                       Bitte beachten Sie die folgenden Informationen zur maschinellen Übersetzung.
                   </AlertDialogDescription>
               </AlertDialogHeader>
-              <div className="space-y-3 py-4">
+              <div className="space-y-3 py-4 overflow-y-auto">
                   {disclaimerTranslations.map(({ lang, Flag, text }) => (
                       <div key={lang} className="flex items-center gap-3">
                           <Flag className="h-5 w-auto flex-shrink-0 rounded-sm" />
