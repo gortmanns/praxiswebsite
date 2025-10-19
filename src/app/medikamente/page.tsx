@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Header } from '../_components/header';
@@ -99,12 +100,9 @@ export default function MedikamentePage() {
                   <TabsList className="grid h-auto w-full grid-cols-2 gap-x-2 bg-transparent p-0">
                       <TabsTrigger
                           value="telefon"
-                          className={cn(
-                            'group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg rounded-b-none p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
-                            'bg-gradient-start' // Always blue
-                          )}
+                          className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-xl font-bold text-primary-foreground transition-all duration-300"
                       >
-                          <span className="text-primary-foreground">Vorbestellung per Telefon</span>
+                           <span className="text-primary-foreground">Vorbestellung per Telefon</span>
                            <a href="tel:0313162666" className="flex items-center gap-3 text-lg text-primary-foreground">
                               <Phone className="h-6 w-6"/>
                               <span>031 316 26 66</span>
@@ -112,10 +110,7 @@ export default function MedikamentePage() {
                       </TabsTrigger>
                        <TabsTrigger
                           value="email"
-                          className={cn(
-                            'group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg rounded-b-none p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
-                            'bg-secondary' // Always gray
-                          )}
+                          className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 text-xl font-bold text-primary-foreground transition-all duration-300"
                       >
                           <span className="text-primary-foreground">Vorbestellung per E-Mail</span>
                           <ObfuscatedLink
