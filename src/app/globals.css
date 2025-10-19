@@ -92,17 +92,20 @@
   opacity: 0.5 !important;
 }
 
-/* Google Translate Widget Specific Styles */
+/* --- Standard Google Translate Widget CSS --- */
+
+/* This container is positioned over the visible globe icon */
 #google_translate_element {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 10;
   cursor: pointer;
+  z-index: 10;
 }
 
+/* Hide everything inside the widget EXCEPT the <select> dropdown */
 .goog-te-gadget {
   height: 100% !important;
   width: 100% !important;
@@ -111,34 +114,32 @@
 .goog-te-gadget-simple {
   background-color: transparent !important;
   border: none !important;
-  font-size: 0 !important;
+  font-size: 0 !important; /* Hide text like "Sprache auswählen" */
   height: 100% !important;
   width: 100% !important;
   display: inline-block;
   vertical-align: middle;
 }
 
+/* Hide the default Google Translate icon and any text */
 .goog-te-gadget-icon,
 .goog-te-menu-value span,
 .goog-te-menu-value img {
   display: none !important;
 }
 
-.goog-te-menu-value {
-  width: 100% !important;
-  height: 100% !important;
-}
-
+/* Make the <select> element completely transparent and fill the container */
 select.goog-te-combo {
   opacity: 0 !important;
+  -moz-opacity: 0 !important;
+  filter: alpha(opacity=0) !important;
   width: 100%;
   height: 100%;
   cursor: pointer;
 }
 
+/* Cleanup: Hide other Google elements that might appear */
 body { top: 0 !important; }
 .skiptranslate { display: none !important; }
 #goog-gt-tt { display: none !important; }
 .goog-te-banner-frame { display: none !important; }
-
-    

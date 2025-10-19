@@ -1,10 +1,4 @@
-/**********************************************************************************
- * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
- * 
- * Diese Datei wurde nach wiederholten Fehlversuchen stabilisiert.
- * ÄNDERN SIE DIESE DATEI UNTER KEINEN UMSTÄNDEN OHNE AUSDRÜCKLICHE ERLAUBNIS.
- * Jede Änderung muss vorher bestätigt werden.
- **********************************************************************************/
+
 'use client';
 
 import React, { useEffect } from 'react';
@@ -12,32 +6,39 @@ import React, { useEffect } from 'react';
 export function GoogleTranslateWidget() {
 
   useEffect(() => {
-    // Prevent script from being added multiple times
-    if (document.getElementById('google-translate-script')) {
-      return;
+    const scriptId = 'google-translate-script';
+    
+    // Check if the script already exists
+    if (document.getElementById(scriptId)) {
+        // If it exists, ensure the widget is initialized
+        if (window.google && window.google.translate) {
+            new window.google.translate.TranslateElement({
+                pageLanguage: 'de',
+                layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false,
+            }, 'google_translate_element');
+        }
+        return;
     }
 
     // Define the initialization function on the window object
-    (window as any).googleTranslateElementInit = () => {
-      new (window as any).google.translate.TranslateElement({
+    window.googleTranslateElementInit = () => {
+      new window.google.translate.TranslateElement({
         pageLanguage: 'de',
-        layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
+        layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
         autoDisplay: false,
       }, 'google_translate_element');
     };
 
     // Add the Google Translate script to the page
     const addScript = document.createElement('script');
-    addScript.id = 'google-translate-script';
+    addScript.id = scriptId;
     addScript.type = 'text/javascript';
     addScript.src = `//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit`;
     document.body.appendChild(addScript);
 
   }, []);
-
-  // This div is the ONLY thing that should be here. It's the target for Google's script.
-  // It has no visuals itself.
+  
+  // This is the placeholder div that Google's script will populate.
   return <div id="google_translate_element" />;
 }
-
-    
