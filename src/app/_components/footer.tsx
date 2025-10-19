@@ -1,7 +1,10 @@
 
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
+import { usePathname } from 'next/navigation';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -35,8 +38,16 @@ const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 
 export function Footer() {
+  const pathname = usePathname();
+  const isEnglish = pathname.startsWith('/page-en');
   const year = new Date().getFullYear();
-  const navLinks = [
+
+  const navLinks = isEnglish ? [
+    { href: '/ueber-uns', label: 'About Us' },
+    { href: '/jobs', label: 'Jobs & Career' },
+    { href: '/impressum', label: 'Imprint' },
+    { href: '/datenschutzerklaerung', label: 'Privacy Policy' },
+  ] : [
     { href: '/ueber-uns', label: 'Über uns' },
     { href: '/jobs', label: 'Jobs & Mitarbeit' },
     { href: '/impressum', label: 'Impressum' },
@@ -50,7 +61,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-24 md:grid-cols-3">
           <div className="space-y-8">
             <div className="space-y-4">
-                <h3 className="text-lg font-bold uppercase text-primary">Medikamentenbestellung</h3>
+                <h3 className="text-lg font-bold uppercase text-primary">{isEnglish ? 'Medication Order' : 'Medikamentenbestellung'}</h3>
                 <div className="space-y-2 text-sm">
                     <a
                     href="tel:0313162666"
@@ -70,7 +81,7 @@ export function Footer() {
                 </div>
             </div>
             <div className="space-y-4">
-              <h3 className="text-lg font-bold uppercase text-primary">Rechtliches</h3>
+              <h3 className="text-lg font-bold uppercase text-primary">{isEnglish ? 'Legal' : 'Rechtliches'}</h3>
               <ul className="space-y-2">
                 {navLinks.map((link) => (
                   <li key={link.href}>
@@ -88,7 +99,7 @@ export function Footer() {
 
           <div className="space-y-8">
             <div className="space-y-4">
-              <h3 className="text-lg font-bold uppercase text-primary">Anschrift</h3>
+              <h3 className="text-lg font-bold uppercase text-primary">{isEnglish ? 'Address' : 'Anschrift'}</h3>
               <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 text-sm transition-colors hover:text-background">
                   <MapPinIcon className="mt-1 h-[21px] w-[21px] flex-shrink-0" />
                   <div className="flex flex-col">
@@ -99,7 +110,7 @@ export function Footer() {
               </a>
             </div>
             <div className="space-y-4">
-              <h3 className="text-lg font-bold uppercase text-primary">Kontakt</h3>
+              <h3 className="text-lg font-bold uppercase text-primary">{isEnglish ? 'Contact' : 'Kontakt'}</h3>
               <div className="space-y-2 text-sm">
                   <a
                     href="tel:0313162600"
@@ -121,7 +132,7 @@ export function Footer() {
                     <span className="break-all">empfang@praxiszentrum-im-ring.ch</span>
                   </ObfuscatedLink>
                   <div className="flex flex-col items-start gap-2 pt-2">
-                      <p className="text-base font-medium text-background/80">Sichere HIN-E-Mail</p>
+                      <p className="text-base font-medium text-background/80">{isEnglish ? 'Secure HIN E-Mail' : 'Sichere HIN-E-Mail'}</p>
                       <ObfuscatedLink
                         user="praxiszentrum-im-ring"
                         domain="hin.ch"
@@ -136,8 +147,8 @@ export function Footer() {
           </div>
           
           <div className="space-y-4">
-            <h3 className="text-lg font-bold uppercase text-primary">Zertifizierte Qualität</h3>
-            <p className="text-sm">Für ein hohes Qualitätsniveau haben wir unsere Praxis nach strengen Kriterien zertifizieren lassen und dürfen daher dieses Zeichen führen.</p>
+            <h3 className="text-lg font-bold uppercase text-primary">{isEnglish ? 'Certified Quality' : 'Zertifizierte Qualität'}</h3>
+            <p className="text-sm">{isEnglish ? 'To ensure a high level of quality, our practice has been certified according to strict criteria and is therefore authorized to use this seal.' : 'Für ein hohes Qualitätsniveau haben wir unsere Praxis nach strengen Kriterien zertifizieren lassen und dürfen daher dieses Zeichen führen.'}</p>
             <div className="w-1/2 pt-4">
               <Image
                 src="/images/mehrfacharzt-logo.png"
@@ -154,7 +165,7 @@ export function Footer() {
       <div className="bg-foreground/10">
         <div className="container flex h-14 items-center justify-center">
           <p className="text-sm text-background/70">
-            &copy; {year} Praxiszentrum im Ring. Alle Rechte vorbehalten.
+            &copy; {year} Praxiszentrum im Ring. {isEnglish ? 'All rights reserved.' : 'Alle Rechte vorbehalten.'}
           </p>
         </div>
       </div>
