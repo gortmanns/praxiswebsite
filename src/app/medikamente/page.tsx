@@ -153,9 +153,10 @@ export default function MedikamentePage() {
                   <TabsList className="grid h-auto w-full grid-cols-2 p-0">
                       <TabsTrigger
                           value="telefon"
-                          className={cn(
-                              "group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground bg-gradient-start"
-                          )}
+                           className={cn(
+                                "group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground",
+                                "bg-gradient-start"
+                           )}
                       >
                            <span className="text-3xl">Vorbestellung per Telefon</span>
                            <div className="flex items-center gap-3 text-lg text-primary-foreground">
@@ -166,7 +167,8 @@ export default function MedikamentePage() {
                        <TabsTrigger
                           value="email"
                           className={cn(
-                            "group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground bg-secondary"
+                            "group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground",
+                            "bg-secondary"
                           )}
                       >
                           <span className="text-3xl">Vorbestellung per E-Mail</span>
