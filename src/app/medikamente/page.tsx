@@ -149,11 +149,19 @@ export default function MedikamentePage() {
           <div className="mx-auto mt-12 max-w-7xl">
             {/* Desktop View: Tabs */}
             <div className="hidden sm:block">
+              {/* 
+                STYLING-ANWEISUNG:
+                - Telefon-Tab (und zugehörige Karte) IST IMMER BLAU (gradient-start).
+                - E-Mail-Tab (und zugehörige Karte) IST IMMER GRAU (secondary).
+                - Der data-state-Switch dient NUR dazu, die richtige Karte anzuzeigen, NICHT um die Farbe des Tabs zu ändern.
+                - Die Schrift ist IMMER WEISS (primary-foreground).
+                - KEINE Opazitätseffekte.
+              */}
                <Tabs defaultValue="telefon" value={activeTab} onValueChange={setActiveTab} className="w-full">
                   <TabsList className="grid h-auto w-full grid-cols-2 p-0">
                       <TabsTrigger
                           value="telefon"
-                          className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground data-[state=active]:bg-gradient-start data-[state=inactive]:bg-secondary"
+                          className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground bg-gradient-start"
                       >
                            <span className="text-4xl">Vorbestellung per Telefon</span>
                            <div className="flex items-center gap-3 text-lg">
@@ -163,7 +171,7 @@ export default function MedikamentePage() {
                       </TabsTrigger>
                        <TabsTrigger
                           value="email"
-                          className="group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground data-[state=active]:bg-secondary data-[state=inactive]:bg-gradient-start"
+                          className="group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground bg-secondary"
                       >
                           <span className="text-4xl">Vorbestellung per E-Mail</span>
                           <div
@@ -176,14 +184,14 @@ export default function MedikamentePage() {
                   </TabsList>
                 <TabsContent value="telefon" className="-mt-px">
                    <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
-                      <CardContent className="p-6 md:p-8 space-y-6">
+                      <CardContent className="p-6 md:p-8">
                            <PhoneCardContent />
                       </CardContent>
                   </Card>
                 </TabsContent>
                 <TabsContent value="email" className="-mt-px">
                   <Card className="rounded-t-none bg-gradient-to-b from-secondary to-accent text-primary-foreground">
-                      <CardContent className="p-6 md:p-8 space-y-6">
+                      <CardContent className="p-6 md:p-8">
                         <EmailCardContent />
                       </CardContent>
                   </Card>
