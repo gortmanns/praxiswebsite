@@ -16,8 +16,6 @@ export default function MedikamentePage() {
 
   const PhoneCardContent = () => (
      <div className="space-y-6 text-lg">
-        <p>Unsere Bestellhotline für Medikamente erreichen Sie Tag und Nacht an 365 Tagen im Jahr unter der Rufnummer:</p>
-        
         <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl">
             <Phone className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
             <span>031 316 26 66</span>
@@ -34,8 +32,6 @@ export default function MedikamentePage() {
 
   const EmailCardContent = () => (
       <div className="space-y-6 text-lg">
-          <p>Die Bestellung per E-Mail ist ganz einfach. Schreiben Sie eine E-Mail an:</p>
-          
           <ObfuscatedLink
               user="medikamente"
               domain="praxiszentrum-im-ring.ch"
@@ -115,8 +111,8 @@ export default function MedikamentePage() {
                       <TabsTrigger
                           value="telefon"
                           className={cn(
-                            'group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold transition-all duration-300',
-                             activeTab === 'telefon' ? '!bg-gradient-start !text-primary-foreground rounded-b-none' : '!bg-secondary !text-primary-foreground'
+                            'group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold transition-all duration-300 rounded-b-none',
+                             activeTab === 'telefon' ? '!bg-gradient-start !text-primary-foreground' : '!bg-secondary !text-primary-foreground'
                           )}
                       >
                           <div className="flex flex-col items-center">
@@ -130,8 +126,8 @@ export default function MedikamentePage() {
                        <TabsTrigger
                           value="email"
                           className={cn(
-                            'group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-lg p-6 text-xl font-bold transition-all duration-300',
-                             activeTab === 'email' ? '!bg-gradient-start !text-primary-foreground rounded-b-none' : '!bg-secondary !text-primary-foreground'
+                            'group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold transition-all duration-300 rounded-b-none',
+                             activeTab === 'email' ? '!bg-gradient-start !text-primary-foreground' : '!bg-secondary !text-primary-foreground'
                           )}
                       >
                           <div className="flex flex-col items-center">
@@ -146,21 +142,7 @@ export default function MedikamentePage() {
                 <TabsContent value="telefon" className="-mt-px">
                    <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
                       <CardContent className="p-6 md:p-8">
-                           <div className="space-y-6 text-lg">
-                                <p>Unsere Bestellhotline für Medikamente erreichen Sie Tag und Nacht an 365 Tagen im Jahr unter der Rufnummer:</p>
-                                
-                                <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl">
-                                    <Phone className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
-                                    <span>031 316 26 66</span>
-                                </a>
-                                
-                                <p>Befolgen Sie einfach die Anweisungen und deponieren Sie über das Dialogsystem Ihren Namen, Vornamen sowie das Geburtsdatum, gefolgt von den benötigten Medikamenten. Um Missverständnissen vorzubeugen, lesen Sie am einfachsten die Medikamente so vor, wie diese auf der Originalverpackung bezeichnet sind.</p>
-                                
-                                <div>
-                                <p>Zum Beispiel:</p>
-                                <pre className="mt-2 rounded-md bg-muted p-4 font-code text-base text-muted-foreground">ATORVASTATIN Mepha Lactab 40 mg</pre>
-                                </div>
-                            </div>
+                           <PhoneCardContent />
                       </CardContent>
                   </Card>
                 </TabsContent>
