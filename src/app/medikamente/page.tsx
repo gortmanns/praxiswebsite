@@ -17,7 +17,7 @@ export default function MedikamentePage() {
   const PhoneCardContent = () => (
      <>
         <h4 className="font-headline text-2xl font-bold">Bestellungen per Telefon</h4>
-         <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl">
+        <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold text-primary-foreground transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl">
             <Phone className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
             <span>031 316 26 66</span>
         </a>
@@ -53,7 +53,7 @@ export default function MedikamentePage() {
           <ObfuscatedLink
             user="medikamente"
             domain="praxiszentrum-im-ring.ch"
-            className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl"
+            className="my-4 flex items-center justify-start gap-4 text-2xl font-bold text-primary-foreground transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl"
         >
             <Mail className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
             <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
@@ -154,11 +154,10 @@ export default function MedikamentePage() {
                       <TabsTrigger
                           value="telefon"
                           className={cn(
-                              "group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground",
-                               activeTab === 'telefon' ? 'bg-gradient-start' : 'bg-gradient-start'
+                              "group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground bg-gradient-start"
                           )}
                       >
-                           <span className="text-2xl">Vorbestellung per Telefon</span>
+                           <span className="text-3xl">Vorbestellung per Telefon</span>
                            <div className="flex items-center gap-3 text-lg text-primary-foreground">
                               <Phone className="h-6 w-6"/>
                               <span>031 316 26 66</span>
@@ -167,11 +166,10 @@ export default function MedikamentePage() {
                        <TabsTrigger
                           value="email"
                           className={cn(
-                            "group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground",
-                             activeTab === 'email' ? 'bg-secondary' : 'bg-secondary'
+                            "group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground bg-secondary"
                           )}
                       >
-                          <span className="text-2xl">Vorbestellung per E-Mail</span>
+                          <span className="text-3xl">Vorbestellung per E-Mail</span>
                           <div
                               className="flex items-center gap-3 text-lg text-primary-foreground"
                           >
