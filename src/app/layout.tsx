@@ -39,10 +39,6 @@ export default function RootLayout({
         </FirebaseClientProvider>
         <Toaster />
         <Script
-          strategy="afterInteractive"
-          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-        />
-        <Script
           id="google-translate-init"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
@@ -56,6 +52,10 @@ export default function RootLayout({
               }
             `,
           }}
+        />
+         <Script
+          strategy="afterInteractive"
+          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
         />
       </body>
     </html>
