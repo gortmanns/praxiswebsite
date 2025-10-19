@@ -112,7 +112,7 @@ export default function MedikamentePage() {
                           value="telefon"
                           className={cn(
                             'group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg rounded-b-none p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
-                             '!bg-gradient-start'
+                             '!bg-gradient-start data-[state=inactive]:bg-gradient-to-b data-[state=inactive]:from-secondary data-[state=inactive]:to-accent'
                           )}
                       >
                           <div className="flex flex-col items-center">
@@ -120,14 +120,13 @@ export default function MedikamentePage() {
                                   <Phone className="h-6 w-6"/>
                                   <span>Vorbestellung per Telefon</span>
                               </div>
-                              <span className="text-base font-normal">031 316 26 66</span>
                           </div>
                       </TabsTrigger>
                        <TabsTrigger
                           value="email"
                           className={cn(
                             'group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg rounded-b-none p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
-                             '!bg-secondary'
+                             'data-[state=active]:!bg-secondary'
                           )}
                       >
                           <div className="flex flex-col items-center">
@@ -135,7 +134,6 @@ export default function MedikamentePage() {
                                   <Mail className="h-6 w-6"/>
                                   <span>Vorbestellung per E-Mail</span>
                               </div>
-                              <span className="break-all text-base font-normal">medikamente@praxiszentrum-im-ring.ch</span>
                           </div>
                       </TabsTrigger>
                   </TabsList>
