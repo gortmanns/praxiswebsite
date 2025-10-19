@@ -153,7 +153,10 @@ export default function MedikamentePage() {
                   <TabsList className="grid h-auto w-full grid-cols-2 gap-x-2 bg-transparent p-0">
                       <TabsTrigger
                           value="telefon"
-                          className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-xl font-bold text-primary-foreground"
+                          className={cn(
+                              "group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-xl font-bold text-primary-foreground",
+                              activeTab === 'telefon' ? "bg-gradient-start" : "bg-gradient-start opacity-70"
+                          )}
                       >
                            <span className="text-primary-foreground">Vorbestellung per Telefon</span>
                            <div className="flex items-center gap-3 text-lg text-primary-foreground">
@@ -163,7 +166,10 @@ export default function MedikamentePage() {
                       </TabsTrigger>
                        <TabsTrigger
                           value="email"
-                          className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 text-xl font-bold text-primary-foreground"
+                          className={cn(
+                              "group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-xl font-bold text-primary-foreground",
+                              activeTab === 'email' ? "bg-secondary" : "bg-secondary opacity-70"
+                          )}
                       >
                           <span className="text-primary-foreground">Vorbestellung per E-Mail</span>
                           <div
