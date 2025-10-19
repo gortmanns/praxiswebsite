@@ -153,20 +153,14 @@ export default function MedikamentePage() {
           <div className="mx-auto mt-12 max-w-7xl">
             {/* Desktop View: Tabs */}
             <div className="hidden sm:block">
-               <Tabs defaultValue="telefon" value={activeTab} onValueChange={setActiveTab} className="w-full rounded-lg shadow-2xl">
+              <Tabs defaultValue="telefon" value={activeTab} onValueChange={setActiveTab} className="w-full rounded-lg shadow-2xl">
                   <TabsList className="grid h-auto w-full grid-cols-2 gap-2 p-0">
-                      {/*
-                        WICHTIGER HINWEIS: Die Farben der Tabs sind fix und ändern sich NICHT.
-                        - Telefon-Tab ist IMMER blau (bg-gradient-start).
-                        - E-Mail-Tab ist IMMER grau (bg-secondary).
-                        - Die Schrift ist IMMER weiss (text-primary-foreground).
-                        - Die Logik `data-[state=inactive]:opacity-100` ist korrekt, da sie sicherstellt, dass die inaktiven Tabs nicht ausgegraut werden.
-                      */}
                       <TabsTrigger
                           value="telefon"
                           className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-primary-foreground data-[state=inactive]:opacity-100"
                       >
-                           <span className="text-3xl font-bold">Vorbestellung per Telefon</span>
+                           {/* WICHTIGER HINWEIS: Die Farben der Tabs sind fix und ändern sich NICHT. Telefon ist IMMER blau, Email IMMER grau. Beide IMMER mit weisser Schrift. */}
+                           <span className="text-2xl font-bold">Vorbestellung per Telefon</span>
                            <div className="flex items-center gap-3 text-base">
                               <Phone className="h-6 w-6"/>
                               <span>031 316 26 66</span>
@@ -176,10 +170,8 @@ export default function MedikamentePage() {
                           value="email"
                           className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 text-primary-foreground data-[state=inactive]:opacity-100"
                       >
-                          <span className="text-3xl font-bold">Vorbestellung per E-Mail</span>
-                          <div
-                              className="flex items-center gap-3 text-base"
-                          >
+                          <span className="text-2xl font-bold">Vorbestellung per E-Mail</span>
+                          <div className="flex items-center gap-3 text-base">
                               <Mail className="h-6 w-6"/>
                               <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
                           </div>
