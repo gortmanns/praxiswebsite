@@ -17,7 +17,7 @@ export default function MedikamentePage() {
   const PhoneCardContent = () => (
      <>
         <h4 className="font-headline text-2xl font-bold">Bestellungen per Telefon</h4>
-        <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl">
+         <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl">
             <Phone className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
             <span>031 316 26 66</span>
         </a>
@@ -153,12 +153,12 @@ export default function MedikamentePage() {
                   <TabsList className="grid h-auto w-full grid-cols-2 p-0">
                       <TabsTrigger
                           value="telefon"
-                          style={activeTab === 'telefon' ? { backgroundColor: 'hsl(var(--gradient-start))' } : {}}
                           className={cn(
-                              "group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-xl font-bold text-primary-foreground"
+                              "group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground",
+                               activeTab === 'telefon' ? 'bg-gradient-start' : 'bg-gradient-start'
                           )}
                       >
-                           <span className="text-primary-foreground">Vorbestellung per Telefon</span>
+                           <span className="text-2xl">Vorbestellung per Telefon</span>
                            <div className="flex items-center gap-3 text-lg text-primary-foreground">
                               <Phone className="h-6 w-6"/>
                               <span>031 316 26 66</span>
@@ -166,12 +166,12 @@ export default function MedikamentePage() {
                       </TabsTrigger>
                        <TabsTrigger
                           value="email"
-                          style={activeTab === 'email' ? { backgroundColor: 'hsl(var(--secondary))' } : {}}
                           className={cn(
-                            "group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 text-xl font-bold text-primary-foreground"
+                            "group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground",
+                             activeTab === 'email' ? 'bg-secondary' : 'bg-secondary'
                           )}
                       >
-                          <span className="text-primary-foreground">Vorbestellung per E-Mail</span>
+                          <span className="text-2xl">Vorbestellung per E-Mail</span>
                           <div
                               className="flex items-center gap-3 text-lg text-primary-foreground"
                           >
