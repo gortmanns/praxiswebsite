@@ -9,13 +9,7 @@
 
 import React, { useEffect } from 'react';
 import { Globe } from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-
+import { cn } from '@/lib/utils';
 
 export function GoogleTranslateWidget() {
 
@@ -42,27 +36,28 @@ export function GoogleTranslateWidget() {
     document.body.appendChild(addScript);
 
     // Add styles to hide the default Google Translate UI elements
+    // and make our custom icon clickable
     const style = document.createElement('style');
     style.innerHTML = `
       body { top: 0 !important; }
       .skiptranslate { display: none !important; }
       #goog-gt-tt { display: none !important; }
       .goog-te-banner-frame { display: none !important; }
+      
       .goog-te-gadget-simple {
         background-color: transparent !important;
         border: none !important;
         width: 100%;
         height: 100%;
+        cursor: pointer;
       }
-      .goog-te-gadget-icon,
-      .goog-te-gadget-simple span,
-      .goog-te-gadget-simple > a {
-        display: none !important;
+      .goog-te-gadget-simple .goog-te-menu-value * {
+          display: none !important;
+      }
+      .goog-te-gadget-simple > img {
+         display: none !important;
       }
       .goog-te-gadget-simple .goog-te-menu-value select {
-          background: transparent;
-          border: none;
-          color: transparent;
           cursor: pointer;
           position: absolute;
           top: 0;
@@ -79,23 +74,9 @@ export function GoogleTranslateWidget() {
   }, []);
 
   return (
-    <TooltipProvider>
-      <div className="relative h-6 w-6 cursor-pointer group">
-        {/* The actual Google Translate widget, made invisible but clickable */}
-        <div id="google_translate_element" className="absolute inset-0 z-10" />
-
-        {/* The visual part: Tooltip with the Globe icon */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="absolute inset-0 pointer-events-none">
-              <Globe className="h-6 w-6 text-primary-foreground group-hover:text-accent transition-colors" />
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Automatische Übersetzung</p>
-          </TooltipContent>
-        </Tooltip>
-      </div>
-    </TooltipProvider>
+    <div className="relative h-6 w-6 cursor-pointer group">
+      <div id="google_translate_element" className="absolute inset-0 z-10" />
+      <Globe className="absolute inset-0 h-6 w-6 text-primary-foreground transition-colors group-hover:text-accent" />
+    </div>
   );
 }
