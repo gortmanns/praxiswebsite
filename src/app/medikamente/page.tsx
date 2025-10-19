@@ -52,6 +52,7 @@ export default function MedikamentePage() {
   const EmailCardContent = () => (
       <>
           <h4 className="font-headline text-3xl font-bold">Bestellungen per E-Mail</h4>
+          <p className="text-lg mt-4">Sie können Ihre Medikamente auch bequem per E-Mail bestellen.</p>
           <ObfuscatedLink
             user="medikamente"
             domain="praxiszentrum-im-ring.ch"
@@ -80,6 +81,7 @@ export default function MedikamentePage() {
    const MobileEmailCardContent = () => (
       <>
           <div className="space-y-6 text-lg">
+              <p>Sie können Ihre Medikamente auch bequem per E-Mail bestellen.</p>
               <p>In den Betreff schreiben Sie bitte Ihren Namen, Vornamen sowie das Geburtsdatum, damit wir Ihre Bestellung zuordnen können. Schreiben Sie dann in die E-Mail einfach die benötigten Medikamente, möglichst so, wie diese auf der Originalverpackung bezeichnet sind.</p>
               <ObfuscatedLink
                 user="medikamente"
@@ -151,20 +153,21 @@ export default function MedikamentePage() {
           <div className="mx-auto mt-12 max-w-7xl">
             {/* Desktop View: Tabs */}
             <div className="hidden sm:block">
-               <Tabs defaultValue="telefon" value={activeTab} onValueChange={setActiveTab} className="w-full">
+               <Tabs defaultValue="telefon" value={activeTab} onValueChange={setActiveTab} className="w-full rounded-lg shadow-2xl">
                   <TabsList className="grid h-auto w-full grid-cols-2 gap-2 p-0">
                       {/*
-                        WICHTIGER HINWEIS: Die Farben der Tabs sind fix und ändern sich NICHT je nach Aktiv-Zustand.
+                        WICHTIGER HINWEIS: Die Farben der Tabs sind fix und ändern sich NICHT.
                         - Telefon-Tab ist IMMER blau (bg-gradient-start).
                         - E-Mail-Tab ist IMMER grau (bg-secondary).
                         - Die Schrift ist IMMER weiss (text-primary-foreground).
+                        - Die Logik `data-[state=inactive]:opacity-100` ist korrekt, da sie sicherstellt, dass die inaktiven Tabs nicht ausgegraut werden.
                       */}
                       <TabsTrigger
                           value="telefon"
                           className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-primary-foreground data-[state=inactive]:opacity-100"
                       >
                            <span className="text-3xl font-bold">Vorbestellung per Telefon</span>
-                           <div className="flex items-center gap-3 text-lg">
+                           <div className="flex items-center gap-3 text-base">
                               <Phone className="h-6 w-6"/>
                               <span>031 316 26 66</span>
                           </div>
@@ -175,7 +178,7 @@ export default function MedikamentePage() {
                       >
                           <span className="text-3xl font-bold">Vorbestellung per E-Mail</span>
                           <div
-                              className="flex items-center gap-3 text-lg"
+                              className="flex items-center gap-3 text-base"
                           >
                               <Mail className="h-6 w-6"/>
                               <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
@@ -190,7 +193,7 @@ export default function MedikamentePage() {
                   </Card>
                 </TabsContent>
                 <TabsContent value="email" className="-mt-px">
-                  <Card className="rounded-t-none bg-secondary text-primary-foreground">
+                  <Card className="rounded-t-none bg-gradient-to-b from-secondary to-accent text-primary-foreground">
                       <CardContent className="p-6 md:p-8">
                         <EmailCardContent />
                       </CardContent>
