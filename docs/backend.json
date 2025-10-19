@@ -109,6 +109,7 @@
       "properties": {
         "id": { "type": "string" },
         "text": { "type": "string" },
+        "text_en": { "type": "string" },
         "start": { "type": "string", "format": "date-time" },
         "end": { "type": "string", "format": "date-time" },
         "separatorStyle": { "type": "string", "enum": ["diamonds", "spaces", "equals", "dashes", "plus", "asterisks"] }
@@ -122,7 +123,9 @@
       "properties": {
         "preHolidayDays": { "type": "number", "description": "How many days before a holiday the announcement banner should appear." },
         "yellowBannerText": { "type": "string", "description": "Text for the holiday announcement (yellow) banner." },
+        "yellowBannerText_en": { "type": "string", "description": "English text for the holiday announcement (yellow) banner." },
         "redBannerText": { "type": "string", "description": "Text for the during-holiday (red) banner." },
+        "redBannerText_en": { "type": "string", "description": "English text for the during-holiday (red) banner." },
         "yellowBannerSeparatorStyle": { "type": "string", "enum": ["diamonds", "spaces", "equals", "dashes", "plus", "asterisks"] },
         "redBannerSeparatorStyle": { "type": "string", "enum": ["diamonds", "spaces", "equals", "dashes", "plus", "asterisks"] }
       },
@@ -167,5 +170,3 @@
     }
   }
 }
-
-    

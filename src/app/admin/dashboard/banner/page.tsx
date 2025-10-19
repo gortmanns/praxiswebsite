@@ -1,4 +1,3 @@
-
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -48,6 +47,8 @@ interface BannerSettings {
     preHolidayDays: number;
     yellowBannerText: string;
     redBannerText: string;
+    yellowBannerText_en?: string;
+    redBannerText_en?: string;
     yellowBannerSeparatorStyle?: SeparatorStyle;
     redBannerSeparatorStyle?: SeparatorStyle;
 }
@@ -55,6 +56,7 @@ interface BannerSettings {
 interface InfoBanner {
     id: string;
     text: string;
+    text_en?: string;
     start: Date;
     end: Date;
     separatorStyle: SeparatorStyle;
@@ -63,6 +65,7 @@ interface InfoBanner {
 interface InfoBannerFromDB {
     id: string;
     text: string;
+    text_en?: string;
     start: Timestamp;
     end: Timestamp;
     separatorStyle: SeparatorStyle;
@@ -73,12 +76,15 @@ const initialBannerSettings: BannerSettings = {
     preHolidayDays: 14,
     yellowBannerText: 'Die {name} stehen bevor. In der Zeit vom {start} bis und mit {ende} bleibt das Praxiszentrum geschlossen. Bitte überprüfen Sie Ihren Medikamentenvorrat und beziehen Sie allenfalls nötigen Nachschub rechtzeitig.',
     redBannerText: 'Ferienhalber bleibt das Praxiszentrum in der Zeit vom {start} bis und mit {ende} geschlossen. Die Notfall-Notrufnummern finden sie rechts oben im Menü unter dem Punkt "NOTFALL". Ab dem {ende+1} stehen wieder wie gewohnt zur Verfügung.',
+    yellowBannerText_en: 'The {name} are approaching. During the period from {start} until {ende}, the practice center will be closed. Please check your medication supply and obtain any necessary refills in a timely manner.',
+    redBannerText_en: 'Due to holidays, the practice center will be closed from {start} until {ende}. The emergency numbers can be found in the menu at the top right under "EMERGENCY". We will be available for you as usual starting from {ende+1}.',
     yellowBannerSeparatorStyle: 'diamonds',
     redBannerSeparatorStyle: 'diamonds',
 };
 
 const initialInfoBannerState: Omit<InfoBanner, 'id'> = {
     text: '',
+    text_en: '',
     start: new Date(),
     end: addDays(new Date(), 7),
     separatorStyle: 'diamonds',
@@ -207,9 +213,15 @@ function BannerManager() {
     
     const handleSaveBannerSettings = async () => {
         if (!settingsDocRef) return;
+        
+        const settingsToSave: BannerSettings = {
+            ...bannerSettings,
+            yellowBannerText_en: bannerSettings.yellowBannerText_en || bannerSettings.yellowBannerText,
+            redBannerText_en: bannerSettings.redBannerText_en || bannerSettings.redBannerText,
+        };
 
         try {
-            await setDoc(settingsDocRef, bannerSettings, { merge: true });
+            await setDoc(settingsDocRef, settingsToSave, { merge: true });
             setNotification({ variant: 'success', title: 'Erfolgreich', description: 'Banner-Einstellungen gespeichert.' });
         } catch (e: any) {
             console.error("Error saving banner settings: ", e);
@@ -237,7 +249,10 @@ function BannerManager() {
     const handleSaveInfoBanner = async () => {
         if (!firestore) return;
 
-        const bannerToSave = { ...currentEditorBanner };
+        const bannerToSave: Partial<InfoBanner> = { 
+            ...currentEditorBanner,
+            text_en: currentEditorBanner.text_en || currentEditorBanner.text,
+        };
 
         if (!bannerToSave.text || !bannerToSave.start || !bannerToSave.end) {
             setNotification({ variant: 'destructive', title: 'Fehler', description: 'Bitte füllen Sie alle Felder aus.' });
@@ -321,9 +336,15 @@ function BannerManager() {
 
                         {isEditing && (
                             <div className="space-y-4 bg-background p-6 rounded-b-lg">
-                                <div className="space-y-2">
-                                    <Label htmlFor="blueBannerText">Bannertext</Label>
-                                    <Textarea id="blueBannerText" value={currentEditorBanner.text} onChange={(e) => handleInfoBannerInputChange('text', e.target.value)} rows={4} />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="blueBannerText">Bannertext (Deutsch)</Label>
+                                        <Textarea id="blueBannerText" value={currentEditorBanner.text} onChange={(e) => handleInfoBannerInputChange('text', e.target.value)} rows={4} />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="blueBannerTextEn">Bannertext (Englisch)</Label>
+                                        <Textarea id="blueBannerTextEn" value={currentEditorBanner.text_en} onChange={(e) => handleInfoBannerInputChange('text_en', e.target.value)} rows={4} placeholder="Wenn leer, wird der deutsche Text verwendet." />
+                                    </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
@@ -409,9 +430,15 @@ function BannerManager() {
                                     </Alert>
                                 </div>
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="yellowBannerText">Bannertext</Label>
-                                <Textarea id="yellowBannerText" value={bannerSettings.yellowBannerText} onChange={(e) => handleBannerSettingsChange('yellowBannerText', e.target.value)} rows={4} />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="yellowBannerText">Bannertext (Deutsch)</Label>
+                                    <Textarea id="yellowBannerText" value={bannerSettings.yellowBannerText} onChange={(e) => handleBannerSettingsChange('yellowBannerText', e.target.value)} rows={4} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="yellowBannerTextEn">Bannertext (Englisch)</Label>
+                                    <Textarea id="yellowBannerTextEn" value={bannerSettings.yellowBannerText_en} onChange={(e) => handleBannerSettingsChange('yellowBannerText_en', e.target.value)} rows={4} placeholder="Wenn leer, wird der deutsche Text verwendet." />
+                                </div>
                             </div>
                             
                             <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
@@ -447,9 +474,15 @@ function BannerManager() {
                         <div className="space-y-4 bg-background p-6 rounded-b-lg">
                             {isLoadingSettings ? <Skeleton className="h-48 w-full" /> : (
                             <>
-                            <div className="space-y-2">
-                                <Label htmlFor="redBannerText">Bannertext</Label>
-                                <Textarea id="redBannerText" value={bannerSettings.redBannerText} onChange={(e) => handleBannerSettingsChange('redBannerText', e.target.value)} rows={4} />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="redBannerText">Bannertext (Deutsch)</Label>
+                                    <Textarea id="redBannerText" value={bannerSettings.redBannerText} onChange={(e) => handleBannerSettingsChange('redBannerText', e.target.value)} rows={4} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="redBannerTextEn">Bannertext (Englisch)</Label>
+                                    <Textarea id="redBannerTextEn" value={bannerSettings.redBannerText_en} onChange={(e) => handleBannerSettingsChange('redBannerText_en', e.target.value)} rows={4} placeholder="Wenn leer, wird der deutsche Text verwendet." />
+                                </div>
                             </div>
 
                             <div className="flex flex-wrap items-center justify-between gap-4 pt-2">

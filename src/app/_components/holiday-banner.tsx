@@ -11,11 +11,12 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, collection, query, where, Timestamp } from 'firebase/firestore';
 import { format, addDays, differenceInDays, isWithinInterval } from 'date-fns';
-import { de } from 'date-fns/locale';
+import { de, enUS } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { usePathname } from 'next/navigation';
 
 // --- Helper Components & Types ---
 
@@ -86,6 +87,7 @@ interface HolidayFromDB {
 interface InfoBanner {
     id: string;
     text: string;
+    text_en?: string;
     start: Date;
     end: Date;
     separatorStyle: SeparatorStyle;
@@ -93,6 +95,7 @@ interface InfoBanner {
 interface InfoBannerFromDB {
     id: string;
     text: string;
+    text_en?: string;
     start: Timestamp;
     end: Timestamp;
     separatorStyle: SeparatorStyle;
@@ -101,6 +104,8 @@ interface BannerSettings {
     preHolidayDays: number;
     yellowBannerText: string;
     redBannerText: string;
+    yellowBannerText_en?: string;
+    redBannerText_en?: string;
     yellowBannerSeparatorStyle?: SeparatorStyle;
     redBannerSeparatorStyle?: SeparatorStyle;
 }
@@ -110,6 +115,8 @@ interface BannerSettings {
 export function HolidayBanner() {
     const firestore = useFirestore();
     const [now, setNow] = useState<Date | null>(null);
+    const pathname = usePathname();
+    const isEnglish = pathname.startsWith('/page-en');
 
     useEffect(() => {
         setNow(new Date());
@@ -153,10 +160,13 @@ export function HolidayBanner() {
 
     const bannerToDisplay = useMemo(() => {
         if (!now) return null;
+        
+        const locale = isEnglish ? enUS : de;
+        const dateFormat = isEnglish ? 'MMMM d, yyyy' : 'd. MMMM yyyy';
 
         if (activeInfoBanner) {
             return {
-                text: activeInfoBanner.text,
+                text: isEnglish ? activeInfoBanner.text_en || activeInfoBanner.text : activeInfoBanner.text,
                 color: 'gray',
                 separatorStyle: activeInfoBanner.separatorStyle,
             };
@@ -167,7 +177,7 @@ export function HolidayBanner() {
         const isInHoliday = isWithinInterval(now, { start: nextHoliday.start, end: nextHoliday.end });
         const daysUntilHoliday = differenceInDays(nextHoliday.start, now);
 
-        const formatFullDate = (date: Date) => format(date, 'd. MMMM yyyy', { locale: de });
+        const formatFullDate = (date: Date) => format(date, dateFormat, { locale });
         
         const placeholders = {
             '{name}': nextHoliday.name,
@@ -178,6 +188,10 @@ export function HolidayBanner() {
             '{ende+2}': formatFullDate(addDays(nextHoliday.end, 2)),
             '{ende+3}': formatFullDate(addDays(nextHoliday.end, 3)),
         };
+        
+        const yellowText = isEnglish ? settings.yellowBannerText_en || settings.yellowBannerText : settings.yellowBannerText;
+        const redText = isEnglish ? settings.redBannerText_en || settings.redBannerText : settings.redBannerText;
+
 
         const replacePlaceholders = (text: string) => {
             return Object.entries(placeholders).reduce((acc, [key, value]) => acc.replace(new RegExp(key, 'g'), value), text);
@@ -185,7 +199,7 @@ export function HolidayBanner() {
 
         if (isInHoliday) {
             return {
-                text: replacePlaceholders(settings.redBannerText),
+                text: replacePlaceholders(redText),
                 color: 'red',
                 separatorStyle: settings.redBannerSeparatorStyle,
             };
@@ -193,7 +207,7 @@ export function HolidayBanner() {
 
         if (daysUntilHoliday >= 0 && daysUntilHoliday <= settings.preHolidayDays) {
             return {
-                text: replacePlaceholders(settings.yellowBannerText),
+                text: replacePlaceholders(yellowText),
                 color: 'yellow',
                 separatorStyle: settings.yellowBannerSeparatorStyle,
             };
@@ -201,7 +215,7 @@ export function HolidayBanner() {
 
         return null;
 
-    }, [activeInfoBanner, nextHoliday, settings, now]);
+    }, [activeInfoBanner, nextHoliday, settings, now, isEnglish]);
 
     const isLoading = isLoadingSettings || isLoadingHolidays || isLoadingInfoBanners || !now;
     const hasError = settingsError || holidaysError || infoBannersError;
