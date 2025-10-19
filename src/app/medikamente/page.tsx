@@ -150,10 +150,13 @@ export default function MedikamentePage() {
             {/* Desktop View: Tabs */}
             <div className="hidden sm:block">
                <Tabs defaultValue="telefon" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                  <TabsList className="grid h-auto w-full grid-cols-2 gap-x-2 bg-transparent p-0">
+                  <TabsList className="grid h-auto w-full grid-cols-2 p-0">
                       <TabsTrigger
                           value="telefon"
-                          className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-xl font-bold text-primary-foreground"
+                          style={activeTab === 'telefon' ? { backgroundColor: 'darkgreen' } : {}}
+                          className={cn(
+                              "group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-xl font-bold text-primary-foreground",
+                          )}
                       >
                            <span className="text-primary-foreground">Vorbestellung per Telefon</span>
                            <div className="flex items-center gap-3 text-lg text-primary-foreground">
@@ -163,7 +166,10 @@ export default function MedikamentePage() {
                       </TabsTrigger>
                        <TabsTrigger
                           value="email"
-                          className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 text-xl font-bold text-primary-foreground"
+                          style={activeTab === 'email' ? { backgroundColor: 'darkred' } : {}}
+                          className={cn(
+                            "group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 text-xl font-bold text-primary-foreground",
+                          )}
                       >
                           <span className="text-primary-foreground">Vorbestellung per E-Mail</span>
                           <div
@@ -243,5 +249,3 @@ export default function MedikamentePage() {
     </div>
   );
 }
-
-    
