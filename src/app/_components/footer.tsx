@@ -86,7 +86,7 @@ export function Footer() {
                 {navLinks.map((link) => (
                   <li key={link.href}>
                     <Link
-                      href={link.href}
+                      href={isEnglish ? `${link.href}-en` : link.href}
                       className="text-sm text-background/80 transition-colors hover:text-background"
                     >
                       {link.label}
@@ -172,3 +172,5 @@ export function Footer() {
     </footer>
   );
 }
+
+    
