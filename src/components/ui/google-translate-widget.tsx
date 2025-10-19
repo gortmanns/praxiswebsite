@@ -154,7 +154,7 @@ export function GoogleTranslateWidget() {
                   ))}
               </div>
               <AlertDialogFooter>
-                  <AlertDialogAction onClick={handleDialogConfirm}>Verstanden</AlertDialogAction>
+                  <AlertDialogAction onClick={handleDialogConfirm}>OK</AlertDialogAction>
               </AlertDialogFooter>
           </AlertDialogContent>
       </AlertDialog>
