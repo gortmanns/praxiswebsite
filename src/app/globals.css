@@ -106,10 +106,19 @@
     opacity: 0;
     cursor: pointer;
 }
-
-/* Hide the google branding */
-.goog-te-gadget-icon {
-  display: none !important;
+#google_translate_element .goog-te-gadget-simple {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 0 !important; /* Hide original text */
+    display: inline-block;
+}
+#google_translate_element .goog-te-gadget-simple span {
+    display: none; /* Hide all internal spans */
+}
+#google_translate_element .goog-te-gadget-icon {
+    display: none !important;
 }
 
 /* Cleanup: Hide other Google elements that might appear */
