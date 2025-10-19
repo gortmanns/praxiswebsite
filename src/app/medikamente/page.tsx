@@ -153,9 +153,9 @@ export default function MedikamentePage() {
                   <TabsList className="grid h-auto w-full grid-cols-2 p-0">
                       <TabsTrigger
                           value="telefon"
-                          style={activeTab === 'telefon' ? { backgroundColor: 'darkgreen' } : {}}
+                          style={activeTab === 'telefon' ? { backgroundColor: 'hsl(var(--gradient-start))' } : {}}
                           className={cn(
-                              "group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-xl font-bold text-primary-foreground",
+                              "group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-xl font-bold text-primary-foreground"
                           )}
                       >
                            <span className="text-primary-foreground">Vorbestellung per Telefon</span>
@@ -166,9 +166,9 @@ export default function MedikamentePage() {
                       </TabsTrigger>
                        <TabsTrigger
                           value="email"
-                          style={activeTab === 'email' ? { backgroundColor: 'darkred' } : {}}
+                          style={activeTab === 'email' ? { backgroundColor: 'hsl(var(--secondary))' } : {}}
                           className={cn(
-                            "group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 text-xl font-bold text-primary-foreground",
+                            "group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 text-xl font-bold text-primary-foreground"
                           )}
                       >
                           <span className="text-primary-foreground">Vorbestellung per E-Mail</span>
