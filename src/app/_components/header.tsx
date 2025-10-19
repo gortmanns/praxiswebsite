@@ -118,7 +118,7 @@ export function Header() {
       <div className="bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
         <div className="w-full px-4 sm:px-8">
             <div className="flex h-auto items-center justify-between py-2 md:h-10">
-                <div className="flex items-center gap-3 group">
+                <div className="flex items-center gap-3">
                     <Link href="/" title="Deutsch">
                         <DeFlag className="h-6 w-auto cursor-pointer rounded-sm border-2 border-transparent hover:border-primary-foreground" />
                     </Link>
@@ -126,10 +126,8 @@ export function Header() {
                         <EnFlag className="h-6 w-auto cursor-pointer rounded-sm border-2 border-transparent hover:border-primary-foreground" />
                     </Link>
                     <div className="border-l border-primary-foreground/50 h-6"></div>
-                    <div className="relative h-6 w-6">
-                        <div className="absolute inset-0 z-10">
-                            <GoogleTranslateWidget />
-                        </div>
+                    <div id="google-translate-container" className="relative group flex items-center justify-center h-6 w-6">
+                        <GoogleTranslateWidget />
                         <Globe className="h-6 w-6 text-primary-foreground transition-colors group-hover:text-accent pointer-events-none" />
                     </div>
                 </div>
@@ -328,3 +326,5 @@ export function Header() {
     </header>
   );
 }
+
+    
