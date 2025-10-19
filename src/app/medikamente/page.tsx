@@ -111,8 +111,8 @@ export default function MedikamentePage() {
                       <TabsTrigger
                           value="telefon"
                           className={cn(
-                            'group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg rounded-b-none p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
-                             '!bg-gradient-start data-[state=inactive]:bg-gradient-to-b data-[state=inactive]:from-secondary data-[state=inactive]:to-accent'
+                            'group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold text-primary-foreground transition-all duration-300 rounded-b-none',
+                            'bg-gradient-to-b from-gradient-start to-gradient-end'
                           )}
                       >
                           <div className="flex flex-col items-center">
@@ -125,8 +125,8 @@ export default function MedikamentePage() {
                        <TabsTrigger
                           value="email"
                           className={cn(
-                            'group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg rounded-b-none p-6 text-xl font-bold text-primary-foreground transition-all duration-300',
-                             'data-[state=active]:!bg-secondary'
+                            'group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-t-lg p-6 text-xl font-bold text-primary-foreground transition-all duration-300 rounded-b-none',
+                            'bg-gradient-to-b from-secondary to-accent'
                           )}
                       >
                           <div className="flex flex-col items-center">
@@ -160,7 +160,7 @@ export default function MedikamentePage() {
                     <CardHeader>
                         <div className="flex items-center gap-3 text-xl font-bold">
                             <Phone />
-                            Vorbestellung per Telefon
+                            <span>Vorbestellung per Telefon</span>
                         </div>
                     </CardHeader>
                     <CardContent>
@@ -171,7 +171,7 @@ export default function MedikamentePage() {
                      <CardHeader>
                          <div className="flex items-center gap-3 text-xl font-bold">
                             <Mail />
-                            Vorbestellung per E-Mail
+                            <span>Vorbestellung per E-Mail</span>
                         </div>
                     </CardHeader>
                     <CardContent>
