@@ -17,6 +17,22 @@ export default function MedikamentePage() {
   const PhoneCardContent = () => (
      <>
         <h4 className="font-headline text-2xl font-bold">Bestellungen per Telefon</h4>
+        <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl">
+            <Phone className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
+            <span>031 316 26 66</span>
+        </a>
+        <div className="space-y-6 text-lg">
+            <p>Befolgen Sie einfach die Anweisungen und deponieren Sie über das Dialogsystem Ihren Namen, Vornamen sowie das Geburtsdatum, gefolgt von den benötigten Medikamenten. Um Missverständnissen vorzubeugen, lesen Sie am einfachsten die Medikamente so vor, wie diese auf der Originalverpackung bezeichnet sind.</p>
+            <div>
+            <p>Zum Beispiel:</p>
+            <pre className="mt-2 rounded-md bg-muted p-4 font-code text-base text-muted-foreground">ATORVASTATIN Mepha Lactab 40 mg</pre>
+            </div>
+        </div>
+     </>
+  );
+  
+  const MobilePhoneCardContent = () => (
+     <>
         <div className="space-y-6 text-lg">
             <p>Befolgen Sie einfach die Anweisungen und deponieren Sie über das Dialogsystem Ihren Namen, Vornamen sowie das Geburtsdatum, gefolgt von den benötigten Medikamenten. Um Missverständnissen vorzubeugen, lesen Sie am einfachsten die Medikamente so vor, wie diese auf der Originalverpackung bezeichnet sind.</p>
              <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl">
@@ -34,6 +50,33 @@ export default function MedikamentePage() {
   const EmailCardContent = () => (
       <>
           <h4 className="font-headline text-2xl font-bold">Bestellungen per E-Mail</h4>
+          <ObfuscatedLink
+            user="medikamente"
+            domain="praxiszentrum-im-ring.ch"
+            className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl"
+        >
+            <Mail className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
+            <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
+        </ObfuscatedLink>
+          <div className="space-y-6 text-lg">
+              <p>In den Betreff schreiben Sie bitte Ihren Namen, Vornamen sowie das Geburtsdatum, damit wir Ihre Bestellung zuordnen können. Schreiben Sie dann in die E-Mail einfach die benötigten Medikamente, möglichst so, wie diese auf der Originalverpackung bezeichnet sind.</p>
+              <div>
+                  <p>Zum Beispiel:</p>
+                  <pre className="mt-2 rounded-md bg-muted p-4 font-code text-base text-muted-foreground">ATORVASTATIN Mepha Lactab 40 mg</pre>
+              </div>
+              
+              <p>Alternativ können Sie auch ganz unkompliziert Fotos der Verpackungen schicken, auf denen die Bezeichnung des jeweiligen Medikaments gut erkennbar ist.</p>
+              
+              <div className="space-y-2 rounded-md border border-border bg-card p-4 text-card-foreground">
+                  <h5 className="font-bold text-primary">Hinweis zum Datenschutz</h5>
+                  <p className="text-base">E-Mails werden im Internet unverschlüsselt übertragen und passieren dabei mehrere Server und Zwischenstationen. Das heisst, mit ausreichendem technischem Wissen kann jeder, der Zugriff auf diese Zwischenstationen hat, den Inhalt der E-Mails lesen. Eine E-Mail entspricht also am ehesten einer Postkarte und nicht einem geschlossenen Brief. Bitte bedenken Sie dies, wenn Sie diesen Weg der Vorbestellung wählen. Wenn Sie Bedenken bezüglich Vertraulichkeit und Datenschutz haben, nutzen Sie im Zweifel lieber die telefonische Bestellhotline.</p>
+              </div>
+          </div>
+      </>
+  );
+  
+   const MobileEmailCardContent = () => (
+      <>
           <div className="space-y-6 text-lg">
               <p>In den Betreff schreiben Sie bitte Ihren Namen, Vornamen sowie das Geburtsdatum, damit wir Ihre Bestellung zuordnen können. Schreiben Sie dann in die E-Mail einfach die benötigten Medikamente, möglichst so, wie diese auf der Originalverpackung bezeichnet sind.</p>
               <ObfuscatedLink
@@ -110,7 +153,7 @@ export default function MedikamentePage() {
                   <TabsList className="grid h-auto w-full grid-cols-2 gap-x-2 bg-transparent p-0">
                       <TabsTrigger
                           value="telefon"
-                          className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-xl font-bold text-primary-foreground data-[state=inactive]:opacity-70"
+                          className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-xl font-bold text-primary-foreground"
                       >
                            <span className="text-primary-foreground">Vorbestellung per Telefon</span>
                            <div className="flex items-center gap-3 text-lg text-primary-foreground">
@@ -120,7 +163,7 @@ export default function MedikamentePage() {
                       </TabsTrigger>
                        <TabsTrigger
                           value="email"
-                          className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 text-xl font-bold text-primary-foreground data-[state=inactive]:opacity-70"
+                          className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 text-xl font-bold text-primary-foreground"
                       >
                           <span className="text-primary-foreground">Vorbestellung per E-Mail</span>
                           <div
@@ -158,7 +201,7 @@ export default function MedikamentePage() {
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <PhoneCardContent />
+                        <MobilePhoneCardContent />
                     </CardContent>
                 </Card>
                 <Card className="overflow-hidden bg-gradient-to-b from-secondary to-accent text-primary-foreground">
@@ -169,7 +212,7 @@ export default function MedikamentePage() {
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <EmailCardContent />
+                        <MobileEmailCardContent />
                     </CardContent>
                 </Card>
             </div>
