@@ -18,7 +18,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { DeFlag, FrFlag, ItFlag, EnFlag, EsFlag, PtFlag, TrFlag } from '@/components/logos/flags';
+import { FrFlag, ItFlag, EnFlag, EsFlag, PtFlag, TrFlag } from '@/components/logos/flags';
 import { cn } from '@/lib/utils';
 
 const disclaimerTranslations = [
@@ -34,12 +34,10 @@ export function GoogleTranslateWidget() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
-    // Check if the script already exists
     if (document.getElementById('google-translate-script')) {
       return;
     }
 
-    // Define the callback function on the window object
     (window as any).googleTranslateElementInit = () => {
       new (window as any).google.translate.TranslateElement({
         pageLanguage: 'de',
@@ -48,14 +46,12 @@ export function GoogleTranslateWidget() {
       }, 'google_translate_element');
     };
 
-    // Create and append the script tag
     const addScript = document.createElement('script');
     addScript.id = 'google-translate-script';
     addScript.type = 'text/javascript';
     addScript.src = `//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit`;
     document.body.appendChild(addScript);
 
-    // Style the Google Translate bar to be less intrusive
     const style = document.createElement('style');
     style.innerHTML = `
       body { top: 0 !important; }
@@ -70,24 +66,29 @@ export function GoogleTranslateWidget() {
   const handleWidgetClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const hasBeenWarned = sessionStorage.getItem('googleTranslateWarningDismissed');
     if (!hasBeenWarned) {
-      // Prevent the Google Translate dropdown from opening immediately
       e.stopPropagation();
       e.preventDefault();
       setIsDialogOpen(true);
     }
-    // If warned, do nothing and let the click propagate to the widget
   };
 
   const handleDialogConfirm = () => {
     sessionStorage.setItem('googleTranslateWarningDismissed', 'true');
     setIsDialogOpen(false);
-    // Find the select element and manually trigger its dropdown
-    const selectElement = document.querySelector('#google_translate_element select') as HTMLSelectElement | null;
-    if (selectElement) {
-        // This is a bit of a hack, but standard .click() doesn't work on <select>
-        const event = new MouseEvent('mousedown');
+    
+    // Defer the click to the next event loop tick to ensure the dialog is closed.
+    setTimeout(() => {
+      const selectElement = document.querySelector('#google_translate_element select') as HTMLSelectElement | null;
+      if (selectElement) {
+        // Create and dispatch a mouse event to simulate a click, which opens the dropdown.
+        const event = new MouseEvent('mousedown', {
+            bubbles: true,
+            cancelable: true,
+            view: window
+        });
         selectElement.dispatchEvent(event);
-    }
+      }
+    }, 0);
   };
 
 
@@ -99,19 +100,23 @@ export function GoogleTranslateWidget() {
         onClickCapture={handleWidgetClick}
       >
         <style>{`
+          .google-translate-widget {
+              position: relative;
+              display: inline-block;
+              width: 24px;
+              height: 24px;
+              cursor: pointer;
+          }
           .google-translate-widget .goog-te-gadget-simple {
             background-color: transparent !important;
             border: none !important;
-            display: inline-block;
+            width: 100%;
+            height: 100%;
           }
-          .google-translate-widget .goog-te-gadget-icon {
-            display: none !important;
-          }
-          .google-translate-widget .goog-te-gadget-simple span {
-            display: none;
-          }
+          .google-translate-widget .goog-te-gadget-icon,
+          .google-translate-widget .goog-te-gadget-simple span,
           .google-translate-widget .goog-te-gadget-simple > a {
-              display: none !important;
+            display: none !important;
           }
           .google-translate-widget .goog-te-gadget-simple .goog-te-menu-value select {
               background: transparent;
@@ -123,18 +128,13 @@ export function GoogleTranslateWidget() {
               left: 0;
               width: 100%;
               height: 100%;
+              opacity: 0;
               -webkit-appearance: none;
               -moz-appearance: none;
               appearance: none;
           }
-          .google-translate-widget .goog-te-gadget-simple {
-              position: relative;
-              display: inline-block;
-              width: 24px; /* Size of the icon */
-              height: 24px; /* Size of the icon */
-          }
         `}</style>
-        <Globe className="h-6 w-6 text-primary-foreground cursor-pointer transition-colors hover:text-primary-foreground/80" />
+        <Globe className="pointer-events-none absolute top-0 left-0 h-6 w-6 text-primary-foreground" />
       </div>
 
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
