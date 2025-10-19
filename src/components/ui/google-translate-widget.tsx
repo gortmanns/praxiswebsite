@@ -138,7 +138,7 @@ export function GoogleTranslateWidget() {
       </div>
 
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <AlertDialogContent className="w-[90vw] max-w-none sm:w-[80vw] sm:max-w-4xl max-h-[90vh] flex flex-col">
+          <AlertDialogContent className="w-[90vw] md:w-[80vw] max-w-4xl max-h-[90vh] flex flex-col">
               <AlertDialogHeader>
                   <AlertDialogTitle>Hinweis zur automatischen Übersetzung</AlertDialogTitle>
                   <AlertDialogDescription>
