@@ -153,21 +153,21 @@ export default function MedikamentePage() {
                   <TabsList className="grid h-auto w-full grid-cols-2 p-0">
                       <TabsTrigger
                           value="telefon"
-                           className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 font-bold text-primary-foreground"
+                           className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 font-bold text-primary-foreground data-[state=active]:bg-gradient-start"
                       >
                            <span className="text-3xl">Vorbestellung per Telefon</span>
-                           <div className="flex items-center gap-3 text-lg text-primary-foreground">
+                           <div className="flex items-center gap-3 text-lg">
                               <Phone className="h-6 w-6"/>
                               <span>031 316 26 66</span>
                           </div>
                       </TabsTrigger>
                        <TabsTrigger
                           value="email"
-                          className="group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 font-bold text-primary-foreground"
+                          className="group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 font-bold text-primary-foreground data-[state=active]:bg-secondary"
                       >
                           <span className="text-3xl">Vorbestellung per E-Mail</span>
                           <div
-                              className="flex items-center gap-3 text-lg text-primary-foreground"
+                              className="flex items-center gap-3 text-lg"
                           >
                               <Mail className="h-6 w-6"/>
                               <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
@@ -243,3 +243,5 @@ export default function MedikamentePage() {
     </div>
   );
 }
+
+    
