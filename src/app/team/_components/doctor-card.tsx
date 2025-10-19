@@ -11,6 +11,7 @@ export interface Doctor {
     name: string;
     frontSideCode: string;
     backSideCode: string;
+    disableFlip?: boolean;
     [key: string]: any; // Allow other properties for static data compatibility
 }
 
@@ -33,7 +34,7 @@ const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
 
 
 export const DoctorCard: React.FC<Doctor> = (props) => {
-    const { frontSideCode, backSideCode } = props;
+    const { frontSideCode, backSideCode, disableFlip } = props;
 
     return (
         <div className={cn(
@@ -42,9 +43,11 @@ export const DoctorCard: React.FC<Doctor> = (props) => {
         )}>
              {frontSideCode && <CodeRenderer html={frontSideCode} />}
             
-            <div className="flip-card-back absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                {backSideCode && <CodeRenderer html={backSideCode} />}
-            </div>
+            {!disableFlip && backSideCode && (
+                <div className="flip-card-back absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
+                    <CodeRenderer html={backSideCode} />
+                </div>
+            )}
         </div>
     );
 };

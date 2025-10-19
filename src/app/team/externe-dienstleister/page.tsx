@@ -53,7 +53,7 @@ export default function ExterneDienstleisterPage() {
                 ) : activeServiceProviders.length > 0 ? (
                      activeServiceProviders.map(provider => (
                         <div key={provider.id} id={provider.name.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
-                            <DoctorCard {...provider} />
+                            <DoctorCard {...provider} disableFlip={true} />
                         </div>
                     ))
                 ) : (
