@@ -63,7 +63,7 @@ export function Header() {
   const isEnglish = pathname.startsWith('/page-en');
 
   const mainNavLinks = [
-    { href: isEnglish ? '/page-en' : '/', title: isEnglish ? 'Home' : 'Startseite' },
+    { href: isEnglish ? '/page-en' : '/', title: isEnglish ? 'Home' : 'Start' },
     { href: '/leistungen', title: isEnglish ? 'Services' : 'Leistungen' },
     { href: '/medikamente', title: isEnglish ? 'Medication' : 'Medikamente' },
   ];
@@ -174,7 +174,7 @@ export function Header() {
                     href={link.href}
                     onMouseEnter={handleMouseEnter}
                     className={cn(
-                        'relative z-10 flex h-14 items-center justify-center whitespace-nowrap rounded-md px-4 text-xl font-bold uppercase transition-colors',
+                        'relative z-10 flex h-14 items-center justify-center whitespace-nowrap rounded-md px-3 text-xl font-bold uppercase transition-colors',
                         pathname === link.href ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}
                 >
@@ -186,7 +186,7 @@ export function Header() {
                     <div 
                       onMouseEnter={handleMouseEnter}
                       className={cn(
-                        'relative z-10 flex h-14 cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-4 text-xl font-bold uppercase transition-colors',
+                        'relative z-10 flex h-14 cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 text-xl font-bold uppercase transition-colors',
                         ueberUnsActive ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}>
                         <div className="flex items-center">
@@ -208,7 +208,7 @@ export function Header() {
                     <div 
                       onMouseEnter={handleMouseEnter}
                       className={cn(
-                        'relative z-10 flex h-14 cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-4 text-xl font-bold uppercase transition-colors',
+                        'relative z-10 flex h-14 cursor-pointer items-center gap-1 whitespace-nowrap rounded-md px-3 text-xl font-bold uppercase transition-colors',
                         zeitenActive ? 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground' : 'text-muted-foreground hover:text-primary-foreground'
                     )}>
                         <div className="flex items-center">
@@ -230,7 +230,7 @@ export function Header() {
                  href={notfallLink.href}
                  onMouseEnter={handleMouseEnter}
                  className={cn(
-                  'relative z-10 flex h-14 items-center justify-center whitespace-nowrap rounded-md px-4 text-xl font-bold uppercase transition-colors',
+                  'relative z-10 flex h-14 items-center justify-center whitespace-nowrap rounded-md px-3 text-xl font-bold uppercase transition-colors',
                   pathname === notfallLink.href ? 'ring-2 ring-emergency-red ring-offset-2 ring-offset-background' : 'text-emergency-red hover:text-emergency-red/80'
                  )}
              >
