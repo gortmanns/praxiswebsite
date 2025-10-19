@@ -16,7 +16,6 @@ export default function MedikamentePage() {
 
   const PhoneCardContent = () => (
      <div className="space-y-6 text-lg">
-        <h4 className="text-left font-headline text-2xl font-bold">Vorbestellung per Telefon</h4>
         <p>Unsere Bestellhotline für Medikamente erreichen Sie Tag und Nacht an 365 Tagen im Jahr unter der Rufnummer:</p>
         
         <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl">
@@ -35,7 +34,6 @@ export default function MedikamentePage() {
 
   const EmailCardContent = () => (
       <div className="space-y-6 text-lg">
-          <h4 className="text-left font-headline text-2xl font-bold">Vorbestellung per E-Mail</h4>
           <p>Die Bestellung per E-Mail ist ganz einfach. Schreiben Sie eine E-Mail an:</p>
           
           <ObfuscatedLink
@@ -152,7 +150,22 @@ export default function MedikamentePage() {
                 <TabsContent value="telefon" className="-mt-px">
                    <Card className="rounded-t-none !border-t-0 bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
                       <CardContent className="p-6 md:p-8">
-                          <PhoneCardContent />
+                           <div className="space-y-6 text-lg">
+                                <h4 className="text-left font-headline text-2xl font-bold">Vorbestellung per Telefon</h4>
+                                <p>Unsere Bestellhotline für Medikamente erreichen Sie Tag und Nacht an 365 Tagen im Jahr unter der Rufnummer:</p>
+                                
+                                <a href="tel:0313162666" className="my-4 flex items-center justify-start gap-4 text-2xl font-bold transition-colors hover:text-primary-foreground/80 md:text-3xl lg:text-4xl">
+                                    <Phone className="h-8 w-8 flex-shrink-0 md:h-10 md:w-10" />
+                                    <span>031 316 26 66</span>
+                                </a>
+                                
+                                <p>Befolgen Sie einfach die Anweisungen und deponieren Sie über das Dialogsystem Ihren Namen, Vornamen sowie das Geburtsdatum, gefolgt von den benötigten Medikamenten. Um Missverständnissen vorzubeugen, lesen Sie am einfachsten die Medikamente so vor, wie diese auf der Originalverpackung bezeichnet sind.</p>
+                                
+                                <div>
+                                <p>Zum Beispiel:</p>
+                                <pre className="mt-2 rounded-md bg-muted p-4 font-code text-base text-muted-foreground">ATORVASTATIN Mepha Lactab 40 mg</pre>
+                                </div>
+                            </div>
                       </CardContent>
                   </Card>
                 </TabsContent>
