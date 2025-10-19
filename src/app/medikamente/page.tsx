@@ -153,9 +153,9 @@ export default function MedikamentePage() {
                   <TabsList className="grid h-auto w-full grid-cols-2 p-0">
                       <TabsTrigger
                           value="telefon"
-                           className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 font-bold text-primary-foreground data-[state=active]:bg-gradient-start"
+                          className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground data-[state=active]:bg-gradient-start data-[state=inactive]:bg-secondary"
                       >
-                           <span className="text-3xl">Vorbestellung per Telefon</span>
+                           <span className="text-4xl">Vorbestellung per Telefon</span>
                            <div className="flex items-center gap-3 text-lg">
                               <Phone className="h-6 w-6"/>
                               <span>031 316 26 66</span>
@@ -163,9 +163,9 @@ export default function MedikamentePage() {
                       </TabsTrigger>
                        <TabsTrigger
                           value="email"
-                          className="group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 font-bold text-primary-foreground data-[state=active]:bg-secondary"
+                          className="group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 font-bold text-primary-foreground data-[state=active]:bg-secondary data-[state=inactive]:bg-gradient-start"
                       >
-                          <span className="text-3xl">Vorbestellung per E-Mail</span>
+                          <span className="text-4xl">Vorbestellung per E-Mail</span>
                           <div
                               className="flex items-center gap-3 text-lg"
                           >
@@ -243,5 +243,3 @@ export default function MedikamentePage() {
     </div>
   );
 }
-
-    
