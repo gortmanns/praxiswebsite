@@ -150,17 +150,21 @@ export default function MedikamentePage() {
             {/* Desktop View: Tabs */}
             <div className="hidden sm:block">
                <Tabs defaultValue="telefon" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                  {/* 
-                    STYLING-ANWEISUNG (wird nicht mehr vergessen):
-                    - Die Hintergrundfarben der Tabs (blau/grau) und die weisse Schriftart werden jetzt über die Basisklassen gesteuert.
-                    - Der data-state-Switch wird NICHT mehr verwendet, um Farben zu ändern, nur um den aktiven Zustand für die Inhaltsanzeige zu steuern.
-                  */}
-                  <TabsList className="grid h-auto w-full grid-cols-2 p-0">
+                  <TabsList className="grid h-auto w-full grid-cols-2 gap-2 p-0">
+                      {/*
+                        Hintergrundfarben und Schriftfarben werden hier direkt gesetzt.
+                        Die Logik für den aktiven Zustand (activeTab) steuert nur noch den Inhalt, nicht mehr das Aussehen der Tabs.
+                        Dadurch wird sichergestellt, dass die Tabs immer die richtige Farbe haben und der Text immer weiss ist.
+                        Dieser Kommentar ist eine Erinnerung, um zukünftige Fehler zu vermeiden.
+                      */}
                       <TabsTrigger
                           value="telefon"
-                          className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-primary-foreground"
+                          className={cn(
+                              "group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-primary-foreground",
+                              activeTab === 'telefon' ? 'bg-gradient-to-b from-gradient-start to-gradient-end' : 'bg-secondary'
+                          )}
                       >
-                           <span className="text-3xl font-bold">Vorbestellung per Telefon</span>
+                           <span className="text-2xl font-bold">Vorbestellung per Telefon</span>
                            <div className="flex items-center gap-3 text-lg">
                               <Phone className="h-6 w-6"/>
                               <span>031 316 26 66</span>
@@ -168,9 +172,12 @@ export default function MedikamentePage() {
                       </TabsTrigger>
                        <TabsTrigger
                           value="email"
-                          className="group/email ml-2 flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 text-primary-foreground"
+                          className={cn(
+                              "group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-primary-foreground",
+                              activeTab === 'email' ? 'bg-gradient-to-b from-gradient-start to-gradient-end' : 'bg-secondary'
+                          )}
                       >
-                          <span className="text-3xl font-bold">Vorbestellung per E-Mail</span>
+                          <span className="text-2xl font-bold">Vorbestellung per E-Mail</span>
                           <div
                               className="flex items-center gap-3 text-lg"
                           >
@@ -180,14 +187,14 @@ export default function MedikamentePage() {
                       </TabsTrigger>
                   </TabsList>
                 <TabsContent value="telefon" className="-mt-px">
-                   <Card className={cn("rounded-t-none", activeTab === 'telefon' ? 'bg-gradient-to-b from-gradient-start to-gradient-end' : 'bg-secondary', "text-primary-foreground")}>
+                   <Card className={cn("rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground")}>
                       <CardContent className="p-6 md:p-8">
                            <PhoneCardContent />
                       </CardContent>
                   </Card>
                 </TabsContent>
                 <TabsContent value="email" className="-mt-px">
-                  <Card className={cn("rounded-t-none", activeTab === 'email' ? 'bg-secondary' : 'bg-gradient-start', "text-primary-foreground")}>
+                  <Card className={cn("rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground")}>
                       <CardContent className="p-6 md:p-8">
                         <EmailCardContent />
                       </CardContent>
