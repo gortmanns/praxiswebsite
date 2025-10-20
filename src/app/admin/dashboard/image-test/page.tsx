@@ -14,7 +14,9 @@ import { Input } from '@/components/ui/input';
 import { ImageUp, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
-import { saveCroppedImage } from './actions';
+import { useStorage } from '@/firebase';
+import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 
 import { ImageSourceDialog } from '../team/doctors/_components/image-source-dialog';
 import { ImageLibraryDialog } from '../team/doctors/_components/image-library-dialog';
@@ -23,6 +25,7 @@ import { projectImages } from '../partners/project-images';
 
 export default function ImageTestPage() {
     const { toast } = useToast();
+    const storage = useStorage();
 
     const [imageUrl, setImageUrl] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -46,6 +49,10 @@ export default function ImageTestPage() {
 
     const handleCropComplete = useCallback(async (croppedDataUrl: string) => {
         setDialogState({ type: null, data: {} });
+        if (!storage) {
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
+            return;
+        }
         if (!croppedDataUrl) {
             toast({ variant: 'destructive', title: 'Fehler', description: 'Keine Bilddaten vom Zuschneide-Dialog erhalten.' });
             return;
@@ -53,23 +60,23 @@ export default function ImageTestPage() {
 
         setIsLoading(true);
 
-        try {
-            const result = await saveCroppedImage(croppedDataUrl);
+        const imagePath = `uploads/${uuidv4()}.jpg`;
+        const imageRef = storageRef(storage, imagePath);
 
-            if (result.success && result.filePath) {
-                // Wichtig: Füge einen Zeitstempel hinzu, um Caching-Probleme im Browser zu vermeiden
-                setImageUrl(`${result.filePath}?t=${new Date().getTime()}`);
-                toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich gespeichert und angezeigt.' });
-            } else {
-                throw new Error(result.error || 'Unbekannter Fehler beim Speichern des Bildes.');
-            }
+        try {
+            // Upload the cropped image data URL to Firebase Storage
+            const snapshot = await uploadString(imageRef, croppedDataUrl, 'data_url');
+            const downloadURL = await getDownloadURL(snapshot.ref);
+            
+            setImageUrl(downloadURL);
+            toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich hochgeladen und angezeigt.' });
         } catch (error: any) {
-            console.error("Error saving image: ", error);
-            toast({ variant: 'destructive', title: 'Speicher-Fehler', description: error.message });
+            console.error("Error uploading image: ", error);
+            toast({ variant: 'destructive', title: 'Upload-Fehler', description: `Das Bild konnte nicht hochgeladen werden: ${error.message}` });
         } finally {
             setIsLoading(false);
         }
-    }, [toast]);
+    }, [toast, storage]);
 
     return (
         <div className="flex flex-1 items-start p-4 sm:p-6">
@@ -77,7 +84,7 @@ export default function ImageTestPage() {
                 <CardHeader>
                     <CardTitle>Isolierter Bild-Upload-Test</CardTitle>
                     <CardDescription>
-                        Dieser Test validiert den Prozess: Bild auswählen, zuschneiden und lokal im Projektordner `/public/images/uploads` speichern.
+                        Dieser Test validiert den Prozess: Bild auswählen, zuschneiden und auf Firebase Storage hochladen. Das Ergebnis wird unten angezeigt.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -87,7 +94,7 @@ export default function ImageTestPage() {
                             Bild auswählen
                         </Button>
                         <p className="text-sm text-muted-foreground">
-                            Dieser Button startet den Dialog zur Auswahl einer Bildquelle (Upload oder Bibliothek), gefolgt vom Zuschneide-Dialog. Das Ergebnis wird unten angezeigt.
+                            Dieser Button startet den Dialog zur Auswahl einer Bildquelle (Upload oder Bibliothek), gefolgt vom Zuschneide-Dialog.
                         </p>
                     </div>
 
@@ -102,7 +109,6 @@ export default function ImageTestPage() {
                                     alt="Vorschau des hochgeladenen Bildes"
                                     fill
                                     className="object-contain p-2"
-                                    // Wichtig: 'key' erzwingt ein Neuladen des Bildes, wenn sich die URL ändert
                                     key={imageUrl}
                                 />
                             ) : (
@@ -112,11 +118,11 @@ export default function ImageTestPage() {
                     </div>
 
                     <div className="space-y-2">
-                        <h3 className="font-semibold">Bild-URL (lokaler Pfad):</h3>
+                        <h3 className="font-semibold">Bild-URL (Firebase Storage):</h3>
                         <Input
                             readOnly
                             value={imageUrl}
-                            placeholder="Der lokale Bildpfad wird hier angezeigt"
+                            placeholder="Die Firebase Storage URL wird hier angezeigt"
                         />
                     </div>
                 </CardContent>

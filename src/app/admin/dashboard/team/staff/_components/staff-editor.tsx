@@ -13,7 +13,6 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Languages, User as UserIcon, Info, Pencil } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { saveCroppedImage } from '../../../image-test/actions';
 import { ImageSourceDialog } from '@/app/admin/dashboard/team/doctors/_components/image-source-dialog';
 import { ImageLibraryDialog } from '@/app/admin/dashboard/team/doctors/_components/image-library-dialog';
 import { ImageCropDialog } from '@/app/admin/dashboard/team/doctors/_components/image-crop-dialog';
@@ -23,6 +22,9 @@ import { VitaEditorDialog } from '@/app/admin/dashboard/team/doctors/_components
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useStorage } from '@/firebase';
+import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 
 
 export interface StaffMember {
@@ -48,6 +50,7 @@ interface StaffEditorProps {
 
 export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) => {
     const { toast } = useToast();
+    const storage = useStorage();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [dialogState, setDialogState] = useState<{
@@ -76,24 +79,30 @@ export const StaffEditor: React.FC<StaffEditorProps> = ({ cardData, onUpdate }) 
 
     const handleCropComplete = useCallback(async (croppedDataUrl: string) => {
         setDialogState({ type: null, data: {} });
+        if (!storage) {
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
+            return;
+        }
         if (!croppedDataUrl) {
             toast({ variant: 'destructive', title: 'Fehler', description: 'Keine Bilddaten vom Zuschneide-Dialog erhalten.' });
             return;
         }
 
+        const imagePath = `staff-images/${uuidv4()}.jpg`;
+        const imageRef = storageRef(storage, imagePath);
+
         try {
-            const result = await saveCroppedImage(croppedDataUrl);
-            if (result.success && result.filePath) {
-                onUpdate({ imageUrl: result.filePath });
-                toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich aktualisiert.' });
-            } else {
-                throw new Error(result.error || 'Unbekannter Fehler beim Speichern des Bildes.');
-            }
+            // Upload the cropped image data URL to Firebase Storage
+            const snapshot = await uploadString(imageRef, croppedDataUrl, 'data_url');
+            const downloadURL = await getDownloadURL(snapshot.ref);
+
+            onUpdate({ imageUrl: downloadURL });
+            toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich hochgeladen und aktualisiert.' });
         } catch (error: any) {
-            console.error("Error saving image: ", error);
-            toast({ variant: 'destructive', title: 'Speicher-Fehler', description: error.message });
+            console.error("Error uploading image: ", error);
+            toast({ variant: 'destructive', title: 'Upload-Fehler', description: `Das Bild konnte nicht hochgeladen werden: ${error.message}` });
         }
-    }, [onUpdate, toast]);
+    }, [onUpdate, toast, storage]);
     
     const handleVitaSave = (newVita: string) => {
         onUpdate({ backsideContent: newVita });
