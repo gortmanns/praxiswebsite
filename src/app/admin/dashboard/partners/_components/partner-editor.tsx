@@ -1,4 +1,3 @@
-
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -245,5 +244,3 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
         </div>
     );
 };
-
-    

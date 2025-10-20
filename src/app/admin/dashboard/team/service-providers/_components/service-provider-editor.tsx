@@ -1,4 +1,3 @@
-
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -9,9 +8,7 @@
 'use client';
 
 import React, { useState, useRef, useCallback } from 'react';
-import { saveCroppedImage } from '../../../image-test/actions';
 import { TextEditDialog } from '../../doctors/_components/text-edit-dialog';
-import { VitaEditorDialog } from '../../doctors/_components/vita-editor-dialog';
 import { LanguageSelectDialog } from '../../doctors/_components/language-select-dialog';
 import { ImageSourceDialog } from '../../doctors/_components/image-source-dialog';
 import { ImageLibraryDialog } from '../../doctors/_components/image-library-dialog';
@@ -76,23 +73,28 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
     
     const handleCropComplete = useCallback(async (croppedDataUrl: string, field: string) => {
         setDialogState({ type: null });
+        if (!storage) {
+            toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
+            return;
+        }
         if (!croppedDataUrl) {
             toast({ variant: 'destructive', title: 'Fehler', description: 'Keine Bilddaten vom Zuschneide-Dialog erhalten.' });
             return;
         }
 
+        const imagePath = `service-provider-images/${uuidv4()}.jpg`;
+        const imageRef = storageRef(storage, imagePath);
+
         try {
-            const result = await saveCroppedImage(croppedDataUrl);
-            if (result.success && result.filePath) {
-                const newFrontSideCode = updateHtmlWithImage(cardData.frontSideCode, result.filePath, field);
-                onUpdate({ frontSideCode: newFrontSideCode });
-                toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich aktualisiert.' });
-            } else {
-                 throw new Error(result.error || 'Unbekannter Fehler beim Speichern des Bildes.');
-            }
+            const snapshot = await uploadString(imageRef, croppedDataUrl, 'data_url');
+            const downloadURL = await getDownloadURL(snapshot.ref);
+
+            const newFrontSideCode = updateHtmlWithImage(cardData.frontSideCode, downloadURL, field);
+            onUpdate({ frontSideCode: newFrontSideCode });
+            toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich aktualisiert.' });
         } catch (error: any) {
-            console.error("Error saving image: ", error);
-            toast({ variant: 'destructive', title: 'Speicher-Fehler', description: error.message });
+            console.error("Error uploading image: ", error);
+            toast({ variant: 'destructive', title: 'Upload-Fehler', description: `Das Bild konnte nicht hochgeladen werden: ${error.message}` });
         }
     }, [storage, cardData.frontSideCode, onUpdate, toast]);
 
