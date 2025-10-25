@@ -19,7 +19,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 
-import { EditableServiceProviderCard } from './_components/editable-service-provider-card';
 import { ServiceProviderEditor } from './_components/service-provider-editor';
 import { DisplayCard } from './_components/display-card';
 
@@ -164,6 +163,8 @@ export default function ServiceProvidersPage() {
     const isEditing = editingCardId !== null || isCreatingNew;
 
     const handleEdit = (card: ServiceProvider) => {
+        if (typeof window === 'undefined') return;
+
         let template = initialServiceProviderState.frontSideCode;
         const parser = new DOMParser();
         const doc = parser.parseFromString(template, 'text/html');
@@ -320,6 +321,10 @@ export default function ServiceProvidersPage() {
     
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
+    const handleEditorUpdate = (update: Partial<ServiceProvider>) => {
+        setEditorCardState(prev => ({...prev, ...update}));
+    }
+
     const renderCardGroups = () => {
         const activeItems = validDbData.filter(i => !i.hidden);
         const hiddenItems = validDbData.filter(i => i.hidden);
@@ -415,7 +420,7 @@ export default function ServiceProvidersPage() {
                 <CardContent>
                    {isEditing && (
                         <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted p-4 mb-8">
-                            <ServiceProviderEditor cardData={editorCardState} onUpdate={setEditorCardState} isCreatingNew={isCreatingNew} />
+                            <ServiceProviderEditor cardData={editorCardState} onUpdate={handleEditorUpdate} isCreatingNew={isCreatingNew} />
                         </div>
                     )}
 
