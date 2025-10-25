@@ -540,5 +540,3 @@ function BannerManager() {
 export default function BannerPage() {
     return <BannerManager />;
 }
-
-    

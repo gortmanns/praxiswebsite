@@ -34,6 +34,23 @@
       },
       "required": ["id", "order", "name", "role", "imageUrl"]
     },
+    "ServiceProvider": {
+      "title": "Service Provider",
+      "description": "Represents an external service provider's profile.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the service provider." },
+        "order": { "type": "number", "description": "Display order of the service provider." },
+        "name": { "type": "string", "description": "The full name of the service provider." },
+        "frontSideCode": { "type": "string", "description": "HTML code for the front side of the card." },
+        "backSideCode": { "type": "string", "description": "HTML code for the back side of the card." },
+        "languages": { "type": "array", "items": { "type": "string" }, "description": "Languages spoken by the service provider." },
+        "hidden": { "type": "boolean", "description": "Whether the service provider card is hidden." },
+        "websiteUrl": { "type": "string", "description": "URL to the service provider's website." },
+        "openInNewTab": { "type": "boolean", "description": "Whether the link should open in a new tab." }
+      },
+      "required": ["id", "order", "name", "frontSideCode"]
+    },
     "MedicalPartner": {
       "title": "Medical Partner",
       "description": "Represents a medical cooperation partner.",
@@ -91,6 +108,7 @@
       "properties": {
         "id": { "type": "string" },
         "text": { "type": "string" },
+        "text_en": { "type": "string" },
         "start": { "type": "string", "format": "date-time" },
         "end": { "type": "string", "format": "date-time" },
         "separatorStyle": { "type": "string", "enum": ["diamonds", "spaces", "equals", "dashes", "plus", "asterisks"] }
@@ -104,7 +122,9 @@
       "properties": {
         "preHolidayDays": { "type": "number", "description": "How many days before a holiday the announcement banner should appear." },
         "yellowBannerText": { "type": "string", "description": "Text for the holiday announcement (yellow) banner." },
+        "yellowBannerText_en": { "type": "string", "description": "English text for the holiday announcement (yellow) banner." },
         "redBannerText": { "type": "string", "description": "Text for the during-holiday (red) banner." },
+        "redBannerText_en": { "type": "string", "description": "English text for the during-holiday (red) banner." },
         "yellowBannerSeparatorStyle": { "type": "string", "enum": ["diamonds", "spaces", "equals", "dashes", "plus", "asterisks"] },
         "redBannerSeparatorStyle": { "type": "string", "enum": ["diamonds", "spaces", "equals", "dashes", "plus", "asterisks"] }
       },
@@ -122,6 +142,10 @@
     "staff": {
       "schema": { "$ref": "#/entities/StaffMember" },
       "description": "Stores practice staff member profiles."
+    },
+    "serviceProviders": {
+      "schema": { "$ref": "#/entities/ServiceProvider" },
+      "description": "Stores external service provider profiles."
     },
     "medicalPartners": {
       "schema": { "$ref": "#/entities/MedicalPartner" },

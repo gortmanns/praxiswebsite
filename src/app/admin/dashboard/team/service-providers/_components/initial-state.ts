@@ -115,7 +115,7 @@ export const createPopulatedFrontSideCode = (cardData: Partial<ServiceProvider>)
         const element = doc.getElementById(elementId);
         if (element) {
             if (content.image) {
-                element.innerHTML = `<img src="${content.image}" alt="Logo" class="h-full w-full ${objectFit === 'contain' ? 'object-contain' : 'object-cover'} relative" />`;
+                element.innerHTML = `<img src="${content.image}" alt="Dynamisches Bild" class="h-full w-full ${objectFit === 'contain' ? 'object-contain' : 'object-cover'} relative" />`;
             } else if (content.text) {
                 const pOrH3 = element.querySelector('p') || element.querySelector('h3');
                 if (pOrH3) pOrH3.textContent = content.text;

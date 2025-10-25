@@ -21,7 +21,7 @@ import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 
 import { ServiceProviderEditor } from './_components/service-provider-editor';
 import { DisplayCard } from './_components/display-card';
-import { initialServiceProviderState, createPopulatedFrontSideCode } from './_components/initial-state';
+import { initialServiceProviderState } from './_components/initial-state';
 
 
 export interface ServiceProvider {
@@ -65,13 +65,7 @@ export default function ServiceProvidersPage() {
     const handleEdit = (card: ServiceProvider) => {
         setEditingCardId(card.id);
         setIsCreatingNew(false);
-        // HIER IST DIE KORREKTUR:
-        // Wir nehmen die Rohdaten der Karte und generieren den HTML-Code
-        // auf Basis der funktionierenden Vorlage neu.
-        setEditorCardState({
-            ...card,
-            frontSideCode: createPopulatedFrontSideCode(card)
-        });
+        setEditorCardState(card);
     };
 
     const handleCreateNew = () => {

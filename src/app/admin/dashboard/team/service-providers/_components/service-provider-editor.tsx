@@ -46,14 +46,15 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
     const updateHtmlWithImage = (html: string, url: string, field: string): string => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
-        const containerId = field === 'position' ? 'position-container' : 'image-container';
-        const container = doc.getElementById(containerId);
+        const container = doc.getElementById(field === 'position' ? 'position-container' : 'image-container');
         
         if (container) {
              const newHtml = `<div id="edit-${field}" class="w-full h-full relative"><img src="${url}" alt="Dynamisches Bild" class="h-full w-full ${field === 'position' ? 'object-contain' : 'object-cover'} relative" /></div>`;
-            container.innerHTML = newHtml;
+             const targetDiv = container.querySelector(`[id="edit-${field}"]`) || container;
+             targetDiv.innerHTML = newHtml;
+
         } else {
-             console.error(`Container with id '${containerId}' not found in HTML.`);
+             console.error(`Container with id '${field === 'position' ? 'position-container' : 'image-container'}' not found in HTML.`);
         }
         
         return doc.body.innerHTML;
