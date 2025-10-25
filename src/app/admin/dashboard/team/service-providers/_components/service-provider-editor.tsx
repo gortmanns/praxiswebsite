@@ -7,7 +7,7 @@
  **********************************************************************************/
 'use client';
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { TextEditDialog } from '../../doctors/_components/text-edit-dialog';
 import { LanguageSelectDialog } from '../../doctors/_components/language-select-dialog';
 import { ImageSourceDialog } from '../../doctors/_components/image-source-dialog';
@@ -155,7 +155,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
         while (target && target.id !== 'card-root' && target.id !== 'doctor-editor-root') {
             const id = target.id;
 
-            if (id.startsWith('edit-')) {
+            if (id && id.startsWith('edit-')) {
                 e.stopPropagation();
                 const field = id.substring(5);
 
@@ -182,7 +182,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
     };
     
     const handleInputChange = (field: keyof ServiceProvider, value: string | boolean) => {
-        onUpdate({ [field]: value });
+        onUpdate({ ...cardData, [field]: value });
     };
 
     return (
