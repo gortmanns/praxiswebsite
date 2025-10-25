@@ -35,10 +35,7 @@ export interface ServiceProvider {
     openInNewTab?: boolean;
     createdAt?: any;
     // Internal helper properties not stored in DB
-    _title?: string;
-    _specialty?: string;
-    _position?: string;
-    _imageUrl?: string;
+    _dialog?: { type: string; data: any };
 }
 
 
@@ -128,6 +125,7 @@ const initialServiceProviderState: Omit<ServiceProvider, 'id' | 'order' | 'creat
 
 // Helper function to extract content from existing HTML
 const extractFromHtml = (html: string, id: string): { text: string; image: string } => {
+    if (typeof window === 'undefined') return { text: '', image: '' };
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
     const element = doc.getElementById(id);
@@ -166,26 +164,20 @@ export default function ServiceProvidersPage() {
     const isEditing = editingCardId !== null || isCreatingNew;
 
     const handleEdit = (card: ServiceProvider) => {
-        let constructedFrontCode = initialServiceProviderState.frontSideCode;
+        let template = initialServiceProviderState.frontSideCode;
         const parser = new DOMParser();
-        const doc = parser.parseFromString(constructedFrontCode, 'text/html');
+        const doc = parser.parseFromString(template, 'text/html');
 
-        const updateElementText = (id: string, text: string) => {
-            const el = doc.getElementById(id);
-            if (el) {
-                const pOrH3 = el.querySelector('p') || el.querySelector('h3');
-                if (pOrH3 && text) pOrH3.textContent = text;
-            }
-        };
-
-        const updateElementImage = (containerId: string, imageSrc: string, objectFit: 'contain' | 'cover' = 'cover') => {
-            const el = doc.getElementById(containerId);
-            if (el && imageSrc) {
-                const editDiv = el.querySelector('div[id^="edit-"]');
-                if (editDiv) {
-                     editDiv.innerHTML = `<img src="${imageSrc}" alt="Logo" class="h-full w-full ${objectFit === 'contain' ? 'object-contain' : 'object-cover'} relative" />`;
+        const updateElement = (elementId: string, content: {text?: string, image?: string}, objectFit: 'contain' | 'cover' = 'cover') => {
+             const element = doc.getElementById(elementId);
+             if (element) {
+                if (content.image) {
+                     element.innerHTML = `<img src="${content.image}" alt="Logo" class="h-full w-full ${objectFit === 'contain' ? 'object-contain' : 'object-cover'} relative" />`;
+                } else if (content.text) {
+                    const pOrH3 = element.querySelector('p') || element.querySelector('h3');
+                    if(pOrH3) pOrH3.textContent = content.text;
                 }
-            }
+             }
         };
 
         const titleInfo = extractFromHtml(card.frontSideCode, 'edit-title');
@@ -193,28 +185,18 @@ export default function ServiceProvidersPage() {
         const specialtyInfo = extractFromHtml(card.frontSideCode, 'edit-specialty');
         const positionInfo = extractFromHtml(card.frontSideCode, 'edit-position');
         const imageInfo = extractFromHtml(card.frontSideCode, 'edit-image');
-        
-        updateElementText('edit-title', titleInfo.text);
-        updateElementText('edit-name', nameInfo.text || card.name); // Fallback to card name
-        updateElementText('edit-specialty', specialtyInfo.text);
-        
-        if (positionInfo.image) {
-            updateElementImage('position-container', positionInfo.image, 'contain');
-        } else {
-            updateElementText('edit-position', positionInfo.text);
-        }
 
-        if (imageInfo.image) {
-            updateElementImage('image-container', imageInfo.image, 'cover');
-        }
-
-        const finalFrontCode = doc.body.innerHTML;
+        updateElement('edit-title', { text: titleInfo.text });
+        updateElement('edit-name', { text: nameInfo.text || card.name });
+        updateElement('edit-specialty', { text: specialtyInfo.text });
+        updateElement('edit-position', { text: positionInfo.text, image: positionInfo.image }, 'contain');
+        updateElement('edit-image', { image: imageInfo.image }, 'cover');
 
         setEditingCardId(card.id);
         setIsCreatingNew(false);
         setEditorCardState({
             ...card,
-            frontSideCode: finalFrontCode
+            frontSideCode: doc.body.innerHTML
         });
     };
 
