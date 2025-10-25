@@ -23,6 +23,9 @@ import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storag
 import { v4 as uuidv4 } from 'uuid';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 
 
 interface ServiceProviderEditorProps {
@@ -176,18 +179,41 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
             target = target.parentElement as HTMLElement;
         }
     };
+    
+    const handleInputChange = (field: keyof ServiceProvider, value: string | boolean) => {
+        onUpdate({ ...cardData, [field]: value });
+    };
 
     return (
         <div id="doctor-editor-root">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                 <EditableServiceProviderCard serviceProvider={cardData} onCardClick={handleCardClick} />
+                <div className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="websiteUrl">Website URL</Label>
+                        <Input 
+                            id="websiteUrl" 
+                            value={cardData.websiteUrl || ''}
+                            onChange={(e) => handleInputChange('websiteUrl', e.target.value)}
+                            placeholder="https://beispiel-website.ch"
+                        />
+                    </div>
+                     <div className="flex items-center space-x-2">
+                        <Checkbox 
+                            id="openInNewTab"
+                            checked={cardData.openInNewTab === undefined ? true : cardData.openInNewTab}
+                            onCheckedChange={(checked) => handleInputChange('openInNewTab', !!checked)}
+                        />
+                        <Label htmlFor="openInNewTab">In neuem Tab öffnen</Label>
+                    </div>
+                </div>
             </div>
 
             <Alert variant="info" className="mt-8">
                 <Info className="h-4 w-4" />
                 <AlertTitle className="font-bold">Anleitung</AlertTitle>
                 <AlertDescription>
-                    Klicken Sie auf ein Element, um dieses zu bearbeiten. Die Live-Vorschau wird sofort entsprechend der Bearbeitung aktualisiert. Die Übernahme in die Datenbank erfolgt erst am Ende als separater Schritt mit dem Klick auf die Schaltfläche "{isCreatingNew ? 'Neue Karte speichern' : 'Änderungen speichern'}".
+                    Klicken Sie auf ein Element auf der Karte, um dieses zu bearbeiten. Rechts können Sie die URL für die Verlinkung eingeben. Die Übernahme in die Datenbank erfolgt erst am Ende als separater Schritt mit dem Klick auf die Schaltfläche "{isCreatingNew ? 'Neue Karte speichern' : 'Änderungen speichern'}".
                 </AlertDescription>
             </Alert>
 

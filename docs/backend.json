@@ -42,15 +42,14 @@
         "id": { "type": "string", "description": "Unique identifier for the service provider." },
         "order": { "type": "number", "description": "Display order of the service provider." },
         "name": { "type": "string", "description": "The full name of the service provider." },
-        "role": { "type": "string", "description": "The primary role of the service provider." },
-        "role2": { "type": "string", "description": "An optional secondary role." },
-        "imageUrl": { "type": "string", "description": "URL of the service provider's portrait image." },
-        "backsideContent": { "type": "string", "description": "HTML or text content for the card's flip side." },
+        "frontSideCode": { "type": "string", "description": "HTML code for the front side of the card." },
+        "backSideCode": { "type": "string", "description": "HTML code for the back side of the card." },
         "languages": { "type": "array", "items": { "type": "string" }, "description": "Languages spoken by the service provider." },
         "hidden": { "type": "boolean", "description": "Whether the service provider card is hidden." },
-        "fullWidth": { "type": "boolean", "description": "Whether the card should span the full width of the grid." }
+        "websiteUrl": { "type": "string", "description": "URL to the service provider's website." },
+        "openInNewTab": { "type": "boolean", "description": "Whether the link should open in a new tab." }
       },
-      "required": ["id", "order", "name", "role", "imageUrl"]
+      "required": ["id", "order", "name", "frontSideCode"]
     },
     "MedicalPartner": {
       "title": "Medical Partner",

@@ -1,4 +1,3 @@
-
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -31,6 +30,8 @@ export interface ServiceProvider {
     backSideCode: string;
     languages: string[];
     hidden: boolean;
+    websiteUrl?: string;
+    openInNewTab?: boolean;
     createdAt?: any;
 }
 
@@ -39,6 +40,8 @@ const initialServiceProviderState: Omit<ServiceProvider, 'id' | 'order' | 'creat
     name: "Neuer Dienstleister",
     languages: ['de'],
     hidden: false,
+    websiteUrl: "",
+    openInNewTab: true,
     frontSideCode: `
         <style>
             .template-card button, .template-card div[id^="edit-"] { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; display: block; }

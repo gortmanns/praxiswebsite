@@ -3,19 +3,16 @@
 
 import { Header } from '../../_components/header';
 import { Footer } from '../../_components/footer';
-import { DoctorCard } from '../_components/doctor-card';
+import { DoctorCard, type Doctor as DoctorData } from '../_components/doctor-card';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import React from 'react';
+import Link from 'next/link';
 
-interface ServiceProvider {
-    id: string;
-    order: number;
-    name: string;
-    frontSideCode: string;
-    backSideCode: string;
-    hidden?: boolean;
+interface ServiceProvider extends DoctorData {
+    websiteUrl?: string;
+    openInNewTab?: boolean;
 }
 
 export default function ExterneDienstleisterPage() {
@@ -51,11 +48,29 @@ export default function ExterneDienstleisterPage() {
                         </div>
                     ))
                 ) : activeServiceProviders.length > 0 ? (
-                     activeServiceProviders.map(provider => (
-                        <div key={provider.id} id={provider.name.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
-                            <DoctorCard {...provider} disableFlip={true} />
-                        </div>
-                    ))
+                     activeServiceProviders.map(provider => {
+                        const card = <DoctorCard {...provider} disableFlip={true} />;
+                        
+                        if (provider.websiteUrl) {
+                            return (
+                                <Link 
+                                    key={provider.id}
+                                    href={provider.websiteUrl}
+                                    target={provider.openInNewTab ? '_blank' : '_self'}
+                                    rel="noopener noreferrer"
+                                    className="mx-auto flex w-full max-w-[1000px] justify-center p-2"
+                                >
+                                    {card}
+                                </Link>
+                            )
+                        }
+                        
+                        return (
+                            <div key={provider.id} id={provider.name.toLowerCase().replace(/ /g, '-')} className="mx-auto flex w-full max-w-[1000px] justify-center p-2">
+                                {card}
+                            </div>
+                        )
+                    })
                 ) : (
                     <p className="text-center text-muted-foreground">Informationen zu den externen Dienstleistern werden in Kürze hier angezeigt.</p>
                 )}
