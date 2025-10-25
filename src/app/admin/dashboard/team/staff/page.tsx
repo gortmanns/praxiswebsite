@@ -316,7 +316,7 @@ export default function StaffPageManager() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="relative w-full max-w-sm overflow-hidden rounded-lg border bg-accent/95 text-background shadow-xl aspect-[2/3]">
+                                        <div className="relative w-full max-w-sm overflow-hidden rounded-lg border bg-accent/95 text-background shadow-xl">
                                             <button className="absolute top-2 right-2 z-10 p-2 text-white/80 hover:text-white" onClick={() => handleEditorUpdate({_dialog: { type: 'vita', data: { initialValue: editorCardState.backsideContent || '' } }})}>
                                                 <Pencil className="h-8 w-8 font-bold" />
                                             </button>
