@@ -70,32 +70,21 @@ interface EditableDoctorCardProps {
     doctor: Doctor;
     onCardClick?: (e: React.MouseEvent) => void;
     isBeingEdited?: boolean;
-    showBacksideOnly?: boolean;
+    showBackside?: boolean;
 }
 
-export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onCardClick, isBeingEdited, showBacksideOnly = false }) => {
+export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onCardClick, isBeingEdited, showBackside = false }) => {
     
-    if (showBacksideOnly) {
-         return (
-             <div 
-                id="card-root"
-                className="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border"
-                onClick={onCardClick}
-            >
-                <div className="absolute inset-0 flex flex-col items-center justify-start overflow-auto bg-accent/95 text-left text-background">
-                    <BacksideRenderer html={doctor.backSideCode} />
-                </div>
-                 {isBeingEdited && (
-                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/90">
-                        <span className="text-2xl font-bold text-primary-foreground">In Bearbeitung</span>
-                    </div>
-                )}
-            </div>
-        );
-    }
+    // Render the card's back side using the data
+    const backSide = (
+        <div className="absolute inset-0 flex flex-col items-center justify-start overflow-auto bg-accent/95 text-left text-background">
+            <BacksideRenderer html={doctor.backSideCode} />
+        </div>
+    );
     
-    return (
-        <div id="card-root" className="template-card w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border bg-background text-card-foreground p-6 font-headline" onClick={onCardClick}>
+    // Render the card's front side using the data
+    const frontSide = (
+        <div className="w-full h-full bg-background text-card-foreground p-6 font-headline">
             <style>{templateStyles}</style>
             <div className="flex h-full w-full items-start">
                 <div id="image-container" className="relative h-full aspect-[2/3] overflow-hidden rounded-md shrink-0 bg-muted">
@@ -144,6 +133,13 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
                     </div>
                 </div>
             </div>
+        </div>
+    );
+    
+    return (
+        <div id="card-root" className="template-card relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border" onClick={onCardClick}>
+            {frontSide}
+            {showBackside && backSide}
              {isBeingEdited && (
                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/90">
                     <span className="text-2xl font-bold text-primary-foreground">In Bearbeitung</span>

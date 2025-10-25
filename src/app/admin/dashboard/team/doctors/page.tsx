@@ -98,7 +98,7 @@ export default function DoctorsPage() {
             await batch.commit();
         } catch (error: any) {
             console.error('Error moving item:', error);
-            setNotification({ variant: 'destructive', title: 'Fehler', description: `Position konnte nicht geändert werden: ${error.message}` });
+            setNotification({ variant: 'destructive', title: 'Fehler', description: `Position konnte nicht geändert werden: ${'error' in error ? error.message : 'Unknown error'}` });
         }
     };
 
@@ -110,7 +110,7 @@ export default function DoctorsPage() {
             await setDoc(docRef, { hidden: !card.hidden }, { merge: true });
         } catch (error: any) {
             console.error('Error toggling hidden state:', error);
-            setNotification({ variant: 'destructive', title: 'Fehler', description: `Sichtbarkeit konnte nicht geändert werden: ${error.message}` });
+            setNotification({ variant: 'destructive', title: 'Fehler', description: `Sichtbarkeit konnte nicht geändert werden: ${'error' in error ? error.message : 'Unknown error'}` });
         }
     };
 
@@ -140,7 +140,7 @@ export default function DoctorsPage() {
         setNotification(null);
         
         // Remove transient state properties before saving
-        const { _dialog, frontSideCode, ...dataToSave } = editorCardState;
+        const { _dialog, ...dataToSave } = editorCardState;
 
         try {
             if (isCreatingNew) {
@@ -169,7 +169,7 @@ export default function DoctorsPage() {
             handleCancelEdit();
         } catch (error: any) {
             console.error("Error saving changes: ", error);
-            setNotification({ variant: 'destructive', title: 'Fehler', description: `Die Änderungen konnten nicht gespeichert werden: ${error.message}` });
+            setNotification({ variant: 'destructive', title: 'Fehler', description: `Die Änderungen konnten nicht gespeichert werden: ${'error' in error ? error.message : 'Unknown error'}` });
         }
     };
     
@@ -197,7 +197,7 @@ export default function DoctorsPage() {
                                          isEditing && editingCardId !== item.id && "opacity-50 pointer-events-none",
                                          isHiddenGrid && "grayscale"
                                      )}>
-                                        <EditableDoctorCard doctor={item} showBackside={true} isBeingEdited={isEditing && editingCardId === item.id} />
+                                        <EditableDoctorCard doctor={item} isBeingEdited={isEditing && editingCardId === item.id} />
                                     </div>
                                     <div id={`buttons-${item.id}`} className="flex w-full max-w-lg items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
                                         {!isHiddenGrid && (
