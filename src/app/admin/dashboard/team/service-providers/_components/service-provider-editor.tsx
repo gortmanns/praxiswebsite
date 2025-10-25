@@ -14,10 +14,8 @@ import { ImageSourceDialog } from '../../doctors/_components/image-source-dialog
 import { ImageLibraryDialog } from '../../doctors/_components/image-library-dialog';
 import { ImageCropDialog } from '../../doctors/_components/image-crop-dialog';
 import { LogoFunctionSelectDialog } from '../../doctors/_components/logo-function-select-dialog';
-import { EditableServiceProviderCard } from './editable-service-provider-card';
 import { useToast } from '@/hooks/use-toast';
 import { projectImages } from '@/app/admin/dashboard/partners/project-images';
-import type { ServiceProvider } from '../page';
 import { useStorage } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
@@ -26,7 +24,7 @@ import { Info } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { extractFromHtml } from './initial-state';
+import { type ServiceProvider, EditableServiceProviderCard } from './initial-state';
 
 
 interface ServiceProviderEditorProps {
@@ -35,7 +33,6 @@ interface ServiceProviderEditorProps {
     isCreatingNew: boolean;
 }
 
-
 export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ cardData, onUpdate, isCreatingNew }) => {
     const { toast } = useToast();
     const storage = useStorage();
@@ -43,49 +40,30 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
     const [dialogState, setDialogState] = useState<{ type: string | null; data?: any }>({ type: null });
     const fileInputRef = useRef<HTMLInputElement>(null);
     
-    const updateHtmlWithImage = (html: string, url: string, field: string): string => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const container = doc.getElementById(field === 'position' ? 'position-container' : 'image-container');
-        
-        if (container) {
-             const newHtml = `<div id="edit-${field}" class="w-full h-full relative"><img src="${url}" alt="Dynamisches Bild" class="h-full w-full ${field === 'position' ? 'object-contain' : 'object-cover'} relative" /></div>`;
-             const targetDiv = container.querySelector(`[id="edit-${field}"]`) || container;
-             targetDiv.innerHTML = newHtml;
-
-        } else {
-             console.error(`Container with id '${field === 'position' ? 'position-container' : 'image-container'}' not found in HTML.`);
-        }
-        
-        return doc.body.innerHTML;
-    };
-    
-    const handleCropComplete = useCallback(async (croppedDataUrl: string, field: string) => {
-        setDialogState({ type: null });
+    const handleImageUpload = useCallback(async (dataUrl: string, field: string) => {
         if (!storage) {
             toast({ variant: 'destructive', title: 'Fehler', description: 'Speicherdienst nicht verfügbar.' });
             return;
         }
-        if (!croppedDataUrl) {
-            toast({ variant: 'destructive', title: 'Fehler', description: 'Keine Bilddaten vom Zuschneide-Dialog erhalten.' });
-            return;
-        }
-
         const imagePath = `service-provider-images/${uuidv4()}.jpg`;
         const imageRef = storageRef(storage, imagePath);
 
         try {
-            const snapshot = await uploadString(imageRef, croppedDataUrl, 'data_url');
+            const snapshot = await uploadString(imageRef, dataUrl, 'data_url');
             const downloadURL = await getDownloadURL(snapshot.ref);
-
-            const newFrontSideCode = updateHtmlWithImage(cardData.frontSideCode, downloadURL, field);
-            onUpdate({ frontSideCode: newFrontSideCode });
+            
+            const fieldToUpdate = field === 'image' ? 'imageUrl' : 'positionImageUrl';
+            onUpdate({ [fieldToUpdate]: downloadURL, [field === 'image' ? 'positionImageUrl' : 'imageUrl']: cardData[field === 'image' ? 'positionImageUrl' : 'imageUrl'] });
             toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich aktualisiert.' });
         } catch (error: any) {
-            console.error("Error uploading image: ", error);
             toast({ variant: 'destructive', title: 'Upload-Fehler', description: `Das Bild konnte nicht hochgeladen werden: ${error.message}` });
         }
-    }, [storage, cardData.frontSideCode, onUpdate, toast]);
+    }, [storage, onUpdate, toast, cardData]);
+    
+    const handleCropComplete = useCallback(async (croppedDataUrl: string, field: string) => {
+        setDialogState({ type: null });
+        handleImageUpload(croppedDataUrl, field);
+    }, [handleImageUpload]);
 
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,7 +72,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
             reader.onload = (event) => {
                 if (dialogState.data) {
                     const { field } = dialogState.data;
-                    const aspectRatio = field === 'position' ? 1600 / 463.75 : 2/3; // 265 * 1.75 = 463.75
+                    const aspectRatio = field === 'position' ? 1600 / 463.75 : 2/3;
                     setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio, field } });
                 }
             };
@@ -102,35 +80,21 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
         }
         if (e.target) e.target.value = '';
     };
-
-    const updateFrontSideCode = (field: string, value: string) => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(cardData.frontSideCode, 'text/html');
-        const element = doc.getElementById(`edit-${field}`);
-        if(element) {
-            const pOrH3 = element.querySelector('p') || element.querySelector('h3');
-            if (pOrH3) {
-                pOrH3.textContent = value;
-            } else if (field === 'position') {
-                 element.innerHTML = `<div class="w-full text-left"><p class="text-base">${value}</p></div>`;
-            }
-        }
-        return doc.body.innerHTML;
-    };
     
     const handleTextSave = (newValue: string) => {
         if (!dialogState.data) return;
         const { field } = dialogState.data;
         if (!field) return;
 
-        const newFrontSideCode = updateFrontSideCode(field, newValue);
-        let updatedCardData: Partial<ServiceProvider> = { frontSideCode: newFrontSideCode };
-        
-        if (field === 'name') {
-            updatedCardData.name = newValue;
-        }
+        const fieldToUpdate = {
+            title: 'title',
+            name: 'name',
+            specialty: 'specialty',
+            position: 'positionText'
+        }[field] || field;
 
-        onUpdate(updatedCardData);
+
+        onUpdate({ [fieldToUpdate]: newValue });
         setDialogState({ type: null });
     };
     
@@ -146,9 +110,9 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
                 const field = id.substring(5);
 
                 const textFields: { [key: string]: { title: string; label: string, isTextArea?: boolean, initialValue: string } } = {
-                    title: { title: "Titel bearbeiten", label: "Neuer Titel", initialValue: extractFromHtml(cardData.frontSideCode, 'edit-title').text },
+                    title: { title: "Titel bearbeiten", label: "Neuer Titel", initialValue: cardData.title || '' },
                     name: { title: "Name bearbeiten", label: "Neuer Name", initialValue: cardData.name },
-                    specialty: { title: "Spezialisierung bearbeiten", label: "Neue Spezialisierung", initialValue: extractFromHtml(cardData.frontSideCode, 'edit-specialty').text },
+                    specialty: { title: "Spezialisierung bearbeiten", label: "Neue Spezialisierung", initialValue: cardData.specialty || '' },
                 };
 
                 if (textFields[field]) {
@@ -168,7 +132,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
     };
     
     const handleInputChange = (field: keyof ServiceProvider, value: string | boolean) => {
-        onUpdate({ ...cardData, [field]: value });
+        onUpdate({ [field]: value });
     };
 
     return (
@@ -213,7 +177,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
                 <LogoFunctionSelectDialog 
                     isOpen={true} 
                     onOpenChange={() => setDialogState({ type: null })} 
-                    onSelectFunction={() => setDialogState(prev => ({ type: 'text', data: { ...prev?.data, title: 'Funktion bearbeiten', label: 'Funktion', isTextArea: true, initialValue: extractFromHtml(cardData.frontSideCode, 'edit-position').text } }))} 
+                    onSelectFunction={() => setDialogState(prev => ({ type: 'text', data: { ...prev?.data, title: 'Funktion bearbeiten', label: 'Funktion', isTextArea: true, initialValue: cardData.positionText || '' } }))} 
                     onSelectFromLibrary={() => setDialogState(prev => ({ type: 'imageLibrary', data: prev?.data }))} 
                     onUploadNew={() => fileInputRef.current?.click()} />
             )}
@@ -229,7 +193,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
                     isOpen={true} 
                     onOpenChange={() => setDialogState({ type: null })} 
                     images={projectImages} 
-                    onImageSelect={(imageUrl) => setDialogState({ type: 'imageCrop', data: { ...dialogState.data, imageUrl, aspectRatio: dialogState.data.field === 'position' ? 1600 / 463.75 : 2/3 } })} />
+                    onImageSelect={(imageUrl) => handleImageUpload(imageUrl, dialogState.data.field)} />
             )}
             {dialogState.type === 'imageCrop' && (
                 <ImageCropDialog

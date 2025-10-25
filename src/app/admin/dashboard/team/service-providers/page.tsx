@@ -7,7 +7,7 @@
  **********************************************************************************/
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
@@ -21,22 +21,8 @@ import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 
 import { ServiceProviderEditor } from './_components/service-provider-editor';
 import { DisplayCard } from './_components/display-card';
-import { initialServiceProviderState } from './_components/initial-state';
+import { initialServiceProviderState, type ServiceProvider } from './_components/initial-state';
 
-
-export interface ServiceProvider {
-    id: string;
-    order: number;
-    name: string;
-    frontSideCode: string;
-    backSideCode: string;
-    languages: string[];
-    hidden: boolean;
-    websiteUrl?: string;
-    openInNewTab?: boolean;
-    createdAt?: any;
-    _dialog?: { type: string; data: any };
-}
 
 export default function ServiceProvidersPage() {
     const collectionName = "serviceProviders";
@@ -57,21 +43,25 @@ export default function ServiceProvidersPage() {
 
     const [editingCardId, setEditingCardId] = useState<string | null>(null);
     const [isCreatingNew, setIsCreatingNew] = useState(false);
-    const [editorCardState, setEditorCardState] = useState<ServiceProvider>({ ...initialServiceProviderState, id: '', order: 0 } as ServiceProvider);
+    const [editorCardState, setEditorCardState] = useState<ServiceProvider>(initialServiceProviderState as ServiceProvider);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
 
     const isEditing = editingCardId !== null || isCreatingNew;
 
-    const handleEdit = (card: ServiceProvider) => {
+    const handleEdit = useCallback((card: ServiceProvider) => {
         setEditingCardId(card.id);
         setIsCreatingNew(false);
-        setEditorCardState(card);
-    };
+        // Ensure that even older data models get the new fields
+        setEditorCardState({
+            ...initialServiceProviderState,
+            ...card,
+        });
+    }, []);
 
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
-        setEditorCardState({ ...initialServiceProviderState, id: '', order: 0 } as ServiceProvider);
+        setEditorCardState(initialServiceProviderState as ServiceProvider);
     };
 
     const handleCancelEdit = () => {
@@ -151,7 +141,8 @@ export default function ServiceProvidersPage() {
         }
         setNotification(null);
 
-        let dataToSave: Partial<ServiceProvider> = { ...editorCardState };
+        // Omit frontSideCode and backSideCode as they are now generated dynamically
+        const { frontSideCode, backSideCode, ...dataToSave } = editorCardState;
     
         try {
             if (isCreatingNew) {
@@ -159,11 +150,9 @@ export default function ServiceProvidersPage() {
                 const highestOrder = dbData ? dbData.filter(d=>d.name).reduce((max, item) => item.order > max ? item.order : max, 0) : 0;
                 
                 const newCardData = {
-                    ...initialServiceProviderState,
                     ...dataToSave,
                     order: highestOrder + 1,
                     createdAt: serverTimestamp(),
-                    hidden: false,
                 };
     
                 const newDocRef = await addDoc(collection(firestore, collectionName), newCardData);
@@ -172,8 +161,8 @@ export default function ServiceProvidersPage() {
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: `Neue ${entityName}-Karte erfolgreich erstellt.` });
             
             } else if (editingCardId) {
-                delete dataToSave.createdAt;
-                delete dataToSave.id;
+                delete (dataToSave as any).createdAt;
+                delete (dataToSave as any).id;
     
                 const docRef = doc(firestore, collectionName, editingCardId);
                 await setDoc(docRef, dataToSave, { merge: true });

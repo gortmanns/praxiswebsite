@@ -7,47 +7,23 @@
  **********************************************************************************/
 'use client';
 
-import React, { useMemo } from 'react';
-import DOMPurify from 'dompurify';
-import { cn } from '@/lib/utils';
-import type { ServiceProvider } from '../page';
+import React from 'react';
+import { EditableServiceProviderCard, type ServiceProvider } from './initial-state';
 
 interface DisplayCardProps {
     serviceProvider: ServiceProvider;
     isBeingEdited?: boolean;
 }
 
-const CodeRenderer: React.FC<{ html: string; className?: string; }> = ({ html, className }) => {
-    const sanitizedHtml = useMemo(() => {
-        if (typeof window !== 'undefined') {
-            const config = {
-                ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img", "div"],
-                ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src']
-            };
-            return { __html: DOMPurify.sanitize(html, config) };
-        }
-        return { __html: '' };
-    }, [html]);
-
-    return (
-        <div
-            className={cn("relative w-full h-full", className)}
-            dangerouslySetInnerHTML={sanitizedHtml}
-        />
-    );
-};
-
-
 export const DisplayCard: React.FC<DisplayCardProps> = ({ serviceProvider, isBeingEdited }) => {
+    // This component now simply wraps the canonical EditableServiceProviderCard,
+    // but without passing the onCardClick handler, making it non-interactive for display.
     return (
-        <div
-            className="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border"
-        >
-            <CodeRenderer html={serviceProvider.frontSideCode} />
-
-            {isBeingEdited && (
-                <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/90">
-                    <span className="text-2xl font-bold text-primary-foreground">In Bearbeitung</span>
+        <div className="relative">
+            <EditableServiceProviderCard serviceProvider={serviceProvider} />
+             {isBeingEdited && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/80">
+                    <span className="text-xl font-bold text-primary-foreground">In Bearbeitung</span>
                 </div>
             )}
         </div>
