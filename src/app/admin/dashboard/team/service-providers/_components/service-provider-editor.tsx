@@ -7,7 +7,7 @@
  **********************************************************************************/
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { TextEditDialog } from '../../doctors/_components/text-edit-dialog';
 import { LanguageSelectDialog } from '../../doctors/_components/language-select-dialog';
 import { ImageSourceDialog } from '../../doctors/_components/image-source-dialog';
@@ -133,6 +133,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
     };
     
     const handleTextSave = (newValue: string) => {
+        if (!dialogState.data) return;
         const { field } = dialogState.data;
         if (!field) return;
 
@@ -181,7 +182,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
     };
     
     const handleInputChange = (field: keyof ServiceProvider, value: string | boolean) => {
-        onUpdate({ ...cardData, [field]: value });
+        onUpdate({ [field]: value });
     };
 
     return (
@@ -226,8 +227,8 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
                 <LogoFunctionSelectDialog 
                     isOpen={true} 
                     onOpenChange={() => setDialogState({ type: null })} 
-                    onSelectFunction={() => setDialogState(prev => ({ type: 'text', data: { ...prev.data, title: 'Funktion bearbeiten', label: 'Funktion', isTextArea: true, initialValue: extractText(cardData.frontSideCode, 'edit-position') } }))} 
-                    onSelectFromLibrary={() => setDialogState(prev => ({ type: 'imageLibrary', data: prev.data }))} 
+                    onSelectFunction={() => setDialogState(prev => ({ type: 'text', data: { ...prev?.data, title: 'Funktion bearbeiten', label: 'Funktion', isTextArea: true, initialValue: extractText(cardData.frontSideCode, 'edit-position') } }))} 
+                    onSelectFromLibrary={() => setDialogState(prev => ({ type: 'imageLibrary', data: prev?.data }))} 
                     onUploadNew={() => fileInputRef.current?.click()} />
             )}
             {dialogState.type === 'imageSource' && (
@@ -235,7 +236,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
                     isOpen={true} 
                     onOpenChange={() => setDialogState({ type: null })} 
                     onUpload={() => fileInputRef.current?.click()} 
-                    onSelect={() => setDialogState(prev => ({ type: 'imageLibrary', data: prev.data }))} />
+                    onSelect={() => setDialogState(prev => ({ type: 'imageLibrary', data: prev?.data }))} />
             )}
             {dialogState.type === 'imageLibrary' && (
                  <ImageLibraryDialog 
