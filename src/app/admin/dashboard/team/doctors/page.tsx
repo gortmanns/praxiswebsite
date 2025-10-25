@@ -20,7 +20,9 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 
 import { DoctorEditor as EditorComponent } from './_components/doctor-editor';
-import { EditableDoctorCard, initialDoctorState, type Doctor } from './_components/editable-doctor-card';
+// Wichtig: Die "DoctorCard" aus dem öffentlichen Team-Bereich importieren, um die korrekte Anzeige sicherzustellen.
+import { DoctorCard as DisplayCard } from '@/app/team/_components/doctor-card';
+import { initialDoctorState, type Doctor } from './_components/editable-doctor-card';
 
 
 export default function DoctorsPage() {
@@ -197,7 +199,7 @@ export default function DoctorsPage() {
                                          isEditing && editingCardId !== item.id && "opacity-50 pointer-events-none",
                                          isHiddenGrid && "grayscale"
                                      )}>
-                                        <EditableDoctorCard doctor={item} isBeingEdited={isEditing && editingCardId === item.id} />
+                                        <DisplayCard {...item} />
                                     </div>
                                     <div id={`buttons-${item.id}`} className="flex w-full max-w-lg items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
                                         {!isHiddenGrid && (
