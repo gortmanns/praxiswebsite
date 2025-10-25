@@ -6,15 +6,23 @@
       "description": "Represents a doctor's profile.",
       "type": "object",
       "properties": {
-        "id": { "type": "string", "description": "Unique identifier for the doctor." },
-        "order": { "type": "number", "description": "Display order of the doctor." },
-        "name": { "type": "string", "description": "The full name of the doctor." },
-        "frontSideCode": { "type": "string", "description": "HTML code for the front side of the doctor card." },
-        "backSideCode": { "type": "string", "description": "HTML code for the back side of the doctor card." },
-        "languages": { "type": "array", "items": { "type": "string" }, "description": "Languages spoken by the doctor." },
-        "hidden": { "type": "boolean", "description": "Whether the doctor card is hidden." }
+        "id": { "type": "string" },
+        "order": { "type": "number" },
+        "name": { "type": "string" },
+        "title": { "type": "string" },
+        "specialty": { "type": "string" },
+        "qual1": { "type": "string" },
+        "qual2": { "type": "string" },
+        "qual3": { "type": "string" },
+        "qual4": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "positionText": { "type": "string" },
+        "positionImageUrl": { "type": "string" },
+        "backSideCode": { "type": "string" },
+        "languages": { "type": "array", "items": { "type": "string" } },
+        "hidden": { "type": "boolean" }
       },
-      "required": ["id", "name", "order", "frontSideCode", "backSideCode"]
+      "required": ["id", "order", "name", "backSideCode"]
     },
     "StaffMember": {
       "title": "Staff Member",
@@ -49,7 +57,7 @@
         "websiteUrl": { "type": "string", "description": "URL to the service provider's website." },
         "openInNewTab": { "type": "boolean", "description": "Whether the link should open in a new tab." }
       },
-      "required": ["id", "order", "name", "frontSideCode"]
+      "required": ["id", "order", "name"]
     },
     "MedicalPartner": {
       "title": "Medical Partner",
