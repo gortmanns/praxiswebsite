@@ -34,6 +34,11 @@ export interface ServiceProvider {
     websiteUrl?: string;
     openInNewTab?: boolean;
     createdAt?: any;
+    // Internal helper properties not stored in DB
+    _title?: string;
+    _specialty?: string;
+    _position?: string;
+    _imageUrl?: string;
 }
 
 
@@ -118,27 +123,23 @@ const initialServiceProviderState: Omit<ServiceProvider, 'id' | 'order' | 'creat
             </div>
         </div>
     `,
-    backSideCode: `
-        <style>
-            .vita-content { color: hsl(var(--background)); }
-            .vita-content p { margin: 0; }
-            .vita-content ul { list-style-type: disc; padding-left: 2rem; margin-top: 1em; margin-bottom: 1em; }
-            .vita-content li { margin-bottom: 0.5em; }
-            .vita-content h4 { font-size: 1.25rem; font-weight: bold; margin-bottom: 1em; }
-            .vita-content .is-small { font-size: 0.8em; font-weight: normal; }
-            .vita-content span[style*="color: var(--color-tiptap-blue)"] { color: hsl(var(--primary)); }
-            .vita-content span[style*="color: var(--color-tiptap-gray)"] { color: hsl(var(--secondary-foreground)); }
-        </style>
-        <div class="w-full h-full text-left">
-            <div id="edit-vita" class="w-full h-full text-left p-8">
-                <div class="vita-content w-full h-full">
-                    <h4>Curriculum Vitae</h4>
-                    <p>Zum Bearbeiten klicken</p>
-                </div>
-            </div>
-        </div>
-    `,
+    backSideCode: ``,
 };
+
+// Helper function to extract content from existing HTML
+const extractFromHtml = (html: string, id: string): { text: string; image: string } => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const element = doc.getElementById(id);
+    if (!element) return { text: '', image: '' };
+    
+    const textContent = element.querySelector('p')?.textContent || element.querySelector('h3')?.textContent || '';
+    const imageSrc = element.querySelector('img')?.getAttribute('src') || '';
+
+    if (imageSrc) return { text: '', image: imageSrc };
+    return { text: textContent, image: '' };
+};
+
 
 export default function ServiceProvidersPage() {
     const collectionName = "serviceProviders";
@@ -165,9 +166,56 @@ export default function ServiceProvidersPage() {
     const isEditing = editingCardId !== null || isCreatingNew;
 
     const handleEdit = (card: ServiceProvider) => {
+        let constructedFrontCode = initialServiceProviderState.frontSideCode;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(constructedFrontCode, 'text/html');
+
+        const updateElementText = (id: string, text: string) => {
+            const el = doc.getElementById(id);
+            if (el) {
+                const pOrH3 = el.querySelector('p') || el.querySelector('h3');
+                if (pOrH3 && text) pOrH3.textContent = text;
+            }
+        };
+
+        const updateElementImage = (containerId: string, imageSrc: string, objectFit: 'contain' | 'cover' = 'cover') => {
+            const el = doc.getElementById(containerId);
+            if (el && imageSrc) {
+                const editDiv = el.querySelector('div[id^="edit-"]');
+                if (editDiv) {
+                     editDiv.innerHTML = `<img src="${imageSrc}" alt="Logo" class="h-full w-full ${objectFit === 'contain' ? 'object-contain' : 'object-cover'} relative" />`;
+                }
+            }
+        };
+
+        const titleInfo = extractFromHtml(card.frontSideCode, 'edit-title');
+        const nameInfo = extractFromHtml(card.frontSideCode, 'edit-name');
+        const specialtyInfo = extractFromHtml(card.frontSideCode, 'edit-specialty');
+        const positionInfo = extractFromHtml(card.frontSideCode, 'edit-position');
+        const imageInfo = extractFromHtml(card.frontSideCode, 'edit-image');
+        
+        updateElementText('edit-title', titleInfo.text);
+        updateElementText('edit-name', nameInfo.text || card.name); // Fallback to card name
+        updateElementText('edit-specialty', specialtyInfo.text);
+        
+        if (positionInfo.image) {
+            updateElementImage('position-container', positionInfo.image, 'contain');
+        } else {
+            updateElementText('edit-position', positionInfo.text);
+        }
+
+        if (imageInfo.image) {
+            updateElementImage('image-container', imageInfo.image, 'cover');
+        }
+
+        const finalFrontCode = doc.body.innerHTML;
+
         setEditingCardId(card.id);
         setIsCreatingNew(false);
-        setEditorCardState(card);
+        setEditorCardState({
+            ...card,
+            frontSideCode: finalFrontCode
+        });
     };
 
     const handleCreateNew = () => {
