@@ -14,7 +14,7 @@ import { AlertCircle } from 'lucide-react';
 import Image from 'next/image';
 
 export default function LoginPage() {
-  const auth = useAuth();
+  const { auth } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState('admin@praxis-im-ring.ch');
   const [password, setPassword] = useState('password');
@@ -23,6 +23,10 @@ export default function LoginPage() {
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!auth) {
+        setError("Authentifizierungsdienst nicht bereit. Bitte versuchen Sie es in einem Moment erneut.");
+        return;
+    }
     setIsLoading(true);
     setError(null);
     try {
