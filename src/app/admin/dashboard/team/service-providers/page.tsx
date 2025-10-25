@@ -65,6 +65,9 @@ export default function ServiceProvidersPage() {
     const handleEdit = (card: ServiceProvider) => {
         setEditingCardId(card.id);
         setIsCreatingNew(false);
+        // HIER IST DIE KORREKTUR:
+        // Wir nehmen die Rohdaten der Karte und generieren den HTML-Code
+        // auf Basis der funktionierenden Vorlage neu.
         setEditorCardState({
             ...card,
             frontSideCode: createPopulatedFrontSideCode(card)
