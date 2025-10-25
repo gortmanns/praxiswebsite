@@ -1,4 +1,3 @@
-
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -310,7 +309,7 @@ export default function DoctorsPage() {
                                          isEditing && editingCardId !== item.id && "opacity-50 pointer-events-none",
                                          isHiddenGrid && "grayscale"
                                      )}>
-                                        <EditableDoctorCard doctor={item} isBeingEdited={isEditing && editingCardId === item.id} />
+                                        <EditableDoctorCard doctor={item} showBackside={true} isBeingEdited={isEditing && editingCardId === item.id} />
                                     </div>
                                     <div id={`buttons-${item.id}`} className="flex w-full max-w-lg items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
                                         {!isHiddenGrid && (

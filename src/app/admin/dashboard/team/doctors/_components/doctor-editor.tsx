@@ -122,6 +122,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate, 
     };
     
     const handleTextSave = (newValue: string) => {
+        if (!dialogState.data) return;
         const { field } = dialogState.data;
         if (!field) return;
 
@@ -156,8 +157,9 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate, 
         while (target && target.id !== 'card-root' && target.id !== 'doctor-editor-root') {
             const id = target.id;
 
-            if (id.startsWith('edit-')) {
+            if (id && id.startsWith('edit-')) {
                 e.stopPropagation();
+                e.preventDefault();
                 const field = id.substring(5);
 
                 const textFields: { [key: string]: { title: string; label: string, isTextArea?: boolean, initialValue: string } } = {
@@ -196,9 +198,9 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate, 
 
     return (
         <div id="doctor-editor-root">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                <EditableDoctorCard doctor={cardData} onCardClick={handleCardClick} />
-                <EditableDoctorCard doctor={cardData} showBacksideOnly={true} onCardClick={handleCardClick} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start" onClickCapture={handleCardClick}>
+                <EditableDoctorCard doctor={cardData} />
+                <EditableDoctorCard doctor={cardData} showBacksideOnly={true} />
             </div>
 
             <Alert variant="info" className="mt-8">
@@ -219,8 +221,8 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate, 
                 <LogoFunctionSelectDialog 
                     isOpen={true} 
                     onOpenChange={() => setDialogState({ type: null })} 
-                    onSelectFunction={() => setDialogState(prev => ({ type: 'text', data: { ...prev.data, title: 'Funktion bearbeiten', label: 'Funktion', isTextArea: true, initialValue: extractText(cardData.frontSideCode, 'edit-position') } }))} 
-                    onSelectFromLibrary={() => setDialogState(prev => ({ type: 'imageLibrary', data: prev.data }))} 
+                    onSelectFunction={() => setDialogState(prev => ({ type: 'text', data: { ...prev?.data, title: 'Funktion bearbeiten', label: 'Funktion', isTextArea: true, initialValue: extractText(cardData.frontSideCode, 'edit-position') } }))} 
+                    onSelectFromLibrary={() => setDialogState(prev => ({ type: 'imageLibrary', data: prev?.data }))} 
                     onUploadNew={() => fileInputRef.current?.click()} />
             )}
             {dialogState.type === 'imageSource' && (
@@ -228,7 +230,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate, 
                     isOpen={true} 
                     onOpenChange={() => setDialogState({ type: null })} 
                     onUpload={() => fileInputRef.current?.click()} 
-                    onSelect={() => setDialogState(prev => ({ type: 'imageLibrary', data: prev.data }))} />
+                    onSelect={() => setDialogState(prev => ({ type: 'imageLibrary', data: prev?.data }))} />
             )}
             {dialogState.type === 'imageLibrary' && (
                  <ImageLibraryDialog 
