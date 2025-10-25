@@ -342,9 +342,8 @@ export default function StaffPageManager() {
                         {isLoadingData && (
                             <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2">
                                 {Array.from({ length: 4 }).map((_, index) => (
-                                    <div key={index} className="flex flex-col items-center space-y-4">
+                                    <div key={index} className="flex justify-center">
                                         <Skeleton className="h-[550px] w-full max-w-sm" />
-                                        <Skeleton className="h-24 w-full max-w-sm" />
                                     </div>
                                 ))}
                             </div>
