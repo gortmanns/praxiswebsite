@@ -26,6 +26,7 @@ import { Info } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { extractFromHtml } from './initial-state';
 
 
 interface ServiceProviderEditorProps {
@@ -33,22 +34,6 @@ interface ServiceProviderEditorProps {
     onUpdate: (updatedData: Partial<ServiceProvider>) => void;
     isCreatingNew: boolean;
 }
-
-const extractText = (html: string, id: string): string => {
-    if (typeof window === 'undefined' || !html) return '';
-    try {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const element = doc.getElementById(id);
-        if (element) {
-            const pOrH3 = element.querySelector('p') || element.querySelector('h3');
-            return pOrH3?.textContent || '';
-        }
-    } catch (e) {
-        console.error("Error parsing HTML for text extraction", e);
-    }
-    return '';
-};
 
 
 export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ cardData, onUpdate, isCreatingNew }) => {
@@ -160,9 +145,9 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
                 const field = id.substring(5);
 
                 const textFields: { [key: string]: { title: string; label: string, isTextArea?: boolean, initialValue: string } } = {
-                    title: { title: "Titel bearbeiten", label: "Neuer Titel", initialValue: extractText(cardData.frontSideCode, 'edit-title') },
+                    title: { title: "Titel bearbeiten", label: "Neuer Titel", initialValue: extractFromHtml(cardData.frontSideCode, 'edit-title').text },
                     name: { title: "Name bearbeiten", label: "Neuer Name", initialValue: cardData.name },
-                    specialty: { title: "Spezialisierung bearbeiten", label: "Neue Spezialisierung", initialValue: extractText(cardData.frontSideCode, 'edit-specialty') },
+                    specialty: { title: "Spezialisierung bearbeiten", label: "Neue Spezialisierung", initialValue: extractFromHtml(cardData.frontSideCode, 'edit-specialty').text },
                 };
 
                 if (textFields[field]) {
@@ -212,7 +197,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
 
             <Alert variant="info" className="mt-8">
                 <Info className="h-4 w-4" />
-                <AlertTitle className="font-bold">Anleitung</AlertTitle>
+                <AlertTitle>Anleitung</AlertTitle>
                 <AlertDescription>
                     Klicken Sie auf ein Element auf der Karte, um dieses zu bearbeiten. Rechts können Sie die URL für die Verlinkung eingeben. Die Übernahme in die Datenbank erfolgt erst am Ende als separater Schritt mit dem Klick auf die Schaltfläche "{isCreatingNew ? 'Neue Karte speichern' : 'Änderungen speichern'}".
                 </AlertDescription>
@@ -227,7 +212,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
                 <LogoFunctionSelectDialog 
                     isOpen={true} 
                     onOpenChange={() => setDialogState({ type: null })} 
-                    onSelectFunction={() => setDialogState(prev => ({ type: 'text', data: { ...prev?.data, title: 'Funktion bearbeiten', label: 'Funktion', isTextArea: true, initialValue: extractText(cardData.frontSideCode, 'edit-position') } }))} 
+                    onSelectFunction={() => setDialogState(prev => ({ type: 'text', data: { ...prev?.data, title: 'Funktion bearbeiten', label: 'Funktion', isTextArea: true, initialValue: extractFromHtml(cardData.frontSideCode, 'edit-position').text } }))} 
                     onSelectFromLibrary={() => setDialogState(prev => ({ type: 'imageLibrary', data: prev?.data }))} 
                     onUploadNew={() => fileInputRef.current?.click()} />
             )}
