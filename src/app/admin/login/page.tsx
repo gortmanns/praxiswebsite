@@ -16,8 +16,8 @@ import Image from 'next/image';
 export default function LoginPage() {
   const { auth } = useAuth();
   const router = useRouter();
-  const [email, setEmail] = useState('admin@praxis-im-ring.ch');
-  const [password, setPassword] = useState('password');
+  const [email, setEmail] = useState('g.ortmanns@praxiszentrum-im-ring.ch');
+  const [password, setPassword] = useState('PraZeiR2023.');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
