@@ -15,7 +15,7 @@ interface EditableDoctorCardProps {
     showBacksideOnly?: boolean;
 }
 
-const CodeRenderer: React.FC<{ html: string; className?: string;}> = ({ html, className }) => {
+const CodeRenderer: React.FC<{ html: string; className?: string; onClick?: (e: React.MouseEvent) => void;}> = ({ html, className, onClick }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [scale, setScale] = useState(1);
 
@@ -63,6 +63,7 @@ const CodeRenderer: React.FC<{ html: string; className?: string;}> = ({ html, cl
                     transform: `scale(${scale})`,
                     transformOrigin: 'top left',
                 }}
+                onClick={onClick}
                 dangerouslySetInnerHTML={sanitizedHtml}
             />
         </div>
@@ -77,10 +78,9 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
              <div 
                 id="card-root"
                 className="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border"
-                onClick={onCardClick}
             >
                 <div className="absolute inset-0 flex flex-col items-center justify-start overflow-auto bg-accent/95 text-left text-background">
-                    <CodeRenderer html={doctor.backSideCode} />
+                    <CodeRenderer html={doctor.backSideCode} onClick={onCardClick} />
                 </div>
                  {isBeingEdited && (
                     <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/90">
@@ -96,11 +96,10 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
             <div 
                 id="card-root"
                 className="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border"
-                onClick={onCardClick}
             >
-                <CodeRenderer html={doctor.frontSideCode} />
+                <CodeRenderer html={doctor.frontSideCode} onClick={onCardClick} />
                 <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                    <CodeRenderer html={doctor.backSideCode} />
+                    <CodeRenderer html={doctor.backSideCode} onClick={onCardClick} />
                 </div>
                 
                 {isBeingEdited && (
@@ -116,9 +115,8 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
         <div 
             id="card-root"
             className="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border"
-            onClick={onCardClick}
         >
-             <CodeRenderer html={doctor.frontSideCode} />
+             <CodeRenderer html={doctor.frontSideCode} onClick={onCardClick} />
             
             {isBeingEdited && (
                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/90">
