@@ -8,18 +8,16 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import type { ServiceProvider } from '../page';
 import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
+import type { ServiceProvider } from '../page';
 
-
-interface EditableServiceProviderCardProps {
+interface DisplayCardProps {
     serviceProvider: ServiceProvider;
-    onCardClick?: (e: React.MouseEvent) => void;
     isBeingEdited?: boolean;
 }
 
-const CodeRenderer: React.FC<{ html: string; className?: string;}> = ({ html, className }) => {
+const CodeRenderer: React.FC<{ html: string; className?: string; }> = ({ html, className }) => {
     const sanitizedHtml = useMemo(() => {
         if (typeof window !== 'undefined') {
             const config = {
@@ -32,26 +30,21 @@ const CodeRenderer: React.FC<{ html: string; className?: string;}> = ({ html, cl
     }, [html]);
 
     return (
-         <div className={cn("relative w-full aspect-[1000/495] overflow-hidden", className)}>
-             <div 
-                className="absolute top-0 left-0 origin-top-left w-full h-full"
-                dangerouslySetInnerHTML={sanitizedHtml}
-            />
-        </div>
+        <div
+            className={cn("relative w-full h-full", className)}
+            dangerouslySetInnerHTML={sanitizedHtml}
+        />
     );
 };
 
 
-export const EditableServiceProviderCard: React.FC<EditableServiceProviderCardProps> = ({ serviceProvider, onCardClick, isBeingEdited }) => {
-    
+export const DisplayCard: React.FC<DisplayCardProps> = ({ serviceProvider, isBeingEdited }) => {
     return (
-        <div 
-            id="card-root"
+        <div
             className="group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border"
-            onClick={onCardClick}
         >
-             <CodeRenderer html={serviceProvider.frontSideCode} />
-            
+            <CodeRenderer html={serviceProvider.frontSideCode} />
+
             {isBeingEdited && (
                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/90">
                     <span className="text-2xl font-bold text-primary-foreground">In Bearbeitung</span>

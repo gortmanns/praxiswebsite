@@ -21,6 +21,7 @@ import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 
 import { EditableServiceProviderCard } from './_components/editable-service-provider-card';
 import { ServiceProviderEditor as EditorComponent } from './_components/service-provider-editor';
+import { DisplayCard } from './_components/display-card';
 
 export interface ServiceProvider {
     id: string;
@@ -154,16 +155,16 @@ export default function ServiceProvidersPage() {
         return query(collection(firestore, collectionName) as CollectionReference<DocumentData>, orderBy('order', 'asc'));
     }, [firestore, collectionName]);
 
-    const { data: dbData, isLoading: isLoadingData, error: dbError } = useCollection<CardData>(dataQuery as any);
+    const { data: dbData, isLoading: isLoadingData, error: dbError } = useCollection<ServiceProvider>(dataQuery as any);
 
     const [editingCardId, setEditingCardId] = useState<string | null>(null);
     const [isCreatingNew, setIsCreatingNew] = useState(false);
-    const [editorCardState, setEditorCardState] = useState<CardData>({ ...initialServiceProviderState, id: '', order: 0 } as CardData);
+    const [editorCardState, setEditorCardState] = useState<ServiceProvider>({ ...initialServiceProviderState, id: '', order: 0 } as ServiceProvider);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
 
     const isEditing = editingCardId !== null || isCreatingNew;
 
-    const handleEdit = (card: CardData) => {
+    const handleEdit = (card: ServiceProvider) => {
         setEditingCardId(card.id);
         setIsCreatingNew(false);
         setEditorCardState(card);
@@ -172,7 +173,7 @@ export default function ServiceProvidersPage() {
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
-        setEditorCardState({ ...initialServiceProviderState, id: '', order: 0 } as CardData);
+        setEditorCardState({ ...initialServiceProviderState, id: '', order: 0 } as ServiceProvider);
     };
 
     const handleCancelEdit = () => {
@@ -216,7 +217,7 @@ export default function ServiceProvidersPage() {
     };
 
 
-    const handleToggleHidden = async (card: CardData) => {
+    const handleToggleHidden = async (card: ServiceProvider) => {
         if (!firestore) return;
         const docRef = doc(firestore, collectionName, card.id);
         try {
@@ -252,7 +253,7 @@ export default function ServiceProvidersPage() {
         }
         setNotification(null);
 
-        let dataToSave: Partial<CardData> = { ...editorCardState };
+        let dataToSave: Partial<ServiceProvider> = { ...editorCardState };
     
         try {
             if (isCreatingNew) {
@@ -293,7 +294,7 @@ export default function ServiceProvidersPage() {
         const activeItems = validDbData.filter(i => !i.hidden);
         const hiddenItems = validDbData.filter(i => i.hidden);
     
-        const renderGrid = (items: CardData[], title: string, description: string, isHiddenGrid: boolean) => {
+        const renderGrid = (items: ServiceProvider[], title: string, description: string, isHiddenGrid: boolean) => {
             return (
                 <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
@@ -307,7 +308,7 @@ export default function ServiceProvidersPage() {
                                          isEditing && editingCardId !== item.id && "opacity-50 pointer-events-none",
                                          isHiddenGrid && "grayscale"
                                      )}>
-                                        <EditableServiceProviderCard serviceProvider={item} isBeingEdited={isEditing && editingCardId === item.id} />
+                                        <DisplayCard serviceProvider={item} isBeingEdited={isEditing && editingCardId === item.id} />
                                     </div>
                                     <div id={`buttons-${item.id}`} className="flex w-full max-w-lg items-center justify-center gap-2 rounded-lg border bg-background/80 p-2 shadow-inner">
                                         {!isHiddenGrid && (
