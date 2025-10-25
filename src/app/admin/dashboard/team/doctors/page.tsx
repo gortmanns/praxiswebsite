@@ -31,6 +31,8 @@ export interface Doctor {
     languages: string[];
     hidden: boolean;
     createdAt?: any;
+    // Internal state for triggering dialogs
+    _dialog?: { type: string; data: any };
 }
 
 
@@ -156,16 +158,16 @@ export default function DoctorsPage() {
         return query(collection(firestore, collectionName) as CollectionReference<DocumentData>, orderBy('order', 'asc'));
     }, [firestore, collectionName]);
 
-    const { data: dbData, isLoading: isLoadingData, error: dbError } = useCollection<CardData>(dataQuery as any);
+    const { data: dbData, isLoading: isLoadingData, error: dbError } = useCollection<Doctor>(dataQuery as any);
 
     const [editingCardId, setEditingCardId] = useState<string | null>(null);
     const [isCreatingNew, setIsCreatingNew] = useState(false);
-    const [editorCardState, setEditorCardState] = useState<CardData>({ ...initialDoctorState, id: '', order: 0 } as CardData);
+    const [editorCardState, setEditorCardState] = useState<Doctor>({ ...initialDoctorState, id: '', order: 0 } as Doctor);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
 
     const isEditing = editingCardId !== null || isCreatingNew;
 
-    const handleEdit = (card: CardData) => {
+    const handleEdit = (card: Doctor) => {
         setEditingCardId(card.id);
         setIsCreatingNew(false);
         setEditorCardState(card);
@@ -174,7 +176,7 @@ export default function DoctorsPage() {
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
-        setEditorCardState({ ...initialDoctorState, id: '', order: 0 } as CardData);
+        setEditorCardState({ ...initialDoctorState, id: '', order: 0 } as Doctor);
     };
 
     const handleCancelEdit = () => {
@@ -218,7 +220,7 @@ export default function DoctorsPage() {
     };
 
 
-    const handleToggleHidden = async (card: CardData) => {
+    const handleToggleHidden = async (card: Doctor) => {
         if (!firestore) return;
         const docRef = doc(firestore, collectionName, card.id);
         try {
@@ -254,7 +256,7 @@ export default function DoctorsPage() {
         }
         setNotification(null);
 
-        let dataToSave: Partial<CardData> = { ...editorCardState };
+        let dataToSave: Partial<Doctor> = { ...editorCardState };
     
         try {
             if (isCreatingNew) {
@@ -291,11 +293,15 @@ export default function DoctorsPage() {
     
     const validDbData = useMemo(() => dbData?.filter(d => d.name).sort((a,b) => a.order - b.order) || [], [dbData]);
 
+    const handleEditorUpdate = (update: Partial<Doctor>) => {
+        setEditorCardState(prev => ({...prev, ...update}));
+    }
+
     const renderCardGroups = () => {
         const activeItems = validDbData.filter(i => !i.hidden);
         const hiddenItems = validDbData.filter(i => i.hidden);
     
-        const renderGrid = (items: CardData[], title: string, description: string, isHiddenGrid: boolean) => {
+        const renderGrid = (items: Doctor[], title: string, description: string, isHiddenGrid: boolean) => {
             return (
                 <div className="space-y-4 mt-12">
                     <h3 className="font-headline text-xl font-bold tracking-tight text-primary">{title}</h3>
@@ -386,7 +392,11 @@ export default function DoctorsPage() {
                 <CardContent>
                    {isEditing && (
                         <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted p-4 mb-8">
-                            <EditorComponent cardData={editorCardState} onUpdate={setEditorCardState} isCreatingNew={isCreatingNew} />
+                            <EditorComponent 
+                                cardData={editorCardState} 
+                                onUpdate={handleEditorUpdate} 
+                                isCreatingNew={isCreatingNew}
+                            />
                         </div>
                     )}
 

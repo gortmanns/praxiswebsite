@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { TextEditDialog } from './text-edit-dialog';
 import { VitaEditorDialog } from './vita-editor-dialog';
 import { LanguageSelectDialog } from './language-select-dialog';
@@ -49,6 +49,14 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate, 
     const [dialogState, setDialogState] = useState<{ type: string | null; data?: any }>({ type: null });
     const fileInputRef = useRef<HTMLInputElement>(null);
     
+    // Effect to handle dialog opening requests from parent
+    useEffect(() => {
+        if (cardData._dialog?.type) {
+            setDialogState({ type: cardData._dialog.type as any, data: cardData._dialog.data });
+            onUpdate({ _dialog: undefined }); // Clear the request
+        }
+    }, [cardData._dialog, onUpdate]);
+
     const updateHtmlWithImage = (html: string, url: string, field: string): string => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
@@ -151,56 +159,42 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate, 
         setDialogState({ type: null });
     };
 
-    const handleCardClick = (e: React.MouseEvent) => {
-        let target = e.target as HTMLElement;
-        
-        while (target && target.id !== 'card-root' && target.id !== 'doctor-editor-root') {
-            const id = target.id;
+    const openDialogFor = (field: string) => {
+        const textFields: { [key: string]: { title: string; label: string, isTextArea?: boolean, initialValue: string } } = {
+            title: { title: "Titel bearbeiten", label: "Neuer Titel", initialValue: extractText(cardData.frontSideCode, 'edit-title') },
+            name: { title: "Name bearbeiten", label: "Neuer Name", initialValue: cardData.name },
+            specialty: { title: "Spezialisierung bearbeiten", label: "Neue Spezialisierung", initialValue: extractText(cardData.frontSideCode, 'edit-specialty') },
+            qual1: { title: "Qualifikation 1 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual1') },
+            qual2: { title: "Qualifikation 2 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual2') },
+            qual3: { title: "Qualifikation 3 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual3') },
+            qual4: { title: "Qualifikation 4 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual4') },
+        };
 
-            if (id && id.startsWith('edit-')) {
-                e.stopPropagation();
-                e.preventDefault();
-                const field = id.substring(5);
-
-                const textFields: { [key: string]: { title: string; label: string, isTextArea?: boolean, initialValue: string } } = {
-                    title: { title: "Titel bearbeiten", label: "Neuer Titel", initialValue: extractText(cardData.frontSideCode, 'edit-title') },
-                    name: { title: "Name bearbeiten", label: "Neuer Name", initialValue: cardData.name },
-                    specialty: { title: "Spezialisierung bearbeiten", label: "Neue Spezialisierung", initialValue: extractText(cardData.frontSideCode, 'edit-specialty') },
-                    qual1: { title: "Qualifikation 1 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual1') },
-                    qual2: { title: "Qualifikation 2 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual2') },
-                    qual3: { title: "Qualifikation 3 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual3') },
-                    qual4: { title: "Qualifikation 4 bearbeiten", label: "Text", initialValue: extractText(cardData.frontSideCode, 'edit-qual4') },
-                };
-
-                if (textFields[field]) {
-                    setDialogState({ type: 'text', data: { ...textFields[field], field } });
-                } else if (field === 'image') {
-                    setDialogState({ type: 'imageSource', data: { field: 'image' } });
-                } else if (field === 'vita') {
-                    const initialHtml = cardData.backSideCode;
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(initialHtml, 'text/html');
-                    const contentDiv = doc.querySelector('.vita-content');
-                    const vitaContent = contentDiv ? contentDiv.innerHTML : '';
-                    const finalContent = vitaContent.includes("Zum Bearbeiten klicken") ? '' : vitaContent;
-                    setDialogState({ type: 'vita', data: { initialValue: finalContent } });
-                } else if (field === 'language') {
-                    setDialogState({ type: 'language', data: {} });
-                } else if (field === 'position') {
-                    setDialogState({ type: 'logoFunction', data: { field: 'position' } });
-                }
-                
-                return;
-            }
-            target = target.parentElement as HTMLElement;
+        if (textFields[field]) {
+            setDialogState({ type: 'text', data: { ...textFields[field], field } });
+        } else if (field === 'image') {
+            setDialogState({ type: 'imageSource', data: { field: 'image' } });
+        } else if (field === 'vita') {
+            const initialHtml = cardData.backSideCode;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(initialHtml, 'text/html');
+            const contentDiv = doc.querySelector('.vita-content');
+            const vitaContent = contentDiv ? contentDiv.innerHTML : '';
+            const finalContent = vitaContent.includes("Zum Bearbeiten klicken") ? '' : vitaContent;
+            setDialogState({ type: 'vita', data: { initialValue: finalContent } });
+        } else if (field === 'language') {
+            setDialogState({ type: 'language', data: {} });
+        } else if (field === 'position') {
+            setDialogState({ type: 'logoFunction', data: { field: 'position' } });
         }
     };
 
+
     return (
         <div id="doctor-editor-root">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start" onClickCapture={handleCardClick}>
-                <EditableDoctorCard doctor={cardData} />
-                <EditableDoctorCard doctor={cardData} showBacksideOnly={true} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <EditableDoctorCard doctor={cardData} onEditRequest={openDialogFor} />
+                <EditableDoctorCard doctor={cardData} showBacksideOnly={true} onEditRequest={openDialogFor} />
             </div>
 
             <Alert variant="info" className="mt-8">
