@@ -127,7 +127,7 @@ const extractFromHtml = (html: string, id: string): { text: string; image: strin
     if (typeof window === 'undefined') return { text: '', image: '' };
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
-    const element = doc.getElementById(id);
+    const element = doc.querySelector(`[id="${id}"]`);
     if (!element) return { text: '', image: '' };
     
     const textContent = element.querySelector('p')?.textContent || element.querySelector('h3')?.textContent || '';
@@ -186,7 +186,7 @@ export default function ServiceProvidersPage() {
         const specialtyInfo = extractFromHtml(card.frontSideCode, 'edit-specialty');
         const positionInfo = extractFromHtml(card.frontSideCode, 'edit-position');
         const imageInfo = extractFromHtml(card.frontSideCode, 'edit-image');
-
+        
         updateElement('edit-title', { text: titleInfo.text });
         updateElement('edit-name', { text: nameInfo.text || card.name });
         updateElement('edit-specialty', { text: specialtyInfo.text });
