@@ -49,10 +49,48 @@ export default function DoctorsPage() {
 
     const isEditing = editingCardId !== null || isCreatingNew;
 
+    const parseFromLegacyHtml = (htmlString: string): Partial<Doctor> => {
+        if (typeof window === 'undefined' || !htmlString) return {};
+        
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlString, 'text/html');
+        
+        const extractText = (selector: string) => doc.querySelector(selector)?.textContent?.trim() || '';
+
+        const qualifications = Array.from(doc.querySelectorAll('.mt-6.text-xl p')).map(p => p.textContent?.trim() || '');
+        const languages = Array.from(doc.querySelectorAll('.absolute.bottom-0.right-0 img')).map(img => {
+            const src = img.getAttribute('src');
+            if (src?.includes('de.svg')) return 'de';
+            if (src?.includes('gb.svg')) return 'en';
+            return '';
+        }).filter(Boolean);
+
+        return {
+            title: extractText('.text-2xl.font-bold.text-primary'),
+            name: extractText('h3.text-5xl'),
+            specialty: extractText('p.text-xl.font-bold'),
+            qual1: qualifications[0] || '',
+            qual2: qualifications[1] || '',
+            qual3: qualifications[2] || '',
+            qual4: qualifications[3] || '',
+            imageUrl: doc.querySelector('.relative.h-full img')?.getAttribute('src') || '',
+            languages: languages as string[],
+        };
+    };
+
     const handleEdit = useCallback((card: Doctor) => {
         setEditingCardId(card.id);
         setIsCreatingNew(false);
-        setEditorCardState(card);
+
+        let initialStateForEditor = { ...card };
+
+        // If the card has legacy frontSideCode and is missing modern fields, parse it.
+        if (card.frontSideCode && !card.title) {
+            const parsedData = parseFromLegacyHtml(card.frontSideCode);
+            initialStateForEditor = { ...card, ...parsedData };
+        }
+        
+        setEditorCardState(initialStateForEditor);
     }, []);
 
     const handleCreateNew = () => {
