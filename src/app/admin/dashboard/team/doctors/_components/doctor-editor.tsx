@@ -75,6 +75,15 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate, 
         }
         if (e.target) e.target.value = '';
     };
+
+    const handleImageLibrarySelect = (imageUrl: string, field: 'image' | 'position') => {
+        const fieldToUpdate = field === 'image' ? 'imageUrl' : 'positionImageUrl';
+        const textToClear = field === 'image' ? {} : { positionText: '' };
+
+        onUpdate({ [fieldToUpdate]: imageUrl, ...textToClear });
+        toast({ variant: 'success', title: 'Erfolg', description: 'Bild aus Bibliothek ausgewählt.' });
+        setDialogState({ type: null });
+    };
     
     const handleTextSave = (newValue: string) => {
         if (!dialogState.data) return;
@@ -198,7 +207,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate, 
                     isOpen={true} 
                     onOpenChange={() => setDialogState({ type: null })} 
                     images={projectImages} 
-                    onImageSelect={(imageUrl) => handleImageUpload(imageUrl, dialogState.data.field)} />
+                    onImageSelect={(imageUrl) => handleImageLibrarySelect(imageUrl, dialogState.data.field)} />
             )}
             {dialogState.type === 'imageCrop' && (
                 <ImageCropDialog
