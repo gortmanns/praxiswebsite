@@ -78,6 +78,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
             reader.onload = (event) => {
                 if (dialogState.data) {
                     const { field } = dialogState.data;
+                    // Only set aspect ratio for the main image, not for the logo/position
                     const aspectRatio = field === 'image' ? 2/3 : undefined;
                     setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, field, aspectRatio } });
                 }
@@ -89,8 +90,8 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
 
     const handleImageLibrarySelect = (imageUrl: string) => {
         if (dialogState.data?.field) {
-            const field = dialogState.data.field;
-            const aspectRatio = field === 'image' ? 2/3 : undefined;
+            const { field } = dialogState.data;
+            const aspectRatio = field === 'image' ? 2 / 3 : undefined;
             setDialogState({ type: 'imageCrop', data: { imageUrl, field, aspectRatio } });
         }
     };
