@@ -1,4 +1,3 @@
-
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -57,8 +56,7 @@ export default function DoctorsPage() {
         const doc = parser.parseFromString(htmlString, 'text/html');
         
         const extractText = (selector: string) => doc.querySelector(selector)?.textContent?.trim() || '';
-        const extractHtml = (selector: string) => doc.querySelector(selector)?.innerHTML?.trim() || '';
-
+        
         const qualifications = Array.from(doc.querySelectorAll('.mt-6.text-xl p')).map(p => p.textContent?.trim() || '');
         
         const positionContainer = doc.querySelector('.flex-grow > div > .mt-6');
@@ -74,7 +72,7 @@ export default function DoctorsPage() {
             qual4: qualifications[3] || '',
             imageUrl: doc.querySelector('.relative.h-full img')?.getAttribute('src') || '',
             positionHtml: positionContainer ? positionContainer.outerHTML : '',
-            languagesHtml: languagesContainer ? languagesContainer.innerHTML : '',
+            languagesHtml: languagesContainer ? languagesContainer.outerHTML : '',
         };
     };
 
@@ -84,6 +82,7 @@ export default function DoctorsPage() {
 
         let initialStateForEditor: Doctor = { ...initialDoctorState, ...card };
 
+        // If card is a legacy card (has frontSideCode but is missing modern fields), parse it.
         if (card.frontSideCode && (!card.title || !card.name || !card.specialty)) {
             const parsedData = parseFromLegacyHtml(card.frontSideCode);
             initialStateForEditor = { ...initialStateForEditor, ...parsedData };
@@ -175,7 +174,12 @@ export default function DoctorsPage() {
         }
         setNotification(null);
         
-        const { _dialog, frontSideCode, ...dataToSave } = editorCardState;
+        const { _dialog, ...dataToSave } = editorCardState;
+
+        // When saving, if the user has provided a new imageUrl, we can safely remove frontSideCode
+        if (dataToSave.imageUrl) {
+            delete dataToSave.frontSideCode;
+        }
 
         try {
             if (isCreatingNew) {

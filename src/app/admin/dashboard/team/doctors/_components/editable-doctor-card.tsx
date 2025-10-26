@@ -1,4 +1,3 @@
-
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -238,7 +237,6 @@ const templateStyles = `
     .template-card .flex-grow { flex-grow: 1; }
     .template-card .flex-col { flex-direction: column; }
     .template-card .justify-center { justify-content: center; }
-    .template-card .justify-between { justify-content: space-between; }
     .template-card .ml-6 { margin-left: 1.5rem; }
     .template-card .text-2xl { font-size: 1.5rem; line-height: 2rem; }
     .template-card .font-bold { font-weight: 700; }

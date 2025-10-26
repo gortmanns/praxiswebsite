@@ -22,9 +22,10 @@
         "backSideCode": { "type": "string" },
         "languages": { "type": "array", "items": { "type": "string" } },
         "languagesHtml": { "type": "string", "description": "Raw HTML for the language flags for legacy cards." },
-        "hidden": { "type": "boolean" }
+        "hidden": { "type": "boolean" },
+        "frontSideCode": { "type": "string", "description": "Raw HTML for the entire front side of the card, used for legacy data." }
       },
-      "required": ["id", "order", "name", "backSideCode"]
+      "required": ["id", "order", "name"]
     },
     "StaffMember": {
       "title": "Staff Member",
@@ -49,15 +50,18 @@
       "description": "Represents an external service provider's profile.",
       "type": "object",
       "properties": {
-        "id": { "type": "string", "description": "Unique identifier for the service provider." },
-        "order": { "type": "number", "description": "Display order of the service provider." },
-        "name": { "type": "string", "description": "The full name of the service provider." },
-        "frontSideCode": { "type": "string", "description": "HTML code for the front side of the card." },
-        "backSideCode": { "type": "string", "description": "HTML code for the back side of the card." },
-        "languages": { "type": "array", "items": { "type": "string" }, "description": "Languages spoken by the service provider." },
-        "hidden": { "type": "boolean", "description": "Whether the service provider card is hidden." },
-        "websiteUrl": { "type": "string", "description": "URL to the service provider's website." },
-        "openInNewTab": { "type": "boolean", "description": "Whether the link should open in a new tab." }
+        "id": { "type": "string" },
+        "order": { "type": "number" },
+        "name": { "type": "string" },
+        "title": { "type": "string" },
+        "specialty": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "positionText": { "type": "string" },
+        "positionImageUrl": { "type": "string" },
+        "languages": { "type": "array", "items": { "type": "string" } },
+        "hidden": { "type": "boolean" },
+        "websiteUrl": { "type": "string" },
+        "openInNewTab": { "type": "boolean" }
       },
       "required": ["id", "order", "name"]
     },
