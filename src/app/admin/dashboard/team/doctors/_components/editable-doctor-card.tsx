@@ -20,10 +20,10 @@ export interface Doctor {
     imageUrl?: string;
     positionText?: string;
     positionImageUrl?: string;
-    positionHtml?: string; // For legacy HTML
+    positionHtml?: string;
     backSideCode: string;
     languages: string[];
-    languagesHtml?: string; // For legacy HTML
+    languagesHtml?: string;
     hidden: boolean;
     createdAt?: any;
     _dialog?: { type: string; data: any };
@@ -42,7 +42,9 @@ export const initialDoctorState: Omit<Doctor, 'id' | 'order' | 'createdAt'> = {
     imageUrl: "",
     positionText: "Position oder Logo",
     positionImageUrl: "",
+    positionHtml: "",
     languages: ['de'],
+    languagesHtml: "",
     hidden: false,
     backSideCode: `
         <div class="vita-content w-full h-full">
@@ -63,19 +65,19 @@ const BacksideRenderer: React.FC<{ html: string; }> = ({ html }) => {
 
     return (
          <div id="edit-vita" className="w-full h-full text-left p-8">
-            <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-0 prose-ul:my-2 text-white" dangerouslySetInnerHTML={sanitizedHtml} />
+            <div className="prose prose-sm max-w-none prose-p:my-0 prose-ul:my-2 text-white" dangerouslySetInnerHTML={sanitizedHtml} />
         </div>
     );
 };
 
-const HtmlRenderer: React.FC<{ html: string }> = ({ html }) => {
+const HtmlRenderer: React.FC<{ html: string, elementId: string }> = ({ html, elementId }) => {
     const sanitizedHtml = useMemo(() => {
         if (typeof window !== 'undefined') {
-            return { __html: DOMPurify.sanitize(html) };
+            return { __html: DOMPurify.sanitize(html, { ADD_ATTR: ['id'] }) };
         }
         return { __html: '' };
     }, [html]);
-    return <div className="w-full text-left" dangerouslySetInnerHTML={sanitizedHtml} />;
+    return <div id={elementId} className="w-full text-left" dangerouslySetInnerHTML={sanitizedHtml} />;
 }
 
 
@@ -154,23 +156,25 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
                             {doctor.qual3 && <div id="edit-qual3" className="w-full text-left"><p>{doctor.qual3}</p></div>}
                             {doctor.qual4 && <div id="edit-qual4" className="w-full text-left"><p>{doctor.qual4}</p></div>}
                         </div>
-                        <div id="edit-position" className="mt-6">
-                             {doctor.positionHtml ? (
-                                <HtmlRenderer html={doctor.positionHtml} />
-                            ) : doctor.positionImageUrl ? (
+                        {doctor.positionHtml ? (
+                            <HtmlRenderer html={doctor.positionHtml} elementId="edit-position" />
+                        ) : doctor.positionImageUrl ? (
+                            <div id="edit-position" className="mt-6">
                                 <div className="w-full text-left h-[50px] relative">
                                     <Image src={doctor.positionImageUrl} alt="Position Logo" layout="fill" objectFit="contain" className="object-left" />
                                 </div>
-                            ) : (
-                                <div className="w-full text-left"><p className="text-base">{doctor.positionText || 'Position oder Logo'}</p></div>
-                            )}
-                        </div>
-                    </div>
-                     <div id="edit-language" className="absolute bottom-0 right-0">
-                        {doctor.languagesHtml ? (
-                            <HtmlRenderer html={doctor.languagesHtml} />
+                            </div>
                         ) : (
-                            <LanguageFlags languages={doctor.languages} />
+                             <div id="edit-position" className="mt-6"><div className="w-full text-left"><p className="text-base">{doctor.positionText || 'Position oder Logo'}</p></div></div>
+                        )}
+                    </div>
+                     <div className="absolute bottom-0 right-0">
+                        {doctor.languagesHtml ? (
+                            <HtmlRenderer html={doctor.languagesHtml} elementId="edit-language" />
+                        ) : (
+                           <div id="edit-language">
+                             <LanguageFlags languages={doctor.languages} />
+                           </div>
                         )}
                     </div>
                 </div>
