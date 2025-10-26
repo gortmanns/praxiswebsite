@@ -52,13 +52,17 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
             const snapshot = await uploadString(imageRef, dataUrl, 'data_url');
             const downloadURL = await getDownloadURL(snapshot.ref);
             
-            const fieldToUpdate = field === 'image' ? 'imageUrl' : 'positionImageUrl';
-            onUpdate({ [fieldToUpdate]: downloadURL, [field === 'image' ? 'positionImageUrl' : 'imageUrl']: cardData[field === 'image' ? 'positionImageUrl' : 'imageUrl'] });
+            if (field === 'image') {
+              onUpdate({ imageUrl: downloadURL, positionImageUrl: '', positionText: '' });
+            } else if (field === 'position') {
+              onUpdate({ positionImageUrl: downloadURL, positionText: '' });
+            }
+
             toast({ variant: 'success', title: 'Erfolg', description: 'Bild erfolgreich aktualisiert.' });
         } catch (error: any) {
             toast({ variant: 'destructive', title: 'Upload-Fehler', description: `Das Bild konnte nicht hochgeladen werden: ${error.message}` });
         }
-    }, [storage, onUpdate, toast, cardData]);
+    }, [storage, onUpdate, toast]);
     
     const handleCropComplete = useCallback(async (croppedDataUrl: string, field: string) => {
         setDialogState({ type: null });
@@ -79,6 +83,13 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
         }
         if (e.target) e.target.value = '';
     };
+
+    const handleImageLibrarySelect = (imageUrl: string) => {
+        if (dialogState.data?.field) {
+            const field = dialogState.data.field;
+            setDialogState({ type: 'imageCrop', data: { imageUrl, field } });
+        }
+    };
     
     const handleTextSave = (newValue: string) => {
         if (!dialogState.data) return;
@@ -93,7 +104,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
         }[field] || field;
 
 
-        onUpdate({ [fieldToUpdate]: newValue });
+        onUpdate({ [fieldToUpdate]: newValue, ...(field === 'position' && { positionImageUrl: '' }) });
         setDialogState({ type: null });
     };
     
@@ -176,7 +187,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
                 <LogoFunctionSelectDialog 
                     isOpen={true} 
                     onOpenChange={() => setDialogState({ type: null })} 
-                    onSelectFunction={() => setDialogState(prev => ({ type: 'text', data: { ...prev?.data, title: 'Funktion bearbeiten', label: 'Funktion', isTextArea: true, initialValue: cardData.positionText || '' } }))} 
+                    onSelectFunction={() => setDialogState(prev => ({ type: 'text', data: { ...prev?.data, title: 'Funktion/Position bearbeiten', label: 'Funktion', isTextArea: false, initialValue: cardData.positionText || '' } }))} 
                     onSelectFromLibrary={() => setDialogState(prev => ({ type: 'imageLibrary', data: prev?.data }))} 
                     onUploadNew={() => fileInputRef.current?.click()} />
             )}
@@ -192,7 +203,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
                     isOpen={true} 
                     onOpenChange={() => setDialogState({ type: null })} 
                     images={projectImages} 
-                    onImageSelect={(imageUrl) => handleImageUpload(imageUrl, dialogState.data.field)} />
+                    onImageSelect={handleImageLibrarySelect} />
             )}
             {dialogState.type === 'imageCrop' && (
                 <ImageCropDialog
