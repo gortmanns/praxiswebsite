@@ -154,7 +154,7 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
                             {doctor.qual3 && <div id="edit-qual3" className="w-full text-left"><p>{doctor.qual3}</p></div>}
                             {doctor.qual4 && <div id="edit-qual4" className="w-full text-left"><p>{doctor.qual4}</p></div>}
                         </div>
-                        <div id="edit-position">
+                        <div id="edit-position" className="mt-6">
                              {doctor.positionHtml ? (
                                 <HtmlRenderer html={doctor.positionHtml} />
                             ) : doctor.positionImageUrl ? (
@@ -166,7 +166,7 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
                             )}
                         </div>
                     </div>
-                     <div id="edit-language" className="w-full text-right">
+                     <div id="edit-language" className="absolute bottom-0 right-0">
                         {doctor.languagesHtml ? (
                             <HtmlRenderer html={doctor.languagesHtml} />
                         ) : (
