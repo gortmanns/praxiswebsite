@@ -20,8 +20,10 @@ export interface Doctor {
     imageUrl?: string;
     positionText?: string;
     positionImageUrl?: string;
+    positionHtml?: string; // For legacy HTML
     backSideCode: string;
     languages: string[];
+    languagesHtml?: string; // For legacy HTML
     hidden: boolean;
     createdAt?: any;
     _dialog?: { type: string; data: any };
@@ -66,6 +68,17 @@ const BacksideRenderer: React.FC<{ html: string; }> = ({ html }) => {
     );
 };
 
+const HtmlRenderer: React.FC<{ html: string }> = ({ html }) => {
+    const sanitizedHtml = useMemo(() => {
+        if (typeof window !== 'undefined') {
+            return { __html: DOMPurify.sanitize(html) };
+        }
+        return { __html: '' };
+    }, [html]);
+    return <div className="w-full text-left" dangerouslySetInnerHTML={sanitizedHtml} />;
+}
+
+
 interface EditableDoctorCardProps {
     doctor: Doctor;
     onCardClick?: (e: React.MouseEvent) => void;
@@ -103,14 +116,12 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
         '--card-scale': scale
     } as React.CSSProperties;
     
-    // Render the card's back side using the data
     const backSide = (
         <div className="absolute inset-0 flex flex-col items-center justify-start overflow-auto bg-accent/95 text-left text-background">
             <BacksideRenderer html={doctor.backSideCode} />
         </div>
     );
     
-    // Render the card's front side using the data
     const frontSide = (
         <div className="w-full h-full bg-background text-card-foreground p-6 font-headline">
             <div className="flex h-full w-full items-start">
@@ -126,7 +137,7 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
                         )}
                     </div>
                 </div>
-                <div className="flex-grow flex flex-col justify-center ml-6 h-full relative">
+                <div className="flex-grow flex flex-col justify-between ml-6 h-full relative">
                     <div>
                         <div id="edit-title" className="w-full text-left">
                             <p className="text-2xl font-bold text-primary">{doctor.title || 'Titel'}</p>
@@ -143,20 +154,24 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
                             {doctor.qual3 && <div id="edit-qual3" className="w-full text-left"><p>{doctor.qual3}</p></div>}
                             {doctor.qual4 && <div id="edit-qual4" className="w-full text-left"><p>{doctor.qual4}</p></div>}
                         </div>
-                        <div id="position-container" className="mt-6">
-                            <div id="edit-position">
-                                {doctor.positionImageUrl ? (
-                                    <div className="w-full text-left h-[50px] relative">
-                                        <Image src={doctor.positionImageUrl} alt="Position Logo" layout="fill" objectFit="contain" className="object-left" />
-                                    </div>
-                                ) : (
-                                    <div className="w-full text-left"><p className="text-base">{doctor.positionText || 'Position oder Logo'}</p></div>
-                                )}
-                            </div>
+                        <div id="edit-position">
+                             {doctor.positionHtml ? (
+                                <HtmlRenderer html={doctor.positionHtml} />
+                            ) : doctor.positionImageUrl ? (
+                                <div className="w-full text-left h-[50px] relative">
+                                    <Image src={doctor.positionImageUrl} alt="Position Logo" layout="fill" objectFit="contain" className="object-left" />
+                                </div>
+                            ) : (
+                                <div className="w-full text-left"><p className="text-base">{doctor.positionText || 'Position oder Logo'}</p></div>
+                            )}
                         </div>
                     </div>
-                    <div id="edit-language" className="absolute bottom-0 right-0">
-                         <LanguageFlags languages={doctor.languages} />
+                     <div id="edit-language" className="w-full text-right">
+                        {doctor.languagesHtml ? (
+                            <HtmlRenderer html={doctor.languagesHtml} />
+                        ) : (
+                            <LanguageFlags languages={doctor.languages} />
+                        )}
                     </div>
                 </div>
             </div>
@@ -196,7 +211,7 @@ const templateStyles = `
     .template-card button, .template-card div[id^="edit-"] { all: unset; box-sizing: border-box; cursor: pointer; transition: all 0.2s ease; display: block; }
     .template-card .image-button:hover { background-color: rgba(0,0,0,0.1); }
     .template-card .image-button-background { background-color: white; }
-    .template-card p, .template-card h3, .template-card span { margin:0; }
+    .template-card p, .template-card h3, .template-card span, .template-card img, .template-card div { margin:0; }
     .template-card .font-headline { font-family: var(--font-headline); }
     .template-card .text-card-foreground { color: hsl(var(--card-foreground)); }
     .template-card .bg-background { background-color: hsl(var(--background)); }
@@ -212,6 +227,7 @@ const templateStyles = `
     .template-card .flex-grow { flex-grow: 1; }
     .template-card .flex-col { flex-direction: column; }
     .template-card .justify-center { justify-content: center; }
+    .template-card .justify-between { justify-content: space-between; }
     .template-card .ml-6 { margin-left: 1.5rem; }
     .template-card .text-2xl { font-size: 1.5rem; line-height: 2rem; }
     .template-card .font-bold { font-weight: 700; }
@@ -222,6 +238,7 @@ const templateStyles = `
     .template-card .mt-6 { margin-top: 1.5rem; }
     .template-card .text-base { font-size: 1rem; line-height: 1.5rem; }
     .template-card .text-left { text-align: left; }
+    .template-card .text-right { text-align: right; }
     .template-card .absolute { position: absolute; }
     .template-card .bottom-0 { bottom: 0; }
     .template-card .right-0 { right: 0; }

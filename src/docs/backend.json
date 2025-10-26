@@ -18,8 +18,10 @@
         "imageUrl": { "type": "string" },
         "positionText": { "type": "string" },
         "positionImageUrl": { "type": "string" },
+        "positionHtml": { "type": "string", "description": "Raw HTML for the position/logo section for legacy cards." },
         "backSideCode": { "type": "string" },
         "languages": { "type": "array", "items": { "type": "string" } },
+        "languagesHtml": { "type": "string", "description": "Raw HTML for the language flags for legacy cards." },
         "hidden": { "type": "boolean" }
       },
       "required": ["id", "order", "name", "backSideCode"]

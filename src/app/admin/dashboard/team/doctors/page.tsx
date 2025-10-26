@@ -1,3 +1,4 @@
+
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -56,32 +57,12 @@ export default function DoctorsPage() {
         const doc = parser.parseFromString(htmlString, 'text/html');
         
         const extractText = (selector: string) => doc.querySelector(selector)?.textContent?.trim() || '';
-        
+        const extractHtml = (selector: string) => doc.querySelector(selector)?.innerHTML?.trim() || '';
+
         const qualifications = Array.from(doc.querySelectorAll('.mt-6.text-xl p')).map(p => p.textContent?.trim() || '');
         
-        const languages = Array.from(doc.querySelectorAll('.absolute.bottom-0.right-0 img')).map(img => {
-            const src = img.getAttribute('src');
-            if (!src) return '';
-            if (src.includes('de.svg')) return 'de';
-            if (src.includes('gb.svg')) return 'en'; // Legacy used gb for english
-            if (src.includes('fr.svg')) return 'fr';
-            if (src.includes('it.svg')) return 'it';
-            if (src.includes('es.svg')) return 'es';
-            // Add more mappings if other flags were used
-            return '';
-        }).filter(Boolean);
-
-        const positionContainer = doc.querySelector('.mt-6:not(.text-xl)');
-        let positionImageUrl = '';
-        let positionText = '';
-        if (positionContainer) {
-            const img = positionContainer.querySelector('img');
-            if (img) {
-                positionImageUrl = img.getAttribute('src') || '';
-            } else {
-                positionText = positionContainer.textContent?.trim() || '';
-            }
-        }
+        const positionContainer = doc.querySelector('.flex-grow > div > .mt-6');
+        const languagesContainer = doc.querySelector('.absolute.bottom-0.right-0');
 
         return {
             title: extractText('.text-2xl.font-bold.text-primary'),
@@ -92,9 +73,8 @@ export default function DoctorsPage() {
             qual3: qualifications[2] || '',
             qual4: qualifications[3] || '',
             imageUrl: doc.querySelector('.relative.h-full img')?.getAttribute('src') || '',
-            languages: languages as string[],
-            positionImageUrl: positionImageUrl,
-            positionText: positionText,
+            positionHtml: positionContainer ? positionContainer.outerHTML : '',
+            languagesHtml: languagesContainer ? languagesContainer.innerHTML : '',
         };
     };
 
