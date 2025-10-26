@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
@@ -160,7 +161,7 @@ export const DoctorEditor: React.FC<DoctorEditorProps> = ({ cardData, onUpdate, 
         <div id="doctor-editor-root">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                 <EditableDoctorCard doctor={cardData} onCardClick={handleCardClick} />
-                <EditableDoctorCard doctor={cardData} showBacksideOnly={true} onCardClick={handleCardClick} />
+                <EditableDoctorCard doctor={cardData} showBackside={true} onCardClick={handleCardClick} />
             </div>
 
             <Alert variant="info" className="mt-8">

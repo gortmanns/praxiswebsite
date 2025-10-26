@@ -85,7 +85,6 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
     // Render the card's front side using the data
     const frontSide = (
         <div className="w-full h-full bg-background text-card-foreground p-6 font-headline">
-            <style>{templateStyles}</style>
             <div className="flex h-full w-full items-start">
                 <div id="image-container" className="relative h-full aspect-[2/3] overflow-hidden rounded-md shrink-0 bg-muted">
                     <div id="edit-image" className="image-button w-full h-full flex flex-col items-center justify-center text-center p-4 text-muted-foreground">
@@ -137,14 +136,29 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
     );
     
     return (
-        <div id="card-root" className="template-card relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border" onClick={onCardClick}>
-            {frontSide}
-            {showBackside && backSide}
+        <div id="card-root" className="template-card-wrapper relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border" onClick={onCardClick}>
+            <div className='template-card'>
+                {showBackside ? backSide : frontSide}
+            </div>
              {isBeingEdited && (
                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-primary/90">
                     <span className="text-2xl font-bold text-primary-foreground">In Bearbeitung</span>
                 </div>
             )}
+            <style jsx>{`
+                .template-card-wrapper {
+                    background-color: hsl(var(--muted));
+                }
+                .template-card {
+                    width: 1000px;
+                    height: 495px;
+                    transform-origin: top left;
+                    transform: scale(var(--card-scale, 1));
+                    transition: transform 0.2s ease-out;
+                    background-color: hsl(var(--background));
+                }
+            `}</style>
+            <style>{templateStyles}</style>
         </div>
     );
 };
@@ -195,3 +209,4 @@ const templateStyles = `
     .template-card .bg-white { background-color: white; }
     .template-card .shrink-0 { flex-shrink: 0; }
 `;
+
