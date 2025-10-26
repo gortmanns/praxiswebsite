@@ -72,7 +72,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
             reader.onload = (event) => {
                 if (dialogState.data) {
                     const { field } = dialogState.data;
-                    const aspectRatio = field === 'position' ? 1600 / 463.75 : 2/3;
+                    const aspectRatio = field === 'position' ? (1600/463.75) : undefined;
                     setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio, field } });
                 }
             };
