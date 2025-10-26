@@ -30,24 +30,44 @@ export interface Doctor {
 const BacksideRenderer: React.FC<{ html: string; }> = ({ html }) => {
     const sanitizedHtml = useMemo(() => {
         if (typeof window !== 'undefined') {
-            // Remove prose classes to avoid style conflicts
-            return { __html: DOMPurify.sanitize(html, { FORBID_CLASS: ['prose', 'prose-invert'] }) };
+            return { __html: DOMPurify.sanitize(html) };
         }
         return { __html: '' };
     }, [html]);
 
     return (
-        <div className="w-full h-full text-left p-8 text-white">
-            <div className="text-sm max-w-none [&_p]:my-0 [&_ul]:my-2" dangerouslySetInnerHTML={sanitizedHtml} />
+        <div className="w-full h-full text-left p-8">
+            <div className="text-sm text-white max-w-none [&_p]:my-0 [&_ul]:my-2" dangerouslySetInnerHTML={sanitizedHtml} />
         </div>
     );
 };
 
 
+const LegacyCardRenderer: React.FC<{ html: string }> = ({ html }) => {
+    const sanitizedHtml = useMemo(() => {
+        if (typeof window !== 'undefined') {
+            return { __html: DOMPurify.sanitize(html) };
+        }
+        return { __html: '' };
+    }, [html]);
+
+    return <div className="w-full h-full" dangerouslySetInnerHTML={sanitizedHtml} />;
+};
+
+
 export const DoctorCard: React.FC<Doctor> = (props) => {
-    const { backSideCode, disableFlip } = props;
+    const { backSideCode, disableFlip, frontSideCode } = props;
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [scale, setScale] = useState(1);
+    
+    // Determine if we should use the legacy frontSideCode for rendering.
+    // This is true if frontSideCode exists and is not just an empty container.
+    const useLegacyRendering = useMemo(() => {
+        if (!frontSideCode) return false;
+        const cleaned = frontSideCode.replace(/<style>.*?<\/style>/gs, '').trim();
+        return cleaned.length > 50; // Heuristic: empty templates are small.
+    }, [frontSideCode]);
+
 
     useEffect(() => {
         const calculateScale = () => {
@@ -72,7 +92,9 @@ export const DoctorCard: React.FC<Doctor> = (props) => {
     }, []);
 
     // The single source of truth for rendering the card front.
-    const frontSide = (
+    const frontSide = useLegacyRendering ? (
+        <LegacyCardRenderer html={frontSideCode!} />
+    ) : (
         <div className="w-full h-full bg-background text-card-foreground p-6 font-headline">
             <div className="flex h-full w-full items-start">
                 <div className="relative h-full aspect-[2/3] overflow-hidden rounded-md shrink-0 bg-muted">

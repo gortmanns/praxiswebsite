@@ -65,8 +65,7 @@ export const initialDoctorState: Omit<Doctor, 'id' | 'order' | 'createdAt'> = {
 const BacksideRenderer: React.FC<{ html: string; }> = ({ html }) => {
     const sanitizedHtml = useMemo(() => {
         if (typeof window !== 'undefined') {
-             // Remove prose classes to avoid style conflicts
-            return { __html: DOMPurify.sanitize(html, { FORBID_CLASS: ['prose', 'prose-invert'] }) };
+            return { __html: DOMPurify.sanitize(html) };
         }
         return { __html: '' };
     }, [html]);
@@ -127,7 +126,7 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
     } as React.CSSProperties;
     
     const backSide = (
-        <div className="absolute inset-0 flex flex-col items-center justify-start overflow-auto bg-accent/95 text-left text-background">
+        <div className="absolute inset-0 flex flex-col items-center justify-start overflow-auto bg-accent/95 text-background">
             <BacksideRenderer html={doctor.backSideCode} />
         </div>
     );
@@ -176,7 +175,7 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
                              <div id="edit-position" className="mt-6"><div className="w-full text-left"><p className="text-base">{doctor.positionText || 'Position oder Logo'}</p></div></div>
                         )}
                     </div>
-                     <div className="absolute bottom-0 right-0">
+                    <div className="absolute bottom-0 right-0">
                         {doctor.languagesHtml ? (
                             <HtmlRenderer html={doctor.languagesHtml} elementId="edit-language" />
                         ) : (
