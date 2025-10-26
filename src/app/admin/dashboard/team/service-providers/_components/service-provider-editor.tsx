@@ -72,8 +72,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
             reader.onload = (event) => {
                 if (dialogState.data) {
                     const { field } = dialogState.data;
-                    const aspectRatio = field === 'position' ? (1600/463.75) : undefined;
-                    setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, aspectRatio, field } });
+                    setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, field } });
                 }
             };
             reader.readAsDataURL(e.target.files[0]);
@@ -198,7 +197,6 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
             {dialogState.type === 'imageCrop' && (
                 <ImageCropDialog
                     imageUrl={dialogState.data.imageUrl}
-                    aspectRatio={dialogState.data.aspectRatio}
                     onCropComplete={(croppedImage) => handleCropComplete(croppedImage, dialogState.data.field)}
                     onClose={() => setDialogState({ type: null })}
                 />
