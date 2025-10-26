@@ -30,13 +30,14 @@ export interface Doctor {
 const BacksideRenderer: React.FC<{ html: string; }> = ({ html }) => {
     const sanitizedHtml = useMemo(() => {
         if (typeof window !== 'undefined') {
-            return { __html: DOMPurify.sanitize(html) };
+            // Remove prose classes to avoid style conflicts
+            return { __html: DOMPurify.sanitize(html, { FORBID_CLASS: ['prose', 'prose-invert'] }) };
         }
         return { __html: '' };
     }, [html]);
 
     return (
-         <div className="w-full h-full text-left p-8 text-white">
+        <div className="w-full h-full text-left p-8 text-white">
             <div className="text-sm max-w-none [&_p]:my-0 [&_ul]:my-2" dangerouslySetInnerHTML={sanitizedHtml} />
         </div>
     );
@@ -44,7 +45,7 @@ const BacksideRenderer: React.FC<{ html: string; }> = ({ html }) => {
 
 
 export const DoctorCard: React.FC<Doctor> = (props) => {
-    const { frontSideCode, backSideCode, disableFlip } = props;
+    const { backSideCode, disableFlip } = props;
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [scale, setScale] = useState(1);
 
@@ -70,18 +71,7 @@ export const DoctorCard: React.FC<Doctor> = (props) => {
         };
     }, []);
 
-    // Check if the legacy frontSideCode exists and is not just whitespace.
-    // This is the logic the user wants to revert to.
-    const useLegacyRendering = frontSideCode && frontSideCode.trim().length > 0;
-
-    const sanitizedFrontSide = useMemo(() => {
-        if (useLegacyRendering && typeof window !== 'undefined') {
-            return { __html: DOMPurify.sanitize(frontSideCode) };
-        }
-        return { __html: '' };
-    }, [frontSideCode, useLegacyRendering]);
-
-    // New data-driven rendering. This will be the fallback.
+    // The single source of truth for rendering the card front.
     const frontSide = (
         <div className="w-full h-full bg-background text-card-foreground p-6 font-headline">
             <div className="flex h-full w-full items-start">
@@ -100,15 +90,15 @@ export const DoctorCard: React.FC<Doctor> = (props) => {
                         <h3 className="text-5xl font-bold text-primary my-2">{props.name}</h3>
                         <p className="text-xl font-bold">{props.specialty || ''}</p>
                         <div className="mt-6 text-xl">
-                            <p>{props.qual1 || ''}</p>
-                            <p>{props.qual2 || ''}</p>
-                            <p>{props.qual3 || ''}</p>
-                            <p>{props.qual4 || ''}</p>
+                            {props.qual1 && <p>{props.qual1}</p>}
+                            {props.qual2 && <p>{props.qual2}</p>}
+                            {props.qual3 && <p>{props.qual3}</p>}
+                            {props.qual4 && <p>{props.qual4}</p>}
                         </div>
                         <div className="mt-6">
                             {props.positionImageUrl ? (
                                 <div className="w-full text-left h-[50px] relative">
-                                    <Image src={props.positionImageUrl} alt="Position Logo" layout="fill" objectFit="contain" />
+                                    <Image src={props.positionImageUrl} alt="Position Logo" layout="fill" objectFit="contain" className="object-left"/>
                                 </div>
                             ) : (
                                 <div className="w-full text-left"><p className="text-base">{props.positionText || ''}</p></div>
@@ -129,7 +119,7 @@ export const DoctorCard: React.FC<Doctor> = (props) => {
             "shadow-xl"
         )}>
             <div style={{ transform: `scale(${scale})`, transformOrigin: 'top left', width: '1000px', height: '495px' }}>
-                 {useLegacyRendering ? <div dangerouslySetInnerHTML={sanitizedFrontSide} /> : frontSide}
+                 {frontSide}
             </div>
             
             {!disableFlip && backSideCode && (

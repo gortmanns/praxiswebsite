@@ -1,3 +1,4 @@
+
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -64,7 +65,8 @@ export const initialDoctorState: Omit<Doctor, 'id' | 'order' | 'createdAt'> = {
 const BacksideRenderer: React.FC<{ html: string; }> = ({ html }) => {
     const sanitizedHtml = useMemo(() => {
         if (typeof window !== 'undefined') {
-            return { __html: DOMPurify.sanitize(html) };
+             // Remove prose classes to avoid style conflicts
+            return { __html: DOMPurify.sanitize(html, { FORBID_CLASS: ['prose', 'prose-invert'] }) };
         }
         return { __html: '' };
     }, [html]);
@@ -265,5 +267,3 @@ const templateStyles = `
     .template-card .bg-white { background-color: white; }
     .template-card .shrink-0 { flex-shrink: 0; }
 `;
-
-    
