@@ -44,7 +44,7 @@ const BacksideRenderer: React.FC<{ html: string; }> = ({ html }) => {
 
 
 export const DoctorCard: React.FC<Doctor> = (props) => {
-    const { backSideCode, disableFlip } = props;
+    const { frontSideCode, backSideCode, disableFlip } = props;
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [scale, setScale] = useState(1);
 
@@ -70,7 +70,18 @@ export const DoctorCard: React.FC<Doctor> = (props) => {
         };
     }, []);
 
-    // New data-driven rendering. This will now be used for ALL cards.
+    // Check if the legacy frontSideCode exists and is not just whitespace.
+    // This is the logic the user wants to revert to.
+    const useLegacyRendering = frontSideCode && frontSideCode.trim().length > 0;
+
+    const sanitizedFrontSide = useMemo(() => {
+        if (useLegacyRendering && typeof window !== 'undefined') {
+            return { __html: DOMPurify.sanitize(frontSideCode) };
+        }
+        return { __html: '' };
+    }, [frontSideCode, useLegacyRendering]);
+
+    // New data-driven rendering. This will be the fallback.
     const frontSide = (
         <div className="w-full h-full bg-background text-card-foreground p-6 font-headline">
             <div className="flex h-full w-full items-start">
@@ -118,7 +129,7 @@ export const DoctorCard: React.FC<Doctor> = (props) => {
             "shadow-xl"
         )}>
             <div style={{ transform: `scale(${scale})`, transformOrigin: 'top left', width: '1000px', height: '495px' }}>
-                {frontSide}
+                 {useLegacyRendering ? <div dangerouslySetInnerHTML={sanitizedFrontSide} /> : frontSide}
             </div>
             
             {!disableFlip && backSideCode && (
