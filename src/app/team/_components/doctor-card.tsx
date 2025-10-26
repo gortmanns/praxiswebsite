@@ -36,8 +36,8 @@ const BacksideRenderer: React.FC<{ html: string; }> = ({ html }) => {
     }, [html]);
 
     return (
-         <div className="w-full h-full text-left p-8">
-            <div className="prose prose-sm max-w-none prose-p:my-0 prose-ul:my-2 text-white" dangerouslySetInnerHTML={sanitizedHtml} />
+         <div className="w-full h-full text-left p-8 text-white">
+            <div className="text-sm max-w-none [&_p]:my-0 [&_ul]:my-2" dangerouslySetInnerHTML={sanitizedHtml} />
         </div>
     );
 };
