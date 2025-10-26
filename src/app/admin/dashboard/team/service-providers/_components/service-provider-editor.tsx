@@ -25,6 +25,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { type ServiceProvider, EditableServiceProviderCard } from './initial-state';
+import { Slider } from '@/components/ui/slider';
 
 
 interface ServiceProviderEditorProps {
@@ -78,7 +79,6 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
             reader.onload = (event) => {
                 if (dialogState.data) {
                     const { field } = dialogState.data;
-                    // Only set aspect ratio for the main image, not for the logo/position
                     const aspectRatio = field === 'image' ? 2/3 : undefined;
                     setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, field, aspectRatio } });
                 }
@@ -107,7 +107,6 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
             specialty: 'specialty',
             position: 'positionText'
         }[field] || field;
-
 
         onUpdate({ [fieldToUpdate]: newValue, ...(field === 'position' && { positionImageUrl: '' }) });
         setDialogState({ type: null });
@@ -146,8 +145,13 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
         }
     };
     
-    const handleInputChange = (field: keyof ServiceProvider, value: string | boolean) => {
-        onUpdate({ [field]: value });
+    const handleInputChange = (field: keyof ServiceProvider, value: string | boolean | number) => {
+        onUpdate({ ...cardData, [field]: value });
+    };
+
+    const handleSliderChange = (field: 'logoScale', value: number[]) => {
+        const singleValue = value[0];
+        handleInputChange(field, singleValue);
     };
 
     return (
@@ -172,6 +176,18 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
                         />
                         <Label htmlFor="openInNewTab">In neuem Tab öffnen</Label>
                     </div>
+                     {cardData.positionImageUrl && (
+                        <div className="space-y-2 pt-4">
+                            <Label htmlFor="logoScale">Logo Grösse: {cardData.logoScale || 100}%</Label>
+                            <Slider
+                                id="logoScale"
+                                value={[cardData.logoScale || 100]}
+                                onValueChange={(value) => handleSliderChange('logoScale', value)}
+                                max={200}
+                                step={1}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
 

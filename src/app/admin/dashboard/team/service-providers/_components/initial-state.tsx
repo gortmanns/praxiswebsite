@@ -21,6 +21,7 @@ export interface ServiceProvider {
     imageUrl?: string;
     positionText?: string;
     positionImageUrl?: string;
+    logoScale?: number;
     languages: string[];
     hidden: boolean;
     websiteUrl?: string;
@@ -44,6 +45,7 @@ export const initialServiceProviderState: Omit<ServiceProvider, 'id' | 'order' |
     imageUrl: '',
     positionText: 'Position oder Logo',
     positionImageUrl: '',
+    logoScale: 100,
 };
 
 
@@ -54,6 +56,12 @@ interface EditableServiceProviderCardProps {
 }
 
 export const EditableServiceProviderCard: React.FC<EditableServiceProviderCardProps> = ({ serviceProvider, onCardClick }) => {
+    const logoScale = serviceProvider.logoScale || 100;
+    const logoStyle = {
+        transform: `scale(${logoScale / 100})`,
+        transformOrigin: 'left center',
+    };
+
     return (
         <div id="card-root" className="template-card w-full h-full bg-background text-card-foreground p-6 font-headline" onClick={onCardClick}>
             <style>{templateStyles}</style>
@@ -87,8 +95,8 @@ export const EditableServiceProviderCard: React.FC<EditableServiceProviderCardPr
                         <div id="position-container" className="mt-6">
                             <div id="edit-position">
                                 {serviceProvider.positionImageUrl ? (
-                                    <div className="w-full text-left h-[50px] relative">
-                                        <Image src={serviceProvider.positionImageUrl} alt="Position Logo" layout="fill" objectFit="contain" />
+                                    <div className="w-full text-left h-[50px] relative" style={logoStyle}>
+                                        <Image src={serviceProvider.positionImageUrl} alt="Position Logo" layout="fill" objectFit="contain" className="object-left"/>
                                     </div>
                                 ) : (
                                     <div className="w-full text-left"><p className="text-base">{serviceProvider.positionText || 'Position oder Logo'}</p></div>

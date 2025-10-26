@@ -58,6 +58,7 @@
         "imageUrl": { "type": "string" },
         "positionText": { "type": "string" },
         "positionImageUrl": { "type": "string" },
+        "logoScale": { "type": "number" },
         "languages": { "type": "array", "items": { "type": "string" } },
         "hidden": { "type": "boolean" },
         "websiteUrl": { "type": "string" },
