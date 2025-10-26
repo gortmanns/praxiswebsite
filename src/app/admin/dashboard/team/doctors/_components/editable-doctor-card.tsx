@@ -138,16 +138,16 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
                             <p className="text-xl font-bold">{doctor.specialty || 'Spezialisierung'}</p>
                         </div>
                         <div className="mt-6 text-xl">
-                            <div id="edit-qual1" className="w-full text-left"><p>{doctor.qual1 || 'Qualifikation 1'}</p></div>
-                            <div id="edit-qual2" className="w-full text-left"><p>{doctor.qual2 || 'Qualifikation 2'}</p></div>
-                            <div id="edit-qual3" className="w-full text-left"><p>{doctor.qual3 || 'Qualifikation 3'}</p></div>
-                            <div id="edit-qual4" className="w-full text-left"><p>{doctor.qual4 || 'Qualifikation 4'}</p></div>
+                            {doctor.qual1 && <div id="edit-qual1" className="w-full text-left"><p>{doctor.qual1}</p></div>}
+                            {doctor.qual2 && <div id="edit-qual2" className="w-full text-left"><p>{doctor.qual2}</p></div>}
+                            {doctor.qual3 && <div id="edit-qual3" className="w-full text-left"><p>{doctor.qual3}</p></div>}
+                            {doctor.qual4 && <div id="edit-qual4" className="w-full text-left"><p>{doctor.qual4}</p></div>}
                         </div>
                         <div id="position-container" className="mt-6">
                             <div id="edit-position">
                                 {doctor.positionImageUrl ? (
                                     <div className="w-full text-left h-[50px] relative">
-                                        <Image src={doctor.positionImageUrl} alt="Position Logo" layout="fill" objectFit="contain" />
+                                        <Image src={doctor.positionImageUrl} alt="Position Logo" layout="fill" objectFit="contain" object-position="left" />
                                     </div>
                                 ) : (
                                     <div className="w-full text-left"><p className="text-base">{doctor.positionText || 'Position oder Logo'}</p></div>
@@ -237,4 +237,5 @@ const templateStyles = `
     .template-card .bg-white { background-color: white; }
     .template-card .shrink-0 { flex-shrink: 0; }
 `;
+
 
