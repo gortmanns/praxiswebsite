@@ -138,8 +138,8 @@ export default function DoctorsPage() {
         }
         setNotification(null);
         
-        // Remove transient state properties before saving
-        const { _dialog, ...dataToSave } = editorCardState;
+        // Remove transient state properties and the legacy `frontSideCode` before saving.
+        const { _dialog, frontSideCode, ...dataToSave } = editorCardState;
 
         try {
             if (isCreatingNew) {
