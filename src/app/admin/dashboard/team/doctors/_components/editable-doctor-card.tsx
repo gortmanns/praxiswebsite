@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -74,6 +74,34 @@ interface EditableDoctorCardProps {
 }
 
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onCardClick, isBeingEdited, showBackside = false }) => {
+    const wrapperRef = useRef<HTMLDivElement>(null);
+    const [scale, setScale] = useState(1);
+
+    useEffect(() => {
+        const calculateScale = () => {
+            if (wrapperRef.current) {
+                const parentWidth = wrapperRef.current.offsetWidth;
+                const scaleValue = parentWidth / 1000; // Original width is 1000px
+                setScale(scaleValue);
+            }
+        };
+
+        calculateScale();
+        const resizeObserver = new ResizeObserver(calculateScale);
+        if (wrapperRef.current) {
+            resizeObserver.observe(wrapperRef.current);
+        }
+
+        return () => {
+            if (wrapperRef.current) {
+                resizeObserver.unobserve(wrapperRef.current);
+            }
+        };
+    }, []);
+
+    const cardStyle = {
+        '--card-scale': scale
+    } as React.CSSProperties;
     
     // Render the card's back side using the data
     const backSide = (
@@ -136,7 +164,7 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
     );
     
     return (
-        <div id="card-root" className="template-card-wrapper relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border" onClick={onCardClick}>
+        <div id="card-root" ref={wrapperRef} className="template-card-wrapper relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg shadow-sm border" onClick={onCardClick} style={cardStyle}>
             <div className='template-card'>
                 {showBackside ? backSide : frontSide}
             </div>
