@@ -126,7 +126,7 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
                         )}
                     </div>
                 </div>
-                <div className="flex-grow flex flex-col justify-center ml-6 h-full relative">
+                <div className="flex-grow flex flex-col justify-start ml-6 h-full relative">
                     <div>
                         <div id="edit-title" className="w-full text-left">
                             <p className="text-2xl font-bold text-primary">{doctor.title || 'Titel'}</p>
@@ -147,7 +147,7 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
                             <div id="edit-position">
                                 {doctor.positionImageUrl ? (
                                     <div className="w-full text-left h-[50px] relative">
-                                        <Image src={doctor.positionImageUrl} alt="Position Logo" layout="fill" objectFit="contain" object-position="left" />
+                                        <Image src={doctor.positionImageUrl} alt="Position Logo" layout="fill" objectFit="contain" className="object-left" />
                                     </div>
                                 ) : (
                                     <div className="w-full text-left"><p className="text-base">{doctor.positionText || 'Position oder Logo'}</p></div>
@@ -212,6 +212,7 @@ const templateStyles = `
     .template-card .flex-grow { flex-grow: 1; }
     .template-card .flex-col { flex-direction: column; }
     .template-card .justify-center { justify-content: center; }
+    .template-card .justify-start { justify-content: flex-start; }
     .template-card .ml-6 { margin-left: 1.5rem; }
     .template-card .text-2xl { font-size: 1.5rem; line-height: 2rem; }
     .template-card .font-bold { font-weight: 700; }
@@ -229,6 +230,7 @@ const templateStyles = `
     .template-card .gap-2 { gap: 0.5rem; }
     .template-card .object-contain { object-fit: contain; }
     .template-card .object-cover { object-fit: cover; }
+    .template-card .object-left { object-position: left; }
     .template-card .text-muted-foreground { color: hsl(var(--muted-foreground)); }
     .template-card .bg-muted { background-color: hsl(var(--muted)); }
     .template-card .text-center { text-align: center; }
@@ -240,3 +242,6 @@ const templateStyles = `
 
 
 
+
+
+    
