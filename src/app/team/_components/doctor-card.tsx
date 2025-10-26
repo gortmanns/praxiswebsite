@@ -44,7 +44,7 @@ const BacksideRenderer: React.FC<{ html: string; }> = ({ html }) => {
 
 
 export const DoctorCard: React.FC<Doctor> = (props) => {
-    const { backSideCode, disableFlip, frontSideCode } = props;
+    const { backSideCode, disableFlip } = props;
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [scale, setScale] = useState(1);
 
@@ -58,31 +58,19 @@ export const DoctorCard: React.FC<Doctor> = (props) => {
         };
 
         calculateScale();
-        window.addEventListener('resize', calculateScale);
-        return () => window.removeEventListener('resize', calculateScale);
+        const resizeObserver = new ResizeObserver(calculateScale);
+        if (wrapperRef.current) {
+            resizeObserver.observe(wrapperRef.current);
+        }
+
+        return () => {
+            if (wrapperRef.current) {
+                resizeObserver.unobserve(wrapperRef.current);
+            }
+        };
     }, []);
 
-    // Check if we should use the legacy frontSideCode
-    if (frontSideCode) {
-        return (
-             <div ref={wrapperRef} className={cn(
-                "group relative w-full max-w-[1000px] aspect-[1000/495] overflow-hidden rounded-lg border bg-background",
-                "shadow-xl"
-            )}>
-                 <div className="w-full h-full" style={{ transform: `scale(${scale})`, transformOrigin: 'top left', width: '1000px', height: '495px' }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(frontSideCode) }}/>
-                
-                {!disableFlip && backSideCode && (
-                    <div className="flip-card-back absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                         <div className="w-full h-full" style={{ transform: `scale(${scale})`, transformOrigin: 'top left', width: '1000px', height: '495px' }}>
-                            <BacksideRenderer html={backSideCode} />
-                        </div>
-                    </div>
-                )}
-            </div>
-        );
-    }
-
-    // New data-driven rendering
+    // New data-driven rendering. This will now be used for ALL cards.
     const frontSide = (
         <div className="w-full h-full bg-background text-card-foreground p-6 font-headline">
             <div className="flex h-full w-full items-start">
