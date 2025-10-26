@@ -59,16 +59,18 @@ export default function DoctorsPage() {
         
         const qualifications = Array.from(doc.querySelectorAll('.mt-6.text-xl p')).map(p => p.textContent?.trim() || '');
         
-        // This was a faulty implementation, so it's commented out.
-        // const languages = Array.from(doc.querySelectorAll('.absolute.bottom-0.right-0 img')).map(img => {
-        //     const src = img.getAttribute('src');
-        //     if (!src) return '';
-        //     if (src.includes('de.svg')) return 'de';
-        //     if (src.includes('gb.svg')) return 'en';
-        //     return '';
-        // }).filter(Boolean);
+        const languages = Array.from(doc.querySelectorAll('.absolute.bottom-0.right-0 img')).map(img => {
+            const src = img.getAttribute('src');
+            if (!src) return '';
+            if (src.includes('de.svg')) return 'de';
+            if (src.includes('gb.svg')) return 'en'; // Legacy used gb for english
+            if (src.includes('fr.svg')) return 'fr';
+            if (src.includes('it.svg')) return 'it';
+            if (src.includes('es.svg')) return 'es';
+            // Add more mappings if other flags were used
+            return '';
+        }).filter(Boolean);
 
-        // Logic to extract position image or text
         const positionContainer = doc.querySelector('.mt-6:not(.text-xl)');
         let positionImageUrl = '';
         let positionText = '';
@@ -90,7 +92,7 @@ export default function DoctorsPage() {
             qual3: qualifications[2] || '',
             qual4: qualifications[3] || '',
             imageUrl: doc.querySelector('.relative.h-full img')?.getAttribute('src') || '',
-            // languages: languages as string[],
+            languages: languages as string[],
             positionImageUrl: positionImageUrl,
             positionText: positionText,
         };
@@ -102,7 +104,6 @@ export default function DoctorsPage() {
 
         let initialStateForEditor: Doctor = { ...initialDoctorState, ...card };
 
-        // If the card has legacy frontSideCode and is missing modern fields, parse it.
         if (card.frontSideCode && (!card.title || !card.name || !card.specialty)) {
             const parsedData = parseFromLegacyHtml(card.frontSideCode);
             initialStateForEditor = { ...initialStateForEditor, ...parsedData };
@@ -194,7 +195,6 @@ export default function DoctorsPage() {
         }
         setNotification(null);
         
-        // Remove transient state properties and the legacy `frontSideCode` before saving.
         const { _dialog, frontSideCode, ...dataToSave } = editorCardState;
 
         try {
