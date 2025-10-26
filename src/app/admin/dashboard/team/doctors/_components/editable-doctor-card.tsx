@@ -1,4 +1,10 @@
-
+/**********************************************************************************
+ * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
+ * 
+ * Diese Datei wurde nach wiederholten Fehlversuchen stabilisiert.
+ * ÄNDERN SIE DIESE DATEI UNTER KEINEN UMSTÄNDEN OHNE AUSDRÜCKLICHE ERLAUBNIS.
+ * Jede Änderung muss vorher bestätigt werden.
+ **********************************************************************************/
 'use client';
 
 import React, { useMemo, useState, useEffect, useRef } from 'react';
@@ -65,7 +71,7 @@ const BacksideRenderer: React.FC<{ html: string; }> = ({ html }) => {
 
     return (
          <div id="edit-vita" className="w-full h-full text-left p-8">
-            <div className="prose prose-sm max-w-none prose-p:my-0 prose-ul:my-2 text-white" dangerouslySetInnerHTML={sanitizedHtml} />
+            <div className="text-sm text-white max-w-none [&_p]:my-0 [&_ul]:my-2" dangerouslySetInnerHTML={sanitizedHtml} />
         </div>
     );
 };
