@@ -53,7 +53,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
             const downloadURL = await getDownloadURL(snapshot.ref);
             
             if (field === 'image') {
-              onUpdate({ imageUrl: downloadURL, positionImageUrl: '', positionText: '' });
+              onUpdate({ imageUrl: downloadURL });
             } else if (field === 'position') {
               onUpdate({ positionImageUrl: downloadURL, positionText: '' });
             }
@@ -78,7 +78,8 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
             reader.onload = (event) => {
                 if (dialogState.data) {
                     const { field } = dialogState.data;
-                    setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, field } });
+                    const aspectRatio = field === 'image' ? 2/3 : undefined;
+                    setDialogState({ type: 'imageCrop', data: { imageUrl: event.target?.result as string, field, aspectRatio } });
                 }
             };
             reader.readAsDataURL(e.target.files[0]);
@@ -89,7 +90,8 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
     const handleImageLibrarySelect = (imageUrl: string) => {
         if (dialogState.data?.field) {
             const field = dialogState.data.field;
-            setDialogState({ type: 'imageCrop', data: { imageUrl, field } });
+            const aspectRatio = field === 'image' ? 2/3 : undefined;
+            setDialogState({ type: 'imageCrop', data: { imageUrl, field, aspectRatio } });
         }
     };
     
@@ -210,6 +212,7 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
             {dialogState.type === 'imageCrop' && (
                 <ImageCropDialog
                     imageUrl={dialogState.data.imageUrl}
+                    aspectRatio={dialogState.data.aspectRatio}
                     field={dialogState.data.field}
                     onCropComplete={handleCropComplete}
                     onClose={() => setDialogState({ type: null })}
