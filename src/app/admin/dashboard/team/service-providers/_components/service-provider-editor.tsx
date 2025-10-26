@@ -64,9 +64,11 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
         }
     }, [storage, onUpdate, toast]);
     
-    const handleCropComplete = useCallback(async (croppedDataUrl: string, field: string) => {
+    const handleCropComplete = useCallback(async (croppedDataUrl: string, field?: string) => {
         setDialogState({ type: null });
-        handleImageUpload(croppedDataUrl, field);
+        if (field) {
+            handleImageUpload(croppedDataUrl, field);
+        }
     }, [handleImageUpload]);
 
 
@@ -208,7 +210,8 @@ export const ServiceProviderEditor: React.FC<ServiceProviderEditorProps> = ({ ca
             {dialogState.type === 'imageCrop' && (
                 <ImageCropDialog
                     imageUrl={dialogState.data.imageUrl}
-                    onCropComplete={(croppedImage) => handleCropComplete(croppedImage, dialogState.data.field)}
+                    field={dialogState.data.field}
+                    onCropComplete={handleCropComplete}
                     onClose={() => setDialogState({ type: null })}
                 />
             )}

@@ -17,9 +17,10 @@ import { Button } from '@/components/ui/button';
 
 interface ImageCropDialogProps {
   imageUrl: string;
-  onCropComplete: (croppedImageUrl: string) => void;
+  onCropComplete: (croppedImageUrl: string, field?: string) => void;
   onClose: () => void;
   aspectRatio?: number;
+  field?: string;
 }
 
 export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
@@ -27,6 +28,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
   onCropComplete,
   onClose,
   aspectRatio = undefined,
+  field,
 }) => {
   const cropperRef = useRef<ReactCropperElement>(null);
 
@@ -41,7 +43,7 @@ export const ImageCropDialog: React.FC<ImageCropDialogProps> = ({
     if (!croppedCanvas) return;
     
     const resultDataUrl = croppedCanvas.toDataURL('image/jpeg', 0.9);
-    onCropComplete(resultDataUrl);
+    onCropComplete(resultDataUrl, field);
     onClose();
   };
 
