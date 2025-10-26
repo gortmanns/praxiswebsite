@@ -52,10 +52,7 @@ export default function DoctorsPage() {
     const handleEdit = useCallback((card: Doctor) => {
         setEditingCardId(card.id);
         setIsCreatingNew(false);
-        setEditorCardState({
-            ...initialDoctorState,
-            ...card
-        });
+        setEditorCardState(card);
     }, []);
 
     const handleCreateNew = () => {
