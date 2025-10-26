@@ -56,14 +56,28 @@ export default function DoctorsPage() {
         const doc = parser.parseFromString(htmlString, 'text/html');
         
         const extractText = (selector: string) => doc.querySelector(selector)?.textContent?.trim() || '';
-
+        
         const qualifications = Array.from(doc.querySelectorAll('.mt-6.text-xl p')).map(p => p.textContent?.trim() || '');
         const languages = Array.from(doc.querySelectorAll('.absolute.bottom-0.right-0 img')).map(img => {
             const src = img.getAttribute('src');
-            if (src?.includes('de.svg')) return 'de';
-            if (src?.includes('gb.svg')) return 'en';
+            if (!src) return '';
+            if (src.includes('de.svg')) return 'de';
+            if (src.includes('gb.svg')) return 'en';
             return '';
         }).filter(Boolean);
+
+        // Logic to extract position image or text
+        const positionContainer = doc.querySelector('.mt-6:not(.text-xl)');
+        let positionImageUrl = '';
+        let positionText = '';
+        if (positionContainer) {
+            const img = positionContainer.querySelector('img');
+            if (img) {
+                positionImageUrl = img.getAttribute('src') || '';
+            } else {
+                positionText = positionContainer.textContent?.trim() || '';
+            }
+        }
 
         return {
             title: extractText('.text-2xl.font-bold.text-primary'),
@@ -75,6 +89,8 @@ export default function DoctorsPage() {
             qual4: qualifications[3] || '',
             imageUrl: doc.querySelector('.relative.h-full img')?.getAttribute('src') || '',
             languages: languages as string[],
+            positionImageUrl: positionImageUrl,
+            positionText: positionText,
         };
     };
 
@@ -82,12 +98,12 @@ export default function DoctorsPage() {
         setEditingCardId(card.id);
         setIsCreatingNew(false);
 
-        let initialStateForEditor = { ...card };
+        let initialStateForEditor = { ...initialDoctorState, ...card };
 
         // If the card has legacy frontSideCode and is missing modern fields, parse it.
-        if (card.frontSideCode && !card.title) {
+        if (card.frontSideCode && (!card.title || !card.name || !card.specialty)) {
             const parsedData = parseFromLegacyHtml(card.frontSideCode);
-            initialStateForEditor = { ...card, ...parsedData };
+            initialStateForEditor = { ...initialStateForEditor, ...parsedData };
         }
         
         setEditorCardState(initialStateForEditor);
