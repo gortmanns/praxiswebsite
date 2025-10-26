@@ -71,7 +71,7 @@ const BacksideRenderer: React.FC<{ html: string; }> = ({ html }) => {
 
     return (
          <div id="edit-vita" className="w-full h-full text-left p-8">
-            <div className="text-sm text-white max-w-none [&_p]:my-0 [&_ul]:my-2" dangerouslySetInnerHTML={sanitizedHtml} />
+            <div className="text-sm text-white max-w-none [&_p]:my-2 [&_ul]:my-2" dangerouslySetInnerHTML={sanitizedHtml} />
         </div>
     );
 };
@@ -97,6 +97,13 @@ interface EditableDoctorCardProps {
 export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, onCardClick, isBeingEdited, showBackside = false }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [scale, setScale] = useState(1);
+    
+    // Determine if we should use the legacy frontSideCode for rendering.
+    const useLegacyRendering = useMemo(() => {
+        if (!doctor.frontSideCode) return false;
+        const cleaned = doctor.frontSideCode.replace(/<style>.*?<\/style>/gs, '').trim();
+        return cleaned.length > 50; // Heuristic: empty templates are small.
+    }, [doctor.frontSideCode]);
 
     useEffect(() => {
         const calculateScale = () => {
@@ -130,7 +137,9 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
         </div>
     );
     
-    const frontSide = (
+    const frontSide = useLegacyRendering ? (
+        <HtmlRenderer html={doctor.frontSideCode!} elementId="card-root-legacy" />
+    ) : (
         <div className="w-full h-full bg-background text-card-foreground p-6 font-headline">
             <div className="flex h-full w-full items-start">
                 <div id="image-container" className="relative h-full aspect-[2/3] overflow-hidden rounded-md shrink-0 bg-muted">
@@ -162,7 +171,7 @@ export const EditableDoctorCard: React.FC<EditableDoctorCardProps> = ({ doctor, 
                             {doctor.qual3 && <div id="edit-qual3" className="w-full text-left"><p>{doctor.qual3}</p></div>}
                             {doctor.qual4 && <div id="edit-qual4" className="w-full text-left"><p>{doctor.qual4}</p></div>}
                         </div>
-                        {doctor.positionHtml ? (
+                         {doctor.positionHtml ? (
                             <HtmlRenderer html={doctor.positionHtml} elementId="edit-position" />
                         ) : doctor.positionImageUrl ? (
                             <div id="edit-position" className="mt-6">

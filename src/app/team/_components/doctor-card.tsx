@@ -37,7 +37,7 @@ const BacksideRenderer: React.FC<{ html: string; }> = ({ html }) => {
 
     return (
         <div className="w-full h-full text-left p-8">
-            <div className="text-sm text-white max-w-none [&_p]:my-0 [&_ul]:my-2" dangerouslySetInnerHTML={sanitizedHtml} />
+            <div className="text-sm text-white max-w-none [&_p]:my-2 [&_ul]:my-2" dangerouslySetInnerHTML={sanitizedHtml} />
         </div>
     );
 };
@@ -61,7 +61,6 @@ export const DoctorCard: React.FC<Doctor> = (props) => {
     const [scale, setScale] = useState(1);
     
     // Determine if we should use the legacy frontSideCode for rendering.
-    // This is true if frontSideCode exists and is not just an empty container.
     const useLegacyRendering = useMemo(() => {
         if (!frontSideCode) return false;
         const cleaned = frontSideCode.replace(/<style>.*?<\/style>/gs, '').trim();
