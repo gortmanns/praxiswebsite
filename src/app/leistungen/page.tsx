@@ -70,6 +70,16 @@ const leistungen = [
       </>
     ),
   },
+    {
+    name: 'RSV-Impfung',
+    image: '/images/leistungen/RSV-Impfung.jpg',
+    hint: 'vaccination rsv',
+    backsideContent: (
+      <>
+        <p>RSV steht als Abkürzung für das menschliche Respiratorische-Synzytial-Virus, welches schwere Atemwegserkrankungen hervorruft. In anderen Ländern bereits Standard, wird die inzwischen Verfügbare Impfung in der Schweiz noch nicht von der Grundversicherung übernommen. Haben Sie eine Zusatzversicherung und sind über 65 Jahre oder aufgrund anderer Erkrankungen ein Risikopatient, dann stellen wir gerne einen Antrag auf Kostengutsprache bei Ihrer Zusatzversicherung.</p>
+      </>
+    ),
+  },
   {
     name: 'Röntgen',
     image: '/images/leistungen/roentgen.jpg',
