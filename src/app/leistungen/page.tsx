@@ -32,7 +32,7 @@ const leistungen = [
     hint: 'health checkup',
     backsideContent: (
       <>
-        <p>Details zu diesem Angebot folgen in Kürze.</p>
+        <p>"Nicht alle Vorsorgeuntersuchungen werden von der Grundversicherung übernommen. Auf Wunsch bestimmen wir als Privatleistung z. B. den Spiegel von Vitaminen und Mineralstoffen und geben Empfehlungen zur optimalen Ernährung. Die Abrechnung erfolgt nach Aufwand und ist eine Privatleistung."</p>
       </>
     ),
   },
@@ -66,7 +66,7 @@ const leistungen = [
     hint: 'travel medicine',
     backsideContent: (
       <>
-        <p>Details zu diesem Angebot folgen in Kürze.</p>
+        <p>Gerne beraten wir Sie vor einer Reise über empfohlene Impfungen und andere relevante Vorsorgemassnahmen. Dies ist eine Privatleistung, die nicht von der Grundversicherung übernommen wird, die Abrechnung erfolgt nach Aufwand.</p>
       </>
     ),
   },
