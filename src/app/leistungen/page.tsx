@@ -32,7 +32,7 @@ const leistungen = [
     hint: 'health checkup',
     backsideContent: (
       <>
-        <p>Nicht alle Vorsorgeuntersuchungen werden von der Grundversicherung übernommen. Auf Wunsch bestimmen wir als Privatleistung z. B. den Spiegel von Vitaminen und Mineralstoffen und geben Empfehlungen zur optimalen Ernährung. Die Abrechnung erfolgt nach Aufwand und ist eine Privatleistung.</p>
+        <p>Leider werden von der Grundversicherung Vorsorgeuntersuchungen nur in einem sehr engen Rahmen übernommen. Gerne führen wir diese aber als Privatleistung durch, wenn Sie dies wünschen.</p>
       </>
     ),
   },
