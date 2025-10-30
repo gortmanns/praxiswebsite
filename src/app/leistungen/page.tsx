@@ -27,6 +27,16 @@ const leistungen = [
     ),
   },
   {
+    name: 'Erweiterte Gesundheitsvorsorge',
+    image: 'https://picsum.photos/seed/vorsorge/600/400',
+    hint: 'health checkup',
+    backsideContent: (
+      <>
+        <p>Details zu diesem Angebot folgen in Kürze.</p>
+      </>
+    ),
+  },
+  {
     name: 'Praxislabor',
     image: '/images/leistungen/labor.jpg',
     hint: 'lab technician microscope',
@@ -47,6 +57,16 @@ const leistungen = [
     backsideContent: (
       <>
         <p>Als selbstdispensierende Praxis übernehmen wir Ihre Versorgung mit den benötigten Medikamenten aus unserer gut sortierten Praxisapotheke. Die Lagerung und Abgabe der Medikamente erfolgt selbstverständlich entsprechend den gesetzlichen Vorschriften.</p>
+      </>
+    ),
+  },
+  {
+    name: 'Reisemedizinische Beratungen',
+    image: 'https://picsum.photos/seed/reisemedizin/600/400',
+    hint: 'travel medicine',
+    backsideContent: (
+      <>
+        <p>Details zu diesem Angebot folgen in Kürze.</p>
       </>
     ),
   },
