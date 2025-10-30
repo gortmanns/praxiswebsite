@@ -28,7 +28,7 @@ const leistungen = [
   },
   {
     name: 'Erweiterte Gesundheitsvorsorge',
-    image: 'https://picsum.photos/seed/vorsorge/600/400',
+    image: '/images/leistungen/Gesundheitscheck.jpg',
     hint: 'health checkup',
     backsideContent: (
       <>
@@ -62,7 +62,7 @@ const leistungen = [
   },
   {
     name: 'Reisemedizinische Beratungen',
-    image: 'https://picsum.photos/seed/reisemedizin/600/400',
+    image: '/images/leistungen/Reisemedizin.jpg',
     hint: 'travel medicine',
     backsideContent: (
       <>
