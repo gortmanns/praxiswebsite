@@ -32,7 +32,7 @@ const leistungen = [
     hint: 'health checkup',
     backsideContent: (
       <>
-        <p>Leider werden von der Grundversicherung Vorsorgeuntersuchungen nur in einem sehr engen Rahmen übernommen. Gerne führen wir diese aber als Privatleistung durch, wenn Sie dies wünschen.</p>
+        <p>Die Grundversicherung deckt Vorsorgeuntersuchungen leider nur in einem sehr begrenzten Rahmen ab. Gerne führen wir weitere Analysen wie zum Beispiel die Bestimmung von Vitaminen und Mineralstoffen als private Zusatzleistung durch.</p>
       </>
     ),
   },
