@@ -60,12 +60,12 @@ export function Header() {
   const navRef = useRef<HTMLElement>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  const isEnglish = pathname.startsWith('/page-en');
+  const isEnglish = pathname.startsWith('/page-en') || pathname.startsWith('/leistungen-en') || pathname.startsWith('/medikamente-en') || pathname.startsWith('/notfall-en');
 
   const mainNavLinks = [
     { href: isEnglish ? '/page-en' : '/', title: isEnglish ? 'Home' : 'Start' },
-    { href: '/leistungen', title: isEnglish ? 'Services' : 'Leistungen' },
-    { href: '/medikamente', title: isEnglish ? 'Medication' : 'Medikamente' },
+    { href: isEnglish ? '/leistungen-en' : '/leistungen', title: isEnglish ? 'Services' : 'Leistungen' },
+    { href: isEnglish ? '/medikamente-en' : '/medikamente', title: isEnglish ? 'Medication' : 'Medikamente' },
   ];
   
   const ueberUnsLinks = [
@@ -80,10 +80,10 @@ export function Header() {
     { href: '/praxisferien', title: isEnglish ? 'Practice Holidays' : 'Praxisferien' }
   ];
   
-  const notfallLink = { href: '/notfall', title: isEnglish ? 'EMERGENCY' : 'NOTFALL' };
+  const notfallLink = { href: isEnglish ? '/notfall-en' : '/notfall', title: isEnglish ? 'EMERGENCY' : 'NOTFALL' };
 
   const zeitenActive = pathname === '/oeffnungszeiten' || pathname === '/telefonzeiten' || pathname === '/praxisferien';
-  const ueberUnsActive = pathname === '/team' || pathname === '/impressionen' || pathname === '/team/externe-dienstleister';
+  const ueberUnsActive = pathname === '/team' || pathname === '/impressionen' || pathname === '/team/externe-dienstleister' || pathname === '/team-en' || pathname === '/team/externe-dienstleister-en' || pathname === '/impressionen-en';
 
 
   const [indicatorStyle, setIndicatorStyle] = useState({});
@@ -291,7 +291,7 @@ export function Header() {
                         <CollapsibleContent className="py-2 pl-6">
                             <div className="flex flex-col space-y-2">
                             {ueberUnsLinks.map((link) => (
-                                <MobileNavLink key={link.href} {...link} isActive={pathname === link.href} setSheetOpen={setSheetOpen} />
+                                <MobileNavLink key={link.href} {...link} href={isEnglish ? `${link.href}-en` : link.href} isActive={pathname === (isEnglish ? `${link.href}-en` : link.href)} setSheetOpen={setSheetOpen} />
                             ))}
                             </div>
                         </CollapsibleContent>
