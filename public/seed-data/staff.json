@@ -1,0 +1,8 @@
+
+[
+    { "id": "garcia", "order": 1, "name": "Fr. Garcia", "role": "Leitende MPA", "imageUrl": "/images/team/Garcia.jpg", "languages": ["de", "es"], "hidden": false, "fullWidth": false },
+    { "id": "aeschlimann", "order": 2, "name": "Fr. Aeschlimann", "role": "MPA", "imageUrl": "/images/team/Aeschlimann.jpg", "languages": ["de", "en", "fr"], "hidden": false, "fullWidth": false },
+    { "id": "huber", "order": 3, "name": "Fr. Huber", "role": "MPA", "imageUrl": "/images/team/Huber.jpg", "languages": ["de", "en"], "hidden": false, "fullWidth": false },
+    { "id": "oetztuerk", "order": 4, "name": "Fr. Öztürk", "role": "MPA i.A.", "imageUrl": "/images/team/Oetztuerk.jpg", "languages": ["de", "tr"], "hidden": false, "fullWidth": false },
+    { "id": "sommer", "order": 5, "name": "Fr. Sommer", "role": "MPA i.A.", "imageUrl": "/images/team/Sommer.jpg", "languages": ["de", "en"], "hidden": false, "fullWidth": false }
+]

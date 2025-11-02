@@ -1,0 +1,35 @@
+
+[
+    {
+      "id": "dr-med-m-rosenov",
+      "order": 1,
+      "name": "Dr. med. M. Rosenov",
+      "specialty": "Facharzt für Orthopädie",
+      "imageUrl": "/images/team/Dr.Rosenov.jpg",
+      "positionImageUrl": "https://orthozentrum-bern.ch/wp-content/themes/blankslate-child/img/logo_orthozentrum.svg",
+      "hidden": false,
+      "websiteUrl": "https://orthozentrum-bern.ch/",
+      "openInNewTab": true
+    },
+    {
+      "id": "dr-med-s-herschel",
+      "order": 2,
+      "name": "Dr. med. S. Herschel",
+      "specialty": "Fachärztin für Angiologie",
+      "imageUrl": "/images/team/Dr.Herschel.jpg",
+      "positionImageUrl": "/images/VASC-Alliance-Logo.png",
+      "hidden": false,
+      "websiteUrl": "https://www.vasc-alliance.ch/",
+      "openInNewTab": true
+    },
+     {
+      "id": "dr-med-a-slezak",
+      "order": 3,
+      "name": "Dr. med. A. Slezak",
+      "specialty": "Fachärztin für Neurologie",
+      "imageUrl": "/images/team/Dr.Slezak.jpg",
+      "hidden": false,
+      "websiteUrl": "https://neurologie-plus.ch/",
+      "openInNewTab": true
+    }
+]

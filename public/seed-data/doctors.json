@@ -1,0 +1,29 @@
+
+[
+    {
+      "id": "dr-med-g-ortmanns",
+      "order": 1,
+      "name": "Dr. med. G. Ortmanns",
+      "title": "Inhaber",
+      "specialty": "Facharzt für Allgemeinmedizin (D)",
+      "qual1": "Fähigkeitsausweis für Praxislabor (KHM)",
+      "qual2": "Fähigkeitsausweis für dosisintensives Röntgen (KHM)",
+      "qual3": "",
+      "qual4": "",
+      "imageUrl": "/images/team/Ortmanns.jpg",
+      "backSideCode": "\n        <div class=\"w-full h-full text-left p-8 text-white\">\n            <div class=\"prose prose-invert text-white\">\n                <h4>Curriculum Vitae</h4>\n                <ul>\n                    <li>Studium der Humanmedizin in Aachen</li>\n                    <li>Facharztausbildung im Spital Heinsberg (D) und Geilenkirchen (D)</li>\n                    <li>Anerkennung als Facharzt für Allgemeinmedizin</li>\n                    <li>Übernahme der Praxis von Dr. med. A. Keller in Mützenich (D)</li>\n                    <li>Weiterbildung im Bereich der speziellen Schmerztherapie und der Palliativmedizin</li>\n                    <li>Umzug in die Schweiz und Tätigkeit als leitender Arzt in der Medaxo Praxengruppe</li>\n                    <li>Tätigkeit als Vertretungsarzt in diversen Hausarztpraxen</li>\n                    <li>Übernahme der Praxis von Dr. med. J. Segginger zum 01.01.2023</li>\n                </ul>\n            </div>\n        </div>",
+      "languages": ["de", "en"],
+      "hidden": false
+    },
+    {
+      "id": "prof-dr-med-dr-h-c-peter-schemmer",
+      "order": 2,
+      "name": "Prof. Dr. med. Dr. h. c. P. Schemmer",
+      "title": "Konsiliararzt",
+      "specialty": "Facharzt für Viszeralchirurgie",
+      "imageUrl": "/images/team/Prof.Schemmer.jpg",
+      "backSideCode": "",
+      "languages": [],
+      "hidden": false
+    }
+]
