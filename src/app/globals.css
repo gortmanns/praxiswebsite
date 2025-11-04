@@ -91,7 +91,7 @@
       100% { transform: scale(1.1); }
     }
     .animate-kenburns-zoom-in {
-      animation: kenburns-zoom-in 20s ease-in-out infinite alternate;
+      animation: kenburns-zoom-in 7s ease-in-out infinite alternate;
     }
     
     @keyframes kenburns-pan-right {
@@ -99,7 +99,7 @@
       100% { transform: translate(5%, 0) scale(1.15); }
     }
     .animate-kenburns-pan-right {
-      animation: kenburns-pan-right 25s ease-in-out infinite alternate;
+      animation: kenburns-pan-right 8s ease-in-out infinite alternate;
     }
 
     @keyframes kenburns-pan-left {
@@ -107,7 +107,7 @@
       100% { transform: translate(-5%, 0) scale(1.15); }
     }
     .animate-kenburns-pan-left {
-        animation: kenburns-pan-left 25s ease-in-out infinite alternate;
+        animation: kenburns-pan-left 8s ease-in-out infinite alternate;
     }
     
     @keyframes kenburns-zoom-out {
@@ -115,7 +115,7 @@
       100% { transform: scale(1); }
     }
     .animate-kenburns-zoom-out {
-      animation: kenburns-zoom-out 20s ease-in-out infinite alternate;
+      animation: kenburns-zoom-out 7s ease-in-out infinite alternate;
     }
 }
 
