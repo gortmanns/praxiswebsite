@@ -1,10 +1,11 @@
 
 import { Header } from '../_components/header';
 import { Footer } from '../_components/footer';
-import { ImageGallery } from './_components/image-gallery';
-import { practiceImages } from './images';
+import { ImageGallery } from '../impressionen/_components/image-gallery';
+import { practiceImages } from '../impressionen/images';
 
-export default function ImpressionenPage() {
+
+export default function ImpressionenEnPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -12,14 +13,14 @@ export default function ImpressionenPage() {
         <div className="container py-16 sm:py-24">
             <div className="mx-auto max-w-5xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
-                    IMPRESSIONEN
+                    IMPRESSIONS
                 </h2>
-                 <p className="mt-4 text-lg text-foreground/80">
-                    Ein kleiner Einblick in unsere modernen und freundlichen Praxisräumlichkeiten.
+                <p className="mt-4 text-lg text-foreground/80">
+                    A small glimpse into our modern and friendly practice rooms.
                 </p>
             </div>
             <div className="mx-auto mt-16">
-                <ImageGallery images={practiceImages} />
+                 <ImageGallery images={practiceImages} />
             </div>
         </div>
       </main>
@@ -27,3 +28,4 @@ export default function ImpressionenPage() {
     </div>
   );
 }
+
