@@ -85,45 +85,37 @@
         animation-duration: var(--animation-duration, 60s);
     }
 
-    /* Ken Burns Effects */
-    @keyframes kenburns-zoom-in {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.1); }
-    }
-    .animate-kenburns-zoom-in {
-      animation: kenburns-zoom-in 2.3s ease-in-out infinite alternate;
-    }
-    
+    /* Ken Burns Effects - Pure Panning */
     @keyframes kenburns-pan-right {
-      0% { transform: translate(-5%, 0) scale(1.15); }
-      100% { transform: translate(5%, 0) scale(1.15); }
+      0% { transform: scale(1.15) translate(-5%, 0); }
+      100% { transform: scale(1.15) translate(5%, 0); }
     }
     .animate-kenburns-pan-right {
-      animation: kenburns-pan-right 2.6s ease-in-out infinite alternate;
-    }
-
-    @keyframes kenburns-pan-left {
-      0% { transform: translate(5%, 0) scale(1.15); }
-      100% { transform: translate(-5%, 0) scale(1.15); }
-    }
-    .animate-kenburns-pan-left {
-        animation: kenburns-pan-left 2.6s ease-in-out infinite alternate;
+      animation: kenburns-pan-right 8s ease-in-out infinite alternate;
     }
     
-    @keyframes kenburns-zoom-out {
-      0% { transform: scale(1.1); }
-      100% { transform: scale(1); }
+    @keyframes kenburns-pan-left {
+      0% { transform: scale(1.15) translate(5%, 0); }
+      100% { transform: scale(1.15) translate(-5%, 0); }
     }
-    .animate-kenburns-zoom-out {
-      animation: kenburns-zoom-out 2.3s ease-in-out infinite alternate;
+    .animate-kenburns-pan-left {
+        animation: kenburns-pan-left 8s ease-in-out infinite alternate;
     }
 
-    @keyframes kenburns-custom-pan-zoom {
-      0% { transform: scale(1.2) translate(-10%, -5%); }
-      100% { transform: scale(1.4) translate(10%, 5%); }
+    @keyframes kenburns-pan-up {
+      0% { transform: scale(1.15) translate(0, 5%); }
+      100% { transform: scale(1.15) translate(0, -5%); }
     }
-    .animate-kenburns-custom-pan-zoom {
-        animation: kenburns-custom-pan-zoom 2.6s ease-in-out infinite alternate;
+    .animate-kenburns-pan-up {
+      animation: kenburns-pan-up 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes kenburns-pan-down {
+      0% { transform: scale(1.15) translate(0, -5%); }
+      100% { transform: scale(1.15) translate(0, 5%); }
+    }
+    .animate-kenburns-pan-down {
+      animation: kenburns-pan-down 8s ease-in-out infinite alternate;
     }
 }
 

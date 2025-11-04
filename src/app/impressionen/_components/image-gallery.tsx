@@ -15,10 +15,10 @@ interface ImageGalleryProps {
 }
 
 const animationClasses = [
-  'animate-kenburns-zoom-in',
   'animate-kenburns-pan-right',
-  'animate-kenburns-zoom-out',
   'animate-kenburns-pan-left',
+  'animate-kenburns-pan-down',
+  'animate-kenburns-pan-up',
 ];
 
 export function ImageGallery({ images }: ImageGalleryProps) {
@@ -29,11 +29,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       {images.map((image, index) => {
-        let animationClass = animationClasses[index % animationClasses.length];
-        if (index === 1) {
-          // Apply custom animation to the second image (index 1)
-          animationClass = 'animate-kenburns-custom-pan-zoom';
-        }
+        const animationClass = animationClasses[index % animationClasses.length];
 
         return (
           <div
