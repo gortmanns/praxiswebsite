@@ -18,7 +18,7 @@ export default function ImpressionenPage() {
                     Ein kleiner Einblick in unsere modernen und freundlichen Praxisräumlichkeiten.
                 </p>
             </div>
-            <div className="mx-auto mt-16">
+            <div className="mx-auto mt-16 max-w-7xl">
                 <ImageGallery images={practiceImages} />
             </div>
         </div>

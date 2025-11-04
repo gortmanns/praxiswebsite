@@ -3,13 +3,6 @@
 
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 
 interface GalleryImage {
   src: string;
@@ -21,41 +14,38 @@ interface ImageGalleryProps {
   images: GalleryImage[];
 }
 
+const animationClasses = [
+  'animate-kenburns-zoom-in',
+  'animate-kenburns-pan-right',
+  'animate-kenburns-zoom-out',
+  'animate-kenburns-pan-left',
+];
+
 export function ImageGallery({ images }: ImageGalleryProps) {
   if (!images || images.length === 0) {
     return <p>Keine Bilder verfügbar.</p>;
   }
 
   return (
-    <div className="relative w-full max-w-6xl mx-auto">
-        <Carousel
-            opts={{
-                align: "start",
-                loop: true,
-            }}
-            className="w-full"
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {images.map((image, index) => (
+        <div
+          key={index}
+          className="relative aspect-video w-full overflow-hidden rounded-lg shadow-2xl"
         >
-            <CarouselContent>
-                {images.map((image, index) => (
-                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                    <div className="p-1">
-                        <div className="group aspect-video w-full overflow-hidden rounded-lg shadow-2xl">
-                            <Image
-                                src={image.src}
-                                alt={image.alt}
-                                data-ai-hint={image.hint}
-                                width={600}
-                                height={400}
-                                className="h-full w-full object-cover transition-transform duration-[8000ms] ease-in-out group-hover:scale-110"
-                            />
-                        </div>
-                    </div>
-                </CarouselItem>
-                ))}
-            </CarouselContent>
-            <CarouselPrevious className="absolute left-[-1rem] top-1/2 -translate-y-1/2" />
-            <CarouselNext className="absolute right-[-1rem] top-1/2 -translate-y-1/2" />
-        </Carousel>
+          <Image
+            src={image.src}
+            alt={image.alt}
+            data-ai-hint={image.hint}
+            fill
+            className={cn(
+              "h-full w-full object-cover",
+              animationClasses[index % animationClasses.length]
+            )}
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        </div>
+      ))}
     </div>
   );
 }

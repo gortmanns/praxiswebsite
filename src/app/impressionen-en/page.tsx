@@ -19,7 +19,7 @@ export default function ImpressionenEnPage() {
                     A small glimpse into our modern and friendly practice rooms.
                 </p>
             </div>
-            <div className="mx-auto mt-16">
+            <div className="mx-auto mt-16 max-w-7xl">
                  <ImageGallery images={practiceImages} />
             </div>
         </div>
@@ -28,4 +28,3 @@ export default function ImpressionenEnPage() {
     </div>
   );
 }
-
