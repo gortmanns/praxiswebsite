@@ -30,13 +30,13 @@ export function ImageGallery({ images }: ImageGalleryProps) {
         } else if (index === 1) {
           animationClass = 'animate-kenburns-pan-right';
         } else if (index === 2) {
-          animationClass = 'animate-kenburns-pan-left';
+            animationClass = 'animate-kenburns-pan-left';
         }
 
         return (
           <div
             key={index}
-            className="relative aspect-video w-full overflow-hidden rounded-lg shadow-2xl"
+            className="relative w-full overflow-hidden rounded-lg shadow-2xl h-[80vh] max-h-[800px]"
           >
             <Image
               src={image.src}
