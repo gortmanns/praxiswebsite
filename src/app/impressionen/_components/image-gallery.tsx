@@ -8,6 +8,7 @@ interface GalleryImage {
   src: string;
   alt: string;
   hint: string;
+  description?: string;
 }
 
 interface ImageGalleryProps {
@@ -28,6 +29,10 @@ export function ImageGallery({ images }: ImageGalleryProps) {
           animationClass = 'animate-kenburns-zoom-in-focus-right';
         } else if (index === 1) {
           animationClass = 'animate-kenburns-pan-right';
+        } else if (index === 2) {
+          animationClass = 'animate-kenburns-zoom-in-full';
+        } else if (index === 3) {
+            animationClass = 'animate-kenburns-pan-left';
         }
 
         return (
@@ -46,6 +51,11 @@ export function ImageGallery({ images }: ImageGalleryProps) {
               )}
               sizes="100vw"
             />
+            {image.description && (
+              <div className="absolute bottom-4 right-4 rounded-md bg-black/50 px-4 py-2 text-white shadow-lg">
+                <p className="text-lg font-semibold">{image.description}</p>
+              </div>
+            )}
           </div>
         );
       })}

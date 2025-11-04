@@ -4,16 +4,19 @@ export const practiceImages = [
         src: '/images/impressionen/Praxis1.jpg',
         alt: 'Heller und freundlicher Empfangsbereich der Arztpraxis.',
         hint: 'reception area',
+        description: 'Medikamenten-Ausgabe',
     },
     {
         src: '/images/impressionen/Praxis2.jpg',
         alt: 'Modernes Sprechzimmer mit medizinischen Geräten.',
         hint: 'doctor office',
+        description: 'Sprechzimmer 2',
     },
     {
         src: '/images/impressionen/Praxis3.jpg',
         alt: 'Ein leerer, sauberer Warteraum mit bequemen Stühlen.',
         hint: 'waiting room',
+        description: 'Wartebereich',
     },
     {
         src: '/images/impressionen/Praxis4.jpg',
