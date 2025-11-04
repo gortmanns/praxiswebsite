@@ -37,7 +37,10 @@ export function ImageGallery({ images }: ImageGalleryProps) {
           animationClass = 'animate-kenburns-zoom-in-focus-right';
         } else if (index === 2) {
           animationClass = 'animate-kenburns-pan-left';
+        } else if (index === 3) {
+           animationClass = 'animate-kenburns-pan-left-zoom-bed';
         }
+
 
         return (
           <div

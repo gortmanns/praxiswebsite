@@ -85,15 +85,19 @@
         animation-duration: var(--animation-duration, 60s);
     }
 
-    /* Ken Burns Effects - Pure Panning */
-    @keyframes kenburns-pan-right {
-      0% { transform: scale(1.15) translate(-7.5%, 0); }
-      100% { transform: scale(1.15) translate(7.5%, 0); }
-    }
-    .animate-kenburns-pan-right {
-      animation: kenburns-pan-right 12s ease-in-out infinite alternate;
-    }
+    /* --- Ken Burns Effects --- */
     
+    /* Zooms in with a focus on the right side */
+    @keyframes kenburns-zoom-in-focus-right {
+      0% { transform: scale(1.15); }
+      100% { transform: scale(1.45); }
+    }
+    .animate-kenburns-zoom-in-focus-right {
+      animation: kenburns-zoom-in-focus-right 12s ease-in-out infinite alternate;
+      transform-origin: 75% 50%;
+    }
+
+    /* Pans from left to right */
     @keyframes kenburns-pan-left {
       0% { transform: scale(1.15) translate(7.5%, 0); }
       100% { transform: scale(1.15) translate(-7.5%, 0); }
@@ -102,39 +106,14 @@
         animation: kenburns-pan-left 12s ease-in-out infinite alternate;
     }
 
-    @keyframes kenburns-pan-up {
-      0% { transform: scale(1.15) translate(0, 7.5%); }
-      100% { transform: scale(1.15) translate(0, -7.5%); }
+    /* Pans to the left while zooming in, focusing on the bed */
+    @keyframes kenburns-pan-left-zoom-bed {
+      0% { transform: scale(1.1) translateX(5%); }
+      100% { transform: scale(1.25) translateX(-10%); }
     }
-    .animate-kenburns-pan-up {
-      animation: kenburns-pan-up 12s ease-in-out infinite alternate;
-    }
-
-    @keyframes kenburns-pan-down {
-      0% { transform: scale(1.15) translate(0, -7.5%); }
-      100% { transform: scale(1.15) translate(0, 7.5%); }
-    }
-    .animate-kenburns-pan-down {
-      animation: kenburns-pan-down 12s ease-in-out infinite alternate;
-    }
-
-    /* Custom zoom-in animation for the first image, focusing on the right */
-    @keyframes kenburns-zoom-in-focus-right {
-      0% { transform: scale(1.15); }
-      100% { transform: scale(1.45); }
-    }
-    .animate-kenburns-zoom-in-focus-right {
-      animation: kenburns-zoom-in-focus-right 12s ease-in-out infinite alternate;
-      transform-origin: 75% 50%; /* Focus on right-center */
-    }
-
-    /* New, more powerful zoom-in animation */
-    @keyframes kenburns-zoom-in-full {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.4); }
-    }
-    .animate-kenburns-zoom-in-full {
-      animation: kenburns-zoom-in-full 12s ease-in-out infinite alternate;
+    .animate-kenburns-pan-left-zoom-bed {
+      animation: kenburns-pan-left-zoom-bed 15s ease-in-out infinite alternate;
+      transform-origin: 20% 60%; /* Focus on the lower-left area (the bed) */
     }
 }
 
