@@ -40,7 +40,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
         } else if (index === 3) {
            animationClass = 'animate-kenburns-pan-left-zoom-bed';
         } else if (index === 4) {
-           animationClass = 'animate-kenburns-pan-left-zoom-bed';
+           animationClass = 'animate-kenburns-pan-right-zoom-bed';
         }
 
 
