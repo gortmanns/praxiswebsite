@@ -87,32 +87,32 @@
 
     /* Ken Burns Effects - Pure Panning */
     @keyframes kenburns-pan-right {
-      0% { transform: scale(1.15) translate(-5%, 0); }
-      100% { transform: scale(1.15) translate(5%, 0); }
+      0% { transform: scale(1.1) translate(-5%, 0); }
+      100% { transform: scale(1.1) translate(5%, 0); }
     }
     .animate-kenburns-pan-right {
       animation: kenburns-pan-right 8s ease-in-out infinite alternate;
     }
     
     @keyframes kenburns-pan-left {
-      0% { transform: scale(1.15) translate(5%, 0); }
-      100% { transform: scale(1.15) translate(-5%, 0); }
+      0% { transform: scale(1.1) translate(5%, 0); }
+      100% { transform: scale(1.1) translate(-5%, 0); }
     }
     .animate-kenburns-pan-left {
         animation: kenburns-pan-left 8s ease-in-out infinite alternate;
     }
 
     @keyframes kenburns-pan-up {
-      0% { transform: scale(1.15) translate(0, 5%); }
-      100% { transform: scale(1.15) translate(0, -5%); }
+      0% { transform: scale(1.1) translate(0, 5%); }
+      100% { transform: scale(1.1) translate(0, -5%); }
     }
     .animate-kenburns-pan-up {
       animation: kenburns-pan-up 8s ease-in-out infinite alternate;
     }
 
     @keyframes kenburns-pan-down {
-      0% { transform: scale(1.15) translate(0, -5%); }
-      100% { transform: scale(1.15) translate(0, 5%); }
+      0% { transform: scale(1.1) translate(0, -5%); }
+      100% { transform: scale(1.1) translate(0, 5%); }
     }
     .animate-kenburns-pan-down {
       animation: kenburns-pan-down 8s ease-in-out infinite alternate;
