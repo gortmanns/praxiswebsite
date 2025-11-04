@@ -91,7 +91,7 @@
       100% { transform: scale(1.1); }
     }
     .animate-kenburns-zoom-in {
-      animation: kenburns-zoom-in 7s ease-in-out infinite alternate;
+      animation: kenburns-zoom-in 2.3s ease-in-out infinite alternate;
     }
     
     @keyframes kenburns-pan-right {
@@ -99,7 +99,7 @@
       100% { transform: translate(5%, 0) scale(1.15); }
     }
     .animate-kenburns-pan-right {
-      animation: kenburns-pan-right 8s ease-in-out infinite alternate;
+      animation: kenburns-pan-right 2.6s ease-in-out infinite alternate;
     }
 
     @keyframes kenburns-pan-left {
@@ -107,7 +107,7 @@
       100% { transform: translate(-5%, 0) scale(1.15); }
     }
     .animate-kenburns-pan-left {
-        animation: kenburns-pan-left 8s ease-in-out infinite alternate;
+        animation: kenburns-pan-left 2.6s ease-in-out infinite alternate;
     }
     
     @keyframes kenburns-zoom-out {
@@ -115,7 +115,15 @@
       100% { transform: scale(1); }
     }
     .animate-kenburns-zoom-out {
-      animation: kenburns-zoom-out 7s ease-in-out infinite alternate;
+      animation: kenburns-zoom-out 2.3s ease-in-out infinite alternate;
+    }
+
+    @keyframes kenburns-custom-pan-zoom {
+      0% { transform: scale(1.2) translate(-10%, -5%); }
+      100% { transform: scale(1.4) translate(10%, 5%); }
+    }
+    .animate-kenburns-custom-pan-zoom {
+        animation: kenburns-custom-pan-zoom 2.6s ease-in-out infinite alternate;
     }
 }
 
@@ -127,7 +135,6 @@
 
 /* --- Google Translate Widget Cleanup --- */
 
-/* Hide the main widget container, but keep it in the layout */
 body { top: 0 !important; }
 .skiptranslate:not(#google_translate_element) { display: none !important; }
 iframe.skiptranslate { display: none !important; }
