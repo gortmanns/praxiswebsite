@@ -15,9 +15,9 @@ interface ImageGalleryProps {
 }
 
 const animationClasses = [
-  'animate-kenburns-pan-left',
-  'animate-kenburns-pan-down',
-  'animate-kenburns-pan-up',
+  'animate-kenburns-pan-right', // used for index 1
+  'animate-kenburns-pan-down', // used for index 4
+  'animate-kenburns-pan-up', // used for index 5
 ];
 
 export function ImageGallery({ images }: ImageGalleryProps) {
@@ -34,11 +34,11 @@ export function ImageGallery({ images }: ImageGalleryProps) {
           // Special animation for the first image
           animationClass = 'animate-kenburns-zoom-in-focus-right';
         } else if (index === 2) {
-          // Row 2, Left: Zoom animation
-          animationClass = 'animate-kenburns-zoom-in-focus-right';
+          // Row 2, Left: New, stronger zoom animation
+          animationClass = 'animate-kenburns-zoom-in-full';
         } else if (index === 3) {
           // Row 2, Right: Pan from left to right
-          animationClass = 'animate-kenburns-pan-left';
+          animationClass = 'animate-kenburns-pan-right';
         }
         else {
           // Cycle through the panning animations for the rest

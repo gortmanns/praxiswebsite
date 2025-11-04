@@ -118,7 +118,7 @@
       animation: kenburns-pan-down 12s ease-in-out infinite alternate;
     }
 
-    /* Custom zoom-in animation */
+    /* Custom zoom-in animation for the first image, focusing on the right */
     @keyframes kenburns-zoom-in-focus-right {
       0% { transform: scale(1.15); }
       100% { transform: scale(1.45); }
@@ -126,6 +126,15 @@
     .animate-kenburns-zoom-in-focus-right {
       animation: kenburns-zoom-in-focus-right 12s ease-in-out infinite alternate;
       transform-origin: 75% 50%; /* Focus on right-center */
+    }
+
+    /* New, more powerful zoom-in animation */
+    @keyframes kenburns-zoom-in-full {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.4); }
+    }
+    .animate-kenburns-zoom-in-full {
+      animation: kenburns-zoom-in-full 12s ease-in-out infinite alternate;
     }
 }
 
