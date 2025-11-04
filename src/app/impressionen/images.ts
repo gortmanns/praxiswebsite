@@ -19,14 +19,14 @@ export const practiceImages = [
         description: 'Wartebereich',
     },
     {
-        src: '/images/impressionen/Praxis4.jpg',
-        alt: 'Laborbereich mit Mikroskop und Analysegeräten.',
-        hint: 'medical laboratory',
-    },
-    {
         src: '/images/impressionen/Praxis5.jpg',
         alt: 'Detailaufnahme eines Blutdruckmessgeräts in der Praxis.',
         hint: 'medical equipment',
+    },
+    {
+        src: '/images/impressionen/Praxis4.jpg',
+        alt: 'Laborbereich mit Mikroskop und Analysegeräten.',
+        hint: 'medical laboratory',
     },
     {
         src: '/images/impressionen/Praxis6.jpg',
