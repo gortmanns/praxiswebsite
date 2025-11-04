@@ -14,12 +14,6 @@ interface ImageGalleryProps {
   images: GalleryImage[];
 }
 
-const animationClasses = [
-  'animate-kenburns-pan-right', // used for index 1
-  'animate-kenburns-pan-down', // used for index 4
-  'animate-kenburns-pan-up', // used for index 5
-];
-
 export function ImageGallery({ images }: ImageGalleryProps) {
   if (!images || images.length === 0) {
     return <p>Keine Bilder verfügbar.</p>;
@@ -30,20 +24,13 @@ export function ImageGallery({ images }: ImageGalleryProps) {
       {images.map((image, index) => {
         let animationClass = '';
 
+        // Only apply animations to the first two images (index 0 and 1)
         if (index === 0) {
-          // Special animation for the first image
           animationClass = 'animate-kenburns-zoom-in-focus-right';
-        } else if (index === 2) {
-          // Row 2, Left: New, stronger zoom animation
-          animationClass = 'animate-kenburns-zoom-in-full';
-        } else if (index === 3) {
-          // Row 2, Right: Pan from left to right
+        } else if (index === 1) {
           animationClass = 'animate-kenburns-pan-right';
         }
-        else {
-          // Cycle through the panning animations for the rest
-          animationClass = animationClasses[index % animationClasses.length];
-        }
+        // For index 2, 3, 4, 5... animationClass remains empty.
 
         return (
           <div
