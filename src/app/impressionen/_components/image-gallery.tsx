@@ -33,9 +33,16 @@ export function ImageGallery({ images }: ImageGalleryProps) {
         if (index === 0) {
           // Special animation for the first image
           animationClass = 'animate-kenburns-zoom-in-focus-right';
-        } else {
+        } else if (index === 2) {
+          // Row 2, Left: Zoom animation
+          animationClass = 'animate-kenburns-zoom-in-focus-right';
+        } else if (index === 3) {
+          // Row 2, Right: Pan from left to right
+          animationClass = 'animate-kenburns-pan-left';
+        }
+        else {
           // Cycle through the panning animations for the rest
-          animationClass = animationClasses[(index - 1) % animationClasses.length];
+          animationClass = animationClasses[index % animationClasses.length];
         }
 
         return (
