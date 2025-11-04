@@ -30,9 +30,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
         } else if (index === 1) {
           animationClass = 'animate-kenburns-pan-right';
         } else if (index === 2) {
-          animationClass = 'animate-kenburns-zoom-in-full';
-        } else if (index === 3) {
-            animationClass = 'animate-kenburns-pan-left';
+          animationClass = 'animate-kenburns-pan-left';
         }
 
         return (
