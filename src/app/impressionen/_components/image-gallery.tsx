@@ -21,19 +21,17 @@ export function ImageGallery({ images }: ImageGalleryProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
       {images.map((image, index) => {
         let animationClass = '';
 
-        // Only apply animations to the first two images
         if (index === 0) {
           animationClass = 'animate-kenburns-zoom-in-focus-right';
         } else if (index === 1) {
           animationClass = 'animate-kenburns-pan-right';
         } else if (index === 2) {
-            animationClass = 'animate-kenburns-pan-left';
+          animationClass = 'animate-kenburns-pan-left';
         }
-
 
         return (
           <div
@@ -47,7 +45,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
                 data-ai-hint={image.hint}
                 width={0}
                 height={0}
-                sizes="100vw"
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="h-auto w-full"
               />
             </div>
