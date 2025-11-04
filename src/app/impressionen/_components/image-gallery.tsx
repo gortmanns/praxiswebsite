@@ -15,7 +15,6 @@ interface ImageGalleryProps {
 }
 
 const animationClasses = [
-  'animate-kenburns-pan-right',
   'animate-kenburns-pan-left',
   'animate-kenburns-pan-down',
   'animate-kenburns-pan-up',
@@ -29,7 +28,15 @@ export function ImageGallery({ images }: ImageGalleryProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       {images.map((image, index) => {
-        const animationClass = animationClasses[index % animationClasses.length];
+        let animationClass = '';
+
+        if (index === 0) {
+          // Special animation for the first image
+          animationClass = 'animate-kenburns-zoom-in-focus-right';
+        } else {
+          // Cycle through the panning animations for the rest
+          animationClass = animationClasses[(index - 1) % animationClasses.length];
+        }
 
         return (
           <div
