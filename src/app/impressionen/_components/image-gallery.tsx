@@ -39,6 +39,8 @@ export function ImageGallery({ images }: ImageGalleryProps) {
           animationClass = 'animate-kenburns-pan-left';
         } else if (index === 3) {
            animationClass = 'animate-kenburns-pan-left-zoom-bed';
+        } else if (index === 4) {
+           animationClass = 'animate-kenburns-pan-left-zoom-bed';
         }
 
 
@@ -47,7 +49,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
             key={index}
             className="relative w-full overflow-hidden rounded-lg shadow-2xl"
           >
-            <div className={cn(animationClass && "relative overflow-hidden", animationClass)}>
+            <div className={cn("relative overflow-hidden", animationClass)}>
               <Image
                 src={image.src}
                 alt={image.alt}
