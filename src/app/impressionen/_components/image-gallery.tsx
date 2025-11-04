@@ -20,17 +20,15 @@ export function ImageGallery({ images }: ImageGalleryProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 gap-8">
       {images.map((image, index) => {
         let animationClass = '';
 
-        // Only apply animations to the first two images (index 0 and 1)
         if (index === 0) {
           animationClass = 'animate-kenburns-zoom-in-focus-right';
         } else if (index === 1) {
           animationClass = 'animate-kenburns-pan-right';
         }
-        // For index 2, 3, 4, 5... animationClass remains empty.
 
         return (
           <div
@@ -46,7 +44,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
                 "h-full w-full object-cover",
                 animationClass
               )}
-              sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="100vw"
             />
           </div>
         );
