@@ -1,32 +1,32 @@
 
 export const practiceImages = [
     {
-        src: 'https://picsum.photos/seed/praxis1/600/400',
+        src: '/images/impressionen/Praxis1.jpg',
         alt: 'Heller und freundlicher Empfangsbereich der Arztpraxis.',
         hint: 'reception area',
     },
     {
-        src: 'https://picsum.photos/seed/praxis2/600/400',
+        src: '/images/impressionen/Praxis2.jpg',
         alt: 'Modernes Sprechzimmer mit medizinischen Geräten.',
         hint: 'doctor office',
     },
     {
-        src: 'https://picsum.photos/seed/praxis3/600/400',
+        src: '/images/impressionen/Praxis3.jpg',
         alt: 'Ein leerer, sauberer Warteraum mit bequemen Stühlen.',
         hint: 'waiting room',
     },
     {
-        src: 'https://picsum.photos/seed/praxis4/600/400',
+        src: '/images/impressionen/Praxis4.jpg',
         alt: 'Laborbereich mit Mikroskop und Analysegeräten.',
         hint: 'medical laboratory',
     },
     {
-        src: 'https://picsum.photos/seed/praxis5/600/400',
+        src: '/images/impressionen/Praxis5.jpg',
         alt: 'Detailaufnahme eines Blutdruckmessgeräts in der Praxis.',
         hint: 'medical equipment',
     },
     {
-        src: 'https://picsum.photos/seed/praxis6/600/400',
+        src: '/images/impressionen/Praxis6.jpg',
         alt: 'Aussenansicht des modernen Praxisgebäudes.',
         hint: 'building exterior',
     },
