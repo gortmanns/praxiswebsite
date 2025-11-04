@@ -25,6 +25,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
       {images.map((image, index) => {
         let animationClass = '';
 
+        // Only apply animations to the first two images
         if (index === 0) {
           animationClass = 'animate-kenburns-zoom-in-focus-right';
         } else if (index === 1) {
@@ -33,22 +34,23 @@ export function ImageGallery({ images }: ImageGalleryProps) {
             animationClass = 'animate-kenburns-pan-left';
         }
 
+
         return (
           <div
             key={index}
-            className="relative w-full overflow-hidden rounded-lg shadow-2xl h-[80vh] max-h-[800px]"
+            className="relative w-full overflow-hidden rounded-lg shadow-2xl"
           >
-            <Image
-              src={image.src}
-              alt={image.alt}
-              data-ai-hint={image.hint}
-              fill
-              className={cn(
-                "h-full w-full object-cover",
-                animationClass
-              )}
-              sizes="100vw"
-            />
+            <div className={cn("relative overflow-hidden", animationClass)}>
+              <Image
+                src={image.src}
+                alt={image.alt}
+                data-ai-hint={image.hint}
+                width={0}
+                height={0}
+                sizes="100vw"
+                className="h-auto w-full"
+              />
+            </div>
             {image.description && (
               <div className="absolute bottom-4 right-4 rounded-md bg-black/50 px-4 py-2 text-white shadow-lg">
                 <p className="text-lg font-semibold">{image.description}</p>
