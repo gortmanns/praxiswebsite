@@ -1,11 +1,10 @@
-
 'use client'
 
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { LanguageFlags } from '@/app/admin/dashboard/team/doctors/_components/language-flags';
+import { LanguageFlags } from '@/components/logos/flags/language-flags';
 
 export interface Doctor {
     id: string;

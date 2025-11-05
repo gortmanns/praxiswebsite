@@ -1,8 +1,10 @@
 
+'use client';
+    
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { LanguageFlags } from '@/app/admin/dashboard/team/doctors/_components/language-flags';
+import { LanguageFlags } from '@/components/logos/flags/language-flags';
 
 interface TeamMemberCardProps {
   name: string;
