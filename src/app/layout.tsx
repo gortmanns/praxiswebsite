@@ -2,17 +2,11 @@ import type { Metadata } from 'next';
 import './globals.css';
 import './tiptap-styles.css';
 import { cn } from '@/lib/utils';
-import { Montserrat, Open_Sans } from 'next/font/google';
+import { Montserrat } from 'next/font/google';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
   variable: '--font-headline',
-  weight: ['400', '700'],
-});
-
-const openSans = Open_Sans({
-  subsets: ['latin'],
-  variable: '--font-body',
   weight: ['400', '700'],
 });
 
@@ -34,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de">
-      <body className={cn('font-body antialiased', montserrat.variable, openSans.variable)}>
+      <body className={cn('font-body antialiased', montserrat.variable)}>
           {children}
       </body>
     </html>
