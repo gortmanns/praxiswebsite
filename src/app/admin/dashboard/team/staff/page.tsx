@@ -22,7 +22,7 @@ import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { StaffCard as DisplayCard } from './_components/staff-card';
 import { StaffEditor } from './_components/staff-editor';
 import type { StaffMember as CardData } from './_components/staff-editor';
-import { LanguageFlags } from '@/app/admin/dashboard/team/doctors/_components/language-flags';
+import { LanguageFlags } from '@/components/logos/flags/language-flags';
 
 
 const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {

@@ -11,7 +11,7 @@ import React, { useMemo, useState, useEffect, useRef } from 'react';
 import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { LanguageFlags } from './language-flags';
+import { LanguageFlags } from '@/components/logos/flags/language-flags';
 
 export interface Doctor {
     id: string;
