@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation';
 import { Footer } from './_components/footer';
 import { Header } from './_components/header';
 import { HolidayBanner } from './_components/holiday-banner';
-import { cn } from '@/lib/utils';
 
 export default function PageLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
