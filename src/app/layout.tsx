@@ -1,6 +1,5 @@
 
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import './globals.css';
 import './tiptap-styles.css';
 import { cn } from '@/lib/utils';
@@ -33,25 +32,6 @@ export default function RootLayout({
     <html lang="de">
       <body className={cn('font-body antialiased', montserrat.variable, openSans.variable)}>
           {children}
-        <Script
-          id="google-translate-init"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              function googleTranslateElementInit() {
-                new google.translate.TranslateElement({
-                  pageLanguage: 'de',
-                  layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                  autoDisplay: false
-                }, 'google_translate_element');
-              }
-            `,
-          }}
-        />
-         <Script
-          strategy="afterInteractive"
-          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-        />
       </body>
     </html>
   );
