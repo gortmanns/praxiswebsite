@@ -1,6 +1,5 @@
 
 import type { Metadata } from 'next';
-import { Toaster } from '@/components/ui/toaster';
 import Script from 'next/script';
 import './globals.css';
 import './tiptap-styles.css';
@@ -34,7 +33,6 @@ export default function RootLayout({
     <html lang="de">
       <body className={cn('font-body antialiased', montserrat.variable, openSans.variable)}>
           {children}
-        <Toaster />
         <Script
           id="google-translate-init"
           strategy="afterInteractive"
