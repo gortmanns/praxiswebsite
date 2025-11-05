@@ -3,6 +3,7 @@ import './globals.css';
 import './tiptap-styles.css';
 import { cn } from '@/lib/utils';
 import { Montserrat, Open_Sans } from 'next/font/google';
+import { FirebaseClientProvider } from '@/firebase';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -35,7 +36,9 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className={cn('font-body antialiased', montserrat.variable, openSans.variable)}>
+        <FirebaseClientProvider>
           {children}
+        </FirebaseClientProvider>
       </body>
     </html>
   );

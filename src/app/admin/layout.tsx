@@ -1,6 +1,5 @@
 'use client';
 
-import { FirebaseClientProvider } from '@/firebase';
 import { Toaster } from 'sonner';
 
 export default function AdminLayout({
@@ -10,9 +9,9 @@ export default function AdminLayout({
 }) {
   
   return (
-    <FirebaseClientProvider>
+    <>
       {children}
       <Toaster />
-    </FirebaseClientProvider>
+    </>
   );
 }
