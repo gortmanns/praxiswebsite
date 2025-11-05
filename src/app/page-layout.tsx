@@ -7,6 +7,7 @@ import { Header } from './_components/header';
 import { HolidayBanner } from './_components/holiday-banner';
 import { Toaster } from '@/components/ui/toaster';
 import Script from 'next/script';
+import { FirebaseClientProvider } from '@/firebase';
 
 export default function PageLayout({
   children,
@@ -25,8 +26,9 @@ export default function PageLayout({
                     pathname.startsWith('/ueber-uns-en') ||
                     pathname.startsWith('/impressum-en') ||
                     pathname.startsWith('/datenschutzerklaerung-en');
+
   return (
-    <>
+    <FirebaseClientProvider>
       <div className="flex min-h-screen flex-col bg-background">
         <Header isEnglish={isEnglish} />
         <main className="flex-1">
@@ -57,6 +59,6 @@ export default function PageLayout({
         strategy="afterInteractive"
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
       />
-    </>
+    </FirebaseClientProvider>
   );
 }
