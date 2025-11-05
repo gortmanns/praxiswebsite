@@ -1,16 +1,12 @@
-'use client';
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
 import { cn } from '@/lib/utils';
 import { Phone, Mail } from 'lucide-react';
-import { useState } from 'react';
 import PageLayout from '../page-layout';
 
 export default function MedikamentePage() {
-  const [activeTab, setActiveTab] = useState('telefon');
 
   const PhoneCardContent = () => (
      <div className="w-full">
@@ -149,19 +145,11 @@ export default function MedikamentePage() {
         <div className="mx-auto mt-12 max-w-7xl">
           {/* Desktop View: Tabs */}
           <div className="hidden sm:block">
-            <Tabs defaultValue="telefon" value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <Tabs defaultValue="telefon" className="w-full">
                 <TabsList className="grid h-auto w-full grid-cols-2 gap-2 rounded-lg bg-transparent p-0 shadow-2xl">
-                    {/*
-                      WICHTIGER HINWEIS FÜR DIE KI:
-                      Die Farben der Tabs sind fix und ändern sich NICHT.
-                      - Telefon-Tab ist IMMER blau (bg-gradient-start).
-                      - E-Mail-Tab ist IMMER grau (bg-secondary).
-                      - Die Schrift ist IMMER weiss (text-primary-foreground).
-                      - Es gibt KEINE Logik für einen "aktiven" oder "inaktiven" Zustand, die Farben sind statisch.
-                    */}
                     <TabsTrigger
                         value="telefon"
-                        className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-primary-foreground"
+                        className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-primary-foreground data-[state=active]:bg-gradient-start data-[state=inactive]:bg-secondary"
                     >
                         <span className="text-[clamp(1.2rem,2.5vw,1.5rem)] font-bold">Vorbestellung per Telefon</span>
                         <div className="flex items-center gap-3 text-[clamp(0.8rem,2vw,1rem)]">
@@ -171,7 +159,7 @@ export default function MedikamentePage() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="email"
-                        className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 text-primary-foreground"
+                        className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-primary-foreground data-[state=active]:bg-gradient-start data-[state=inactive]:bg-secondary"
                     >
                         <span className="text-[clamp(1.2rem,2.5vw,1.5rem)] font-bold">Vorbestellung per E-Mail</span>
                         <div className="flex items-center gap-3 text-[clamp(0.8rem,2vw,1rem)]">
@@ -188,7 +176,7 @@ export default function MedikamentePage() {
                 </Card>
               </TabsContent>
               <TabsContent value="email" className="-mt-px">
-                <Card className="rounded-t-none bg-gradient-to-b from-secondary to-accent text-primary-foreground shadow-2xl">
+                <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground shadow-2xl">
                     <CardContent className="p-6 md:p-8">
                       <EmailCardContent />
                     </CardContent>

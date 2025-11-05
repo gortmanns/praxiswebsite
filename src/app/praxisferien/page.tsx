@@ -1,9 +1,7 @@
-'use client';
-
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { Skeleton } from '@/components/ui/skeleton';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, Timestamp } from 'firebase/firestore';
 import PageLayout from '../page-layout';
@@ -19,7 +17,7 @@ function formatDate(date: Date) {
   return format(date, 'd. MMMM yyyy', { locale: de });
 }
 
-export default function PraxisferienPage() {
+function PraxisferienContent() {
   const firestore = useFirestore();
 
   const holidaysQuery = useMemoFirebase(() => {
@@ -29,7 +27,7 @@ export default function PraxisferienPage() {
 
   const { data: holidaysData, isLoading } = useCollection<{ id: string; name: string; start: Timestamp; end: Timestamp }>(holidaysQuery);
 
-  const sortedHolidays: Holiday[] = useMemo(() => {
+  const sortedHolidays: Holiday[] = React.useMemo(() => {
     if (!holidaysData) return [];
     
     const now = new Date();
@@ -48,6 +46,37 @@ export default function PraxisferienPage() {
 
 
   return (
+    <div className="mx-auto mt-16 w-full max-w-2xl space-y-8">
+      {isLoading ? (
+        Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className="space-y-4">
+            <Skeleton className="h-6 w-1/2" />
+            <Skeleton className="h-5 w-3/4" />
+            {index < 2 && <hr className="mt-8 border-t border-border" />}
+          </div>
+        ))
+      ) : sortedHolidays.length > 0 ? (
+        sortedHolidays.map((holiday, index) => (
+          <div key={holiday.id}>
+            <div className="space-y-2">
+              <h3 className="text-xl font-bold text-primary">{holiday.name}</h3>
+              <p className="text-lg text-foreground/80">
+                {formatDate(holiday.start)} – {formatDate(holiday.end)}
+              </p>
+            </div>
+            {index < sortedHolidays.length - 1 && <hr className="mt-8 border-t border-border" />}
+          </div>
+        ))
+      ) : (
+        <p className="text-center text-lg text-foreground/80">Aktuell sind keine Praxisferien geplant.</p>
+      )}
+    </div>
+  );
+}
+
+
+export default function PraxisferienPage() {
+  return (
     <PageLayout>
       <div className="container py-16 sm:py-24">
           <div className="mx-auto max-w-5xl text-center">
@@ -58,34 +87,7 @@ export default function PraxisferienPage() {
                   Auf dieser Seite finden Sie stets eine Übersicht aller Praxisferien, soweit diese bereits geplant sind.
               </p>
           </div>
-          <div className="mx-auto mt-16 w-full max-w-2xl space-y-8">
-            {isLoading ? (
-              // Ladezustand mit Skeletons
-              Array.from({ length: 3 }).map((_, index) => (
-                <div key={index} className="space-y-4">
-                  <Skeleton className="h-6 w-1/2" />
-                  <Skeleton className="h-5 w-3/4" />
-                  {index < 2 && <hr className="mt-8 border-t border-border" />}
-                </div>
-              ))
-            ) : sortedHolidays.length > 0 ? (
-              // Daten geladen und vorhanden
-              sortedHolidays.map((holiday, index) => (
-                <div key={holiday.id}>
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-bold text-primary">{holiday.name}</h3>
-                    <p className="text-lg text-foreground/80">
-                      {formatDate(holiday.start)} – {formatDate(holiday.end)}
-                    </p>
-                  </div>
-                  {index < sortedHolidays.length - 1 && <hr className="mt-8 border-t border-border" />}
-                </div>
-              ))
-            ) : (
-              // Daten geladen, aber keine Einträge
-              <p className="text-center text-lg text-foreground/80">Aktuell sind keine Praxisferien geplant.</p>
-            )}
-          </div>
+          <PraxisferienContent />
       </div>
     </PageLayout>
   );

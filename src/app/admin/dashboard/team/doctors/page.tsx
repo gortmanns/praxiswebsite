@@ -71,8 +71,9 @@ export default function DoctorsPage() {
             qual3: qualifications[2] || '',
             qual4: qualifications[3] || '',
             imageUrl: doc.querySelector('.relative.h-full img')?.getAttribute('src') || '',
-            positionHtml: positionContainer ? positionContainer.outerHTML : '',
-            languagesHtml: languagesContainer ? languagesContainer.outerHTML : '',
+            positionText: positionContainer?.textContent?.trim() || '',
+            // positionHtml: positionContainer ? positionContainer.outerHTML : '',
+            // languagesHtml: languagesContainer ? languagesContainer.outerHTML : '',
         };
     };
 
@@ -83,7 +84,7 @@ export default function DoctorsPage() {
         let initialStateForEditor: Doctor = { ...initialDoctorState, ...card };
 
         // If card is a legacy card (has frontSideCode but is missing modern fields), parse it.
-        if (card.frontSideCode && (!card.title || !card.name || !card.specialty)) {
+        if (card.frontSideCode && (!card.title || !card.specialty)) {
             const parsedData = parseFromLegacyHtml(card.frontSideCode);
             initialStateForEditor = { ...initialStateForEditor, ...parsedData };
         }

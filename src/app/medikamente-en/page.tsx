@@ -1,16 +1,12 @@
-'use client';
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
 import { cn } from '@/lib/utils';
 import { Phone, Mail } from 'lucide-react';
-import { useState } from 'react';
 import PageLayout from '../page-layout';
 
 export default function MedicationPage() {
-  const [activeTab, setActiveTab] = useState('phone');
 
   const PhoneCardContent = () => (
      <div className="w-full">
@@ -149,11 +145,11 @@ export default function MedicationPage() {
         <div className="mx-auto mt-12 max-w-7xl">
           {/* Desktop View: Tabs */}
           <div className="hidden sm:block">
-            <Tabs defaultValue="phone" value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <Tabs defaultValue="phone" className="w-full">
                 <TabsList className="grid h-auto w-full grid-cols-2 gap-2 rounded-lg bg-transparent p-0 shadow-2xl">
                     <TabsTrigger
                         value="phone"
-                        className="group/phone flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-gradient-start p-6 text-primary-foreground"
+                        className="group/phone flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-primary-foreground data-[state=active]:bg-gradient-start data-[state=inactive]:bg-secondary"
                     >
                         <span className="text-[clamp(1.2rem,2.5vw,1.5rem)] font-bold">Pre-order by Phone</span>
                         <div className="flex items-center gap-3 text-[clamp(0.8rem,2vw,1rem)]">
@@ -163,7 +159,7 @@ export default function MedicationPage() {
                     </TabsTrigger>
                     <TabsTrigger
                         value="email"
-                        className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none bg-secondary p-6 text-primary-foreground"
+                        className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-primary-foreground data-[state=active]:bg-gradient-start data-[state=inactive]:bg-secondary"
                     >
                         <span className="text-[clamp(1.2rem,2.5vw,1.5rem)] font-bold">Pre-order by E-Mail</span>
                         <div className="flex items-center gap-3 text-[clamp(0.8rem,2vw,1rem)]">
@@ -180,7 +176,7 @@ export default function MedicationPage() {
                 </Card>
               </TabsContent>
               <TabsContent value="email" className="-mt-px">
-                <Card className="rounded-t-none bg-gradient-to-b from-secondary to-accent text-primary-foreground shadow-2xl">
+                <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground shadow-2xl">
                     <CardContent className="p-6 md:p-8">
                       <EmailCardContent />
                     </CardContent>
