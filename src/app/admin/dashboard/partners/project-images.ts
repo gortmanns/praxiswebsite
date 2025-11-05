@@ -6,7 +6,6 @@ export const projectImages = [
     '/images/go-medical-logo.png',
     '/images/mcl-labor-logo.png',
     '/images/doxnet-logo.jpg',
-    '/images/logos/slezak-logo.png',
     '/images/praxiszentrum-logo.png',
     '/images/praxiszentrum-logo-icon.png',
     '/images/mehrfacharzt-logo.png',

@@ -5,12 +5,6 @@ const nextConfig: NextConfig = {
   output: 'export',
   // Suppress the warning about source maps in production, as it's not critical for this setup.
   productionBrowserSourceMaps: true,
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   images: {
     unoptimized: true,
     remotePatterns: [
