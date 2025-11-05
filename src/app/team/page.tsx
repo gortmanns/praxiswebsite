@@ -1,4 +1,3 @@
-
 'use client';
 
 import PageLayout from '../page-layout';
@@ -15,9 +14,19 @@ interface Doctor {
     id: string;
     order: number;
     name: string;
-    frontSideCode: string;
+    title?: string;
+    specialty?: string;
+    qual1?: string;
+    qual2?: string;
+    qual3?: string;
+    qual4?: string;
+    imageUrl?: string;
+    positionText?: string;
+    positionImageUrl?: string;
     backSideCode: string;
+    languages: string[];
     hidden?: boolean;
+    frontSideCode?: string; 
 }
 
 interface StaffMember {

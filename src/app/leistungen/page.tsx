@@ -1,4 +1,3 @@
-
 import PageLayout from '../page-layout';
 import Image from 'next/image';
 import Link from 'next/link';

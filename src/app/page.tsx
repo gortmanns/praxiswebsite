@@ -1,4 +1,3 @@
-
 import PageLayout from './page-layout';
 import { Hero } from './_components/hero';
 import { WelcomeSection } from './_components/welcome-section';

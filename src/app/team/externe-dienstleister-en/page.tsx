@@ -1,4 +1,3 @@
-
 'use client';
 
 import PageLayout from '../../page-layout';

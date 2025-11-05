@@ -1,24 +1,14 @@
-
 'use client';
 
 import PageLayout from '../page-layout';
 import { TeamMemberCard } from '../team/_components/team-member-card';
-import { DoctorCard } from '../team/_components/doctor-card';
+import { DoctorCard, type Doctor as DoctorData } from '../team/_components/doctor-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import React from 'react';
 import Link from 'next/link';
-
-interface Doctor {
-    id: string;
-    order: number;
-    name: string;
-    frontSideCode: string;
-    backSideCode: string;
-    hidden?: boolean;
-}
 
 interface StaffMember {
     id: string;
@@ -46,7 +36,7 @@ export default function TeamEnPage() {
     return query(collection(firestore, 'staff'), orderBy('order', 'asc'));
   }, [firestore]);
 
-  const { data: doctorsData, isLoading: isLoadingDoctors } = useCollection<Doctor>(doctorsQuery);
+  const { data: doctorsData, isLoading: isLoadingDoctors } = useCollection<DoctorData>(doctorsQuery);
   const { data: staffData, isLoading: isLoadingStaff } = useCollection<StaffMember>(staffQuery);
 
   const activeDoctors = doctorsData?.filter(d => !d.hidden) || [];

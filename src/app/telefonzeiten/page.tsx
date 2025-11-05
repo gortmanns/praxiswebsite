@@ -1,4 +1,3 @@
-
 import PageLayout from '../page-layout';
 import { PhoneHoursCalendar } from '../oeffnungszeiten/_components/phone-hours-calendar';
 

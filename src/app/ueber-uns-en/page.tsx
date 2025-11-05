@@ -1,4 +1,3 @@
-
 import PageLayout from '../page-layout';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -34,7 +33,6 @@ export default function UeberUnsEnPage() {
                             <li>The X-ray system was extensively renewed and now operates completely digitally. X-ray images can now be viewed from any PC in the practice.</li>
                             <li>To make the whole effort worthwhile and to justify the name of a medical center, collaborations have been established with various specialists who now regularly offer appointments at our medical center, saving our patients many trips to the city of Bern.</li>
                             <li>A nutritionist regularly holds appointments in our premises, so the journeys for our patients are now short for this service as well.</li>
-                            <li>To enable the treatment by specialists, an ultrasound examination device was additionally purchased.</li>
                         </ul>
 
                         <h3 className="pt-4 font-headline text-2xl font-bold text-primary">What remains to be done?</h3>

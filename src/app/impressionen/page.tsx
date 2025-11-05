@@ -1,4 +1,3 @@
-
 import PageLayout from '../page-layout';
 import { ImageGallery } from './_components/image-gallery';
 import { practiceImages } from './images';

@@ -1,4 +1,3 @@
-
 import PageLayout from '../page-layout';
 import { OpeningHoursCalendar } from './_components/opening-hours-calendar';
 
