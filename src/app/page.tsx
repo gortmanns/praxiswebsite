@@ -9,6 +9,7 @@ import { QuickNavSection } from './_components/quick-nav-section';
 import { CooperationPartnersSection } from './_components/cooperation-partners';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/components/ui/skeleton';
+import { FirebaseClientProvider } from '@/firebase';
 
 const HolidayBanner = dynamic(
   () => import('./_components/holiday-banner').then((mod) => mod.HolidayBanner),
@@ -21,16 +22,18 @@ const HolidayBanner = dynamic(
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
-        <HolidayBanner />
-        <Hero />
-        <WelcomeSection />
-        <QuickNavSection />
-        <CooperationPartnersSection />
-      </main>
-      <Footer />
-    </div>
+    <FirebaseClientProvider>
+      <div className="flex min-h-screen flex-col bg-background">
+        <Header />
+        <main className="flex-1">
+          <HolidayBanner />
+          <Hero />
+          <WelcomeSection />
+          <QuickNavSection />
+          <CooperationPartnersSection />
+        </main>
+        <Footer />
+      </div>
+    </FirebaseClientProvider>
   );
 }
