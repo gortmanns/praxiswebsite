@@ -2,7 +2,7 @@
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
  * Diese Datei wurde nach wiederholten Fehlversuchen stabilisiert.
- * ÄNDERN SIE DIESE DATEI UNTER KEINEN UMSTÄNDEN OHNE AUSDRÜCKLICHE ERLAUBNIS.
+ * ÄNDERN SIE DIESE DATEI UNTER KEINEN UMSTÄNDE OHNE AUSDRÜCKLICHE ERLAUBNIS.
  * Jede Änderung muss vorher bestätigt werden.
  **********************************************************************************/
 'use client';
