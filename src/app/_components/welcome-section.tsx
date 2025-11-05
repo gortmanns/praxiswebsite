@@ -1,12 +1,7 @@
 
 'use client';
 
-import { usePathname } from 'next/navigation';
-
-export function WelcomeSection() {
-  const pathname = usePathname();
-  const isEnglish = pathname.startsWith('/page-en');
-
+export function WelcomeSection({ isEnglish }: { isEnglish: boolean }) {
   return (
     <section id="welcome" className="pt-8 pb-12 sm:pt-12 sm:pb-16">
       <div className="container">

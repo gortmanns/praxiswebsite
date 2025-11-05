@@ -1,3 +1,4 @@
+
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -13,10 +14,7 @@ import { doc, collection, query, where, Timestamp } from 'firebase/firestore';
 import { format, addDays, differenceInDays, isWithinInterval } from 'date-fns';
 import { de, enUS } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { usePathname } from 'next/navigation';
 
 // --- Helper Components & Types ---
 
@@ -112,11 +110,9 @@ interface BannerSettings {
 
 // --- Main Banner Logic ---
 
-export function HolidayBanner() {
+export function HolidayBanner({ isEnglish }: { isEnglish: boolean }) {
     const firestore = useFirestore();
     const [now, setNow] = useState<Date | null>(null);
-    const pathname = usePathname();
-    const isEnglish = pathname.startsWith('/page-en') || pathname.startsWith('/team-en') || pathname.startsWith('/team/externe-dienstleister-en') || pathname.startsWith('/impressionen-en') || pathname.startsWith('/jobs-en') || pathname.startsWith('/leistungen-en') || pathname.startsWith('/medikamente-en') || pathname.startsWith('/notfall-en');
 
     useEffect(() => {
         setNow(new Date());

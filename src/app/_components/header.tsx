@@ -55,12 +55,10 @@ const MobileNavLink = ({ href, title, isActive, isEmergency = false, setSheetOpe
 };
 
 
-export function Header() {
+export function Header({ isEnglish }: { isEnglish: boolean }) {
   const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
-
-  const isEnglish = pathname.startsWith('/page-en') || pathname.startsWith('/leistungen-en') || pathname.startsWith('/medikamente-en') || pathname.startsWith('/notfall-en') || pathname.startsWith('/ueber-uns-en') || pathname.startsWith('/jobs-en') || pathname.startsWith('/impressum-en') || pathname.startsWith('/datenschutzerklaerung-en') || pathname.startsWith('/impressionen-en') || pathname.startsWith('/team-en') || pathname.startsWith('/team/externe-dienstleister-en');
 
   const mainNavLinks = [
     { href: isEnglish ? '/page-en' : '/', title: isEnglish ? 'Home' : 'Start' },

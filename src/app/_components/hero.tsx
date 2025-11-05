@@ -5,12 +5,8 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Calendar } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 
-export function Hero() {
-  const pathname = usePathname();
-  const isEnglish = pathname.startsWith('/page-en');
-
+export function Hero({ isEnglish }: { isEnglish: boolean }) {
   return (
     <section className="relative w-full aspect-[1511/721]">
       <Image

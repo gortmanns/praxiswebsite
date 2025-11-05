@@ -4,7 +4,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
-import { usePathname } from 'next/navigation';
 
 const PhoneIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -37,16 +36,14 @@ const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 
-export function Footer() {
-  const pathname = usePathname();
-  const isEnglish = pathname.startsWith('/page-en');
+export function Footer({ isEnglish }: { isEnglish: boolean }) {
   const year = new Date().getFullYear();
 
   const navLinks = isEnglish ? [
-    { href: '/ueber-uns', label: 'About Us' },
-    { href: '/jobs', label: 'Jobs & Career' },
-    { href: '/impressum', label: 'Imprint' },
-    { href: '/datenschutzerklaerung', label: 'Privacy Policy' },
+    { href: '/ueber-uns-en', label: 'About Us' },
+    { href: '/jobs-en', label: 'Jobs & Career' },
+    { href: '/impressum-en', label: 'Imprint' },
+    { href: '/datenschutzerklaerung-en', label: 'Privacy Policy' },
   ] : [
     { href: '/ueber-uns', label: 'Über uns' },
     { href: '/jobs', label: 'Jobs & Mitarbeit' },
@@ -86,7 +83,7 @@ export function Footer() {
                 {navLinks.map((link) => (
                   <li key={link.href}>
                     <Link
-                      href={isEnglish ? `${link.href}-en` : link.href}
+                      href={link.href}
                       className="text-sm text-background/80 transition-colors hover:text-background"
                     >
                       {link.label}
@@ -172,5 +169,3 @@ export function Footer() {
     </footer>
   );
 }
-
-    

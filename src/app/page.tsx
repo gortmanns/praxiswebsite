@@ -1,3 +1,4 @@
+
 import PageLayout from './page-layout';
 import { Hero } from './_components/hero';
 import { WelcomeSection } from './_components/welcome-section';
@@ -7,10 +8,10 @@ import { CooperationPartnersSection } from './_components/cooperation-partners';
 export default function Home() {
   return (
     <PageLayout>
-        <Hero />
-        <WelcomeSection />
-        <QuickNavSection />
-        <CooperationPartnersSection />
+      <Hero isEnglish={false} />
+      <WelcomeSection isEnglish={false} />
+      <QuickNavSection />
+      <CooperationPartnersSection isEnglish={false} />
     </PageLayout>
   );
 }

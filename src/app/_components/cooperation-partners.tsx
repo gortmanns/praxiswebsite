@@ -7,7 +7,6 @@ import { collection, query, orderBy } from 'firebase/firestore';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import DOMPurify from 'dompurify';
-import { usePathname } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface Partner {
@@ -65,9 +64,7 @@ const PartnerGrid: React.FC<{ partners: Partner[] }> = ({ partners }) => {
 };
 
 
-export function CooperationPartnersSection() {
-  const pathname = usePathname();
-  const isEnglish = pathname.startsWith('/page-en');
+export function CooperationPartnersSection({ isEnglish }: { isEnglish: boolean }) {
   const firestore = useFirestore();
 
   const medicalPartnersQuery = useMemoFirebase(() => {
