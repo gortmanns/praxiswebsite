@@ -4,6 +4,7 @@ import './globals.css';
 import './tiptap-styles.css';
 import { cn } from '@/lib/utils';
 import { Montserrat, Open_Sans } from 'next/font/google';
+import ClientLayout from './client-layout';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -31,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className={cn('font-body antialiased', montserrat.variable, openSans.variable)}>
-          {children}
+          <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

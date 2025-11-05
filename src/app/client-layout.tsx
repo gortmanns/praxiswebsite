@@ -1,10 +1,12 @@
+
 'use client';
 
+import { FirebaseClientProvider } from '@/firebase';
 import Script from 'next/script';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <FirebaseClientProvider>
       {children}
       <Script
         id="google-translate-init"
@@ -27,6 +29,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         strategy="afterInteractive"
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
       />
-    </>
+    </FirebaseClientProvider>
   );
 }
