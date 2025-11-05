@@ -1,127 +1,55 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, orderBy } from 'firebase/firestore';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import DOMPurify from 'dompurify';
-import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
 
-// --- Static Data Definition ---
-
-const medicalPartnersData = [
-    {
-      id: 'ortho',
-      order: 1,
-      name: 'orthozentrum-bern',
-      websiteUrl: 'https://orthozentrum-bern.ch/',
-      logoHtml: `
-        <svg viewBox="0 0 240 55.5" xmlns="http://www.w3.org/2000/svg" class="text-card-foreground h-full w-full object-contain" aria-label="orthozentrum-bern Logo">
-          <g>
-            <path d="M46.7 7.8S44.5 3.9 40 3.9H20.8s-4.4 0-6.7 3.9L4.6 24.4s-2.2 3.9 0 7.7l9.6 16.6s2.2 3.9 6.7 3.9H40s4.4 0 6.7-3.9l9.6-16.6s2.2-3.9 0-7.7L46.7 7.8z" fill="none" stroke="#588791" stroke-width="1.639"></path>
-            <path d="M24 52.4c-1.1-3.4-3.1-8-5.1-11.1-.6-.9-1-1.9-1.2-2.9-.3-1.8.9-3.2 2.9-3.5 6.5-1 13-1 19.5 0 2.2.3 3.4 2 2.9 4-.2.7-.5 1.4-1 2.1-2 3.1-4.1 8-5.2 11.4" fill="none" stroke="#588791" stroke-width="1.639"></path>
-            <path d="M35.4 4.4c.4 3.8 1.7 8 4.1 11.3 1.8 2.4 3.1 2.6 3.7 5.6.5 2.5-.3 6.9-2.3 7.9-2.3 1.2-4.6 1-6.8-.4-1.4-1.2-2.4-1.4-3.6-1.3-1.3 0-2.3.2-3.6 1.3-2.2 1.5-4.4 1.6-6.8.4-2-1-2.8-5.3-2.3-7.9.6-3 1.9-3.2 3.7-5.6 2.4-3.2 3.7-7.4 4.1-11.3" fill="none" stroke="#588791" stroke-width="1.639"></path>
-          </g>
-          <text x="70" y="32" font-family="Montserrat, sans-serif" font-size="16" font-weight="bold" fill="#588791" dominant-baseline="middle">orthozentrum-bern</text>
-        </svg>
-      `,
-      openInNewTab: true,
-    },
-    {
-      id: 'vasc',
-      order: 2,
-      name: 'VASC ALLIANCE',
-      websiteUrl: 'https://www.vasc-alliance.ch/',
-      logoHtml: '<img src="/images/VASC-Alliance-Logo.png" alt="VASC ALLIANCE Logo" style="object-fit: contain; width: 100%; height: 100%;" data-ai-hint="vascular surgery logo" />',
-      openInNewTab: true,
-    },
-    {
-      id: 'schemmer',
-      order: 3,
-      name: 'Schemmer & Worni',
-      websiteUrl: 'https://schemmer-worni.ch/',
-      logoHtml: '<img src="/images/schemmer-worni-logo.png" alt="Schemmer & Worni Logo" style="object-fit: contain; width: 100%; height: 100%;" data-ai-hint="surgery logo" />',
-      openInNewTab: true,
-    },
-    {
-      id: 'slezak',
-      order: 4,
-      name: 'Agnieszka Slezak',
-      websiteUrl: 'https://neurologie-plus.ch/',
-      logoHtml: `
-        <svg viewBox="0 0 500 150" xmlns="http://www.w3.org/2000/svg" class="text-special-green h-full w-full object-contain" aria-label="Agnieszka Slezak Logo">
-          <style>.text-special-green { color: #358392; } .foreground-fill { fill: hsl(var(--foreground)); }</style>
-          <text x="5" y="70" font-family="Montserrat, sans-serif" font-size="36" font-weight="bold" fill="currentColor">Dr. med. Agnieszka Slezak</text>
-          <text x="250" y="110" font-family="Montserrat, sans-serif" font-size="24" font-weight="normal" class="foreground-fill" text-anchor="middle">Fachärztin für Neurologie</text>
-        </svg>
-      `,
-      openInNewTab: true,
-    },
-];
-
-const otherPartnersData = [
-    {
-      id: 'go-medical',
-      order: 1,
-      name: 'Go-Medical',
-      websiteUrl: 'https://www.go-medical.ch/',
-      logoHtml: '<img src="/images/go-medical-logo.png" alt="Go-Medical Logo" style="object-fit: contain; width: 100%; height: 100%;" data-ai-hint="medical services logo" />',
-      openInNewTab: true,
-    },
-    {
-      id: 'mcl',
-      order: 2,
-      name: 'MCL',
-      websiteUrl: 'https://www.mcl.ch/',
-      logoHtml: '<img src="/images/mcl-labor-logo.png" alt="MCL Logo" style="object-fit: contain; width: 100%; height: 100%;" data-ai-hint="laboratory logo" />',
-      openInNewTab: true,
-    },
-    {
-      id: 'doxnet',
-      order: 3,
-      name: 'doxnet',
-      websiteUrl: 'https://www.doxnet.ch/',
-      logoHtml: '<img src="/images/doxnet-logo.jpg" alt="doxnet Logo" style="object-fit: contain; width: 100%; height: 100%;" data-ai-hint="medical network logo" />',
-      openInNewTab: true,
-    },
-];
-
-// --- Components ---
+interface Partner {
+  id: string;
+  order: number;
+  name: string;
+  websiteUrl: string;
+  logoHtml: string;
+  openInNewTab: boolean;
+  hidden?: boolean;
+}
 
 const CodeRenderer: React.FC<{ html: string }> = ({ html }) => {
     const [sanitizedHtml, setSanitizedHtml] = useState({ __html: '' });
 
     useEffect(() => {
-        // This effect runs only on the client, after the component has mounted.
         const sanitize = DOMPurify.sanitize;
         const config = {
             ADD_TAGS: ["svg", "path", "g", "text", "image", "rect", "polygon", "circle", "line", "defs", "clipPath", "style", "img"],
             ADD_ATTR: ['style', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'd', 'font-family', 'font-size', 'font-weight', 'x', 'y', 'dominant-baseline', 'text-anchor', 'aria-label', 'width', 'height', 'alt', 'data-ai-hint', 'class', 'className', 'fill-rule', 'clip-rule', 'id', 'transform', 'points', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'href', 'target', 'rel', 'src']
         };
         setSanitizedHtml({ __html: sanitize(html, config) });
-    }, [html]); // Re-run if the html prop changes.
+    }, [html]);
 
-    // On the server and during initial client render, this div will be empty.
-    // After mount, the useEffect will run and the sanitized HTML will be rendered.
     return <div className="relative flex h-full w-full items-center justify-center overflow-hidden" dangerouslySetInnerHTML={sanitizedHtml} />;
 };
 
 
-const PartnerCard: React.FC<{ partner: typeof medicalPartnersData[0] }> = ({ partner }) => (
+const PartnerCard: React.FC<{ partner: Partner }> = ({ partner }) => (
     <Link
         href={partner.websiteUrl || '#'}
         target={partner.openInNewTab ? '_blank' : '_self'}
         rel="noopener noreferrer"
         className="block w-full aspect-[2/1] overflow-hidden rounded-lg shadow-2xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
     >
-        <Card className="flex h-full w-full items-center justify-center bg-background p-4">
+        <Card className="flex h-full w-full items-center justify-center bg-background p-4 transition-transform duration-300 hover:scale-105">
             {partner.logoHtml && <CodeRenderer html={partner.logoHtml} />}
         </Card>
     </Link>
 );
 
-const PartnerGrid: React.FC<{ partners: typeof medicalPartnersData }> = ({ partners }) => {
+const PartnerGrid: React.FC<{ partners: Partner[] }> = ({ partners }) => {
   if (!partners || partners.length === 0) return null;
   return (
     <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8">
@@ -138,6 +66,33 @@ const PartnerGrid: React.FC<{ partners: typeof medicalPartnersData }> = ({ partn
 export function CooperationPartnersSection() {
   const pathname = usePathname();
   const isEnglish = pathname.startsWith('/page-en');
+  const firestore = useFirestore();
+
+  const medicalPartnersQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'medicalPartners'), orderBy('order', 'asc'));
+  }, [firestore]);
+
+  const otherPartnersQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'otherPartners'), orderBy('order', 'asc'));
+  }, [firestore]);
+
+  const { data: medicalPartnersData, isLoading: isLoadingMedical } = useCollection<Partner>(medicalPartnersQuery);
+  const { data: otherPartnersData, isLoading: isLoadingOther } = useCollection<Partner>(otherPartnersQuery);
+  
+  const activeMedicalPartners = useMemo(() => medicalPartnersData?.filter(p => !p.hidden), [medicalPartnersData]);
+  const activeOtherPartners = useMemo(() => otherPartnersData?.filter(p => !p.hidden), [otherPartnersData]);
+
+  const renderSkeleton = () => (
+      <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8">
+          {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="w-full md:w-1/3 lg:w-1/4 max-w-xs flex-grow">
+                   <Skeleton className="w-full aspect-[2/1] rounded-lg" />
+              </div>
+          ))}
+      </div>
+  );
 
   return (
     <section id="partners" className="w-full bg-primary">
@@ -147,16 +102,20 @@ export function CooperationPartnersSection() {
         </h2>
         
         <div className="mt-12">
-          <PartnerGrid partners={medicalPartnersData} />
+          {isLoadingMedical ? renderSkeleton() : (
+              activeMedicalPartners && activeMedicalPartners.length > 0 ? <PartnerGrid partners={activeMedicalPartners} /> : <p className="text-center text-primary-foreground">Informationen werden geladen...</p>
+          )}
         </div>
 
-        {otherPartnersData && otherPartnersData.length > 0 && (
+        {activeOtherPartners && activeOtherPartners.length > 0 && (
             <>
                 <h3 className="mt-16 text-center font-headline text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
                 {isEnglish ? 'Our Other Partners' : 'Unsere weiteren Partner'}
                 </h3>
                 <div className="mt-12">
-                    <PartnerGrid partners={otherPartnersData} />
+                     {isLoadingOther ? renderSkeleton() : (
+                       activeOtherPartners && activeOtherPartners.length > 0 && <PartnerGrid partners={activeOtherPartners} />
+                     )}
                 </div>
             </>
         )}
