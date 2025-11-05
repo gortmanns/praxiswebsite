@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Toaster } from 'sonner';
@@ -7,11 +8,5 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  
-  return (
-    <>
-      {children}
-      <Toaster />
-    </>
-  );
+  return <>{children}<Toaster /></>;
 }
