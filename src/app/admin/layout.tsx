@@ -1,8 +1,9 @@
 'use client';
 
-import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from './dashboard/_components/app-sidebar';
 import { Toaster } from 'sonner';
+import { FirebaseClientProvider } from '@/firebase';
 
 export default function AdminLayout({
   children,
@@ -10,12 +11,14 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        {children}
-      </SidebarInset>
-      <Toaster />
-    </SidebarProvider>
+    <FirebaseClientProvider>
+      <SidebarProvider>
+        <AppSidebar />
+        <main className="flex-1">
+          {children}
+        </main>
+        <Toaster />
+      </SidebarProvider>
+    </FirebaseClientProvider>
   );
 }
