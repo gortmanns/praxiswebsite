@@ -5,6 +5,7 @@ import './tiptap-styles.css';
 import { cn } from '@/lib/utils';
 import { Montserrat, Open_Sans } from 'next/font/google';
 import ClientLayout from './client-layout';
+import { Toaster } from "@/components/ui/toaster"
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -21,8 +22,13 @@ const openSans = Open_Sans({
 export const metadata: Metadata = {
   title: 'Praxiszentrum im Ring',
   description: 'Ihre Gesundheit, Unsere Priorität.',
-  viewport: 'width=device-width, initial-scale=1.0',
 };
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 
 export default function RootLayout({
   children,

@@ -1,15 +1,12 @@
 
-import { Header } from '../_components/header';
-import { Footer } from '../_components/footer';
+import PageLayout from '../page-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
 
 export default function DatenschutzerklaerungEnPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
+    <PageLayout>
         <div className="container py-16 sm:py-24">
             <div className="mx-auto max-w-5xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
@@ -54,10 +51,6 @@ export default function DatenschutzerklaerungEnPage() {
                 </Card>
             </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+    </PageLayout>
   );
 }
-
-    

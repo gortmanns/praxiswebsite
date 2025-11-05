@@ -1,8 +1,7 @@
 
 'use client';
 
-import { Header } from '../_components/header';
-import { Footer } from '../_components/footer';
+import PageLayout from '../page-layout';
 import { TeamMemberCard } from '../team/_components/team-member-card';
 import { DoctorCard } from '../team/_components/doctor-card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -54,9 +53,7 @@ export default function TeamEnPage() {
   const activeStaff = staffData?.filter(s => !s.hidden) || [];
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
+    <PageLayout>
         <div className="container py-16 sm:py-24">
           <div className="mx-auto max-w-5xl space-y-16">
             <div id="doctors">
@@ -129,8 +126,6 @@ export default function TeamEnPage() {
             </div>
           </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+    </PageLayout>
   );
 }

@@ -1,6 +1,5 @@
 
-import { Header } from '../_components/header';
-import { Footer } from '../_components/footer';
+import PageLayout from '../page-layout';
 import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -138,9 +137,7 @@ const leistungen = [
 
 export default function LeistungenPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
+    <PageLayout>
         <div className="container py-16 sm:py-24">
             <div className="mx-auto max-w-5xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
@@ -185,8 +182,6 @@ export default function LeistungenPage() {
                 ))}
             </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+    </PageLayout>
   );
 }

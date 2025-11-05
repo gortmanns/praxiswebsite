@@ -1,13 +1,10 @@
 
-import { Header } from '../_components/header';
-import { Footer } from '../_components/footer';
+import PageLayout from '../page-layout';
 import { Card, CardContent } from '@/components/ui/card';
 
 export default function UeberUnsPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
+    <PageLayout>
         <div className="container py-16 sm:py-24">
             <div className="mx-auto max-w-5xl text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
@@ -37,7 +34,6 @@ export default function UeberUnsPage() {
                             <li>Die Röntgenanlage wurde aufwendig erneuert und arbeitet nun komplett digital. Röntgenbilder können nun von jedem PC in der Praxis aus betrachtet werden.</li>
                             <li>Damit sich der ganze Aufwand auch lohnt und der Umbau zu einem Praxiszentrum auch diesen Namen rechtfertigt, wurden Kooperationen mit diversen Fachspezialisten geschlossen, die jetzt regelmässig Termine bei uns im Praxiszentrum anbieten, sodass wir unseren Patienten den Weg in die Stadt Bern vielfach ersparen können.</li>
                             <li>Eine Ernährungsberaterin führt regelmässig Termine bei uns in den Räumlichkeiten durch, sodass auch hierfür die Wege für unsere Patienten nun kurz sind.</li>
-                            <li>Um die Behandlung der Fachspezialisten zu ermöglichen, wurde zusätzlich ein Ultraschall-Untersuchungsgerät angeschafft.</li>
                         </ul>
 
                         <h3 className="pt-4 font-headline text-2xl font-bold text-primary">Was bleibt zu tun?</h3>
@@ -64,8 +60,6 @@ export default function UeberUnsPage() {
                 </Card>
             </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+    </PageLayout>
   );
 }

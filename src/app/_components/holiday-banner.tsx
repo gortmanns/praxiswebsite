@@ -116,7 +116,7 @@ export function HolidayBanner() {
     const firestore = useFirestore();
     const [now, setNow] = useState<Date | null>(null);
     const pathname = usePathname();
-    const isEnglish = pathname.startsWith('/page-en');
+    const isEnglish = pathname.startsWith('/page-en') || pathname.startsWith('/team-en') || pathname.startsWith('/team/externe-dienstleister-en') || pathname.startsWith('/impressionen-en') || pathname.startsWith('/jobs-en') || pathname.startsWith('/leistungen-en') || pathname.startsWith('/medikamente-en') || pathname.startsWith('/notfall-en');
 
     useEffect(() => {
         setNow(new Date());

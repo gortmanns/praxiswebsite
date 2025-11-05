@@ -1,7 +1,5 @@
 
-
-import { Header } from '../_components/header';
-import { Footer } from '../_components/footer';
+import PageLayout from '../page-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Phone } from 'lucide-react';
 import Image from 'next/image';
@@ -9,9 +7,7 @@ import Link from 'next/link';
 
 export default function NotfallPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
+    <PageLayout>
         <div className="w-full px-4 py-16 sm:px-8 sm:py-24">
           <Card>
             <CardHeader>
@@ -107,8 +103,6 @@ export default function NotfallPage() {
             </CardContent>
           </Card>
         </div>
-      </main>
-      <Footer />
-    </div>
+    </PageLayout>
   );
 }

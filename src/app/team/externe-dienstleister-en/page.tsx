@@ -1,8 +1,7 @@
 
 'use client';
 
-import { Header } from '../../_components/header';
-import { Footer } from '../../_components/footer';
+import PageLayout from '../../page-layout';
 import { DoctorCard, type Doctor as DoctorData } from '../_components/doctor-card';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
@@ -28,9 +27,7 @@ export default function ExterneDienstleisterEnPage() {
     const activeServiceProviders = serviceProvidersData?.filter(sp => !sp.hidden) || [];
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
+    <PageLayout>
         <div className="container py-16 sm:py-24">
           <div className="mx-auto max-w-5xl space-y-16">
             <div>
@@ -77,8 +74,6 @@ export default function ExterneDienstleisterEnPage() {
             </div>
           </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+    </PageLayout>
   );
 }
