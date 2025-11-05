@@ -1,7 +1,7 @@
 
 'use client';
 
-import { DoctorCard, type Doctor as DoctorData } from '../_components/doctor-card';
+import { DoctorCard, type Doctor as DoctorData } from '../../_components/doctor-card';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';

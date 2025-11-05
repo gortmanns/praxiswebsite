@@ -1,4 +1,3 @@
-
 'use client';
 
 import type { Metadata } from 'next';
@@ -27,7 +26,6 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
   const isEnglish = pathname.includes('-en') || pathname.startsWith('/page-en');
-
   const isAdminRoute = pathname.startsWith('/admin');
 
   if (isAdminRoute) {
@@ -43,7 +41,7 @@ export default function RootLayout({
   }
   
   return (
-    <html lang="de">
+    <html lang={isEnglish ? 'en' : 'de'}>
       <body className={cn('font-body antialiased', montserrat.variable)}>
         <FirebaseClientProvider>
           <div className="flex min-h-screen flex-col bg-background">

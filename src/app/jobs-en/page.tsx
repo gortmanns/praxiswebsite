@@ -40,7 +40,7 @@ export default function JobsEnPage() {
             </Card>
              <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-2xl font-bold text-primary">Open Positions & Unsolicited Applications</CardTitle>
+                    <CardTitle className="font-headline text-xl font-bold text-primary">Open Positions & Unsolicited Applications</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6 text-lg text-foreground/80">
                     <div className="space-y-4 rounded-md border border-border bg-card p-6">
