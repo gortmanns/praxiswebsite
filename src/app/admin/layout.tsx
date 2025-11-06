@@ -1,24 +1,5 @@
-'use client';
-
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { AppSidebar } from './dashboard/_components/app-sidebar';
-import { Toaster } from 'sonner';
-import { FirebaseClientProvider } from '@/firebase';
-
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <FirebaseClientProvider>
-      <SidebarProvider>
-        <AppSidebar />
-        <main className="flex-1">
-          {children}
-        </main>
-        <Toaster />
-      </SidebarProvider>
-    </FirebaseClientProvider>
-  );
-}
+// This file is intentionally left blank to remove the shared admin layout.
+// The layout logic (providers and sidebar) has been moved directly into each 
+// individual admin page to prevent build conflicts with Next.js error pages.
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return <

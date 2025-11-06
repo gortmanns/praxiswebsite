@@ -1,4 +1,3 @@
-
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -10,7 +9,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirestore, useCollection, useMemoFirebase, FirebaseClientProvider } from '@/firebase';
 import { collection, query, orderBy, addDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,6 +22,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
+import { AppSidebar } from '../_components/app-sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 interface Holiday {
   id: string;
@@ -31,7 +32,7 @@ interface Holiday {
   end: Date;
 }
 
-export default function HolidaysPage() {
+function HolidaysPageContent() {
   const firestore = useFirestore();
 
   const [newName, setNewName] = useState('');
@@ -254,4 +255,19 @@ export default function HolidaysPage() {
     </AlertDialog>
     </>
   );
+}
+
+export default function HolidaysPage() {
+    return (
+        <FirebaseClientProvider>
+            <SidebarProvider>
+                <div className="flex">
+                    <AppSidebar />
+                    <main className="flex-1">
+                        <HolidaysPageContent />
+                    </main>
+                </div>
+            </SidebarProvider>
+        </FirebaseClientProvider>
+    )
 }

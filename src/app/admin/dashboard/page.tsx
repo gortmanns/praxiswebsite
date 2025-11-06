@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useAuth } from '@/firebase';
+import { useAuth, FirebaseClientProvider } from '@/firebase';
 import { updatePassword } from 'firebase/auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -9,8 +9,10 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, CheckCircle, Eye, EyeOff } from 'lucide-react';
+import { AppSidebar } from './_components/app-sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
-export default function DashboardPage() {
+function DashboardPageContent() {
   const auth = useAuth();
   const user = auth.currentUser;
 
@@ -161,4 +163,19 @@ export default function DashboardPage() {
       </div>
     </div>
   );
+}
+
+export default function DashboardPage() {
+    return (
+        <FirebaseClientProvider>
+            <SidebarProvider>
+                <div className="flex">
+                    <AppSidebar />
+                    <main className="flex-1">
+                        <DashboardPageContent />
+                    </main>
+                </div>
+            </SidebarProvider>
+        </FirebaseClientProvider>
+    )
 }

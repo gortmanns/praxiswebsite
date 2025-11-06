@@ -9,7 +9,7 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirestore, useCollection, useMemoFirebase, FirebaseClientProvider } from '@/firebase';
 import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -23,9 +23,10 @@ import { DoctorEditor as EditorComponent } from './_components/doctor-editor';
 // Wichtig: Die "DoctorCard" aus dem öffentlichen Team-Bereich importieren, um die korrekte Anzeige sicherzustellen.
 import { DoctorCard as DisplayCard } from '@/app/team/_components/doctor-card';
 import { initialDoctorState, type Doctor } from './_components/editable-doctor-card';
+import { AppSidebar } from '../_components/app-sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
-
-export default function DoctorsPage() {
+function DoctorsPageContent() {
     const collectionName = "doctors";
     const pageTitle = "Ärzte verwalten";
     const pageDescription = "Verwalten Sie die auf der Team-Seite angezeigten Ärzte.";
@@ -72,8 +73,6 @@ export default function DoctorsPage() {
             qual4: qualifications[3] || '',
             imageUrl: doc.querySelector('.relative.h-full img')?.getAttribute('src') || '',
             positionText: positionContainer?.textContent?.trim() || '',
-            // positionHtml: positionContainer ? positionContainer.outerHTML : '',
-            // languagesHtml: languagesContainer ? languagesContainer.outerHTML : '',
         };
     };
 
@@ -83,7 +82,6 @@ export default function DoctorsPage() {
 
         let initialStateForEditor: Doctor = { ...initialDoctorState, ...card };
 
-        // If card is a legacy card (has frontSideCode but is missing modern fields), parse it.
         if (card.frontSideCode && (!card.title || !card.specialty)) {
             const parsedData = parseFromLegacyHtml(card.frontSideCode);
             initialStateForEditor = { ...initialStateForEditor, ...parsedData };
@@ -177,7 +175,6 @@ export default function DoctorsPage() {
         
         const { _dialog, ...dataToSave } = editorCardState;
 
-        // When saving, if the user has provided a new imageUrl, we can safely remove frontSideCode
         if (dataToSave.imageUrl) {
             delete dataToSave.frontSideCode;
         }
@@ -376,4 +373,19 @@ export default function DoctorsPage() {
             </AlertDialog>
         </div>
     );
+}
+
+export default function DoctorsPage() {
+    return (
+        <FirebaseClientProvider>
+            <SidebarProvider>
+                <div className="flex">
+                    <AppSidebar />
+                    <main className="flex-1">
+                        <DoctorsPageContent />
+                    </main>
+                </div>
+            </SidebarProvider>
+        </FirebaseClientProvider>
+    )
 }

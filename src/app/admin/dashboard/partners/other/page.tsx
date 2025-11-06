@@ -1,4 +1,3 @@
-
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -13,7 +12,9 @@ import ReusableCardManager from '../../_components/reusable-card-manager';
 import { PartnerCard as DisplayCard } from '../_components/partner-card';
 import { PartnerEditor as EditorComponent } from '../_components/partner-editor';
 import type { Partner as CardData } from '../_components/partner-editor';
-
+import { AppSidebar } from '../../_components/app-sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
+import { FirebaseClientProvider } from '@/firebase';
 
 const initialOtherPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     name: "Neuer Partner",
@@ -27,7 +28,7 @@ const initialOtherPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     logoY: 0,
 };
 
-export default function OtherPartnersPage() {
+function OtherPartnersPageContent() {
     return (
         <ReusableCardManager
             collectionName="otherPartners"
@@ -39,4 +40,19 @@ export default function OtherPartnersPage() {
             entityName="Sonstiger Partner"
         />
     );
+}
+
+export default function OtherPartnersPage() {
+    return (
+        <FirebaseClientProvider>
+            <SidebarProvider>
+                <div className="flex">
+                    <AppSidebar />
+                    <main className="flex-1">
+                        <OtherPartnersPageContent />
+                    </main>
+                </div>
+            </SidebarProvider>
+        </FirebaseClientProvider>
+    )
 }

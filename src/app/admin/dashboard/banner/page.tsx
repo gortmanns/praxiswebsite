@@ -25,9 +25,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { useFirestore, useDoc, useMemoFirebase, useCollection } from '@/firebase';
+import { useFirestore, useDoc, useMemoFirebase, useCollection, FirebaseClientProvider } from '@/firebase';
 import { doc, setDoc, collection, query, orderBy, addDoc, deleteDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
+import { AppSidebar } from '../_components/app-sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 const bannerClasses = {
     yellow: 'bg-yellow-400 border-yellow-500 text-yellow-900',
@@ -538,5 +540,14 @@ function BannerManager() {
 }
 
 export default function BannerPage() {
-    return <BannerManager />;
-}
+    return (
+        <FirebaseClientProvider>
+            <SidebarProvider>
+                <div className="flex">
+                    <AppSidebar />
+                    <main className="flex-1">
+                        <BannerManager />
+                    </main>
+                </div>
+            </SidebarProvider>
+        </FirebaseClientProvider>

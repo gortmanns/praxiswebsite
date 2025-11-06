@@ -9,7 +9,7 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirestore, useCollection, useMemoFirebase, FirebaseClientProvider } from '@/firebase';
 import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -22,9 +22,10 @@ import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { ServiceProviderEditor } from './_components/service-provider-editor';
 import { DisplayCard } from './_components/display-card';
 import { initialServiceProviderState, type ServiceProvider } from './_components/initial-state';
+import { AppSidebar } from '../_components/app-sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
-
-export default function ServiceProvidersPage() {
+function ServiceProvidersPageContent() {
     const collectionName = "serviceProviders";
     const pageTitle = "Externe Dienstleister verwalten";
     const pageDescription = "Verwalten Sie die auf der Team-Seite angezeigten externen Dienstleister.";
@@ -141,7 +142,6 @@ export default function ServiceProvidersPage() {
         }
         setNotification(null);
 
-        // Omit frontSideCode and backSideCode as they are now generated dynamically
         const { frontSideCode, backSideCode, ...dataToSave } = editorCardState;
     
         try {
@@ -335,3 +335,13 @@ export default function ServiceProvidersPage() {
         </div>
     );
 }
+
+export default function ServiceProvidersPage() {
+    return (
+        <FirebaseClientProvider>
+            <SidebarProvider>
+                <div className="flex">
+                    <AppSidebar />
+                    <main className="flex-1">
+                        <ServiceProvidersPageContent />
+                    </
