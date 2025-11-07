@@ -1,4 +1,3 @@
-
 import PageLayout from '../page-layout';
 import TeamContent from './_components/team-content';
 

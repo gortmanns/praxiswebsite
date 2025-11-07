@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useAuth, FirebaseClientProvider } from '@/firebase';
+import { useAuth } from '@/firebase';
 import { updatePassword } from 'firebase/auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -13,8 +13,8 @@ import { AppSidebar } from './_components/app-sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 
 function DashboardPageContent() {
-  const auth = useAuth();
-  const user = auth.currentUser;
+  const { auth } = useAuth();
+  const user = auth?.currentUser;
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [newPassword, setNewPassword] = useState('');
@@ -167,15 +167,13 @@ function DashboardPageContent() {
 
 export default function DashboardPage() {
     return (
-        <FirebaseClientProvider>
-            <SidebarProvider>
-                <div className="flex">
-                    <AppSidebar />
-                    <main className="flex-1">
-                        <DashboardPageContent />
-                    </main>
-                </div>
-            </SidebarProvider>
-        </FirebaseClientProvider>
+        <SidebarProvider>
+            <div className="flex">
+                <AppSidebar />
+                <main className="flex-1">
+                    <DashboardPageContent />
+                </main>
+            </div>
+        </SidebarProvider>
     );
 }

@@ -9,7 +9,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useFirestore, useCollection, useMemoFirebase, FirebaseClientProvider } from '@/firebase';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, addDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -259,15 +259,13 @@ function HolidaysPageContent() {
 
 export default function HolidaysPage() {
     return (
-        <FirebaseClientProvider>
-            <SidebarProvider>
-                <div className="flex">
-                    <AppSidebar />
-                    <main className="flex-1">
-                        <HolidaysPageContent />
-                    </main>
-                </div>
-            </SidebarProvider>
-        </FirebaseClientProvider>
+        <SidebarProvider>
+            <div className="flex">
+                <AppSidebar />
+                <main className="flex-1">
+                    <HolidaysPageContent />
+                </main>
+            </div>
+        </SidebarProvider>
     );
 }

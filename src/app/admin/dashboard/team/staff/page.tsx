@@ -9,7 +9,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useFirestore, useCollection, useMemoFirebase, FirebaseClientProvider } from '@/firebase';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, writeBatch, serverTimestamp, CollectionReference, DocumentData, doc, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -377,15 +377,13 @@ function StaffPageContent() {
 
 export default function StaffPage() {
     return (
-        <FirebaseClientProvider>
-            <SidebarProvider>
-                <div className="flex">
-                    <AppSidebar />
-                    <main className="flex-1">
-                        <StaffPageContent />
-                    </main>
-                </div>
-            </SidebarProvider>
-        </FirebaseClientProvider>
+        <SidebarProvider>
+            <div className="flex">
+                <AppSidebar />
+                <main className="flex-1">
+                    <StaffPageContent />
+                </main>
+            </div>
+        </SidebarProvider>
     );
 }

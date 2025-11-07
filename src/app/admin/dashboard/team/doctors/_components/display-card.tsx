@@ -8,8 +8,7 @@
 'use client';
 
 import React from 'react';
-import { EditableServiceProviderCard } from '../_components/initial-state';
-import type { ServiceProvider } from '../_components/initial-state';
+import { EditableServiceProviderCard, type ServiceProvider } from './initial-state';
 
 interface DisplayCardProps {
     serviceProvider: ServiceProvider;
@@ -21,9 +20,7 @@ export const DisplayCard: React.FC<DisplayCardProps> = ({ serviceProvider, isBei
     // but without passing the onCardClick handler, making it non-interactive for display.
     return (
         <div className="relative">
-            <a href={serviceProvider.websiteUrl} target={serviceProvider.openInNewTab ? '_blank' : '_self'} rel="noopener noreferrer">
-                <EditableServiceProviderCard serviceProvider={serviceProvider} />
-            </a>
+            <EditableServiceProviderCard serviceProvider={serviceProvider} />
              {isBeingEdited && (
                 <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary/80">
                     <span className="text-xl font-bold text-primary-foreground">In Bearbeitung</span>

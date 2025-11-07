@@ -14,7 +14,6 @@ import { PartnerEditor as EditorComponent } from '../_components/partner-editor'
 import type { Partner as CardData } from '../_components/partner-editor';
 import { AppSidebar } from '../../_components/app-sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { FirebaseClientProvider } from '@/firebase';
 
 const initialOtherPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     name: "Neuer Partner",
@@ -44,15 +43,13 @@ function OtherPartnersPageContent() {
 
 export default function OtherPartnersPage() {
     return (
-        <FirebaseClientProvider>
-            <SidebarProvider>
-                <div className="flex">
-                    <AppSidebar />
-                    <main className="flex-1">
-                        <OtherPartnersPageContent />
-                    </main>
-                </div>
-            </SidebarProvider>
-        </FirebaseClientProvider>
+        <SidebarProvider>
+            <div className="flex">
+                <AppSidebar />
+                <main className="flex-1">
+                    <OtherPartnersPageContent />
+                </main>
+            </div>
+        </SidebarProvider>
     );
 }

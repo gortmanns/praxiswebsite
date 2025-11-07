@@ -40,7 +40,9 @@ export default function ExterneDienstleisterContent({ isEnglish }: { isEnglish: 
         </div>
         <div className="mx-auto mt-16 flex flex-col items-center space-y-16">
             {isLoading ? renderSkeletons() : activeServiceProviders?.map(provider => (
-                <DoctorCard key={provider.id} {...provider} disableFlip={true} />
+                <a key={provider.id} href={provider.websiteUrl} target={provider.openInNewTab ? '_blank' : '_self'} rel="noopener noreferrer">
+                    <DoctorCard {...provider} disableFlip={true} />
+                </a>
             ))}
         </div>
     </div>

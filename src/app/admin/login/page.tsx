@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth, FirebaseClientProvider } from '@/firebase';
+import { useAuth } from '@/firebase';
 import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -91,9 +91,5 @@ function LoginPageContent() {
 
 
 export default function LoginPage() {
-    return (
-        <FirebaseClientProvider>
-            <LoginPageContent />
-        </FirebaseClientProvider>
-    )
+    return <LoginPageContent />;
 }
