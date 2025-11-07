@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -91,5 +92,7 @@ function LoginPageContent() {
 
 
 export default function LoginPage() {
-    return <LoginPageContent />;
+    return (
+        <LoginPageContent />
+    );
 }

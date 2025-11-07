@@ -1,4 +1,3 @@
-'use client';
 
 import type { Metadata } from 'next';
 import './globals.css';
@@ -21,6 +20,11 @@ const openSans = Open_Sans({
   weight: ['400', '700'],
 });
 
+export const metadata: Metadata = {
+  title: 'Praxiszentrum im Ring',
+  description: 'Hausarztpraxis in Hinterkappelen',
+};
+
 
 export default function RootLayout({
   children,
@@ -31,9 +35,11 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className={cn('font-body antialiased', montserrat.variable, openSans.variable)}>
-        {children}
-        <Toaster />
-        <Script
+          <FirebaseClientProvider>
+            {children}
+          </FirebaseClientProvider>
+          <Toaster />
+          <Script
             id="google-translate-init"
             strategy="afterInteractive"
             dangerouslySetInnerHTML={{
