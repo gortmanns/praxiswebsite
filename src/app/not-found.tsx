@@ -2,9 +2,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-// Diese Komponente ist absichtlich einfach gehalten und importiert keine
-// client-seitigen Layouts, um Build-Fehler bei der statischen Generierung
-// von Fehlerseiten zu vermeiden.
+// This component is deliberately simple and does not import any
+// client-side layouts to avoid build errors during static generation
+// of error pages.
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4 text-center">

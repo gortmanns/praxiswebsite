@@ -19,12 +19,14 @@ const openSans = Open_Sans({
   weight: ['400', '700'],
 });
 
+// Metadata can only be exported from a Server Component
 export const metadata: Metadata = {
   title: 'Praxiszentrum im Ring',
   description: 'Hausarztpraxis in Hinterkappelen',
 };
 
-
+// This is the root layout. It's a pure Server Component.
+// It should not contain any client-side providers or hooks.
 export default function RootLayout({
   children,
 }: Readonly<{
