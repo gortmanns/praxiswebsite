@@ -8,7 +8,7 @@ export default {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  safelist: [ // Ensure these classes are not purged
+  safelist: [
     { pattern: /^md:col-start-(1|2|3|4)$/ },
   ],
   theme: {
@@ -119,3 +119,5 @@ export default {
   },
   plugins: [require('tailwindcss-animate'), require('tailwind-scrollbar'), require('@tailwindcss/typography')],
 } satisfies Config;
+
+    

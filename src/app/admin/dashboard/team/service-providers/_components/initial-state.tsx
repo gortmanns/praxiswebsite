@@ -156,3 +156,5 @@ const templateStyles = `
     .template-card .bg-white { background-color: white; }
     .template-card .shrink-0 { flex-shrink: 0; }
 `;
+
+    
