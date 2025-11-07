@@ -42,8 +42,8 @@ export interface Partner {
 }
 
 interface PartnerEditorProps {
-    cardData: Partner;
-    onUpdate: (updatedData: Partner) => void;
+    cardData: Partial<Partner>;
+    onUpdate: (updatedData: Partial<Partner>) => void;
     children?: ReactNode; 
 }
 
@@ -130,7 +130,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                 <div className="space-y-6 p-10 rounded-l-lg bg-muted z-20">
                     <div className="space-y-2">
                         <Label htmlFor="name">Name <span className="text-xs text-muted-foreground">(zur internen Verwendung, wird nicht angezeigt)</span></Label>
-                        <Input id="name" value={cardData.name} onChange={(e) => handleInputChange('name', e.target.value)} />
+                        <Input id="name" value={cardData.name || ''} onChange={(e) => handleInputChange('name', e.target.value)} />
                     </div>
                     <div className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2">
                         <Label htmlFor="websiteUrl">Website URL <span className="text-xs text-muted-foreground">(für Verlinkung)</span></Label>
@@ -236,7 +236,7 @@ export const PartnerEditor: React.FC<PartnerEditorProps> = ({ cardData, onUpdate
                     onOpenChange={() => setDialogState({ type: null, data: {} })}
                     title="Logo HTML bearbeiten"
                     label="HTML Code"
-                    initialValue={cardData.logoHtml}
+                    initialValue={cardData.logoHtml || ''}
                     onSave={handleHtmlSave}
                     isTextArea={true}
                 />

@@ -1,4 +1,3 @@
-
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -33,8 +32,8 @@ interface ReusableCardManagerProps<T extends CardData> {
     initialCardState: Omit<T, 'id' | 'order' | 'createdAt'>;
     DisplayCardComponent: React.ComponentType<any>;
     EditorCardComponent: React.ComponentType<{ 
-        cardData: T; 
-        onUpdate: (updatedData: T) => void;
+        cardData: Partial<T>; // Allow partial data for creation form
+        onUpdate: (updatedData: Partial<T>) => void;
         children?: React.ReactNode;
     }>;
     entityName: string;
@@ -62,7 +61,7 @@ function ReusableCardManager<T extends CardData>({
 
     const [editingCardId, setEditingCardId] = useState<string | null>(null);
     const [isCreatingNew, setIsCreatingNew] = useState(false);
-    const [editorCardState, setEditorCardState] = useState<T>({ ...initialCardState, id: '', order: 0 } as T);
+    const [editorCardState, setEditorCardState] = useState<Partial<T>>(initialCardState);
     const [deleteConfirmState, setDeleteConfirmState] = useState<{ isOpen: boolean; cardId?: string; cardName?: string }>({ isOpen: false });
 
     const isEditing = editingCardId !== null || isCreatingNew;
@@ -76,7 +75,7 @@ function ReusableCardManager<T extends CardData>({
     const handleCreateNew = () => {
         setEditingCardId(null);
         setIsCreatingNew(true);
-        setEditorCardState({ ...initialCardState, id: '' } as T);
+        setEditorCardState(initialCardState);
     };
 
     const handleCancelEdit = () => {
@@ -84,10 +83,10 @@ function ReusableCardManager<T extends CardData>({
         setIsCreatingNew(false);
     };
 
-    const generateFinalLogoHtml = (partner: T): string => {
-        const scale = 'logoScale' in partner ? (partner.logoScale || 100) / 100 : 1;
-        const x = 'logoX' in partner ? (partner.logoX || 0) : 0;
-        const y = 'logoY' in partner ? (partner.logoY || 0) : 0;
+    const generateFinalLogoHtml = (partner: Partial<T>): string => {
+        const scale = 'logoScale' in partner && typeof partner.logoScale === 'number' ? partner.logoScale / 100 : 1;
+        const x = 'logoX' in partner && typeof partner.logoX === 'number' ? partner.logoX : 0;
+        const y = 'logoY' in partner && typeof partner.logoY === 'number' ? partner.logoY : 0;
         const transformStyle = `transform: scale(${scale}) translate(${x}px, ${y}px); transition: transform 0.2s ease-out; width: 100%; height: 100%;`;
     
         const innerContent = partner.imageUrl
@@ -190,8 +189,8 @@ function ReusableCardManager<T extends CardData>({
                 setNotification({ variant: 'success', title: 'Erfolgreich', description: `Neue ${entityName}-Karte erfolgreich erstellt.` });
             
             } else if (editingCardId) {
-                delete dataToSave.createdAt;
-                delete dataToSave.id;
+                delete (dataToSave as any).createdAt;
+                delete (dataToSave as any).id;
     
                 const docRef = doc(firestore, collectionName, editingCardId);
                 await setDoc(docRef, dataToSave, { merge: true });
@@ -363,7 +362,7 @@ function ReusableCardManager<T extends CardData>({
                    {isEditing && (
                         <div className="relative rounded-lg border-2 border-dashed border-primary bg-muted h-[400px] mb-8">
                             {partnerEditorOverlay}
-                            <EditorCardComponent cardData={editorCardState} onUpdate={setEditorCardState} />
+                            <EditorCardComponent cardData={editorCardState} onUpdate={(update) => setEditorCardState(prev => ({ ...prev, ...update }))} />
                         </div>
                     )}
 
@@ -422,5 +421,3 @@ function ReusableCardManager<T extends CardData>({
 }
 
 export default ReusableCardManager;
-
-    
