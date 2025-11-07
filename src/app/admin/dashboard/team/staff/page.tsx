@@ -23,8 +23,6 @@ import { StaffCard as DisplayCard } from './_components/staff-card';
 import { StaffEditor } from './_components/staff-editor';
 import type { StaffMember as CardData } from './_components/staff-editor';
 import { LanguageFlags } from '@/components/logos/flags/language-flags';
-import { AppSidebar } from '../../_components/app-sidebar';
-import { SidebarProvider } from '@/components/ui/sidebar';
 
 const initialStaffState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     name: "Name",
@@ -376,14 +374,5 @@ function StaffPageContent() {
 
 
 export default function StaffPage() {
-    return (
-        <SidebarProvider>
-            <div className="flex">
-                <AppSidebar />
-                <main className="flex-1">
-                    <StaffPageContent />
-                </main>
-            </div>
-        </SidebarProvider>
-    );
+    return <StaffPageContent />;
 }

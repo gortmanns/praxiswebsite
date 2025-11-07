@@ -22,8 +22,6 @@ import { TimedAlert, type TimedAlertProps } from '@/components/ui/timed-alert';
 import { ServiceProviderEditor } from './_components/service-provider-editor';
 import { DisplayCard } from './_components/display-card';
 import { initialServiceProviderState, type ServiceProvider } from './_components/initial-state';
-import { AppSidebar } from '../../_components/app-sidebar';
-import { SidebarProvider } from '@/components/ui/sidebar';
 
 function ServiceProvidersPageContent() {
     const collectionName = "serviceProviders";
@@ -337,14 +335,5 @@ function ServiceProvidersPageContent() {
 }
 
 export default function ServiceProvidersPage() {
-    return (
-        <SidebarProvider>
-            <div className="flex">
-                <AppSidebar />
-                <main className="flex-1">
-                    <ServiceProvidersPageContent />
-                </main>
-            </div>
-        </SidebarProvider>
-    );
+    return <ServiceProvidersPageContent />;
 }

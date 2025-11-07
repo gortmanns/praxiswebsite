@@ -12,8 +12,6 @@ import ReusableCardManager from '../../_components/reusable-card-manager';
 import { PartnerCard as DisplayCard } from '../_components/partner-card';
 import { PartnerEditor as EditorComponent } from '../_components/partner-editor';
 import type { Partner as CardData } from '../_components/partner-editor';
-import { AppSidebar } from '../../_components/app-sidebar';
-import { SidebarProvider } from '@/components/ui/sidebar';
 
 const initialMedicalPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> = {
     name: "Neuer Partner",
@@ -27,7 +25,7 @@ const initialMedicalPartnerState: Omit<CardData, 'id' | 'order' | 'createdAt'> =
     logoY: 0,
 };
 
-function MedicalPartnersPageContent() {
+export default function MedicalPartnersPage() {
     return (
         <ReusableCardManager
             collectionName="medicalPartners"
@@ -38,18 +36,5 @@ function MedicalPartnersPageContent() {
             EditorCardComponent={EditorComponent}
             entityName="Ärztlicher Partner"
         />
-    );
-}
-
-export default function MedicalPartnersPage() {
-    return (
-        <SidebarProvider>
-            <div className="flex">
-                <AppSidebar />
-                <main className="flex-1">
-                    <MedicalPartnersPageContent />
-                </main>
-            </div>
-        </SidebarProvider>
     );
 }

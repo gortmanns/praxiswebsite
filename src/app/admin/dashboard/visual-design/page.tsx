@@ -1,3 +1,5 @@
+
+'use client';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ColorPaletteDemo } from '@/app/_components/color-palette-demo';
 import { CheckCircle, AlertCircle, Info, XCircle } from 'lucide-react';

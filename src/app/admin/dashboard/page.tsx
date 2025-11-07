@@ -9,8 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, CheckCircle, Eye, EyeOff } from 'lucide-react';
-import { AppSidebar } from './_components/app-sidebar';
-import { SidebarProvider } from '@/components/ui/sidebar';
 
 function DashboardPageContent() {
   const { auth } = useAuth();
@@ -167,13 +165,6 @@ function DashboardPageContent() {
 
 export default function DashboardPage() {
     return (
-        <SidebarProvider>
-            <div className="flex">
-                <AppSidebar />
-                <main className="flex-1">
-                    <DashboardPageContent />
-                </main>
-            </div>
-        </SidebarProvider>
+        <DashboardPageContent />
     );
 }
