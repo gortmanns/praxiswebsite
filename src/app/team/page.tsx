@@ -1,3 +1,5 @@
+'use client';
+
 import { TeamMemberCard } from './_components/team-member-card';
 import { DoctorCard } from './_components/doctor-card';
 import { Skeleton } from '@/components/ui/skeleton';

@@ -1,3 +1,5 @@
+'use client';
+
 import { TeamMemberCard } from '../team/_components/team-member-card';
 import { DoctorCard, type Doctor as DoctorData } from '../team/_components/doctor-card';
 import { Skeleton } from '@/components/ui/skeleton';

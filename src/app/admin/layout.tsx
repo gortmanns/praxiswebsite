@@ -2,4 +2,5 @@
 // The layout logic (providers and sidebar) has been moved directly into each 
 // individual admin page to prevent build conflicts with Next.js error pages.
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <
+  return <>{children}</>;
+}
