@@ -31,9 +31,7 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className={cn('font-body antialiased', montserrat.variable, openSans.variable)}>
-          <FirebaseClientProvider>
-            {children}
-          </FirebaseClientProvider>
+        {children}
         <Toaster />
         <Script
             id="google-translate-init"

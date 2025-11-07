@@ -15,8 +15,8 @@ export default function DashboardLayout({
         <div className="flex">
             <AppSidebar />
             <main className="flex-1">
-                <header className="flex h-14 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm sticky top-0 z-30">
-                    <SidebarTrigger className="md:hidden"/>
+                <header className="flex h-14 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm sticky top-0 z-30 lg:hidden">
+                    <SidebarTrigger />
                     <h1 className="text-lg font-semibold">Dashboard</h1>
                 </header>
                 {children}

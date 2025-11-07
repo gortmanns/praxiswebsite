@@ -18,7 +18,7 @@ export function FirebaseClientProvider({ children }: FirebaseClientProviderProps
     if (typeof window !== 'undefined' && !firebaseServices) {
       setFirebaseServices(initializeFirebase());
     }
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, [firebaseServices]);
 
   // While firebaseServices are being initialized, we can render a loading state or nothing.
   // This prevents children from trying to access a null context.
