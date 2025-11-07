@@ -1,6 +1,6 @@
 
 import PageLayout from '../page-layout';
-import TeamContent from '../team/_components/team-content';
+import TeamContent from '@/app/team/_components/team-content';
 
 export default function TeamEnPage() {
   return (
