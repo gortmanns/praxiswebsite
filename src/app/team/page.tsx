@@ -1,5 +1,5 @@
 import PageLayout from '../page-layout';
-import TeamContent from '@/app/team/_components/team-content';
+import TeamContent from './_components/team-content';
 
 export default function TeamPage() {
   return (

@@ -1,5 +1,5 @@
 import PageLayout from '../../page-layout';
-import ExterneDienstleisterContent from '@/app/team/_components/externe-dienstleister-content';
+import ExterneDienstleisterContent from '../_components/externe-dienstleister-content';
 
 export default function ExterneDienstleisterEnPage() {
   return (
