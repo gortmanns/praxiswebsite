@@ -52,4 +52,7 @@ export default function MedicalPartnersPage() {
                         <MedicalPartnersPageContent />
                     </main>
                 </div>
-            
+            </SidebarProvider>
+        </FirebaseClientProvider>
+    );
+}

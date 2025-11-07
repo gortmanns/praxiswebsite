@@ -551,3 +551,5 @@ export default function BannerPage() {
                 </div>
             </SidebarProvider>
         </FirebaseClientProvider>
+    );
+}

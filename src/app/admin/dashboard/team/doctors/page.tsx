@@ -23,7 +23,7 @@ import { DoctorEditor as EditorComponent } from './_components/doctor-editor';
 // Wichtig: Die "DoctorCard" aus dem öffentlichen Team-Bereich importieren, um die korrekte Anzeige sicherzustellen.
 import { DoctorCard as DisplayCard } from '@/app/team/_components/doctor-card';
 import { initialDoctorState, type Doctor } from './_components/editable-doctor-card';
-import { AppSidebar } from '../_components/app-sidebar';
+import { AppSidebar } from '../../_components/app-sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 
 function DoctorsPageContent() {
