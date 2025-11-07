@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils';
 import { Montserrat } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
 import Script from 'next/script';
-import { FirebaseClientProvider } from '@/firebase';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -31,10 +30,8 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className={cn('font-body antialiased', montserrat.variable)}>
-        <FirebaseClientProvider>
-            {children}
-            <Toaster />
-        </FirebaseClientProvider>
+          {children}
+          <Toaster />
         <Script
             id="google-translate-init"
             strategy="afterInteractive"
