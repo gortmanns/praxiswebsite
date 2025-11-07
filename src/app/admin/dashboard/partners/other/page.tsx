@@ -54,5 +54,5 @@ export default function OtherPartnersPage() {
                 </div>
             </SidebarProvider>
         </FirebaseClientProvider>
-    )
+    );
 }

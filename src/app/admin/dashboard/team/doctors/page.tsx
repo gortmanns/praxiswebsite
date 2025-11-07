@@ -387,5 +387,5 @@ export default function DoctorsPage() {
                 </div>
             </SidebarProvider>
         </FirebaseClientProvider>
-    )
+    );
 }

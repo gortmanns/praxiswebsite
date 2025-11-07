@@ -269,5 +269,5 @@ export default function HolidaysPage() {
                 </div>
             </SidebarProvider>
         </FirebaseClientProvider>
-    )
+    );
 }

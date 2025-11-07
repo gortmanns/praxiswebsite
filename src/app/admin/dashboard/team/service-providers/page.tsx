@@ -348,5 +348,5 @@ export default function ServiceProvidersPage() {
                 </div>
             </SidebarProvider>
         </FirebaseClientProvider>
-    )
+    );
 }
