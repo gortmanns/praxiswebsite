@@ -10,4 +10,3 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // Instead, we just need the core Firebase provider.
   // The actual admin UI (sidebar etc.) is handled by the dashboard layout.
   return <FirebaseClientProvider>{children}</FirebaseClientProvider>;
-}
