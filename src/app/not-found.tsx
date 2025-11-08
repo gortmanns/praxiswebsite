@@ -1,11 +1,11 @@
+'use client';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
 
-// This page is now completely self-contained and does not use any shared layout
-// to ensure it can be statically built without client-side dependencies.
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background text-center">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4 text-center">
         <div className="max-w-md p-8">
           <Image
             src="/images/praxiszentrum-logo.png"
@@ -15,14 +15,14 @@ export default function NotFound() {
             height={81} 
             className="mx-auto h-auto w-full"
           />
-          <h1 className="mt-8 text-3xl font-bold tracking-tight text-primary sm:text-4xl">Seite nicht gefunden</h1>
+          <h1 className="mt-8 text-3xl font-bold tracking-tight text-primary sm:text-4xl">404 - Seite nicht gefunden</h1>
           <p className="mt-4 text-lg text-foreground/80">
-            Es tut uns leid, aber die angeforderte Seite ist nicht vorhanden.
+            Die von Ihnen gesuchte Seite ist nicht vorhanden.
           </p>
-          <div className="mt-10">
-            <Link href="/" className="rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
-              Zurück zur Startseite
-            </Link>
+          <div className="mt-6">
+            <Button asChild>
+              <Link href="/">Zurück zur Startseite</Link>
+            </Button>
           </div>
         </div>
     </div>
