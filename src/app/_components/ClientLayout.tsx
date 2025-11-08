@@ -7,6 +7,7 @@ import { Footer } from './footer';
 import { HolidayBanner } from './holiday-banner';
 import React from 'react';
 import { FirebaseClientProvider } from '@/firebase';
+import { Toaster } from '@/components/ui/toaster';
 
 // This is the main Client Component Layout.
 // It contains all providers and hooks that need to run on the client.
@@ -23,6 +24,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           {children}
         </main>
         <Footer isEnglish={isEnglish} />
+        <Toaster />
       </div>
     </FirebaseClientProvider>
   );

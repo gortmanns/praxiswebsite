@@ -4,7 +4,6 @@ import './globals.css';
 import './tiptap-styles.css';
 import { cn } from '@/lib/utils';
 import { Montserrat } from 'next/font/google';
-import { Toaster } from '@/components/ui/toaster';
 import Script from 'next/script';
 
 const montserrat = Montserrat({
@@ -30,7 +29,6 @@ export default function RootLayout({
     <html lang="de">
       <body className={cn('font-body antialiased', montserrat.variable)}>
           {children}
-          <Toaster />
         <Script
             id="google-translate-init"
             strategy="afterInteractive"
