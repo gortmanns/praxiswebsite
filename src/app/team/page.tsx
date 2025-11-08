@@ -1,14 +1,14 @@
 
 'use client';
-import ClientLayout from '../_components/ClientLayout';
+import PageLayout from '../page-layout';
 import TeamContent from './_components/team-content';
 
 export default function TeamPage() {
   return (
-    <ClientLayout>
+    <PageLayout>
       <div className="container py-16 sm:py-24">
         <TeamContent isEnglish={false} />
       </div>
-    </ClientLayout>
+    </PageLayout>
   );
 }

@@ -2,11 +2,11 @@
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
-import ClientLayout from '../_components/ClientLayout';
+import PageLayout from '../page-layout';
 
 export default function JobsPage() {
   return (
-    <ClientLayout>
+    <PageLayout>
       <div className="container py-16 sm:py-24">
           <div className="mx-auto max-w-5xl text-center">
               <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
@@ -69,6 +69,6 @@ export default function JobsPage() {
               </Card>
           </div>
       </div>
-    </ClientLayout>
+    </PageLayout>
   );
 }

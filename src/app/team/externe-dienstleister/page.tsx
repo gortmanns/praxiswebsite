@@ -1,12 +1,12 @@
 
 'use client';
-import ClientLayout from '../../_components/ClientLayout';
+import PageLayout from '../../../page-layout';
 import ExterneDienstleisterContent from '@/app/team/_components/externe-dienstleister-content';
 
 export default function ExterneDienstleisterPage() {
   return (
-    <ClientLayout>
+    <PageLayout>
         <ExterneDienstleisterContent isEnglish={false} />
-    </ClientLayout>
+    </PageLayout>
   );
 }
