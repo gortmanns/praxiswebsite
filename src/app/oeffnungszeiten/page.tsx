@@ -1,11 +1,10 @@
-
 'use client';
 import { OpeningHoursCalendar } from './_components/opening-hours-calendar';
-import PageLayout from '../page-layout';
+import ClientLayout from '../_components/ClientLayout';
 
 export default function OeffnungszeitenPage() {
   return (
-    <PageLayout>
+    <ClientLayout>
       <div className="container py-16 sm:py-24">
           <div className="mx-auto max-w-5xl text-center">
               <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
@@ -20,6 +19,6 @@ export default function OeffnungszeitenPage() {
               <OpeningHoursCalendar />
           </div>
       </div>
-    </PageLayout>
+    </ClientLayout>
   );
 }

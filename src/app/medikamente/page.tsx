@@ -1,4 +1,3 @@
-
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
@@ -6,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
 import { cn } from '@/lib/utils';
 import { Phone, Mail } from 'lucide-react';
-import PageLayout from '../page-layout';
+import ClientLayout from '../_components/ClientLayout';
 
 export default function MedikamentePage() {
 
@@ -103,7 +102,7 @@ export default function MedikamentePage() {
   );
 
   return (
-    <PageLayout>
+    <ClientLayout>
       <div className="container py-16 sm:py-24">
         <div className="mx-auto max-w-5xl text-center">
             <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
@@ -234,6 +233,6 @@ export default function MedikamentePage() {
         </div>
 
       </div>
-    </PageLayout>
+    </ClientLayout>
   );
 }

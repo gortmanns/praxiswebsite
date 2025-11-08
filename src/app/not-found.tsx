@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
+// This page is now completely self-contained and does not use any shared layout
+// to ensure it can be statically built without client-side dependencies.
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background text-center">
