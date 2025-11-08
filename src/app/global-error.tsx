@@ -21,7 +21,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
                 <p className="mt-4 text-lg text-foreground/80">
                     Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.
                 </p>
-                <div className="mt-6 flex justify-center gap-4">
+                 <div className="mt-6 flex justify-center gap-4">
                     <Button asChild>
                         <Link href="/">Zurück zur Startseite</Link>
                     </Button>
