@@ -111,6 +111,12 @@ interface BannerSettings {
 // --- Main Banner Logic ---
 
 export function HolidayBanner({ isEnglish }: { isEnglish: boolean }) {
+    // SSR Guard: This component uses client-side hooks for data fetching.
+    // It should not be rendered on the server.
+    if (typeof window === 'undefined') {
+        return null;
+    }
+
     const firestore = useFirestore();
     const [now, setNow] = useState<Date | null>(null);
 

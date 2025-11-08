@@ -1,3 +1,5 @@
+'use client';
+
 import { Hero } from '../_components/hero';
 import { WelcomeSection } from '../_components/welcome-section';
 import { QuickNavSection } from '../_components/quick-nav-section';

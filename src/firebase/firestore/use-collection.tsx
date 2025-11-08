@@ -40,7 +40,7 @@ export interface InternalQuery extends Query<DocumentData> {
 
 /**
  * React hook to subscribe to a Firestore collection or query in real-time.
- * Handles nullable references/queries.
+ * Handles nullable references/queries and is SSR-safe.
  * 
  *
  * IMPORTANT! YOU MUST MEMOIZE the inputted memoizedTargetRefOrQuery or BAD THINGS WILL HAPPEN
@@ -63,6 +63,12 @@ export function useCollection<T = any>(
   const [error, setError] = useState<FirestoreError | Error | null>(null);
 
   useEffect(() => {
+    // SSR Guard: Don't run this on the server.
+    if (typeof window === 'undefined') {
+        setIsLoading(false);
+        return;
+    }
+
     // If the query is not yet available, we are in a loading state, but don't start a listener.
     if (!memoizedTargetRefOrQuery) {
       setIsLoading(true);
@@ -115,7 +121,7 @@ export function useCollection<T = any>(
     return () => unsubscribe();
   }, [memoizedTargetRefOrQuery]);
 
-  if (memoizedTargetRefOrQuery && !memoizedTargetRefOrQuery.__memo) {
+  if (typeof window !== 'undefined' && memoizedTargetRefOrQuery && !memoizedTargetRefOrQuery.__memo) {
     throw new Error('useCollection query was not properly memoized using useMemoFirebase. This can cause infinite loops and unnecessary Firestore reads.');
   }
 

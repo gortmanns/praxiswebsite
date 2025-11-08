@@ -1,3 +1,5 @@
+'use client';
+
 import { ImageGallery } from '../impressionen/_components/image-gallery';
 import { practiceImages } from '../impressionen/images';
 import PageLayout from '../page-layout';
