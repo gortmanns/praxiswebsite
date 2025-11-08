@@ -13,7 +13,6 @@ const montserrat = Montserrat({
   weight: ['400', '700'],
 });
 
-// Metadata can only be exported from a Server Component
 export const metadata: Metadata = {
   title: 'Praxiszentrum im Ring',
   description: 'Hausarztpraxis in Hinterkappelen',
