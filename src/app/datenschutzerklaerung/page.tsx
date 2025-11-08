@@ -1,9 +1,11 @@
+
+'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import PageLayout from '../page-layout';
+import ClientLayout from '../_components/ClientLayout';
 
 export default function DatenschutzerklaerungPage() {
   return (
-    <PageLayout>
+    <ClientLayout>
       <div className="container py-16 sm:py-24">
           <div className="mx-auto max-w-5xl text-center">
               <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
@@ -74,7 +76,7 @@ export default function DatenschutzerklaerungPage() {
                       </div>
                       <div>
                           <h3 className="font-bold">Recht auf Einschränkung der Verarbeitung</h3>
-                          <p>Jede von der Verarbeitung personenbezogener Daten betroffene Person hat das Recht, von dem für die Verarbeitung Verantwortlichen dieser Website die Einschränkung der Verarbeitung zu verlangen, wenn eine der folgenden Bedingungen erfüllt ist: Die Richtigkeit der personenbezogenen Daten wird von der betroffenen Person bestritten, und zwar für einen Zeitraum, der es dem für die Verarbeitung Verantwortlichen ermöglicht, die Richtigkeit der personenbezogenen Daten zu überprüfen.</p>
+                          <p>Jede von der Verarbeitung personenbezogener Daten betroffene Person hat das Recht, von dem für die Verarbeitung Verantwortlichen dieser Website die Einschränkäung der Verarbeitung zu verlangen, wenn eine der folgenden Bedingungen erfüllt ist: Die Richtigkeit der personenbezogenen Daten wird von der betroffenen Person bestritten, und zwar für einen Zeitraum, der es dem für die Verarbeitung Verantwortlichen ermöglicht, die Richtigkeit der personenbezogenen Daten zu überprüfen.</p>
                           <ul className="list-disc pl-6 mt-2 space-y-2">
                               <li>Die Verarbeitung ist unrechtmässig, die betroffene Person legt Widerspruch gegen die Löschung der personenbezogenen Daten ein und verlangt stattdessen die Einschränkung der Nutzung der personenbezogenen Daten.</li>
                               <li>Der für die Verarbeitung Verantwortliche benötigt die personenbezogenen Daten nicht mehr für die Zwecke der Verarbeitung, die betroffene Person benötigt sie jedoch für die Geltendmachung. Die betroffene Person hat aus Gründen, die sich aus ihrer besonderen Situation ergeben, Widerspruch gegen die Verarbeitung eingelegt und es steht noch nicht fest, ob die berechtigten Interessen des Verantwortlichen gegenüber denen der betroffenen Person überwiegen.</li>
@@ -172,6 +174,6 @@ export default function DatenschutzerklaerungPage() {
               </Card>
           </div>
       </div>
-    </PageLayout>
+    </ClientLayout>
   );
 }
