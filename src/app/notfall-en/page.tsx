@@ -1,14 +1,15 @@
+
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Phone } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import PageLayout from '../page-layout';
+import ClientLayout from '../_components/ClientLayout';
 
 export default function EmergencyPage() {
   return (
-    <PageLayout>
+    <ClientLayout>
       <div className="w-full px-4 py-16 sm:px-8 sm:py-24">
         <Card>
           <CardHeader>
@@ -104,6 +105,6 @@ export default function EmergencyPage() {
           </CardContent>
         </Card>
       </div>
-    </PageLayout>
+    </ClientLayout>
   );
 }

@@ -3,13 +3,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Header } from './_components/header';
 import { Footer } from './_components/footer';
-import ClientLayout from './_components/ClientLayout';
 
-// This component is now wrapped in a minimal ClientLayout to get basic styling
-// but it is structured to avoid the HolidayBanner and other complex data-fetching components.
-// For simplicity and to ensure no hooks are called during its server-render phase,
-// we will just render the core page content with a simple header/footer structure
-// that is safe.
+// This component is now completely self-contained and does NOT use any client-side layout components.
+// It renders its own simple Header and Footer to avoid any hooks during server-side build.
 
 export default function NotFound() {
   return (
