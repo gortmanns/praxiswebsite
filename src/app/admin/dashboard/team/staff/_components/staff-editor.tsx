@@ -1,3 +1,4 @@
+
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -22,7 +23,7 @@ import { VitaEditorDialog } from '@/app/admin/dashboard/team/doctors/_components
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { useStorage } from '@/firebase';
+import { useStorage } from '@/firebase/provider';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 

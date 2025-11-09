@@ -1,5 +1,3 @@
-
-/*
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -53,8 +51,4 @@ export default function DatenschutzerklaerungEnPage() {
         </div>
     </div>
   );
-}
-*/
-export default function Page() {
-  return null;
 }

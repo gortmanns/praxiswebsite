@@ -1,4 +1,3 @@
-/*
 'use client';
 import { OpeningHoursCalendar } from './_components/opening-hours-calendar';
 
@@ -19,8 +18,4 @@ export default function OeffnungszeitenPage() {
         </div>
     </div>
   );
-}
-*/
-export default function Page() {
-  return null;
 }

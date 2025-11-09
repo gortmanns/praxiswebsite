@@ -43,8 +43,6 @@ const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 
 export function Footer({ isEnglish }: { isEnglish: boolean }) {
-  return null;
-  /*
   const year = new Date().getFullYear();
 
   const navLinks = isEnglish ? [
@@ -176,5 +174,4 @@ export function Footer({ isEnglish }: { isEnglish: boolean }) {
       </div>
     </footer>
   );
-  */
 }

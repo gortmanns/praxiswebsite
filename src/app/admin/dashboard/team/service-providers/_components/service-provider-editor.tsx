@@ -1,3 +1,4 @@
+
 /**********************************************************************************
  * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
  * 
@@ -16,7 +17,7 @@ import { ImageCropDialog } from '../../doctors/_components/image-crop-dialog';
 import { LogoFunctionSelectDialog } from '../../doctors/_components/logo-function-select-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { projectImages } from '@/app/admin/dashboard/partners/project-images';
-import { useStorage } from '@/firebase';
+import { useStorage } from '@/firebase/provider';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';

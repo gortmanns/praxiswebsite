@@ -1,4 +1,3 @@
-/*
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -182,8 +181,4 @@ export default function LeistungenPage() {
         </div>
     </div>
   );
-}
-*/
-export default function Page() {
-  return null;
 }

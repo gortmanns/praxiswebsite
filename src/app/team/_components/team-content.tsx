@@ -1,7 +1,8 @@
+
 'use client';
 
 import React from 'react';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase/provider';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { DoctorCard, Doctor } from './doctor-card';
 import { TeamMemberCard } from './team-member-card';

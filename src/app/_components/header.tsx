@@ -43,8 +43,35 @@ const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
+interface MobileNavLinkProps {
+    href: string;
+    title: string;
+    isActive: boolean;
+    isEmergency?: boolean;
+    setSheetOpen: (open: boolean) => void;
+}
+
+const MobileNavLink: React.FC<MobileNavLinkProps> = ({ href, title, isActive, isEmergency = false, setSheetOpen }) => (
+    <Link
+      href={href}
+      onClick={() => setSheetOpen(false)}
+      className={cn(
+        "block rounded-md px-3 py-2 text-lg font-bold uppercase transition-colors",
+        isActive
+          ? isEmergency
+            ? 'ring-2 ring-emergency-red ring-offset-2 ring-offset-background text-emergency-red'
+            : 'bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground'
+          : isEmergency
+            ? 'text-emergency-red hover:text-emergency-red/80'
+            : 'text-muted-foreground hover:text-primary'
+      )}
+    >
+      {title}
+    </Link>
+);
+
+
 export function Header({ isEnglish }: { isEnglish: boolean }) {
-    /*
   const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -98,13 +125,12 @@ export function Header({ isEnglish }: { isEnglish: boolean }) {
   useEffect(() => {
     // No-op, just to ensure state is updated on path change
   }, [pathname]);
-  */
+
   return (
     <header className="w-full border-b bg-background">
       <div className="bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground">
         <div className="w-full px-4 sm:px-8">
             <div className="flex h-auto items-center justify-between py-2 md:h-10">
-                {/* 
                 <div className="flex items-center gap-3">
                     <Link href="/" title="Deutsch">
                         <DeFlag className="h-6 w-auto cursor-pointer rounded-sm border-2 border-transparent hover:border-primary-foreground" />
@@ -115,7 +141,6 @@ export function Header({ isEnglish }: { isEnglish: boolean }) {
                     <div className="border-l border-primary-foreground/50 h-6"></div>
                     <div id="google_translate_element"></div>
                 </div>
-                */}
                 <div className="flex flex-col items-center gap-2 text-sm md:flex-row md:gap-6">
                     <a
                     href="tel:0313162600"
@@ -140,7 +165,6 @@ export function Header({ isEnglish }: { isEnglish: boolean }) {
             </div>
         </div>
       </div>
-      {/*
       <div className="flex h-[140px] items-center justify-between px-8">
         <Link href={isEnglish ? "/page-en" : "/"} className="min-w-[280px] max-w-[781px]">
               <Image
@@ -310,7 +334,6 @@ export function Header({ isEnglish }: { isEnglish: boolean }) {
         </div>
 
       </div>
-      */}
     </header>
   );
 }

@@ -9,7 +9,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase/provider';
 import { doc, collection, query, where, Timestamp } from 'firebase/firestore';
 import { format, addDays, differenceInDays, isWithinInterval } from 'date-fns';
 import { de, enUS } from 'date-fns/locale';

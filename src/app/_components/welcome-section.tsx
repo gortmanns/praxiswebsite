@@ -1,4 +1,3 @@
-/*
 'use client';
 
 export function WelcomeSection({ isEnglish }: { isEnglish: boolean }) {
@@ -19,8 +18,4 @@ export function WelcomeSection({ isEnglish }: { isEnglish: boolean }) {
       </div>
     </section>
   );
-}
-*/
-export function WelcomeSection({ isEnglish }: { isEnglish: boolean }) {
-  return null;
 }

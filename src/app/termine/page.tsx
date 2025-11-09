@@ -1,4 +1,3 @@
-/*
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Phone, UserPlus, Clock, Download } from 'lucide-react';
@@ -58,7 +57,7 @@ export default function TerminePage() {
                         <a href="/path/to/formular2.pdf" download>Einverständniserklärung</a>
                     </Button>
                 </div>
-                * /}
+                */}
             </div>
             
             <p>Dies hilft uns, Sie von Anfang an optimal zu betreuen.</p>
@@ -81,8 +80,4 @@ export default function TerminePage() {
       </div>
     </div>
   );
-}
-*/
-export default function Page() {
-  return null;
 }

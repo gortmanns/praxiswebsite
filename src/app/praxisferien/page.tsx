@@ -1,12 +1,11 @@
 
-/*
 'use client';
 
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { Skeleton } from '@/components/ui/skeleton';
 import React from 'react';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase/provider';
 import { collection, query, orderBy, Timestamp } from 'firebase/firestore';
 
 interface Holiday {
@@ -92,8 +91,4 @@ export default function PraxisferienPage() {
         <PraxisferienContent />
     </div>
   );
-}
-*/
-export default function Page() {
-  return null;
 }

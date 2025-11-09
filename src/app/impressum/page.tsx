@@ -1,4 +1,3 @@
-/*
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
@@ -64,8 +63,4 @@ export default function ImpressumPage() {
       </div>
     </div>
   );
-}
-*/
-export default function Page() {
-  return null;
 }

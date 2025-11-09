@@ -1,6 +1,7 @@
+
 'use client';
 import { AppSidebar } from './dashboard/_components/app-sidebar';
-import { useAuth } from '@/firebase';
+import { useAuth } from '@/firebase/provider';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';

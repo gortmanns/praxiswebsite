@@ -1,4 +1,3 @@
-/*
 'use client';
 import { ImageGallery } from './_components/image-gallery';
 import { practiceImages } from './images';
@@ -19,8 +18,4 @@ export default function ImpressionenPage() {
         </div>
     </div>
   );
-}
-*/
-export default function Page() {
-  return null;
 }

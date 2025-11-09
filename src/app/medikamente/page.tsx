@@ -1,4 +1,3 @@
-/*
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
@@ -184,7 +183,7 @@ export default function MedikamentePage() {
           </Tabs>
         </div>
         
-        {/* Mobile View: Stacked Cards * /}
+        {/* Mobile View: Stacked Cards */}
         <div className="space-y-8 sm:hidden">
             <Card className="overflow-hidden bg-gradient-start text-primary-foreground">
                 <CardHeader>
@@ -232,8 +231,4 @@ export default function MedikamentePage() {
 
     </div>
   );
-}
-*/
-export default function Page() {
-  return null;
 }

@@ -27,7 +27,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useAuth } from '@/firebase';
+import { useAuth } from '@/firebase/provider';
 import { signOut } from 'firebase/auth';
 
 
@@ -56,8 +56,8 @@ export function AppSidebar() {
   const visualDesignItem = { href: '/admin/dashboard/visual-design', label: 'Visual Design', icon: Palette };
 
   const handleLogout = async () => {
-    if (!auth) return;
-    await signOut(auth);
+    if (!auth.auth) return;
+    await signOut(auth.auth);
     router.push('/admin/login');
   };
 

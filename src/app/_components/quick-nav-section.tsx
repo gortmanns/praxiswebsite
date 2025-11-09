@@ -1,4 +1,3 @@
-/*
 'use client';
 import Link from 'next/link';
 import {
@@ -68,8 +67,3 @@ export function QuickNavSection() {
     </section>
   );
 }
-*/
-export function QuickNavSection() {
-  return null;
-}
-    

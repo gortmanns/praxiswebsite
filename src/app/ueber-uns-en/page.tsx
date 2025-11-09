@@ -1,4 +1,3 @@
-/*
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
@@ -55,8 +54,4 @@ export default function UeberUnsEnPage() {
         </div>
     </div>
   );
-}
-*/
-export default function Page() {
-  return null;
 }

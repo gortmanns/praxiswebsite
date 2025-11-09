@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
@@ -11,7 +12,7 @@ import { LogoFunctionSelectDialog } from './logo-function-select-dialog';
 import { EditableDoctorCard, type Doctor } from './editable-doctor-card';
 import { useToast } from '@/hooks/use-toast';
 import { projectImages } from '@/app/admin/dashboard/partners/project-images';
-import { useStorage } from '@/firebase';
+import { useStorage } from '@/firebase/provider';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';

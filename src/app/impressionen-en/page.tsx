@@ -1,4 +1,3 @@
-/*
 'use client';
 
 import { ImageGallery } from '../impressionen/_components/image-gallery';
@@ -20,8 +19,4 @@ export default function ImpressionenEnPage() {
         </div>
     </div>
   );
-}
-*/
-export default function Page() {
-  return null;
 }

@@ -1,8 +1,8 @@
-/*
+
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase/provider';
 import { collection, query, orderBy } from 'firebase/firestore';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
@@ -121,8 +121,4 @@ export function CooperationPartnersSection({ isEnglish }: { isEnglish: boolean }
       </div>
     </section>
   );
-}
-*/
-export function CooperationPartnersSection({ isEnglish }: { isEnglish: boolean }) {
-  return null;
 }
