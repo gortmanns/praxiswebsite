@@ -1,4 +1,4 @@
-
+/*
 'use client';
 
 import Image from 'next/image';
@@ -27,4 +27,8 @@ export function Hero({ isEnglish }: { isEnglish: boolean }) {
       </div>
     </section>
   );
+}
+*/
+export function Hero({ isEnglish }: { isEnglish: boolean }) {
+  return null;
 }

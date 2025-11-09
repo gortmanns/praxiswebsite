@@ -1,4 +1,4 @@
-
+/*
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -121,4 +121,8 @@ export function CooperationPartnersSection({ isEnglish }: { isEnglish: boolean }
       </div>
     </section>
   );
+}
+*/
+export function CooperationPartnersSection({ isEnglish }: { isEnglish: boolean }) {
+  return null;
 }
