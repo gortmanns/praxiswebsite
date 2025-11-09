@@ -5,7 +5,7 @@ import './tiptap-styles.css';
 import { cn } from '@/lib/utils';
 import { Montserrat } from 'next/font/google';
 import Script from 'next/script';
-import { FirebaseClientProvider } from '@/firebase';
+import { FirebaseClientProvider } from '@/firebase/client-provider';
 import ClientLayout from './_components/ClientLayout';
 
 

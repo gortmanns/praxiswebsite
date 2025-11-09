@@ -8,6 +8,8 @@ import { FirebaseStorage } from 'firebase/storage';
 import { Auth, onAuthStateChanged, User } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener'
 import { useRouter } from 'next/navigation';
+import { useCollection } from './firestore/use-collection';
+import { useDoc } from './firestore/use-doc';
 
 interface FirebaseProviderProps {
   children: ReactNode;
@@ -166,3 +168,6 @@ export function useMemoFirebase<T>(factory: () => T, deps: DependencyList): T | 
   
   return memoized;
 }
+
+// Re-export specific hooks needed by the app
+export { useCollection, useDoc };

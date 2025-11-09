@@ -19,9 +19,6 @@ export function initializeFirebase() {
 }
 
 
-export * from './provider';
-export * from './client-provider';
-export * from './firestore/use-collection';
-export * from './firestore/use-doc';
-export * from './errors';
-export * from './error-emitter';
+// Client-side hooks and providers are no longer exported from here
+// to maintain a clean separation between server and client concerns.
+// They are now exported from provider.tsx and client-provider.tsx.
