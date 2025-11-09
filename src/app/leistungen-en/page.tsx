@@ -1,3 +1,5 @@
+
+/*
 'use client';
 
 import Image from 'next/image';
@@ -182,4 +184,8 @@ export default function ServicesPage() {
         </div>
     </div>
   );
+}
+*/
+export default function Page() {
+  return null;
 }

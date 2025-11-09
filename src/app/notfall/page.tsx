@@ -1,3 +1,5 @@
+
+/*
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Phone } from 'lucide-react';
@@ -102,4 +104,8 @@ export default function NotfallPage() {
       </Card>
     </div>
   );
+}
+*/
+export default function Page() {
+  return null;
 }

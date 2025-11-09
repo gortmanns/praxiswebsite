@@ -1,3 +1,5 @@
+
+/*
 'use client';
 
 import { format } from 'date-fns';
@@ -90,4 +92,8 @@ export default function PraxisferienPage() {
         <PraxisferienContent />
     </div>
   );
+}
+*/
+export default function Page() {
+  return null;
 }

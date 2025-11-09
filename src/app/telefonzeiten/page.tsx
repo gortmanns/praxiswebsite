@@ -1,3 +1,5 @@
+
+/*
 'use client';
 import { PhoneHoursCalendar } from '../oeffnungszeiten/_components/phone-hours-calendar';
 
@@ -18,4 +20,8 @@ export default function TelefonzeitenPage() {
         </div>
     </div>
   );
+}
+*/
+export default function Page() {
+  return null;
 }

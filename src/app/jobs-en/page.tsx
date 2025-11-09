@@ -1,3 +1,5 @@
+
+/*
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -68,4 +70,8 @@ export default function JobsEnPage() {
         </div>
     </div>
   );
+}
+*/
+export default function Page() {
+  return null;
 }

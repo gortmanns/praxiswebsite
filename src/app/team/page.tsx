@@ -1,3 +1,5 @@
+
+/*
 'use client';
 import TeamContent from './_components/team-content';
 
@@ -7,4 +9,8 @@ export default function TeamPage() {
       <TeamContent isEnglish={false} />
     </div>
   );
+}
+*/
+export default function Page() {
+  return null;
 }

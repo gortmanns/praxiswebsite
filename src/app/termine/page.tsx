@@ -1,3 +1,5 @@
+
+/*
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Phone, UserPlus, Clock, Download } from 'lucide-react';
@@ -80,4 +82,8 @@ export default function TerminePage() {
       </div>
     </div>
   );
+}
+*/
+export default function Page() {
+  return null;
 }

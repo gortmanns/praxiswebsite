@@ -1,3 +1,5 @@
+
+/*
 'use client';
 
 import { Hero } from '../_components/hero';
@@ -14,4 +16,8 @@ export default function HomeEn() {
         <CooperationPartnersSection isEnglish={true} />
     </>
   );
+}
+*/
+export default function Page() {
+  return null;
 }
