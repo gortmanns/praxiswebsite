@@ -1,11 +1,10 @@
+
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import PageLayout from './page-layout';
 
 export default function NotFound() {
   return (
-    <PageLayout>
         <div className="flex min-h-[70vh] flex-col items-center justify-center bg-background p-4 text-center">
             <div className="max-w-md p-8">
             <Image
@@ -27,6 +26,5 @@ export default function NotFound() {
             </div>
             </div>
         </div>
-    </PageLayout>
   );
 }
