@@ -5,6 +5,7 @@ import './tiptap-styles.css';
 import { cn } from '@/lib/utils';
 import { Montserrat } from 'next/font/google';
 import Script from 'next/script';
+import { FirebaseClientProvider } from '@/firebase';
 import ClientLayout from './_components/ClientLayout';
 
 
@@ -20,7 +21,8 @@ export const metadata: Metadata = {
 };
 
 // This is the root layout.
-// It now wraps ALL pages with the ClientLayout, which contains all providers.
+// It now wraps ALL pages with the FirebaseClientProvider.
+// It then renders the ClientLayout, which contains the rest of the page structure.
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -30,9 +32,11 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className={cn('font-body antialiased', montserrat.variable)}>
-          <ClientLayout>
-            {children}
-          </ClientLayout>
+          <FirebaseClientProvider>
+            <ClientLayout>
+              {children}
+            </ClientLayout>
+          </FirebaseClientProvider>
           <Script
             id="google-translate-init"
             strategy="afterInteractive"

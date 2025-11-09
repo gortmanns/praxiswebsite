@@ -6,22 +6,26 @@ import { Header } from './header';
 import { Footer } from './footer';
 import { HolidayBanner } from './holiday-banner';
 import React, { useContext } from 'react';
-import { FirebaseClientProvider, FirebaseContext } from '@/firebase';
+import { FirebaseContext } from '@/firebase';
 import { Toaster } from '@/components/ui/toaster';
 
 // This is the main Client Component Layout.
 // It contains all providers and hooks that need to run on the client.
-function InnerLayout({ children }: { children: React.ReactNode }) {
+export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isEnglish = pathname.includes('-en');
   const firebaseContext = useContext(FirebaseContext);
 
-  // SSR Guard: Do not render anything until Firebase is initialized on the client.
-  // This prevents the 'useContext of null' error during the build process.
-  if (!firebaseContext || !firebaseContext.areServicesAvailable) {
-    return null;
+  // SSR Guard: During build, Firebase context might not be ready.
+  // We check for its availability.
+  if (!firebaseContext) {
+    // On the server or during the very first render pass, we can return the children directly
+    // because the provider is wrapping them in RootLayout.
+    // This avoids rendering the full layout until the client-side context is hydrated.
+    return <>{children}</>;
   }
 
+  // Once the context is available on the client, render the full layout.
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header isEnglish={isEnglish} />
@@ -32,14 +36,5 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
       <Footer isEnglish={isEnglish} />
       <Toaster />
     </div>
-  );
-}
-
-
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <FirebaseClientProvider>
-      <InnerLayout>{children}</InnerLayout>
-    </FirebaseClientProvider>
   );
 }
