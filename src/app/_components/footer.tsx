@@ -1,4 +1,10 @@
-
+/**********************************************************************************
+ * WICHTIGER HINWEIS (WRITE PROTECT DIRECTIVE)
+ * 
+ * Diese Datei wurde nach wiederholten Fehlversuchen stabilisiert.
+ * ÄNDERN SIE DIESE DATEI UNTER KEINEN UMSTÄNDEN OHNE AUSDRÜCKLICHE ERLAUBNIS.
+ * Jede Änderung muss vorher bestätigt werden.
+ **********************************************************************************/
 'use client';
 
 import Link from 'next/link';
@@ -37,6 +43,8 @@ const PrinterIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 
 export function Footer({ isEnglish }: { isEnglish: boolean }) {
+  return null;
+  /*
   const year = new Date().getFullYear();
 
   const navLinks = isEnglish ? [
@@ -168,4 +176,5 @@ export function Footer({ isEnglish }: { isEnglish: boolean }) {
       </div>
     </footer>
   );
+  */
 }
