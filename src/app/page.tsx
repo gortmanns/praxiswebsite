@@ -8,10 +8,12 @@ import { CooperationPartnersSection } from './_components/cooperation-partners';
 export default function Home() {
   return (
     <PageLayout>
+      {/*
       <Hero isEnglish={false} />
       <WelcomeSection isEnglish={false} />
       <QuickNavSection />
       <CooperationPartnersSection isEnglish={false} />
+      */}
     </PageLayout>
   );
 }
