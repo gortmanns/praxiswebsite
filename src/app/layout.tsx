@@ -5,7 +5,8 @@ import './tiptap-styles.css';
 import { cn } from '@/lib/utils';
 import { Montserrat } from 'next/font/google';
 import Script from 'next/script';
-import ClientLayout from './_components/ClientLayout';
+import { FirebaseClientProvider } from '@/firebase';
+
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 // This is the root layout.
-// It wraps ALL pages with the ClientLayout to provide global context.
+// It wraps ALL pages with the FirebaseClientProvider to make context available everywhere.
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,7 +30,9 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className={cn('font-body antialiased', montserrat.variable)}>
-          <ClientLayout>{children}</ClientLayout>
+          <FirebaseClientProvider>
+            {children}
+          </FirebaseClientProvider>
           <Script
             id="google-translate-init"
             strategy="afterInteractive"

@@ -1,9 +1,37 @@
 'use client';
+import { AppSidebar } from './dashboard/_components/app-sidebar';
+import { useAuth } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
-import React from 'react';
 
-// This layout is for all admin routes.
-// It is now wrapped by the global ClientLayout in the root layout.
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+    const { user, loading } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push('/admin/login');
+        }
+    }, [user, loading, router]);
+
+    if (loading || !user) {
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <div className="h-16 w-16 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent"></div>
+            </div>
+        );
+    }
+
+  return (
+    <SidebarProvider>
+        <div className="flex min-h-screen bg-muted/40">
+            <AppSidebar />
+            <main className="flex-1">
+                {children}
+            </main>
+        </div>
+    </SidebarProvider>
+  );
 }
