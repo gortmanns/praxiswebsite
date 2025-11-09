@@ -1,4 +1,3 @@
-
 /*
 'use client';
 import TeamContent from './_components/team-content';

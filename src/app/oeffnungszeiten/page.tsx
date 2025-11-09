@@ -1,4 +1,3 @@
-
 /*
 'use client';
 import { OpeningHoursCalendar } from './_components/opening-hours-calendar';

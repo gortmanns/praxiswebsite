@@ -143,7 +143,6 @@ export default function MedikamentePage() {
       </div>
 
       <div className="mx-auto mt-12 max-w-7xl">
-        {/* Desktop View: Tabs */}
         <div className="hidden sm:block">
           <Tabs defaultValue="telefon" className="w-full">
               <TabsList className="grid h-auto w-full grid-cols-2 gap-2 rounded-lg bg-transparent p-0 shadow-2xl">
@@ -185,7 +184,7 @@ export default function MedikamentePage() {
           </Tabs>
         </div>
         
-        {/* Mobile View: Stacked Cards */}
+        {/* Mobile View: Stacked Cards * /}
         <div className="space-y-8 sm:hidden">
             <Card className="overflow-hidden bg-gradient-start text-primary-foreground">
                 <CardHeader>

@@ -49,7 +49,7 @@ export default function TerminePage() {
                 <p className="text-base">
                     Die Links zum Herunterladen der Formulare werden hier in Kürze verfügbar sein.
                 </p>
-                {/* 
+                {/*
                 <div className="flex flex-col items-start gap-4 sm:flex-row">
                     <Button asChild>
                         <a href="/path/to/formular1.pdf" download>Patientenstammblatt</a>
@@ -58,7 +58,7 @@ export default function TerminePage() {
                         <a href="/path/to/formular2.pdf" download>Einverständniserklärung</a>
                     </Button>
                 </div>
-                */}
+                * /}
             </div>
             
             <p>Dies hilft uns, Sie von Anfang an optimal zu betreuen.</p>

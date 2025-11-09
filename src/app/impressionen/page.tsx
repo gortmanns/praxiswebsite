@@ -1,4 +1,3 @@
-
 /*
 'use client';
 import { ImageGallery } from './_components/image-gallery';
