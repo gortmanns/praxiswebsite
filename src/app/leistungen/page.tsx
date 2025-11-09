@@ -2,7 +2,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import ClientLayout from '../_components/ClientLayout';
 
 const leistungen = [
   {
@@ -137,51 +136,49 @@ const leistungen = [
 
 export default function LeistungenPage() {
   return (
-    <ClientLayout>
-      <div className="container py-16 sm:py-24">
-          <div className="mx-auto max-w-5xl text-center">
-              <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
-                  UNSERE LEISTUNGEN
-              </h2>
-          </div>
+    <div className="container py-16 sm:py-24">
+        <div className="mx-auto max-w-5xl text-center">
+            <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
+                UNSERE LEISTUNGEN
+            </h2>
+        </div>
 
-          <div className="mx-auto mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {leistungen.map((leistung) => (
-                <div key={leistung.name} className="group relative flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-2xl transition-transform duration-500">
-                  <div className="flex items-center justify-center p-4 min-h-[9rem]">
-                      <div className="text-center">
-                        <h3 className="font-headline text-2xl font-bold text-primary">
-                          {leistung.name === 'TWINT' ? (
-                              <>
-                                  TWINT
-                                  <br />
-                                  <span className="text-xl">Mit dem Handy bezahlen</span>
-                              </>
-                          ) : leistung.name}
-                        </h3>
-                      </div>
-                  </div>
-                  <div className={cn("relative w-full aspect-square", leistung.name === 'TWINT' && "bg-black")}>
-                      <Image
-                          src={leistung.image}
-                          alt={leistung.name}
-                          fill
-                          className="object-cover"
-                          data-ai-hint={leistung.hint}
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      />
-                  </div>
-                  {leistung.backsideContent && (
-                        <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
-                            <div className="text-center text-lg">
-                                {leistung.backsideContent}
-                            </div>
-                        </div>
-                    )}
+        <div className="mx-auto mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {leistungen.map((leistung) => (
+              <div key={leistung.name} className="group relative flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-2xl transition-transform duration-500">
+                <div className="flex items-center justify-center p-4 min-h-[9rem]">
+                    <div className="text-center">
+                      <h3 className="font-headline text-2xl font-bold text-primary">
+                        {leistung.name === 'TWINT' ? (
+                            <>
+                                TWINT
+                                <br />
+                                <span className="text-xl">Mit dem Handy bezahlen</span>
+                            </>
+                        ) : leistung.name}
+                      </h3>
+                    </div>
                 </div>
-              ))}
-          </div>
-      </div>
-    </ClientLayout>
+                <div className={cn("relative w-full aspect-square", leistung.name === 'TWINT' && "bg-black")}>
+                    <Image
+                        src={leistung.image}
+                        alt={leistung.name}
+                        fill
+                        className="object-cover"
+                        data-ai-hint={leistung.hint}
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                </div>
+                {leistung.backsideContent && (
+                      <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-start overflow-auto bg-accent/95 p-6 text-left text-background transition-all duration-1000 group-hover:translate-y-0">
+                          <div className="text-center text-lg">
+                              {leistung.backsideContent}
+                          </div>
+                      </div>
+                  )}
+              </div>
+            ))}
+        </div>
+    </div>
   );
 }

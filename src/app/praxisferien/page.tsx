@@ -6,7 +6,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import React from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, Timestamp } from 'firebase/firestore';
-import ClientLayout from '../_components/ClientLayout';
 
 interface Holiday {
   id: string;
@@ -79,18 +78,16 @@ function PraxisferienContent() {
 
 export default function PraxisferienPage() {
   return (
-    <ClientLayout>
-      <div className="container py-16 sm:py-24">
-          <div className="mx-auto max-w-5xl text-center">
-              <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl sm:whitespace-nowrap text-primary">
-                  PRAXISFERIEN
-              </h2>
-              <p className="mt-6 text-lg text-foreground/80">
-                  Auf dieser Seite finden Sie stets eine Übersicht aller Praxisferien, soweit diese bereits geplant sind.
-              </p>
-          </div>
-          <PraxisferienContent />
-      </div>
-    </ClientLayout>
+    <div className="container py-16 sm:py-24">
+        <div className="mx-auto max-w-5xl text-center">
+            <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl sm:whitespace-nowrap text-primary">
+                PRAXISFERIEN
+            </h2>
+            <p className="mt-6 text-lg text-foreground/80">
+                Auf dieser Seite finden Sie stets eine Übersicht aller Praxisferien, soweit diese bereits geplant sind.
+            </p>
+        </div>
+        <PraxisferienContent />
+    </div>
   );
 }

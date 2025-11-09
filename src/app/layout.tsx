@@ -5,6 +5,7 @@ import './tiptap-styles.css';
 import { cn } from '@/lib/utils';
 import { Montserrat } from 'next/font/google';
 import Script from 'next/script';
+import ClientLayout from './_components/ClientLayout';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -17,8 +18,8 @@ export const metadata: Metadata = {
   description: 'Hausarztpraxis in Hinterkappelen',
 };
 
-// This is the root layout. It's a pure Server Component.
-// It should not contain any client-side providers or hooks.
+// This is the root layout.
+// It wraps ALL pages with the ClientLayout to provide global context.
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,8 +29,8 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className={cn('font-body antialiased', montserrat.variable)}>
-          {children}
-        <Script
+          <ClientLayout>{children}</ClientLayout>
+          <Script
             id="google-translate-init"
             strategy="afterInteractive"
             dangerouslySetInnerHTML={{

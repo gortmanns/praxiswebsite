@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ObfuscatedLink } from '@/components/ui/obfuscated-link';
 import { cn } from '@/lib/utils';
 import { Phone, Mail } from 'lucide-react';
-import ClientLayout from '../_components/ClientLayout';
 
 export default function MedikamentePage() {
 
@@ -102,137 +101,135 @@ export default function MedikamentePage() {
   );
 
   return (
-    <ClientLayout>
-      <div className="container py-16 sm:py-24">
-        <div className="mx-auto max-w-5xl text-center">
-            <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
-                MEDIKAMENTE
-            </h2>
-        </div>
-
-        <div className="mx-auto mt-16 max-w-7xl">
-          <Card>
-            <CardContent className="p-6">
-              <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
-                <div className="relative aspect-[3/2] w-full">
-                  <Image
-                    src="/images/foto-medis.jpg"
-                    alt="Verschiedene Medikamentenschachteln"
-                    data-ai-hint="medication boxes"
-                    fill
-                    className="rounded-lg object-cover"
-                  />
-                </div>
-                <div className="flex flex-col justify-center space-y-4">
-                  <h3 className="font-headline text-2xl font-bold text-primary">Ihre Medikamente direkt vom Hausarzt</h3>
-                  <p className="text-lg text-foreground/80">
-                    Als Patient können Sie alle Ihre Medikamente bequem bei uns beziehen. So sparen Sie nicht nur Geld, sondern Sie haben auch die Gewissheit, dass Sie wirklich nur die Medikamente erhalten und einnehmen, die Sie auch benötigen. Bei jeder Abgabe eines Medikaments wird dieses mit den in Ihrer Krankenakte hinterlegten Medikamenten abgeglichen.
-                  </p>
-                  <p className="text-lg text-foreground/80">
-                    Um Ihnen den Bezug der Medikamente so einfach wie möglich zu machen, bieten wir Ihnen die Möglichkeit, die Medikamente vorzubestellen.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="mx-auto mt-16 max-w-7xl text-center">
-          <h3 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-            So einfach bestellen Sie Ihre Medikamente
-          </h3>
-        </div>
-
-        <div className="mx-auto mt-12 max-w-7xl">
-          {/* Desktop View: Tabs */}
-          <div className="hidden sm:block">
-            <Tabs defaultValue="telefon" className="w-full">
-                <TabsList className="grid h-auto w-full grid-cols-2 gap-2 rounded-lg bg-transparent p-0 shadow-2xl">
-                    <TabsTrigger
-                        value="telefon"
-                        className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-primary-foreground data-[state=active]:bg-gradient-start data-[state=inactive]:bg-secondary"
-                    >
-                        <span className="text-[clamp(1.2rem,2.5vw,1.5rem)] font-bold">Vorbestellung per Telefon</span>
-                        <div className="flex items-center gap-3 text-[clamp(0.8rem,2vw,1rem)]">
-                            <Phone className="h-6 w-6"/>
-                            <span>031 316 26 66</span>
-                        </div>
-                    </TabsTrigger>
-                    <TabsTrigger
-                        value="email"
-                        className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-primary-foreground data-[state=active]:bg-gradient-start data-[state=inactive]:bg-secondary"
-                    >
-                        <span className="text-[clamp(1.2rem,2.5vw,1.5rem)] font-bold">Vorbestellung per E-Mail</span>
-                        <div className="flex items-center gap-3 text-[clamp(0.8rem,2vw,1rem)]">
-                            <Mail className="h-6 w-6"/>
-                            <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
-                        </div>
-                    </TabsTrigger>
-                </TabsList>
-              <TabsContent value="telefon" className="-mt-px">
-                <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground shadow-2xl">
-                    <CardContent className="p-6 md:p-8">
-                        <PhoneCardContent />
-                    </CardContent>
-                </Card>
-              </TabsContent>
-              <TabsContent value="email" className="-mt-px">
-                <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground shadow-2xl">
-                    <CardContent className="p-6 md:p-8">
-                      <EmailCardContent />
-                    </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </div>
-          
-          {/* Mobile View: Stacked Cards */}
-          <div className="space-y-8 sm:hidden">
-              <Card className="overflow-hidden bg-gradient-start text-primary-foreground">
-                  <CardHeader>
-                      <div className="flex items-center gap-3 text-xl font-bold">
-                          <Phone />
-                          <span>Vorbestellung per Telefon</span>
-                      </div>
-                  </CardHeader>
-                  <CardContent>
-                      <MobilePhoneCardContent />
-                  </CardContent>
-              </Card>
-              <Card className="overflow-hidden bg-secondary text-primary-foreground">
-                  <CardHeader>
-                      <div className="flex items-center gap-3 text-xl font-bold">
-                          <Mail />
-                          <span>Vorbestellung per E-Mail</span>
-                      </div>
-                  </CardHeader>
-                  <CardContent>
-                      <MobileEmailCardContent />
-                  </CardContent>
-              </Card>
-          </div>
-        </div>
-
-        <div className="mx-auto mt-16 max-w-7xl">
-          <Card>
-            <CardContent className="p-6 md:p-8">
-              <div className="space-y-6 text-lg text-foreground/80">
-                <h3 className="font-headline text-2xl font-bold text-primary">Abholung Ihrer bestellten Medikamente</h3>
-                <p>Ihre Medikamente sind in der Regel spätestens zwei Werktage nach Ihrer Bestellung zur Abholung im Praxiszentrum im Ring bereit.</p>
-                <p>Um Wartezeiten und Störungen des Sprechstundenbetriebs zu minimieren, bitten wir darum, dass Sie wann immer möglich die Medikamente vorbestellen und sie zu den folgenden Zeiten abholen:</p>
-                <ul className="space-y-2 text-foreground">
-                  <li>Montags 10-12 Uhr</li>
-                  <li>Dienstag 15-17 Uhr</li>
-                  <li>Mittwoch 10-12 Uhr</li>
-                  <li>Donnerstag 15-17 Uhr</li>
-                  <li>Freitag 10-12 Uhr</li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
+    <div className="container py-16 sm:py-24">
+      <div className="mx-auto max-w-5xl text-center">
+          <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl sm:whitespace-nowrap">
+              MEDIKAMENTE
+          </h2>
       </div>
-    </ClientLayout>
+
+      <div className="mx-auto mt-16 max-w-7xl">
+        <Card>
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
+              <div className="relative aspect-[3/2] w-full">
+                <Image
+                  src="/images/foto-medis.jpg"
+                  alt="Verschiedene Medikamentenschachteln"
+                  data-ai-hint="medication boxes"
+                  fill
+                  className="rounded-lg object-cover"
+                />
+              </div>
+              <div className="flex flex-col justify-center space-y-4">
+                <h3 className="font-headline text-2xl font-bold text-primary">Ihre Medikamente direkt vom Hausarzt</h3>
+                <p className="text-lg text-foreground/80">
+                  Als Patient können Sie alle Ihre Medikamente bequem bei uns beziehen. So sparen Sie nicht nur Geld, sondern Sie haben auch die Gewissheit, dass Sie wirklich nur die Medikamente erhalten und einnehmen, die Sie auch benötigen. Bei jeder Abgabe eines Medikaments wird dieses mit den in Ihrer Krankenakte hinterlegten Medikamenten abgeglichen.
+                </p>
+                <p className="text-lg text-foreground/80">
+                  Um Ihnen den Bezug der Medikamente so einfach wie möglich zu machen, bieten wir Ihnen die Möglichkeit, die Medikamente vorzubestellen.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="mx-auto mt-16 max-w-7xl text-center">
+        <h3 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl">
+          So einfach bestellen Sie Ihre Medikamente
+        </h3>
+      </div>
+
+      <div className="mx-auto mt-12 max-w-7xl">
+        {/* Desktop View: Tabs */}
+        <div className="hidden sm:block">
+          <Tabs defaultValue="telefon" className="w-full">
+              <TabsList className="grid h-auto w-full grid-cols-2 gap-2 rounded-lg bg-transparent p-0 shadow-2xl">
+                  <TabsTrigger
+                      value="telefon"
+                      className="group/telefon flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-primary-foreground data-[state=active]:bg-gradient-start data-[state=inactive]:bg-secondary"
+                  >
+                      <span className="text-[clamp(1.2rem,2.5vw,1.5rem)] font-bold">Vorbestellung per Telefon</span>
+                      <div className="flex items-center gap-3 text-[clamp(0.8rem,2vw,1rem)]">
+                          <Phone className="h-6 w-6"/>
+                          <span>031 316 26 66</span>
+                      </div>
+                  </TabsTrigger>
+                  <TabsTrigger
+                      value="email"
+                      className="group/email flex h-auto w-full flex-col items-center justify-center gap-2 rounded-b-none p-6 text-primary-foreground data-[state=active]:bg-gradient-start data-[state=inactive]:bg-secondary"
+                  >
+                      <span className="text-[clamp(1.2rem,2.5vw,1.5rem)] font-bold">Vorbestellung per E-Mail</span>
+                      <div className="flex items-center gap-3 text-[clamp(0.8rem,2vw,1rem)]">
+                          <Mail className="h-6 w-6"/>
+                          <span className="break-all">medikamente@praxiszentrum-im-ring.ch</span>
+                      </div>
+                  </TabsTrigger>
+              </TabsList>
+            <TabsContent value="telefon" className="-mt-px">
+              <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground shadow-2xl">
+                  <CardContent className="p-6 md:p-8">
+                      <PhoneCardContent />
+                  </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="email" className="-mt-px">
+              <Card className="rounded-t-none bg-gradient-to-b from-gradient-start to-gradient-end text-primary-foreground shadow-2xl">
+                  <CardContent className="p-6 md:p-8">
+                    <EmailCardContent />
+                  </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
+        
+        {/* Mobile View: Stacked Cards */}
+        <div className="space-y-8 sm:hidden">
+            <Card className="overflow-hidden bg-gradient-start text-primary-foreground">
+                <CardHeader>
+                    <div className="flex items-center gap-3 text-xl font-bold">
+                        <Phone />
+                        <span>Vorbestellung per Telefon</span>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <MobilePhoneCardContent />
+                </CardContent>
+            </Card>
+            <Card className="overflow-hidden bg-secondary text-primary-foreground">
+                <CardHeader>
+                    <div className="flex items-center gap-3 text-xl font-bold">
+                        <Mail />
+                        <span>Vorbestellung per E-Mail</span>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <MobileEmailCardContent />
+                </CardContent>
+            </Card>
+        </div>
+      </div>
+
+      <div className="mx-auto mt-16 max-w-7xl">
+        <Card>
+          <CardContent className="p-6 md:p-8">
+            <div className="space-y-6 text-lg text-foreground/80">
+              <h3 className="font-headline text-2xl font-bold text-primary">Abholung Ihrer bestellten Medikamente</h3>
+              <p>Ihre Medikamente sind in der Regel spätestens zwei Werktage nach Ihrer Bestellung zur Abholung im Praxiszentrum im Ring bereit.</p>
+              <p>Um Wartezeiten und Störungen des Sprechstundenbetriebs zu minimieren, bitten wir darum, dass Sie wann immer möglich die Medikamente vorbestellen und sie zu den folgenden Zeiten abholen:</p>
+              <ul className="space-y-2 text-foreground">
+                <li>Montags 10-12 Uhr</li>
+                <li>Dienstag 15-17 Uhr</li>
+                <li>Mittwoch 10-12 Uhr</li>
+                <li>Donnerstag 15-17 Uhr</li>
+                <li>Freitag 10-12 Uhr</li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+    </div>
   );
 }
