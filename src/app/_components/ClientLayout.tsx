@@ -26,7 +26,7 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen flex-col bg-background">
       <Header isEnglish={isEnglish} />
       <main className="flex-1">
-        <HolidayBanner isEnglish={isEnglish} />
+        {/* <HolidayBanner isEnglish={isEnglish} /> */}
         {children}
       </main>
       <Footer isEnglish={isEnglish} />
