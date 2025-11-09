@@ -1,4 +1,3 @@
-
 'use client';
 
 // NOTE: We no longer need FirebaseClientProvider here because it's handled

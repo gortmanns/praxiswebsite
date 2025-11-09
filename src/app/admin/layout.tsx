@@ -1,4 +1,3 @@
-
 'use client';
 import { AppSidebar } from './dashboard/_components/app-sidebar';
 import { useAuth } from '@/firebase/provider';
